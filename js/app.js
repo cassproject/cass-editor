@@ -15,7 +15,8 @@ window.onload = function () {
             framework = f;
             populateFramework();
         }, error);
-    }
+    } else
+        gotoPage(defaultPage);
 }
 
 function backPage() {
@@ -258,8 +259,17 @@ refreshSidebar = function () {
     var thing = framework;
     if (selectedCompetency != null)
         thing = selectedCompetency;
+    $("#editFrameworkSection .viewMode").show();
+    $("#editFrameworkSection .editMode").hide();
     $("#editFrameworkSection #sidebarName").text(thing.getName());
+    $("#editFrameworkSection #sidebarNameInput").val(thing.getName());
     $("#editFrameworkSection #sidebarDescription").text(thing.getDescription());
+    $("#editFrameworkSection #sidebarDescriptionInput").val(thing.getDescription());
+}
+
+editSidebar = function () {
+    $("#editFrameworkSection .viewMode").hide();
+    $("#editFrameworkSection .editMode").show();
 }
 
 $('#file').on('change', function (e) {

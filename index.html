@@ -79,14 +79,18 @@
 
     <div id="editFrameworkSection" class="page pageWithSidebar" style="height:100%;display: none;">
         <div id="detailSlider" class="sidebar" style="">
-            <h3 id="sidebarName">Framework Name Here</h3>
-            <p id="sidebarDescription">This is a super long description, it describes the things worth describing.</p>
-            <select onclick="$(this).children().first().prop('selected', true);" style="margin:0rem;margin-right:1rem;">
+            <h3 id="sidebarName" class="viewMode">Framework Name Here</h3>
+            <input id="sidebarNameInput" class="editMode" style="width:calc(100% - 1rem);" value="Framework Name Here" />
+            <p id="sidebarDescription" class="viewMode">This is a super long description, it describes the things worth describing.</p>
+            <textarea id="sidebarDescriptionInput" class="editMode" style="width:calc(100% - 1rem);height:6rem;">This is a super long description, it describes the things worth describing.</textarea>
+            <select id="sidebarAddCompetencies" class="viewMode" onclick="$(this).children().first().prop('selected', true);" style="">
                 <option style="display:none;" disabled selected>Add Competencies</option>
-                <option>Existing</option>
+                <option>Search...</option>
                 <option>New</option>
             </select>
-            <button style="margin:0rem;">Edit</button>
+            <button id="sidebarEdit" class="viewMode" style="margin:0rem;" onclick="editSidebar();">Edit</button>
+            <button id="sidebarCancel" class="editMode" style="margin:0rem;" onclick="refreshSidebar();">Cancel</button>
+            <button id="sidebarSave" class="editMode" style="margin:0rem;">Save</button>
         </div>
         <p id="frameworkName" style="margin:0rem;margin-left:1rem;font-size:2rem;line-height:2rem;" onclick="selectedCompetency=null;refreshSidebar();"></p>
         <ul id="tree">
