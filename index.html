@@ -25,15 +25,15 @@
             </div>
         </div>
 
-        <div id="formSection" style="width: 100%; position: relative; padding-left: 1rem;
-    	padding-right: 20px; display: table; border-collapse: separate; border-spacing: 0px 10px;">
+        <div id="formSection" style="width: calc(100% - 2rem); position: relative; padding-left: 1rem;
+    	padding-right: 1rem; display: table; border-collapse: separate;margin:0rem;border-spacing: 0px 10px;">
             <div style="display: table-row">
                 <label id="nameSpan" style="display: table-cell; width: 15%;">Name</label>
-                <input type="text" name="name" style="display: table-cell; width: 85%;">
+                <input type="text" id="name" style="display: table-cell; width: 85%;" placeholder="Enter the framework name here.">
             </div>
             <div style="display: table-row">
                 <label id="descriptionSpan" for="description" style="display: table-cell; width: 15%;">Description</label>
-                <textarea type="text" name="description" style="display: table-cell; width: 85%;"></textarea>
+                <textarea type="text" id="description" style="display: table-cell; width: 85%;" placeholder="Enter the framework description here."></textarea>
             </div>
         </div>
 
@@ -80,17 +80,29 @@
     <div id="editFrameworkSection" class="page pageWithSidebar" style="height:100%;display: none;">
         <div id="detailSlider" class="sidebar" style="">
             <h3 id="sidebarName" class="viewMode">Framework Name Here</h3>
-            <input id="sidebarNameInput" class="editMode" style="width:calc(100% - 1rem);" value="Framework Name Here" />
+            <input id="sidebarNameInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" value="Framework Name Here" />
             <p id="sidebarDescription" class="viewMode">This is a super long description, it describes the things worth describing.</p>
-            <textarea id="sidebarDescriptionInput" class="editMode" style="width:calc(100% - 1rem);height:6rem;">This is a super long description, it describes the things worth describing.</textarea>
-            <select id="sidebarAddCompetencies" class="viewMode" onclick="$(this).children().first().prop('selected', true);" style="">
+            <textarea id="sidebarDescriptionInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);height:6rem;">This is a super long description, it describes the things worth describing.</textarea>
+            <select id="sidebarVersion" class="viewMode" style="display:block;margin-bottom:.5rem;">
+                <option selected>Shared: Updates automatically.</option>
+                <option>Manual update only.</option>
+            </select>
+            <select id="sidebarAddCompetencies" class="viewMode" onclick="addCompetency();$(this).children().first().prop('selected', true);">
                 <option style="display:none;" disabled selected>Add Competencies</option>
-                <option>Search...</option>
-                <option>New</option>
+                <option value="search">Search...</option>
+                <option value="new">New</option>
+            </select>
+            <select id="sidebarAddLevels" class="viewMode" onclick="addLevel();$(this).children().first().prop('selected', true);">
+                <option style="display:none;" disabled selected>Add Levels</option>
+                <option value="search">Search...</option>
+                <option value="new">New</option>
             </select>
             <button id="sidebarEdit" class="viewMode" style="margin:0rem;" onclick="editSidebar();">Edit</button>
+            <button id="sidebarDelete" class="editMode" style="margin:0rem;float:right;margin-left:4px;" onclick="deleteCompetency();">Delete</button>
+            <button id="sidebarRemove" class="editMode" style="margin:0rem;float:right;" onclick="removeCompetency();">Remove</button>
             <button id="sidebarCancel" class="editMode" style="margin:0rem;" onclick="refreshSidebar();">Cancel</button>
-            <button id="sidebarSave" class="editMode" style="margin:0rem;">Save</button>
+            <button id="sidebarSave" class="editMode" style="margin:0rem;" onclick="saveCompetency();">Save</button>
+            <p><small id="sidebarFeedback"></small></p>
         </div>
         <p id="frameworkName" style="margin:0rem;margin-left:1rem;font-size:2rem;line-height:2rem;" onclick="selectedCompetency=null;refreshSidebar();"></p>
         <ul id="tree">
@@ -125,10 +137,7 @@
     <script src="js/cass/ec.crypto.js"></script>
     <script src="js/cass/require.js"></script>
     <script src="js/cass/base64toArrayBuffer.js"></script>
-    <script>
-        require("/js/cass/pem-jwk");
-
-    </script>
+    <script src="js/cass/pem-jwk.js"></script>
     <script src="js/cass/org.json-ld.js"></script>
     <script src="js/cass/FileSaver.js"></script>
     <script src="js/cass/org.cassproject.schema.general.js"></script>
@@ -140,7 +149,10 @@
     <script src="js/cass/cass.competency.js"></script>
     <script src="js/util.js"></script>
     <script src="js/server.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/editFramework.js"></script>
+    <script src="js/viewFramework.js"></script>
+    <script src="js/import.js"></script>
+    <script src="js/pageManagement.js"></script>
 </body>
 
 </html>

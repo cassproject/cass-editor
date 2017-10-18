@@ -1,5 +1,5 @@
 /*
- Copyright 2017 Eduworks Corporation and other contributing parties.
+ Copyright 2017 Credential Engine and other contributing parties.
 
  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -14,7 +14,7 @@ EcRepository.caching = true;
 
 var frameworkId = "";
 
-var servers = ["https://dev.cassproject.org/api"];
+var servers = ["https://dev.cassproject.org/api/"];
 var repo;
 
 if (queryParams.server != null)
@@ -26,4 +26,43 @@ for (var i = 0; i < servers.length; i++) {
     r.autoDetectRepository();
     servers[i] = r;
     repo = r;
+
+    // Instead of /ws/custom, will be /ws in next release.
+    var connection = new WebSocket(r.selectedServer.replace(/http/, "ws").replace(/api\//, "ws/custom"));
+    // When the connection is open, send some data to the server
+    connection.onopen = function () {
+        console.log("WebSocket open.");
+    };
+
+    // Log errors
+    connection.onerror = function (error) {
+        console.log(error);
+    };
+
+    // Log messages from the server
+    connection.onmessage = function (e) {
+        console.log('Server: ' + e.data);
+        EcRepository.get(e.data, function (wut) {
+            delete EcRepository.cache[wut.id];
+            delete EcRepository.cache[wut.shortId()];
+            if (new EcFramework().isA(wut.getFullType()))
+                if (framework.id == wut.id) {
+                    framework = new EcFramework();
+                    framework.copyFrom(wut);
+                    populateFramework();
+                }
+
+            if (new EcCompetency().isA(wut.getFullType())) {
+                var com = new EcCompetency();
+                com.copyFrom(wut);
+                refreshCompetency(com);
+                if (selectedCompetency.id == wut.id) {
+                    selectedCompetency = com;
+                    refreshSidebar();
+                }
+            }
+
+        }, error);
+    };
+
 }

@@ -15,6 +15,11 @@ var EcCrypto = function() {};
 EcCrypto = stjs.extend(EcCrypto, null, [], function(constructor, prototype) {
     constructor.caching = false;
     constructor.decryptionCache = new Object();
+    constructor.md5 = function(s) {
+        var m = forge.md.md5.create();
+        m.update(s);
+        return m.digest().toHex();
+    };
 }, {decryptionCache: "Object"}, {});
 /**
  *  Helper classes for dealing with RSA Public Keys.
@@ -7559,7 +7564,7 @@ EcRsaOaepAsync = stjs.extend(EcRsaOaepAsync, null, [], function(constructor, pro
         }
         var keyUsages = new Array();
         keyUsages.push("encrypt");
-        var algorithm = new AlgorithmIdentifier();
+        var algorithm = new Object();
         algorithm.name = "RSA-OAEP";
         algorithm.hash = "SHA-1";
         if (pk.key == null) 
@@ -7593,7 +7598,7 @@ EcRsaOaepAsync = stjs.extend(EcRsaOaepAsync, null, [], function(constructor, pro
         }
         var keyUsages = new Array();
         keyUsages.push("decrypt");
-        var algorithm = new AlgorithmIdentifier();
+        var algorithm = new Object();
         algorithm.name = "RSA-OAEP";
         algorithm.hash = "SHA-1";
         if (ppk.key == null) 
@@ -7619,7 +7624,7 @@ EcRsaOaepAsync = stjs.extend(EcRsaOaepAsync, null, [], function(constructor, pro
         }
         var keyUsages = new Array();
         keyUsages.push("sign");
-        var algorithm = new AlgorithmIdentifier();
+        var algorithm = new Object();
         algorithm.name = "RSASSA-PKCS1-v1_5";
         algorithm.hash = "SHA-1";
         if (ppk.signKey == null) 
@@ -7645,7 +7650,7 @@ EcRsaOaepAsync = stjs.extend(EcRsaOaepAsync, null, [], function(constructor, pro
         }
         var keyUsages = new Array();
         keyUsages.push("sign");
-        var algorithm = new AlgorithmIdentifier();
+        var algorithm = new Object();
         algorithm.name = "RSASSA-PKCS1-v1_5";
         algorithm.hash = "SHA-256";
         if (ppk.signKey == null) 
@@ -7671,7 +7676,7 @@ EcRsaOaepAsync = stjs.extend(EcRsaOaepAsync, null, [], function(constructor, pro
         }
         var keyUsages = new Array();
         keyUsages.push("verify");
-        var algorithm = new AlgorithmIdentifier();
+        var algorithm = new Object();
         algorithm.name = "RSASSA-PKCS1-v1_5";
         algorithm.hash = "SHA-1";
         if (pk.signKey == null) 
@@ -7696,7 +7701,7 @@ EcAesCtrAsync = stjs.extend(EcAesCtrAsync, null, [], function(constructor, proto
         }
         var keyUsages = new Array();
         keyUsages.push("encrypt", "decrypt");
-        var algorithm = new AlgorithmIdentifier();
+        var algorithm = new Object();
         algorithm.name = "AES-CTR";
         algorithm.counter = base64.decode(iv);
         algorithm.length = 128;
@@ -7723,7 +7728,7 @@ EcAesCtrAsync = stjs.extend(EcAesCtrAsync, null, [], function(constructor, proto
         }
         var keyUsages = new Array();
         keyUsages.push("encrypt", "decrypt");
-        var algorithm = new AlgorithmIdentifier();
+        var algorithm = new Object();
         algorithm.name = "AES-CTR";
         algorithm.counter = base64.decode(iv);
         algorithm.length = 128;
