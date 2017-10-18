@@ -14,7 +14,8 @@ EcRepository.caching = true;
 
 var frameworkId = "";
 
-var servers = ["https://sandbox.cassproject.org/api/custom"];
+var servers = ["https://dev.cassproject.org/api"];
+var repo;
 
 if (queryParams.server != null)
     servers = [queryParams.server];
@@ -24,4 +25,5 @@ for (var i = 0; i < servers.length; i++) {
     r.selectedServer = servers[i];
     r.autoDetectRepository();
     servers[i] = r;
+    repo = r;
 }

@@ -14,26 +14,47 @@ body {
     box-sizing: border-box;
     overflow: hidden;
 }
-#status {
+
+.page {
+    box-sizing: border-box;
     display: block;
-    position: fixed;
-    text-align: center;
-    width: 100%;
-    margin: 0 auto;
+    position: absolute;
+    top: 0rem;
     bottom: 0;
-    font-size: 2rem;
-    padding: 1rem;
+    padding: 0;
+    width: 100%;
+    overflow: auto;
+    scroll-behavior: smooth;
 }
-.button,
-button {
-    border: 0;
-    -webkit-border-radius: 4;
-    -moz-border-radius: 4;
-    border-radius: .5rem;
-    font-size: 1.5rem;
-    padding: .25rem 1rem .25rem 1rem;
-    text-decoration: none;
+
+#tree {
+    margin: 0px;
+    padding-top: 0rem;
+    max-height: calc(100% - 2rem);
+    overflow: auto;
 }
+
+.pageWithSidebar {
+    padding-right: 21rem;
+}
+
+.sidebar {
+    position: fixed;
+    right: 0;
+    float: right;
+    padding-left: 1rem;
+    margin-top: 1rem;
+    height: 100vh;
+    max-width: 50%;
+    width: 20rem;
+    border-left: 1px black solid;
+}
+
+#title {
+    margin-top: 0rem;
+    margin-bottom: .5rem;
+}
+
 .button:hover,
 button:hover {
     /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ffffff+100&0.5+0,0.5+100 */
@@ -45,28 +66,22 @@ button:hover {
     background-image: linear-gradient(to bottom, rgba(128, 128, 128, 0.5) 0%, rgba(128, 128, 128, 0.5) 100%);
     filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#80808080', endColorstr='#80808080', GradientType=0);
 }
-#main {
-    box-sizing: border-box;
-    display: block;
-    position: absolute;
-    top: 2.3rem;
-    bottom: 0;
-    padding: 0;
-    width: 100%;
-    overflow: auto;
-    scroll-behavior: smooth;
-    border-top: 1px solid #000;
-    border-bottom: 1px solid #000;
+
+ul {
+    list-style: none;
 }
+
 #frameworks {
     margin-top: 1rem;
     margin-left: 1rem;
 }
+
 #frameworks p {
     text-align: left;
     margin-bottom: .2em;
     margin: 0px;
 }
+
 #frameworks p:hover {
     /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ffffff+100&0.1+0,0.1+100 */
     background-image: -moz-linear-gradient(top, rgba(128, 128, 128, 0.1) 0%, rgba(128, 128, 128, 0.1) 100%);
@@ -77,11 +92,13 @@ button:hover {
     background-image: linear-gradient(to bottom, rgba(128, 128, 128, 0.1) 0%, rgba(128, 128, 128, 0.1) 100%);
     filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#80808080', endColorstr='#80808080', GradientType=0);
 }
+
 #frameworks p a {
     overflow: hidden;
     text-overflow: ellipsis;
     font-size: 1.5rem;
 }
+
 #frameworks p span {
     margin-left: 1rem;
     font-size: 1rem;
@@ -94,81 +111,21 @@ button:hover {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
 #frameworks p a:hover {
     text-decoration: underline;
 }
-#mainbar {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    padding: 0px;
-    z-index: 5;
-}
-#header {
-    position: absolute;
-    -webkit-font-smoothing: antialiased;
-    text-align: center;
-    top: 0;
-    height: 2.2rem;
-    width: 100%;
-    padding: 0rem 0rem;
-    margin: 0rem 0rem;
-    z-index: 10;
-    font-size: 2rem;
-}
-#header input {
-    border: 0;
-    -webkit-border-radius: 4;
-    -moz-border-radius: 4;
-    border-radius: .25rem;
-    border: none;
-    background-color: transparent;
-    color: inherit;
-    width: 99%;
-    height: 1.6rem;
-    margin: 0px;
-    padding: 0px;
-    padding-left: .25rem;
-    font-size: 1.5rem;
-    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ffffff+100&0.5+0,0.5+100 */
-    background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.5) 100%);
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(255, 255, 255, 0.5)), color-stop(100%, rgba(255, 255, 255, 0.5)));
-    background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.5) 100%);
-    background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.5) 100%);
-    background-image: -ms-linear-gradient(top, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.5) 100%);
-    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.5) 100%);
-    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#80ffffff', endColorstr='#80ffffff', GradientType=0);
-}
-#header span {
-    overflow: hidden;
-    display: block;
-    white-space: nowrap;
-    margin: 0px;
-    text-overflow: ellipsis;
-}
-#main > ul {
-    margin: 0;
-    padding: 0;
-}
-#main > ul > .competency {
-    border-bottom: 1px solid;
-    padding: .75em 0;
-    padding-left: 1em;
-    margin: 0 0;
-    list-style: none;
-}
-#main > ul > .competency > span {
-    font-size: 1.25rem;
-    margin-bottom: 1rem;
-}
+
 .competency {
     border-top: 1px solid transparent;
     border-bottom: 1px solid transparent;
 }
+
 .competency > span {
     font-size: 1rem;
     line-height: 1.5rem;
 }
+
 .competency:hover {
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
@@ -181,6 +138,7 @@ button:hover {
     background-image: linear-gradient(to bottom, rgba(128, 128, 128, 0.1) 0%, rgba(128, 128, 128, 0.1) 100%);
     filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#80808080', endColorstr='#80808080', GradientType=0);
 }
+
 .competency > small {
     display: block;
     font-size: .8rem;
@@ -194,6 +152,7 @@ button:hover {
     left: 50%;
     text-align: center;
 }
+
 @-webkit-keyframes uil-default-anim {
     0% {
         opacity: 1
@@ -202,6 +161,7 @@ button:hover {
         opacity: 0
     }
 }
+
 @keyframes uil-default-anim {
     0% {
         opacity: 1
@@ -210,9 +170,11 @@ button:hover {
         opacity: 0
     }
 }
+
 ul {
     list-style: none;
 }
+
 .uil-default-css > div {
     /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ffffff+100&0.5+0,0.5+100 */
     background-image: -moz-linear-gradient(top, rgba(128, 128, 128, 0.5) 0%, rgba(128, 128, 128, 0.5) 100%);
@@ -223,12 +185,14 @@ ul {
     background-image: linear-gradient(to bottom, rgba(128, 128, 128, 0.5) 0%, rgba(128, 128, 128, 0.5) 100%);
     filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#80808080', endColorstr='#80808080', GradientType=0);
 }
+
 .uil-default-css > div:nth-of-type(1) {
     -webkit-animation: uil-default-anim 1s linear infinite;
     animation: uil-default-anim 1s linear infinite;
     -webkit-animation-delay: -0.5s;
     animation-delay: -0.5s;
 }
+
 .uil-default-css {
     display: inline-block;
     position: relative;
@@ -236,132 +200,154 @@ ul {
     width: 200px;
     height: 200px;
 }
+
 .uil-default-css > div:nth-of-type(2) {
     -webkit-animation: uil-default-anim 1s linear infinite;
     animation: uil-default-anim 1s linear infinite;
     -webkit-animation-delay: -0.4166666666666667s;
     animation-delay: -0.4166666666666667s;
 }
+
 .uil-default-css {
     position: relative;
     background: none;
     width: 200px;
     height: 200px;
 }
+
 .uil-default-css > div:nth-of-type(3) {
     -webkit-animation: uil-default-anim 1s linear infinite;
     animation: uil-default-anim 1s linear infinite;
     -webkit-animation-delay: -0.33333333333333337s;
     animation-delay: -0.33333333333333337s;
 }
+
 .uil-default-css {
     position: relative;
     background: none;
     width: 200px;
     height: 200px;
 }
+
 .uil-default-css > div:nth-of-type(4) {
     -webkit-animation: uil-default-anim 1s linear infinite;
     animation: uil-default-anim 1s linear infinite;
     -webkit-animation-delay: -0.25s;
     animation-delay: -0.25s;
 }
+
 .uil-default-css {
     position: relative;
     background: none;
     width: 200px;
     height: 200px;
 }
+
 .uil-default-css > div:nth-of-type(5) {
     -webkit-animation: uil-default-anim 1s linear infinite;
     animation: uil-default-anim 1s linear infinite;
     -webkit-animation-delay: -0.16666666666666669s;
     animation-delay: -0.16666666666666669s;
 }
+
 .uil-default-css {
     position: relative;
     background: none;
     width: 200px;
     height: 200px;
 }
+
 .uil-default-css > div:nth-of-type(6) {
     -webkit-animation: uil-default-anim 1s linear infinite;
     animation: uil-default-anim 1s linear infinite;
     -webkit-animation-delay: -0.08333333333333331s;
     animation-delay: -0.08333333333333331s;
 }
+
 .uil-default-css {
     position: relative;
     background: none;
     width: 200px;
     height: 200px;
 }
+
 .uil-default-css > div:nth-of-type(7) {
     -webkit-animation: uil-default-anim 1s linear infinite;
     animation: uil-default-anim 1s linear infinite;
     -webkit-animation-delay: 0s;
     animation-delay: 0s;
 }
+
 .uil-default-css {
     position: relative;
     background: none;
     width: 200px;
     height: 200px;
 }
+
 .uil-default-css > div:nth-of-type(8) {
     -webkit-animation: uil-default-anim 1s linear infinite;
     animation: uil-default-anim 1s linear infinite;
     -webkit-animation-delay: 0.08333333333333337s;
     animation-delay: 0.08333333333333337s;
 }
+
 .uil-default-css {
     position: relative;
     background: none;
     width: 200px;
     height: 200px;
 }
+
 .uil-default-css > div:nth-of-type(9) {
     -webkit-animation: uil-default-anim 1s linear infinite;
     animation: uil-default-anim 1s linear infinite;
     -webkit-animation-delay: 0.16666666666666663s;
     animation-delay: 0.16666666666666663s;
 }
+
 .uil-default-css {
     position: relative;
     background: none;
     width: 200px;
     height: 200px;
 }
+
 .uil-default-css > div:nth-of-type(10) {
     -webkit-animation: uil-default-anim 1s linear infinite;
     animation: uil-default-anim 1s linear infinite;
     -webkit-animation-delay: 0.25s;
     animation-delay: 0.25s;
 }
+
 .uil-default-css {
     position: relative;
     background: none;
     width: 200px;
     height: 200px;
 }
+
 .uil-default-css > div:nth-of-type(11) {
     -webkit-animation: uil-default-anim 1s linear infinite;
     animation: uil-default-anim 1s linear infinite;
     -webkit-animation-delay: 0.33333333333333337s;
     animation-delay: 0.33333333333333337s;
 }
+
 .uil-default-css {
     position: relative;
     background: none;
     width: 200px;
     height: 200px;
 }
+
 .uil-default-css > div:nth-of-type(12) {
     -webkit-animation: uil-default-anim 1s linear infinite;
     animation: uil-default-anim 1s linear infinite;
     -webkit-animation-delay: 0.41666666666666663s;
     animation-delay: 0.41666666666666663s;
 }
+
 .uil-default-css {
     position: relative;
     background: none;

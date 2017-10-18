@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.cassproject</groupId>
-    <artifactId>cass-viewer</artifactId>
+    <artifactId>cass-editor</artifactId>
     <version>1.0.0</version>
     <packaging>war</packaging>
 
-    <name>cass-viewer</name>
-    <url>http://github.com/cassproject/cass-viewer</url>
+    <name>cass-editor</name>
+    <url>http://github.com/cassproject/cass-editor</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,7 +20,7 @@
         <dependency>
             <groupId>com.eduworks</groupId>
             <artifactId>cass.competency</artifactId>
-            <version>1.1.1</version>
+            <version>1.2.0</version>
         </dependency>
     </dependencies>
 

@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<html id="cassImport" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>CASS Editor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+
+<body style="height:100%;">
+    <div id="addFrameworkSection" class="page" style="display: none;">
+        <div style="padding: 1rem;">
+            <div style="float:right;">
+                <button id="importButton" onclick='showPage("#importSection");'>Import...</button>
+            </div>
+            <div style="">
+                <h2 id="title">
+                    Add a Framework
+                </h2>
+                <span id="caption">Import a framework or create one below.</span>
+            </div>
+        </div>
+
+        <div id="formSection" style="width: 100%; position: relative; padding-left: 1rem;
+    	padding-right: 20px; display: table; border-collapse: separate; border-spacing: 0px 10px;">
+            <div style="display: table-row">
+                <label id="nameSpan" style="display: table-cell; width: 15%;">Name</label>
+                <input type="text" name="name" style="display: table-cell; width: 85%;">
+            </div>
+            <div style="display: table-row">
+                <label id="descriptionSpan" for="description" style="display: table-cell; width: 15%;">Description</label>
+                <textarea type="text" name="description" style="display: table-cell; width: 85%;"></textarea>
+            </div>
+        </div>
+
+        <hr style="position: relative; margin-left: 1rem; margin-right: 1rem;">
+
+        <div id="buttonSection" style="margin-left: 1rem;">
+            <div>
+                <div style="float:left; margin-right:1rem;">
+                    <button id="saveButton" onclick="createFramework();">Create</button>
+                </div>
+                <div style="float:left;">
+                    <button id="cancelButton">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="importSection" class="page" style="display: none;">
+        <div style="padding: 1rem;">
+            <div>
+                <h2 id="title">
+                    Import a framework
+                </h2>
+            </div>
+        </div>
+        <form id="importFileForm" method="post" action="" encType="multipart/form-data" style="min-height:5rem; display: flex; align-items: center; border: 2px dashed black; margin-left: 20px;">
+            <center style="width:100%">
+                <input type="file" name="files[]" id="file" data-multiple-caption="{count} files selected" multiple hidden/>
+                <label for="file" style="">Drag and drop a file here<br> or <button href="#" onClick="$(this).parent().click()">Browse...</button></label>
+            </center>
+        </form>
+
+        <hr style="position: relative; margin-left: 1rem; margin-right: 1rem;">
+
+        <div id="buttonSection" style="margin-left: 1rem;">
+            <div>
+                <div style="float:left;">
+                    <button id="cancelButton" onclick="backPage();">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="editFrameworkSection" class="page pageWithSidebar" style="height:100%;display: none;">
+        <div id="detailSlider" class="sidebar" style="">
+            <h3 id="sidebarName">Framework Name Here</h3>
+            <p id="sidebarDescription">This is a super long description, it describes the things worth describing.</p>
+            <select onclick="$(this).children().first().prop('selected', true);" style="margin:0rem;margin-right:1rem;">
+                <option style="display:none;" disabled selected>Add Competencies</option>
+                <option>Existing</option>
+                <option>New</option>
+            </select>
+            <button style="margin:0rem;">Edit</button>
+        </div>
+        <p id="frameworkName" style="margin:0rem;margin-left:1rem;font-size:2rem;line-height:2rem;" onclick="selectedCompetency=null;refreshSidebar();"></p>
+        <ul id="tree">
+        </ul>
+    </div>
+
+    <div id="loading" class="page" style="display:none;">
+        <div class='uil-default-css' style='margin-top:20px;transform:scale(0.71);'>
+            <div style='top:80px;left:93px;width:14px;height:40px;-webkit-transform:rotate(0deg) translate(0,-60px);transform:rotate(0deg) translate(0,-60px);border-radius:10px;position:absolute;'></div>
+            <div style='top:80px;left:93px;width:14px;height:40px;-webkit-transform:rotate(30deg) translate(0,-60px);transform:rotate(30deg) translate(0,-60px);border-radius:10px;position:absolute;'></div>
+            <div style='top:80px;left:93px;width:14px;height:40px;-webkit-transform:rotate(60deg) translate(0,-60px);transform:rotate(60deg) translate(0,-60px);border-radius:10px;position:absolute;'></div>
+            <div style='top:80px;left:93px;width:14px;height:40px;-webkit-transform:rotate(90deg) translate(0,-60px);transform:rotate(90deg) translate(0,-60px);border-radius:10px;position:absolute;'></div>
+            <div style='top:80px;left:93px;width:14px;height:40px;-webkit-transform:rotate(120deg) translate(0,-60px);transform:rotate(120deg) translate(0,-60px);border-radius:10px;position:absolute;'></div>
+            <div style='top:80px;left:93px;width:14px;height:40px;-webkit-transform:rotate(150deg) translate(0,-60px);transform:rotate(150deg) translate(0,-60px);border-radius:10px;position:absolute;'></div>
+            <div style='top:80px;left:93px;width:14px;height:40px;-webkit-transform:rotate(180deg) translate(0,-60px);transform:rotate(180deg) translate(0,-60px);border-radius:10px;position:absolute;'></div>
+            <div style='top:80px;left:93px;width:14px;height:40px;-webkit-transform:rotate(210deg) translate(0,-60px);transform:rotate(210deg) translate(0,-60px);border-radius:10px;position:absolute;'></div>
+            <div style='top:80px;left:93px;width:14px;height:40px;-webkit-transform:rotate(240deg) translate(0,-60px);transform:rotate(240deg) translate(0,-60px);border-radius:10px;position:absolute;'></div>
+            <div style='top:80px;left:93px;width:14px;height:40px;-webkit-transform:rotate(270deg) translate(0,-60px);transform:rotate(270deg) translate(0,-60px);border-radius:10px;position:absolute;'></div>
+            <div style='top:80px;left:93px;width:14px;height:40px;-webkit-transform:rotate(300deg) translate(0,-60px);transform:rotate(300deg) translate(0,-60px);border-radius:10px;position:absolute;'></div>
+            <div style='top:80px;left:93px;width:14px;height:40px;-webkit-transform:rotate(330deg) translate(0,-60px);transform:rotate(330deg) translate(0,-60px);border-radius:10px;position:absolute;'></div>
+        </div><br>
+        <center id="status">Loading...</center>
+    </div>
+
+    <script src="js/vendor/jquery-3.2.1.min.js"></script>
+    <script src="forge/forge.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.0/jquery.mark.min.js"></script>
+    <script src="js/cass/stjs.js"></script>
+    <script src="js/cass/ec.base.js"></script>
+    <script src="js/cass/random.js"></script>
+    <script src="js/cass/blobHelper.js"></script>
+    <script src="js/cass/ec.crypto.js"></script>
+    <script src="js/cass/require.js"></script>
+    <script src="js/cass/base64toArrayBuffer.js"></script>
+    <script>
+        require("/js/cass/pem-jwk");
+
+    </script>
+    <script src="js/cass/org.json-ld.js"></script>
+    <script src="js/cass/FileSaver.js"></script>
+    <script src="js/cass/org.cassproject.schema.general.js"></script>
+    <script src="js/cass/org.schema.js"></script>
+    <script src="js/cass/org.cassproject.schema.ebac.js"></script>
+    <script src="js/cass/org.cassproject.schema.cass.js"></script>
+    <script src="js/cass/ebac.identity.js"></script>
+    <script src="js/cass/ebac.repository.js"></script>
+    <script src="js/cass/cass.competency.js"></script>
+    <script src="js/util.js"></script>
+    <script src="js/server.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>
