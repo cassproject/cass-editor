@@ -878,8 +878,6 @@ EcAlignment = stjs.extend(EcAlignment, Relation, [], function(constructor, proto
      *                                         Callback triggered if error searching
      *  @param {Object}                        [paramObj]
      *                                         Parameters to include in the search
-     *  @param start
-     *  @param size
      *  @memberOf EcAlignment
      *  @method searchByCompetency
      *  @static
@@ -1041,6 +1039,38 @@ EcLevel = stjs.extend(EcLevel, Level, [], function(constructor, prototype) {
                     console.error(msg);
             }
         }, failure);
+    };
+    /**
+     *  Retrieves a level from it's server synchronously, the call
+     *  blocks until it is successful or an error occurs
+     * 
+     *  @param {String} id
+     *                  ID of the competency to retrieve
+     *  @return EcLevel
+     *  The level retrieved
+     *  @memberOf EcLevel
+     *  @method getBlocking
+     *  @static
+     */
+    constructor.getBlocking = function(id) {
+        var p1 = EcRepository.getBlocking(id);
+        if (p1 == null) 
+            return null;
+        var level = new EcLevel();
+        if (p1.isA(EcEncryptedValue.myType)) {
+            var encrypted = new EcEncryptedValue();
+            encrypted.copyFrom(p1);
+            p1 = encrypted.decryptIntoObject();
+            EcEncryptedValue.encryptOnSave(p1.id, true);
+        }
+        if (p1.isAny(level.getTypes())) {
+            level.copyFrom(p1);
+            return level;
+        } else {
+            var msg = "Retrieved object was not a level";
+            console.error(msg);
+            return null;
+        }
     };
     /**
      *  Searches for levels with a string query

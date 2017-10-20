@@ -8,7 +8,7 @@
  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-var defaultPage = "#addFrameworkSection";
+var defaultPage = "#frameworksSection";
 window.onload = function () {
     if (queryParams.frameworkId != null) {
         loading("Loading framework...");
@@ -18,8 +18,9 @@ window.onload = function () {
             selectedCompetency = null;
             refreshSidebar();
         }, error);
-    } else
-        gotoPage(defaultPage);
+    } else {
+        searchFrameworks();
+    }
 }
 
 function backPage() {

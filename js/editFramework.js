@@ -1,6 +1,6 @@
 addCompetency = function () {
     var addOrSearch = $("#sidebarAddCompetencies").val();
-    if (addOrSearch == "search") {} else if (addOrSearch == "add") {
+    if (addOrSearch == "search") {} else if (addOrSearch == "new") {
         var c = new EcCompetency();
         c.generateId(repo.selectedServer);
         framework.addCompetency(c.id);
@@ -36,6 +36,28 @@ addCompetency = function () {
         }, error);
     }
 }
+
+addLevel = function () {
+    var addOrSearch = $("#sidebarAddLevels").val();
+    if (addOrSearch == "search") {} else if (addOrSearch == "new") {
+        var c = new EcLevel();
+        c.generateId(repo.selectedServer);
+        framework.addLevel(c.id);
+        if (EcIdentityManager.ids.length > 0)
+            c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+        c.name = "New Level";
+        c.competency = selectedCompetency.shortId();
+        EcRepository.save(c, function () {
+            EcRepository.save(framework, function () {
+                selectedCompetency = c;
+                refreshSidebar();
+                editSidebar();
+                $("#sidebarNameInput").focus();
+            }, error);
+        }, error);
+    }
+}
+
 saveCompetency = function () {
     if (selectedCompetency == null) {
         framework.name = $("#sidebarNameInput").val();
@@ -66,4 +88,36 @@ createFramework = function () {
     EcRepository.save(framework, function () {
         populateFramework();
     }, error);
+}
+
+setCompetencyConfigurationManagement = function () {
+    var addOrSearch = $("#sidebarVersion").val();
+    if (addOrSearch == "version") {
+        for (var i = 0; i < framework.competency.length; i++) {
+            if (framework.competency[i] == selectedCompetency.shortId()) {
+                framework.competency[i] = selectedCompetency.id;
+                EcRepository.save(framework, refreshSidebar, error);
+            }
+        }
+        for (var i = 0; i < framework.level.length; i++) {
+            if (framework.level[i] == selectedCompetency.shortId()) {
+                framework.level[i] = selectedCompetency.id;
+                EcRepository.save(framework, refreshSidebar, error);
+            }
+        }
+    } else if (addOrSearch == "noVersion") {
+
+        for (var i = 0; i < framework.competency.length; i++) {
+            if (framework.competency[i] == selectedCompetency.id) {
+                framework.competency[i] = selectedCompetency.shortId();
+                EcRepository.save(framework, refreshSidebar, error);
+            }
+        }
+        for (var i = 0; i < framework.level.length; i++) {
+            if (framework.level[i] == selectedCompetency.id) {
+                framework.level[i] = selectedCompetency.shortId();
+                EcRepository.save(framework, refreshSidebar, error);
+            }
+        }
+    }
 }

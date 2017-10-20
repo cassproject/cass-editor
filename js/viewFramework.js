@@ -50,7 +50,19 @@ populateFramework = function () {
     });
 }
 
-function refreshCompetency(col) {
+function afterRefresh(level) {
+    if (level == null) {
+        this.fetches += framework.level.length;
+        for (var i = 0; i < framework.level.length; i++) {
+            EcLevel.get(framework.level[i], refreshCompetency, fetchFailure);
+        }
+        if (framework.level.length == 0)
+            showPage("#editFrameworkSection", framework);
+    } else
+        showPage("#editFrameworkSection", framework);
+}
+
+function refreshCompetency(col, level) {
     var me = this;
     me.fetches--;
     var treeNode = null;
@@ -66,6 +78,8 @@ function refreshCompetency(col) {
         if (!$(this).hasClass("competency"))
             me = $(this).parents("competency");
         selectedCompetency = EcCompetency.getBlocking(me.attr("id"));
+        if (selectedCompetency == null)
+            selectedCompetency = EcLevel.getBlocking(me.attr("id"));
         refreshSidebar();
         evt.stopPropagation();
     });
@@ -73,15 +87,10 @@ function refreshCompetency(col) {
     if (col.description != null && col.description != "NULL" && col.description != col.name)
         treeNode.prepend("<small/>").children().first().text(col.getDescription());
     treeNode.prepend("<span/>").children().first().text(col.getName());
-    if (queryParams.link == "true")
-        treeNode.prepend(" <a style='float:right;' target='_blank'>🔗</a>").children().first().attr("href", col.shortId());
-    if (queryParams.select != null)
-        treeNode.prepend("<input type='checkbox'>").children().first().click(function (evt) {
-            console.log(evt);
-            $(evt.target).parent().find("input").prop("checked", evt.target.checked);
-        });
     if (col.competency != null) {
+        level = true;
         $(".competency[id=\"" + col.competency + "\"]").children().last().append($(".competency[id=\"" + col.shortId() + "\"]"));
+        treeNode.children().first().append(" <small>(Performance Level)</small>");
         if (!$(".competency[id=\"" + col.competency + "\"]").hasClass("expandable"))
             $(".competency[id=\"" + col.competency + "\"]").addClass("expandable").prepend("<span/>").children().first().text("🔽 ").click(function (evt) {
                 $(evt.target).parent().children("ul").slideToggle();
@@ -91,6 +100,13 @@ function refreshCompetency(col) {
                     $(this).text("🔽 ");
             });
     }
+    if (queryParams.link == "true")
+        treeNode.prepend(" <a style='float:right;' target='_blank'>🔗</a>").children().first().attr("href", col.shortId());
+    if (queryParams.select != null)
+        treeNode.prepend("<input type='checkbox'>").children().first().click(function (evt) {
+            console.log(evt);
+            $(evt.target).parent().find("input").prop("checked", evt.target.checked);
+        });
     if (me.fetches == 0) {
         if (framework.relation != undefined && framework.relation.length > 0) {
             me.fetches += framework.relation.length;
@@ -123,7 +139,7 @@ function refreshCompetency(col) {
                                     if (me.fetches == 0) {
                                         if ($("#tree").html() == "")
                                             $("#tree").html("<br><br><center><h3>This framework is empty.</h3></center>");
-                                        showPage("#editFrameworkSection", framework);
+                                        afterRefresh(level);
                                     }
                                 }, fetchFailure);
                             }
@@ -134,7 +150,7 @@ function refreshCompetency(col) {
         } else {
             if ($("#tree").html() == "")
                 $("#tree").html("<br><br><center><h3>This framework is empty.</h3></center>");
-            showPage("#editFrameworkSection", framework);
+            afterRefresh(level);
         }
     }
 }
@@ -152,22 +168,37 @@ refreshSidebar = function () {
     $("#editFrameworkSection #sidebarDescription").text(thing.getDescription());
     $("#editFrameworkSection #sidebarDescriptionInput").val(thing.getDescription());
 
-    if (framework == thing)
+    if (framework == thing) {
         $("#sidebarVersion").hide();
+        $("#sidebarAddLevels").hide();
+    }
 
     if (thing == selectedCompetency)
-        if (EcArray.has(framework.competency, thing.shortId()))
-            $("#sidebarVersion option").first().attr('selected', true);
-        else
-            $("#sidebarVersion option").last().attr('selected', true);
+        if (EcArray.has(framework.competency.concat(framework.level), thing.shortId()))
+            $("#sidebarVersion option").prop('selected', false).first().prop('selected', true);
+        else {
+            if (EcArray.has(framework.competency.concat(framework.level), thing.id))
+                $("#sidebarVersion option").prop('selected', false).last().prop('selected', true);
+            else
+                console.log("Error. Version not certain.");
+        }
 
+    if (new EcLevel().isA(thing.getFullType())) {
+        $("#sidebarAddCompetencies").hide();
+        $("#sidebarAddLevels").hide();
+    }
+
+    if (thing.id == thing.shortId()) {
+        $("#sidevarVersion").hide();
+    }
 
     if (!framework.canEditAny(EcIdentityManager.getMyPks())) {
         $("#sidebarVersion").prop('disabled', true);
         $("#sidebarAddCompetencies").prop('disabled', true);
         $("#sidebarAddLevels").prop('disabled', true);
         $("#sidebarFeedback").html("Some edit options are limited: <li>You do not own this framework.</li> ");
-    }
+    } else
+        $("#sidebarFeedback").html("");
 
 }
 
@@ -182,7 +213,7 @@ editSidebar = function () {
     $("sidebarFeedback").text("");
     if (!framework.canEditAny(EcIdentityManager.getMyPks()))
         if (selectedCompetency != null && framework.competency != null)
-            if (EcArray.has(framework.competency, selectedCompetency.shortId())) {
+            if (EcArray.has(framework.competency.concat(framework.level), selectedCompetency.shortId())) {
                 $("#sidebarSave").prop('disabled', true);
                 $("#sidebarRemove").prop('disabled', true);
                 $("#sidebarDelete").prop('disabled', true);

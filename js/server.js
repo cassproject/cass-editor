@@ -11,6 +11,7 @@
 var repo;
 
 EcRepository.caching = true;
+EcRepository.cachingSearch = true;
 
 var frameworkId = "";
 
@@ -20,26 +21,28 @@ var repo;
 if (queryParams.server != null)
     servers = [queryParams.server];
 
-for (var i = 0; i < servers.length; i++) {
-    var r = new EcRepository();
-    r.selectedServer = servers[i];
-    r.autoDetectRepository();
-    servers[i] = r;
-    repo = r;
+var webSocketBackoff = 100;
 
+openWebSocket = function (r) {
     // Instead of /ws/custom, will be /ws in next release.
     var connection = new WebSocket(r.selectedServer.replace(/http/, "ws").replace(/api\//, "ws/custom"));
-    // When the connection is open, send some data to the server
+
     connection.onopen = function () {
         console.log("WebSocket open.");
     };
 
-    // Log errors
     connection.onerror = function (error) {
         console.log(error);
     };
 
-    // Log messages from the server
+    //Re-establish connection on close.
+    connection.onclose = function () {
+        webSocketBackoff *= 2;
+        setTimeout(function () {
+            openWebSocket(r);
+        }, webSocketBackoff);
+    };
+
     connection.onmessage = function (e) {
         console.log('Server: ' + e.data);
         EcRepository.get(e.data, function (wut) {
@@ -61,8 +64,27 @@ for (var i = 0; i < servers.length; i++) {
                     refreshSidebar();
                 }
             }
+            if (new EcLevel().isA(wut.getFullType())) {
+                var com = new EcLevel();
+                com.copyFrom(wut);
+                refreshCompetency(com);
+                if (selectedCompetency.id == wut.id) {
+                    selectedCompetency = com;
+                    refreshSidebar();
+                }
+            }
 
         }, error);
     };
 
+}
+
+for (var i = 0; i < servers.length; i++) {
+    var r = new EcRepository();
+    r.selectedServer = servers[i];
+    r.autoDetectRepository();
+    servers[i] = r;
+    repo = r;
+
+    openWebSocket(r);
 }

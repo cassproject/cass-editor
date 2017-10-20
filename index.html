@@ -9,6 +9,7 @@
     <title>CASS Editor</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/viewFrameworks.css">
 </head>
 
 <body style="height:100%;">
@@ -77,15 +78,24 @@
         </div>
     </div>
 
+    <div id="frameworksSection" class="page" style="height:100%;display: none;">
+        <div id="header">
+            <input type="text" id="search" placeholder="Search...">
+        </div>
+        <div id="main">
+            <center id="frameworks"></center>
+        </div>
+    </div>
+
     <div id="editFrameworkSection" class="page pageWithSidebar" style="height:100%;display: none;">
         <div id="detailSlider" class="sidebar" style="">
             <h3 id="sidebarName" class="viewMode">Framework Name Here</h3>
             <input id="sidebarNameInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" value="Framework Name Here" />
             <p id="sidebarDescription" class="viewMode">This is a super long description, it describes the things worth describing.</p>
             <textarea id="sidebarDescriptionInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);height:6rem;">This is a super long description, it describes the things worth describing.</textarea>
-            <select id="sidebarVersion" class="viewMode" style="display:block;margin-bottom:.5rem;">
-                <option selected>Shared: Updates automatically.</option>
-                <option>Manual update only.</option>
+            <select id="sidebarVersion" class="viewMode" style="display:block;margin-bottom:.5rem;" onclick="setCompetencyConfigurationManagement();">
+                <option selected value="noVersion">Shared: Updates automatically.</option>
+                <option value="version">Manual update only.</option>
             </select>
             <select id="sidebarAddCompetencies" class="viewMode" onclick="addCompetency();$(this).children().first().prop('selected', true);">
                 <option style="display:none;" disabled selected>Add Competencies</option>
@@ -104,6 +114,7 @@
             <button id="sidebarSave" class="editMode" style="margin:0rem;" onclick="saveCompetency();">Save</button>
             <p><small id="sidebarFeedback"></small></p>
         </div>
+        <p onclick='searchFrameworks();' style="margin:0rem;margin-left:.5rem;margin-right:1rem;font-size:2rem;line-height:2rem;float:left;">◀️</p>
         <p id="frameworkName" style="margin:0rem;margin-left:1rem;font-size:2rem;line-height:2rem;" onclick="selectedCompetency=null;refreshSidebar();"></p>
         <ul id="tree">
         </ul>
@@ -151,6 +162,7 @@
     <script src="js/server.js"></script>
     <script src="js/editFramework.js"></script>
     <script src="js/viewFramework.js"></script>
+    <script src="js/viewFrameworks.js"></script>
     <script src="js/import.js"></script>
     <script src="js/pageManagement.js"></script>
 </body>

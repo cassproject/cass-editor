@@ -1,0 +1,96 @@
+#frameworksSection {
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    top: 2.3rem;
+    bottom: 0;
+    padding: 0;
+    width: 100%;
+    overflow: auto;
+    scroll-behavior: smooth;
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
+}
+
+#header {
+    position: absolute;
+    -webkit-font-smoothing: antialiased;
+    text-align: center;
+    top: 0;
+    height: 2.2rem;
+    width: 100%;
+    padding: 0rem 0rem;
+    margin: 0rem 0rem;
+    z-index: 10;
+    font-size: 2rem;
+}
+
+#header input {
+    border: 0;
+    -webkit-border-radius: 4;
+    -moz-border-radius: 4;
+    border-radius: .25rem;
+    border: none;
+    background-color: transparent;
+    color: inherit;
+    width: 99%;
+    height: 1.6rem;
+    margin: 0px;
+    padding: 0px;
+    padding-left: .25rem;
+    font-size: 1.5rem;
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ffffff+100&0.5+0,0.5+100 */
+    background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.5) 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(255, 255, 255, 0.5)), color-stop(100%, rgba(255, 255, 255, 0.5)));
+    background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.5) 100%);
+    background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.5) 100%);
+    background-image: -ms-linear-gradient(top, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.5) 100%);
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.5) 100%);
+    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#80ffffff', endColorstr='#80ffffff', GradientType=0);
+}
+
+
+#frameworks {
+    margin-top: 1rem;
+    margin-left: 1rem;
+}
+
+#frameworks p {
+    text-align: left;
+    margin-bottom: .2em;
+    margin: 0px;
+}
+
+#frameworks p:hover {
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ffffff+100&0.1+0,0.1+100 */
+    background-image: -moz-linear-gradient(top, rgba(128, 128, 128, 0.1) 0%, rgba(128, 128, 128, 0.1) 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(128, 128, 128, 0.1)), color-stop(100%, rgba(128, 128, 128, 0.1)));
+    background-image: -webkit-linear-gradient(top, rgba(128, 128, 128, 0.1) 0%, rgba(128, 128, 128, 0.1) 100%);
+    background-image: -o-linear-gradient(top, rgba(128, 128, 128, 0.1) 0%, rgba(128, 128, 128, 0.1) 100%);
+    background-image: -ms-linear-gradient(top, rgba(128, 128, 128, 0.1) 0%, rgba(128, 128, 128, 0.1) 100%);
+    background-image: linear-gradient(to bottom, rgba(128, 128, 128, 0.1) 0%, rgba(128, 128, 128, 0.1) 100%);
+    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#80808080', endColorstr='#80808080', GradientType=0);
+}
+
+#frameworks p a {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 1.5rem;
+}
+
+#frameworks p span {
+    margin-left: 1rem;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    min-height: 3rem;
+    display: block;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#frameworks p a:hover {
+    text-decoration: underline;
+}
