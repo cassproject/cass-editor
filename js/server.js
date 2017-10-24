@@ -49,29 +49,32 @@ openWebSocket = function (r) {
             delete EcRepository.cache[wut.id];
             delete EcRepository.cache[wut.shortId()];
             if (new EcFramework().isA(wut.getFullType()))
-                if (framework.id == wut.id) {
-                    framework = new EcFramework();
-                    framework.copyFrom(wut);
-                    populateFramework();
-                }
+                if (framework != null)
+                    if (framework.id == wut.id) {
+                        framework = new EcFramework();
+                        framework.copyFrom(wut);
+                        populateFramework();
+                    }
 
             if (new EcCompetency().isA(wut.getFullType())) {
                 var com = new EcCompetency();
                 com.copyFrom(wut);
                 refreshCompetency(com);
-                if (selectedCompetency.id == wut.id) {
-                    selectedCompetency = com;
-                    refreshSidebar();
-                }
+                if (selectedCompetency != null)
+                    if (selectedCompetency.id == wut.id) {
+                        selectedCompetency = com;
+                        refreshSidebar();
+                    }
             }
             if (new EcLevel().isA(wut.getFullType())) {
                 var com = new EcLevel();
                 com.copyFrom(wut);
                 refreshCompetency(com);
-                if (selectedCompetency.id == wut.id) {
-                    selectedCompetency = com;
-                    refreshSidebar();
-                }
+                if (selectedCompetency != null)
+                    if (selectedCompetency.id == wut.id) {
+                        selectedCompetency = com;
+                        refreshSidebar();
+                    }
             }
 
         }, error);
