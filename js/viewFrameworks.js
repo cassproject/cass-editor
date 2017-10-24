@@ -33,7 +33,6 @@ function frameworkSearch(server, searchTerm) {
                     frameworkId = $(evt.target).attr("id");
                     if (frameworkId == null)
                         frameworkId = $(evt.target).parent().attr("id");
-                    EcRepository.cache = {};
                     EcFramework.get(frameworkId, function (f) {
                         framework = f;
                         populateFramework();
