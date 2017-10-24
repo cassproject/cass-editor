@@ -2,12 +2,12 @@
     box-sizing: border-box;
     display: block;
     position: absolute;
-    top: 2.3rem;
+    top: 0rem;
     bottom: 0;
     padding: 0;
     width: 100%;
-    overflow: auto;
-    scroll-behavior: smooth;
+    height: 100%;
+    overflow-y: hidden;
     border-top: 1px solid #000;
     border-bottom: 1px solid #000;
 }
@@ -26,11 +26,10 @@
 }
 
 #header input {
-    border: 0;
     -webkit-border-radius: 4;
     -moz-border-radius: 4;
     border-radius: .25rem;
-    border: none;
+    border: 1px black solid;
     background-color: transparent;
     color: inherit;
     width: 99%;
@@ -51,8 +50,10 @@
 
 
 #frameworks {
-    margin-top: 1rem;
+    margin-top: 3rem;
     margin-left: 1rem;
+    overflow-y: scroll;
+    height: calc(100% - 3rem);
 }
 
 #frameworks p {

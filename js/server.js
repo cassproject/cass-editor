@@ -79,12 +79,23 @@ openWebSocket = function (r) {
 
 }
 
+function cappend(event) {
+    console.log("I got " + event.data.selected.length + " selected items from the iframe");
+    console.log(event.data.selected);
+    appendCompetencies(event.data.selected);
+    backPage();
+}
+
 for (var i = 0; i < servers.length; i++) {
     var r = new EcRepository();
     r.selectedServer = servers[i];
     r.autoDetectRepository();
     servers[i] = r;
     repo = r;
+    $("iframe").attr("src", "http://cassproject.github.io/cass-viewer/index.html?select=Add&origin=" + window.location.origin + "&server=" +
+        r.selectedServer);
+
+    window.addEventListener('message', cappend, false);
 
     openWebSocket(r);
 }

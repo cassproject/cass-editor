@@ -10,6 +10,7 @@
 
 var framework = null;
 var selectedCompetency = null;
+var selectedRelation = null;
 
 fetchFailure = function (failure) {
     this.fetches--;
@@ -32,7 +33,7 @@ populateFramework = function () {
         framework.relation = [];
     if (framework.level == null)
         framework.level = [];
-    repo.precache(framework.competency.concat(framework.relation), function (success) {
+    var fun = function (success) {
         if (framework.competency.length == 0) {
             if ($("#tree").html() == "")
                 $("#tree").html("<br><br><center><h3>This framework is empty.</h3></center>");
@@ -47,7 +48,8 @@ populateFramework = function () {
                 EcLevel.get(framework.level[i], refreshCompetency, fetchFailure);
             }
         }
-    });
+    };
+    repo.precache(framework.competency.concat(framework.relation), fun, fun);
 }
 
 function afterRefresh(level) {
@@ -62,27 +64,40 @@ function afterRefresh(level) {
         showPage("#editFrameworkSection", framework);
 }
 
+$("body").on("click", ".collapse", null, function (evt) {
+    $(evt.target).parent().children("ul").slideToggle();
+    if ($(this).text() == "🔽 ")
+        $(this).text("▶️ ");
+    else
+        $(this).text("🔽 ");
+});
+$("body").on("click", ".competency", null, function (evt) {
+    var me = $(this);
+    if (!$(this).hasClass("competency"))
+        me = $(this).parents("competency");
+    selectedCompetency = EcCompetency.getBlocking(me.attr("id"));
+    if (selectedCompetency == null)
+        selectedCompetency = EcLevel.getBlocking(me.attr("id"));
+    var relationId = me.attr("relationid");
+    if (relationId != null && relationId != "")
+        selectedRelation = EcAlignment.getBlocking(me.attr("relationid"));
+    else
+        selectedRelation = null;
+    refreshSidebar();
+    evt.stopPropagation();
+});
+
 function refreshCompetency(col, level) {
     var me = this;
     me.fetches--;
     var treeNode = null;
     if ($("[id='" + col.shortId() + "']").length > 0) {
-        treeNode = $("[id='" + col.shortId() + "']").before("<li class = 'competency'><ul></ul></li>");
+        treeNode = $("[id='" + col.shortId() + "']").before("<li class = 'competency' draggable='true' ondragstart='dragCompetency(event);' ondrop='dropCompetency(event);' ondragover='allowCompetencyDrop(event);'><ul></ul></li>");
         var tn = treeNode.prev();
         treeNode.remove();
         treeNode = tn;
     } else
-        treeNode = $("#tree").append("<li class = 'competency'><ul></ul></li>").children().last();
-    treeNode.click(function (evt) {
-        var me = $(this);
-        if (!$(this).hasClass("competency"))
-            me = $(this).parents("competency");
-        selectedCompetency = EcCompetency.getBlocking(me.attr("id"));
-        if (selectedCompetency == null)
-            selectedCompetency = EcLevel.getBlocking(me.attr("id"));
-        refreshSidebar();
-        evt.stopPropagation();
-    });
+        treeNode = $("#tree").append("<li class = 'competency' draggable='true' ondragstart='dragCompetency(event);' ondrop='dropCompetency(event);' ondragover='allowCompetencyDrop(event);'><ul></ul></li>").children().last();
     treeNode.attr("id", col.shortId());
     if (col.description != null && col.description != "NULL" && col.description != col.name)
         treeNode.prepend("<small/>").children().first().text(col.getDescription());
@@ -92,18 +107,12 @@ function refreshCompetency(col, level) {
         $(".competency[id=\"" + col.competency + "\"]").children().last().append($(".competency[id=\"" + col.shortId() + "\"]"));
         treeNode.children().first().append(" <small>(Performance Level)</small>");
         if (!$(".competency[id=\"" + col.competency + "\"]").hasClass("expandable"))
-            $(".competency[id=\"" + col.competency + "\"]").addClass("expandable").prepend("<span/>").children().first().text("🔽 ").click(function (evt) {
-                $(evt.target).parent().children("ul").slideToggle();
-                if ($(this).text() == "🔽 ")
-                    $(this).text("▶️ ");
-                else
-                    $(this).text("🔽 ");
-            });
+            $(".competency[id=\"" + col.competency + "\"]").addClass("expandable").prepend("<span/>").children().first().addClass("collapse").text("🔽 ");
     }
     if (queryParams.link == "true")
         treeNode.prepend(" <a style='float:right;' target='_blank'>🔗</a>").children().first().attr("href", col.shortId());
     if (queryParams.select != null)
-        treeNode.prepend("<input type='checkbox'>").children().first().click(function (evt) {
+        treeNode.prepend("<input type='checkbox'>").children().first().addClass("selector").click(function (evt) {
             console.log(evt);
             $(evt.target).parent().find("input").prop("checked", evt.target.checked);
         });
@@ -113,36 +122,33 @@ function refreshCompetency(col, level) {
             for (var i = 0; i < framework.relation.length; i++) {
                 EcAlignment.get(framework.relation[i], function (relation) {
                     me.fetches--;
-                    if (relation.source !== undefined) {
+                    if (relation.source !== undefined && relation.target !== undefined && relation.source != null && relation.target != null) {
                         if (relation.relationType == "narrows") {
-                            $(".competency[id=\"" + relation.target + "\"]").children().last().append($(".competency[id=\"" + relation.source + "\"]"));
-                            if (!$(".competency[id=\"" + relation.target + "\"]").hasClass("expandable"))
-                                $(".competency[id=\"" + relation.target + "\"]").addClass("expandable").prepend("<span/>").children().first().text("🔽 ").click(function (evt) {
-                                    $(evt.target).parent().children("ul").slideToggle();
-                                    if ($(this).text() == "🔽 ")
-                                        $(this).text("▶️ ");
-                                    else
-                                        $(this).text("🔽 ");
-                                });
-                        }
-                        if (me.fetches == 0) {
-                            me.fetches += framework.relation.length;
-                            for (var i = 0; i < framework.relation.length; i++) {
-                                EcAlignment.get(framework.relation[i], function (relation) {
-                                    me.fetches--;
-                                    if (relation.source !== undefined) {
-                                        if (relation.relationType == "requires") {
-                                            if ($(".competency[id=\"" + relation.target + "\"]").prevAll(".competency[id=\"" + relation.source + "\"]").length > 0)
-                                                $(".competency[id=\"" + relation.target + "\"]").insertBefore($(".competency[id=\"" + relation.source + "\"]"));
-                                        }
-                                    }
-                                    if (me.fetches == 0) {
-                                        if ($("#tree").html() == "")
-                                            $("#tree").html("<br><br><center><h3>This framework is empty.</h3></center>");
-                                        afterRefresh(level);
-                                    }
-                                }, fetchFailure);
+                            if ($(".competency[relationid=\"" + relation.shortId() + "\"]").length == 0) {
+                                $(".competency[id=\"" + relation.target + "\"]").children().last().append($(".competency[id=\"" + relation.source + "\"]").outerHTML()).children().last().attr("relationid", relation.shortId());
+                                $("#tree>.competency[id=\"" + relation.source + "\"]").remove();
+                                if (!$(".competency[id=\"" + relation.target + "\"]").hasClass("expandable"))
+                                    $(".competency[id=\"" + relation.target + "\"]").addClass("expandable").prepend("<span/>").children().first().addClass("collapse").text("🔽 ");
                             }
+                        }
+                    }
+                    if (me.fetches == 0) {
+                        me.fetches += framework.relation.length;
+                        for (var i = 0; i < framework.relation.length; i++) {
+                            EcAlignment.get(framework.relation[i], function (relation) {
+                                me.fetches--;
+                                if (relation.source !== undefined) {
+                                    if (relation.relationType == "requires") {
+                                        if ($(".competency[id=\"" + relation.target + "\"]").prevAll(".competency[id=\"" + relation.source + "\"]").length > 0)
+                                            $(".competency[id=\"" + relation.target + "\"]").insertBefore($(".competency[id=\"" + relation.source + "\"]"));
+                                    }
+                                }
+                                if (me.fetches == 0) {
+                                    if ($("#tree").html() == "")
+                                        $("#tree").html("<br><br><center><h3>This framework is empty.</h3></center>");
+                                    afterRefresh(level);
+                                }
+                            }, fetchFailure);
                         }
                     }
                 }, fetchFailure);
@@ -224,11 +230,16 @@ editSidebar = function () {
         $("#sidebarNameInput").prop('disabled', true);
         $("#sidebarDescriptionInput").prop('disabled', true);
         $("#sidebarSave").prop('disabled', true);
-        $("#sidebarRemove").prop('disabled', true);
         $("#sidebarDelete").prop('disabled', true);
-        if (thing == framework)
+        if (thing == framework) {
+            $("#sidebarUnlink").prop('disabled', true);
+            $("#sidebarRemove").prop('disabled', true);
             $("#sidebarFeedback").html("Some edit options are limited: <li>You do not own this framework.</li> ");
-        else
+        } else
             $("#sidebarFeedback").append("<li>You do not own this competency.</li> ");
+    }
+
+    if (selectedRelation == null) {
+        $("#sidebarUnlink").prop('disabled', true);
     }
 }

@@ -24,6 +24,10 @@ queryParams = function () {
 };
 queryParams = queryParams();
 
+jQuery.fn.outerHTML = function () {
+    return jQuery('<div />').append(this.eq(0).clone()).html();
+};
+
 window.onload = function () {
     if (parent != window) {
         importParentStyles();
