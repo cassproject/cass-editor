@@ -126,7 +126,8 @@ function refreshCompetency(col, level) {
                         if (relation.relationType == "narrows") {
                             if ($(".competency[relationid=\"" + relation.shortId() + "\"]").length == 0) {
                                 $(".competency[id=\"" + relation.target + "\"]").children().last().append($(".competency[id=\"" + relation.source + "\"]").outerHTML()).children().last().attr("relationid", relation.shortId());
-                                $("#tree>.competency[id=\"" + relation.source + "\"]").remove();
+                                if ($(".competency[id=\"" + relation.target + "\"]").length > 0)
+                                    $("#tree>.competency[id=\"" + relation.source + "\"]").remove();
                                 if (!$(".competency[id=\"" + relation.target + "\"]").hasClass("expandable"))
                                     $(".competency[id=\"" + relation.target + "\"]").addClass("expandable").prepend("<span/>").children().first().addClass("collapse").text("🔽 ");
                             }
