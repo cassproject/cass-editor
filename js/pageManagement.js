@@ -20,7 +20,7 @@ window.onload = function () {
             selectedCompetency = null;
             refreshSidebar();
         }, error);
-    } else if (queryParams.action = "add") {
+    } else if (queryParams.action == "add") {
         defaultPage = "#addFrameworkSection";
         showPage(defaultPage);
     } else {
