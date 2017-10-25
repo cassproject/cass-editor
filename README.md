@@ -2,7 +2,7 @@
 # CASS
 Competency and Skills Service -- Competency Framework Editor
 
-Create, edit, modify frameworks using an easy to use, embeddable iframe.
+Create, edit, modify CASS frameworks and competencies using an easy to use, embeddable iframe.
 
 # Features
  * View and edit public or permissioned competency frameworks on a CASS instance.
