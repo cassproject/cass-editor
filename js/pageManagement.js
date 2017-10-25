@@ -11,6 +11,7 @@
 var defaultPage = "#frameworksSection";
 window.onload = function () {
     if (queryParams.frameworkId != null) {
+        defaultPage = "#editFrameworkSection";
         loading("Loading framework...");
         $("#editFrameworkBack").hide();
         EcFramework.get(queryParams.frameworkId, function (f) {
@@ -19,6 +20,9 @@ window.onload = function () {
             selectedCompetency = null;
             refreshSidebar();
         }, error);
+    } else if (queryParams.action = "add") {
+        defaultPage = "#addFrameworkSection";
+        showPage(defaultPage);
     } else {
         searchFrameworks();
     }
