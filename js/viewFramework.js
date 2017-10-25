@@ -196,7 +196,7 @@ refreshSidebar = function () {
     }
 
     if (thing.id == thing.shortId()) {
-        $("#sidevarVersion").hide();
+        $("#sidebarVersion").hide();
     }
 
     if (!framework.canEditAny(EcIdentityManager.getMyPks())) {
