@@ -12,6 +12,7 @@ var defaultPage = "#frameworksSection";
 window.onload = function () {
     if (queryParams.frameworkId != null) {
         loading("Loading framework...");
+        $("#editFrameworkBack").hide();
         EcFramework.get(queryParams.frameworkId, function (f) {
             framework = f;
             populateFramework();
