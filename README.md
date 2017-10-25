@@ -4,6 +4,15 @@ Competency and Skills Service -- Competency Framework Editor
 
 Create, edit, modify frameworks using an easy to use, embeddable iframe.
 
+# Features
+ * View and edit public or permissioned competency frameworks on a CASS instance.
+ * Concurrent editing - Changes are shown on multiple people's screens concurrently.
+ * Import - Import frameworks of competencies from several formats.
+ * Embeddable - Put the cass-editor in your website with a few lines of HTML.
+ * Customizable - Change the default behavior of the cass-editor via URL parameters.
+ * Inherits your style - If it can, uses the CASS from the embedding website to style the internals.
+ * Unbranded and open source - Carries no branding information, allowing you to use it easily and without concern.
+
 # Try it out
 The cass-editor is available for use at https://cassproject.github.io/cass-editor/
 
@@ -74,3 +83,6 @@ CASS can operate using credentials provided by the parent site. These credential
   
 ## TBD: Only show frameworks that individual owns.
 Along with user credentials, the cass-editor can be configured to not show others' frameworks. This functionality can be enabled by the URL parameter `show=mine`.
+
+# TBD: Events
+The cass-editor can send events when various operations occur. This functionality will be extended in the future.
