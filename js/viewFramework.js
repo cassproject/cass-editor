@@ -167,7 +167,7 @@ refreshSidebar = function () {
     if (selectedCompetency != null)
         thing = selectedCompetency;
     $("sidebarFeedback").text("");
-    $("#editFrameworkSection").find("input,textarea,select").prop('disabled', false);
+    $("#editFrameworkSection").find("button,input,textarea,select").prop('disabled', false);
     $("#editFrameworkSection .viewMode").show();
     $("#editFrameworkSection .editMode").hide();
     $("#editFrameworkSection #sidebarName").text(thing.getName());
@@ -233,11 +233,14 @@ editSidebar = function () {
         $("#sidebarSave").prop('disabled', true);
         $("#sidebarDelete").prop('disabled', true);
         if (thing == framework) {
-            $("#sidebarUnlink").prop('disabled', true);
-            $("#sidebarRemove").prop('disabled', true);
             $("#sidebarFeedback").html("Some edit options are limited: <li>You do not own this framework.</li> ");
         } else
             $("#sidebarFeedback").append("<li>You do not own this competency.</li> ");
+    }
+
+    if (thing == framework) {
+        $("#sidebarUnlink").hide();
+        $("#sidebarRemove").hide();
     }
 
     if (selectedRelation == null) {
