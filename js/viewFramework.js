@@ -111,11 +111,6 @@ function refreshCompetency(col, level) {
     }
     if (queryParams.link == "true")
         treeNode.prepend(" <a style='float:right;' target='_blank'>🔗</a>").children().first().attr("href", col.shortId());
-    if (queryParams.select != null)
-        treeNode.prepend("<input type='checkbox'>").children().first().addClass("selector").click(function (evt) {
-            console.log(evt);
-            $(evt.target).parent().find("input").prop("checked", evt.target.checked);
-        });
     if (me.fetches == 0) {
         if (framework.relation != undefined && framework.relation.length > 0) {
             me.fetches += framework.relation.length;

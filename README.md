@@ -73,13 +73,20 @@ If you are limiting users to seeing only a set of frameworks that can be describ
     ex:
     https://cassproject.github.io/cass-editor/index.html?filter=@id:case.georgiastandards.org
 
-## TBD: Generate and manage a local user.
-CASS can create and manage a local user that owns the frameworks and competencies they create. The user credentials will be stored in HTML5 LocalStorage and unique per individual and per server. To enable this functionality, use `user=self`.
+## Generate and manage a local user.
+CASS can create and manage a local user that owns the frameworks and competencies they create. The user credentials will be stored in HTML5 LocalStorage and unique per individual. To enable this functionality, use `user=self`.
   
   Note: This method is risky, as a user that clears their localstorage will lose access to their frameworks and competencies.
   
-## TBD: Operate using a provided set of user credentials.
-CASS can operate using credentials provided by the parent site. These credentials are passed into the iframe via a message, in order to avoid transmitting them over HTTP. Details are TBD.
+## Operate using a provided set of user credentials.
+CASS can operate using credentials provided by the parent site. These credentials are passed into the iframe via a message, in order to avoid transmitting them over HTTP. Use `user=self`, and pass a RSA-OAEP 2048 bit PEM private key in via:
+
+    document.getElementById("iframe").contentWindow.postMessage(
+      JSON.stringify({action:"identity",identity:privateKey}),
+      window.location.origin
+    );
+    
+Note: The window will not proceed loading until it has received the 'identity' message.
   
 ## TBD: Only show frameworks that individual owns.
 Along with user credentials, the cass-editor can be configured to not show others' frameworks. This functionality can be enabled by the URL parameter `show=mine`.

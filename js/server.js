@@ -102,3 +102,43 @@ for (var i = 0; i < servers.length; i++) {
 
     openWebSocket(r);
 }
+
+loadIdentity = function (callback) {
+    if (queryParams.user == "self") {
+        EcIdentityManager.readIdentities();
+        EcIdentityManager.readContacts();
+        if (EcIdentityManager.ids.length == 0) {
+            loading("Generating identity...");
+            EcPpk.generateKeyAsync(
+                function (p1) {
+                    identity = new EcIdentity();
+                    identity.ppk = p1;
+                    identity.displayName = "You";
+                    EcIdentityManager.onIdentityChanged = EcIdentityManager.saveIdentities;
+                    EcIdentityManager.addIdentity(identity);
+                    callback();
+                }
+            );
+        } else
+            callback();
+    } else if (queryParams.user == "wait") {
+        var fun = function (evt) {
+            var data = evt.data;
+            if (data != null)
+                data = JSON.parse(data);
+            if (data.action == "identity") {
+                identity = new EcIdentity();
+                identity.ppk = EcPpk.fromPem(data.identity);
+                identity.displayName = "You";
+                EcIdentityManager.addIdentity(identity);
+                callback();
+            }
+        };
+        if (window.addEventListener) {
+            window.addEventListener("message", fun, false);
+        } else {
+            window.attachEvent("onmessage", fun);
+        }
+    } else
+        callback();
+}
