@@ -65,12 +65,17 @@ function afterRefresh(level) {
 }
 
 $("body").on("click", ".collapse", null, function (evt) {
-    $(evt.target).parent().children("ul").slideToggle();
-    if ($(this).text() == "🔽 ")
-        $(this).text("▶️ ");
-    else
-        $(this).text("🔽 ");
+    $(this).parent().children("ul").slideToggle();
+
+    if ($(this).hasClass('collapsed')) {
+        $(this).removeClass('collapsed');
+        $(this).html('<i class="fa fa-chevron-down" aria-hidden="true"></i> ');
+    } else {
+        $(this).addClass('collapsed');
+        $(this).html('<i class="fa fa-chevron-right" aria-hidden="true"></i> ');
+    }
 });
+
 $("body").on("click", ".competency", null, function (evt) {
     var me = $(this);
     if (!$(this).hasClass("competency"))
@@ -107,7 +112,7 @@ function refreshCompetency(col, level) {
         $(".competency[id=\"" + col.competency + "\"]").children().last().append($(".competency[id=\"" + col.shortId() + "\"]"));
         treeNode.children().first().append(" <small>(Performance Level)</small>");
         if (!$(".competency[id=\"" + col.competency + "\"]").hasClass("expandable"))
-            $(".competency[id=\"" + col.competency + "\"]").addClass("expandable").prepend("<span/>").children().first().addClass("collapse").text("🔽 ");
+            $(".competency[id=\"" + col.competency + "\"]").addClass("expandable").prepend("<span/>").children().first().addClass("collapse").html('<i class="fa fa-chevron-down" aria-hidden="true"></i> ');
     }
     if (queryParams.link == "true")
         treeNode.prepend(" <a style='float:right;' target='_blank'>🔗</a>").children().first().attr("href", col.shortId());
@@ -124,7 +129,7 @@ function refreshCompetency(col, level) {
                                 if ($(".competency[id=\"" + relation.target + "\"]").length > 0)
                                     $("#tree>.competency[id=\"" + relation.source + "\"]").remove();
                                 if (!$(".competency[id=\"" + relation.target + "\"]").hasClass("expandable"))
-                                    $(".competency[id=\"" + relation.target + "\"]").addClass("expandable").prepend("<span/>").children().first().addClass("collapse").text("🔽 ");
+                                    $(".competency[id=\"" + relation.target + "\"]").addClass("expandable").prepend("<span/>").children().first().addClass("collapse").html('<i class="fa fa-chevron-down" aria-hidden="true"></i> ');
                             }
                         }
                     }
