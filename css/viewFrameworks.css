@@ -64,6 +64,7 @@
 
 #frameworks p:hover {
     /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ffffff+100&0.1+0,0.1+100 */
+/*
     background-image: -moz-linear-gradient(top, rgba(128, 128, 128, 0.1) 0%, rgba(128, 128, 128, 0.1) 100%);
     background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(128, 128, 128, 0.1)), color-stop(100%, rgba(128, 128, 128, 0.1)));
     background-image: -webkit-linear-gradient(top, rgba(128, 128, 128, 0.1) 0%, rgba(128, 128, 128, 0.1) 100%);
@@ -71,6 +72,7 @@
     background-image: -ms-linear-gradient(top, rgba(128, 128, 128, 0.1) 0%, rgba(128, 128, 128, 0.1) 100%);
     background-image: linear-gradient(to bottom, rgba(128, 128, 128, 0.1) 0%, rgba(128, 128, 128, 0.1) 100%);
     filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#80808080', endColorstr='#80808080', GradientType=0);
+*/
 }
 
 #frameworks p a {
