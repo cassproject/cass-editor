@@ -83,6 +83,10 @@ $("body").on("click", ".competency", null, function (evt) {
         selectedRelation = EcAlignment.getBlocking(me.attr("relationid"));
     else
         selectedRelation = null;
+    $(document.body).find('.competency.selected').each(function() {
+        $(this).removeClass('selected');
+    });
+    me.addClass('selected');
     refreshSidebar();
     evt.stopPropagation();
 });
