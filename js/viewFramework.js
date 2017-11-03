@@ -80,10 +80,10 @@ $("body").on("click", ".competency", null, function (evt) {
     var me = $(this);
     if (!$(this).hasClass("competency"))
         me = $(this).parents("competency");
-    
+
     $('.competency').removeClass('selected');
     me.addClass('selected');
-    
+
     selectedCompetency = EcCompetency.getBlocking(me.attr("id"));
     if (selectedCompetency == null)
         selectedCompetency = EcLevel.getBlocking(me.attr("id"));
@@ -110,11 +110,11 @@ function refreshCompetency(col, level) {
         treeNode.remove();
         treeNode = tn;
     } else
-        treeNode = $("#tree").append("<li class = 'competency' draggable='true' ondragstart='dragCompetency(event);' ondrop='dropCompetency(event);' ondragover='allowCompetencyDrop(event);'><ul></ul></li>").children().last();
+        treeNode = $("#tree").append("<li class = 'competency' draggable='true' ondragstart='dragCompetency(event);' ondrop='dropCompetency(event);' ondragover='allowCompetencyDrop(event);'><span></span><ul></ul></li>").children().last();
     treeNode.attr("id", col.shortId());
     if (col.description != null && col.description != "NULL" && col.description != col.name)
-        treeNode.prepend("<small/>").children().first().text(col.getDescription());
-    treeNode.prepend("<span/>").children().first().text(col.getName());
+        treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").text(col.getDescription());
+    treeNode.children().first().prepend("<span/>").children().first().addClass("competencyName").text(col.getName());
     if (col.competency != null) {
         level = true;
         $(".competency[id=\"" + col.competency + "\"]").children().last().append($(".competency[id=\"" + col.shortId() + "\"]"));
@@ -172,7 +172,7 @@ function refreshCompetency(col, level) {
 
 refreshSidebar = function () {
     $('#detailSlider').show();
-    
+
     var thing = framework;
     if (selectedCompetency != null)
         thing = selectedCompetency;
