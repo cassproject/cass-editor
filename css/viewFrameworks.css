@@ -28,6 +28,7 @@
 #header input {
     -webkit-border-radius: 4;
     -moz-border-radius: 4;
+    border: none;
     background-color: transparent;
     color: inherit;
     width: 99%;
