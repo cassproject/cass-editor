@@ -9,7 +9,7 @@
 */
 
 var defaultPage = "#frameworksSection";
-window.onload = function () {
+$(document).ready(function () {
     loadIdentity(function () {
         if (queryParams.frameworkId != null) {
             defaultPage = "#editFrameworkSection";
@@ -28,7 +28,7 @@ window.onload = function () {
             searchFrameworks();
         }
     });
-}
+});
 
 function backPage() {
     window.history.back();

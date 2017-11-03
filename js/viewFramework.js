@@ -65,16 +65,25 @@ function afterRefresh(level) {
 }
 
 $("body").on("click", ".collapse", null, function (evt) {
-    $(evt.target).parent().children("ul").slideToggle();
-    if ($(this).text() == "🔽 ")
-        $(this).text("▶️ ");
-    else
+    $(this).parent().children("ul").slideToggle();
+
+    if ($(this).hasClass('collapsed')) {
+        $(this).removeClass('collapsed');
         $(this).text("🔽 ");
+    } else {
+        $(this).addClass('collapsed');
+        $(this).text("▶️ ");
+    }
 });
+
 $("body").on("click", ".competency", null, function (evt) {
     var me = $(this);
     if (!$(this).hasClass("competency"))
         me = $(this).parents("competency");
+
+    $('.competency').removeClass('selected');
+    me.addClass('selected');
+
     selectedCompetency = EcCompetency.getBlocking(me.attr("id"));
     if (selectedCompetency == null)
         selectedCompetency = EcLevel.getBlocking(me.attr("id"));
@@ -83,7 +92,7 @@ $("body").on("click", ".competency", null, function (evt) {
         selectedRelation = EcAlignment.getBlocking(me.attr("relationid"));
     else
         selectedRelation = null;
-    $(document.body).find('.competency.selected').each(function() {
+    $(document.body).find('.competency.selected').each(function () {
         $(this).removeClass('selected');
     });
     me.addClass('selected');
@@ -162,6 +171,8 @@ function refreshCompetency(col, level) {
 }
 
 refreshSidebar = function () {
+    $('#detailSlider').show();
+
     var thing = framework;
     if (selectedCompetency != null)
         thing = selectedCompetency;

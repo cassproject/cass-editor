@@ -1,0 +1,110 @@
+body {
+    /*    border-top: 1px solid #CAD9DB;*/
+    border-bottom: 1px solid #CAD9DB;
+}
+
+#banner {
+    background-color: #0F3E63;
+    padding: 15px 5vw;
+}
+
+#banner>h3 {
+    font-size: 28px;
+    color: #FFF;
+    margin: 0;
+    padding: 5px 5px 10px 5px;
+}
+
+#banner>p {
+    padding: 2px 10px;
+    color: #FFF;
+}
+
+#frameworkName {
+    font-weight: bold;
+    font-size: 1.2rem;
+    cursor: pointer;
+    /*    margin: 0rem;*/
+    /*    margin-left: .5rem;*/
+    /*    line-height: 2rem;*/
+}
+
+*[draggable="true"] {
+    cursor: move;
+}
+
+.competency {
+    background-image: none;
+    filter: none;
+    padding: .5em;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.competency>span {
+    font-weight: bold;
+}
+
+.competency:hover {
+    border-color: transparent;
+    background-image: none;
+    filter: none;
+}
+
+.competency:hover>span {
+    color: #B55130;
+}
+
+.competency>small:active,
+.competency>span:active {
+    /*    background-color: rgba(255, 215, 0, 0.46);*/
+}
+
+.selected.competency {
+    /*
+    background-color: #F5F5F5;
+    border: 1px solid #aaa;
+*/
+    border: 1px solid #CAD9DB;
+    background-color: #FCFCFC;
+}
+
+.selected.competency>span {
+    color: #B55130;
+/*    color: #45A085;*/
+}
+
+.competency .collapse {
+    float: left;
+    margin-left: -2em;
+}
+
+.competency .collapse:hover {
+    color: #B55130;
+    cursor: pointer;
+}
+
+.sidebar {
+    background-color: white;
+    border: 1px solid #CAD9DB;
+    width: 33%;
+    margin-top: 3rem;
+    height: auto;
+    min-height: 60vh;
+    /*
+    position: fixed;
+    right: 0;
+    float: right;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-top: 1rem;
+    height: 100vh;
+    max-width: 50%;
+    width: 19rem;
+    overflow: hidden;
+*/
+}
+
+.pageWithSidebar {
+    padding-right: 34%;
+}
