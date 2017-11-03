@@ -34,7 +34,7 @@ function backPage() {
     window.history.back();
 }
 
-var error = console.log;
+var error = console.error;
 
 window.onpopstate = function (event) {
     if (event.state == null)

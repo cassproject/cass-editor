@@ -18,12 +18,14 @@ fetchFailure = function (failure) {
     if (this.fetches == 0) {
         if ($("#tree").html() == "")
             $("#tree").html("<br><br><center><h3>This framework is empty.</h3></center>");
-        showPage("#editFrameworkSection", framework);
+        afterRefresh(true);
     }
 };
 
+var treeTop = 0;
 populateFramework = function () {
     var me = this;
+    treeTop = $("#tree").scrollTop();
     $("#tree").html("");
     me.fetches = 0;
     $("#editFrameworkSection #frameworkName").text(framework.getName());
@@ -62,6 +64,7 @@ function afterRefresh(level) {
             showPage("#editFrameworkSection", framework);
     } else
         showPage("#editFrameworkSection", framework);
+    $("#tree").scrollTop(treeTop);
 }
 
 $("body").on("click", ".collapse", null, function (evt) {
