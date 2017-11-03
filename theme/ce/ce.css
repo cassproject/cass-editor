@@ -24,7 +24,6 @@ body {
     font-weight: bold;
     font-size: 1.2rem;
     cursor: pointer;
-    margin: .5rem;
 }
 
 #frameworkName {
@@ -58,8 +57,12 @@ body {
     filter: none;
 }
 
-.competency:hover > span {
+.competency:hover > span > span {
     color: #B55130;
+}
+
+.competency small {
+    font-size: .8rem;
 }
 
 .competency > small:active,
@@ -76,7 +79,7 @@ body {
     background-color: #FCFCFC;
 }
 
-.selected.competency > span {
+.selected.competency > span > span {
     color: #B55130;
     /*    color: #45A085;*/
 }
