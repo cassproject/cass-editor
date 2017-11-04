@@ -17,8 +17,8 @@
     <dependencies>
         <dependency>
             <groupId>com.eduworks</groupId>
-            <artifactId>cass.competency</artifactId>
-            <version>SNAPSHOT</version>
+            <artifactId>cass.import</artifactId>
+            <version>1.3.0</version>
         </dependency>
     </dependencies>
 

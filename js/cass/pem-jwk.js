@@ -3971,7 +3971,7 @@ Mont.prototype.invm = function invm(a) {
 },{}],18:[function(require,module,exports){
 window.pemJwk = require("pem-jwk");
 //global.pem-jwk = window.pemJwk;
-//module.exports = global.pem-jwk;
+module.exports = window.pemJwk;
 
 },{"pem-jwk":4}],19:[function(require,module,exports){
 arguments[4][5][0].apply(exports,arguments)

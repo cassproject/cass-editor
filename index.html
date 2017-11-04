@@ -78,6 +78,62 @@
             </div>
         </div>
     </div>
+    <div id="csvImportSection" class="page" style="display:none;margin-left: 1rem;">
+        <h3 id="csvImportHeader">Import CSV</h3>
+        <i>This will import a CSV. (with headers as the first row, please!)</i>
+        <hr>
+        <div style="width: calc(100% - 2rem); position: relative; padding-left: 1rem;
+    	padding-right: 1rem; display: table; border-collapse: separate;margin:0rem;border-spacing: 0px 10px;">
+            <div style="display: table-row">
+                <label style="display: table-cell; width: 25%;">Step 1: Name the framework.</label>
+                <input id="importCsvFrameworkName" placeholder="Name the Framework." style="display: table-cell; width: 75%;" />
+            </div>
+            <div style="display: table-row">
+                <label style="display: table-cell; width: 25%;">Step 2: Describe the framework (optional).</label>
+                <textarea style="display: table-cell; width: 75%;" id="importCsvFrameworkDescription" placeholder="Describe the framework."></textarea>
+            </div>
+            <div style="display: table-row">
+                <label style="display: table-cell; width: 25%;">Step 3: Select the Name column.</label>
+                <select style="display: table-cell; width: 75%;" id="importCsvColumnName"></select>
+            </div>
+            <div style="display: table-row">
+                <label style="display: table-cell; width: 25%;">Step 4: Select the Description column (optional).</label>
+                <select style="display: table-cell; width: 75%;" id="importCsvColumnDescription"></select>
+            </div>
+            <div style="display: table-row">
+                <label style="display: table-cell; width: 25%;">Step 5 Select the Scope column (optional).</label>
+                <select style="display: table-cell; width: 75%;" id="importCsvColumnScope"></select>
+            </div>
+            <div style="display: table-row">
+                <label style="display: table-cell; width: 25%;">Step 6: Select the ID column (optional). If chosen, this should be a URL from another CASS system or a non-numeric ID.</label>
+                <select style="display: table-cell; width: 75%;" id="importCsvColumnId"></select>
+            </div>
+            <div style="display: table-row">
+                <label style="display: table-cell; width: 25%;">Step 7: Select a relation file (optional). The relation source/target must be in the form of ID or Name, and the relation types should be "requires", "desires", "narrows", "isEnabledBy", "isRelatedTo", or "isEquivalentTo".</label>
+                <input style="display: table-cell; width: 75%;" type="file" id="importCsvRelation" onchange="analyzeCsvRelation();" />
+            </div>
+            <div class="importCsvRelationOptions" style="display: table-row;display:none">
+                <label class="importCsvRelationOptions" style="display: table-cell; width: 25%;">Step 8: Select the Source column.</label>
+                <select style="display: table-cell; width: 75%;" class="importCsvRelationOptions" style="display:none" id="importCsvColumnSource"></select>
+            </div>
+            <div class="importCsvRelationOptions" style="display: table-row;display:none">
+                <label class="importCsvRelationOptions" style="display: table-cell; width: 25%;">Step 9: Select the Relation Type column.</label>
+                <select style="display: table-cell; width: 75%;" class="importCsvRelationOptions" style="display:none" id="importCsvColumnRelationType"></select>
+            </div>
+            <div class="importCsvRelationOptions" style="display: table-row;display:none"><label class="importCsvRelationOptions" style="display: table-cell; width: 25%;">Step 10: Select the Target column.</label>
+                <select style="display: table-cell; width: 75%;" class="importCsvRelationOptions" style="display:none" id="importCsvColumnTarget"></select>
+            </div>
+        </div>
+        <hr>
+        <div id="buttonSection">
+            <div>
+                <div style="float:left;">
+                    <button id="importButton" onclick="importCsv();">Import</button>
+                    <button id="cancelButton" onclick="backPage();">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div id="frameworksSection" class="page" style="height:100%;display: none;">
         <div id="header">
@@ -143,6 +199,7 @@
     </div>
 
     <script src="js/vendor/jquery-3.2.1.min.js"></script>
+    <script src="js/vendor/papaparse.js"></script>
     <script src="forge/forge.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.0/jquery.mark.min.js"></script>
     <script src="js/cass/stjs.js"></script>
@@ -162,6 +219,7 @@
     <script src="js/cass/ebac.identity.js"></script>
     <script src="js/cass/ebac.repository.js"></script>
     <script src="js/cass/cass.competency.js"></script>
+    <script src="js/cass/cass.import.js"></script>
     <script src="js/util.js"></script>
     <script src="js/server.js"></script>
     <script src="js/editFramework.js"></script>
