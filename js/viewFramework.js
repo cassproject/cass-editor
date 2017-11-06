@@ -11,6 +11,10 @@
 var framework = null;
 var selectedCompetency = null;
 var selectedRelation = null;
+//For keyboard controls
+var frameworkSelectionIndex = null;
+var competencySelectionIndex = null;
+var competencyEditScreenActive = false;
 
 fetchFailure = function (failure) {
     this.fetches--;
@@ -89,6 +93,80 @@ $("body").on("click", ".competency", null, function (evt) {
     me.addClass('selected');
     refreshSidebar();
     evt.stopPropagation();
+});
+
+$('html').keydown(function(evt) {
+    //If we're on the framework selection screen
+    if ($('#frameworksSection').css('display') === 'block') {
+        var frameworkElementArray = document.getElementById('frameworks').children;
+        if (frameworkSelectionIndex === null) {
+            frameworkSelectionIndex = 0;
+            $('#frameworks').find('p.selected').each(function() {
+                $(this).removeClass('selected');
+            });
+            frameworkElementArray[frameworkSelectionIndex].classList.add('selected');
+            return;
+        }
+        //On Down arrow
+        console.log(evt.which);
+        if (evt.which === 40) {
+            if (frameworkSelectionIndex < frameworkElementArray.length)
+                frameworkSelectionIndex++;
+            //clear any existing selected
+            $('#frameworks').find('p.selected').each(function() {
+                $(this).removeClass('selected');
+            });
+            frameworkElementArray[frameworkSelectionIndex].classList.add('selected');
+        }
+        //On Up arrow
+        else if (evt.which === 38) {
+            if (frameworkSelectionIndex > 0)
+                frameworkSelectionIndex--;
+            $('#frameworks').find('p.selected').each(function() {
+                $(this).removeClass('selected');
+            });
+            frameworkElementArray[frameworkSelectionIndex].classList.add('selected');
+        }
+        //On enter
+        else if (evt.which === 13) {
+            $(frameworkElementArray[frameworkSelectionIndex]).click();
+            frameworkSelectionIndex = null;
+        }
+    }
+    //If we're on the editFrameworks section
+    else if ($('#editFrameworkSection').css('display') === 'block') {
+        var competencyElementArray = $('#tree').find('.competency:visible');
+        if (competencySelectionIndex === null) {
+            competencySelectionIndex = 0;
+            $('#tree').find('.competency.selected').each(function() {
+                $(this).removeClass('selected');
+            });
+            competencyElementArray[competencySelectionIndex].classList.add('selected');
+        }
+
+        if (evt.which === 40) {
+            if (competencySelectionIndex < competencyElementArray.length)
+                competencySelectionIndex++;
+            if (competencyElementArray[competencySelectionIndex])
+            $('#tree').find('.competency.selected').each(function() {
+                $(this).removeClass('selected');
+            });
+            competencyElementArray[competencySelectionIndex].classList.add('selected');
+        } else if (evt.which === 38) {
+            if (competencySelectionIndex > 0)
+                competencySelectionIndex--;
+            $('#tree').find('.competency.selected').each(function() {
+                $(this).removeClass('selected');
+            });
+            competencyElementArray[competencySelectionIndex].classList.add('selected');
+        } else if (evt.which === 13) {
+            $(competencyElementArray[competencySelectionIndex]).click();
+        } else if (evt.which === 39) {
+            $(competencyElementArray[competencySelectionIndex]).find('.collapse').click();
+        } else if (evt.which === 37) {
+            $(competencyElementArray[competencySelectionIndex]).find('.collapse').click();
+        } 
+    }
 });
 
 function refreshCompetency(col, level) {
