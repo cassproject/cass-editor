@@ -25,7 +25,7 @@ $(document).ready(function () {
             defaultPage = "#addFrameworkSection";
             showPage(defaultPage);
         } else {
-            searchFrameworks();
+            searchFrameworks(createParamObj(5000));
         }
     });
 });
