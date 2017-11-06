@@ -63,7 +63,7 @@
     margin: 0px;
 }
 
-#frameworks p:hover {
+#frameworks p:hover, #frameworks p.selected {
     /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ffffff+100&0.1+0,0.1+100 */
     /*
     background-image: -moz-linear-gradient(top, rgba(128, 128, 128, 0.1) 0%, rgba(128, 128, 128, 0.1) 100%);

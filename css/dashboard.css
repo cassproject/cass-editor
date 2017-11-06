@@ -98,7 +98,8 @@ ul {
 }
 
 .competency:hover,
-.competency.selected {
+.competency.selected,
+p.selected {
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
     /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ffffff+100&0.1+0,0.1+100 */
