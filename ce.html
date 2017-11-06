@@ -13,15 +13,12 @@
     <link rel="stylesheet" href="https://credentialfinder.org/Styles/Webfonts/TrumpGothicPro/TrumpGothicPro.css" type="text/css" charset="utf-8" />
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
     <link href="https://credentialfinder.org/Style/CommonV2?ver=2" rel="stylesheet" type="text/css" />
+    <link href="theme/ce/ce.css" rel="stylesheet" type="text/css" />
     <script src="https://use.fontawesome.com/48a8b07d4b.js"></script>
-
-
 
     <link href="https://credentialfinder.org/Content/qTip2/jquery.qtip.min.css" rel="stylesheet" />
     <!-- Include either the minifed or production version, NOT both!! -->
     <script src="https://credentialfinder.org/Content/qTip2/jquery.qtip.min.js" type="text/javascript"></script>
-
-
 
     <script src="https://credentialfinder.org/Scripts/jquery-ui-1.11.1.js"></script>
     <script src="https://credentialfinder.org/Scripts/jquery.timepicker.js"></script>
@@ -93,6 +90,12 @@
             </div>
         </div>
     </div>
+
+    <div id="banner">
+        <h3>Edit Framework</h3>
+        <p>Select any item to edit it. Click and drag an item to re-order it.</p>
+    </div>
+
     <div id="content">
         <!--[if lte IE 10]>
 	<div id="oldIEBlock" style="background-color: #B55130; padding: 10px; margin: 0 -5vw;">
@@ -109,16 +112,11 @@
 <![endif]-->
 
 
-
-
-
         <link href="https://credentialfinder.org/Style/AccountBox" rel="stylesheet" type="text/css" />
 
-        <h1>Edit Framework</h1>
-
-        <iframe id="iframe" width="100%" height="800" frameborder="0"></iframe>
+        <iframe id="iframe" width="100%" height="550" frameborder="0"></iframe>
         <script>
-            document.getElementsByTagName("iframe")[0].setAttribute("src", "index.html?frameworkId=http://sandbox.service.cassproject.org/data/schema.eduworks.com.cass.0.1.framework/7cb5a3e1-5e25-4e31-b783-cdd820e81544");
+            document.getElementsByTagName("iframe")[0].setAttribute("src", "index.html?origin=http://localhost:8080");
 
         </script>
     </div>

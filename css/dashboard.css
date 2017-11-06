@@ -24,11 +24,13 @@ body {
     padding: 0;
     width: 100%;
     height: 100%;
-    overflow: auto;
-    scroll-behavior: smooth;
+    /*    overflow: auto;*/
+    /*    scroll-behavior: smooth;*/
 }
 
 #tree {
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
     margin: 0px;
     padding-top: 0rem;
     max-height: calc(100% - 2rem);
@@ -73,17 +75,30 @@ ul {
     list-style: none;
 }
 
+#frameworkName,
+#editFrameworkBack {
+    font-size: 1.5rem;
+    line-height: 2.3rem;
+}
+
+#editFrameworkBack {
+    margin-left: .5rem;
+}
+
 .competency {
     border-top: 1px solid transparent;
     border-bottom: 1px solid transparent;
 }
 
-.competency > span {
+.competency > span {}
+
+.competency > span > span {
     font-size: 1rem;
     line-height: 1.5rem;
 }
 
-.competency:hover, .competency.selected {
+.competency:hover,
+.competency.selected {
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
     /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ffffff+100&0.1+0,0.1+100 */
@@ -96,9 +111,8 @@ ul {
     filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#80808080', endColorstr='#80808080', GradientType=0);
 }
 
-.competency > small {
+.competency > span > small {
     display: block;
-    font-size: .8rem;
 }
 
 /* Loading animation */

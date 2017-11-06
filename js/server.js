@@ -95,13 +95,13 @@ for (var i = 0; i < servers.length; i++) {
     r.autoDetectRepository();
     servers[i] = r;
     repo = r;
-    $("iframe").attr("src", "https://cassproject.github.io/cass-viewer/index.html?select=Add&origin=" + window.location.origin + "&server=" +
-        r.selectedServer);
 
     window.addEventListener('message', cappend, false);
 
     openWebSocket(r);
 }
+$("iframe").attr("src", "https://cassproject.github.io/cass-viewer/index.html?select=Add&origin=" + window.location.origin + "&server=" +
+    r.selectedServer);
 
 loadIdentity = function (callback) {
     if (queryParams.user == "self") {

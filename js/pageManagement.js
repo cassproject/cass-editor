@@ -9,7 +9,7 @@
 */
 
 var defaultPage = "#frameworksSection";
-window.onload = function () {
+$(document).ready(function () {
     loadIdentity(function () {
         if (queryParams.frameworkId != null) {
             defaultPage = "#editFrameworkSection";
@@ -28,13 +28,13 @@ window.onload = function () {
             searchFrameworks();
         }
     });
-}
+});
 
 function backPage() {
     window.history.back();
 }
 
-var error = console.log;
+var error = console.error;
 
 window.onpopstate = function (event) {
     if (event.state == null)

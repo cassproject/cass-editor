@@ -22,12 +22,14 @@ fetchFailure = function (failure) {
     if (this.fetches == 0) {
         if ($("#tree").html() == "")
             $("#tree").html("<br><br><center><h3>This framework is empty.</h3></center>");
-        showPage("#editFrameworkSection", framework);
+        afterRefresh(true);
     }
 };
 
+var treeTop = 0;
 populateFramework = function () {
     var me = this;
+    treeTop = $("#tree").scrollTop();
     $("#tree").html("");
     me.fetches = 0;
     $("#editFrameworkSection #frameworkName").text(framework.getName());
@@ -66,19 +68,29 @@ function afterRefresh(level) {
             showPage("#editFrameworkSection", framework);
     } else
         showPage("#editFrameworkSection", framework);
+    $("#tree").scrollTop(treeTop);
 }
 
 $("body").on("click", ".collapse", null, function (evt) {
-    $(evt.target).parent().children("ul").slideToggle();
-    if ($(this).text() == "🔽 ")
-        $(this).text("▶️ ");
-    else
-        $(this).text("🔽 ");
+    $(this).parent().children("ul").slideToggle();
+
+    if ($(this).hasClass('collapsed')) {
+        $(this).removeClass('collapsed');
+        $(this).html('<i class="fa fa-minus-square" aria-hidden="true"></i> ');
+    } else {
+        $(this).addClass('collapsed');
+        $(this).html('<i class="fa fa-plus-square" aria-hidden="true"></i> ');
+    }
 });
+
 $("body").on("click", ".competency", null, function (evt) {
     var me = $(this);
     if (!$(this).hasClass("competency"))
         me = $(this).parents("competency");
+
+    $('.competency').removeClass('selected');
+    me.addClass('selected');
+
     selectedCompetency = EcCompetency.getBlocking(me.attr("id"));
     if (selectedCompetency == null)
         selectedCompetency = EcLevel.getBlocking(me.attr("id"));
@@ -87,7 +99,7 @@ $("body").on("click", ".competency", null, function (evt) {
         selectedRelation = EcAlignment.getBlocking(me.attr("relationid"));
     else
         selectedRelation = null;
-    $(document.body).find('.competency.selected').each(function() {
+    $(document.body).find('.competency.selected').each(function () {
         $(this).removeClass('selected');
     });
     me.addClass('selected');
@@ -179,17 +191,17 @@ function refreshCompetency(col, level) {
         treeNode.remove();
         treeNode = tn;
     } else
-        treeNode = $("#tree").append("<li class = 'competency' draggable='true' ondragstart='dragCompetency(event);' ondrop='dropCompetency(event);' ondragover='allowCompetencyDrop(event);'><ul></ul></li>").children().last();
+        treeNode = $("#tree").append("<li class = 'competency' draggable='true' ondragstart='dragCompetency(event);' ondrop='dropCompetency(event);' ondragover='allowCompetencyDrop(event);'><span></span><ul></ul></li>").children().last();
     treeNode.attr("id", col.shortId());
     if (col.description != null && col.description != "NULL" && col.description != col.name)
-        treeNode.prepend("<small/>").children().first().text(col.getDescription());
-    treeNode.prepend("<span/>").children().first().text(col.getName());
+        treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").text(col.getDescription());
+    treeNode.children().first().prepend("<span/>").children().first().addClass("competencyName").text(col.getName());
     if (col.competency != null) {
         level = true;
         $(".competency[id=\"" + col.competency + "\"]").children().last().append($(".competency[id=\"" + col.shortId() + "\"]"));
         treeNode.children().first().append(" <small>(Performance Level)</small>");
         if (!$(".competency[id=\"" + col.competency + "\"]").hasClass("expandable"))
-            $(".competency[id=\"" + col.competency + "\"]").addClass("expandable").prepend("<span/>").children().first().addClass("collapse").text("🔽 ");
+            $(".competency[id=\"" + col.competency + "\"]").addClass("expandable").prepend("<span/>").children().first().addClass("collapse").html('<i class="fa fa-minus-square" aria-hidden="true"></i> ');
     }
     if (queryParams.link == "true")
         treeNode.prepend(" <a style='float:right;' target='_blank'>🔗</a>").children().first().attr("href", col.shortId());
@@ -206,7 +218,7 @@ function refreshCompetency(col, level) {
                                 if ($(".competency[id=\"" + relation.target + "\"]").length > 0)
                                     $("#tree>.competency[id=\"" + relation.source + "\"]").remove();
                                 if (!$(".competency[id=\"" + relation.target + "\"]").hasClass("expandable"))
-                                    $(".competency[id=\"" + relation.target + "\"]").addClass("expandable").prepend("<span/>").children().first().addClass("collapse").text("🔽 ");
+                                    $(".competency[id=\"" + relation.target + "\"]").addClass("expandable").prepend("<span/>").children().first().addClass("collapse").html('<i class="fa fa-minus-square" aria-hidden="true"></i> ');
                             }
                         }
                     }
@@ -240,6 +252,8 @@ function refreshCompetency(col, level) {
 }
 
 refreshSidebar = function () {
+    $('#detailSlider').show();
+
     var thing = framework;
     if (selectedCompetency != null)
         thing = selectedCompetency;
