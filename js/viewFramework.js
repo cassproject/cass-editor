@@ -99,10 +99,6 @@ $("body").on("click", ".competency", null, function (evt) {
         selectedRelation = EcAlignment.getBlocking(me.attr("relationid"));
     else
         selectedRelation = null;
-    $(document.body).find('.competency.selected').each(function () {
-        $(this).removeClass('selected');
-    });
-    me.addClass('selected');
     refreshSidebar();
     evt.stopPropagation();
 });
@@ -128,7 +124,6 @@ $('html').keydown(function(evt) {
             return;
         }
         //On Down arrow
-        console.log(evt.which);
         if (evt.which === 40) {
             if (frameworkSelectionIndex < frameworkElementArray.length)
                 frameworkSelectionIndex++;
@@ -147,8 +142,8 @@ $('html').keydown(function(evt) {
             });
             frameworkElementArray[frameworkSelectionIndex].classList.add('selected');
         }
-        //On enter
-        else if (evt.which === 13) {
+        //On space
+        else if (evt.which === 32) {
             $(frameworkElementArray[frameworkSelectionIndex]).click();
             frameworkSelectionIndex = null;
         }
@@ -179,7 +174,7 @@ $('html').keydown(function(evt) {
                 $(this).removeClass('selected');
             });
             competencyElementArray[competencySelectionIndex].classList.add('selected');
-        } else if (evt.which === 13) {
+        } else if (evt.which === 32) {
             $(competencyElementArray[competencySelectionIndex]).click();
         } else if (evt.which === 39) {
             $(competencyElementArray[competencySelectionIndex]).find('.collapse').click();
