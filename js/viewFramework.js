@@ -107,6 +107,14 @@ $("body").on("click", ".competency", null, function (evt) {
     evt.stopPropagation();
 });
 
+$('body').on('dragover', '.competency', function(evt) {
+    $(this).addClass('selected');
+});
+
+$('body').on('dragleave', '.competency', function(evt) {
+    $(this).removeClass('selected');
+});
+
 $('html').keydown(function(evt) {
     //If we're on the framework selection screen
     if ($('#frameworksSection').css('display') === 'block') {
