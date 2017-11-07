@@ -159,7 +159,7 @@ $('html').keydown(function(evt) {
                 });
                 competencyElementArray[competencySelectionIndex].classList.add('selected');
             }
-
+            //On down arrow
             if (evt.which === 40) {
                 if (competencySelectionIndex < competencyElementArray.length)
                     competencySelectionIndex++;
@@ -168,20 +168,36 @@ $('html').keydown(function(evt) {
                     $(this).removeClass('selected');
                 });
                 competencyElementArray[competencySelectionIndex].classList.add('selected');
-            } else if (evt.which === 38) {
+            }
+            //On up arrow
+            else if (evt.which === 38) {
                 if (competencySelectionIndex > 0)
                     competencySelectionIndex--;
                 $('#tree').find('.competency.selected').each(function() {
                     $(this).removeClass('selected');
                 });
                 competencyElementArray[competencySelectionIndex].classList.add('selected');
-            } else if (evt.which === 13) {
+            }
+            //On enter
+            else if (evt.which === 13) {
                 $(competencyElementArray[competencySelectionIndex]).click();
-            } else if (evt.which === 39) {
+            }
+            //On left and right arrows
+            else if (evt.which === 39) {
                 $(competencyElementArray[competencySelectionIndex]).find('.collapse').click();
-            } else if (evt.which === 37) {
+            }
+            else if (evt.which === 37) {
                 $(competencyElementArray[competencySelectionIndex]).find('.collapse').click();
-            } 
+            }
+            //On Backspace
+            else if (evt.which === 8) {
+                $('#editFrameworkBack').click();
+            }
+        }
+    } else {
+        //On escape
+        if (evt.which === 27) {
+            $('input').blur();
         }
     }
 });
