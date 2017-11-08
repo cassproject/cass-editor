@@ -63,3 +63,12 @@ function importParentStyles() {
     }
     document.getElementsByTagName("head")[0].appendChild(style);
 }
+
+function createParamObj(size) {
+    var paramObj = {};
+    paramObj.size = size;
+    if (queryParams.show != null && queryParams.show === 'mine')
+        paramObj.ownership = 'me';
+
+    return paramObj;
+}

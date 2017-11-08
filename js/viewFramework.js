@@ -99,85 +99,106 @@ $("body").on("click", ".competency", null, function (evt) {
         selectedRelation = EcAlignment.getBlocking(me.attr("relationid"));
     else
         selectedRelation = null;
-    $(document.body).find('.competency.selected').each(function () {
-        $(this).removeClass('selected');
-    });
-    me.addClass('selected');
     refreshSidebar();
     evt.stopPropagation();
 });
 
-$('html').keydown(function(evt) {
-    //If we're on the framework selection screen
-    if ($('#frameworksSection').css('display') === 'block') {
-        var frameworkElementArray = document.getElementById('frameworks').children;
-        if (frameworkSelectionIndex === null) {
-            frameworkSelectionIndex = 0;
-            $('#frameworks').find('p.selected').each(function() {
-                $(this).removeClass('selected');
-            });
-            frameworkElementArray[frameworkSelectionIndex].classList.add('selected');
-            return;
-        }
-        //On Down arrow
-        console.log(evt.which);
-        if (evt.which === 40) {
-            if (frameworkSelectionIndex < frameworkElementArray.length)
-                frameworkSelectionIndex++;
-            //clear any existing selected
-            $('#frameworks').find('p.selected').each(function() {
-                $(this).removeClass('selected');
-            });
-            frameworkElementArray[frameworkSelectionIndex].classList.add('selected');
-        }
-        //On Up arrow
-        else if (evt.which === 38) {
-            if (frameworkSelectionIndex > 0)
-                frameworkSelectionIndex--;
-            $('#frameworks').find('p.selected').each(function() {
-                $(this).removeClass('selected');
-            });
-            frameworkElementArray[frameworkSelectionIndex].classList.add('selected');
-        }
-        //On enter
-        else if (evt.which === 13) {
-            $(frameworkElementArray[frameworkSelectionIndex]).click();
-            frameworkSelectionIndex = null;
-        }
-    }
-    //If we're on the editFrameworks section
-    else if ($('#editFrameworkSection').css('display') === 'block') {
-        var competencyElementArray = $('#tree').find('.competency:visible');
-        if (competencySelectionIndex === null) {
-            competencySelectionIndex = 0;
-            $('#tree').find('.competency.selected').each(function() {
-                $(this).removeClass('selected');
-            });
-            competencyElementArray[competencySelectionIndex].classList.add('selected');
-        }
+$('body').on('dragover', '.competency', function(evt) {
+    $(this).addClass('selected');
+});
 
-        if (evt.which === 40) {
-            if (competencySelectionIndex < competencyElementArray.length)
-                competencySelectionIndex++;
-            if (competencyElementArray[competencySelectionIndex])
-            $('#tree').find('.competency.selected').each(function() {
-                $(this).removeClass('selected');
-            });
-            competencyElementArray[competencySelectionIndex].classList.add('selected');
-        } else if (evt.which === 38) {
-            if (competencySelectionIndex > 0)
-                competencySelectionIndex--;
-            $('#tree').find('.competency.selected').each(function() {
-                $(this).removeClass('selected');
-            });
-            competencyElementArray[competencySelectionIndex].classList.add('selected');
-        } else if (evt.which === 13) {
-            $(competencyElementArray[competencySelectionIndex]).click();
-        } else if (evt.which === 39) {
-            $(competencyElementArray[competencySelectionIndex]).find('.collapse').click();
-        } else if (evt.which === 37) {
-            $(competencyElementArray[competencySelectionIndex]).find('.collapse').click();
-        } 
+$('body').on('dragleave', '.competency', function(evt) {
+    $(this).removeClass('selected');
+});
+
+$('html').keydown(function(evt) {
+    if (!$('input').is(':focus')) {
+        //If we're on the framework selection screen
+        if ($('#frameworksSection').css('display') === 'block') {
+            var frameworkElementArray = document.getElementById('frameworks').children;
+            if (frameworkSelectionIndex === null) {
+                frameworkSelectionIndex = 0;
+                $('#frameworks').find('p.selected').each(function() {
+                    $(this).removeClass('selected');
+                });
+                frameworkElementArray[frameworkSelectionIndex].classList.add('selected');
+                return;
+            }
+            //On Down arrow
+            if (evt.which === 40) {
+                if (frameworkSelectionIndex < frameworkElementArray.length)
+                    frameworkSelectionIndex++;
+                //clear any existing selected
+                $('#frameworks').find('p.selected').each(function() {
+                    $(this).removeClass('selected');
+                });
+                frameworkElementArray[frameworkSelectionIndex].classList.add('selected');
+            }
+            //On Up arrow
+            else if (evt.which === 38) {
+                if (frameworkSelectionIndex > 0)
+                    frameworkSelectionIndex--;
+                $('#frameworks').find('p.selected').each(function() {
+                    $(this).removeClass('selected');
+                });
+                frameworkElementArray[frameworkSelectionIndex].classList.add('selected');
+            }
+            //On enter
+            else if (evt.which === 13) {
+                $(frameworkElementArray[frameworkSelectionIndex]).click();
+                frameworkSelectionIndex = null;
+            }
+        }
+        //If we're on the editFrameworks section
+        else if ($('#editFrameworkSection').css('display') === 'block') {
+            var competencyElementArray = $('#tree').find('.competency:visible');
+            if (competencySelectionIndex === null) {
+                competencySelectionIndex = 0;
+                $('#tree').find('.competency.selected').each(function() {
+                    $(this).removeClass('selected');
+                });
+                competencyElementArray[competencySelectionIndex].classList.add('selected');
+            }
+            //On down arrow
+            if (evt.which === 40) {
+                if (competencySelectionIndex < competencyElementArray.length)
+                    competencySelectionIndex++;
+                if (competencyElementArray[competencySelectionIndex])
+                $('#tree').find('.competency.selected').each(function() {
+                    $(this).removeClass('selected');
+                });
+                competencyElementArray[competencySelectionIndex].classList.add('selected');
+            }
+            //On up arrow
+            else if (evt.which === 38) {
+                if (competencySelectionIndex > 0)
+                    competencySelectionIndex--;
+                $('#tree').find('.competency.selected').each(function() {
+                    $(this).removeClass('selected');
+                });
+                competencyElementArray[competencySelectionIndex].classList.add('selected');
+            }
+            //On enter
+            else if (evt.which === 13) {
+                $(competencyElementArray[competencySelectionIndex]).click();
+            }
+            //On left and right arrows
+            else if (evt.which === 39) {
+                $(competencyElementArray[competencySelectionIndex]).find('.collapse').click();
+            }
+            else if (evt.which === 37) {
+                $(competencyElementArray[competencySelectionIndex]).find('.collapse').click();
+            }
+            //On Backspace
+            else if (evt.which === 8) {
+                $('#editFrameworkBack').click();
+            }
+        }
+    } else {
+        //On escape
+        if (evt.which === 27) {
+            $('input').blur();
+        }
     }
 });
 
