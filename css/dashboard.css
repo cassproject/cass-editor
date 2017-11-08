@@ -52,6 +52,7 @@ body {
     max-width: 50%;
     width: 19rem;
     border-left: 1px black solid;
+    overflow: auto;
 }
 
 #title {
@@ -99,6 +100,7 @@ ul {
 
 .competency:hover,
 .competency.selected,
+#frameworkNameContainer.selected,
 p.selected {
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
@@ -114,6 +116,10 @@ p.selected {
 
 .competency > span > small {
     display: block;
+}
+
+#ceasnDataFields {
+    display: none;
 }
 
 /* Loading animation */

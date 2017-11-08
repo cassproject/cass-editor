@@ -88,7 +88,7 @@ $("body").on("click", ".competency", null, function (evt) {
     if (!$(this).hasClass("competency"))
         me = $(this).parents("competency");
 
-    $('.competency').removeClass('selected');
+    $('.selected').removeClass('selected');
     me.addClass('selected');
 
     selectedCompetency = EcCompetency.getBlocking(me.attr("id"));
@@ -103,6 +103,11 @@ $("body").on("click", ".competency", null, function (evt) {
     evt.stopPropagation();
 });
 
+$('body').on('click', '#frameworkName', function(evt) {
+    $('.selected').removeClass('selected');
+    $('#frameworkNameContainer').addClass('selected');
+});
+
 $('body').on('dragover', '.competency', function(evt) {
     $(this).addClass('selected');
 });
@@ -112,7 +117,7 @@ $('body').on('dragleave', '.competency', function(evt) {
 });
 
 $('html').keydown(function(evt) {
-    if (!$('input').is(':focus')) {
+    if (!$('input').is(':focus') && !$('select').is(':focus')) {
         //If we're on the framework selection screen
         if ($('#frameworksSection').css('display') === 'block') {
             var frameworkElementArray = document.getElementById('frameworks').children;
@@ -153,34 +158,24 @@ $('html').keydown(function(evt) {
         else if ($('#editFrameworkSection').css('display') === 'block') {
             var competencyElementArray = $('#tree').find('.competency:visible');
             if (competencySelectionIndex === null) {
-                competencySelectionIndex = 0;
-                $('#tree').find('.competency.selected').each(function() {
-                    $(this).removeClass('selected');
-                });
-                competencyElementArray[competencySelectionIndex].classList.add('selected');
+                competencySelectionIndex = -1;
+                $('#frameworkName').click();
+                return;
             }
             //On down arrow
             if (evt.which === 40) {
                 if (competencySelectionIndex < competencyElementArray.length)
                     competencySelectionIndex++;
-                if (competencyElementArray[competencySelectionIndex])
-                $('#tree').find('.competency.selected').each(function() {
-                    $(this).removeClass('selected');
-                });
-                competencyElementArray[competencySelectionIndex].classList.add('selected');
+                $(competencyElementArray[competencySelectionIndex]).click();
             }
             //On up arrow
             else if (evt.which === 38) {
-                if (competencySelectionIndex > 0)
+                if (competencySelectionIndex >= 0)
                     competencySelectionIndex--;
-                $('#tree').find('.competency.selected').each(function() {
-                    $(this).removeClass('selected');
-                });
-                competencyElementArray[competencySelectionIndex].classList.add('selected');
-            }
-            //On enter
-            else if (evt.which === 13) {
-                $(competencyElementArray[competencySelectionIndex]).click();
+                if (competencySelectionIndex >= 0)
+                    $(competencyElementArray[competencySelectionIndex]).click();
+                else
+                    $('#frameworkName').click();
             }
             //On left and right arrows
             else if (evt.which === 39) {
@@ -198,6 +193,7 @@ $('html').keydown(function(evt) {
         //On escape
         if (evt.which === 27) {
             $('input').blur();
+            $('select').blur();
         }
     }
 });
@@ -275,6 +271,10 @@ function refreshCompetency(col, level) {
 refreshSidebar = function () {
     $('#detailSlider').show();
 
+    if (queryParams.ceasnDataFields === 'true') {
+        $('#ceasnDataFields').show();
+    }
+
     var thing = framework;
     if (selectedCompetency != null)
         thing = selectedCompetency;
@@ -286,6 +286,20 @@ refreshSidebar = function () {
     $("#editFrameworkSection #sidebarNameInput").val(thing.getName());
     $("#editFrameworkSection #sidebarDescription").text(thing.getDescription());
     $("#editFrameworkSection #sidebarDescriptionInput").val(thing.getDescription());
+    $("#editFrameworkSection #sidebarInLanguage").text(thing["schema:inLanguage"]);
+    $("#editFrameworkSection #sidebarInLanguageInput").val(thing["schema:inLanguage"]);
+    $("#editFrameworkSection #sidebarIsPartOf").text(thing.isPartOf);
+    $("#editFrameworkSection #sidebarIsPartOfInput").val(thing.isPartOf);
+    $("#editFrameworkSection #sidebarCodedNotation").text(thing["schema:identifier"]);
+    $("#editFrameworkSection #sidebarCodedNotationInput").val(thing["schema:identifier"]);
+    $("#editFrameworkSection #sidebarCompetencyCategory").text(thing["http://schema.eduworks.com/ims/case/v1p0/CFItemType"]);
+    $("#editFrameworkSection #sidebarCompetencyCategoryInput").val(thing["http://schema.eduworks.com/ims/case/v1p0/CFItemType"]);
+    $("#editFrameworkSection #sidebarHasChild").text(thing["gemq:hasChild"]);
+    $("#editFrameworkSection #sidebarHasChildInput").val(thing["gemq:hasChild"]);
+    $("#editFrameworkSection #sidebarIsChildOf").text(thing["gemq:isChildOf"]);
+    $("#editFrameworkSection #sidebarIsChildOfInput").val(thing["gemq:isChildOf"]);
+    $("#editFrameworkSection #sidebarConceptKeyword").text(thing["schema:keywords"]);
+    $("#editFrameworkSection #sidebarConceptKeywordInput").val(thing["schema:keywords"]);
 
     if (framework == thing) {
         $("#sidebarVersion").hide();
