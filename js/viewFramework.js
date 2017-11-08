@@ -117,7 +117,7 @@ $('body').on('dragleave', '.competency', function(evt) {
 });
 
 $('html').keydown(function(evt) {
-    if (!$('input').is(':focus') && !$('select').is(':focus')) {
+    if (!$('input').is(':focus') && !$('select').is(':focus') && !$('textarea').is(':focus')) {
         //If we're on the framework selection screen
         if ($('#frameworksSection').css('display') === 'block') {
             var frameworkElementArray = document.getElementById('frameworks').children;
