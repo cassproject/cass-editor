@@ -107,6 +107,18 @@ saveCompetency = function () {
     if (selectedCompetency == null) {
         framework.name = $("#sidebarNameInput").val();
         framework.description = $("#sidebarDescriptionInput").val();
+        framework["schema:inLanguage"] = $("#sidebarInLanguageInput").val();
+        // framework.isPartOf = $("#sidebarIsPartOfInput").val();
+        framework["schema:identifier"] = $("#sidebarCodedNotationInput").val();
+        framework["http://schema.eduworks.com/ims/case/v1p0/CFItemType"] = $("#sidebarCompetencyCategoryInput").val();
+        // framework["gemq:hasChild"] = $("#sidebarHasChildInput").val();
+        // framework["gemq:isChildOf"] = $("#sidebarIsChildOfInput").val();
+        framework.author = $("#sidebarAuthorInput").val();
+        framework.comment = $("#sidebarCommentInput").val();
+        framework.creator = $("#sidebarCreatorInput").val();
+        // framework.dateCreated = $("#sidebarDateCreatedInput").val();
+        framework.additionalType = $("#sidebarAlternativeCodedNotationInput").val();
+        framework["schema:keywords"] = $("#sidebarConceptKeywordInput").val();
 
         EcRepository.save(framework, function () {
             populateFramework();
@@ -114,6 +126,18 @@ saveCompetency = function () {
     } else {
         selectedCompetency.name = $("#sidebarNameInput").val();
         selectedCompetency.description = $("#sidebarDescriptionInput").val();
+        selectedCompetency["schema:inLanguage"] = $("#sidebarInLanguageInput").val();
+        // selectedCompetency.isPartOf = $("#sidebarIsPartOfInput").val();
+        selectedCompetency["schema:identifier"] = $("#sidebarCodedNotationInput").val();
+        selectedCompetency["http://schema.eduworks.com/ims/case/v1p0/CFItemType"] = $("#sidebarCompetencyCategoryInput").val();
+        // selectedCompetency["gemq:hasChild"] = $("#sidebarHasChildInput").val();
+        // selectedCompetency["gemq:isChildOf"] = $("#sidebarIsChildOfInput").val();
+        selectedCompetency.author = $("#sidebarAuthorInput").val();
+        selectedCompetency.comment = $("#sidebarCommentInput").val();
+        selectedCompetency.creator = $("#sidebarCreatorInput").val();
+        // selectedCompetency.dateCreated = $("#sidebarDateCreatedInput").val();
+        selectedCompetency.additionalType = $("#sidebarAlternativeCodedNotationInput").val();
+        selectedCompetency["schema:keywords"] = $("#sidebarConceptKeywordInput").val();
 
         EcRepository.save(selectedCompetency, function () {}, error);
     }

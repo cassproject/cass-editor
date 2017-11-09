@@ -275,6 +275,14 @@ refreshSidebar = function () {
         $('#ceasnDataFields').show();
     }
 
+    $('#ceasnDataFields').find('p').each(function() {
+        $(this).text(null);
+    });
+
+    $('#ceasnDataFields').find('input').each(function() {
+        $(this).val(null);
+    });
+
     var thing = framework;
     if (selectedCompetency != null)
         thing = selectedCompetency;
@@ -288,19 +296,30 @@ refreshSidebar = function () {
     $("#editFrameworkSection #sidebarDescriptionInput").val(thing.getDescription());
     $("#editFrameworkSection #sidebarInLanguage").text(thing["schema:inLanguage"]);
     $("#editFrameworkSection #sidebarInLanguageInput").val(thing["schema:inLanguage"]);
-    $("#editFrameworkSection #sidebarIsPartOf").text(thing.isPartOf);
-    $("#editFrameworkSection #sidebarIsPartOfInput").val(thing.isPartOf);
+    // $("#editFrameworkSection #sidebarIsPartOf").text(thing.isPartOf);
+    // $("#editFrameworkSection #sidebarIsPartOfInput").val(thing.isPartOf);
     $("#editFrameworkSection #sidebarCodedNotation").text(thing["schema:identifier"]);
     $("#editFrameworkSection #sidebarCodedNotationInput").val(thing["schema:identifier"]);
     $("#editFrameworkSection #sidebarCompetencyCategory").text(thing["http://schema.eduworks.com/ims/case/v1p0/CFItemType"]);
     $("#editFrameworkSection #sidebarCompetencyCategoryInput").val(thing["http://schema.eduworks.com/ims/case/v1p0/CFItemType"]);
-    $("#editFrameworkSection #sidebarHasChild").text(thing["gemq:hasChild"]);
-    $("#editFrameworkSection #sidebarHasChildInput").val(thing["gemq:hasChild"]);
-    $("#editFrameworkSection #sidebarIsChildOf").text(thing["gemq:isChildOf"]);
-    $("#editFrameworkSection #sidebarIsChildOfInput").val(thing["gemq:isChildOf"]);
+    // $("#editFrameworkSection #sidebarHasChild").text(thing["gemq:hasChild"]);
+    // $("#editFrameworkSection #sidebarHasChildInput").val(thing["gemq:hasChild"]);
+    // $("#editFrameworkSection #sidebarIsChildOf").text(thing["gemq:isChildOf"]);
+    // $("#editFrameworkSection #sidebarIsChildOfInput").val(thing["gemq:isChildOf"]);
     $("#editFrameworkSection #sidebarConceptKeyword").text(thing["schema:keywords"]);
     $("#editFrameworkSection #sidebarConceptKeywordInput").val(thing["schema:keywords"]);
-
+    $("#editFrameworkSection #sidebarAuthor").text(thing.author);
+    $("#editFrameworkSection #sidebarAuthorInput").val(thing.author);
+    $("#editFrameworkSection #sidebarComment").text(thing.comment);
+    $("#editFrameworkSection #sidebarCommentInput").val(thing.comment);
+    $("#editFrameworkSection #sidebarCreator").text(thing.creator);
+    $("#editFrameworkSection #sidebarCreatorInput").val(thing.creator);
+    // $("#editFrameworkSection #sidebarDateCreated").text(thing.dateCreated);
+    // $("#editFrameworkSection #sidebarDateCreatedInput").val(thing.dateCreated);
+    $("#editFrameworkSection #sidebarAlternativeCodedNotation").text(thing.additionalType);
+    $("#editFrameworkSection #sidebarAlternativeCodedNotationInput").val(thing.additionalType);
+    
+    
     if (framework == thing) {
         $("#sidebarVersion").hide();
         $("#sidebarAddLevels").hide();

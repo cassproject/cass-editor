@@ -91,63 +91,71 @@
             <h3 id="sidebarName" class="viewMode">Framework Name Here</h3>
             <input id="sidebarNameInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" value="Framework Name Here" />
             <p id="sidebarDescription" class="viewMode">This is a super long description, it describes the things worth describing.</p>
-            <textarea id="sidebarDescriptionInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);height:6rem;">This is a super long description, it describes the things worth describing.</textarea>
+            <textarea id="sidebarDescriptionInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);height:6rem;margin-bottom: 1rem;">This is a super long description, it describes the things worth describing.</textarea>
             <div id="ceasnDataFields">
-                <p id="sidebarInLanguage" class="viewMode">Done</p>
-                <input id="sidebarInLanguageInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" />
-                <p id="sidebarIsPartOf" class="viewMode">Done</p>
-                <input id="sidebarIsPartOfInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" />
-                <p id="sidebarCodedNotation" class="viewMode">Done</p>
-                <input id="sidebarCodedNotationInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" />
-                <p id="sidebarCompetencyCategory" class="viewMode">Done</p>
-                <input id="sidebarCompetencyCategoryInput" class="editMode" style="margin-top: 1rem;width:calc(100% - 1rem);" />
-                <p id="sidebarDerivedFrom" class="viewMode">TODO</p>
-                <input id="sidebarDerivedFromInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" />
-                <p id="sidebarHasChild" class="viewMode">Done</p>
+                <label for="sidebarInLanguage" class="editMode">In Language</label>
+                <p id="sidebarInLanguage" class="viewMode" style="margin-top: 0;"></p>
+                <input id="sidebarInLanguageInput" class="editMode" style="width:calc(100% - 1rem);margin-bottom: 1rem;" />
+                <!-- <p id="sidebarIsPartOf" class="viewMode">Done</p>
+                <input id="sidebarIsPartOfInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" /> -->
+                <label for="sidebarCodedNotation" class="editMode">Coded Notation</label>
+                <p id="sidebarCodedNotation" class="viewMode" style="margin-top: 0;"></p>
+                <input id="sidebarCodedNotationInput" class="editMode" style="width:calc(100% - 1rem);margin-bottom: 1rem;" />
+                <label for="sidebarCompetencyCategory" class="editMode">Competency Category</label>
+                <p id="sidebarCompetencyCategory" class="viewMode" style="margin-top: 0;"></p>
+                <input id="sidebarCompetencyCategoryInput" class="editMode" style="width:calc(100% - 1rem);margin-bottom: 1rem;" />
+                <!-- <p id="sidebarDerivedFrom" class="viewMode">TODO</p>
+                <input id="sidebarDerivedFromInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" /> -->
+                <!-- <p id="sidebarHasChild" class="viewMode">Done</p>
                 <input id="sidebarHasChildInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" />
                 <p id="sidebarIsChildOf" class="viewMode">Done</p>
-                <input id="sidebarIsChildOfInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" />
-                <p id="sidebarListID" class="viewMode">TODO</p>
-                <input id="sidebarListIDInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" />
-                <p id="sidebarConceptKeyword" class="viewMode">Testing</p>
-                <input id="sidebarConceptKeywordInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" />
-                <p id="sidebarConceptTerm" class="viewMode">Testing</p>
+                <input id="sidebarIsChildOfInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" /> -->
+                <!-- <p id="sidebarListID" class="viewMode">TODO</p>
+                <input id="sidebarListIDInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" /> -->
+                <label for="sidebarConceptKeyword" class="editMode">Concept Keyword</label>
+                <p id="sidebarConceptKeyword" class="viewMode" style="margin-top: 0;"></p>
+                <input id="sidebarConceptKeywordInput" class="editMode" style="width:calc(100% - 1rem);margin-bottom: 1rem;" />
+                <!-- <p id="sidebarConceptTerm" class="viewMode">TODO</p>
                 <input id="sidebarConceptTermInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" />
-                <p id="sidebarAlignFrom" class="viewMode">Testing</p>
+                <p id="sidebarAlignFrom" class="viewMode">TODO</p>
                 <input id="sidebarAlignFromInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" />
-                <p id="sidebarAlignTo" class="viewMode">Testing</p>
-                <input id="sidebarAlignToInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" />
-                <p id="sidebarAlternativeCodedNotation" class="viewMode">Testing</p>
-                <input id="sidebarAlternativeCodedNotationInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" />
-                <p id="sidebarAuthor" class="viewMode">Testing</p>
-                <input id="sidebarAuthorInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" />
-                <p id="sidebarBroadAlignment" class="viewMode">Testing</p>
-                <input id="sidebarBroadAlignmentInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" />
-                <p id="sidebarComment" class="viewMode">Testing</p>
-                <input id="sidebarCommentInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" />
-                <p id="sidebarComplexityLevel" class="viewMode">Testing</p>
-                <input id="sidebarComplexityLevelInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" />
-                <p id="sidebarComprisedOf" class="viewMode">Testing</p>
-                <input id="sidebarComprisedOfInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" />
-                <p id="sidebarCreator" class="viewMode">Testing</p>
-                <input id="sidebarCreatorInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" />
-                <p id="sidebarCrossSubjectReference" class="viewMode">Testing</p>
-                <input id="sidebarCrossSubjectReferenceInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" />
-                <p id="sidebarDateCreated" class="viewMode">Testing</p>
-                <input id="sidebarDateCreated" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" />
-                <p id="sidebarEducationLevelType" class="viewMode">Testing</p>
-                <input id="sidebarEducationLevelTypeInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" />
-                <p id="sidebarExactAlignment" class="viewMode">Testing</p>
+                <p id="sidebarAlignTo" class="viewMode">TODO</p>
+                <input id="sidebarAlignToInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" /> -->
+                <label for="sidebarAlternativeCodedNotation" class="editMode">Alternative Coded Notation</label>
+                <p id="sidebarAlternativeCodedNotation" class="viewMode" style="margin-top: 0;"></p>
+                <input id="sidebarAlternativeCodedNotationInput" class="editMode" style="width:calc(100% - 1rem);margin-bottom: 1rem;" />
+                <label for="sidebarAuthor" class="editMode">Author</label>
+                <p id="sidebarAuthor" class="viewMode" style="margin-top: 0;"></p>
+                <input id="sidebarAuthorInput" class="editMode" style="width:calc(100% - 1rem);margin-bottom: 1rem;" />
+                <!-- <p id="sidebarBroadAlignment" class="viewMode">TODO</p>
+                <input id="sidebarBroadAlignmentInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" /> -->
+                <label for="sidebarComment" class="editMode">Comment</label>
+                <p id="sidebarComment" class="viewMode" style="margin-top: 0;"></p>
+                <input id="sidebarCommentInput" class="editMode" style="width:calc(100% - 1rem);margin-bottom: 1rem;" />
+                <!-- <p id="sidebarComplexityLevel" class="viewMode">TODO</p>
+                <input id="sidebarComplexityLevelInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" /> -->
+                <!-- <p id="sidebarComprisedOf" class="viewMode">TODO</p>
+                <input id="sidebarComprisedOfInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" /> -->
+                <label for="sidebarCreator" class="editMode">Creator</label>
+                <p id="sidebarCreator" class="viewMode" style="margin-top: 0;"></p>
+                <input id="sidebarCreatorInput" class="editMode" style="width:calc(100% - 1rem);margin-bottom: 1rem;" />
+                <!-- <p id="sidebarCrossSubjectReference" class="viewMode">TODO</p>
+                <input id="sidebarCrossSubjectReferenceInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" /> -->
+                <!-- <p id="sidebarDateCreated" class="viewMode">Done</p>
+                <input id="sidebarDateCreated" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" /> -->
+                <!-- <p id="sidebarEducationLevelType" class="viewMode">TODO</p>
+                <input id="sidebarEducationLevelTypeInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" /> -->
+                <!-- <p id="sidebarExactAlignment" class="viewMode">TODO</p>
                 <input id="sidebarExactAlignmentInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" />
-                <p id="sidebarIdentifier" class="viewMode">Testing</p>
+                <p id="sidebarIdentifier" class="viewMode">TODO</p>
                 <input id="sidebarIdentifierInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" />
-                <p id="sidebarIsVersionOf" class="viewMode">Testing</p>
+                <p id="sidebarIsVersionOf" class="viewMode">TODO</p>
                 <input id="sidebarIsVersionOfInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" />
-                <p id="sidebarLocalSubject" class="viewMode">Testing</p>
+                <p id="sidebarLocalSubject" class="viewMode">TODO</p>
                 <input id="sidebarLocalSubjectInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" />
-                <p id="sidebarMajorAlignment" class="viewMode">Testing</p>
+                <p id="sidebarMajorAlignment" class="viewMode">TODO</p>
                 <input id="sidebarMajorAlignmentInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" />
-                <p id="sidebarMinorAlignment" class="viewMode">Testing</p>
+                <p id="sidebarMinorAlignment" class="viewMode">TODO</p>
                 <input id="sidebarMinorAlignmentInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" />
                 <p id="sidebarNarrowAlignment" class="viewMode">Testing</p>
                 <input id="sidebarNarrowAlignmentInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" />
@@ -156,7 +164,7 @@
                 <p id="sidebarSkillEmbodied" class="viewMode">Testing</p>
                 <input id="sidebarSkillEmbodiedInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" />
                 <p id="sidebarWeight" class="viewMode">Testing</p>
-                <input id="sidebarWeightInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" />
+                <input id="sidebarWeightInput" class="editMode" style="margin-top:1rem;width:calc(100% - 1rem);" /> -->
             </div>
             <select id="sidebarVersion" class="viewMode" style="display:block;margin-bottom:.5rem;" onclick="setCompetencyConfigurationManagement();">
                 <option selected value="noVersion">Shared: Updates automatically.</option>
