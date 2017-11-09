@@ -211,7 +211,7 @@ function refreshCompetency(col, level) {
         treeNode = $("#tree").append("<li class = 'competency' draggable='true' ondragstart='dragCompetency(event);' ondrop='dropCompetency(event);' ondragover='allowCompetencyDrop(event);'><span></span><ul></ul></li>").children().last();
     treeNode.attr("id", col.shortId());
     if (col.description != null && col.description != "NULL" && col.description != col.name)
-        treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").text(col.getDescription());
+        treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").css('display', 'block').text(col.getDescription());
     treeNode.children().first().prepend("<span/>").children().first().addClass("competencyName").text(col.getName());
     if (col.competency != null) {
         level = true;
