@@ -47,7 +47,7 @@
                     <button id="saveButton" onclick="createFramework();">Create</button>
                 </div>
                 <div style="float:left;">
-                    <button id="cancelButton">Cancel</button>
+                    <button id="cancelButton" onclick="searchFrameworks(createParamObj(5000));">Cancel</button>
                 </div>
             </div>
         </div>
@@ -189,7 +189,7 @@
             <p><small id="sidebarFeedback"></small></p>
         </div>
         <div id="frameworkNameContainer">
-            <span id="editFrameworkBack" onclick='searchFrameworks();' style="float:left;"><i class="fa fa-backward" > </i></span>&nbsp;
+            <span id="editFrameworkBack" onclick='searchFrameworks(createParamObj(5000));' style="float:left;"><i class="fa fa-backward" > </i></span>&nbsp;
             <span id="frameworkName" style="" onclick="selectedCompetency=null;refreshSidebar();"></span>
         </div>
         <ul id="tree">
