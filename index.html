@@ -188,7 +188,7 @@
             <button id="sidebarSave" class="editMode greenButton" style="margin:0rem;" onclick="saveCompetency();">Save</button>
             <p><small id="sidebarFeedback"></small></p>
         </div>
-        <div id="frameworkNameContainer">
+        <div id="frameworkNameContainer" ondrop="unlinkCompetency();">
             <span id="editFrameworkBack" onclick='searchFrameworks(createParamObj(5000));' style="float:left;"><i class="fa fa-backward" > </i></span>&nbsp;
             <span id="frameworkName" style="" onclick="selectedCompetency=null;refreshSidebar();"></span>
         </div>

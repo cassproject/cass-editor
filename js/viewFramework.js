@@ -116,6 +116,23 @@ $('body').on('dragleave', '.competency', function(evt) {
     $(this).removeClass('selected');
 });
 
+$('body').on('dragstart', '.competency', function(evt) {
+    $(evt.target).click();
+});
+
+$('body').on('dragenter', '#frameworkNameContainer', function(evt) {
+    evt.preventDefault();
+});
+
+$('body').on('dragover', '#frameworkNameContainer', function(evt) {
+    evt.preventDefault();
+    $(this).addClass('selected');
+});
+
+$('body').on('dragleave', '#frameworkNameContainer', function(evt) {
+    $(this).removeClass('selected');
+});
+
 $('html').keydown(function(evt) {
     if (!$('input').is(':focus') && !$('select').is(':focus') && !$('textarea').is(':focus')) {
         //If we're on the framework selection screen
