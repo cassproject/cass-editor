@@ -24,6 +24,9 @@ $(document).ready(function () {
         } else if (queryParams.action == "add") {
             defaultPage = "#addFrameworkSection";
             showPage(defaultPage);
+        } else if (queryParams.action == "import") {
+            defaultPage = "#importSection";
+            showPage(defaultPage);
         } else {
             searchFrameworks(createParamObj(5000));
         }

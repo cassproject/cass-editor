@@ -30,7 +30,7 @@ var treeTop = 0;
 populateFramework = function () {
     var me = this;
     treeTop = $("#tree").scrollTop();
-    $("#tree").html("");
+    $("#tree").hide().html("");
     me.fetches = 0;
     $("#editFrameworkSection #frameworkName").text(framework.getName());
     if (framework.competency == null)
@@ -68,7 +68,7 @@ function afterRefresh(level) {
             showPage("#editFrameworkSection", framework);
     } else
         showPage("#editFrameworkSection", framework);
-    $("#tree").scrollTop(treeTop);
+    $("#tree").show().scrollTop(treeTop);
 }
 
 $("body").on("click", ".collapse", null, function (evt) {

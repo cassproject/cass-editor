@@ -1,9 +1,138 @@
-function showFiles(files) {
-    var input = $('#importFileForm').find('input[type="file"]');
-    var label = $('#importFileForm').find('label');
+var importFiles = [];
 
-    label.text(files.length > 1 ? (input.attr('data-multiple-caption') || '').replace('{count}', files.length) : files[0].name);
+function showFiles(files) {
+    importFiles = [];
+    for (var i = 0; i < files.length; i++)
+        importFiles[i] = files[i];
+    importFile();
 }
+
+function importFile() {
+    var file = importFiles[0];
+    loading(file.name);
+    $("#csvImportHeader").text("Import " + file.name);
+    $("#importCsvFrameworkName").val(file.name.replace(".csv", ""));
+    if (file.name.endsWith(".csv")) {
+        CSVImport.analyzeFile(file, function (data) {
+            $("#importCsvColumnName").html("<option>N/A</option>");
+            $("#importCsvColumnDescription").html("<option>N/A</option>");
+            $("#importCsvColumnScope").html("<option>N/A</option>");
+            $("#importCsvColumnId").html("<option>N/A</option>");
+            for (var i = 0; i < data[0].length; i++) {
+                $("#importCsvColumnName").append("<option/>").children().last().text(data[0][i]).attr("index", i);
+                if (data[0][i].toLowerCase().indexOf("name") != -1)
+                    $("#importCsvColumnName").children().last().prop("selected", true);
+                $("#importCsvColumnDescription").append("<option/>").children().last().text(data[0][i]).attr("index", i);
+                if (data[0][i].toLowerCase().indexOf("description") != -1)
+                    $("#importCsvColumnDescription").children().last().prop("selected", true);
+                $("#importCsvColumnScope").append("<option/>").children().last().text(data[0][i]).attr("index", i);
+                if (data[0][i].toLowerCase().indexOf("scope") != -1)
+                    $("#importCsvColumnScope").children().last().prop("selected", true);
+                $("#importCsvColumnId").append("<option/>").children().last().text(data[0][i]).attr("index", i);
+                if (data[0][i].toLowerCase().indexOf("id") != -1)
+                    $("#importCsvColumnId").children().last().prop("selected", true);
+            }
+            $("#csvImportSection #importButton").text("Import " + (data.length - 1) + " items.");
+            showPage("#csvImportSection");
+        }, function (error) {
+            {
+                alert(error);
+                showPage("importSection");
+            }
+        });
+    }
+}
+
+function importCsv() {
+
+    var nameIndex = parseInt($("#importCsvColumnName option:selected").attr("index"));
+    var descriptionIndex = parseInt($("#importCsvColumnDescription option:selected").attr("index"));
+    var scopeIndex = parseInt($("#importCsvColumnScope option:selected").attr("index"));
+    var idIndex = parseInt($("#importCsvColumnId option:selected").attr("index"));
+    var sourceIndex = parseInt($("#importCsvColumnSource option:selected").attr("index"));
+    var relationTypeIndex = parseInt($("#importCsvColumnRelationType option:selected").attr("index"));
+    var targetIndex = parseInt($("#importCsvColumnTarget option:selected").attr("index"));
+    var file = importFiles[0];
+    var relations = $("#importCsvRelation")[0].files[0];
+    var identity = EcIdentityManager.ids[0];
+
+    var f = new EcFramework();
+    if (identity != null)
+        f.addOwner(identity.ppk.toPk());
+    f.generateId(repo.selectedServer);
+    f.setName($("#importCsvFrameworkName").val());
+    f.setDescription($("#importCsvFrameworkDescription").val());
+    CSVImport.importCompetencies(file, repo.selectedServer, identity, nameIndex, descriptionIndex, scopeIndex, idIndex, relations, sourceIndex, relationTypeIndex, targetIndex,
+        function (competencies, alignments) {
+            f.competency = [];
+            f.relation = [];
+            for (var i = 0; i < competencies.length; i++) {
+                f.competency.push(competencies[i].shortId());
+            }
+            for (var i = 0; i < alignments.length; i++) {
+                f.relation.push(alignments[i].shortId());
+            }
+            f.save(function (success) {
+                importFiles.splice(0, 1);
+                if (importFiles.length > 0)
+                    importFile();
+                else {
+                    framework = f;
+                    populateFramework();
+                    selectedCompetency = null;
+                    refreshSidebar();
+                    if (parent != null && queryParams.origin != null && queryParams.origin != "")
+                        parent.postMessage({
+                            message: "importFinished",
+                            framework: f.id
+                        }, queryParams.origin);
+                }
+            }, function (failure) {
+                error(failure);
+                backPage();
+            });
+        },
+        function (failure) {
+            error(failure);
+            backPage();
+        },
+        function (increment) {
+            loading(increment)
+        }, false);
+}
+
+function analyzeCsvRelation() {
+    var file = $("#importCsvRelation")[0].files[0];
+    if (file == null)
+        $(".importCsvRelationOptions").hide();
+    CSVImport.analyzeFile(file, function (data) {
+        $("#importCsvColumnSource").html("<option>N/A</option>");
+        $("#importCsvColumnRelationType").html("<option>N/A</option>");
+        $("#importCsvColumnTarget").html("<option>N/A</option>");
+        $(".importCsvRelationOptions").show();
+        for (var i = 0; i < data[0].length; i++) {
+            $("#importCsvColumnSource").append("<option/>").children().last().text(data[0][i]).attr("index", i);
+            if (data[0][i].toLowerCase().indexOf("source") != -1)
+                $("#importCsvColumnSource").children().last().prop("selected", true);
+            if (data[0][i].toLowerCase().indexOf("origin") != -1)
+                $("#importCsvColumnSource").children().last().prop("selected", true);
+            $("#importCsvColumnRelationType").append("<option/>").children().last().text(data[0][i]).attr("index", i);
+            if (data[0][i].toLowerCase().indexOf("type") != -1)
+                $("#importCsvColumnRelationType").children().last().prop("selected", true);
+            $("#importCsvColumnTarget").append("<option/>").children().last().text(data[0][i]).attr("index", i);
+            if (data[0][i].toLowerCase().indexOf("target") != -1)
+                $("#importCsvColumnTarget").children().last().prop("selected", true);
+            if (data[0][i].toLowerCase().indexOf("destination") != -1)
+                $("#importCsvColumnTarget").children().last().prop("selected", true);
+        }
+    }, function (error) {
+        {
+            alert(error);
+            showPage("importSection");
+        }
+    });
+}
+
 
 $('#importFileForm').on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
     e.preventDefault();
@@ -11,62 +140,6 @@ $('#importFileForm').on('drag dragstart dragend dragover dragenter dragleave dro
 }).on('drop', function (e) {
     droppedFiles = e.originalEvent.dataTransfer.files;
     showFiles(droppedFiles);
-});
-
-$('#importFileForm').on('submit', function (e) {
-    if ($('#importFileForm')[0].hasAttribute('is-uploading')) {
-        return false;
-    }
-
-    $('#importFileForm').attr('is-uploading', '');
-    if (modernBrowser) {
-        e.preventDefault();
-
-        var ajaxData = new FormData($('#importFileForm').get(0));
-        if (droppedFiles) {
-            $.each(droppedFiles, function (i, file) {
-                ajaxData.append($('#file').attr('name'), file);
-            });
-        }
-
-        $.ajax({
-            url: $('#importFileForm').attr('action'),
-            type: $('#importFileForm').attr('method'),
-            data: ajaxData,
-            dataType: 'json',
-            cache: false,
-            contentType: false,
-            processData: false,
-            complete: function () {
-                $('#importFileForm').removeAttr('is-uploading');
-            },
-            success: function (data) {
-                $('#importFileForm').attr(data.success == true ? 'is-success' : 'is-error', '');
-                if (!data.success) {
-                    $errorMsg.text(data.error);
-                }
-            },
-            error: function () {
-                console.log('error');
-            }
-        });
-    } else {
-        var iframeName = 'uploadiframe' + new Data().getTime();
-        var tempIframe = $('<iframe id="tempIframe" name="' + iframeName + '" style="display: none;"></iframe>');
-
-        $('body').append(tempIframe);
-        $('#importFileForm').attr('target', iframeName);
-
-        $('#tempIframe').one('load', function () {
-            var data = JSON.parse($('#tempIframe').contents().find('body').text());
-            $('#importFileForm').removeAttr('is-uploading').attr(data.success == true ? 'is-success' : 'is-error', '').removeAttr('target');
-            if (!data.success) {
-                $errorMsg.text(data.error);
-            }
-            $('#importFileForm').removeAttr('target');
-            $('#tempIframe').remove();
-        });
-    }
 });
 
 $('#file').on('change', function (e) {
