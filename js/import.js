@@ -51,7 +51,20 @@ function importCsv() {
     var sourceIndex = parseInt($("#importCsvColumnSource option:selected").attr("index"));
     var relationTypeIndex = parseInt($("#importCsvColumnRelationType option:selected").attr("index"));
     var targetIndex = parseInt($("#importCsvColumnTarget option:selected").attr("index"));
+    var file = importFiles[0];
+    var relations = $("#importCsvRelation")[0].files[0];
+    var identity = EcIdentityManager.ids[0];
 
+    var framework = new EcFramework();
+    if (identity != null)
+        framework.addOwner(identity.ppk.toPk());
+    framework.generateId(repo.selectedServer);
+    framework.name = $("#importCsvFrameworkName").val();
+    framework.descrption = $("#importCsvFrameworkDescription").val();
+    importCompetencies(file, repo.selectedServer, identity, nameIndex, descriptionIndex, scopeIndex, idIndex, relations, sourceIndex, relationTypeIndex, destIndex,
+        function (competencies, alignments) {},
+        function (failure) {},
+        function (increment) {}, false);
 }
 
 function analyzeCsvRelation() {
