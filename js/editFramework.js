@@ -208,12 +208,17 @@ removeCompetency = function () {
 }
 
 deleteCompetency = function () {
-    framework.removeCompetency(selectedCompetency.shortId());
-    selectedRelation = null;
-    conditionalDelete(selectedCompetency.shortId());
-    selectedCompetency = null;
-    EcRepository.save(framework, console.log, console.log);
-    refreshSidebar();
+    showConfirmDialog(function(confirmed) {
+        if (confirmed === true) {
+            framework.removeCompetency(selectedCompetency.shortId());
+            selectedRelation = null;
+            conditionalDelete(selectedCompetency.shortId());
+            selectedCompetency = null;
+            EcRepository.save(framework, console.log, console.log);
+            refreshSidebar();
+        }
+        hideConfirmDialog();
+    });
 }
 
 dragCompetency = function (ev) {
@@ -275,4 +280,22 @@ conditionalDelete = function (id) {
                 console.log(results.length + " references found for " + id + "... Not deleting.");
         }, console.log);
     }, 1000);
+}
+
+showConfirmDialog = function (callback) {
+    $("#confirmDialog").show();
+    $("#confirmOverlay").show();
+    $("#dialogConfirmButton").on('click', function() {
+        callback(true);
+    });
+    $("#dialogCancelButton").on('click', function() {
+        callback(false);
+    });
+}
+
+hideConfirmDialog = function () {
+    $("#confirmDialog").hide();
+    $("#confirmOverlay").hide();
+    $("#dialogConfirmButton").off();
+    $("#dialogCancelButton").off();
 }

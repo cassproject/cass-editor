@@ -218,6 +218,20 @@
         <center id="status">Loading...</center>
     </div>
 
+    <div id="confirmDialog" style="display:none;position: fixed;left: 50%;top: 50%;transform: translate(-50%, -50%);z-index: 15001;background-color: white;padding: 1rem;border-radius: 5px;">
+        <div>
+            <span>Are you sure you want to delete this competency? This will remove the competency from the system entirely, not just from your framework.</span>
+        </div>
+        <div style="margin-top: 1rem;">
+            <button id="dialogConfirmButton" style="float: right;">Delete</button>
+            <button id="dialogCancelButton" style="float: right;margin-right: 4px;">Cancel</button>
+        </div>
+    </div>
+
+    <div id="confirmOverlay" style="display: none;position: fixed;width: auto;left: 0;right: 0;height: 100%;z-index: 15000;background-color: rgba(0, 0, 0, 0.4);">
+
+    </div>
+
     <script src="js/vendor/jquery-3.2.1.min.js"></script>
     <script src="forge/forge.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.0/jquery.mark.min.js"></script>
