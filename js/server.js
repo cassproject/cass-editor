@@ -11,7 +11,7 @@
 var repo;
 
 EcRepository.caching = true;
-EcRepository.cachingSearch = true;
+EcRepository.cachingSearch = false;
 
 var frameworkId = "";
 

@@ -208,17 +208,41 @@ removeCompetency = function () {
 }
 
 deleteCompetency = function () {
-    showConfirmDialog(function(confirmed) {
-        if (confirmed === true) {
-            framework.removeCompetency(selectedCompetency.shortId());
-            selectedRelation = null;
-            conditionalDelete(selectedCompetency.shortId());
-            selectedCompetency = null;
-            EcRepository.save(framework, console.log, console.log);
-            refreshSidebar();
-        }
-        hideConfirmDialog();
-    });
+    if (selectedCompetency == null) {
+        showConfirmDialog(function (confirmed) {
+            if (confirmed === true) {
+                EcRepository._delete(framework, function (success) {
+                    //Delete the framework, delete all non-used stuff.
+                    if (framework.competency != null)
+                        for (var i = 0; i < framework.competency.length; i++)
+                            conditionalDelete(framework.competency[i]);
+                    if (framework.relation != null)
+                        for (var i = 0; i < framework.relation.length; i++)
+                            conditionalDelete(framework.relation[i]);
+                    if (framework.level != null)
+                        for (var i = 0; i < framework.level.length; i++)
+                            conditionalDelete(framework.level[i]);
+                    framework = null;
+                    selectedCompetency = null;
+                    backPage();
+                }, console.log);
+            }
+            hideConfirmDialog();
+        }, "Are you sure you want to delete this framework? This will also delete all objects referenced in this framework that aren't found in other frameworks on this server.");
+    } else {
+        showConfirmDialog(function (confirmed) {
+            if (confirmed === true) {
+                framework.removeCompetency(selectedCompetency.shortId());
+                framework.removeLevel(selectedCompetency.shortId());
+                selectedRelation = null;
+                conditionalDelete(selectedCompetency.shortId());
+                selectedCompetency = null;
+                EcRepository.save(framework, console.log, console.log);
+                refreshSidebar();
+            }
+            hideConfirmDialog();
+        }, "Are you sure you want to delete this competency? This will remove the competency from the system entirely, not just from your framework.");
+    }
 }
 
 dragCompetency = function (ev) {
@@ -259,9 +283,11 @@ dropCompetency = function (ev) {
         if (EcIdentityManager.ids.length > 0)
             r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
         framework.addRelation(r.id);
+        framework.removeRelation(data.relationId);
         r.save(function () {}, error);
         EcRepository.save(framework, function () {
-            conditionalDelete(data.relationId);
+            if (data.relationId != null && data.relationId !== undefined)
+                conditionalDelete(data.relationId);
         }, error);
     }
 }
@@ -270,25 +296,32 @@ allowCompetencyDrop = function (ev) {
     ev.preventDefault()
 }
 
-conditionalDelete = function (id) {
-    setTimeout(function () {
-        repo.search("\"" + id + "\"", null, function (results) {
-            if (results.length == 1) {
-                console.log("No references found for " + id + "... deleting.");
-                EcRepository._delete(results[0], console.log, console.log);
-            } else
-                console.log(results.length + " references found for " + id + "... Not deleting.");
-        }, console.log);
-    }, 1000);
+conditionalDelete = function (id, depth) {
+    if (depth == undefined || depth == null) depth = 0;
+    if (id == null || id == undefined)
+        console.trace("ID is undefined.");
+    if (depth < 5)
+        setTimeout(function () {
+            repo.search("\"" + id + "\"", null, function (results) {
+                if (results.length <= 1) {
+                    console.log("No references found for " + id + "... deleting.");
+                    EcRepository._delete(results[0], console.log, console.log);
+                } else {
+                    console.log(results.length + " references found for " + id + "... Not deleting. Will see again in another second.");
+                    conditionalDelete(id, depth + 1);
+                }
+            }, console.log);
+        }, 1000);
 }
 
-showConfirmDialog = function (callback) {
+showConfirmDialog = function (callback, statement) {
     $("#confirmDialog").show();
     $("#confirmOverlay").show();
-    $("#dialogConfirmButton").on('click', function() {
+    $("#confirmText").text(statement);
+    $("#dialogConfirmButton").on('click', function () {
         callback(true);
     });
-    $("#dialogCancelButton").on('click', function() {
+    $("#dialogCancelButton").on('click', function () {
         callback(false);
     });
 }
