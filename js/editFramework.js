@@ -224,7 +224,7 @@ deleteCompetency = function () {
                             conditionalDelete(framework.level[i]);
                     framework = null;
                     selectedCompetency = null;
-                    backPage();
+                    showPage(defaultPage);
                 }, console.log);
             }
             hideConfirmDialog();
