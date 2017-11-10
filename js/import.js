@@ -1,8 +1,9 @@
 var importFiles = [];
 
 function showFiles(files) {
-    importFiles = files;
-
+    importFiles = [];
+    for (var i = 0; i < files.length; i++)
+        importFiles[i] = files[i];
     importFile();
 }
 
@@ -55,16 +56,49 @@ function importCsv() {
     var relations = $("#importCsvRelation")[0].files[0];
     var identity = EcIdentityManager.ids[0];
 
-    var framework = new EcFramework();
+    var f = new EcFramework();
     if (identity != null)
-        framework.addOwner(identity.ppk.toPk());
-    framework.generateId(repo.selectedServer);
-    framework.name = $("#importCsvFrameworkName").val();
-    framework.descrption = $("#importCsvFrameworkDescription").val();
-    importCompetencies(file, repo.selectedServer, identity, nameIndex, descriptionIndex, scopeIndex, idIndex, relations, sourceIndex, relationTypeIndex, destIndex,
-        function (competencies, alignments) {},
-        function (failure) {},
-        function (increment) {}, false);
+        f.addOwner(identity.ppk.toPk());
+    f.generateId(repo.selectedServer);
+    f.setName($("#importCsvFrameworkName").val());
+    f.setDescription($("#importCsvFrameworkDescription").val());
+    CSVImport.importCompetencies(file, repo.selectedServer, identity, nameIndex, descriptionIndex, scopeIndex, idIndex, relations, sourceIndex, relationTypeIndex, targetIndex,
+        function (competencies, alignments) {
+            f.competency = [];
+            f.relation = [];
+            for (var i = 0; i < competencies.length; i++) {
+                f.competency.push(competencies[i].shortId());
+            }
+            for (var i = 0; i < alignments.length; i++) {
+                f.relation.push(alignments[i].shortId());
+            }
+            f.save(function (success) {
+                importFiles.splice(0, 1);
+                if (importFiles.length > 0)
+                    importFile();
+                else {
+                    framework = f;
+                    populateFramework();
+                    selectedCompetency = null;
+                    refreshSidebar();
+                    if (parent != null && queryParams.origin != null && queryParams.origin != "")
+                        parent.postMessage({
+                            message: "importFinished",
+                            framework: f.id
+                        }, queryParams.origin);
+                }
+            }, function (failure) {
+                error(failure);
+                backPage();
+            });
+        },
+        function (failure) {
+            error(failure);
+            backPage();
+        },
+        function (increment) {
+            loading(increment)
+        }, false);
 }
 
 function analyzeCsvRelation() {

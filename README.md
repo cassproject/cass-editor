@@ -55,6 +55,12 @@ By default, the cass-editor provides a framework browser to select and edit fram
     ex:
     https://cassproject.github.io/cass-editor/index.html?action=add
     
+## Import new framework
+To jump directly to the import option of the above add menu, use `action=import`. This will expose the import page.
+
+    ex:
+    https://cassproject.github.io/cass-editor/index.html?action=import
+    
 ## Edit a specific framework
 If you have a specific framework you are directing your users to edit, you can force the cass-editor to only show that framework by using `frameworkId=<url identifier of framework>`
 
