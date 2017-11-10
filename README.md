@@ -10,11 +10,11 @@ Create, edit, modify CASS frameworks and competencies using an easy to use, embe
  * Import - Import frameworks of competencies from several formats.
  * Embeddable - Put the cass-editor in your website with a few lines of HTML.
  * Customizable - Change the default behavior of the cass-editor via URL parameters.
- * Inherits your style - If it can, uses the CASS from the embedding website to style the internals.
+ * Inherits your style - If it can, uses the CSS from the embedding website to style the internals.
  * Unbranded and open source - Carries no branding information, allowing you to use it easily and without concern.
 
 # Try it out
-The cass-editor is available for use at https://cassproject.github.io/cass-editor/
+The (unbranded) cass-editor is available for use at https://cassproject.github.io/cass-editor/
 
 # Integration
 Integrate the cass-editor into your website by nesting it into an iframe on your website.
