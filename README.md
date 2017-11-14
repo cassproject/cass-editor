@@ -94,7 +94,7 @@ CASS can operate using credentials provided by the parent site. These credential
     
 Note: The window will not proceed loading until it has received the 'identity' message.
   
-## TBD: Only show frameworks that individual owns.
+## Only show frameworks that individual owns.
 Along with user credentials, the cass-editor can be configured to not show others' frameworks. This functionality can be enabled by the URL parameter `show=mine`.
 
 # TBD: Events
