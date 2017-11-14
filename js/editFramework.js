@@ -2,6 +2,11 @@ var viewMode = false;
 if (queryParams.view == "true") {
     viewMode = true;
     $(".editControl").remove();
+    if (queryParams.ceasnDataFields == null) {
+        $("#editFrameworkSection").removeClass("pageWithSidebar");
+        $("#detailSlider").remove();
+        EcRepository.cachingSearch = true;
+    }
 }
 
 addCompetency = function () {
@@ -343,8 +348,8 @@ conditionalDelete = function (id, depth) {
         }, 1000);
 }
 
-    if (viewMode) return;
 showConfirmDialog = function (callback, statement, action, id) {
+    if (viewMode) return;
     if (action === 'delete') {
         repo.search("\"" + id + "\"", null, function (results) {
             $("#confirmDialog").show();

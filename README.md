@@ -49,6 +49,18 @@ By default, the cass-editor operates on the dev.cassproject.org CASS instance. T
     ex:
     https://cassproject.github.io/cass-editor/index.html?server=https://sandbox.cassproject.org
     
+## View mode
+By default, the cass-editor provides a framework browser to select and edit frameworks. To instead be restricted to only viewing frameworks, use `view=true`.
+
+    ex:
+    https://cassproject.github.io/cass-editor/index.html?view=true
+    
+## Select competencies in frameworks
+If your app needs the ability to select competencies from a framework, use `select=label` where 'label' is the tag you want the select button to have. ex: Add, Select, Import. Best used with `view=true`.
+
+    ex:
+    https://cassproject.github.io/cass-editor/index.html?select=Add
+
 ## Add new framework
 By default, the cass-editor provides a framework browser to select and edit frameworks. To start with a workflow of creating a framework, use `action=add`. This will expose the framework creation and import pages.
 
