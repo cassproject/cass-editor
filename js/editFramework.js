@@ -282,6 +282,8 @@ dropCompetency = function (ev) {
         r.generateId(repo.selectedServer);
         r.target = EcRemoteLinkedData.trimVersionFromUrl(targetData.competencyId);
         r.source = thing.shortId();
+        if (r.target == r.source)
+            return;
         r.relationType = Relation.NARROWS;
         if (EcIdentityManager.ids.length > 0)
             r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
