@@ -85,8 +85,11 @@ appendCompetencies = function (results, fromSearch) {
             r.relationType = Relation.NARROWS;
             if (EcIdentityManager.ids.length > 0)
                 r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-            framework.addRelation(r.id);
-            EcRepository.save(r, function () {}, error);
+
+            if (r.source != r.target) {
+                framework.addRelation(r.id);
+                EcRepository.save(r, function () {}, error);
+            }
         }
     }
 
