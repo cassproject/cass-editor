@@ -1,4 +1,11 @@
+var viewMode = false;
+if (queryParams.view == "true") {
+    viewMode = true;
+    $(".editControl").remove();
+}
+
 addCompetency = function () {
+    if (viewMode) return;
     var addOrSearch = $("#sidebarAddCompetencies").val();
     if (addOrSearch == "search") {
         gotoPage("#findCompetencySection", framework);
@@ -40,6 +47,7 @@ addCompetency = function () {
 }
 
 appendCompetencies = function (results, fromSearch) {
+    if (viewMode) return;
     for (var i = 0; i < results.length; i++) {
         var thing = EcRepository.getBlocking(results[i]);
         if (thing.isAny(new EcCompetency().getTypes())) {
@@ -84,6 +92,7 @@ appendCompetencies = function (results, fromSearch) {
 }
 
 addLevel = function () {
+    if (viewMode) return;
     var addOrSearch = $("#sidebarAddLevels").val();
     if (addOrSearch == "search") {
         gotoPage("#findCompetencySection", framework);
@@ -107,6 +116,7 @@ addLevel = function () {
 }
 
 saveCompetency = function () {
+    if (viewMode) return;
     if (selectedCompetency == null) {
         framework.name = $("#sidebarNameInput").val();
         framework.description = $("#sidebarDescriptionInput").val();
@@ -147,6 +157,7 @@ saveCompetency = function () {
 }
 
 createFramework = function () {
+    if (viewMode) return;
     if ($("#name").val() == null || $("#name").val().trim() == "")
         return;
     framework = new EcFramework();
@@ -163,6 +174,7 @@ createFramework = function () {
 }
 
 setCompetencyConfigurationManagement = function () {
+    if (viewMode) return;
     var addOrSearch = $("#sidebarVersion").val();
     if (addOrSearch == "version") {
         for (var i = 0; i < framework.competency.length; i++) {
@@ -195,6 +207,7 @@ setCompetencyConfigurationManagement = function () {
 }
 
 unlinkCompetency = function () {
+    if (viewMode) return;
     framework.removeRelation(selectedRelation.shortId());
     conditionalDelete(selectedRelation.shortId());
     selectedRelation = null;
@@ -203,6 +216,7 @@ unlinkCompetency = function () {
 }
 
 removeCompetency = function () {
+    if (viewMode) return;
     framework.removeCompetency(selectedCompetency.shortId());
     selectedRelation = null;
     selectedCompetency = null;
@@ -211,6 +225,7 @@ removeCompetency = function () {
 }
 
 deleteCompetency = function () {
+    if (viewMode) return;
     if (selectedCompetency == null) {
         showConfirmDialog(function (confirmed) {
             if (confirmed === true) {
@@ -249,6 +264,7 @@ deleteCompetency = function () {
 }
 
 dragCompetency = function (ev) {
+    if (viewMode) return;
     ev.dataTransfer.setData("text", JSON.stringify({
         competencyId: $(ev.target).attr("id"),
         relationId: $(ev.target).attr("relationid")
@@ -256,6 +272,7 @@ dragCompetency = function (ev) {
 }
 
 dropCompetency = function (ev) {
+    if (viewMode) return;
     ev.stopPropagation();
     var data = ev.dataTransfer.getData("text");
     if (data != null)
@@ -298,16 +315,18 @@ dropCompetency = function (ev) {
 }
 
 allowCompetencyDrop = function (ev) {
-    ev.preventDefault()
+    if (viewMode) return;
+    ev.preventDefault();
 }
 
 conditionalDelete = function (id, depth) {
+    if (viewMode) return;
     if (depth == undefined || depth == null) depth = 0;
     if (id == null || id == undefined)
         console.trace("ID is undefined.");
     if (depth < 5)
         setTimeout(function () {
-            repo.search("\"" + id + "\"", null, function (results) {
+            EcFramework.search(repo, "\"" + id + "\"", function (results) {
                 if (results.length <= 1) {
                     console.log("No references found for " + id + "... deleting.");
                     EcRepository._delete(results[0], console.log, console.log);
@@ -315,11 +334,12 @@ conditionalDelete = function (id, depth) {
                     console.log(results.length + " references found for " + id + "... Not deleting. Will see again in another second.");
                     conditionalDelete(id, depth + 1);
                 }
-            }, console.log);
+            }, console.error, {});
         }, 1000);
 }
 
 showConfirmDialog = function (callback, statement) {
+    if (viewMode) return;
     $("#confirmDialog").show();
     $("#confirmOverlay").show();
     $("#confirmText").text(statement);
@@ -332,6 +352,7 @@ showConfirmDialog = function (callback, statement) {
 }
 
 hideConfirmDialog = function () {
+    if (viewMode) return;
     $("#confirmDialog").hide();
     $("#confirmOverlay").hide();
     $("#dialogConfirmButton").off();
