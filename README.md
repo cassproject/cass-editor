@@ -99,3 +99,11 @@ Along with user credentials, the cass-editor can be configured to not show other
 
 # TBD: Events
 The cass-editor can send events when various operations occur. This functionality will be extended in the future.
+
+# Keyboard Shortcuts
+&uarr; & &darr; - Navigate up and down the list of frameworks and competencies.  
+&larr; & &rarr; - Expand and contract nested comptencies.  
+Enter - Select the current element.  
+Backspace - Go back.  
+Tab - Switch focus between the buttons and text fields on the page.  
+Escape - Step out of a text field to return to navigation.  

@@ -39,7 +39,7 @@ addCompetency = function () {
     }
 }
 
-appendCompetencies = function (results) {
+appendCompetencies = function (results, fromSearch) {
     for (var i = 0; i < results.length; i++) {
         var thing = EcRepository.getBlocking(results[i]);
         if (thing.isAny(new EcCompetency().getTypes())) {
@@ -64,7 +64,10 @@ appendCompetencies = function (results) {
         if (thing.isAny(new EcCompetency().getTypes())) {
             var r = new EcAlignment();
             r.generateId(repo.selectedServer);
-            r.target = selectedCompetency.shortId();
+            if (fromSearch !== null && fromSearch === true)
+                r.target = results[i];
+            else
+                r.target = selectedCompetency.shortId();
             r.source = thing.shortId();
             r.relationType = Relation.NARROWS;
             if (EcIdentityManager.ids.length > 0)

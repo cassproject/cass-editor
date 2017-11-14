@@ -85,7 +85,7 @@ openWebSocket = function (r) {
 function cappend(event) {
     console.log("I got " + event.data.selected.length + " selected items from the iframe");
     console.log(event.data.selected);
-    appendCompetencies(event.data.selected);
+    appendCompetencies(event.data.selected, true);
     backPage();
 }
 
