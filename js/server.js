@@ -83,10 +83,13 @@ openWebSocket = function (r) {
 }
 
 function cappend(event) {
-    console.log("I got " + event.data.selected.length + " selected items from the iframe");
-    console.log(event.data.selected);
-    appendCompetencies(event.data.selected, true);
-    backPage();
+    if (event.data.message == "selected") {
+        console.log("I got " + event.data.selected.length + " selected items from the iframe");
+        console.log(event.data.selected);
+        appendCompetencies(event.data.selected, true);
+        backPage();
+    } else if (event.data.message == "back")
+        backPage();
 }
 
 for (var i = 0; i < servers.length; i++) {
@@ -100,7 +103,7 @@ for (var i = 0; i < servers.length; i++) {
 
     openWebSocket(r);
 }
-$("iframe").attr("src", "https://cassproject.github.io/cass-viewer/index.html?select=Add&origin=" + window.location.origin + "&server=" +
+$("iframe").attr("src", "index.html?select=Add&view=true&origin=" + window.location.origin + "&server=" +
     r.selectedServer);
 
 loadIdentity = function (callback) {

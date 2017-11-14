@@ -1,3 +1,7 @@
+if (queryParams.select != null)
+    if (parent != window)
+        $("#frameworksBack").show();
+
 function searchFrameworks(paramObj) {
     loading("Loading frameworks...");
     var searchTerm = $("#search").val();

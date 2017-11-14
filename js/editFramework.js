@@ -13,7 +13,7 @@ addCompetency = function () {
     if (viewMode) return;
     var addOrSearch = $("#sidebarAddCompetencies").val();
     if (addOrSearch == "search") {
-        gotoPage("#findCompetencySection", framework);
+        showPage("#findCompetencySection", framework);
     } else if (addOrSearch == "new") {
         var c = new EcCompetency();
         c.generateId(repo.selectedServer);

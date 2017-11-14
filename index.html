@@ -136,7 +136,7 @@
     </div>
 
     <div id="frameworksSection" class="page" style="height:100%;display: none;">
-        <div id="header">
+        <div id="header"><span id="frameworksBack" onclick='parent.postMessage({message: "back"}, queryParams.origin);' style="float:left;display:none;"><i class="fa fa-backward" > </i></span>
             <input type="text" id="search" placeholder="Search...">
         </div>
         <center id="frameworks"></center>

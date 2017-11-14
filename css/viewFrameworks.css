@@ -15,7 +15,6 @@
 #header {
     position: absolute;
     -webkit-font-smoothing: antialiased;
-    text-align: center;
     top: 0;
     height: 2.2rem;
     width: 100%;
@@ -31,11 +30,11 @@
     border: none;
     background-color: transparent;
     color: inherit;
-    width: 99%;
+    width: calc(99% - 37px);
     height: 1.6rem;
     margin: 0px;
     padding: 0px;
-    padding-left: .25rem;
+    padding-left: 1rem;
     font-size: 1.5rem;
     /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ffffff+100&0.5+0,0.5+100 */
     background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.5) 100%);
@@ -63,7 +62,8 @@
     margin: 0px;
 }
 
-#frameworks p:hover, #frameworks p.selected {
+#frameworks p:hover,
+#frameworks p.selected {
     /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ffffff+100&0.1+0,0.1+100 */
     /*
     background-image: -moz-linear-gradient(top, rgba(128, 128, 128, 0.1) 0%, rgba(128, 128, 128, 0.1) 100%);
