@@ -203,11 +203,16 @@ unlinkCompetency = function () {
 }
 
 removeCompetency = function () {
-    framework.removeCompetency(selectedCompetency.shortId());
-    selectedRelation = null;
-    selectedCompetency = null;
-    EcRepository.save(framework, console.log, console.log);
-    refreshSidebar();
+    showConfirmDialog(function (confirmed) {
+        if (confirmed === true) {
+            framework.removeCompetency(selectedCompetency.shortId());
+            selectedRelation = null;
+            selectedCompetency = null;
+            EcRepository.save(framework, console.log, console.log);
+            refreshSidebar();
+        }
+        hideConfirmDialog();
+    }, "This will remove the competency from your framework (but not delete it), do you wish to continue?");
 }
 
 deleteCompetency = function () {
@@ -244,7 +249,7 @@ deleteCompetency = function () {
                 refreshSidebar();
             }
             hideConfirmDialog();
-        }, "Are you sure you want to delete this competency? This will remove the competency from the system entirely, not just from your framework.");
+        }, "Are you sure you want to delete this competency? This will remove the competency from the system entirely, not just from your framework.", "delete", selectedCompetency.shortId());
     }
 }
 
@@ -319,16 +324,37 @@ conditionalDelete = function (id, depth) {
         }, 1000);
 }
 
-showConfirmDialog = function (callback, statement) {
-    $("#confirmDialog").show();
-    $("#confirmOverlay").show();
-    $("#confirmText").text(statement);
-    $("#dialogConfirmButton").on('click', function () {
-        callback(true);
-    });
-    $("#dialogCancelButton").on('click', function () {
-        callback(false);
-    });
+showConfirmDialog = function (callback, statement, action, id) {
+    if (action === 'delete') {
+        repo.search("\"" + id + "\"", null, function (results) {
+            $("#confirmDialog").show();
+            $("#confirmOverlay").show();
+            console.log(results.length);
+            if (results.length > 1) {
+                statement += ' Up to ' + results.length + ' other frameworks may break.';
+            }
+            $("#confirmText").text(statement);
+
+            $("#dialogConfirmButton").on('click', function () {
+                callback(true);
+            });
+            $("#dialogCancelButton").on('click', function () {
+                callback(false);
+            });
+        }, console.log)
+    } else {
+        $("#confirmDialog").show();
+        $("#confirmOverlay").show();
+        $("#confirmText").text(statement);
+
+        $("#dialogConfirmButton").on('click', function () {
+            callback(true);
+        });
+        $("#dialogCancelButton").on('click', function () {
+            callback(false);
+        });
+    }
+
 }
 
 hideConfirmDialog = function () {
