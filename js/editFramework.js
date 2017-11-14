@@ -354,7 +354,7 @@ conditionalDelete = function (id, depth) {
 showConfirmDialog = function (callback, statement, action, id) {
     if (viewMode) return;
     if (action === 'delete') {
-        repo.search("\"" + id + "\"", null, function (results) {
+        EcFramework.search(repo, "\"" + id + "\"", function (results) {
             $("#confirmDialog").show();
             $("#confirmOverlay").show();
             console.log(results.length);
@@ -369,7 +369,7 @@ showConfirmDialog = function (callback, statement, action, id) {
             $("#dialogCancelButton").on('click', function () {
                 callback(false);
             });
-        }, console.log)
+        }, console.error, {})
     } else {
         $("#confirmDialog").show();
         $("#confirmOverlay").show();
