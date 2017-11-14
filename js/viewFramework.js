@@ -103,44 +103,44 @@ $("body").on("click", ".competency", null, function (evt) {
     evt.stopPropagation();
 });
 
-$('body').on('click', '#frameworkName', function(evt) {
+$('body').on('click', '#frameworkName', function (evt) {
     $('.selected').removeClass('selected');
     $('#frameworkNameContainer').addClass('selected');
 });
 
-$('body').on('dragover', '.competency', function(evt) {
+$('body').on('dragover', '.competency', function (evt) {
     $(this).addClass('selected');
 });
 
-$('body').on('dragleave', '.competency', function(evt) {
+$('body').on('dragleave', '.competency', function (evt) {
     $(this).removeClass('selected');
 });
 
-$('body').on('dragstart', '.competency', function(evt) {
+$('body').on('dragstart', '.competency', function (evt) {
     $(evt.target).click();
 });
 
-$('body').on('dragenter', '#frameworkNameContainer', function(evt) {
+$('body').on('dragenter', '#frameworkNameContainer', function (evt) {
     evt.preventDefault();
 });
 
-$('body').on('dragover', '#frameworkNameContainer', function(evt) {
+$('body').on('dragover', '#frameworkNameContainer', function (evt) {
     evt.preventDefault();
     $(this).addClass('selected');
 });
 
-$('body').on('dragleave', '#frameworkNameContainer', function(evt) {
+$('body').on('dragleave', '#frameworkNameContainer', function (evt) {
     $(this).removeClass('selected');
 });
 
-$('html').keydown(function(evt) {
+$('html').keydown(function (evt) {
     if (!$('input').is(':focus') && !$('select').is(':focus') && !$('textarea').is(':focus')) {
         //If we're on the framework selection screen
         if ($('#frameworksSection').css('display') === 'block') {
             var frameworkElementArray = document.getElementById('frameworks').children;
             if (frameworkSelectionIndex === null) {
                 frameworkSelectionIndex = 0;
-                $('#frameworks').find('p.selected').each(function() {
+                $('#frameworks').find('p.selected').each(function () {
                     $(this).removeClass('selected');
                 });
                 frameworkElementArray[frameworkSelectionIndex].classList.add('selected');
@@ -151,7 +151,7 @@ $('html').keydown(function(evt) {
                 if (frameworkSelectionIndex < frameworkElementArray.length)
                     frameworkSelectionIndex++;
                 //clear any existing selected
-                $('#frameworks').find('p.selected').each(function() {
+                $('#frameworks').find('p.selected').each(function () {
                     $(this).removeClass('selected');
                 });
                 frameworkElementArray[frameworkSelectionIndex].classList.add('selected');
@@ -160,7 +160,7 @@ $('html').keydown(function(evt) {
             else if (evt.which === 38) {
                 if (frameworkSelectionIndex > 0)
                     frameworkSelectionIndex--;
-                $('#frameworks').find('p.selected').each(function() {
+                $('#frameworks').find('p.selected').each(function () {
                     $(this).removeClass('selected');
                 });
                 frameworkElementArray[frameworkSelectionIndex].classList.add('selected');
@@ -197,8 +197,7 @@ $('html').keydown(function(evt) {
             //On left and right arrows
             else if (evt.which === 39) {
                 $(competencyElementArray[competencySelectionIndex]).find('.collapse').click();
-            }
-            else if (evt.which === 37) {
+            } else if (evt.which === 37) {
                 $(competencyElementArray[competencySelectionIndex]).find('.collapse').click();
             }
             //On Backspace
@@ -238,7 +237,7 @@ function refreshCompetency(col, level) {
             $(".competency[id=\"" + col.competency + "\"]").addClass("expandable").prepend("<span/>").children().first().addClass("collapse").html('<i class="fa fa-minus-square" aria-hidden="true"></i> ');
     }
     if (queryParams.link == "true")
-        treeNode.prepend(" <a style='float:right;' target='_blank'>🔗</a>").children().first().attr("href", col.shortId());
+        treeNode.prepend(" <a style='float:right;' target='_blank'><i class='fa fa-link' aria-hidden='true'></a>").children().first().attr("href", col.shortId());
     if (me.fetches == 0) {
         if (framework.relation != undefined && framework.relation.length > 0) {
             me.fetches += framework.relation.length;
@@ -292,11 +291,11 @@ refreshSidebar = function () {
         $('#ceasnDataFields').show();
     }
 
-    $('#ceasnDataFields').find('p').each(function() {
+    $('#ceasnDataFields').find('p').each(function () {
         $(this).text(null);
     });
 
-    $('#ceasnDataFields').find('input').each(function() {
+    $('#ceasnDataFields').find('input').each(function () {
         $(this).val(null);
     });
 
@@ -335,8 +334,8 @@ refreshSidebar = function () {
     // $("#editFrameworkSection #sidebarDateCreatedInput").val(thing.dateCreated);
     $("#editFrameworkSection #sidebarAlternativeCodedNotation").text(thing.additionalType);
     $("#editFrameworkSection #sidebarAlternativeCodedNotationInput").val(thing.additionalType);
-    
-    
+
+
     if (framework == thing) {
         $("#sidebarVersion").hide();
         $("#sidebarAddLevels").hide();
