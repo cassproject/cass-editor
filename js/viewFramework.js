@@ -134,9 +134,8 @@ function refreshCompetency(col, level, subsearch) {
                         if (relation.relationType == "narrows") {
                             if ($(".competency[relationid=\"" + relation.shortId() + "\"]").length == 0) {
                                 $(".competency[id=\"" + relation.target + "\"]").children().last().append($(".competency[id=\"" + relation.source + "\"]").outerHTML()).children().last().attr("relationid", relation.shortId());
-                                $('[id]').each(function () {
-                                    $('[id="' + this.id + '"]:gt(0)').remove();
-                                });
+                                if ($(".competency[id=\"" + relation.target + "\"]").length > 0)
+                                    $("#tree>.competency[id=\"" + relation.source + "\"]").remove();
                                 if (!$(".competency[id=\"" + relation.target + "\"]").hasClass("expandable"))
                                     $(".competency[id=\"" + relation.target + "\"]").addClass("expandable").prepend("<span/>").children().first().addClass("collapse").html('<i class="fa fa-minus-square" aria-hidden="true"></i> ');
                             }
