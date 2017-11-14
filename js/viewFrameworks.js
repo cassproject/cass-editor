@@ -6,12 +6,16 @@ function searchFrameworks(paramObj) {
     $("#frameworks").html("");
     searchCompetencies = [];
     for (var i = 0; i < servers.length; i++) {
-        frameworkSearch(servers[i], searchTerm, paramObj);
+        frameworkSearch(servers[i], searchTerm, null, paramObj);
+        if (viewMode)
+            if (searchTerm != "*") {
+                frameworkSearchByCompetency(servers[i], searchTerm);
+            }
     }
 }
 var frameworkLoading = 0;
 
-function frameworkSearch(server, searchTerm, paramObj) {
+function frameworkSearch(server, searchTerm, subsearchTerm, paramObj) {
     frameworkLoading++;
     var search = "";
     if (queryParams.filter != null)
@@ -19,7 +23,6 @@ function frameworkSearch(server, searchTerm, paramObj) {
     else
         search = searchTerm;
     EcFramework.search(server, search, function (frameworks) {
-        showPage("#frameworksSection");
         for (var v = 0; v < frameworks.length; v++) {
             var fx = frameworks[v];
             if (fx.name === undefined || fx.name == null || fx.name == "")
@@ -27,6 +30,7 @@ function frameworkSearch(server, searchTerm, paramObj) {
             if ($("[id='" + fx.shortId() + "']").length == 0) {
                 var p = $("#frameworks").append("<p><a/><span/></p>").children().last();
                 p.attr("id", fx.shortId());
+                p.attr("subsearch", subsearchTerm);
                 p.click(function (evt) {
                     loading("Loading framework...");
                     var frameworkId = null
@@ -35,16 +39,18 @@ function frameworkSearch(server, searchTerm, paramObj) {
                         frameworkId = $(evt.target).parent().attr("id");
                     EcFramework.get(frameworkId, function (f) {
                         framework = f;
-                        populateFramework();
+                        populateFramework(subsearchTerm);
                         selectedCompetency = null;
                         refreshSidebar();
                     }, error);
                 });
                 var title = p.children().first();
                 title.text(fx.getName());
+                if (subsearchTerm != null)
+                    p.prepend("<span style='float:right'>*Matches inside. <span>");
                 var desc = p.children().last();
                 desc.text(fx.getDescription());
-                if (searchTerm != "*")
+                if (searchTerm != "*" && subsearchTerm == null)
                     p.mark(searchTerm);
             }
         }
@@ -52,8 +58,41 @@ function frameworkSearch(server, searchTerm, paramObj) {
         if (frameworkLoading == 0) {
             if ($("#frameworks").html() == "")
                 $("#frameworks").html("<center>No frameworks found.</center>");
+            showPage("#frameworksSection");
         }
     }, console.log, paramObj);
+}
+
+function frameworkSearchByCompetency(server, searchTerm) {
+    frameworkLoading++;
+    EcCompetency.search(server, searchTerm, function (competencies) {
+        var subSearch = "";
+        for (var v = 0; v < competencies.length; v++) {
+            searchCompetencies.push(competencies[v].shortId());
+            if (subSearch != "")
+                subSearch += " OR ";
+            subSearch += "competency:\"" + competencies[v].shortId() + "\"";
+            if (!EcRepository.shouldTryUrl(competencies[v].id)) {
+                if (subSearch != "")
+                    subSearch += " OR ";
+                var m = forge.md.md5.create();
+                m.update(competencies[v].id);
+                var md5 = m.digest().toHex();
+                subSearch += "competency:\"" + md5 + "\"";
+            }
+        }
+        if (subSearch != "") {
+            frameworkSearch(server, subSearch, searchTerm);
+        }
+        frameworkLoading--;
+        if (frameworkLoading == 0) {
+            if ($("#frameworks").html() == "")
+                $("#frameworks").html("<center>No frameworks found.</center>");
+            showPage("#frameworksSection");
+        }
+    }, console.log, {
+        size: 5000
+    });
 }
 
 $("#search").keyup(function (event) {

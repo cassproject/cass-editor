@@ -43,7 +43,7 @@ function select() {
 }
 
 var treeTop = 0;
-populateFramework = function () {
+populateFramework = function (subsearch) {
     var me = this;
     treeTop = $("#tree").scrollTop();
     $("#tree").hide().html("");
@@ -66,22 +66,28 @@ populateFramework = function () {
         } else {
             me.fetches += framework.competency.length;
             for (var i = 0; i < framework.competency.length; i++) {
-                EcCompetency.get(framework.competency[i], refreshCompetency, fetchFailure);
+                EcCompetency.get(framework.competency[i], function (c) {
+                    refreshCompetency(c, null, subsearch);
+                }, fetchFailure);
             }
             me.fetches += framework.level.length;
             for (var i = 0; i < framework.level.length; i++) {
-                EcLevel.get(framework.level[i], refreshCompetency, fetchFailure);
+                EcLevel.get(framework.level[i], function (c) {
+                    refreshCompetency(c, null, subsearch);
+                }, fetchFailure);
             }
         }
     };
     repo.precache(framework.competency.concat(framework.relation), fun, fun);
 }
 
-function afterRefresh(level) {
+function afterRefresh(level, subsearch) {
     if (level == null) {
         this.fetches += framework.level.length;
         for (var i = 0; i < framework.level.length; i++) {
-            EcLevel.get(framework.level[i], refreshCompetency, fetchFailure);
+            EcLevel.get(framework.level[i], function (c) {
+                refreshCompetency(c, null, subsearch);
+            }, fetchFailure);
         }
         if (framework.level.length == 0)
             showPage("#editFrameworkSection", framework);
@@ -90,7 +96,7 @@ function afterRefresh(level) {
     $("#tree").show().scrollTop(treeTop);
 }
 
-function refreshCompetency(col, level) {
+function refreshCompetency(col, level, subsearch) {
     var me = this;
     me.fetches--;
     var treeNode = null;
@@ -116,6 +122,8 @@ function refreshCompetency(col, level) {
         treeNode.prepend(" <a style='float:right;' target='_blank'><i class='fa fa-link' aria-hidden='true'></a>").children().first().attr("href", col.shortId());
     if (queryParams.select != null)
         treeNode.prepend("<input type='checkbox'>");
+    if (subsearch != null)
+        treeNode.mark(subsearch);
     if (me.fetches == 0) {
         if (framework.relation != undefined && framework.relation.length > 0) {
             me.fetches += framework.relation.length;
@@ -148,7 +156,7 @@ function refreshCompetency(col, level) {
                                 if (me.fetches == 0) {
                                     if ($("#tree").html() == "")
                                         $("#tree").html("<br><br><center><h3>This framework is empty.</h3></center>");
-                                    afterRefresh(level);
+                                    afterRefresh(level, subsearch);
                                 }
                             }, fetchFailure);
                         }
@@ -158,7 +166,7 @@ function refreshCompetency(col, level) {
         } else {
             if ($("#tree").html() == "")
                 $("#tree").html("<br><br><center><h3>This framework is empty.</h3></center>");
-            afterRefresh(level);
+            afterRefresh(level, subsearch);
         }
     }
 }
