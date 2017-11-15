@@ -31,12 +31,10 @@ jQuery.fn.outerHTML = function () {
 $(document).ready(function () {
     if (parent != window) {
         var oHead = document.getElementsByTagName("head")[0];
-        var arrStyleSheets = parent.document.getElementsByTagName("style");
+        var arrStyleSheets = parent.document.getElementsByTagName("*");
         for (var i = 0; i < arrStyleSheets.length; i++)
-            oHead.appendChild(arrStyleSheets[i].cloneNode(true));
-        arrStyleSheets = parent.document.getElementsByTagName("link");
-        for (var i = 0; i < arrStyleSheets.length; i++)
-            oHead.appendChild(arrStyleSheets[i].cloneNode(true));
+            if (arrStyleSheets[i].tagName.toLowerCase() == "link" || arrStyleSheets[i].tagName.toLowerCase() == "style")
+                oHead.appendChild(arrStyleSheets[i].cloneNode(true));
         try {
             importParentStyles();
         } catch (e) {}
