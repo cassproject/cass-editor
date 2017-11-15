@@ -385,6 +385,7 @@ $('html').keydown(function (evt) {
                     $(this).removeClass('selected');
                 });
                 frameworkElementArray[frameworkSelectionIndex].classList.add('selected');
+                $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
             }
             //On Up arrow
             else if (evt.which === 38) {
@@ -394,6 +395,7 @@ $('html').keydown(function (evt) {
                     $(this).removeClass('selected');
                 });
                 frameworkElementArray[frameworkSelectionIndex].classList.add('selected');
+                $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
             }
             //On enter
             else if (evt.which === 13) {
@@ -414,6 +416,7 @@ $('html').keydown(function (evt) {
                 if (competencySelectionIndex < competencyElementArray.length)
                     competencySelectionIndex++;
                 $(competencyElementArray[competencySelectionIndex]).click();
+                $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
             }
             //On up arrow
             else if (evt.which === 38) {
@@ -423,12 +426,20 @@ $('html').keydown(function (evt) {
                     $(competencyElementArray[competencySelectionIndex]).click();
                 else
                     $('#frameworkName').click();
+                $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
             }
             //On left and right arrows
             else if (evt.which === 39) {
                 $(competencyElementArray[competencySelectionIndex]).find('.collapse').click();
+                $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
+
             } else if (evt.which === 37) {
                 $(competencyElementArray[competencySelectionIndex]).find('.collapse').click();
+                $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
+            }
+            //On space
+            else if (evt.which === 32) {
+                $(competencyElementArray[competencySelectionIndex]).children("input").click();
             }
             //On Backspace
             else if (evt.which === 8) {
