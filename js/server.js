@@ -36,7 +36,8 @@ openWebSocket = function (r) {
     };
 
     //Re-establish connection on close.
-    connection.onclose = function () {
+    connection.onclose = function (evt) {
+        console.log(evt);
         webSocketBackoff *= 2;
         setTimeout(function () {
             openWebSocket(r);
