@@ -445,6 +445,11 @@ $('html').keydown(function (evt) {
             else if (evt.which === 8) {
                 $('#editFrameworkBack').click();
             }
+            //On Enter
+            else if (evt.which === 13) {
+                if (queryParams.select != null)
+                    $("#selectButton").click();
+            }
         }
     } else {
         //On escape
