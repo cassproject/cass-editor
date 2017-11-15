@@ -86,8 +86,17 @@ function cappend(event) {
     if (event.data.message == "selected") {
         console.log("I got " + event.data.selected.length + " selected items from the iframe");
         console.log(event.data.selected);
-        appendCompetencies(event.data.selected, true);
-        backPage();
+        showCopyOrLinkDialog(function(copy) {
+            if (copy === true) {
+                copyCompetencies(event.data.selected);
+            } else {
+                appendCompetencies(event.data.selected);
+            }
+            hideCopyOrLinkDialog();
+            backPage();
+        });
+        
+
     } else if (event.data.message == "back")
         backPage();
 }

@@ -51,7 +51,7 @@ addCompetency = function () {
     }
 }
 
-appendCompetencies = function (results, fromSearch) {
+appendCompetencies = function (results) {
     if (viewMode) return;
     for (var i = 0; i < results.length; i++) {
         var thing = EcRepository.getBlocking(results[i]);
@@ -350,13 +350,82 @@ conditionalDelete = function (id, depth) {
         }, 1000);
 }
 
+copyCompetencies = function (results) {
+    if (viewMode) return;
+    var copyDict = {};
+    for (var i = 0; i < results.length; i++) {
+        var thing = EcRepository.getBlocking(results[i]);
+        if (thing.isAny(new EcCompetency().getTypes())) {
+            var c = new EcCompetency();
+            c.generateId(repo.selectedServer);
+            framework.addCompetency(c.id);
+            if (EcIdentityManager.ids.length > 0)
+                c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            c.name = thing.name;
+            c.description = thing.description;
+            c.copiedFrom = thing.id;
+            copyDict[c.copiedFrom] = c;
+
+            EcRepository.save(c, function () {}, error);
+        }
+    }
+    for (var i = 0; i < results.length; i++) {
+        var thing = EcRepository.getBlocking(results[i]);
+        if (!thing.isAny(new EcCompetency().getTypes())) {
+            
+            var parent = copyDict[thing.target];
+            var child = copyDict[thing.source];
+
+            if (typeof parent !== 'undefined' && typeof child !== 'undefined') {
+                var r = new EcAlignment();
+                r.generateId(repo.selectedServer);
+
+                r.target = parent.shortId();
+                r.source = child.shortId();
+                r.relationType = Relation.NARROWS;
+                if (EcIdentityManager.ids.length > 0)
+                    r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+
+                if (r.source != r.target) {
+                    framework.addRelation(r.id);
+                    EcRepository.save(r, function () {}, error);
+                }
+            }
+        }
+    }
+    EcRepository.save(framework, function () {
+        refreshSidebar();
+    }, error);
+}
+
+showCopyOrLinkDialog = function (callback) {
+    if (viewMode) return;
+    $("#copyOrLinkDialog").show();
+    $("#confirmOverlay").show();
+
+    $("#copyCompetenciesButton").on('click', function() {
+        callback(true);
+    });
+
+    $("#linkCompetenciesButton").on('click', function() {
+        callback(false);
+    });
+}
+
+hideCopyOrLinkDialog = function () {
+    if (viewMode) return;
+    $("#copyOrLinkDialog").hide();
+    $("#confirmOverlay").hide();
+    $("#linkCompetenciesButton").off();
+    $("#copyCompetenciesButton").off();
+}
+
 showConfirmDialog = function (callback, statement, action, id) {
     if (viewMode) return;
     if (action === 'delete') {
         EcFramework.search(repo, "\"" + id + "\"", function (results) {
             $("#confirmDialog").show();
             $("#confirmOverlay").show();
-            console.log(results.length);
             if (results.length > 1) {
                 statement += ' Up to ' + results.length + ' other frameworks may break.';
             }
