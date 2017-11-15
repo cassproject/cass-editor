@@ -94,7 +94,7 @@ function cappend(event) {
     if (event.data.message == "selected") {
         console.log("I got " + event.data.selected.length + " selected items from the iframe");
         console.log(event.data.selected);
-        showCopyOrLinkDialog(function(copy) {
+        showCopyOrLinkDialog(function (copy) {
             if (copy === true) {
                 copyCompetencies(event.data.selected);
             } else {
@@ -103,7 +103,7 @@ function cappend(event) {
             hideCopyOrLinkDialog();
             backPage();
         });
-        
+
 
     } else if (event.data.message == "back")
         backPage();
@@ -120,8 +120,11 @@ for (var i = 0; i < servers.length; i++) {
 
     openWebSocket(r);
 }
-$("iframe").attr("src", "index.html?select=Add&view=true&origin=" + window.location.origin + "&server=" +
-    r.selectedServer);
+
+var iframePath = "index.html?select=Add&view=true&origin=" + window.location.origin + "&server=" + r.selectedServer;
+if (queryParams.webSocketOverride != null && queryParams.webSocketOverride !== undefined)
+    iframePath += "&webSocketOverride=" + queryParams.webSocketOverride;
+$("iframe").attr("src", iframePath);
 
 loadIdentity = function (callback) {
     if (queryParams.user == "self") {
