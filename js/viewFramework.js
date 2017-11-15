@@ -192,8 +192,8 @@ refreshSidebar = function () {
         thing = selectedCompetency;
     $("sidebarFeedback").text("");
     $("#editFrameworkSection").find("button,input,textarea,select").prop('disabled', false);
-    $("#editFrameworkSection .viewMode").show();
     $("#editFrameworkSection .editMode").hide();
+    $("#editFrameworkSection .viewMode").show();
     $("#editFrameworkSection #sidebarName").text(thing.getName());
     $("#editFrameworkSection #sidebarNameInput").val(thing.getName());
     $("#editFrameworkSection #sidebarDescription").text(thing.getDescription());
@@ -223,6 +223,10 @@ refreshSidebar = function () {
     $("#editFrameworkSection #sidebarAlternativeCodedNotation").text(thing.additionalType);
     $("#editFrameworkSection #sidebarAlternativeCodedNotationInput").val(thing.additionalType);
 
+    $("#editFrameworkSection label").each(function () {
+        if ($("#" + $(this).attr("for")).text() == "" || $("#" + $(this).attr("for")).text() == null)
+            $(this).hide();
+    });
 
     if (framework == thing) {
         $("#sidebarVersion").hide();
