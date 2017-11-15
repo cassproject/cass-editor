@@ -22,13 +22,19 @@ if (queryParams.server != null)
     servers = [queryParams.server];
 
 var webSocketBackoff = 100;
+var webSocketConnection = false;
 
 openWebSocket = function (r) {
+    var connection;
     // Instead of /ws/custom, will be /ws in next release.
-    var connection = new WebSocket(r.selectedServer.replace(/http/, "ws").replace(/api\//, "ws/custom"));
+    if (queryParams.webSocketOverride == null || queryParams.webSocketOverride === undefined)
+        connection = new WebSocket(r.selectedServer.replace(/http/, "ws").replace(/api\//, "ws/custom"));
+    else
+        connection = new WebSocket(queryParams.webSocketOverride);
 
     connection.onopen = function () {
         console.log("WebSocket open.");
+        webSocketConnection = true;
     };
 
     connection.onerror = function (error) {
@@ -39,6 +45,7 @@ openWebSocket = function (r) {
     connection.onclose = function (evt) {
         console.log(evt);
         webSocketBackoff *= 2;
+        webSocketConnection = false;
         setTimeout(function () {
             openWebSocket(r);
         }, webSocketBackoff);
