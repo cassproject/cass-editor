@@ -1,4 +1,11 @@
 var viewMode = false;
+
+afterSave = function (stuff) {
+    console.log(stuff);
+    if (webSocketConnection == false)
+        populateFramework();
+}
+
 if (queryParams.view == "true") {
     viewMode = true;
     $(".editControl").remove();
@@ -37,6 +44,7 @@ addCompetency = function () {
                         refreshSidebar();
                         editSidebar();
                         $("#sidebarNameInput").focus();
+                        afterSave();
                     }, error);
                 }, error);
             } else {
@@ -45,6 +53,7 @@ addCompetency = function () {
                     refreshSidebar();
                     editSidebar();
                     $("#sidebarNameInput").focus();
+                    afterSave();
                 }, error);
             }
         }, error);
@@ -87,7 +96,8 @@ appendCompetencies = function (results) {
 
                 if (r.source != r.target) {
                     framework.addRelation(r.id);
-                    EcRepository.save(r, function () {}, error);
+                    EcRepository.save(r,
+                        afterSave, error);
                 }
             }
     }
@@ -117,6 +127,7 @@ addLevel = function () {
                 refreshSidebar();
                 editSidebar();
                 $("#sidebarNameInput").focus();
+                afterSave();
             }, error);
         }, error);
     }
@@ -163,7 +174,7 @@ saveCompetency = function () {
         selectedCompetency["schema:keywords"] = getValueOrNull($("#sidebarConceptKeywordInput").val());
         selectedCompetency.weight = getValueOrNull($("#sidebarWeightInput").val());
 
-        EcRepository.save(selectedCompetency, function () {}, error);
+        EcRepository.save(selectedCompetency, afterSave, error);
     }
     refreshSidebar();
 }
@@ -223,7 +234,7 @@ unlinkCompetency = function () {
     framework.removeRelation(selectedRelation.shortId());
     conditionalDelete(selectedRelation.shortId());
     selectedRelation = null;
-    EcRepository.save(framework, console.log, console.log);
+    EcRepository.save(framework, afterSave, console.log);
     refreshSidebar();
 }
 
@@ -234,7 +245,7 @@ removeCompetency = function () {
             framework.removeCompetency(selectedCompetency.shortId());
             selectedRelation = null;
             selectedCompetency = null;
-            EcRepository.save(framework, console.log, console.log);
+            EcRepository.save(framework, afterSave, console.log);
             refreshSidebar();
         }
         hideConfirmDialog();
@@ -272,7 +283,7 @@ deleteCompetency = function () {
                 selectedRelation = null;
                 conditionalDelete(selectedCompetency.shortId());
                 selectedCompetency = null;
-                EcRepository.save(framework, console.log, console.log);
+                EcRepository.save(framework, afterSave, console.log);
                 refreshSidebar();
             }
             hideConfirmDialog();
@@ -310,7 +321,10 @@ dropCompetency = function (ev) {
     var thing = EcRepository.getBlocking(data.competencyId);
     if (thing.isAny(new EcLevel().getTypes())) {
         thing.competency = targetData.competencyId;
-        EcRepository.save(thing, function () {}, error);
+        EcRepository.save(thing, function () {
+            if (webSocketConnection == false)
+                populateFramework();
+        }, error);
     } else if (thing.isAny(new EcCompetency().getTypes())) {
         var r = new EcAlignment();
         r.generateId(repo.selectedServer);
@@ -327,6 +341,8 @@ dropCompetency = function (ev) {
         EcRepository.save(framework, function () {
             if (data.relationId != null && data.relationId !== undefined)
                 conditionalDelete(data.relationId);
+            if (webSocketConnection == false)
+                populateFramework();
         }, error);
     }
 }
@@ -346,7 +362,7 @@ conditionalDelete = function (id, depth) {
             EcFramework.search(repo, "\"" + id + "\"", function (results) {
                 if (results.length <= 1) {
                     console.log("No references found for " + id + "... deleting.");
-                    EcRepository._delete(results[0], console.log, console.log);
+                    EcRepository._delete(results[0], afterSave, console.log);
                 } else {
                     console.log(results.length + " references found for " + id + "... Not deleting. Will see again in another second.");
                     conditionalDelete(id, depth + 1);
@@ -384,7 +400,7 @@ copyCompetencies = function (results) {
     for (var i = 0; i < results.length; i++) {
         var thing = EcRepository.getBlocking(results[i]);
         if (!thing.isAny(new EcCompetency().getTypes())) {
-            
+
             var parent = copyDict[thing.target];
             var child = copyDict[thing.source];
 
@@ -407,6 +423,8 @@ copyCompetencies = function (results) {
     }
     EcRepository.save(framework, function () {
         refreshSidebar();
+        if (webSocketConnection == false)
+            populateFramework();
     }, error);
 }
 
@@ -415,11 +433,11 @@ showCopyOrLinkDialog = function (callback) {
     $("#copyOrLinkDialog").show();
     $("#confirmOverlay").show();
 
-    $("#copyCompetenciesButton").on('click', function() {
+    $("#copyCompetenciesButton").on('click', function () {
         callback(true);
     });
 
-    $("#linkCompetenciesButton").on('click', function() {
+    $("#linkCompetenciesButton").on('click', function () {
         callback(false);
     });
 }

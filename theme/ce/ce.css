@@ -97,7 +97,7 @@ body {
     border: 1px solid #CAD9DB;
     width: 33%;
     margin-top: 3rem;
-    height: auto;
+    height: calc(100% - 3rem);
     min-height: 60vh;
     /*
     position: fixed;
