@@ -127,18 +127,20 @@ saveCompetency = function () {
     if (selectedCompetency == null) {
         framework.name = $("#sidebarNameInput").val();
         framework.description = $("#sidebarDescriptionInput").val();
-        framework["schema:inLanguage"] = $("#sidebarInLanguageInput").val();
+
+        framework["schema:inLanguage"] = getValueOrNull($("#sidebarInLanguageInput").val());
         // framework.isPartOf = $("#sidebarIsPartOfInput").val();
-        framework["schema:identifier"] = $("#sidebarCodedNotationInput").val();
-        framework["http://schema.eduworks.com/ims/case/v1p0/CFItemType"] = $("#sidebarCompetencyCategoryInput").val();
+        framework["schema:identifier"] = getValueOrNull($("#sidebarCodedNotationInput").val());
+        framework["http://schema.eduworks.com/ims/case/v1p0/CFItemType"] = getValueOrNull($("#sidebarCompetencyCategoryInput").val());
         // framework["gemq:hasChild"] = $("#sidebarHasChildInput").val();
         // framework["gemq:isChildOf"] = $("#sidebarIsChildOfInput").val();
-        framework.author = $("#sidebarAuthorInput").val();
-        framework.comment = $("#sidebarCommentInput").val();
-        framework.creator = $("#sidebarCreatorInput").val();
+        framework.author = getValueOrNull($("#sidebarAuthorInput").val());
+        framework.comment = getValueOrNull($("#sidebarCommentInput").val());
+        framework.creator = getValueOrNull($("#sidebarCreatorInput").val());
         // framework.dateCreated = $("#sidebarDateCreatedInput").val();
-        framework.additionalType = $("#sidebarAlternativeCodedNotationInput").val();
-        framework["schema:keywords"] = $("#sidebarConceptKeywordInput").val();
+        framework.additionalType = getValueOrNull($("#sidebarAlternativeCodedNotationInput").val());
+        framework["schema:keywords"] = getValueOrNull($("#sidebarConceptKeywordInput").val());
+        framework.weight = getValueOrNull($("#sidebarWeightInput").val());
 
         EcRepository.save(framework, function () {
             populateFramework();
@@ -146,21 +148,24 @@ saveCompetency = function () {
     } else {
         selectedCompetency.name = $("#sidebarNameInput").val();
         selectedCompetency.description = $("#sidebarDescriptionInput").val();
-        selectedCompetency["schema:inLanguage"] = $("#sidebarInLanguageInput").val();
+
+        selectedCompetency["schema:inLanguage"] = getValueOrNull($("#sidebarInLanguageInput").val());
         // selectedCompetency.isPartOf = $("#sidebarIsPartOfInput").val();
-        selectedCompetency["schema:identifier"] = $("#sidebarCodedNotationInput").val();
-        selectedCompetency["http://schema.eduworks.com/ims/case/v1p0/CFItemType"] = $("#sidebarCompetencyCategoryInput").val();
+        selectedCompetency["schema:identifier"] = getValueOrNull($("#sidebarCodedNotationInput").val());
+        selectedCompetency["http://schema.eduworks.com/ims/case/v1p0/CFItemType"] = getValueOrNull($("#sidebarCompetencyCategoryInput").val());
         // selectedCompetency["gemq:hasChild"] = $("#sidebarHasChildInput").val();
         // selectedCompetency["gemq:isChildOf"] = $("#sidebarIsChildOfInput").val();
-        selectedCompetency.author = $("#sidebarAuthorInput").val();
-        selectedCompetency.comment = $("#sidebarCommentInput").val();
-        selectedCompetency.creator = $("#sidebarCreatorInput").val();
+        selectedCompetency.author = getValueOrNull($("#sidebarAuthorInput").val());
+        selectedCompetency.comment = getValueOrNull($("#sidebarCommentInput").val());
+        selectedCompetency.creator = getValueOrNull($("#sidebarCreatorInput").val());
         // selectedCompetency.dateCreated = $("#sidebarDateCreatedInput").val();
-        selectedCompetency.additionalType = $("#sidebarAlternativeCodedNotationInput").val();
-        selectedCompetency["schema:keywords"] = $("#sidebarConceptKeywordInput").val();
+        selectedCompetency.additionalType = getValueOrNull($("#sidebarAlternativeCodedNotationInput").val());
+        selectedCompetency["schema:keywords"] = getValueOrNull($("#sidebarConceptKeywordInput").val());
+        selectedCompetency.weight = getValueOrNull($("#sidebarWeightInput").val());
 
         EcRepository.save(selectedCompetency, function () {}, error);
     }
+    refreshSidebar();
 }
 
 createFramework = function () {
@@ -348,6 +353,13 @@ conditionalDelete = function (id, depth) {
                 }
             }, console.error, {});
         }, 1000);
+}
+
+getValueOrNull = function (value) {
+    if (value === '')
+        return null;
+    else
+        return value;
 }
 
 copyCompetencies = function (results) {

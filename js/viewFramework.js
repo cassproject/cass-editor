@@ -222,6 +222,8 @@ refreshSidebar = function () {
     // $("#editFrameworkSection #sidebarDateCreatedInput").val(thing.dateCreated);
     $("#editFrameworkSection #sidebarAlternativeCodedNotation").text(thing.additionalType);
     $("#editFrameworkSection #sidebarAlternativeCodedNotationInput").val(thing.additionalType);
+    $("#editFrameworkSection #sidebarWeight").text(thing.weight);
+    $("#editFrameworkSection #sidebarWeightInput").val(thing.weight);
 
 
     if (framework == thing) {
