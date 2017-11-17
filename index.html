@@ -244,10 +244,14 @@
             <button id="sidebarUnlink" class="editMode editControl" style="margin:0rem;float:right;margin-left:4px;" onclick="unlinkCompetency();">Unlink</button>
             <button id="sidebarCancel" class="editMode editControl" style="margin:0rem;" onclick="refreshSidebar();">Cancel</button>
             <button id="sidebarSave" class="editMode greenButton editControl" style="margin:0rem;" onclick="saveCompetency();">Save</button>
+            <button id="sidebarViewJSON" class="export" style="margin: 0rem; display: none;" onclick="viewJSON();">View JSON</button>
+<!--             <button id="sidebarDownload" class="export" style="margin: 0rem; display: none;" onclick="downloadCopmpetencies();">Download</button>
+ -->
             <p><small id="sidebarFeedback" class="editControl"></small></p>
         </div>
         <div id="frameworkNameContainer" ondrop="unlinkCompetency();">
             <button id="selectButton" style="float:right;display:none;" onclick='select();'>&gt;</button>
+            <button id="selectAllButton" style="float: right;display: none;" onclick='selectAll();'>Select All</button>
             <span id="editFrameworkBack" onclick='searchFrameworks(createParamObj(5000));' style="float:left;"><i class="fa fa-backward" > </i></span>&nbsp;
             <a id="frameworkLink" class='fa fa-link' style="float:right;display:none;" target='_blank'></a>
             <span id="frameworkName" style="" onclick="selectedCompetency=null;refreshSidebar();"></span>

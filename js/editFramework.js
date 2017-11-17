@@ -378,6 +378,17 @@ getValueOrNull = function (value) {
         return value;
 }
 
+viewJSON = function () {
+    var link;
+    if (selectedCompetency !== null) {
+        link = selectedCompetency.id;
+    } else {
+        link = framework.id;
+    }
+    var redirect = window.open(link, '_blank');
+    redirect.location;
+}
+
 copyCompetencies = function (results) {
     if (viewMode) return;
     var copyDict = {};
