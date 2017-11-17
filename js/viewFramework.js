@@ -109,7 +109,7 @@ function refreshCompetency(col, level, subsearch) {
     me.fetches--;
     var treeNode = null;
     if ($("#tree [id='" + col.shortId() + "']").length > 0) {
-        treeNode = $("[id='" + col.shortId() + "']").before("<li class = 'competency' draggable='true' ondragstart='dragCompetency(event);' ondrop='dropCompetency(event);' ondragover='allowCompetencyDrop(event);'><ul></ul></li>");
+        treeNode = $("[id='" + col.shortId() + "']").before("<li class = 'competency' draggable='true' ondragstart='dragCompetency(event);' ondrop='dropCompetency(event);' ondragover='allowCompetencyDrop(event);'><span></span><ul></ul></li>");
         var tn = treeNode.prev();
         treeNode.remove();
         treeNode = tn;
