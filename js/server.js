@@ -65,15 +65,18 @@ openWebSocket = function (r) {
                     }
 
             if (new EcCompetency().isA(wut.getFullType())) {
-                var com = new EcCompetency();
-                com.copyFrom(wut);
-                refreshCompetency(com);
-                if (selectedCompetency != null)
-                    if (selectedCompetency.id == wut.id) {
-                        selectedCompetency = com;
-                        refreshSidebar();
-                    }
+                if (EcArray.has(framework.competency, wut.shortId()) || EcArray.has(framework.competency, wut.shortId()) || JSON.stringify(competency.framework).indexOf(EcCrypto.md5(wut.id)) != -1) {
+                    var com = new EcCompetency();
+                    com.copyFrom(wut);
+                    refreshCompetency(com);
+                    if (selectedCompetency != null)
+                        if (selectedCompetency.id == wut.id) {
+                            selectedCompetency = com;
+                            refreshSidebar();
+                        }
+                }
             }
+
             if (new EcLevel().isA(wut.getFullType())) {
                 var com = new EcLevel();
                 com.copyFrom(wut);
@@ -116,7 +119,11 @@ for (var i = 0; i < servers.length; i++) {
     servers[i] = r;
     repo = r;
 
-    window.addEventListener('message', cappend, false);
+    try {
+        window.addEventListener('message', cappend, false);
+    } catch (e) {
+        console.log(e);
+    }
 
     openWebSocket(r);
 }
