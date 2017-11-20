@@ -38,6 +38,14 @@
         }
 
     </script>
+    <script type="text/javascript">
+        ceAddFramework = function() {
+            var src = document.getElementsByTagName('iframe')[0].src;
+            if (src.indexOf('&action=add') == -1)
+                src += '&action=add';
+            document.getElementsByTagName('iframe')[0].setAttribute('src', src);
+        }
+    </script>
     <style>
         body {
             padding-top: 142px;
@@ -287,7 +295,10 @@
                 <span style="font-size:.5rem;display:block;margin:0px;margin-right:.5rem;">Powered by:</span>
                 <a href="https://www.cassproject.org" style="margin:0px;" target="_blank">
                             <img src="http://www.cassproject.org/img/CASS-Logo-website-white.png" class="powered-by-logo" width="69px" style="margin-top:-10px;margin-bottom:-10px; clip-path: inset(10px 0px 0px 0px)">
-        </a>
+                </a>
+            </div>
+            <div style="float:left;">
+                <button onclick="ceAddFramework();">Add Framework</button>
             </div>
             <h2 style="margin-bottom:0px;margin-left:69px;text-align:center;">Competency Framework Editor<small><br>Select any item to edit it. Click and drag an item to re-order it.</small></h2>
         </div>
