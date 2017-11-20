@@ -24,6 +24,13 @@ queryParams = function () {
 };
 queryParams = queryParams();
 
+if (!(window.ActiveXObject) && "ActiveXObject" in window) {
+    if (queryParams.view == null || queryParams.view === undefined) {
+        alert("IE 11 does not support functionality required for editing. You will only be able to view frameworks. To remedy this, please use Edge, Firefox, Chrome, Safari, or any other browser that is keeping current with existing standards.")
+        queryParams.view = "true";
+    }
+}
+
 jQuery.fn.outerHTML = function () {
     return jQuery('<div />').append(this.eq(0).clone()).html();
 };

@@ -122,7 +122,7 @@ for (var i = 0; i < servers.length; i++) {
     try {
         window.addEventListener('message', cappend, false);
     } catch (e) {
-        console.log(e);
+        console.error(e);
     }
 
     openWebSocket(r);
@@ -131,7 +131,8 @@ for (var i = 0; i < servers.length; i++) {
 var iframePath = "index.html?select=Add&view=true&origin=" + window.location.origin + "&server=" + r.selectedServer;
 if (queryParams.webSocketOverride != null && queryParams.webSocketOverride !== undefined)
     iframePath += "&webSocketOverride=" + queryParams.webSocketOverride;
-$("iframe").attr("src", iframePath);
+if (queryParams.view != "true")
+    $("iframe").attr("src", iframePath);
 
 loadIdentity = function (callback) {
     if (queryParams.user == "self") {
