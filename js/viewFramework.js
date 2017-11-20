@@ -465,9 +465,14 @@ $('html').keydown(function (evt) {
             }
             //On Enter
             else if (evt.which === 13) {
-                if (queryParams.select != null)
-                    $("#selectButton").click();
+                if (queryParams.select != null) {
+                    if (evt.shiftKey)
+                        selectAll();
+                    else
+                        $("#selectButton").click();
+                }
             }
+            
         }
     } else {
         //On escape

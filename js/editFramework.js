@@ -394,7 +394,7 @@ copyCompetencies = function (results) {
     var copyDict = {};
     for (var i = 0; i < results.length; i++) {
         var thing = EcRepository.getBlocking(results[i]);
-        if (thing.isAny(new EcCompetency().getTypes())) {
+        if (thing != null && thing.isAny(new EcCompetency().getTypes())) {
             var c = new EcCompetency();
             c.generateId(repo.selectedServer);
             framework.addCompetency(c.id);
@@ -410,7 +410,7 @@ copyCompetencies = function (results) {
     }
     for (var i = 0; i < results.length; i++) {
         var thing = EcRepository.getBlocking(results[i]);
-        if (!thing.isAny(new EcCompetency().getTypes())) {
+        if (thing != null && !thing.isAny(new EcCompetency().getTypes())) {
 
             var parent = copyDict[thing.target];
             var child = copyDict[thing.source];
