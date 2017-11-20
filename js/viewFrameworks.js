@@ -32,7 +32,7 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj) {
             if (fx.name === undefined || fx.name == null || fx.name == "")
                 continue;
             if ($("[id='" + fx.shortId() + "']").length == 0) {
-                if (v > 0)
+                if ($("#frameworks").children().length > 0)
                     $("#frameworks").append("<hr/>");
                 var p = $("#frameworks").append("<p><a/><span/></p>").children().last();
 
