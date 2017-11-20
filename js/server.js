@@ -65,24 +65,33 @@ openWebSocket = function (r) {
                     }
 
             if (new EcCompetency().isA(wut.getFullType())) {
-                var com = new EcCompetency();
-                com.copyFrom(wut);
-                refreshCompetency(com);
-                if (selectedCompetency != null)
-                    if (selectedCompetency.id == wut.id) {
-                        selectedCompetency = com;
-                        refreshSidebar();
-                    }
+                if (framework != null)
+                    if (framework.competency != null)
+                        if (EcArray.has(framework.competency, wut.shortId()) || EcArray.has(framework.competency, wut.shortId()) || JSON.stringify(competency.framework).indexOf(EcCrypto.md5(wut.id)) != -1) {
+                            var com = new EcCompetency();
+                            com.copyFrom(wut);
+                            refreshCompetency(com);
+                            if (selectedCompetency != null)
+                                if (selectedCompetency.id == wut.id) {
+                                    selectedCompetency = com;
+                                    refreshSidebar();
+                                }
+                        }
             }
+
             if (new EcLevel().isA(wut.getFullType())) {
-                var com = new EcLevel();
-                com.copyFrom(wut);
-                refreshCompetency(com);
-                if (selectedCompetency != null)
-                    if (selectedCompetency.id == wut.id) {
-                        selectedCompetency = com;
-                        refreshSidebar();
-                    }
+                if (framework != null)
+                    if (framework.level != null)
+                        if (EcArray.has(framework.level, wut.shortId()) || EcArray.has(framework.level, wut.shortId())) {
+                            var com = new EcLevel();
+                            com.copyFrom(wut);
+                            refreshCompetency(com);
+                            if (selectedCompetency != null)
+                                if (selectedCompetency.id == wut.id) {
+                                    selectedCompetency = com;
+                                    refreshSidebar();
+                                }
+                        }
             }
 
         }, error);
@@ -116,7 +125,11 @@ for (var i = 0; i < servers.length; i++) {
     servers[i] = r;
     repo = r;
 
-    window.addEventListener('message', cappend, false);
+    try {
+        window.addEventListener('message', cappend, false);
+    } catch (e) {
+        console.error(e);
+    }
 
     openWebSocket(r);
 }
@@ -124,7 +137,8 @@ for (var i = 0; i < servers.length; i++) {
 var iframePath = "index.html?select=Add&view=true&origin=" + window.location.origin + "&server=" + r.selectedServer;
 if (queryParams.webSocketOverride != null && queryParams.webSocketOverride !== undefined)
     iframePath += "&webSocketOverride=" + queryParams.webSocketOverride;
-$("iframe").attr("src", iframePath);
+if (queryParams.view != "true")
+    $("iframe").attr("src", iframePath);
 
 loadIdentity = function (callback) {
     if (queryParams.user == "self") {
