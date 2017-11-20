@@ -46,7 +46,7 @@ function select() {
 
 function selectAll() {
     $('#tree').find('input').each(function() {
-        $(this).click();
+        $(this).prop('checked', true);
     });
 }
 
