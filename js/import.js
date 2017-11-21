@@ -5,6 +5,7 @@ function showFiles(files) {
     for (var i = 0; i < files.length; i++)
         importFiles[i] = files[i];
     importFile();
+    $("#file")[0].value = "";
 }
 
 function importFile() {
@@ -41,6 +42,49 @@ function importFile() {
             }
         });
     }
+    if (file.name.endsWith(".json")) {
+        ASNImport.analyzeFile(file, function (data) {
+            $("#importAsnFrameworks").text("1 Framework Detected.");
+            $("#importAsnCompetencies").text(EcObject.keys(data).length + " Competencies Detected.");
+            asnCompetencyCount = EcObject.keys(data).length;
+            showPage("#asnImportSection");
+        }, function (error) {
+            {
+                alert(error);
+                showPage("importSection");
+            }
+        });
+    }
+}
+
+var asnCompetencyCount = "unknown";
+
+function importAsn() {
+    var file = importFiles[0];
+    var identity = EcIdentityManager.ids[0];
+    ASNImport.importCompetencies(repo.selectedServer, identity, true, function (competencies, f) {
+            importFiles.splice(0, 1);
+            if (importFiles.length > 0)
+                importFile();
+            else {
+                framework = f;
+                populateFramework();
+                selectedCompetency = null;
+                refreshSidebar();
+                if (parent != null && queryParams.origin != null && queryParams.origin != "")
+                    parent.postMessage({
+                        message: "importFinished",
+                        framework: f.id
+                    }, queryParams.origin);
+            }
+        },
+        function (failure) {
+            error(failure);
+            backPage();
+        },
+        function (increment) {
+            loading(increment.competencies + "/" + asnCompetencyCount + " competencies imported.")
+        });
 }
 
 function importCsv() {

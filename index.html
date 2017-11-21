@@ -16,7 +16,7 @@
     <div id="addFrameworkSection" class="page" style="display: none;">
         <div style="padding: 1rem;">
             <div style="float:right;">
-                <button id="importButton" onclick='showPage("#importSection");'>Import...</button>
+                <button id="importButton" onclick='showPage("#importSection");'>Import or Register...</button>
             </div>
             <div style="">
                 <h2 id="title">
@@ -56,14 +56,18 @@
         <div style="padding: 1rem;">
             <div>
                 <h2 id="title">
-                    Import a framework
+                    Import or Register a framework
                 </h2>
+                <ul>
+                    <li>Importing a framework creates a copy of the framework you provided. For all intents and purposes, you will own the new framework.</li>
+                    <li> Registering a framework creates a carbon copy of the framework, and cannot be modified.</li>
+                </ul>
             </div>
         </div>
         <div id="importFileForm" style="min-height:5rem; display: flex; align-items: center; border: 2px dashed black; margin-left: 1rem;margin-right: 1rem;">
             <center style="width:100%">
                 <input type="file" name="files[]" id="file" data-multiple-caption="{count} files selected" multiple hidden/>
-                <label for="file" style="">Drag and drop a file here<br> or <button href="#" onClick="$(this).parent().click()">Browse...</button></label>
+                <label for="file" style="">Drag and drop a file here<br> or <button href="#" onClick="$(this).parent().click()">Browse...</button><br> or <input type="text" placeholder="Enter a url..."></label>
             </center>
         </div>
 
@@ -128,6 +132,22 @@
             <div>
                 <div style="float:left;">
                     <button id="importButton" onclick="importCsv();">Import</button>
+                    <button id="cancelButton" onclick="backPage();">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="asnImportSection" class="page" style="display:none;margin-left: 1rem;">
+        <h3 id="asnImportHeader">Import ASN</h3>
+        <i>This will import an ASN file.</i>
+        <hr>
+        <p id="importAsnFrameworks"></p>
+        <p id="importAsnCompetencies"></p>
+        <hr>
+        <div id="buttonSection">
+            <div>
+                <div style="float:left;">
+                    <button id="importButton" onclick="importAsn();">Import</button>
                     <button id="cancelButton" onclick="backPage();">Cancel</button>
                 </div>
             </div>
