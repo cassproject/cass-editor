@@ -126,11 +126,14 @@ EcRemoteLinkedData = stjs.extend(EcRemoteLinkedData, EcLinkedData, [], function(
         if (!this.id.endsWith("/")) 
             this.id += "/";
         this.id += "data/";
-        this.id += this.getFullType().replace("http://", "").replaceAll("/", ".");
+        this.id += this.getDottedType();
         this.id += "/";
         this.id += generateUUID();
         this.id += "/";
         this.id += new Date().getTime();
+    };
+    prototype.getDottedType = function() {
+        return this.getFullType().replace("http://", "").replaceAll("/", ".");
     };
     /**
      *  Will generate an identifier using the server URL provided (usually from
@@ -145,7 +148,7 @@ EcRemoteLinkedData = stjs.extend(EcRemoteLinkedData, EcLinkedData, [], function(
         if (!this.id.endsWith("/")) 
             this.id += "/";
         this.id += "data/";
-        this.id += this.getFullType().replace("http://", "").replaceAll("/", ".");
+        this.id += this.getDottedType();
         this.id += "/";
         this.id += uniqueIdentifier;
         this.id += "/";
@@ -164,7 +167,7 @@ EcRemoteLinkedData = stjs.extend(EcRemoteLinkedData, EcLinkedData, [], function(
         if (!this.id.endsWith("/")) 
             this.id += "/";
         this.id += "data/";
-        this.id += this.getFullType().replace("http://", "").replaceAll("/", ".");
+        this.id += this.getDottedType();
         this.id += "/";
         this.id += uniqueIdentifier;
         this.id += "/";

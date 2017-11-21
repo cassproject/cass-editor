@@ -15,10 +15,10 @@ PapaParseParams = stjs.extend(PapaParseParams, null, [], function(constructor, p
 var Importer = function() {};
 Importer = stjs.extend(Importer, null, [], function(constructor, prototype) {
     constructor.isObject = function(obj) {
-        return toString.call(obj) == "[object Object]";
+        return Object.prototype.toString.call(obj) == "[object Object]";
     };
     constructor.isArray = function(obj) {
-        return toString.call(obj) == "[object Array]";
+        return Object.prototype.toString.call(obj) == "[object Array]";
     };
 }, {}, {});
 /**
@@ -638,7 +638,7 @@ CSVImport = stjs.extend(CSVImport, null, [], function(constructor, prototype) {
     constructor.transformReferences = function(data) {
         var props = (data);
         for (var prop in props) {
-            if (props[prop] == null || props[prop] == undefined || toString.call(props[prop]).indexOf("String") == -1) {
+            if (props[prop] == null || props[prop] == undefined || Object.prototype.toString.call(props[prop]).indexOf("String") == -1) {
                 if (EcObject.isObject(props[prop])) {
                     var nested = props[prop];
                     CSVImport.transformReferences(nested);

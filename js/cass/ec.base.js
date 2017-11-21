@@ -5,8 +5,8 @@
  *  @class Triple
  *  @module com.eduworks.ec
  */
-var Triple = function () {};
-Triple = stjs.extend(Triple, null, [], function (constructor, prototype) {
+var Triple = function() {};
+Triple = stjs.extend(Triple, null, [], function(constructor, prototype) {
     /**
      *  Source vertex.
      * 
@@ -35,12 +35,12 @@ Triple = stjs.extend(Triple, null, [], function (constructor, prototype) {
      *  @return {boolean} true IFF <see method definition>
      *  @method equals
      */
-    prototype.equals = function (obj) {
-        if (Object.prototype.equals.call(this, obj))
+    prototype.equals = function(obj) {
+        if (Object.prototype.equals.call(this, obj)) 
             return true;
         if (stjs.isInstanceOf(obj.constructor, Triple)) {
             var t = obj;
-            if (this.source == t.source && this.destination == t.destination && this.edge == t.edge)
+            if (this.source == t.source && this.destination == t.destination && this.edge == t.edge) 
                 return true;
         }
         return false;
@@ -53,8 +53,8 @@ Triple = stjs.extend(Triple, null, [], function (constructor, prototype) {
  *  @class EcObject
  *  @module com.eduworks.ec
  */
-var EcObject = function () {};
-EcObject = stjs.extend(EcObject, null, [], function (constructor, prototype) {
+var EcObject = function() {};
+EcObject = stjs.extend(EcObject, null, [], function(constructor, prototype) {
     /**
      *  Returns true if the result is an object.
      * 
@@ -63,7 +63,7 @@ EcObject = stjs.extend(EcObject, null, [], function (constructor, prototype) {
      *  @static
      *  @method isArray
      */
-    constructor.isObject = function (o) {
+    constructor.isObject = function(o) {
         return (typeof o) == "object";
     };
     /**
@@ -74,13 +74,13 @@ EcObject = stjs.extend(EcObject, null, [], function (constructor, prototype) {
      *  @static
      *  @method keys
      */
-    constructor.keys = function (o) {
+    constructor.keys = function(o) {
         return ecKeys(o);
     };
 }, {}, {});
-var Callback5 = function () {};
-Callback5 = stjs.extend(Callback5, null, [], function (constructor, prototype) {
-    prototype.$invoke = function (p1, p2, p3, p4, p5) {};
+var Callback5 = function() {};
+Callback5 = stjs.extend(Callback5, null, [], function(constructor, prototype) {
+    prototype.$invoke = function(p1, p2, p3, p4, p5) {};
 }, {}, {});
 /**
  *  Array Helper Functions
@@ -89,8 +89,8 @@ Callback5 = stjs.extend(Callback5, null, [], function (constructor, prototype) {
  *  @class EcArray
  *  @module com.eduworks.ec
  */
-var EcArray = function () {};
-EcArray = stjs.extend(EcArray, null, [], function (constructor, prototype) {
+var EcArray = function() {};
+EcArray = stjs.extend(EcArray, null, [], function(constructor, prototype) {
     /**
      *  Returns true if the result is an array.
      * 
@@ -99,7 +99,7 @@ EcArray = stjs.extend(EcArray, null, [], function (constructor, prototype) {
      *  @static
      *  @method isArray
      */
-    constructor.isArray = function (o) {
+    constructor.isArray = function(o) {
         return Object.prototype.toString.call(o) == "[object Array]";
     };
     /**
@@ -109,12 +109,12 @@ EcArray = stjs.extend(EcArray, null, [], function (constructor, prototype) {
      *  @static
      *  @method removeDuplicates
      */
-    constructor.removeDuplicates = function (a) {
-        for (var i = 0; i < a.length; i++)
+    constructor.removeDuplicates = function(a) {
+        for (var i = 0; i < a.length; i++) 
             for (var j = i; j < a.length; j++) {
-                if (j == i)
+                if (j == i) 
                     continue;
-                if (a[i] == a[j])
+                if (a[i] == a[j]) 
                     a.splice(j, 1);
             }
     };
@@ -126,14 +126,14 @@ EcArray = stjs.extend(EcArray, null, [], function (constructor, prototype) {
      *  @static
      *  @method setAdd
      */
-    constructor.setAdd = function (a, o) {
+    constructor.setAdd = function(a, o) {
         var inThere = false;
-        for (var i = 0; i < a.length; i++)
+        for (var i = 0; i < a.length; i++) 
             if (a[i] == o) {
                 inThere = true;
                 break;
             }
-        if (!inThere)
+        if (!inThere) 
             a.push(o);
     };
     /**
@@ -144,9 +144,9 @@ EcArray = stjs.extend(EcArray, null, [], function (constructor, prototype) {
      *  @static
      *  @method setAdd
      */
-    constructor.setRemove = function (a, o) {
-        for (var i = 0; i < a.length; i++)
-            while (a[i] == o) {
+    constructor.setRemove = function(a, o) {
+        for (var i = 0; i < a.length; i++) 
+             while (a[i] == o){
                 a.splice(i, 1);
             }
     };
@@ -158,52 +158,47 @@ EcArray = stjs.extend(EcArray, null, [], function (constructor, prototype) {
      *  @static
      *  @method has
      */
-    constructor.has = function (a, o) {
+    constructor.has = function(a, o) {
         var inThere = false;
-        for (var i = 0; i < a.length; i++)
+        for (var i = 0; i < a.length; i++) 
             if (a[i] == o) {
                 return true;
             }
         return false;
     };
 }, {}, {});
-var EcLocalStorage = function () {};
-EcLocalStorage = stjs.extend(EcLocalStorage, null, [], function (constructor, prototype) {
-    constructor.removeItem = function (s, key) {
+var EcLocalStorage = function() {};
+EcLocalStorage = stjs.extend(EcLocalStorage, null, [], function(constructor, prototype) {
+    constructor.removeItem = function(s, key) {
         ((s)["removeItem"])(key);
     };
 }, {}, {});
 /**
  *  Created by fray on 7/5/17.
  */
-var Task = function () {};
-Task = stjs.extend(Task, null, [], function (constructor, prototype) {
+var Task = function() {};
+Task = stjs.extend(Task, null, [], function(constructor, prototype) {
     constructor.desiredFps = 10;
     constructor.lastFrame = null;
     constructor.tasks = null;
     constructor.delayedFunctions = 0;
     constructor.immediateFunctions = 0;
-    constructor.immediate = function (c) {
+    constructor.immediate = function(c) {
         var currentMs = Date.now();
         var nextFrameMs = stjs.trunc(1000 / Task.desiredFps);
-        if (Task.lastFrame == null || currentMs > Task.lastFrame + nextFrameMs)
-            return setTimeout(function () {
+        if (Task.lastFrame == null || currentMs > Task.lastFrame + nextFrameMs) 
+            return setTimeout(function() {
                 Task.delayedFunctions++;
                 Task.lastFrame = Date.now();
                 c();
             }, 0);
-        else {
+         else {
             Task.immediateFunctions++;
             c();
         }
         return null;
     };
-}, {
-    tasks: {
-        name: "Array",
-        arguments: ["CallbackOrFunction"]
-    }
-}, {});
+}, {tasks: {name: "Array", arguments: ["CallbackOrFunction"]}}, {});
 /**
  *  A hypergraph, consisting of a set of vertices of type <code>V</code> and a
  *  set of hyperedges of type <code>E</code> which connect the vertices. This is
@@ -245,8 +240,8 @@ Task = stjs.extend(Task, null, [], function (constructor, prototype) {
  *  @class Hypergraph
  *  @module com.eduworks.ec
  */
-var Hypergraph = function () {};
-Hypergraph = stjs.extend(Hypergraph, null, [], function (constructor, prototype) {
+var Hypergraph = function() {};
+Hypergraph = stjs.extend(Hypergraph, null, [], function(constructor, prototype) {
     /**
      *  Returns a view of all edges in this graph. In general, this obeys the
      *  <code>Array</code> contract, and therefore makes no guarantees about the
@@ -255,7 +250,7 @@ Hypergraph = stjs.extend(Hypergraph, null, [], function (constructor, prototype)
      *  @return a <code>Array</code> view of all edges in this graph
      *  @method getEdges
      */
-    prototype.getEdges = function () {};
+    prototype.getEdges = function() {};
     /**
      *  Returns a view of all vertices in this graph. In general, this obeys the
      *  <code>Array</code> contract, and therefore makes no guarantees about the
@@ -264,7 +259,7 @@ Hypergraph = stjs.extend(Hypergraph, null, [], function (constructor, prototype)
      *  @return a <code>Array</code> view of all vertices in this graph
      *  @method getVerticies
      */
-    prototype.getVertices = function () {};
+    prototype.getVertices = function() {};
     /**
      *  Returns true if this graph's vertex collection contains
      *  <code>vertex</code>. Equivalent to
@@ -274,7 +269,7 @@ Hypergraph = stjs.extend(Hypergraph, null, [], function (constructor, prototype)
      *  @return true iff this graph contains a vertex <code>vertex</code>
      *  @method containsVertex
      */
-    prototype.containsVertex = function (vertex) {};
+    prototype.containsVertex = function(vertex) {};
     /**
      *  Returns true if this graph's edge collection contains <code>edge</code>.
      *  Equivalent to <code>getEdges().contains(edge)</code>.
@@ -283,21 +278,21 @@ Hypergraph = stjs.extend(Hypergraph, null, [], function (constructor, prototype)
      *  @return true iff this graph contains an edge <code>edge</code>
      *  @method containsEdge
      */
-    prototype.containsEdge = function (edge) {};
+    prototype.containsEdge = function(edge) {};
     /**
      *  Returns the number of edges in this graph.
      * 
      *  @return the number of edges in this graph
      *  @method getEdgeCount
      */
-    prototype.getEdgeCount = function () {};
+    prototype.getEdgeCount = function() {};
     /**
      *  Returns the number of vertices in this graph.
      * 
      *  @return the number of vertices in this graph
      *  @method getVertexCount
      */
-    prototype.getVertexCount = function () {};
+    prototype.getVertexCount = function() {};
     /**
      *  Returns the collection of vertices which are connected to
      *  <code>vertex</code> via any edges in this graph. If <code>vertex</code>
@@ -310,7 +305,7 @@ Hypergraph = stjs.extend(Hypergraph, null, [], function (constructor, prototype)
      *  is not present
      *  @method getNeighbors
      */
-    prototype.getNeighbors = function (vertex) {};
+    prototype.getNeighbors = function(vertex) {};
     /**
      *  Returns the collection of edges in this graph which are connected to
      *  <code>vertex</code>.
@@ -321,7 +316,7 @@ Hypergraph = stjs.extend(Hypergraph, null, [], function (constructor, prototype)
      *  is not present
      *  @method getIncidentEdges
      */
-    prototype.getIncidentEdges = function (vertex) {};
+    prototype.getIncidentEdges = function(vertex) {};
     /**
      *  Returns the collection of vertices in this graph which are connected to
      *  <code>edge</code>. Note that for some graph types there are guarantees
@@ -336,7 +331,7 @@ Hypergraph = stjs.extend(Hypergraph, null, [], function (constructor, prototype)
      *  not present
      *  @method getIncidentVertices
      */
-    prototype.getIncidentVertices = function (edge) {};
+    prototype.getIncidentVertices = function(edge) {};
     /**
      *  Returns an edge that connects this vertex to <code>v</code>. If this edge
      *  is not uniquely defined (that is, if the graph contains more than one
@@ -365,7 +360,7 @@ Hypergraph = stjs.extend(Hypergraph, null, [], function (constructor, prototype)
      *  @method findEdge
      *  @see Hypergraph#findEdgeSet(Object, Object)
      */
-    prototype.findEdge = function (v1, v2) {};
+    prototype.findEdge = function(v1, v2) {};
     /**
      *  Returns all edges that connects this vertex to <code>v</code>. If this
      *  edge is not uniquely defined (that is, if the graph contains more than
@@ -393,7 +388,7 @@ Hypergraph = stjs.extend(Hypergraph, null, [], function (constructor, prototype)
      *  @method findEdgeSet
      *  @see Hypergraph#findEdge(Object, Object)
      */
-    prototype.findEdgeSet = function (v1, v2) {};
+    prototype.findEdgeSet = function(v1, v2) {};
     /**
      *  Adds <code>vertex</code> to this graph. Fails if <code>vertex</code> is
      *  null or already in the graph.
@@ -404,7 +399,7 @@ Hypergraph = stjs.extend(Hypergraph, null, [], function (constructor, prototype)
      *  @throws IllegalArgumentException if <code>vertex</code> is <code>null</code>
      *  @method addVertex
      */
-    prototype.addVertex = function (vertex) {};
+    prototype.addVertex = function(vertex) {};
     /**
      *  Adds <code>edge</code> to this graph. Fails under the following
      *  circumstances:
@@ -428,7 +423,7 @@ Hypergraph = stjs.extend(Hypergraph, null, [], function (constructor, prototype)
      *                                   legal vertex set for <code>edge</code>
      *  @method addHyperEdge
      */
-    prototype.addHyperEdge = function (edge, vertices) {};
+    prototype.addHyperEdge = function(edge, vertices) {};
     /**
      *  Removes <code>vertex</code> from this graph. As a side effect, removes
      *  any edges <code>e</code> incident to <code>vertex</code> if the removal
@@ -449,7 +444,7 @@ Hypergraph = stjs.extend(Hypergraph, null, [], function (constructor, prototype)
      *  <code>false</code> otherwise
      *  @method removeVertex
      */
-    prototype.removeVertex = function (vertex) {};
+    prototype.removeVertex = function(vertex) {};
     /**
      *  Removes <code>edge</code> from this graph. Fails if <code>edge</code> is
      *  null, or is otherwise not an element of this graph.
@@ -459,7 +454,7 @@ Hypergraph = stjs.extend(Hypergraph, null, [], function (constructor, prototype)
      *  <code>false</code> otherwise
      *  @method removeEdge
      */
-    prototype.removeEdge = function (edge) {};
+    prototype.removeEdge = function(edge) {};
     /**
      *  Returns <code>true</code> if <code>v1</code> and <code>v2</code> share an
      *  incident edge. Equivalent to <code>getNeighbors(v1).contains(v2)</code>.
@@ -470,7 +465,7 @@ Hypergraph = stjs.extend(Hypergraph, null, [], function (constructor, prototype)
      *  incident edge
      *  @method isNeighbor
      */
-    prototype.isNeighbor = function (v1, v2) {};
+    prototype.isNeighbor = function(v1, v2) {};
     /**
      *  Returns <code>true</code> if <code>vertex</code> and <code>edge</code>
      *  are incident to each other. Equivalent to
@@ -483,7 +478,7 @@ Hypergraph = stjs.extend(Hypergraph, null, [], function (constructor, prototype)
      *  are incident to each other
      *  @method isIncident
      */
-    prototype.isIncident = function (vertex, edge) {};
+    prototype.isIncident = function(vertex, edge) {};
     /**
      *  Returns the number of edges incident to <code>vertex</code>. Special
      *  cases of interest:
@@ -507,7 +502,7 @@ Hypergraph = stjs.extend(Hypergraph, null, [], function (constructor, prototype)
      *  @method degree
      *  @see Hypergraph#getNeighborCount(Object)
      */
-    prototype.degree = function (vertex) {};
+    prototype.degree = function(vertex) {};
     /**
      *  Returns the number of vertices that are adjacent to <code>vertex</code>
      *  (that is, the number of vertices that are incident to edges in
@@ -520,7 +515,7 @@ Hypergraph = stjs.extend(Hypergraph, null, [], function (constructor, prototype)
      *  @return the number of neighboring vertices
      *  @method getNeighborCount
      */
-    prototype.getNeighborCount = function (vertex) {};
+    prototype.getNeighborCount = function(vertex) {};
     /**
      *  Returns the number of vertices that are incident to <code>edge</code>.
      *  For hyperedges, this can be any nonnegative integer; for edges this must
@@ -533,7 +528,7 @@ Hypergraph = stjs.extend(Hypergraph, null, [], function (constructor, prototype)
      *  @return the number of vertices that are incident to <code>edge</code>.
      *  @method getIncidentCount
      */
-    prototype.getIncidentCount = function (edge) {};
+    prototype.getIncidentCount = function(edge) {};
     /**
      *  Returns the edge type of <code>edge</code> in this graph.
      * 
@@ -542,14 +537,14 @@ Hypergraph = stjs.extend(Hypergraph, null, [], function (constructor, prototype)
      *  <code>null</code> if <code>edge</code> has no defined type
      *  @method getEdgeType
      */
-    prototype.getEdgeType = function (edge) {};
+    prototype.getEdgeType = function(edge) {};
     /**
      *  Returns the default edge type for this graph.
      * 
      *  @return the default edge type for this graph
      *  @method getDefaultEdgeType
      */
-    prototype.getDefaultEdgeType = function () {};
+    prototype.getDefaultEdgeType = function() {};
     /**
      *  Returns the collection of edges in this graph which are of type
      *  <code>edge_type</code>.
@@ -561,7 +556,7 @@ Hypergraph = stjs.extend(Hypergraph, null, [], function (constructor, prototype)
      *  @method getEdgesOfType
      *  @see EdgeType
      */
-    prototype.getEdgesOfType = function (edge_type) {};
+    prototype.getEdgesOfType = function(edge_type) {};
     /**
      *  Returns the number of edges of type <code>edge_type</code> in this graph.
      * 
@@ -569,7 +564,7 @@ Hypergraph = stjs.extend(Hypergraph, null, [], function (constructor, prototype)
      *  @return the number of edges of type <code>edge_type</code> in this graph
      *  @method getEdgeCountOfType
      */
-    prototype.getEdgeCountOfType = function (edge_type) {};
+    prototype.getEdgeCountOfType = function(edge_type) {};
     /**
      *  Returns a <code>Array</code> view of the incoming edges incident to
      *  <code>vertex</code> in this graph.
@@ -579,7 +574,7 @@ Hypergraph = stjs.extend(Hypergraph, null, [], function (constructor, prototype)
      *  <code>vertex</code> in this graph
      *  @method getInEdges
      */
-    prototype.getInEdges = function (vertex) {};
+    prototype.getInEdges = function(vertex) {};
     /**
      *  Returns a <code>Array</code> view of the outgoing edges incident to
      *  <code>vertex</code> in this graph.
@@ -589,7 +584,7 @@ Hypergraph = stjs.extend(Hypergraph, null, [], function (constructor, prototype)
      *  <code>vertex</code> in this graph
      *  @method getOutEdges
      */
-    prototype.getOutEdges = function (vertex) {};
+    prototype.getOutEdges = function(vertex) {};
     /**
      *  Returns the number of incoming edges incident to <code>vertex</code>.
      *  Equivalent to <code>getInEdges(vertex).size()</code>.
@@ -598,7 +593,7 @@ Hypergraph = stjs.extend(Hypergraph, null, [], function (constructor, prototype)
      *  @return the number of incoming edges incident to <code>vertex</code>
      *  @method inDegree
      */
-    prototype.inDegree = function (vertex) {};
+    prototype.inDegree = function(vertex) {};
     /**
      *  Returns the number of outgoing edges incident to <code>vertex</code>.
      *  Equivalent to <code>getOutEdges(vertex).size()</code>.
@@ -607,7 +602,7 @@ Hypergraph = stjs.extend(Hypergraph, null, [], function (constructor, prototype)
      *  @return the number of outgoing edges incident to <code>vertex</code>
      *  @method outDegree
      */
-    prototype.outDegree = function (vertex) {};
+    prototype.outDegree = function(vertex) {};
     /**
      *  If <code>directed_edge</code> is a directed edge in this graph, returns
      *  the source; otherwise returns <code>null</code>. The source of a directed
@@ -620,7 +615,7 @@ Hypergraph = stjs.extend(Hypergraph, null, [], function (constructor, prototype)
      *  in this graph, or <code>null</code> otherwise
      *  @method getSource
      */
-    prototype.getSource = function (directed_edge) {};
+    prototype.getSource = function(directed_edge) {};
     /**
      *  If <code>directed_edge</code> is a directed edge in this graph, returns
      *  the destination; otherwise returns <code>null</code>. The destination of
@@ -634,7 +629,7 @@ Hypergraph = stjs.extend(Hypergraph, null, [], function (constructor, prototype)
      *  edge in this graph, or <code>null</code> otherwise
      *  @method getDest
      */
-    prototype.getDest = function (directed_edge) {};
+    prototype.getDest = function(directed_edge) {};
     /**
      *  Returns a <code>Array</code> view of the predecessors of
      *  <code>vertex</code> in this graph. A predecessor of <code>vertex</code>
@@ -648,7 +643,7 @@ Hypergraph = stjs.extend(Hypergraph, null, [], function (constructor, prototype)
      *  <code>vertex</code> in this graph
      *  @method getPredecessors
      */
-    prototype.getPredecessors = function (vertex) {};
+    prototype.getPredecessors = function(vertex) {};
     /**
      *  Returns a <code>Array</code> view of the successors of
      *  <code>vertex</code> in this graph. A successor of <code>vertex</code> is
@@ -662,11 +657,11 @@ Hypergraph = stjs.extend(Hypergraph, null, [], function (constructor, prototype)
      *  <code>vertex</code> in this graph
      *  @method getSuccessors
      */
-    prototype.getSuccessors = function (vertex) {};
+    prototype.getSuccessors = function(vertex) {};
 }, {}, {});
-var EcDate = function () {};
-EcDate = stjs.extend(EcDate, null, [], function (constructor, prototype) {
-    constructor.toISOString = function (obj) {
+var EcDate = function() {};
+EcDate = stjs.extend(EcDate, null, [], function(constructor, prototype) {
+    constructor.toISOString = function(obj) {
         return ((obj)["toISOString"])();
     };
 }, {}, {});
@@ -678,8 +673,8 @@ EcDate = stjs.extend(EcDate, null, [], function (constructor, prototype) {
  *  @class EcRemote
  *  @module com.eduworks.ec
  */
-var EcRemote = function () {};
-EcRemote = stjs.extend(EcRemote, null, [], function (constructor, prototype) {
+var EcRemote = function() {};
+EcRemote = stjs.extend(EcRemote, null, [], function(constructor, prototype) {
     /**
      *  Turn this property off to cause all remote web service calls to be
      *  synchronous. Can be useful for test scripts, blocking calls, etc.
@@ -712,7 +707,7 @@ EcRemote = stjs.extend(EcRemote, null, [], function (constructor, prototype) {
      *  @method postExpectingObject
      *  @static
      */
-    constructor.postExpectingObject = function (server, service, fd, success, failure) {
+    constructor.postExpectingObject = function(server, service, fd, success, failure) {
         EcRemote.postInner(server, service, fd, null, EcRemote.getSuccessJSONCallback(success, failure), EcRemote.getFailureCallback(failure));
     };
     /**
@@ -730,13 +725,13 @@ EcRemote = stjs.extend(EcRemote, null, [], function (constructor, prototype) {
      *  @method postExpectingString
      *  @static
      */
-    constructor.postExpectingString = function (server, service, fd, success, failure) {
+    constructor.postExpectingString = function(server, service, fd, success, failure) {
         EcRemote.postInner(server, service, fd, null, EcRemote.getSuccessCallback(success, failure), EcRemote.getFailureCallback(failure));
     };
-    constructor.postWithHeadersExpectingString = function (server, service, fd, headers, success, failure) {
+    constructor.postWithHeadersExpectingString = function(server, service, fd, headers, success, failure) {
         EcRemote.postInner(server, service, fd, headers, EcRemote.getSuccessCallback(success, failure), EcRemote.getFailureCallback(failure));
     };
-    constructor.postInner = function (server, service, fd, headers, successCallback, failureCallback) {
+    constructor.postInner = function(server, service, fd, headers, successCallback, failureCallback) {
         var url = server;
         if (!url.endsWith("/") && service != null && !"".equals(service)) {
             url += "/";
@@ -758,7 +753,7 @@ EcRemote = stjs.extend(EcRemote, null, [], function (constructor, prototype) {
                 }
             }
             all = all + "\r\n\r\n--" + (fd)["_boundary"] + "--";
-            if (headers == null || headers == undefined)
+            if (headers == null || headers == undefined) 
                 headers = new Object();
             p.headers = headers;
             p.headers["Content-Type"] = "multipart/form-data; boundary=" + (fd)["_boundary"];
@@ -766,7 +761,7 @@ EcRemote = stjs.extend(EcRemote, null, [], function (constructor, prototype) {
         } else {
             p.mimeType = "multipart/form-data";
             p.data = fd;
-            if (headers != null && headers != undefined)
+            if (headers != null && headers != undefined) 
                 p.headers = headers;
         }
         (p)["contentType"] = false;
@@ -799,7 +794,7 @@ EcRemote = stjs.extend(EcRemote, null, [], function (constructor, prototype) {
      *  @method getExpectingObject
      *  @static
      */
-    constructor.getExpectingObject = function (server, service, success, failure) {
+    constructor.getExpectingObject = function(server, service, success, failure) {
         var url = EcRemote.urlAppend(server, service);
         var p = {};
         p.method = "GET";
@@ -831,7 +826,7 @@ EcRemote = stjs.extend(EcRemote, null, [], function (constructor, prototype) {
      *  @method getExpectingString
      *  @static
      */
-    constructor.getExpectingString = function (server, service, success, failure) {
+    constructor.getExpectingString = function(server, service, success, failure) {
         var url = EcRemote.urlAppend(server, service);
         var p = {};
         p.method = "GET";
@@ -848,7 +843,7 @@ EcRemote = stjs.extend(EcRemote, null, [], function (constructor, prototype) {
             $.ajax(p);
         }
     };
-    constructor.urlAppend = function (server, service) {
+    constructor.urlAppend = function(server, service) {
         var url = server;
         if (!url.endsWith("/") && service != null && service.equals("")) {
             url += "/";
@@ -871,7 +866,7 @@ EcRemote = stjs.extend(EcRemote, null, [], function (constructor, prototype) {
      *  @method _delete
      *  @static
      */
-    constructor._delete = function (url, signatureSheet, success, failure) {
+    constructor._delete = function(url, signatureSheet, success, failure) {
         var p = {};
         p.method = "DELETE";
         p.url = url;
@@ -888,7 +883,7 @@ EcRemote = stjs.extend(EcRemote, null, [], function (constructor, prototype) {
             $.ajax(p);
         }
     };
-    constructor.upgradeHttpToHttps = function (p) {
+    constructor.upgradeHttpToHttps = function(p) {
         if (window != null) {
             if (window.location != null) {
                 if (p.url.indexOf(window.location.protocol) == -1) {
@@ -901,7 +896,7 @@ EcRemote = stjs.extend(EcRemote, null, [], function (constructor, prototype) {
             }
         }
     };
-    constructor.handleFailure = function (failure, paramP1, paramP2, paramP3) {
+    constructor.handleFailure = function(failure, paramP1, paramP2, paramP3) {
         if (failure != null) {
             if (paramP1 != null) {
                 if (paramP1.responseText != null) {
@@ -920,32 +915,32 @@ EcRemote = stjs.extend(EcRemote, null, [], function (constructor, prototype) {
             }
         }
     };
-    constructor.getSuccessCallback = function (success, failure) {
-        return function (arg0, arg1, arg2) {
+    constructor.getSuccessCallback = function(success, failure) {
+        return function(arg0, arg1, arg2) {
             if (arg2.status > 300 || arg2.status < 200) {
-                if (failure != null)
+                if (failure != null) 
                     failure("Error with code: " + arg2.status);
             } else if (success != null) {
                 success(arg2.responseText);
             }
         };
     };
-    constructor.getSuccessJSONCallback = function (success, failure) {
-        return function (arg0, arg1, arg2) {
+    constructor.getSuccessJSONCallback = function(success, failure) {
+        return function(arg0, arg1, arg2) {
             if (arg2.status > 300 || arg2.status < 200) {
-                if (failure != null)
+                if (failure != null) 
                     failure("Error with code: " + arg2.status);
             } else if (success != null) {
                 try {
-                    if (EcObject.isObject(arg2.responseText))
+                    if (EcObject.isObject(arg2.responseText)) 
                         success(arg2.responseText);
-                    else if (EcArray.isArray(arg2.responseText))
+                     else if (EcArray.isArray(arg2.responseText)) 
                         success(arg2.responseText);
-                    else
+                     else 
                         success(JSON.parse(arg2.responseText));
-                } catch (ex) {
+                }catch (ex) {
                     if (ex != null) {
-                        if (failure != null)
+                        if (failure != null) 
                             if ((ex)["getMessage"] != null) {
                                 failure(ex.getMessage());
                             } else {
@@ -956,8 +951,8 @@ EcRemote = stjs.extend(EcRemote, null, [], function (constructor, prototype) {
             }
         };
     };
-    constructor.getFailureCallback = function (failure) {
-        return function (paramP1, paramP2, paramP3) {
+    constructor.getFailureCallback = function(failure) {
+        return function(paramP1, paramP2, paramP3) {
             EcRemote.handleFailure(failure, paramP1, paramP2, paramP3);
         };
     };
@@ -972,8 +967,8 @@ EcRemote = stjs.extend(EcRemote, null, [], function (constructor, prototype) {
  *  @module com.eduworks.ec
  *  @class EcAsyncHelper
  */
-var EcAsyncHelper = function () {};
-EcAsyncHelper = stjs.extend(EcAsyncHelper, null, [], function (constructor, prototype) {
+var EcAsyncHelper = function() {};
+EcAsyncHelper = stjs.extend(EcAsyncHelper, null, [], function(constructor, prototype) {
     constructor.scriptPath = null;
     /**
      *  Counter that counts down when each callback is called. Lots of tricks can be done to cause after to proc in different ways.
@@ -990,21 +985,21 @@ EcAsyncHelper = stjs.extend(EcAsyncHelper, null, [], function (constructor, prot
      *  @param {function(array)}         after Method invoked when all callbacks are called.
      *  @method each
      */
-    prototype.each = function (array, each, after) {
+    prototype.each = function(array, each, after) {
         var me = this;
         this.counter = array.length;
-        if (array.length == 0)
+        if (array.length == 0) 
             after(array);
         for (var i = 0; i < array.length; i++) {
-            if (this.counter > 0)
+            if (this.counter > 0) 
                 this.execute(array, each, after, me, i);
         }
     };
-    prototype.execute = function (array, each, after, me, i) {
-        Task.immediate(function () {
-            each(array[i], function () {
+    prototype.execute = function(array, each, after, me, i) {
+        Task.immediate(function() {
+            each(array[i], function() {
                 me.counter--;
-                if (me.counter == 0)
+                if (me.counter == 0) 
                     after(array);
             });
         });
@@ -1014,7 +1009,7 @@ EcAsyncHelper = stjs.extend(EcAsyncHelper, null, [], function (constructor, prot
      * 
      *  @method stop
      */
-    prototype.stop = function () {
+    prototype.stop = function() {
         this.counter = -1;
     };
 }, {}, {});
@@ -1059,8 +1054,8 @@ EcAsyncHelper = stjs.extend(EcAsyncHelper, null, [], function (constructor, prot
  *  @module com.eduworks.ec
  *  @extends Hypergraph
  */
-var Graph = function () {};
-Graph = stjs.extend(Graph, null, [Hypergraph], function (constructor, prototype) {
+var Graph = function() {};
+Graph = stjs.extend(Graph, null, [Hypergraph], function(constructor, prototype) {
     /**
      *  Returns a <code>Collection</code> view of the incoming edges incident to <code>vertex</code>
      *  in this graph.
@@ -1070,7 +1065,7 @@ Graph = stjs.extend(Graph, null, [Hypergraph], function (constructor, prototype)
      *  to <code>vertex</code> in this graph
      *  @method getInEdges
      */
-    prototype.getInEdges = function (vertex) {};
+    prototype.getInEdges = function(vertex) {};
     /**
      *  Returns a <code>Collection</code> view of the outgoing edges incident to <code>vertex</code>
      *  in this graph.
@@ -1080,7 +1075,7 @@ Graph = stjs.extend(Graph, null, [Hypergraph], function (constructor, prototype)
      *  to <code>vertex</code> in this graph
      *  @method getOutEdges
      */
-    prototype.getOutEdges = function (vertex) {};
+    prototype.getOutEdges = function(vertex) {};
     /**
      *  Returns a <code>Collection</code> view of the predecessors of <code>vertex</code>
      *  in this graph.  A predecessor of <code>vertex</code> is defined as a vertex <code>v</code>
@@ -1093,7 +1088,7 @@ Graph = stjs.extend(Graph, null, [Hypergraph], function (constructor, prototype)
      *  <code>vertex</code> in this graph
      *  @method getPredecessors
      */
-    prototype.getPredecessors = function (vertex) {};
+    prototype.getPredecessors = function(vertex) {};
     /**
      *  Returns a <code>Collection</code> view of the successors of <code>vertex</code>
      *  in this graph.  A successor of <code>vertex</code> is defined as a vertex <code>v</code>
@@ -1106,7 +1101,7 @@ Graph = stjs.extend(Graph, null, [Hypergraph], function (constructor, prototype)
      *  <code>vertex</code> in this graph
      *  @method getSuccessors
      */
-    prototype.getSuccessors = function (vertex) {};
+    prototype.getSuccessors = function(vertex) {};
     /**
      *  Returns the number of incoming edges incident to <code>vertex</code>.
      *  Equivalent to <code>getInEdges(vertex).size()</code>.
@@ -1115,7 +1110,7 @@ Graph = stjs.extend(Graph, null, [Hypergraph], function (constructor, prototype)
      *  @return the number of incoming edges incident to <code>vertex</code>
      *  @method inDegree
      */
-    prototype.inDegree = function (vertex) {};
+    prototype.inDegree = function(vertex) {};
     /**
      *  Returns the number of outgoing edges incident to <code>vertex</code>.
      *  Equivalent to <code>getOutEdges(vertex).size()</code>.
@@ -1124,7 +1119,7 @@ Graph = stjs.extend(Graph, null, [Hypergraph], function (constructor, prototype)
      *  @return the number of outgoing edges incident to <code>vertex</code>
      *  @method outDegree
      */
-    prototype.outDegree = function (vertex) {};
+    prototype.outDegree = function(vertex) {};
     /**
      *  Returns <code>true</code> if <code>v1</code> is a predecessor of <code>v2</code> in this graph.
      *  Equivalent to <code>v1.getPredecessors().contains(v2)</code>.
@@ -1134,7 +1129,7 @@ Graph = stjs.extend(Graph, null, [Hypergraph], function (constructor, prototype)
      *  @return <code>true</code> if <code>v1</code> is a predecessor of <code>v2</code>, and false otherwise.
      *  @method isPredecessor
      */
-    prototype.isPredecessor = function (v1, v2) {};
+    prototype.isPredecessor = function(v1, v2) {};
     /**
      *  Returns <code>true</code> if <code>v1</code> is a successor of <code>v2</code> in this graph.
      *  Equivalent to <code>v1.getSuccessors().contains(v2)</code>.
@@ -1144,7 +1139,7 @@ Graph = stjs.extend(Graph, null, [Hypergraph], function (constructor, prototype)
      *  @return <code>true</code> if <code>v1</code> is a successor of <code>v2</code>, and false otherwise.
      *  @method isSuccessor
      */
-    prototype.isSuccessor = function (v1, v2) {};
+    prototype.isSuccessor = function(v1, v2) {};
     /**
      *  Returns the number of predecessors that <code>vertex</code> has in this graph.
      *  Equivalent to <code>vertex.getPredecessors().size()</code>.
@@ -1153,7 +1148,7 @@ Graph = stjs.extend(Graph, null, [Hypergraph], function (constructor, prototype)
      *  @return the number of predecessors that <code>vertex</code> has in this graph
      *  @method getPredecessorCount
      */
-    prototype.getPredecessorCount = function (vertex) {};
+    prototype.getPredecessorCount = function(vertex) {};
     /**
      *  Returns the number of successors that <code>vertex</code> has in this graph.
      *  Equivalent to <code>vertex.getSuccessors().size()</code>.
@@ -1162,7 +1157,7 @@ Graph = stjs.extend(Graph, null, [Hypergraph], function (constructor, prototype)
      *  @return the number of successors that <code>vertex</code> has in this graph
      *  @method getSuccessorCount
      */
-    prototype.getSuccessorCount = function (vertex) {};
+    prototype.getSuccessorCount = function(vertex) {};
     /**
      *  If <code>directed_edge</code> is a directed edge in this graph, returns the source;
      *  otherwise returns <code>null</code>.
@@ -1175,7 +1170,7 @@ Graph = stjs.extend(Graph, null, [Hypergraph], function (constructor, prototype)
      *  @return the source of <code>directed_edge</code> if it is a directed edge in this graph, or <code>null</code> otherwise
      *  @method getSource
      */
-    prototype.getSource = function (directed_edge) {};
+    prototype.getSource = function(directed_edge) {};
     /**
      *  If <code>directed_edge</code> is a directed edge in this graph, returns the destination;
      *  otherwise returns <code>null</code>.
@@ -1189,7 +1184,7 @@ Graph = stjs.extend(Graph, null, [Hypergraph], function (constructor, prototype)
      *  @return the destination of <code>directed_edge</code> if it is a directed edge in this graph, or <code>null</code> otherwise
      *  @method getDest
      */
-    prototype.getDest = function (directed_edge) {};
+    prototype.getDest = function(directed_edge) {};
     /**
      *  Returns <code>true</code> if <code>vertex</code> is the source of <code>edge</code>.
      *  Equivalent to <code>getSource(edge).equals(vertex)</code>.
@@ -1199,7 +1194,7 @@ Graph = stjs.extend(Graph, null, [Hypergraph], function (constructor, prototype)
      *  @return <code>true</code> iff <code>vertex</code> is the source of <code>edge</code>
      *  @method isSource
      */
-    prototype.isSource = function (vertex, edge) {};
+    prototype.isSource = function(vertex, edge) {};
     /**
      *  Returns <code>true</code> if <code>vertex</code> is the destination of <code>edge</code>.
      *  Equivalent to <code>getDest(edge).equals(vertex)</code>.
@@ -1208,7 +1203,7 @@ Graph = stjs.extend(Graph, null, [Hypergraph], function (constructor, prototype)
      *  @param edge   the edge to be queried
      *  @return <code>true</code> iff <code>vertex</code> is the destination of <code>edge</code>
      */
-    prototype.isDest = function (vertex, edge) {};
+    prototype.isDest = function(vertex, edge) {};
     /**
      *  Adds edge <code>e</code> to this graph such that it connects
      *  vertex <code>v1</code> to <code>v2</code>.
@@ -1229,7 +1224,7 @@ Graph = stjs.extend(Graph, null, [Hypergraph], function (constructor, prototype)
      *  @see Hypergraph#addEdge(Object, Collection)
      *  @see #addEdge(Object, Object, Object, EdgeType)
      */
-    prototype.addEdge = function (e, v1, v2) {};
+    prototype.addEdge = function(e, v1, v2) {};
     /**
      *  Returns the vertex at the other end of <code>edge</code> from <code>vertex</code>.
      *  (That is, returns the vertex incident to <code>edge</code> which is not <code>vertex</code>.)
@@ -1239,7 +1234,7 @@ Graph = stjs.extend(Graph, null, [Hypergraph], function (constructor, prototype)
      *  @return the vertex at the other end of <code>edge</code> from <code>vertex</code>
      *  @method getOpposite
      */
-    prototype.getOpposite = function (vertex, edge) {};
+    prototype.getOpposite = function(vertex, edge) {};
 }, {}, {});
 /**
  *  A directed implementation of {{#crossLink "Graph"}}Graph{{/crossLink}}. Edges have types. Two vertices may have many edges between them.
@@ -1251,63 +1246,63 @@ Graph = stjs.extend(Graph, null, [Hypergraph], function (constructor, prototype)
  *  @module com.eduworks.ec
  *  @extends Graph
  */
-var EcDirectedGraph = function () {};
-EcDirectedGraph = stjs.extend(EcDirectedGraph, null, [Graph], function (constructor, prototype) {
+var EcDirectedGraph = function() {};
+EcDirectedGraph = stjs.extend(EcDirectedGraph, null, [Graph], function(constructor, prototype) {
     prototype.edges = null;
     prototype.verticies = null;
-    prototype.getEdges = function () {
+    prototype.getEdges = function() {
         var results = new Array();
-        for (var i = 0; i < this.edges.length; i++)
+        for (var i = 0; i < this.edges.length; i++) 
             results[i] = this.edges[i].edge;
         return results;
     };
-    prototype.getVertices = function () {
+    prototype.getVertices = function() {
         var results = new Array();
-        for (var i = 0; i < this.verticies.length; i++)
+        for (var i = 0; i < this.verticies.length; i++) 
             results[i] = this.verticies[i];
         return results;
     };
-    prototype.containsVertex = function (vertex) {
-        for (var i = 0; i < this.verticies.length; i++)
-            if (vertex == this.verticies[i])
+    prototype.containsVertex = function(vertex) {
+        for (var i = 0; i < this.verticies.length; i++) 
+            if (vertex == this.verticies[i]) 
                 return true;
         return false;
     };
-    prototype.containsEdge = function (edge) {
-        for (var i = 0; i < this.edges.length; i++)
-            if (edge == this.edges[i].edge)
+    prototype.containsEdge = function(edge) {
+        for (var i = 0; i < this.edges.length; i++) 
+            if (edge == this.edges[i].edge) 
                 return true;
         return false;
     };
-    prototype.getEdgeCount = function () {
+    prototype.getEdgeCount = function() {
         return this.edges.length;
     };
-    prototype.getVertexCount = function () {
+    prototype.getVertexCount = function() {
         return this.verticies.length;
     };
-    prototype.getNeighbors = function (vertex) {
+    prototype.getNeighbors = function(vertex) {
         var results = new Array();
         for (var i = 0; i < this.edges.length; i++) {
-            if (vertex == this.edges[i].source)
+            if (vertex == this.edges[i].source) 
                 results.push(this.edges[i].destination);
-            else if (vertex == this.edges[i].destination)
+             else if (vertex == this.edges[i].destination) 
                 results.push(this.edges[i].source);
         }
         EcArray.removeDuplicates(results);
         return results;
     };
-    prototype.getIncidentEdges = function (vertex) {
+    prototype.getIncidentEdges = function(vertex) {
         var results = new Array();
         for (var i = 0; i < this.edges.length; i++) {
-            if (vertex == this.edges[i].source)
+            if (vertex == this.edges[i].source) 
                 results.push(this.edges[i].edge);
-            else if (vertex == this.edges[i].destination)
+             else if (vertex == this.edges[i].destination) 
                 results.push(this.edges[i].edge);
         }
         EcArray.removeDuplicates(results);
         return results;
     };
-    prototype.getIncidentVertices = function (edge) {
+    prototype.getIncidentVertices = function(edge) {
         var results = new Array();
         for (var i = 0; i < this.edges.length; i++) {
             if (edge == this.edges[i].edge) {
@@ -1318,32 +1313,32 @@ EcDirectedGraph = stjs.extend(EcDirectedGraph, null, [Graph], function (construc
         EcArray.removeDuplicates(results);
         return results;
     };
-    prototype.findEdge = function (v1, v2) {
+    prototype.findEdge = function(v1, v2) {
         for (var i = 0; i < this.edges.length; i++) {
-            if (v1 == this.edges[i].source && v2 == this.edges[i].destination)
+            if (v1 == this.edges[i].source && v2 == this.edges[i].destination) 
                 return this.edges[i].edge;
-            if (v1 == this.edges[i].destination && v2 == this.edges[i].source)
+            if (v1 == this.edges[i].destination && v2 == this.edges[i].source) 
                 return this.edges[i].edge;
         }
         return null;
     };
-    prototype.findEdgeSet = function (v1, v2) {
+    prototype.findEdgeSet = function(v1, v2) {
         var results = new Array();
         for (var i = 0; i < this.edges.length; i++) {
-            if (v1 == this.edges[i].source && v2 == this.edges[i].destination)
+            if (v1 == this.edges[i].source && v2 == this.edges[i].destination) 
                 results.push(this.edges[i].edge);
-            if (v1 == this.edges[i].destination && v2 == this.edges[i].source)
+            if (v1 == this.edges[i].destination && v2 == this.edges[i].source) 
                 results.push(this.edges[i].edge);
         }
         return results;
     };
-    prototype.addVertex = function (vertex) {
-        if (this.verticies.indexOf(vertex) != -1)
+    prototype.addVertex = function(vertex) {
+        if (this.verticies.indexOf(vertex) != -1) 
             return false;
         this.verticies.push(vertex);
         return true;
     };
-    prototype.removeVertex = function (vertex) {
+    prototype.removeVertex = function(vertex) {
         var indexOf = this.verticies.indexOf(vertex);
         if (indexOf != -1) {
             for (var i = 0; i < this.edges.length; i++) {
@@ -1357,7 +1352,7 @@ EcDirectedGraph = stjs.extend(EcDirectedGraph, null, [Graph], function (construc
         }
         return false;
     };
-    prototype.removeEdge = function (edge) {
+    prototype.removeEdge = function(edge) {
         var success = false;
         for (var i = 0; i < this.edges.length; i++) {
             if (this.edges[i].edge == edge) {
@@ -1368,175 +1363,163 @@ EcDirectedGraph = stjs.extend(EcDirectedGraph, null, [Graph], function (construc
         }
         return success;
     };
-    prototype.isNeighbor = function (v1, v2) {
+    prototype.isNeighbor = function(v1, v2) {
         for (var i = 0; i < this.edges.length; i++) {
-            if (v1 == this.edges[i].source && v2 == this.edges[i].destination)
+            if (v1 == this.edges[i].source && v2 == this.edges[i].destination) 
                 return true;
-            else if (v1 == this.edges[i].destination && v2 == this.edges[i].source)
+             else if (v1 == this.edges[i].destination && v2 == this.edges[i].source) 
                 return true;
         }
         return false;
     };
-    prototype.isIncident = function (vertex, edge) {
+    prototype.isIncident = function(vertex, edge) {
         for (var i = 0; i < this.edges.length; i++) {
-            if ((vertex == this.edges[i].source || vertex == this.edges[i].destination) && edge == this.edges[i].edge)
+            if ((vertex == this.edges[i].source || vertex == this.edges[i].destination) && edge == this.edges[i].edge) 
                 return true;
         }
         return false;
     };
-    prototype.degree = function (vertex) {
+    prototype.degree = function(vertex) {
         var count = 0;
         for (var i = 0; i < this.edges.length; i++) {
-            if (vertex == this.edges[i].source || vertex == this.edges[i].destination)
+            if (vertex == this.edges[i].source || vertex == this.edges[i].destination) 
                 count++;
         }
         return count;
     };
-    prototype.getNeighborCount = function (vertex) {
+    prototype.getNeighborCount = function(vertex) {
         return this.getNeighbors(vertex).length;
     };
-    prototype.getIncidentCount = function (edge) {
+    prototype.getIncidentCount = function(edge) {
         return this.getIncidentVertices(edge).length;
     };
-    prototype.getEdgeType = function (edge) {};
-    prototype.getDefaultEdgeType = function () {};
-    prototype.getEdgesOfType = function (edge_type) {
+    prototype.getEdgeType = function(edge) {};
+    prototype.getDefaultEdgeType = function() {};
+    prototype.getEdgesOfType = function(edge_type) {
         var results = new Array();
         for (var i = 0; i < this.edges.length; i++) {
-            if (this.getEdgeType(this.edges[i].edge) == edge_type)
+            if (this.getEdgeType(this.edges[i].edge) == edge_type) 
                 results.push(this.edges[i].edge);
         }
         return results;
     };
-    prototype.getEdgeCountOfType = function (edge_type) {
+    prototype.getEdgeCountOfType = function(edge_type) {
         return this.getEdgesOfType(edge_type).length;
     };
-    prototype.getInEdges = function (vertex) {
+    prototype.getInEdges = function(vertex) {
         var results = new Array();
         for (var i = 0; i < this.edges.length; i++) {
-            if (vertex == this.edges[i].destination)
+            if (vertex == this.edges[i].destination) 
                 results.push(this.edges[i].edge);
         }
         EcArray.removeDuplicates(results);
         return results;
     };
-    prototype.getOutEdges = function (vertex) {
+    prototype.getOutEdges = function(vertex) {
         var results = new Array();
         for (var i = 0; i < this.edges.length; i++) {
-            if (vertex == this.edges[i].source)
+            if (vertex == this.edges[i].source) 
                 results.push(this.edges[i].edge);
         }
         EcArray.removeDuplicates(results);
         return results;
     };
-    prototype.inDegree = function (vertex) {
+    prototype.inDegree = function(vertex) {
         return this.getInEdges(vertex).length;
     };
-    prototype.outDegree = function (vertex) {
+    prototype.outDegree = function(vertex) {
         return this.getOutEdges(vertex).length;
     };
-    prototype.getSource = function (directed_edge) {
+    prototype.getSource = function(directed_edge) {
         for (var i = 0; i < this.edges.length; i++) {
-            if (directed_edge == this.edges[i].edge)
+            if (directed_edge == this.edges[i].edge) 
                 return this.edges[i].source;
         }
         return null;
     };
-    prototype.getDest = function (directed_edge) {
+    prototype.getDest = function(directed_edge) {
         for (var i = 0; i < this.edges.length; i++) {
-            if (directed_edge == this.edges[i].edge)
+            if (directed_edge == this.edges[i].edge) 
                 return this.edges[i].destination;
         }
         return null;
     };
-    prototype.getPredecessors = function (vertex) {
+    prototype.getPredecessors = function(vertex) {
         var results = new Array();
         for (var i = 0; i < this.edges.length; i++) {
-            if (vertex == this.edges[i].destination)
+            if (vertex == this.edges[i].destination) 
                 results.push(this.edges[i].source);
         }
         EcArray.removeDuplicates(results);
         return results;
     };
-    prototype.getSuccessors = function (vertex) {
+    prototype.getSuccessors = function(vertex) {
         var results = new Array();
         for (var i = 0; i < this.edges.length; i++) {
-            if (vertex == this.edges[i].source)
+            if (vertex == this.edges[i].source) 
                 results.push(this.edges[i].destination);
         }
         EcArray.removeDuplicates(results);
         return results;
     };
-    prototype.isPredecessor = function (v1, v2) {
+    prototype.isPredecessor = function(v1, v2) {
         for (var i = 0; i < this.edges.length; i++) {
-            if (v1 == this.edges[i].destination)
-                if (v2 == this.edges[i].source)
+            if (v1 == this.edges[i].destination) 
+                if (v2 == this.edges[i].source) 
                     return true;
         }
         return false;
     };
-    prototype.isSuccessor = function (v1, v2) {
+    prototype.isSuccessor = function(v1, v2) {
         for (var i = 0; i < this.edges.length; i++) {
-            if (v2 == this.edges[i].destination)
-                if (v1 == this.edges[i].source)
+            if (v2 == this.edges[i].destination) 
+                if (v1 == this.edges[i].source) 
                     return true;
         }
         return false;
     };
-    prototype.getPredecessorCount = function (vertex) {
+    prototype.getPredecessorCount = function(vertex) {
         return this.getPredecessors(vertex).length;
     };
-    prototype.getSuccessorCount = function (vertex) {
+    prototype.getSuccessorCount = function(vertex) {
         return this.getSuccessors(vertex).length;
     };
-    prototype.isSource = function (vertex, edge) {
+    prototype.isSource = function(vertex, edge) {
         for (var i = 0; i < this.edges.length; i++) {
-            if (edge == this.edges[i].edge)
-                if (vertex == this.edges[i].source)
+            if (edge == this.edges[i].edge) 
+                if (vertex == this.edges[i].source) 
                     return true;
         }
         return false;
     };
-    prototype.isDest = function (vertex, edge) {
+    prototype.isDest = function(vertex, edge) {
         for (var i = 0; i < this.edges.length; i++) {
-            if (edge == this.edges[i].edge)
-                if (vertex == this.edges[i].destination)
+            if (edge == this.edges[i].edge) 
+                if (vertex == this.edges[i].destination) 
                     return true;
         }
         return false;
     };
-    prototype.addEdge = function (e, v1, v2) {
+    prototype.addEdge = function(e, v1, v2) {
         this.addVertex(v1);
         this.addVertex(v2);
         var t = new Triple();
         t.source = v1;
         t.destination = v2;
         t.edge = e;
-        if (this.edges.indexOf(t) != -1)
+        if (this.edges.indexOf(t) != -1) 
             return false;
         this.edges.push(t);
         return true;
     };
-    prototype.getOpposite = function (vertex, edge) {
+    prototype.getOpposite = function(vertex, edge) {
         for (var i = 0; i < this.edges.length; i++) {
-            if (edge == this.edges[i].edge)
-                if (vertex == this.edges[i].destination)
+            if (edge == this.edges[i].edge) 
+                if (vertex == this.edges[i].destination) 
                     return this.edges[i].source;
-                else if (vertex == this.edges[i].source)
-                return this.edges[i].destination;
+                 else if (vertex == this.edges[i].source) 
+                    return this.edges[i].destination;
         }
         return null;
     };
-}, {
-    edges: {
-        name: "Array",
-        arguments: [{
-            name: "Triple",
-            arguments: ["V", "V", "E"]
-        }]
-    },
-    verticies: {
-        name: "Array",
-        arguments: ["V"]
-    }
-}, {});
+}, {edges: {name: "Array", arguments: [{name: "Triple", arguments: ["V", "V", "E"]}]}, verticies: {name: "Array", arguments: ["V"]}}, {});
