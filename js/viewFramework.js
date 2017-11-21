@@ -108,6 +108,7 @@ function refreshCompetency(col, level, subsearch) {
     var me = this;
     me.fetches--;
     var treeNode = null;
+    var childrenDict = {};
     if ($("#tree [id='" + col.shortId() + "']").length > 0) {
         treeNode = $("[id='" + col.shortId() + "']").before("<li class = 'competency' draggable='true' ondragstart='dragCompetency(event);' ondrop='dropCompetency(event);' ondragover='allowCompetencyDrop(event);'><span></span><ul></ul></li>");
         var tn = treeNode.prev();
@@ -141,9 +142,13 @@ function refreshCompetency(col, level, subsearch) {
                     if (relation.source !== undefined && relation.target !== undefined && relation.source != null && relation.target != null) {
                         if (relation.relationType == "narrows") {
                             if ($(".competency[relationid=\"" + relation.shortId() + "\"]").length == 0) {
-                                $(".competency[id=\"" + relation.target + "\"]").children().last().append($(".competency[id=\"" + relation.source + "\"]").outerHTML()).children().last().attr("relationid", relation.shortId());
+                                if (typeof childrenDict[relation.source] === "undefined") {
+                                    $(".competency[id=\"" + relation.target + "\"]").children().last().append($(".competency[id=\"" + relation.source + "\"]").outerHTML()).children().last().attr("relationid", relation.shortId());
+                                    childrenDict[relation.source] = "1";
+                                }
                                 if ($(".competency[id=\"" + relation.target + "\"]").length > 0)
                                     $("#tree>.competency[id=\"" + relation.source + "\"]").remove();
+
                                 if (!$(".competency[id=\"" + relation.target + "\"]").hasClass("expandable"))
                                     $(".competency[id=\"" + relation.target + "\"]").addClass("expandable").prepend("<span/>").children().first().addClass("collapse").html('<i class="fa fa-minus-square" aria-hidden="true"></i> ');
                             }

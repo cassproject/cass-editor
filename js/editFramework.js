@@ -396,32 +396,34 @@ copyCompetencies = function (results) {
         var thing = EcRepository.getBlocking(results[i]);
         if (thing != null && thing.isAny(new EcCompetency().getTypes())) {
             var c = new EcCompetency();
+            c.copyFrom(thing);
             c.generateId(repo.selectedServer);
             framework.addCompetency(c.id);
             if (EcIdentityManager.ids.length > 0)
                 c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
             c.name = thing.name;
             c.description = thing.description;
-            c.copiedFrom = thing.id;
-            copyDict[c.copiedFrom] = c;
+            c['ceasn:derivedFrom'] = thing.id;
+            copyDict[c['ceasn:derivedFrom']] = c;
 
             EcRepository.save(c, function () {}, error);
         }
     }
     for (var i = 0; i < results.length; i++) {
         var thing = EcRepository.getBlocking(results[i]);
-        if (thing != null && !thing.isAny(new EcCompetency().getTypes())) {
+        if (thing != null && thing.isAny(new EcAlignment().getTypes())) {
 
             var parent = copyDict[thing.target];
             var child = copyDict[thing.source];
 
             if (typeof parent !== 'undefined' && typeof child !== 'undefined') {
                 var r = new EcAlignment();
+                r.copyFrom(thing);
                 r.generateId(repo.selectedServer);
 
                 r.target = parent.shortId();
                 r.source = child.shortId();
-                r.relationType = Relation.NARROWS;
+                r.relationType = thing.relationType;
                 if (EcIdentityManager.ids.length > 0)
                     r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
 
@@ -431,6 +433,29 @@ copyCompetencies = function (results) {
                 }
             }
         }
+    }
+    for (var i = 0; i < results.length; i++) {
+        var thing = EcRepository.getBlocking(results[i]);
+        if (thing != null && thing.isAny(new EcCompetency().getTypes()))
+            if (selectedCompetency != null) {
+               
+                var r = new EcAlignment();
+                r.generateId(repo.selectedServer);
+
+                var child = copyDict[thing.id];
+
+                r.target = selectedCompetency.shortId();
+                r.source = child.shortId();
+                r.relationType = Relation.NARROWS;
+                if (EcIdentityManager.ids.length > 0)
+                    r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+
+                if (r.source != r.target) {
+                    framework.addRelation(r.id);
+                    EcRepository.save(r,
+                        afterSave, error);
+                }
+            }
     }
     EcRepository.save(framework, function () {
         refreshSidebar();
