@@ -41,8 +41,7 @@ function importFile() {
                 showPage("importSection");
             }
         });
-    }
-    if (file.name.endsWith(".json")) {
+    } else if (file.name.endsWith(".json")) {
         ASNImport.analyzeFile(file, function (data) {
             $("#importAsnFrameworks").text("1 Framework Detected.");
             $("#importAsnCompetencies").text(EcObject.keys(data).length + " Competencies Detected.");
@@ -54,10 +53,64 @@ function importFile() {
                 showPage("importSection");
             }
         });
+    } else if (file.name.endsWith(".xml")) {
+        MedbiqImport.analyzeFile(file, function (data) {
+            $("#importMedbiqFrameworks").text("1 Framework Detected.");
+            $("#importMedbiqCompetencies").text(EcObject.keys(data).length + " Competencies Detected.");
+            asnCompetencyCount = EcObject.keys(data).length;
+            showPage("#medbiqImportSection");
+        }, function (error) {
+            {
+                alert(error);
+                showPage("importSection");
+            }
+        });
     }
 }
 
 var asnCompetencyCount = "unknown";
+
+function importMedbiq() {
+    var file = importFiles[0];
+    var identity = EcIdentityManager.ids[0];
+    var f = new EcFramework();
+    if (identity != null)
+        f.addOwner(identity.ppk.toPk());
+    f.generateId(repo.selectedServer);
+    f.setName($("#importMedbiqFrameworkName").val());
+    f.setDescription($("#importMedbiqFrameworkDescription").val());
+    MedbiqImport.importCompetencies(repo.selectedServer, identity, function (competencies) {
+            importFiles.splice(0, 1);
+            for (var i = 0; i < competencies.length; i++)
+                f.addCompetency(competencies[i].shortId());
+            f.save(function (success) {
+                importFiles.splice(0, 1);
+                if (importFiles.length > 0)
+                    importFile();
+                else {
+                    framework = f;
+                    populateFramework();
+                    selectedCompetency = null;
+                    refreshSidebar();
+                    if (parent != null && queryParams.origin != null && queryParams.origin != "")
+                        parent.postMessage({
+                            message: "importFinished",
+                            framework: f.id
+                        }, queryParams.origin);
+                }
+            }, function (failure) {
+                error(failure);
+                backPage();
+            });
+        },
+        function (failure) {
+            error(failure);
+            backPage();
+        },
+        function (increment) {
+            loading(increment.competencies + "/" + asnCompetencyCount + " competencies imported.")
+        });
+}
 
 function importAsn() {
     var file = importFiles[0];

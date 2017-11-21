@@ -67,7 +67,7 @@
         <div id="importFileForm" style="min-height:5rem; display: flex; align-items: center; border: 2px dashed black; margin-left: 1rem;margin-right: 1rem;">
             <center style="width:100%">
                 <input type="file" name="files[]" id="file" data-multiple-caption="{count} files selected" multiple hidden/>
-                <label for="file" style="">Drag and drop a file here<br> or <button href="#" onClick="$(this).parent().click()">Browse...</button><br> or <input type="text" placeholder="Enter a url..."></label>
+                <label for="file" style="">Drag and drop a file here<br> or <button href="#" onClick="$(this).parent().click()">Browse...</button></label>
             </center>
         </div>
 
@@ -148,6 +148,33 @@
             <div>
                 <div style="float:left;">
                     <button id="importButton" onclick="importAsn();">Import</button>
+                    <button id="cancelButton" onclick="backPage();">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="medbiqImportSection" class="page" style="display:none;margin-left: 1rem;">
+        <h3 id="medbiqImportHeader">Import Medbiquitous</h3>
+        <i>This will import an Medbiquitous file.</i>
+        <hr>
+        <div style="width: calc(100% - 2rem); position: relative; padding-left: 1rem;
+    	padding-right: 1rem; display: table; border-collapse: separate;margin:0rem;border-spacing: 0px 10px;">
+            <div class="trow">
+                <label style="display: table-cell; width: 25%;">Step 1: Name the framework.</label>
+                <input id="importMedbiqFrameworkName" placeholder="Name the Framework." style="display: table-cell; width: 75%;" />
+            </div>
+            <div class="trow">
+                <label style="display: table-cell; width: 25%;">Step 2: Describe the framework (optional).</label>
+                <textarea style="display: table-cell; width: 75%;" id="importMedbiqFrameworkDescription" placeholder="Describe the framework."></textarea>
+            </div>
+        </div>
+        <p id="importMedbiqCompetencies"></p>
+        <hr>
+        <div id="buttonSection">
+            <div>
+                <div style="float:left;">
+                    <button id="importButton" onclick="importMedbiq();">Import</button>
                     <button id="cancelButton" onclick="backPage();">Cancel</button>
                 </div>
             </div>
@@ -337,6 +364,7 @@
     <script src="js/cass/require.js"></script>
     <script src="js/cass/base64toArrayBuffer.js"></script>
     <script src="js/cass/pem-jwk.js"></script>
+    <script src="js/cass/xml2json.js"></script>
     <script src="js/cass/org.json-ld.js"></script>
     <script src="js/cass/FileSaver.js"></script>
     <script src="js/cass/org.cassproject.schema.general.js"></script>
