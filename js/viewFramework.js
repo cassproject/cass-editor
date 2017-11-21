@@ -130,7 +130,7 @@ function refreshCompetency(col, level, subsearch) {
     if (queryParams.link == "true")
         treeNode.prepend(" <a style='float:right;' target='_blank'><i class='fa fa-link' aria-hidden='true'></a>").children().first().attr("href", col.shortId());
     if (queryParams.select != null)
-        treeNode.prepend("<input type='checkbox'>");
+        treeNode.prepend("<input type='checkbox' tabIndex='-1'>");
     if (subsearch != null)
         treeNode.mark(subsearch);
     if (me.fetches == 0) {
