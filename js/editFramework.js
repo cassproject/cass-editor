@@ -150,7 +150,7 @@ saveCompetency = function () {
         framework.creator = getValueOrNull($("#sidebarCreatorInput").val());
         // framework.dateCreated = $("#sidebarDateCreatedInput").val();
         framework.additionalType = getValueOrNull($("#sidebarAlternativeCodedNotationInput").val());
-        framework["schema:keywords"] = getValueOrNull($("#sidebarConceptKeywordInput").val());
+        selectedCompetency["schema:keywords"] = getValueOrNull($("#sidebarConceptKeywordInput").val()) === null ? null : $("#sidebarConceptKeywordInput").val().split(',');
         framework.weight = getValueOrNull($("#sidebarWeightInput").val());
 
         EcRepository.save(framework, function () {
@@ -171,7 +171,7 @@ saveCompetency = function () {
         selectedCompetency.creator = getValueOrNull($("#sidebarCreatorInput").val());
         // selectedCompetency.dateCreated = $("#sidebarDateCreatedInput").val();
         selectedCompetency.additionalType = getValueOrNull($("#sidebarAlternativeCodedNotationInput").val());
-        selectedCompetency["schema:keywords"] = getValueOrNull($("#sidebarConceptKeywordInput").val());
+        selectedCompetency["schema:keywords"] = getValueOrNull($("#sidebarConceptKeywordInput").val()) === null ? null : $("#sidebarConceptKeywordInput").val().split(',');
         selectedCompetency.weight = getValueOrNull($("#sidebarWeightInput").val());
 
         EcRepository.save(selectedCompetency, afterSave, error);
