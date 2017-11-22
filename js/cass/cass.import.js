@@ -568,12 +568,14 @@ CSVImport = stjs.extend(CSVImport, null, [], function(constructor, prototype) {
                 var relationTypeKey = tabularData[i][relationTypeIndex];
                 var destKey = tabularData[i][destIndex];
                 if ((CSVImport.importCsvLookup)[sourceKey] == null) 
-                    continue;
+                    alignment.source = sourceKey;
+                 else 
+                    alignment.source = (CSVImport.importCsvLookup)[sourceKey];
                 if ((CSVImport.importCsvLookup)[destKey] == null) 
-                    continue;
-                alignment.source = (CSVImport.importCsvLookup)[sourceKey];
+                    alignment.target = destKey;
+                 else 
+                    alignment.target = (CSVImport.importCsvLookup)[destKey];
                 alignment.relationType = relationTypeKey;
-                alignment.target = (CSVImport.importCsvLookup)[destKey];
                 if (owner != null) 
                     alignment.addOwner(owner.ppk.toPk());
                 alignment.generateId(serverUrl);
@@ -603,6 +605,9 @@ CSVImport = stjs.extend(CSVImport, null, [], function(constructor, prototype) {
                         relations[j]._delete(null, null);
                     }
                 });
+            }
+            if (CSVImport.saved == 0 && CSVImport.saved == relations.length) {
+                success(competencies, relations);
             }
         }, error: failure});
     };
