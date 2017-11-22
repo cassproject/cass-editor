@@ -347,7 +347,7 @@ conditionalDelete = function (id, depth) {
     if (depth < 5)
         setTimeout(function () {
             EcFramework.search(repo, "\"" + id + "\"", function (results) {
-                if (results.length <= 1) {
+                if (results.length <= 0) {
                     console.log("No references found for " + id + "... deleting.");
                     EcRepository._delete(EcRepository.getBlocking(id), afterSave, console.log);
                 } else {
