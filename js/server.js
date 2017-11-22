@@ -53,6 +53,7 @@ openWebSocket = function (r) {
 
     connection.onmessage = function (e) {
         console.log('Server: ' + e.data);
+        if (framework == null) return;
         EcRepository.get(e.data, function (wut) {
             delete EcRepository.cache[wut.id];
             delete EcRepository.cache[wut.shortId()];

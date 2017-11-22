@@ -349,7 +349,7 @@ conditionalDelete = function (id, depth) {
             EcFramework.search(repo, "\"" + id + "\"", function (results) {
                 if (results.length <= 1) {
                     console.log("No references found for " + id + "... deleting.");
-                    EcRepository._delete(results[0], afterSave, console.log);
+                    EcRepository._delete(EcRepository.getBlocking(id), afterSave, console.log);
                 } else {
                     console.log(results.length + " references found for " + id + "... Not deleting. Will see again in another second.");
                     conditionalDelete(id, depth + 1);
@@ -363,17 +363,6 @@ getValueOrNull = function (value) {
         return null;
     else
         return value;
-}
-
-viewJSON = function () {
-    var link;
-    if (selectedCompetency !== null) {
-        link = selectedCompetency.id;
-    } else {
-        link = framework.id;
-    }
-    var redirect = window.open(link, '_blank');
-    redirect.location;
 }
 
 copyCompetencies = function (results) {
@@ -425,7 +414,7 @@ copyCompetencies = function (results) {
         var thing = EcRepository.getBlocking(results[i]);
         if (thing != null && thing.isAny(new EcCompetency().getTypes()))
             if (selectedCompetency != null) {
-               
+
                 var r = new EcAlignment();
                 r.generateId(repo.selectedServer);
 

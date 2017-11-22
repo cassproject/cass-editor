@@ -246,6 +246,19 @@
             <button id="sidebarUnlink" class="editMode editControl" style="margin:0rem;float:right;margin-left:4px;" onclick="unlinkCompetency();">Unlink</button>
             <button id="sidebarCancel" class="editMode editControl" style="margin:0rem;" onclick="refreshSidebar();">Cancel</button>
             <button id="sidebarSave" class="editMode greenButton editControl" style="margin:0rem;" onclick="saveCompetency();">Save</button>
+
+            <select id="sidebarExport" class="viewMode" onclick="exportSelected();$(this).children().first().prop('selected', true);">
+                <option style="display:none;" disabled selected>Download or view...</option>
+                <option value="asn">Achievement Standards Network</option>
+                <option value="cass">CASS (JSON-LD)</option>
+                <option value="cassn4">CASS (RDF Quads)</option>
+                <option value="cassrdfjson">CASS (RDF+JSON)</option>
+                <option value="cassrdfxml">CASS (RDF+XML)</option>
+                <option value="cassturtle">CASS (Turtle)</option>
+                <option value="ceasn">Credential Engine ASN</option>
+                <option value="csv">CSV</option>
+                <option value="case">IMS Global CASE</option>
+            </select>
             <button id="sidebarViewJSON" class="export" style="margin: 0rem; display: none;" onclick="viewJSON();">View JSON</button>
             <!--             <button id="sidebarDownload" class="export" style="margin: 0rem; display: none;" onclick="downloadCopmpetencies();">Download</button>
  -->

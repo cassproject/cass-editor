@@ -45,7 +45,7 @@ function select() {
 }
 
 function selectAll() {
-    $('#tree').find('input').each(function() {
+    $('#tree').find('input').each(function () {
         $(this).prop('checked', true);
     });
 }
@@ -493,7 +493,7 @@ $('html').keydown(function (evt) {
                         $("#selectButton").click();
                 }
             }
-            
+
         }
     } else {
         //On escape
@@ -503,3 +503,91 @@ $('html').keydown(function (evt) {
         }
     }
 });
+
+exportSelected = function () {
+    var v = $("#sidebarExport").val();
+    var link;
+    var guid;
+    if (selectedCompetency != null) {
+        if (EcRepository.shouldTryUrl(selectedCompetency.id) == false) {
+            link = repo.selectedServer + "data/" + EcCrypto.md5(selectedCompetency.id);
+            guid = EcCrypto.md5(selectedCompetency.id);
+        } else {
+            link = selectedCompetency.id;
+            guid = selectedCompetency.getGuid();
+        }
+    } else {
+        if (EcRepository.shouldTryUrl(framework.id) == false) {
+            link = repo.selectedServer + "data/" + EcCrypto.md5(framework.id);
+            guid = EcCrypto.md5(framework.id);
+        } else {
+            link = framework.id;
+            guid = framework.getGuid();
+        }
+    }
+    if (v == "asn")
+        window.open(link.replace("/data/", "/asn/"), '_blank');
+    else if (v == "cass")
+        window.open(link, '_blank');
+    else if (v == "cassn4") {
+        $.ajax({
+            url: link,
+            headers: {
+                "Accept": "text/n4"
+            },
+            success: function (data) {
+                download(framework.name + ".n4", data);
+            }
+        });
+    } else if (v == "cassrdfjson") {
+        $.ajax({
+            url: link,
+            headers: {
+                "Accept": "application/rdf+json"
+            },
+            success: function (data) {
+                download(framework.name + ".rdf.json", JSON.stringify(data, null, 2));
+            }
+        });
+    } else if (v == "cassrdfxml") {
+        $.ajax({
+            url: link,
+            headers: {
+                "Accept": "application/rdf+xml"
+            },
+            success: function (data) {
+                download(framework.name + ".rdf.xml", data);
+            }
+        });
+    } else if (v == "cassturtle") {
+        $.ajax({
+            url: link,
+            headers: {
+                "Accept": "text/turtle"
+            },
+            success: function (data) {
+                download(framework.name + ".turtle", data);
+            }
+        });
+    } else if (v == "ceasn")
+        window.open(link.replace("/data/", "/ceasn/"), '_blank');
+    else if (v == "csv") {
+        CSVExport.exportFramework(framework.id, console.log, console.log);
+    } else if (v == "case")
+        if (selectedCompetency == null)
+            window.open(repo.selectedServer + "ims/case/v1p0/CFDocuments/" + guid, '_blank');
+        else
+            window.open(repo.selectedServer + "ims/case/v1p0/CFItems/" + guid, '_blank');
+
+}
+
+viewJSON = function () {
+    var link;
+    if (selectedCompetency !== null) {
+        link = selectedCompetency.id;
+    } else {
+        link = framework.id;
+    }
+    var redirect = window.open(link, '_blank');
+    redirect.location;
+}
