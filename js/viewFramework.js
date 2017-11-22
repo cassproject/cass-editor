@@ -424,7 +424,7 @@ $('html').keydown(function (evt) {
                     $(this).removeClass('selected');
                 });
                 frameworkElementArray[frameworkSelectionIndex].classList.add('selected');
-                $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
+                $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 100);
             }
             //On Up arrow
             else if (evt.which === 38) {
@@ -434,7 +434,7 @@ $('html').keydown(function (evt) {
                     $(this).removeClass('selected');
                 });
                 frameworkElementArray[frameworkSelectionIndex].classList.add('selected');
-                $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
+                $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 100);
             }
             //On enter
             else if (evt.which === 13) {
@@ -452,27 +452,31 @@ $('html').keydown(function (evt) {
             }
             //On down arrow
             if (evt.which === 40) {
+                $('button').blur();
                 if (competencySelectionIndex < competencyElementArray.length)
                     competencySelectionIndex++;
                 $(competencyElementArray[competencySelectionIndex]).click();
-                $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
+                $('#tree').scrollTop($('#tree').scrollTop() + $('.selected').position().top - 100);
             }
             //On up arrow
             else if (evt.which === 38) {
+                $('button').blur();
                 if (competencySelectionIndex >= 0)
                     competencySelectionIndex--;
                 if (competencySelectionIndex >= 0)
                     $(competencyElementArray[competencySelectionIndex]).click();
                 else
                     $('#frameworkName').click();
-                $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
+                $('#tree').scrollTop($('#tree').scrollTop() + $('.selected').position().top - 100);
             }
             //On left and right arrows
             else if (evt.which === 39) {
+                $('button').blur();
                 $(competencyElementArray[competencySelectionIndex]).find('.collapse').click();
                 $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
 
             } else if (evt.which === 37) {
+                $('button').blur();
                 $(competencyElementArray[competencySelectionIndex]).find('.collapse').click();
                 $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
             }
