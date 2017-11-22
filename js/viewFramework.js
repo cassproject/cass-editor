@@ -102,6 +102,9 @@ function afterRefresh(level, subsearch) {
     } else
         showPage("#editFrameworkSection", framework);
     $("#tree").show().scrollTop(treeTop);
+    if (selectedCompetency !== null) {
+        document.getElementById(selectedCompetency.shortId()).classList.add('selected');
+    }
 }
 
 function refreshCompetency(col, level, subsearch) {
