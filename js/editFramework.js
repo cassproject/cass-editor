@@ -140,18 +140,9 @@ saveCompetency = function () {
         framework.description = $("#sidebarDescriptionInput").val();
 
         framework["schema:inLanguage"] = getValueOrNull($("#sidebarInLanguageInput").val());
-        // framework.isPartOf = $("#sidebarIsPartOfInput").val();
-        framework["schema:identifier"] = getValueOrNull($("#sidebarCodedNotationInput").val());
-        framework["http://schema.eduworks.com/ims/case/v1p0/CFItemType"] = getValueOrNull($("#sidebarCompetencyCategoryInput").val());
-        // framework["gemq:hasChild"] = $("#sidebarHasChildInput").val();
-        // framework["gemq:isChildOf"] = $("#sidebarIsChildOfInput").val();
         framework.author = getValueOrNull($("#sidebarAuthorInput").val());
-        framework.comment = getValueOrNull($("#sidebarCommentInput").val());
         framework.creator = getValueOrNull($("#sidebarCreatorInput").val());
-        // framework.dateCreated = $("#sidebarDateCreatedInput").val();
-        framework.additionalType = getValueOrNull($("#sidebarAlternativeCodedNotationInput").val());
         selectedCompetency["schema:keywords"] = getValueOrNull($("#sidebarConceptKeywordInput").val()) === null ? null : $("#sidebarConceptKeywordInput").val().split(',');
-        framework.weight = getValueOrNull($("#sidebarWeightInput").val());
 
         EcRepository.save(framework, function () {
             populateFramework();
@@ -161,15 +152,11 @@ saveCompetency = function () {
         selectedCompetency.description = $("#sidebarDescriptionInput").val();
 
         selectedCompetency["schema:inLanguage"] = getValueOrNull($("#sidebarInLanguageInput").val());
-        // selectedCompetency.isPartOf = $("#sidebarIsPartOfInput").val();
         selectedCompetency["schema:identifier"] = getValueOrNull($("#sidebarCodedNotationInput").val());
         selectedCompetency["http://schema.eduworks.com/ims/case/v1p0/CFItemType"] = getValueOrNull($("#sidebarCompetencyCategoryInput").val());
-        // selectedCompetency["gemq:hasChild"] = $("#sidebarHasChildInput").val();
-        // selectedCompetency["gemq:isChildOf"] = $("#sidebarIsChildOfInput").val();
         selectedCompetency.author = getValueOrNull($("#sidebarAuthorInput").val());
         selectedCompetency.comment = getValueOrNull($("#sidebarCommentInput").val());
         selectedCompetency.creator = getValueOrNull($("#sidebarCreatorInput").val());
-        // selectedCompetency.dateCreated = $("#sidebarDateCreatedInput").val();
         selectedCompetency.additionalType = getValueOrNull($("#sidebarAlternativeCodedNotationInput").val());
         selectedCompetency["schema:keywords"] = getValueOrNull($("#sidebarConceptKeywordInput").val()) === null ? null : $("#sidebarConceptKeywordInput").val().split(',');
         selectedCompetency.weight = getValueOrNull($("#sidebarWeightInput").val());
