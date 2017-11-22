@@ -7,6 +7,9 @@ function showFiles(files) {
     importFile();
 }
 
+var maxCsvCompetencies = null;
+var maxCsvRelations = null;
+
 function importFile() {
     var file = importFiles[0];
     loading(file.name);
@@ -32,7 +35,7 @@ function importFile() {
                 if (data[0][i].toLowerCase().indexOf("id") != -1)
                     $("#importCsvColumnId").children().last().prop("selected", true);
             }
-            $("#csvImportSection #importButton").text("Import " + (data.length - 1) + " items.");
+            $("#csvImportSection #importButton").text("Import " + (maxCsvCompetencies = (data.length - 1)) + " items.");
             showPage("#csvImportSection");
         }, function (error) {
             {
@@ -97,7 +100,12 @@ function importCsv() {
             backPage();
         },
         function (increment) {
-            loading(increment)
+            if (increment.relations != null && increment.relations !== undefined)
+                loading(increment.relations + "/" + maxCsvRelations + " relations imported.");
+            else if (increment.competencies != null && increment.competencies !== undefined)
+                loading(increment.competencies + "/" + maxCsvCompetencies + " competencies imported.");
+            else
+                loading("Importing...");
         }, false);
 }
 
@@ -125,6 +133,7 @@ function analyzeCsvRelation() {
             if (data[0][i].toLowerCase().indexOf("destination") != -1)
                 $("#importCsvColumnTarget").children().last().prop("selected", true);
         }
+        maxCsvRelations = (data.length - 1);
     }, function (error) {
         {
             alert(error);
