@@ -278,6 +278,7 @@ refreshSidebar = function () {
         $("#sidebarFeedback").html("Some edit options are limited: <li>You do not own this framework.</li> ");
     } else
         $("#sidebarFeedback").html("");
+    
 
 }
 
@@ -318,6 +319,16 @@ editSidebar = function () {
     if (selectedRelation == null) {
         $("#sidebarUnlink").prop('disabled', true);
     }
+
+    var competencies = [];
+
+    $('.competencyName').each(function() {
+        competencies.push($(this).text());
+    });
+
+    $('#sidebarNameInput').autocomplete({
+        source: competencies
+    });
 }
 
 $("body").on("click", ".collapse", null, function (evt) {

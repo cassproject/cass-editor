@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/viewFrameworks.css">
     <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/jquery-ui.min.css">
+    <link rel="stylesheet" href="css/jquery-ui.structure.min.css">
 </head>
 
 <body id="cassControl" style="height:100%;">
@@ -144,6 +146,7 @@
     <div id="editFrameworkSection" class="page pageWithSidebar" style="height:100%;display: none;">
         <div id="detailSlider" class="sidebar" style="display: none;">
             <h3 id="sidebarName" class="viewMode">Framework Name Here</h3>
+            <label for="sidebarNameInput" class="editMode" style="margin: 0px;">Name</label>
             <input id="sidebarNameInput" class="editMode editControl" style="margin-top:1rem;width:calc(100% - 1rem);" value="Framework Name Here" />
             <p id="sidebarDescription" class="viewMode">This is a super long description, it describes the things worth describing.</p>
             <textarea id="sidebarDescriptionInput" class="editMode editControl" style="margin-top:1rem;width:calc(100% - 1rem);height:6rem;margin-bottom: 1rem;">This is a super long description, it describes the things worth describing.</textarea>
@@ -306,6 +309,7 @@
     </div>
 
     <script src="js/vendor/jquery-3.2.1.min.js"></script>
+    <script src="js/vendor/jquery-ui.min.js"></script>
     <script src="js/vendor/papaparse.js"></script>
     <script src="forge/forge.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.0/jquery.mark.min.js"></script>
