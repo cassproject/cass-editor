@@ -406,10 +406,10 @@ $('html').keydown(function (evt) {
     if (!$('input').is(':focus') && !$('select').is(':focus') && !$('textarea').is(':focus')) {
         //If we're on the framework selection screen
         if ($('#frameworksSection').css('display') === 'block') {
-            var frameworkElementArray = document.getElementById('frameworks').children;
+            var frameworkElementArray = document.getElementsByTagName('p');
             if (frameworkSelectionIndex === null) {
                 frameworkSelectionIndex = 0;
-                $('#frameworks').find('p.selected').each(function () {
+                $('#frameworks').find('.selected').each(function () {
                     $(this).removeClass('selected');
                 });
                 frameworkElementArray[frameworkSelectionIndex].classList.add('selected');
@@ -420,7 +420,7 @@ $('html').keydown(function (evt) {
                 if (frameworkSelectionIndex < frameworkElementArray.length)
                     frameworkSelectionIndex++;
                 //clear any existing selected
-                $('#frameworks').find('p.selected').each(function () {
+                $('#frameworks').find('.selected').each(function () {
                     $(this).removeClass('selected');
                 });
                 frameworkElementArray[frameworkSelectionIndex].classList.add('selected');
@@ -430,7 +430,7 @@ $('html').keydown(function (evt) {
             else if (evt.which === 38) {
                 if (frameworkSelectionIndex > 0)
                     frameworkSelectionIndex--;
-                $('#frameworks').find('p.selected').each(function () {
+                $('#frameworks').find('.selected').each(function () {
                     $(this).removeClass('selected');
                 });
                 frameworkElementArray[frameworkSelectionIndex].classList.add('selected');
