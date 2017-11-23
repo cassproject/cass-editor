@@ -406,10 +406,10 @@ $('html').keydown(function (evt) {
     if (!$('input').is(':focus') && !$('select').is(':focus') && !$('textarea').is(':focus')) {
         //If we're on the framework selection screen
         if ($('#frameworksSection').css('display') === 'block') {
-            var frameworkElementArray = document.getElementById('frameworks').children;
+            var frameworkElementArray = document.getElementsByTagName('p');
             if (frameworkSelectionIndex === null) {
                 frameworkSelectionIndex = 0;
-                $('#frameworks').find('p.selected').each(function () {
+                $('#frameworks').find('.selected').each(function () {
                     $(this).removeClass('selected');
                 });
                 frameworkElementArray[frameworkSelectionIndex].classList.add('selected');
@@ -420,21 +420,21 @@ $('html').keydown(function (evt) {
                 if (frameworkSelectionIndex < frameworkElementArray.length)
                     frameworkSelectionIndex++;
                 //clear any existing selected
-                $('#frameworks').find('p.selected').each(function () {
+                $('#frameworks').find('.selected').each(function () {
                     $(this).removeClass('selected');
                 });
                 frameworkElementArray[frameworkSelectionIndex].classList.add('selected');
-                $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
+                $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 100);
             }
             //On Up arrow
             else if (evt.which === 38) {
                 if (frameworkSelectionIndex > 0)
                     frameworkSelectionIndex--;
-                $('#frameworks').find('p.selected').each(function () {
+                $('#frameworks').find('.selected').each(function () {
                     $(this).removeClass('selected');
                 });
                 frameworkElementArray[frameworkSelectionIndex].classList.add('selected');
-                $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
+                $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 100);
             }
             //On enter
             else if (evt.which === 13) {
@@ -452,27 +452,31 @@ $('html').keydown(function (evt) {
             }
             //On down arrow
             if (evt.which === 40) {
+                $('button').blur();
                 if (competencySelectionIndex < competencyElementArray.length)
                     competencySelectionIndex++;
                 $(competencyElementArray[competencySelectionIndex]).click();
-                $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
+                $('#tree').scrollTop($('#tree').scrollTop() + $('.selected').position().top - 100);
             }
             //On up arrow
             else if (evt.which === 38) {
+                $('button').blur();
                 if (competencySelectionIndex >= 0)
                     competencySelectionIndex--;
                 if (competencySelectionIndex >= 0)
                     $(competencyElementArray[competencySelectionIndex]).click();
                 else
                     $('#frameworkName').click();
-                $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
+                $('#tree').scrollTop($('#tree').scrollTop() + $('.selected').position().top - 100);
             }
             //On left and right arrows
             else if (evt.which === 39) {
+                $('button').blur();
                 $(competencyElementArray[competencySelectionIndex]).find('.collapse').click();
                 $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
 
             } else if (evt.which === 37) {
+                $('button').blur();
                 $(competencyElementArray[competencySelectionIndex]).find('.collapse').click();
                 $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
             }
