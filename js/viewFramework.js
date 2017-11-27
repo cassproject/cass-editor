@@ -225,16 +225,16 @@ refreshSidebar = function () {
     $("#editFrameworkSection #sidebarCompetencyCategoryInput").val(thing["http://schema.eduworks.com/ims/case/v1p0/CFItemType"]);
     $("#editFrameworkSection #sidebarConceptKeyword").text(thing["schema:keywords"]);
     $("#editFrameworkSection #sidebarConceptKeywordInput").val(thing["schema:keywords"]);
-    $("#editFrameworkSection #sidebarAuthor").text(thing.author);
-    $("#editFrameworkSection #sidebarAuthorInput").val(thing.author);
-    $("#editFrameworkSection #sidebarComment").text(thing.comment);
-    $("#editFrameworkSection #sidebarCommentInput").val(thing.comment);
-    $("#editFrameworkSection #sidebarCreator").text(thing.creator);
-    $("#editFrameworkSection #sidebarCreatorInput").val(thing.creator);
-    $("#editFrameworkSection #sidebarAlternativeCodedNotation").text(thing.additionalType);
-    $("#editFrameworkSection #sidebarAlternativeCodedNotationInput").val(thing.additionalType);
-    $("#editFrameworkSection #sidebarWeight").text(thing.weight);
-    $("#editFrameworkSection #sidebarWeightInput").val(thing.weight);
+    $("#editFrameworkSection #sidebarAuthor").text(thing["schema:author"]);
+    $("#editFrameworkSection #sidebarAuthorInput").val(thing["schema:author"]);
+    //    $("#editFrameworkSection #sidebarComment").text(thing.comment);
+    //    $("#editFrameworkSection #sidebarCommentInput").val(thing.comment);
+    $("#editFrameworkSection #sidebarCreator").text(thing["schema:creator"]);
+    $("#editFrameworkSection #sidebarCreatorInput").val(thing["schema:creator"]);
+    $("#editFrameworkSection #sidebarAlternativeCodedNotation").text(thing["ceasn:additionalType"]);
+    $("#editFrameworkSection #sidebarAlternativeCodedNotationInput").val(thing["ceasn:additionalType"]);
+    $("#editFrameworkSection #sidebarWeight").text(thing["ceasn:weight"]);
+    $("#editFrameworkSection #sidebarWeightInput").val(thing["ceasn:weight"]);
 
     $("#editFrameworkSection label").each(function () {
         if ($("#" + $(this).attr("for")).text() == "" || $("#" + $(this).attr("for")).text() == null)
