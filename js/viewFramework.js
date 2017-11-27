@@ -247,11 +247,13 @@ refreshSidebar = function () {
     });
 
     if (framework == thing) {
+        $(".frameworkOnly").show();
         $("#sidebarVersion").hide();
         $("#sidebarAddLevels").hide();
     }
 
-    if (thing == selectedCompetency)
+    if (thing == selectedCompetency) {
+        $(".frameworkOnly").hide();
         if (EcArray.has(framework.competency.concat(framework.level), thing.shortId()))
             $("#sidebarVersion option").prop('selected', false).first().prop('selected', true);
         else {
@@ -260,6 +262,7 @@ refreshSidebar = function () {
             else
                 console.log("Error. Version not certain.");
         }
+    }
 
     if (new EcLevel().isA(thing.getFullType())) {
         $("#sidebarAddCompetencies").hide();
@@ -277,7 +280,7 @@ refreshSidebar = function () {
         $("#sidebarFeedback").html("Some edit options are limited: <li>You do not own this framework.</li> ");
     } else
         $("#sidebarFeedback").html("");
-    
+
 
 }
 
@@ -327,7 +330,7 @@ editSidebar = function () {
 
     var competencies = [];
 
-    $('.competencyName').each(function() {
+    $('.competencyName').each(function () {
         competencies.push($(this).text());
     });
 

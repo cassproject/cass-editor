@@ -249,14 +249,14 @@
 
             <select id="sidebarExport" class="viewMode" onclick="exportSelected();$(this).children().first().prop('selected', true);">
                 <option style="display:none;" disabled selected>Download or view...</option>
-                <option value="asn">Achievement Standards Network</option>
+                <option class="frameworkOnly" value="asn">Achievement Standards Network</option>
                 <option value="cass">CASS (JSON-LD)</option>
                 <option value="cassn4">CASS (RDF Quads)</option>
                 <option value="cassrdfjson">CASS (RDF+JSON)</option>
                 <option value="cassrdfxml">CASS (RDF+XML)</option>
                 <option value="cassturtle">CASS (Turtle)</option>
-                <option value="ceasn">Credential Engine ASN</option>
-                <option value="csv">CSV</option>
+                <option class="frameworkOnly" value="ceasn">Credential Engine ASN</option>
+                <option class="frameworkOnly" value="csv">CSV</option>
                 <option value="case">IMS Global CASE</option>
             </select>
             <button id="sidebarViewJSON" class="export" style="margin: 0rem; display: none;" onclick="viewJSON();">View JSON</button>
