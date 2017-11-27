@@ -89,7 +89,14 @@ CSVExport = stjs.extend(CSVExport, Exporter, [], function(constructor, prototype
                             compExport.buildExport(CSVExport.frameworkCompetencies);
                             compExport.downloadCSV(fw.getName() + " - Competencies.csv");
                         } else {}
-                    }, failure);
+                    }, function(s) {
+                        CSVExport.frameworkCompetencies.push(null);
+                        if (CSVExport.frameworkCompetencies.length == fw.competency.length) {
+                            var compExport = new CSVExport.CSVExportProcess();
+                            compExport.buildExport(CSVExport.frameworkCompetencies);
+                            compExport.downloadCSV(fw.getName() + " - Competencies.csv");
+                        } else {}
+                    });
                 }
                 for (var i = 0; i < fw.relation.length; i++) {
                     var relationUrl = fw.relation[i];
@@ -102,7 +109,16 @@ CSVExport = stjs.extend(CSVExport, Exporter, [], function(constructor, prototype
                             if (success != null && success != undefined) 
                                 success();
                         } else {}
-                    }, failure);
+                    }, function(s) {
+                        CSVExport.frameworkRelations.push(null);
+                        if (CSVExport.frameworkRelations.length == fw.relation.length) {
+                            var compExport = new CSVExport.CSVExportProcess();
+                            compExport.buildExport(CSVExport.frameworkRelations);
+                            compExport.downloadCSV(fw.getName() + " - Relations.csv");
+                            if (success != null && success != undefined) 
+                                success();
+                        } else {}
+                    });
                 }
             }
         }, failure);
@@ -147,10 +163,11 @@ CSVExport = stjs.extend(CSVExport, Exporter, [], function(constructor, prototype
             }
         };
         prototype.buildExport = function(objects) {
-            for (var i = 0; i < objects.length; i++) {
-                var object = objects[i];
-                this.addCSVRow(object);
-            }
+            for (var i = 0; i < objects.length; i++) 
+                if (objects[i] != null) {
+                    var object = objects[i];
+                    this.addCSVRow(object);
+                }
         };
         prototype.downloadCSV = function(name) {
             var csv = Papa.unparse(this.csvOutput);
