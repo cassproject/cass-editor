@@ -480,10 +480,6 @@ $('html').keydown(function (evt) {
                 $(competencyElementArray[competencySelectionIndex]).find('.collapse').click();
                 $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
             }
-            //On space
-            else if (evt.which === 32) {
-                $(competencyElementArray[competencySelectionIndex]).children("input").click();
-            }
             //On Backspace
             else if (evt.which === 8) {
                 $('#editFrameworkBack').click();
@@ -494,7 +490,25 @@ $('html').keydown(function (evt) {
                     if (evt.shiftKey)
                         selectAll();
                     else
-                        $("#selectButton").click();
+                        $(competencyElementArray[competencySelectionIndex]).children("input").click();
+                }
+            }
+            //Shift+C
+            else if (evt.which === 67) {
+                if (evt.shiftKey) {
+                    dragShortcut($('.selected'));
+                }
+            }
+            //Shift+V
+            else if (evt.which === 86) {
+                if (evt.shiftKey) {
+                    dropShortcut($('.selected'));
+                }
+            }
+            //Shift+U
+            else if (evt.which === 85) {
+                if (evt.shiftKey) {
+                    unlinkCompetency();
                 }
             }
 
