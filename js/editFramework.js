@@ -142,7 +142,7 @@ saveCompetency = function () {
         framework["schema:inLanguage"] = getValueOrNull($("#sidebarInLanguageInput").val());
         framework.author = getValueOrNull($("#sidebarAuthorInput").val());
         framework.creator = getValueOrNull($("#sidebarCreatorInput").val());
-        selectedCompetency["schema:keywords"] = getValueOrNull($("#sidebarConceptKeywordInput").val()) === null ? null : $("#sidebarConceptKeywordInput").val().split(',');
+        framework["schema:keywords"] = getValueOrNull($("#sidebarConceptKeywordInput").val()) === null ? null : $("#sidebarConceptKeywordInput").val().split(',');
 
         EcRepository.save(framework, function () {
             populateFramework();
@@ -275,6 +275,57 @@ deleteCompetency = function () {
             }
             hideConfirmDialog();
         }, "Are you sure you want to delete this competency? This will remove the competency from the system entirely, not just from your framework.", "delete", selectedCompetency.shortId());
+    }
+}
+
+dragShortcut = function (element) {
+    if (viewMode) return;
+    dragShortcutData = {
+        competencyId: $(element).attr('id'),
+        relationId: $(element).attr('relationid')
+    };
+}
+
+dropShortcut = function (element) {
+    if (viewMode) return;
+    if (dragShortcutData != null) {
+        if (dragShortcutData.relationId != null && dragShortcutData.relationId != '')
+            framework.removeRelation(dragShortcutData.relationId);
+        var targetData = {};
+        var tgt = $(element);
+        while (targetData.competencyId == null) {
+            targetData.competencyId = tgt.attr('id');
+            tgt = tgt.parent();
+        }
+        if (dragShortcutData.competencyId == targetData.competencyId) return;
+        var thing = EcRepository.getBlocking(dragShortcutData.competencyId);
+        if (thing.isAny(new EcLevel().getTypes())) {
+            thing.competency = targetData.competencyId;
+            EcRepository.save(thing, function () {
+                if (webSocketConnection == false)
+                    populateFramework();
+            }, error);
+        } else if (thing.isAny(new EcCompetency().getTypes())) {
+            var r = new EcAlignment();
+            r.generateId(repo.selectedServer);
+            r.target = EcRemoteLinkedData.trimVersionFromUrl(targetData.competencyId);
+            r.source = thing.shortId();
+            if (r.target == r.source)
+                return;
+            r.relationType = Relation.NARROWS;
+            if (EcIdentityManager.ids.length > 0)
+                r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            framework.addRelation(r.id);
+            framework.removeRelation(dragShortcutData.relationId);
+            r.save(function () {}, error);
+            EcRepository.save(framework, function () {
+                if (dragShortcutData.relationId != null && dragShortcutData.relationId !== undefined)
+                    conditionalDelete(dragShortcutData.relationId);
+                if (webSocketConnection == false)
+                    populateFramework();
+            }, error);
+        }
+        dragShortcutData = null;
     }
 }
 

@@ -116,7 +116,10 @@ The cass-editor can send events when various operations occur. This functionalit
 &uarr; & &darr; - Navigate up and down the list of frameworks and competencies.  
 &larr; & &rarr; - Expand and contract nested comptencies.  
 Enter - Select the current element.  
-Shift + Enter - Add selected comptencies to your framework in search.
+Shift + Enter - Select all.  
 Backspace - Go back.  
 Tab - Switch focus between the buttons and text fields on the page.  
 Escape - Step out of a text field to return to navigation.  
+Shift + C - Drag competency  
+Shift + V - Drop competency  
+Shift + U - Unlink competency
