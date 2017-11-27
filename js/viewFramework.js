@@ -103,7 +103,8 @@ function afterRefresh(level, subsearch) {
         showPage("#editFrameworkSection", framework);
     $("#tree").show().scrollTop(treeTop);
     if (selectedCompetency !== null) {
-        document.getElementById(selectedCompetency.shortId()).classList.add('selected');
+        $("[id=\"" + selectedCompetency.shortId() + "\"]").addClass("selected");
+        $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
     }
 }
 
