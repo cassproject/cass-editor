@@ -19,7 +19,7 @@ function searchFrameworks(paramObj) {
 }
 var frameworkLoading = 0;
 
-function frameworkSearch(server, searchTerm, subsearchTerm, paramObj) {
+function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
     frameworkLoading++;
     var search = "";
     if (queryParams.filter != null)
@@ -67,7 +67,19 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj) {
                 $("#frameworks").html("<center>No frameworks found.</center>");
             showPage("#frameworksSection");
         }
-    }, console.log, paramObj);
+    }, function (failure) {
+        frameworkLoading--;
+        if (retry == true) {
+            loading(failure);
+            setTimeout(function () {
+                showPage("#frameworksSection");
+            }, 2000);
+        } else {
+            loading("Defaulting to exact search.");
+            //var escapedSearch = $("#search").val().replaceAll(/([$-/:-?{-~!"^_`\[\]])/g, "\\$1");
+            frameworkSearch(server, "\"" + searchTerm + "\"", subsearchTerm, paramObj, true);
+        }
+    }, paramObj);
 }
 
 function frameworkSearchByCompetency(server, searchTerm) {
