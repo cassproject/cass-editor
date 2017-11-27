@@ -289,42 +289,17 @@ dragShortcut = function (element) {
 dropShortcut = function (element) {
     if (viewMode) return;
     if (dragShortcutData != null) {
-        if (dragShortcutData.relationId != null && dragShortcutData.relationId != '')
+        if (dragShortcutData.relationId != null && dragShortcutData.relationId != '') {
             framework.removeRelation(dragShortcutData.relationId);
+            conditionalDelete(targetData.relationId);
+        }
         var targetData = {};
         var tgt = $(element);
         while (targetData.competencyId == null) {
             targetData.competencyId = tgt.attr('id');
             tgt = tgt.parent();
         }
-        if (dragShortcutData.competencyId == targetData.competencyId) return;
-        var thing = EcRepository.getBlocking(dragShortcutData.competencyId);
-        if (thing.isAny(new EcLevel().getTypes())) {
-            thing.competency = targetData.competencyId;
-            EcRepository.save(thing, function () {
-                if (webSocketConnection == false)
-                    populateFramework();
-            }, error);
-        } else if (thing.isAny(new EcCompetency().getTypes())) {
-            var r = new EcAlignment();
-            r.generateId(repo.selectedServer);
-            r.target = EcRemoteLinkedData.trimVersionFromUrl(targetData.competencyId);
-            r.source = thing.shortId();
-            if (r.target == r.source)
-                return;
-            r.relationType = Relation.NARROWS;
-            if (EcIdentityManager.ids.length > 0)
-                r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-            framework.addRelation(r.id);
-            framework.removeRelation(dragShortcutData.relationId);
-            r.save(function () {}, error);
-            EcRepository.save(framework, function () {
-                if (dragShortcutData.relationId != null && dragShortcutData.relationId !== undefined)
-                    conditionalDelete(dragShortcutData.relationId);
-                if (webSocketConnection == false)
-                    populateFramework();
-            }, error);
-        }
+        dropAny(dragShortcutData, targetData);
         dragShortcutData = null;
     }
 }
@@ -337,24 +312,18 @@ dragCompetency = function (ev) {
     }));
 }
 
-dropCompetency = function (ev) {
-    if (viewMode) return;
-    ev.stopPropagation();
-    var data = ev.dataTransfer.getData("text");
-    if (data != null)
-        data = JSON.parse(data);
-    else
-        return;
-    ev.dataTransfer.clearData("text");
-    if (!ev.shiftKey)
-        if (data.relationId != null && data.relationId != "")
-            framework.removeRelation(data.relationId);
-    var targetData = {};
-    var tgt = $(ev.target);
-    while (targetData.competencyId == null) {
-        targetData.competencyId = tgt.attr("id");
-        tgt = tgt.parent();
+dropAny = function (data, targetData) {
+    //If data is a parent of targetData, we need to unlink targetData.
+    //This is better rewritten than understood, unless you're Fritz or Mile.
+    var targetNodes = $("[id=\"" + targetData.competencyId + "\"]");
+    if (targetNodes.parents("[id=\"" + data.competencyId + "\"]").length > 0) {
+        //OK I found some possible loops. Go find me the actual loops and nuke some connections to make what I commanded possible.
+        targetNodes.parents("[id=\"" + data.competencyId + "\"]").find("[id=\"" + targetData.competencyId + "\"]").each(function () {
+            framework.removeRelation($(this).attr("relationId"));
+            conditionalDelete($(this).attr("relationId"));
+        });
     }
+
     if (data.competencyId == targetData.competencyId) return;
     var thing = EcRepository.getBlocking(data.competencyId);
     if (thing.isAny(new EcLevel().getTypes())) {
@@ -374,7 +343,6 @@ dropCompetency = function (ev) {
         if (EcIdentityManager.ids.length > 0)
             r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
         framework.addRelation(r.id);
-        framework.removeRelation(data.relationId);
         r.save(function () {}, error);
         EcRepository.save(framework, function () {
             if (data.relationId != null && data.relationId !== undefined)
@@ -383,6 +351,30 @@ dropCompetency = function (ev) {
                 populateFramework();
         }, error);
     }
+}
+
+dropCompetency = function (ev) {
+    if (viewMode) return;
+    ev.stopPropagation();
+    var data = ev.dataTransfer.getData("text");
+    if (data != null)
+        data = JSON.parse(data);
+    else
+        return;
+    ev.dataTransfer.clearData("text");
+    if (!ev.shiftKey)
+        if (data.relationId != null && data.relationId != "") {
+            framework.removeRelation(data.relationId);
+            conditionalDelete(targetData.relationId);
+        }
+    var targetData = {};
+    var tgt = $(ev.target);
+    while (targetData.competencyId == null) {
+        targetData.competencyId = tgt.attr("id");
+        targetData.relationId = tgt.attr("relationid");
+        tgt = tgt.parent();
+    }
+    dropAny(data, targetData);
 }
 
 allowCompetencyDrop = function (ev) {
@@ -416,6 +408,7 @@ getValueOrNull = function (value) {
         return value;
 }
 
+var itemsSaving = 0;
 copyCompetencies = function (results) {
     if (viewMode) return;
     var copyDict = {};
@@ -428,12 +421,14 @@ copyCompetencies = function (results) {
             framework.addCompetency(c.id);
             if (EcIdentityManager.ids.length > 0)
                 c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-            c.name = thing.name;
-            c.description = thing.description;
             c['ceasn:derivedFrom'] = thing.id;
             copyDict[c['ceasn:derivedFrom']] = c;
-
-            EcRepository.save(c, function () {}, error);
+            itemsSaving++;
+            EcRepository.save(c, function () {
+                itemsSaving--;
+                if (itemsSaving == 0)
+                    EcRepository.save(framework, afterSave, error);
+            }, error);
         }
     }
     for (var i = 0; i < results.length; i++) {
@@ -456,7 +451,14 @@ copyCompetencies = function (results) {
 
                 if (r.source != r.target) {
                     framework.addRelation(r.id);
-                    EcRepository.save(r, function () {}, error);
+                    EcArray.setRemove(results, r.source);
+                    itemsSaving++;
+                    EcRepository.save(r,
+                        function () {
+                            itemsSaving--;
+                            if (itemsSaving == 0)
+                                EcRepository.save(framework, afterSave, error);
+                        }, error);
                 }
             }
         }
@@ -476,11 +478,15 @@ copyCompetencies = function (results) {
                 r.relationType = Relation.NARROWS;
                 if (EcIdentityManager.ids.length > 0)
                     r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-
                 if (r.source != r.target) {
+                    itemsSaving++;
                     framework.addRelation(r.id);
                     EcRepository.save(r,
-                        afterSave, error);
+                        function () {
+                            itemsSaving--;
+                            if (itemsSaving == 0)
+                                EcRepository.save(framework, afterSave, error);
+                        }, error);
                 }
             }
     }

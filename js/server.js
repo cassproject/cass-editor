@@ -71,6 +71,7 @@ openWebSocket = function (r) {
                         if (EcArray.has(framework.competency, wut.shortId()) || EcArray.has(framework.competency, wut.shortId()) || JSON.stringify(competency.framework).indexOf(EcCrypto.md5(wut.id)) != -1) {
                             var com = new EcCompetency();
                             com.copyFrom(wut);
+                            window.fetches++;
                             refreshCompetency(com);
                             if (selectedCompetency != null)
                                 if (selectedCompetency.id == wut.id) {
@@ -86,6 +87,7 @@ openWebSocket = function (r) {
                         if (EcArray.has(framework.level, wut.shortId()) || EcArray.has(framework.level, wut.shortId())) {
                             var com = new EcLevel();
                             com.copyFrom(wut);
+                            window.fetches++;
                             refreshCompetency(com);
                             if (selectedCompetency != null)
                                 if (selectedCompetency.id == wut.id) {
