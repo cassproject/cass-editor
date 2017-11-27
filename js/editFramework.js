@@ -140,8 +140,8 @@ saveCompetency = function () {
         framework.description = getValueOrNull($("#sidebarDescriptionInput").val());
 
         framework["schema:inLanguage"] = getValueOrNull($("#sidebarInLanguageInput").val());
-        framework.author = getValueOrNull($("#sidebarAuthorInput").val());
-        framework.creator = getValueOrNull($("#sidebarCreatorInput").val());
+        framework["schema:author"] = getValueOrNull($("#sidebarAuthorInput").val());
+        framework["schema:creator"] = getValueOrNull($("#sidebarCreatorInput").val());
         selectedCompetency["schema:keywords"] = getValueOrNull($("#sidebarConceptKeywordInput").val()) === null ? null : $("#sidebarConceptKeywordInput").val().split(',');
 
         EcRepository.save(framework, function () {
@@ -154,12 +154,12 @@ saveCompetency = function () {
         selectedCompetency["schema:inLanguage"] = getValueOrNull($("#sidebarInLanguageInput").val());
         selectedCompetency["schema:identifier"] = getValueOrNull($("#sidebarCodedNotationInput").val());
         selectedCompetency["http://schema.eduworks.com/ims/case/v1p0/CFItemType"] = getValueOrNull($("#sidebarCompetencyCategoryInput").val());
-        selectedCompetency.author = getValueOrNull($("#sidebarAuthorInput").val());
-        selectedCompetency.comment = getValueOrNull($("#sidebarCommentInput").val());
-        selectedCompetency.creator = getValueOrNull($("#sidebarCreatorInput").val());
-        selectedCompetency.additionalType = getValueOrNull($("#sidebarAlternativeCodedNotationInput").val());
+        selectedCompetency["schema:author"] = getValueOrNull($("#sidebarAuthorInput").val());
+        //selectedCompetency.comment = getValueOrNull($("#sidebarCommentInput").val());
+        selectedCompetency["schema:creator"] = getValueOrNull($("#sidebarCreatorInput").val());
+        selectedCompetency["ceasn:additionalType"] = getValueOrNull($("#sidebarAlternativeCodedNotationInput").val());
         selectedCompetency["schema:keywords"] = getValueOrNull($("#sidebarConceptKeywordInput").val()) === null ? null : $("#sidebarConceptKeywordInput").val().split(',');
-        selectedCompetency.weight = getValueOrNull($("#sidebarWeightInput").val());
+        selectedCompetency["ceasn:weight"] = getValueOrNull($("#sidebarWeightInput").val());
 
         EcRepository.save(selectedCompetency, afterSave, error);
     }
