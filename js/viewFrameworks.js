@@ -40,10 +40,14 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
                 p.attr("subsearch", subsearchTerm);
                 p.click(function (evt) {
                     loading("Loading framework...");
-                    var frameworkId = null
-                    frameworkId = $(evt.target).attr("id");
+                    var frameworkId = null;
+                    var frameworkTarget = $(evt.target);
+                    while (frameworkId == null && frameworkTarget.length > 0) {
+                        frameworkId = frameworkTarget.attr("id");
+                        frameworkTarget = frameworkTarget.parent();
+                    }
                     if (frameworkId == null)
-                        frameworkId = $(evt.target).parent().attr("id");
+                        error("Critical: Couldn't find framework ID.");
                     EcFramework.get(frameworkId, function (f) {
                         framework = f;
                         populateFramework(subsearchTerm);
