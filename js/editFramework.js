@@ -136,8 +136,8 @@ addLevel = function () {
 saveCompetency = function () {
     if (viewMode) return;
     if (selectedCompetency == null) {
-        framework.name = $("#sidebarNameInput").val();
-        framework.description = $("#sidebarDescriptionInput").val();
+        framework.name = getValueOrNull($("#sidebarNameInput").val());
+        framework.description = getValueOrNull($("#sidebarDescriptionInput").val());
 
         framework["schema:inLanguage"] = getValueOrNull($("#sidebarInLanguageInput").val());
         framework.author = getValueOrNull($("#sidebarAuthorInput").val());
