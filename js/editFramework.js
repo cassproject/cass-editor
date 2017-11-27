@@ -142,7 +142,7 @@ saveCompetency = function () {
         framework["schema:inLanguage"] = getValueOrNull($("#sidebarInLanguageInput").val());
         framework["schema:author"] = getValueOrNull($("#sidebarAuthorInput").val());
         framework["schema:creator"] = getValueOrNull($("#sidebarCreatorInput").val());
-        selectedCompetency["schema:keywords"] = getValueOrNull($("#sidebarConceptKeywordInput").val()) === null ? null : $("#sidebarConceptKeywordInput").val().split(',');
+        framework["schema:keywords"] = getValueOrNull($("#sidebarConceptKeywordInput").val()) === null ? null : $("#sidebarConceptKeywordInput").val().split(',');
 
         EcRepository.save(framework, function () {
             populateFramework();
