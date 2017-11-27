@@ -179,6 +179,7 @@ createFramework = function () {
         framework.description = $("#description").val();
     loading("Creating framework...");
     EcRepository.save(framework, function () {
+        refreshSidebar();
         populateFramework();
     }, error);
 }
