@@ -280,27 +280,30 @@ deleteCompetency = function () {
     }
 }
 
-dragShortcut = function (element) {
+dragShortcut = function (element, isCopy) {
     if (viewMode) return;
     dragShortcutData = {
         competencyId: $(element).attr('id'),
-        relationId: $(element).attr('relationid')
+        relationId: $(element).attr('relationid'),
+        isCopy: isCopy
     };
 }
 
 dropShortcut = function (element) {
     if (viewMode) return;
     if (dragShortcutData != null) {
-        if (dragShortcutData.relationId != null && dragShortcutData.relationId != '') {
-            framework.removeRelation(dragShortcutData.relationId);
-            conditionalDelete(targetData.relationId);
-        }
         var targetData = {};
         var tgt = $(element);
         while (targetData.competencyId == null) {
             targetData.competencyId = tgt.attr('id');
             tgt = tgt.parent();
         }
+        //Cut and paste
+        if (!dragShortcutData.isCopy)
+            if (dragShortcutData.relationId != null && dragShortcutData.relationId != '') {
+                framework.removeRelation(dragShortcutData.relationId);
+                conditionalDelete(targetData.relationId);
+            }
         dropAny(dragShortcutData, targetData);
         dragShortcutData = null;
     }
@@ -364,11 +367,7 @@ dropCompetency = function (ev) {
     else
         return;
     ev.dataTransfer.clearData("text");
-    if (!ev.shiftKey)
-        if (data.relationId != null && data.relationId != "") {
-            framework.removeRelation(data.relationId);
-            conditionalDelete(targetData.relationId);
-        }
+    
     var targetData = {};
     var tgt = $(ev.target);
     while (targetData.competencyId == null) {
@@ -376,6 +375,11 @@ dropCompetency = function (ev) {
         targetData.relationId = tgt.attr("relationid");
         tgt = tgt.parent();
     }
+    if (!ev.shiftKey)
+        if (data.relationId != null && data.relationId != "") {
+            framework.removeRelation(data.relationId);
+            conditionalDelete(targetData.relationId);
+        }
     dropAny(data, targetData);
 }
 

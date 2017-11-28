@@ -494,7 +494,13 @@ $('html').keydown(function (evt) {
             //Shift+C
             else if (evt.which === 67) {
                 if (evt.shiftKey) {
-                    dragShortcut($('.selected'));
+                    dragShortcut($('.selected'), true);
+                }
+            }
+            //Shift+X
+            else if (evt.which === 88) {
+                if (evt.shiftKey) {
+                    dragShortcut($('.selected'), false);
                 }
             }
             //Shift+V
