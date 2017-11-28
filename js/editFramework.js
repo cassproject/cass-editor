@@ -259,6 +259,7 @@ deleteCompetency = function () {
                     framework = null;
                     selectedCompetency = null;
                     showPage(defaultPage);
+                    searchFrameworks(createParamObj(5000));
                 }, console.log);
             }
             hideConfirmDialog();
