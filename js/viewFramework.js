@@ -103,7 +103,7 @@ function afterRefresh(level, subsearch) {
         showPage("#editFrameworkSection", framework);
     $("#tree").show().scrollTop(treeTop);
     if (selectedCompetency !== null) {
-        $("[id=\"" + selectedCompetency.shortId() + "\"]").addClass("selected");
+        highlightSelected($("[id=\"" + selectedCompetency.shortId() + "\"]"));
         $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
     }
 }
@@ -355,8 +355,7 @@ $("body").on("click", ".competency input", null, function (evt) {
     if (!$(this).hasClass("competency"))
         me = $(this).parents("competency");
 
-    $('.selected').removeClass('selected');
-    me.addClass('selected');
+    highlightSelected(me);
 
     selectedCompetency = EcCompetency.getBlocking(me.attr("id"));
     if (selectedCompetency == null)
@@ -371,8 +370,7 @@ $("body").on("click", ".competency input", null, function (evt) {
 });
 
 $('body').on('click', '#frameworkName', function (evt) {
-    $('.selected').removeClass('selected');
-    $('#frameworkNameContainer').addClass('selected');
+    highlightSelected($('#frameworkNameContainer'));
 });
 
 $('body').on('dragover', '.competency', function (evt) {

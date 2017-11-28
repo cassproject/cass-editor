@@ -181,6 +181,7 @@ createFramework = function () {
     EcRepository.save(framework, function () {
         refreshSidebar();
         populateFramework();
+        highlightSelected($('#frameworkNameContainer'));
     }, error);
 }
 
@@ -501,6 +502,11 @@ copyCompetencies = function (results) {
         if (webSocketConnection == false)
             populateFramework();
     }, error);
+}
+
+highlightSelected = function (element) {
+    $('.selected').removeClass('selected');
+    $(element).addClass('selected');
 }
 
 showCopyOrLinkDialog = function (callback) {
