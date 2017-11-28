@@ -247,6 +247,10 @@ deleteCompetency = function () {
         showConfirmDialog(function (confirmed) {
             if (confirmed === true) {
                 EcRepository._delete(framework, function (success) {
+                    if (defaultPage == "#frameworksSection")
+                        searchFrameworks(createParamObj(5000));
+                    else
+                        showPage(defaultPage);
                     //Delete the framework, delete all non-used stuff.
                     if (framework.competency != null)
                         for (var i = 0; i < framework.competency.length; i++)
@@ -259,8 +263,6 @@ deleteCompetency = function () {
                             conditionalDelete(framework.level[i]);
                     framework = null;
                     selectedCompetency = null;
-                    showPage(defaultPage);
-                    searchFrameworks(createParamObj(5000));
                 }, console.log);
             }
             hideConfirmDialog();
@@ -368,7 +370,7 @@ dropCompetency = function (ev) {
     else
         return;
     ev.dataTransfer.clearData("text");
-    
+
     var targetData = {};
     var tgt = $(ev.target);
     while (targetData.competencyId == null) {
