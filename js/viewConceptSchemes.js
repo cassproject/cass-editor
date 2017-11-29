@@ -2,26 +2,24 @@ if (queryParams.select != null)
     if (parent != window)
         $("#frameworksBack").show();
 
-function searchFrameworks(paramObj) {
-    if (conceptMode)
-        return searchConceptSchemes(paramObj);
-    loading("Loading frameworks...");
+function searchConceptSchemes(paramObj) {
+    loading("Loading concept schemes...");
     var searchTerm = $("#search").val();
     if (searchTerm == null || searchTerm == "")
         searchTerm = "*";
     $("#frameworks").html("");
     searchCompetencies = [];
     for (var i = 0; i < servers.length; i++) {
-        frameworkSearch(servers[i], searchTerm, null, paramObj);
+        conceptSchemeSearch(servers[i], searchTerm, null, paramObj);
         if (viewMode)
             if (searchTerm != "*") {
-                frameworkSearchByCompetency(servers[i], searchTerm);
+                conceptSchemeSearchByConcept(servers[i], searchTerm);
             }
     }
 }
 var frameworkLoading = 0;
 
-function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
+function conceptSchemeSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
     frameworkLoading++;
     var search = "";
     if (queryParams.filter != null)
@@ -88,7 +86,7 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
     }, paramObj);
 }
 
-function frameworkSearchByCompetency(server, searchTerm, retry) {
+function conceptSchemeSearchByConcept(server, searchTerm, retry) {
     frameworkLoading++;
     EcCompetency.search(server, searchTerm, function (competencies) {
         var subSearch = "";
@@ -131,10 +129,3 @@ function frameworkSearchByCompetency(server, searchTerm, retry) {
         size: 5000
     });
 }
-
-$("#search").keyup(function (event) {
-    if (event.keyCode == '13') {
-        searchFrameworks(createParamObj(5000));
-    }
-    return false;
-});

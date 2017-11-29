@@ -1,10 +1,4 @@
-afterSave = function (stuff) {
-    console.log(stuff);
-    if (webSocketConnection == false)
-        populateFramework();
-}
-
-addCompetency = function () {
+addConcept = function () {
     if (conceptMode) return addConcept();
     if (viewMode) return;
     var addOrSearch = $("#sidebarAddCompetencies").val();
@@ -50,86 +44,7 @@ addCompetency = function () {
     }
 }
 
-appendCompetencies = function (results, newLink) {
-    if (conceptMode) return;
-    if (viewMode) return;
-    var selectedCompetency = selectedCompetency;
-    if (newLink !== null && newLink === true) {
-        selectedCompetency = previousSelectedCompetency;
-    }
-    for (var i = 0; i < results.length; i++) {
-        var thing = EcRepository.getBlocking(results[i]);
-        if (thing.isAny(new EcCompetency().getTypes())) {
-            framework.addCompetency(thing.shortId());
-        } else if (thing.isAny(new EcLevel().getTypes())) {
-            framework.addLevel(thing.shortId());
-        }
-    }
-    for (var i = 0; i < results.length; i++) {
-        var thing = EcRepository.getBlocking(results[i]);
-        if (thing.isAny(new EcAlignment().getTypes())) {
-            if (EcArray.has(framework.competency, thing.source))
-                if (EcArray.has(framework.competency, thing.target)) {
-                    framework.addRelation(thing.shortId());
-                    EcArray.setRemove(results, thing.source);
-                }
-        }
-    }
-
-    for (var i = 0; i < results.length; i++) {
-        var thing = EcRepository.getBlocking(results[i]);
-        if (thing.isAny(new EcCompetency().getTypes()))
-            if (selectedCompetency != null) {
-                var r = new EcAlignment();
-                r.generateId(repo.selectedServer);
-
-                r.target = selectedCompetency.shortId();
-                r.source = thing.shortId();
-                r.relationType = Relation.NARROWS;
-                if (EcIdentityManager.ids.length > 0)
-                    r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-
-                if (r.source != r.target) {
-                    framework.addRelation(r.id);
-                    EcRepository.save(r,
-                        afterSave, error);
-                }
-            }
-    }
-
-    EcRepository.save(framework, function () {
-        refreshSidebar();
-        $("#sidebarNameInput").focus();
-    }, error);
-}
-
-addLevel = function () {
-    if (conceptMode) return;
-    if (viewMode) return;
-    var addOrSearch = $("#sidebarAddLevels").val();
-    if (addOrSearch == "search") {
-        gotoPage("#findCompetencySection", framework);
-    } else if (addOrSearch == "new") {
-        var c = new EcLevel();
-        c.generateId(repo.selectedServer);
-        framework.addLevel(c.id);
-        if (EcIdentityManager.ids.length > 0)
-            c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-        c.name = "New Level";
-        c.competency = selectedCompetency.shortId();
-        EcRepository.save(c, function () {
-            EcRepository.save(framework, function () {
-                selectedCompetency = c;
-                refreshSidebar();
-                editSidebar();
-                $("#sidebarNameInput").focus();
-                afterSave();
-            }, error);
-        }, error);
-    }
-}
-
-saveCompetency = function () {
+saveConcept = function () {
     if (conceptMode) return saveConcept();
     if (viewMode) return;
     if (selectedCompetency == null) {
@@ -163,7 +78,7 @@ saveCompetency = function () {
     refreshSidebar();
 }
 
-createFramework = function () {
+createConceptScheme = function () {
     if (conceptMode) return createConceptScheme();
     if (viewMode) return;
     if ($("#name").val() == null || $("#name").val().trim() == "")
@@ -183,41 +98,7 @@ createFramework = function () {
     }, error);
 }
 
-setCompetencyConfigurationManagement = function () {
-    if (conceptMode) return;
-    if (viewMode) return;
-    var addOrSearch = $("#sidebarVersion").val();
-    if (addOrSearch == "version") {
-        for (var i = 0; i < framework.competency.length; i++) {
-            if (framework.competency[i] == selectedCompetency.shortId()) {
-                framework.competency[i] = selectedCompetency.id;
-                EcRepository.save(framework, refreshSidebar, error);
-            }
-        }
-        for (var i = 0; i < framework.level.length; i++) {
-            if (framework.level[i] == selectedCompetency.shortId()) {
-                framework.level[i] = selectedCompetency.id;
-                EcRepository.save(framework, refreshSidebar, error);
-            }
-        }
-    } else if (addOrSearch == "noVersion") {
-
-        for (var i = 0; i < framework.competency.length; i++) {
-            if (framework.competency[i] == selectedCompetency.id) {
-                framework.competency[i] = selectedCompetency.shortId();
-                EcRepository.save(framework, refreshSidebar, error);
-            }
-        }
-        for (var i = 0; i < framework.level.length; i++) {
-            if (framework.level[i] == selectedCompetency.id) {
-                framework.level[i] = selectedCompetency.shortId();
-                EcRepository.save(framework, refreshSidebar, error);
-            }
-        }
-    }
-}
-
-unlinkCompetency = function () {
+unlinkConcept = function () {
     if (conceptMode) return unlinkConcept();
     if (viewMode) return;
     framework.removeRelation(selectedRelation.shortId());
@@ -227,22 +108,7 @@ unlinkCompetency = function () {
     refreshSidebar();
 }
 
-removeCompetency = function () {
-    if (conceptMode) return;
-    if (viewMode) return;
-    showConfirmDialog(function (confirmed) {
-        if (confirmed === true) {
-            framework.removeCompetency(selectedCompetency.shortId());
-            selectedRelation = null;
-            selectedCompetency = null;
-            EcRepository.save(framework, afterSave, console.log);
-            refreshSidebar();
-        }
-        hideConfirmDialog();
-    }, "This will remove the competency from your framework (but not delete it), do you wish to continue?");
-}
-
-deleteCompetency = function () {
+deleteConcept = function () {
     if (conceptMode) return deleteConcept();
     if (viewMode) return;
     if (selectedCompetency == null) {
@@ -285,7 +151,7 @@ deleteCompetency = function () {
     }
 }
 
-dragShortcut = function (element, isCopy) {
+dragConceptShortcut = function (element, isCopy) {
     if (conceptMode) return dragConceptShortcut();
     if (viewMode) return;
     dragShortcutData = {
@@ -295,7 +161,7 @@ dragShortcut = function (element, isCopy) {
     };
 }
 
-dropShortcut = function (element) {
+dropConceptShortcut = function (element) {
     if (conceptMode) return dropConceptShortcut();
     if (viewMode) return;
     if (dragShortcutData != null) {
@@ -316,7 +182,7 @@ dropShortcut = function (element) {
     }
 }
 
-dragCompetency = function (ev) {
+dragConcept = function (ev) {
     if (conceptMode) return dragConcept();
     if (viewMode) return;
     ev.dataTransfer.setData("text", JSON.stringify({
@@ -366,7 +232,7 @@ dropAny = function (data, targetData) {
     }
 }
 
-dropCompetency = function (ev) {
+dropConcept = function (ev) {
     if (conceptMode) return dropConcept();
     if (viewMode) return;
     ev.stopPropagation();
@@ -392,7 +258,7 @@ dropCompetency = function (ev) {
     dropAny(data, targetData);
 }
 
-allowCompetencyDrop = function (ev) {
+allowConceptDrop = function (ev) {
     if (conceptMode) return allowConceptDrop();
     if (viewMode) return;
     ev.preventDefault();
@@ -415,169 +281,4 @@ conditionalDelete = function (id, depth) {
                 }
             }, console.error, {});
         }, 1000);
-}
-
-getValueOrNull = function (value) {
-    if (value === '')
-        return null;
-    else
-        return value;
-}
-
-var itemsSaving = 0;
-copyCompetencies = function (results) {
-    if (conceptMode) return;
-    if (viewMode) return;
-    var copyDict = {};
-    for (var i = 0; i < results.length; i++) {
-        var thing = EcRepository.getBlocking(results[i]);
-        if (thing != null && thing.isAny(new EcCompetency().getTypes())) {
-            var c = new EcCompetency();
-            c.copyFrom(thing);
-            c.generateId(repo.selectedServer);
-            framework.addCompetency(c.id);
-            if (EcIdentityManager.ids.length > 0)
-                c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-            c['ceasn:derivedFrom'] = thing.id;
-            copyDict[c['ceasn:derivedFrom']] = c;
-            itemsSaving++;
-            EcRepository.save(c, function () {
-                itemsSaving--;
-                if (itemsSaving == 0)
-                    EcRepository.save(framework, afterSave, error);
-            }, error);
-        }
-    }
-    for (var i = 0; i < results.length; i++) {
-        var thing = EcRepository.getBlocking(results[i]);
-        if (thing != null && thing.isAny(new EcAlignment().getTypes())) {
-
-            var parent = copyDict[thing.target];
-            var child = copyDict[thing.source];
-
-            if (typeof parent !== 'undefined' && typeof child !== 'undefined') {
-                var r = new EcAlignment();
-                r.copyFrom(thing);
-                r.generateId(repo.selectedServer);
-
-                r.target = parent.shortId();
-                r.source = child.shortId();
-                r.relationType = thing.relationType;
-                if (EcIdentityManager.ids.length > 0)
-                    r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-
-                if (r.source != r.target) {
-                    framework.addRelation(r.id);
-                    EcArray.setRemove(results, r.source);
-                    itemsSaving++;
-                    EcRepository.save(r,
-                        function () {
-                            itemsSaving--;
-                            if (itemsSaving == 0)
-                                EcRepository.save(framework, afterSave, error);
-                        }, error);
-                }
-            }
-        }
-    }
-    for (var i = 0; i < results.length; i++) {
-        var thing = EcRepository.getBlocking(results[i]);
-        if (thing != null && thing.isAny(new EcCompetency().getTypes()))
-            if (selectedCompetency != null) {
-
-                var r = new EcAlignment();
-                r.generateId(repo.selectedServer);
-
-                var child = copyDict[thing.id];
-
-                r.target = selectedCompetency.shortId();
-                r.source = child.shortId();
-                r.relationType = Relation.NARROWS;
-                if (EcIdentityManager.ids.length > 0)
-                    r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-                if (r.source != r.target) {
-                    itemsSaving++;
-                    framework.addRelation(r.id);
-                    EcRepository.save(r,
-                        function () {
-                            itemsSaving--;
-                            if (itemsSaving == 0)
-                                EcRepository.save(framework, afterSave, error);
-                        }, error);
-                }
-            }
-    }
-    EcRepository.save(framework, function () {
-        refreshSidebar();
-        if (webSocketConnection == false)
-            populateFramework();
-    }, error);
-}
-
-highlightSelected = function (element) {
-    $('.selected').removeClass('selected');
-    $(element).addClass('selected');
-}
-
-showCopyOrLinkDialog = function (callback) {
-    if (viewMode) return;
-    $("#copyOrLinkDialog").show();
-    $("#confirmOverlay").show();
-
-    $("#copyCompetenciesButton").on('click', function () {
-        callback(true);
-    });
-
-    $("#linkCompetenciesButton").on('click', function () {
-        callback(false);
-    });
-}
-
-hideCopyOrLinkDialog = function () {
-    if (viewMode) return;
-    $("#copyOrLinkDialog").hide();
-    $("#confirmOverlay").hide();
-    $("#linkCompetenciesButton").off();
-    $("#copyCompetenciesButton").off();
-}
-
-showConfirmDialog = function (callback, statement, action, id) {
-    if (viewMode) return;
-    if (action === 'delete') {
-        EcFramework.search(repo, "\"" + id + "\"", function (results) {
-            $("#confirmDialog").show();
-            $("#confirmOverlay").show();
-            if (results.length > 1) {
-                statement += ' Up to ' + results.length + ' other frameworks may break.';
-            }
-            $("#confirmText").text(statement);
-
-            $("#dialogConfirmButton").on('click', function () {
-                callback(true);
-            });
-            $("#dialogCancelButton").on('click', function () {
-                callback(false);
-            });
-        }, console.error, {})
-    } else {
-        $("#confirmDialog").show();
-        $("#confirmOverlay").show();
-        $("#confirmText").text(statement);
-
-        $("#dialogConfirmButton").on('click', function () {
-            callback(true);
-        });
-        $("#dialogCancelButton").on('click', function () {
-            callback(false);
-        });
-    }
-
-}
-
-hideConfirmDialog = function () {
-    if (viewMode) return;
-    $("#confirmDialog").hide();
-    $("#confirmOverlay").hide();
-    $("#dialogConfirmButton").off();
-    $("#dialogCancelButton").off();
 }
