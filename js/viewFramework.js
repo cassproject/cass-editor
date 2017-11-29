@@ -44,6 +44,22 @@ function select() {
     }, queryParams.origin);
 }
 
+function handleSelectAll(status) {
+    if (status === 'select') {
+        selectAll();
+        $('#selectAllButton').attr('status', 'deselect');
+    } else {
+        deselectAll();
+        $('#selectAllButton').attr('status', 'select');
+    }
+}
+
+function deselectAll() {
+    $('#tree').find('input').each(function () {
+        $(this).prop('checked', false);
+    });
+}
+
 function selectAll() {
     $('#tree').find('input').each(function () {
         $(this).prop('checked', true);
@@ -324,13 +340,31 @@ editSidebar = function () {
     }
 
     var competencies = [];
+    var autocompleteDict = {};
 
     $('.competencyName').each(function () {
-        competencies.push($(this).text());
+        var competency = $(this)[0].parentElement.parentElement;
+        if (!autocompleteDict.hasOwnProperty($(this).text())) {
+            competencies.push($(this).text());
+        }
+        autocompleteDict[$(this).text()] = competency.id;
+
     });
 
     $('#sidebarNameInput').autocomplete({
-        source: competencies
+        source: competencies,
+        select: function(event, ui) {
+            var competency = EcRepository.getBlocking(autocompleteDict[ui.item.value]);
+            var results = [];
+            results.push(competency.id);
+
+            //Delete the default created competency if selecting an existing one from dropdown
+            framework.removeCompetency(selectedCompetency.shortId());
+            framework.removeLevel(selectedCompetency.shortId());
+            conditionalDelete(selectedCompetency.shortId());
+
+            appendCompetencies(results, true);
+        }
     });
 }
 
@@ -484,7 +518,7 @@ $('html').keydown(function (evt) {
             else if (evt.which === 13) {
                 if (queryParams.select != null) {
                     if (evt.shiftKey)
-                        selectAll();
+                        $('#selectAllButton').click();
                     else
                         $(competencyElementArray[competencySelectionIndex]).children("input").click();
                 }

@@ -266,7 +266,7 @@
         </div>
         <div id="frameworkNameContainer" ondrop="unlinkCompetency();">
             <button id="selectButton" style="float:right;display:none;" onclick='select();'>&gt;</button>
-            <button id="selectAllButton" style="float: right;display: none;" onclick='selectAll();'>Select All</button>
+            <button id="selectAllButton" style="float: right;display: none;" status="select" onclick='handleSelectAll($("#selectAllButton").attr("status"));'>Select All</button>
             <span id="editFrameworkBack" onclick='searchFrameworks(createParamObj(5000));' style="float:left;"><i class="fa fa-backward" > </i></span>&nbsp;
             <a id="frameworkLink" class='fa fa-link' style="float:right;display:none;" target='_blank'></a>
             <span id="frameworkName" style="" onclick="selectedCompetency=null;refreshSidebar();"></span>

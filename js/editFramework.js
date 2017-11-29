@@ -22,6 +22,7 @@ addCompetency = function () {
     if (addOrSearch == "search") {
         showPage("#findCompetencySection", framework);
     } else if (addOrSearch == "new") {
+        previousSelectedCompetency = selectedCompetency;
         var c = new EcCompetency();
         c.generateId(repo.selectedServer);
         framework.addCompetency(c.id);
@@ -60,8 +61,12 @@ addCompetency = function () {
     }
 }
 
-appendCompetencies = function (results) {
+appendCompetencies = function (results, newLink) {
     if (viewMode) return;
+    var selectedCompetency = selectedCompetency;
+    if (newLink !== null && newLink === true) {
+        selectedCompetency = previousSelectedCompetency;
+    }
     for (var i = 0; i < results.length; i++) {
         var thing = EcRepository.getBlocking(results[i]);
         if (thing.isAny(new EcCompetency().getTypes())) {
