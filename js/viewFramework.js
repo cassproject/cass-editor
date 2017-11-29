@@ -324,13 +324,31 @@ editSidebar = function () {
     }
 
     var competencies = [];
+    var autocompleteDict = {};
 
     $('.competencyName').each(function () {
-        competencies.push($(this).text());
+        var competency = $(this)[0].parentElement.parentElement;
+        if (!autocompleteDict.hasOwnProperty($(this).text())) {
+            competencies.push($(this).text());
+        }
+        autocompleteDict[$(this).text()] = competency.id;
+
     });
 
     $('#sidebarNameInput').autocomplete({
-        source: competencies
+        source: competencies,
+        select: function(event, ui) {
+            var competency = EcRepository.getBlocking(autocompleteDict[ui.item.value]);
+            var results = [];
+            results.push(competency.id);
+            
+            //Delete the default created competency if selecting an existing one from dropdown
+            framework.removeCompetency(selectedCompetency.shortId());
+            framework.removeLevel(selectedCompetency.shortId());
+            conditionalDelete(selectedCompetency.shortId());
+
+            appendCompetencies(results, true);
+        }
     });
 }
 
