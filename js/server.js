@@ -68,7 +68,7 @@ openWebSocket = function (r) {
             if (new EcCompetency().isA(wut.getFullType())) {
                 if (framework != null)
                     if (framework.competency != null)
-                        if (EcArray.has(framework.competency, wut.shortId()) || EcArray.has(framework.competency, wut.shortId()) || JSON.stringify(competency.framework).indexOf(EcCrypto.md5(wut.id)) != -1) {
+                        if (EcArray.has(framework.competency, wut.shortId()) || EcArray.has(framework.competency, wut.shortId()) || JSON.stringify(framework.competency).indexOf(EcCrypto.md5(wut.id)) != -1) {
                             var com = new EcCompetency();
                             com.copyFrom(wut);
                             window.fetches++;
