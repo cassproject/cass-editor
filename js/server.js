@@ -57,6 +57,15 @@ openWebSocket = function (r) {
         EcRepository.get(e.data, function (wut) {
             delete EcRepository.cache[wut.id];
             delete EcRepository.cache[wut.shortId()];
+
+            if (new ConceptScheme().isA(wut.getFullType()))
+                if (framework != null)
+                    if (framework.shortId() == wut.shortId()) {
+                        framework = new ConceptScheme();
+                        framework.copyFrom(wut);
+                        populateFramework();
+                    }
+
             if (new EcFramework().isA(wut.getFullType()))
                 if (framework != null)
                     if (framework.shortId() == wut.shortId()) {
@@ -65,6 +74,20 @@ openWebSocket = function (r) {
                         populateFramework();
                     }
 
+            if (new Concept().isA(wut.getFullType())) {
+                if (framework != null)
+                    if ($("[id=\"" + wut.shortId() + "\"]").length > 0) {
+                        var com = new Concept();
+                        com.copyFrom(wut);
+                        window.fetches++;
+                        refreshCompetency(com);
+                        if (selectedCompetency != null)
+                            if (selectedCompetency.shortId() == wut.shortId()) {
+                                selectedCompetency = com;
+                                refreshSidebar();
+                            }
+                    }
+            }
             if (new EcCompetency().isA(wut.getFullType())) {
                 if (framework != null)
                     if (framework.competency != null)
@@ -115,8 +138,6 @@ function cappend(event) {
             hideCopyOrLinkDialog();
             backPage();
         });
-
-
     } else if (event.data.message == "back")
         backPage();
 }
