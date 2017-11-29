@@ -24,6 +24,31 @@ queryParams = function () {
 };
 queryParams = queryParams();
 
+var viewMode = false;
+var conceptMode = false;
+
+if (queryParams.view == "true") {
+    viewMode = true;
+    $(".editControl").remove();
+    if (queryParams.ceasnDataFields == null) {
+        $("#editFrameworkSection").removeClass("pageWithSidebar");
+        $("#detailSlider").remove();
+    }
+    EcRepository.cachingSearch = true;
+}
+
+if (queryParams.concepts == "true") {
+    conceptMode = true;
+    $("#addFrameworkSection #title").text("Add a Concept Scheme");
+    $("#addFrameworkSection #caption").text("Create a scheme below.");
+    $("#formSection #importButton").parent().remove();
+    $("#importSection").remove();
+    $("#formSection #nameSpan").text("Title");
+    $("#formSection #name").attr("placeholder", "Enter the concept scheme title here.");
+    $("#formSection #description").attr("placeholder", "Enter the concept scheme description here.");
+
+}
+
 if (!(window.ActiveXObject) && "ActiveXObject" in window) {
     if (queryParams.view == null || queryParams.view === undefined) {
         alert("IE 11 does not support functionality required for editing. You will only be able to view frameworks. To remedy this, please use Edge, Firefox, Chrome, Safari, or any other browser that is keeping current with existing standards.")
