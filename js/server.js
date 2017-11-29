@@ -59,7 +59,7 @@ openWebSocket = function (r) {
             delete EcRepository.cache[wut.shortId()];
             if (new EcFramework().isA(wut.getFullType()))
                 if (framework != null)
-                    if (framework.id == wut.id) {
+                    if (framework.shortId() == wut.shortId()) {
                         framework = new EcFramework();
                         framework.copyFrom(wut);
                         populateFramework();
@@ -74,7 +74,7 @@ openWebSocket = function (r) {
                             window.fetches++;
                             refreshCompetency(com);
                             if (selectedCompetency != null)
-                                if (selectedCompetency.id == wut.id) {
+                                if (selectedCompetency.shortId() == wut.shortId()) {
                                     selectedCompetency = com;
                                     refreshSidebar();
                                 }
@@ -90,7 +90,7 @@ openWebSocket = function (r) {
                             window.fetches++;
                             refreshCompetency(com);
                             if (selectedCompetency != null)
-                                if (selectedCompetency.id == wut.id) {
+                                if (selectedCompetency.shortId() == wut.shortId()) {
                                     selectedCompetency = com;
                                     refreshSidebar();
                                 }
