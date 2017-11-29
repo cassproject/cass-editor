@@ -44,6 +44,22 @@ function select() {
     }, queryParams.origin);
 }
 
+function handleSelectAll(status) {
+    if (status === 'select') {
+        selectAll();
+        $('#selectAllButton').attr('status', 'deselect');
+    } else {
+        deselectAll();
+        $('#selectAllButton').attr('status', 'select');
+    }
+}
+
+function deselectAll() {
+    $('#tree').find('input').each(function () {
+        $(this).prop('checked', false);
+    });
+}
+
 function selectAll() {
     $('#tree').find('input').each(function () {
         $(this).prop('checked', true);
@@ -341,7 +357,7 @@ editSidebar = function () {
             var competency = EcRepository.getBlocking(autocompleteDict[ui.item.value]);
             var results = [];
             results.push(competency.id);
-            
+
             //Delete the default created competency if selecting an existing one from dropdown
             framework.removeCompetency(selectedCompetency.shortId());
             framework.removeLevel(selectedCompetency.shortId());
@@ -502,7 +518,7 @@ $('html').keydown(function (evt) {
             else if (evt.which === 13) {
                 if (queryParams.select != null) {
                     if (evt.shiftKey)
-                        selectAll();
+                        $('#selectAllButton').click();
                     else
                         $(competencyElementArray[competencySelectionIndex]).children("input").click();
                 }
