@@ -12,6 +12,9 @@ if (queryParams.select != null) {
     $("#selectButton").show().text(queryParams.select);
     $("#selectAllButton").show();
 }
+if (queryParams.singleSelect != null) {
+    $("#selectButton").show().text(queryParams.singleSelect);
+}
 
 var framework = null;
 var selectedCompetency = null;
@@ -35,16 +38,22 @@ fetchFailure = function (failure) {
 
 function select() {
     var ary = [];
+    if ($("input:checkbox").length == 0)
+        if (selectedCompetency != null)
+            ary.push(selectedCompetency.shortId());
     $("input:checked").parent().each(function (f) {
         ary.push($(this).attr("id"));
         var rId = $(this).attr("relationId");
         if (rId != null && rId !== undefined && rId != "")
-            ary.push(rId);
+            if (queryParams.selectRelations == "true")
+                ary.push(rId);
     });
-    parent.postMessage({
+    var message = {
         message: "selected",
         selected: ary
-    }, queryParams.origin);
+    };
+    console.log(message);
+    parent.postMessage(message, queryParams.origin);
 }
 
 function handleSelectAll(status) {
@@ -127,7 +136,8 @@ function afterRefresh(level, subsearch) {
     $("#tree").show().scrollTop(treeTop);
     if (selectedCompetency !== null) {
         highlightSelected($("[id=\"" + selectedCompetency.shortId() + "\"]"));
-        $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
+        if ($(".selected").length > 0)
+            $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
     }
 }
 
@@ -207,9 +217,6 @@ function refreshCompetency(col, level, subsearch) {
 }
 
 refreshSidebar = function () {
-    if (conceptMode)
-        return refreshConceptSidebar();
-
     if ($("#detailSlider").length == 0) return;
 
     $('#detailSlider').show();
@@ -241,28 +248,100 @@ refreshSidebar = function () {
     $("#editFrameworkSection").find("button,input,textarea,select").prop('disabled', false);
     $("#editFrameworkSection .editMode").hide();
     $("#editFrameworkSection .viewMode").show();
-    $("#editFrameworkSection #sidebarName").text(thing.getName());
-    $("#editFrameworkSection #sidebarNameInput").val(thing.getName());
-    $("#editFrameworkSection #sidebarDescription").text(thing.getDescription());
-    $("#editFrameworkSection #sidebarDescriptionInput").val(thing.getDescription());
-    $("#editFrameworkSection #sidebarInLanguage").text(thing["schema:inLanguage"]);
-    $("#editFrameworkSection #sidebarInLanguageInput").val(thing["schema:inLanguage"]);
-    $("#editFrameworkSection #sidebarCodedNotation").text(thing["schema:identifier"]);
-    $("#editFrameworkSection #sidebarCodedNotationInput").val(thing["schema:identifier"]);
-    $("#editFrameworkSection #sidebarCompetencyCategory").text(thing["http://schema.eduworks.com/ims/case/v1p0/CFItemType"]);
-    $("#editFrameworkSection #sidebarCompetencyCategoryInput").val(thing["http://schema.eduworks.com/ims/case/v1p0/CFItemType"]);
-    $("#editFrameworkSection #sidebarConceptKeyword").text(thing["schema:keywords"]);
-    $("#editFrameworkSection #sidebarConceptKeywordInput").val(thing["schema:keywords"]);
-    $("#editFrameworkSection #sidebarAuthor").text(thing["schema:author"]);
-    $("#editFrameworkSection #sidebarAuthorInput").val(thing["schema:author"]);
-    //    $("#editFrameworkSection #sidebarComment").text(thing.comment);
-    //    $("#editFrameworkSection #sidebarCommentInput").val(thing.comment);
-    $("#editFrameworkSection #sidebarCreator").text(thing["schema:creator"]);
-    $("#editFrameworkSection #sidebarCreatorInput").val(thing["schema:creator"]);
-    $("#editFrameworkSection #sidebarAlternativeCodedNotation").text(thing["ceasn:additionalType"]);
-    $("#editFrameworkSection #sidebarAlternativeCodedNotationInput").val(thing["ceasn:additionalType"]);
-    $("#editFrameworkSection #sidebarWeight").text(thing["ceasn:weight"]);
-    $("#editFrameworkSection #sidebarWeightInput").val(thing["ceasn:weight"]);
+
+    var labelChoice = null;
+    var fieldChoice = null;
+    var inputChoice = null;
+
+    if (thing == selectedCompetency) {
+        labelChoice = "cassCompetency";
+        fieldChoice = "cassCompetency";
+        inputChoice = "cassCompetency";
+    } else {
+        labelChoice = "cassFramework";
+        fieldChoice = "cassFramework";
+        inputChoice = "cassFramework";
+    }
+    if (queryParams.ceasnDataFields == 'true') {
+        if (thing == selectedCompetency) {
+            labelChoice = "ceasnCompetency";
+            $(".ceasnCompetency").show();
+            $(".ceasnFramework").hide();
+        } else {
+            labelChoice = "ceasnFramework";
+            $(".ceasnCompetency").hide();
+            $(".ceasnFramework").show();
+        }
+        $('#ceasnDataFields').find('p').text(null);
+        $('#ceasnDataFields').find('input').val(null);
+    }
+    if (conceptMode) {
+        if (thing == selectedCompetency) {
+            labelChoice = "skosCompetency";
+            fieldChoice = "skosCompetency";
+            inputChoice = "skosCompetency";
+        } else {
+            labelChoice = "skosFramework";
+            fieldChoice = "skosFramework";
+            inputChoice = "skosFramework";
+        }
+    }
+
+    $("#detailSlider label").each(function () {
+        var label = $(this).attr(labelChoice);
+        if (label != null)
+            $(this).text(label);
+    });
+    $("#detailSlider p,h3").each(function () {
+        if (!$(this).next().is("input,textarea"))
+            return;
+        var val = thing[$(this).next().attr(fieldChoice)];
+        if (val === undefined || val == null || val == "")
+            $(this).html("");
+        else
+            $(this).text(val);
+    });
+    $("#detailSlider input,textarea").each(function () {
+        if ($(this).attr("cassCompetency") != null && ($(this).attr(inputChoice) == null || $(this).attr(inputChoice) === undefined)) {
+            $(this).prev().prev().remove();
+            $(this).prev().remove();
+            $(this).remove();
+            return;
+        }
+        var val = thing[$(this).attr(inputChoice)];
+        if (val === undefined || val == null || val == "")
+            $(this).val(null);
+        else
+            $(this).val(val);
+    });
+    $("#detailSlider button").each(function () {
+        if ($(this).attr("cassCompetency") != null && ($(this).attr(inputChoice) == null || $(this).attr(inputChoice) === undefined)) {
+            $(this).prev().prev().remove();
+            $(this).prev().remove();
+            $(this).remove();
+            return;
+        }
+        var val = thing[$(this).attr(inputChoice)];
+        if (val === undefined || val == null || val == "")
+            $(this).val(null);
+        else
+            $(this).val(val);
+    });
+    $("#detailSlider select").each(function () {
+        if ($(this).attr("cassCompetency") != null && ($(this).attr(inputChoice) == null || $(this).attr(inputChoice) === undefined)) {
+            $(this).prev().prev().remove();
+            $(this).prev().remove();
+            $(this).remove();
+            return;
+        }
+        var val = thing[$(this).attr(inputChoice)];
+        if (val === undefined || val == null || val == "")
+            $(this).find("option").prop('selected', false).first().prop('selected', true);
+        else {
+            $(this).find("option").prop('selected', false);
+            $(this).find("option[value=\"" + val + "\"]").prop('selected', true);
+        }
+    });
 
     $("#editFrameworkSection label").each(function () {
         if ($("#" + $(this).attr("for")).text() == "" || $("#" + $(this).attr("for")).text() == null)
@@ -273,17 +352,28 @@ refreshSidebar = function () {
         $(".frameworkOnly").show();
         $("#sidebarVersion").hide();
         $("#sidebarAddLevels").hide();
+        if (queryParams.ceasnDataFields === 'true') {
+            $(".absentForCeasn").hide();
+            $("[for=\"sidebarNameInput\"]").text("Name");
+            $("#sidebarDescriptionInput").attr("placeholder", "Description");
+        }
     }
 
     if (thing == selectedCompetency) {
         $(".frameworkOnly").hide();
-        if (EcArray.has(framework.competency.concat(framework.level), thing.shortId()))
-            $("#sidebarVersion option").prop('selected', false).first().prop('selected', true);
-        else {
-            if (EcArray.has(framework.competency.concat(framework.level), thing.id))
-                $("#sidebarVersion option").prop('selected', false).last().prop('selected', true);
-            else
-                console.log("Error. Version not certain.");
+        if (framework.competency != null)
+            if (EcArray.has(framework.competency.concat(framework.level), thing.shortId()))
+                $("#sidebarVersion option").prop('selected', false).first().prop('selected', true);
+            else {
+                if (EcArray.has(framework.competency.concat(framework.level), thing.id))
+                    $("#sidebarVersion option").prop('selected', false).last().prop('selected', true);
+                else
+                    console.log("Error. Version not certain.");
+            }
+        if (queryParams.ceasnDataFields === 'true') {
+            $(".absentForCeasn").hide();
+            $("[for=\"sidebarNameInput\"]").text("Competency Text");
+            $("#sidebarDescriptionInput").attr("placeholder", "Comment");
         }
     }
 
@@ -407,7 +497,7 @@ $("body").on("click", ".competency input", null, function (evt) {
     highlightSelected(me);
 
     if (conceptMode) {
-        //TODO
+        selectedCompetency = EcConcept.getBlocking(me.attr("id"));
     } else {
         selectedCompetency = EcCompetency.getBlocking(me.attr("id"));
         if (selectedCompetency == null)
@@ -609,7 +699,10 @@ exportSelected = function () {
                 "Accept": "text/n4"
             },
             success: function (data) {
-                download(framework.name + ".n4", data);
+                if (conceptMode)
+                    download(framework.title + ".n4", data);
+                else
+                    download(framework.name + ".n4", data);
             }
         });
     } else if (v == "cassrdfjson") {
@@ -619,7 +712,10 @@ exportSelected = function () {
                 "Accept": "application/rdf+json"
             },
             success: function (data) {
-                download(framework.name + ".rdf.json", JSON.stringify(data, null, 2));
+                if (conceptMode)
+                    download(framework.title + ".rdf.json", JSON.stringify(data, null, 2));
+                else
+                    download(framework.name + ".rdf.json", JSON.stringify(data, null, 2));
             }
         });
     } else if (v == "cassrdfxml") {
@@ -629,7 +725,10 @@ exportSelected = function () {
                 "Accept": "application/rdf+xml"
             },
             success: function (data) {
-                download(framework.name + ".rdf.xml", data);
+                if (conceptMode)
+                    download(framework.title + ".rdf.xml", data);
+                else
+                    download(framework.name + ".rdf.xml", data);
             }
         });
     } else if (v == "cassturtle") {
@@ -639,7 +738,10 @@ exportSelected = function () {
                 "Accept": "text/turtle"
             },
             success: function (data) {
-                download(framework.name + ".turtle", data);
+                if (conceptMode)
+                    download(framework.title + ".turtle", data);
+                else
+                    download(framework.name + ".turtle", data);
             }
         });
     } else if (v == "ceasn")
