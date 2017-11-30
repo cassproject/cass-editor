@@ -3,7 +3,7 @@ populateConceptScheme = function (subsearch) {
     treeTop = $("#tree").scrollTop();
     $("#tree").hide().html("");
     me.fetches = 0;
-    $("#editFrameworkSection #frameworkName").text(framework.title);
+    $("#editFrameworkSection #frameworkName").text(framework["dcterms:title"]);
     if (queryParams.link == "true")
         $("#editFrameworkSection #frameworkLink").attr("href", framework.shortId()).show();
 
@@ -49,9 +49,9 @@ function refreshConcept(col, level, subsearch, recurse) {
     var treeNode = null;
     treeNode = $("#tree").append("<li class = 'competency' draggable='true' ondragstart='dragConcept(event);' ondrop='dropConcept(event);' ondragover='allowConceptDrop(event);'><span></span><ul></ul></li>").children().last();
     treeNode.attr("id", col.shortId());
-    if (col.description != null && col.description != "NULL" && col.description != col.title)
-        treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").css('display', 'block').text(col.description);
-    treeNode.children().first().prepend("<span/>").children().first().addClass("competencyName").text(col.title);
+    if (col["skos:note"] != null && col["skos:note"] != "NULL" && col["skos:note"] != col["skos:definition"])
+        treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").css('display', 'block').text(col["skos:note"]);
+    treeNode.children().first().prepend("<span/>").children().first().addClass("competencyName").text(col["skos:definition"]);
     if (queryParams.link == "true")
         treeNode.prepend(" <a style='float:right;' target='_blank'><i class='fa fa-link' aria-hidden='true'></a>").children().first().attr("href", col.shortId());
     if (queryParams.select != null)

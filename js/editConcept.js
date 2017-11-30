@@ -45,33 +45,6 @@ addConcept = function () {
     }
 }
 
-saveConcept = function () {
-    if (viewMode) return;
-    if (selectedCompetency == null) {
-        framework.title = getValueOrNull($("#sidebarNameInput").val());
-        framework.description = getValueOrNull($("#sidebarDescriptionInput").val());
-
-        framework["dc:language"] = getValueOrNull($("#sidebarInLanguageInput").val()) === null ? null : $("#sidebarInLanguageInput").val().split(',');
-        framework["dc:creator"] = getValueOrNull($("#sidebarCreatorInput").val()) === null ? null : $("#sidebarCreatorInput").val().split(',');
-        framework["dc:subject"] = getValueOrNull($("#sidebarConceptKeywordInput").val()) === null ? null : $("#sidebarConceptKeywordInput").val().split(',');
-
-        EcRepository.save(framework, function () {
-            populateFramework();
-        }, error);
-    } else {
-        selectedCompetency.title = $("#sidebarNameInput").val();
-        selectedCompetency.description = $("#sidebarDescriptionInput").val();
-
-        selectedCompetency["dc:language"] = getValueOrNull($("#sidebarInLanguageInput").val()) === null ? null : $("#sidebarInLanguageInput").val().split(',');
-        selectedCompetency["dc:identifier"] = getValueOrNull($("#sidebarCodedNotationInput").val());
-        selectedCompetency["dc:creator"] = getValueOrNull($("#sidebarCreatorInput").val()) === null ? null : $("#sidebarCreatorInput").val().split(',');
-        selectedCompetency["dc:subject"] = getValueOrNull($("#sidebarConceptKeywordInput").val()) === null ? null : $("#sidebarConceptKeywordInput").val().split(',');
-
-        EcRepository.save(selectedCompetency, afterSave, error);
-    }
-    refreshSidebar();
-}
-
 createConceptScheme = function () {
     if (viewMode) return;
     if ($("#name").val() == null || $("#name").val().trim() == "")
@@ -80,9 +53,9 @@ createConceptScheme = function () {
     framework.generateId(repo.selectedServer);
     if (EcIdentityManager.ids.length > 0)
         framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-    framework.title = $("#name").val();
+    framework["dcterms:title"] = $("#name").val();
     if ($("#description").val() != null && $("#description").val() != "")
-        framework.description = $("#description").val();
+        framework["dcterms:description"] = $("#description").val();
     loading("Creating concept scheme...");
     EcRepository.save(framework, function () {
         refreshSidebar();

@@ -25,7 +25,7 @@ function conceptSchemeSearch(server, searchTerm, subsearchTerm, paramObj, retry)
     EcConceptScheme.search(server, search, function (frameworks) {
         for (var v = 0; v < frameworks.length; v++) {
             var fx = frameworks[v];
-            if (fx.title === undefined || fx.title == null || fx.title == "")
+            if (fx["dcterms:title"] === undefined || fx["dcterms:title"] == null || fx["dcterms:title"] == "")
                 continue;
             if ($("[id='" + fx.shortId() + "']").length == 0) {
                 if ($("#frameworks").children().length > 0)
@@ -52,11 +52,11 @@ function conceptSchemeSearch(server, searchTerm, subsearchTerm, paramObj, retry)
                     }, error);
                 });
                 var title = p.children().first();
-                title.text(fx.title);
+                title.text(fx["dcterms:title"]);
                 if (subsearchTerm != null)
                     p.prepend("<span style='float:right'>*Matches inside. <span>");
                 var desc = p.children().last();
-                desc.text(fx.description);
+                desc.text(fx["dcterms:description"]);
                 if (searchTerm != "*" && subsearchTerm == null)
                     p.mark(searchTerm);
             }
