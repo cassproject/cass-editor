@@ -127,8 +127,26 @@ Note: The window will not proceed loading until it has received the 'identity' m
 ## Only show frameworks that individual owns.
 Along with user credentials, the cass-editor can be configured to not show others' frameworks. This functionality can be enabled by the URL parameter `show=mine`.
 
-# TBD: Events
-The cass-editor can send events when various operations occur. This functionality will be extended in the future.
+# Events
+The cass-editor can send events when various operations occur.
+
+To bind the cass-editor from the parent page, use the following code:
+
+    window.addEventListener('message', iframeMessage, false);
+
+	function iframeMessage(event) {
+		//check the origin, to make sure it comes from a trusted source.
+		if (false && event.origin !== window.location.origin)
+			return;
+		alert("I got " + event.data.selected.length + " selected items from the iframe");
+	}
+
+To ensure the iframe is passing the correct origin, pass the origin into the iframe using a URL parameter, `origin=originUrl`.
+
+On Selected:
+
+    event.data.message == "selected"
+    event.data.selected == [uri,uri,uri]
 
 # Keyboard Shortcuts
 &uarr; & &darr; - Navigate up and down the list of frameworks and competencies.  
