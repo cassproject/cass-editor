@@ -252,15 +252,18 @@ refreshSidebar = function () {
     var labelChoice = null;
     var fieldChoice = null;
     var inputChoice = null;
+    var safeChoice = null;
 
     if (thing == selectedCompetency) {
         labelChoice = "cassCompetency";
         fieldChoice = "cassCompetency";
         inputChoice = "cassCompetency";
+        safeChoice = "cassCompetency";
     } else {
         labelChoice = "cassFramework";
         fieldChoice = "cassFramework";
         inputChoice = "cassFramework";
+        safeChoice = "cassFramework";
     }
     if (queryParams.ceasnDataFields == 'true') {
         if (thing == selectedCompetency) {
@@ -304,7 +307,7 @@ refreshSidebar = function () {
             $(this).text(val);
     });
     $("#detailSlider input,textarea").each(function () {
-        if ($(this).attr("cassCompetency") != null && ($(this).attr(inputChoice) == null || $(this).attr(inputChoice) === undefined)) {
+        if ($(this).attr(safeChoice) != null && ($(this).attr(inputChoice) == null || $(this).attr(inputChoice) === undefined)) {
             $(this).prev().prev().remove();
             $(this).prev().remove();
             $(this).remove();
@@ -312,7 +315,7 @@ refreshSidebar = function () {
         }
         var val = thing[$(this).attr(inputChoice)];
         if (val === undefined || val == null || val == "")
-            if ($(this).attr("defaultToFramework") != null) 
+            if ($(this).attr("defaultToFramework") != null)
                 val = framework[$(this).attr(inputChoice)];
         if (EcArray.isArray(val))
             val = val.join(", ");
@@ -322,7 +325,7 @@ refreshSidebar = function () {
             $(this).val(val);
     });
     $("#detailSlider button").each(function () {
-        if ($(this).attr("cassCompetency") != null && ($(this).attr(inputChoice) == null || $(this).attr(inputChoice) === undefined)) {
+        if ($(this).attr(safeChoice) != null && ($(this).attr(inputChoice) == null || $(this).attr(inputChoice) === undefined)) {
             $(this).prev().prev().remove();
             $(this).prev().remove();
             $(this).remove();
@@ -335,7 +338,7 @@ refreshSidebar = function () {
             $(this).val(val);
     });
     $("#detailSlider select").each(function () {
-        if ($(this).attr("cassCompetency") != null && ($(this).attr(inputChoice) == null || $(this).attr(inputChoice) === undefined)) {
+        if ($(this).attr(safeChoice) != null && ($(this).attr(inputChoice) == null || $(this).attr(inputChoice) === undefined)) {
             $(this).prev().prev().remove();
             $(this).prev().remove();
             $(this).remove();
@@ -350,8 +353,8 @@ refreshSidebar = function () {
         }
     });
 
-    $("#editFrameworkSection label").each(function () {
-        if ($("#" + $(this).attr("for")).text() == "" || $("#" + $(this).attr("for")).text() == null)
+    $("#editFrameworkSection label:visible").each(function () {
+        if ($(this).parent().children("#" + $(this).attr("for")).text() == "" || $(this).parent().children("#" + $(this).attr("for")).text() == null)
             $(this).hide();
     });
 
@@ -361,8 +364,6 @@ refreshSidebar = function () {
         $("#sidebarAddLevels").hide();
         if (queryParams.ceasnDataFields === 'true') {
             $(".absentForCeasn").hide();
-            $("[for=\"sidebarNameInput\"]").text("Name");
-            $("#sidebarDescriptionInput").attr("placeholder", "Description");
         }
     }
 
@@ -379,8 +380,6 @@ refreshSidebar = function () {
             }
         if (queryParams.ceasnDataFields === 'true') {
             $(".absentForCeasn").hide();
-            $("[for=\"sidebarNameInput\"]").text("Competency Text");
-            $("#sidebarDescriptionInput").attr("placeholder", "Comment");
         }
     }
 

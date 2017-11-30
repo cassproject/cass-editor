@@ -137,6 +137,13 @@ saveCompetency = function () {
     var fieldChoice = null;
     var inputChoice = null;
 
+    var thing;
+    if (selectedCompetency == null) {
+        thing = framework;
+    } else {
+        thing = selectedCompetency;
+    }
+
     if (thing == selectedCompetency) {
         labelChoice = "cassCompetency";
         fieldChoice = "cassCompetency";
@@ -165,12 +172,6 @@ saveCompetency = function () {
         }
     }
 
-    var thing;
-    if (selectedCompetency == null) {
-        thing = framework;
-    } else {
-        thing = selectedCompetency;
-    }
 
     $("#detailSlider").find("input:visible,textarea:visible").each(function () {
         var val = getValueOrNull($(this).val());
