@@ -251,28 +251,75 @@ refreshSidebar = function () {
     $("#editFrameworkSection").find("button,input,textarea,select").prop('disabled', false);
     $("#editFrameworkSection .editMode").hide();
     $("#editFrameworkSection .viewMode").show();
-    $("#editFrameworkSection #sidebarName").text(thing.getName());
-    $("#editFrameworkSection #sidebarNameInput").val(thing.getName());
-    $("#editFrameworkSection #sidebarDescription").text(thing.getDescription());
-    $("#editFrameworkSection #sidebarDescriptionInput").val(thing.getDescription());
-    $("#editFrameworkSection #sidebarInLanguage").text(thing["schema:inLanguage"]);
-    $("#editFrameworkSection #sidebarInLanguageInput").val(thing["schema:inLanguage"]);
-    $("#editFrameworkSection #sidebarCodedNotation").text(thing["schema:identifier"]);
-    $("#editFrameworkSection #sidebarCodedNotationInput").val(thing["schema:identifier"]);
-    $("#editFrameworkSection #sidebarCompetencyCategory").text(thing["http://schema.eduworks.com/ims/case/v1p0/CFItemType"]);
-    $("#editFrameworkSection #sidebarCompetencyCategoryInput").val(thing["http://schema.eduworks.com/ims/case/v1p0/CFItemType"]);
-    $("#editFrameworkSection #sidebarConceptKeyword").text(thing["schema:keywords"]);
-    $("#editFrameworkSection #sidebarConceptKeywordInput").val(thing["schema:keywords"]);
-    $("#editFrameworkSection #sidebarAuthor").text(thing["schema:author"]);
-    $("#editFrameworkSection #sidebarAuthorInput").val(thing["schema:author"]);
-    //    $("#editFrameworkSection #sidebarComment").text(thing.comment);
-    //    $("#editFrameworkSection #sidebarCommentInput").val(thing.comment);
-    $("#editFrameworkSection #sidebarCreator").text(thing["schema:creator"]);
-    $("#editFrameworkSection #sidebarCreatorInput").val(thing["schema:creator"]);
-    $("#editFrameworkSection #sidebarAlternativeCodedNotation").text(thing["ceasn:additionalType"]);
-    $("#editFrameworkSection #sidebarAlternativeCodedNotationInput").val(thing["ceasn:additionalType"]);
-    $("#editFrameworkSection #sidebarWeight").text(thing["ceasn:weight"]);
-    $("#editFrameworkSection #sidebarWeightInput").val(thing["ceasn:weight"]);
+
+    var labelChoice = null;
+    var fieldChoice = null;
+    var inputChoice = null;
+
+    if (thing == selectedCompetency) {
+        labelChoice = "cassCompetency";
+        fieldChoice = "cassCompetency";
+        inputChoice = "cassCompetency";
+    } else {
+        labelChoice = "cassFramework";
+        fieldChoice = "cassFramework";
+        inputChoice = "cassFramework";
+    }
+    if (queryParams.ceasnDataFields == 'true') {
+        if (thing == selectedCompetency) {
+            labelChoice = "ceasnCompetency";
+            $(".ceasnCompetency").show();
+            $(".ceasnFramework").hide();
+        } else {
+            labelChoice = "ceasnFramework";
+            $(".ceasnCompetency").hide();
+            $(".ceasnFramework").show();
+        }
+        $('#ceasnDataFields').find('p').text(null);
+        $('#ceasnDataFields').find('input').val(null);
+    }
+    if (conceptMode) {
+        if (thing == selectedCompetency) {
+            labelChoice = "skosCompetency";
+            fieldChoice = "skosCompetency";
+            inputChoice = "skosCompetency";
+        } else {
+            labelChoice = "skosFramework";
+            fieldChoice = "skosFramework";
+            inputChoice = "skosFramework";
+        }
+    }
+
+    $("#detailSlider label").each(function () {
+        var label = $(this).attr(labelChoice);
+        if (label != null)
+            $(this).text(label);
+    });
+    $("#detailSlider p").each(function () {
+        if (!$(this).next().is("input,textarea"))
+            return;
+        var val = thing[$(this).next().attr(fieldChoice)];
+        if (val === undefined || val == null || val == "")
+            $(this).html("");
+        else
+            $(this).text(val);
+    });
+    $("#detailSlider input,textarea").each(function () {
+        var val = thing[$(this).attr(inputChoice)];
+        if (val === undefined || val == null || val == "")
+            $(this).val(null);
+        else
+            $(this).val(val);
+    });
+    $("#detailSlider select").each(function () {
+        var val = thing[$(this).attr(inputChoice)];
+        if (val === undefined || val == null || val == "")
+            $(this).find("option").prop('selected', false).first().prop('selected', true);
+        else {
+            $(this).find("option").prop('selected', false);
+            $(this).find("option[value=\"" + val + "\"]").prop('selected', true);
+        }
+    });
 
     $("#editFrameworkSection label").each(function () {
         if ($("#" + $(this).attr("for")).text() == "" || $("#" + $(this).attr("for")).text() == null)
@@ -283,6 +330,11 @@ refreshSidebar = function () {
         $(".frameworkOnly").show();
         $("#sidebarVersion").hide();
         $("#sidebarAddLevels").hide();
+        if (queryParams.ceasnDataFields === 'true') {
+            $(".absentForCeasn").hide();
+            $("[for=\"sidebarNameInput\"]").text("Name");
+            $("#sidebarDescriptionInput").attr("placeholder", "Description");
+        }
     }
 
     if (thing == selectedCompetency) {
@@ -294,6 +346,11 @@ refreshSidebar = function () {
                 $("#sidebarVersion option").prop('selected', false).last().prop('selected', true);
             else
                 console.log("Error. Version not certain.");
+        }
+        if (queryParams.ceasnDataFields === 'true') {
+            $(".absentForCeasn").hide();
+            $("[for=\"sidebarNameInput\"]").text("Competency Text");
+            $("#sidebarDescriptionInput").attr("placeholder", "Comment");
         }
     }
 
