@@ -29,7 +29,8 @@ var conceptMode = false;
 
 if (queryParams.view == "true") {
     viewMode = true;
-    $(".editControl").remove();
+    $("button.editControl").remove();
+    $("select.editControl").remove();
     if (queryParams.ceasnDataFields == null) {
         $("#editFrameworkSection").removeClass("pageWithSidebar");
         $("#detailSlider").remove();
