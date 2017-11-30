@@ -168,7 +168,7 @@ for (var i = 0; i < servers.length; i++) {
 var iframeRoot = queryParams.editorRoot;
 if (iframeRoot == null || iframeRoot === undefined)
     iframeRoot = "";
-var iframePath = iframeRoot + "index.html?select=Add&selectRelations=true&view=true&iframeRoot=" + iframeRoot + "&origin=" + window.location.origin + (queryParams.server == null ? "" : "&server=" + r.selectedServer);
+var iframePath = iframeRoot + "index.html?select=Add&selectRelations=true&view=true&iframeRoot=" + iframeRoot + "&origin=" + window.location.origin + (queryParams.server == null ? "" : "&server=" + queryParams.server);
 if (queryParams.webSocketOverride != null && queryParams.webSocketOverride !== undefined)
     iframePath += "&webSocketOverride=" + queryParams.webSocketOverride;
 if (queryParams.view != "true")
