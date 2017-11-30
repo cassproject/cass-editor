@@ -353,7 +353,7 @@ refreshSidebar = function () {
         }
     });
 
-    $("#editFrameworkSection label:visible").each(function () {
+    $("#editFrameworkSection label").each(function () {
         if ($(this).parent().children("#" + $(this).attr("for")).text() == "" || $(this).parent().children("#" + $(this).attr("for")).text() == null)
             $(this).hide();
     });
