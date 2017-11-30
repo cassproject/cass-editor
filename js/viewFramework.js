@@ -307,7 +307,7 @@ refreshSidebar = function () {
             $(this).text(val);
     });
     $("#detailSlider input,textarea").each(function () {
-        if ($(this).attr(safeChoice) != null && ($(this).attr(inputChoice) == null || $(this).attr(inputChoice) === undefined)) {
+        if ($(this).attr(safeChoice) != null && ($(this).attr(labelChoice) == null || $(this).attr(labelChoice) === undefined)) {
             $(this).prev().prev().remove();
             $(this).prev().remove();
             $(this).remove();
@@ -325,7 +325,7 @@ refreshSidebar = function () {
             $(this).val(val);
     });
     $("#detailSlider button").each(function () {
-        if ($(this).attr(safeChoice) != null && ($(this).attr(inputChoice) == null || $(this).attr(inputChoice) === undefined)) {
+        if ($(this).attr(safeChoice) != null && ($(this).attr(labelChoice) == null || $(this).attr(labelChoice) === undefined)) {
             $(this).prev().prev().remove();
             $(this).prev().remove();
             $(this).remove();
@@ -338,7 +338,7 @@ refreshSidebar = function () {
             $(this).val(val);
     });
     $("#detailSlider select").each(function () {
-        if ($(this).attr(safeChoice) != null && ($(this).attr(inputChoice) == null || $(this).attr(inputChoice) === undefined)) {
+        if ($(this).attr(safeChoice) != null && ($(this).attr(labelChoice) == null || $(this).attr(labelChoice) === undefined)) {
             $(this).prev().prev().remove();
             $(this).prev().remove();
             $(this).remove();
