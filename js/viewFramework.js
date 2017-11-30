@@ -217,9 +217,6 @@ function refreshCompetency(col, level, subsearch) {
 }
 
 refreshSidebar = function () {
-    if (conceptMode)
-        return refreshConceptSidebar();
-
     if ($("#detailSlider").length == 0) return;
 
     $('#detailSlider').show();
@@ -295,7 +292,7 @@ refreshSidebar = function () {
         if (label != null)
             $(this).text(label);
     });
-    $("#detailSlider p").each(function () {
+    $("#detailSlider p,h3").each(function () {
         if (!$(this).next().is("input,textarea"))
             return;
         var val = thing[$(this).next().attr(fieldChoice)];
@@ -305,6 +302,25 @@ refreshSidebar = function () {
             $(this).text(val);
     });
     $("#detailSlider input,textarea").each(function () {
+        if ($(this).attr("cassCompetency") != null && ($(this).attr(inputChoice) == null || $(this).attr(inputChoice) === undefined)) {
+            $(this).prev().prev().remove();
+            $(this).prev().remove();
+            $(this).remove();
+            return;
+        }
+        var val = thing[$(this).attr(inputChoice)];
+        if (val === undefined || val == null || val == "")
+            $(this).val(null);
+        else
+            $(this).val(val);
+    });
+    $("#detailSlider button").each(function () {
+        if ($(this).attr("cassCompetency") != null && ($(this).attr(inputChoice) == null || $(this).attr(inputChoice) === undefined)) {
+            $(this).prev().prev().remove();
+            $(this).prev().remove();
+            $(this).remove();
+            return;
+        }
         var val = thing[$(this).attr(inputChoice)];
         if (val === undefined || val == null || val == "")
             $(this).val(null);
@@ -312,6 +328,12 @@ refreshSidebar = function () {
             $(this).val(val);
     });
     $("#detailSlider select").each(function () {
+        if ($(this).attr("cassCompetency") != null && ($(this).attr(inputChoice) == null || $(this).attr(inputChoice) === undefined)) {
+            $(this).prev().prev().remove();
+            $(this).prev().remove();
+            $(this).remove();
+            return;
+        }
         var val = thing[$(this).attr(inputChoice)];
         if (val === undefined || val == null || val == "")
             $(this).find("option").prop('selected', false).first().prop('selected', true);
@@ -339,14 +361,15 @@ refreshSidebar = function () {
 
     if (thing == selectedCompetency) {
         $(".frameworkOnly").hide();
-        if (EcArray.has(framework.competency.concat(framework.level), thing.shortId()))
-            $("#sidebarVersion option").prop('selected', false).first().prop('selected', true);
-        else {
-            if (EcArray.has(framework.competency.concat(framework.level), thing.id))
-                $("#sidebarVersion option").prop('selected', false).last().prop('selected', true);
-            else
-                console.log("Error. Version not certain.");
-        }
+        if (framework.competency != null)
+            if (EcArray.has(framework.competency.concat(framework.level), thing.shortId()))
+                $("#sidebarVersion option").prop('selected', false).first().prop('selected', true);
+            else {
+                if (EcArray.has(framework.competency.concat(framework.level), thing.id))
+                    $("#sidebarVersion option").prop('selected', false).last().prop('selected', true);
+                else
+                    console.log("Error. Version not certain.");
+            }
         if (queryParams.ceasnDataFields === 'true') {
             $(".absentForCeasn").hide();
             $("[for=\"sidebarNameInput\"]").text("Competency Text");

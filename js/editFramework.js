@@ -131,7 +131,6 @@ addLevel = function () {
 }
 
 saveCompetency = function () {
-    if (conceptMode) return saveConcept();
     if (viewMode) return;
 
     var labelChoice = null;

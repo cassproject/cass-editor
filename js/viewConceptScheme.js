@@ -80,67 +80,6 @@ function refreshConcept(col, level, subsearch, recurse) {
     return treeNode;
 }
 
-refreshConceptSidebar = function () {
-    if ($("#detailSlider").length == 0) return;
-
-    $('#detailSlider').show();
-
-    $('#ceasnDataFields').find('p').each(function () {
-        $(this).text(null);
-    });
-
-    $('#ceasnDataFields').find('input').each(function () {
-        $(this).val(null);
-    });
-
-    var thing = framework;
-    if (selectedCompetency != null) {
-        $('.ceasnCompetency .viewMode').show();
-        thing = selectedCompetency;
-    } else {
-        $('.ceasnCompetency').hide();
-    }
-    $("sidebarFeedback").text("");
-    $("#editFrameworkSection").find("button,input,textarea,select").prop('disabled', false);
-    $("#editFrameworkSection .editMode").hide();
-    $("#editFrameworkSection .viewMode").show();
-    $("#editFrameworkSection #sidebarName").text(thing.title == null ? "" : thing.title);
-    $("#editFrameworkSection #sidebarNameInput").val(thing.title == null ? "" : thing.title);
-    $("#editFrameworkSection #sidebarDescription").text(thing.description == null ? "" : thing.description);
-    $("#editFrameworkSection #sidebarDescriptionInput").val(thing.description == null ? "" : thing.description);
-    $("#editFrameworkSection #sidebarInLanguage").text(thing["dc:language"]);
-    $("#editFrameworkSection #sidebarInLanguageInput").val(thing["dc:language"]);
-    $("#editFrameworkSection #sidebarConceptKeyword").text(thing["dc:subject"]);
-    $("#editFrameworkSection #sidebarConceptKeywordInput").val(thing["dc:subject"]);
-    $("#editFrameworkSection #sidebarCreator").text(thing["dc:creator"]);
-    $("#editFrameworkSection #sidebarCreatorInput").val(thing["dc:creator"]);
-
-    $("#editFrameworkSection label").each(function () {
-        if ($("#" + $(this).attr("for")).text() == "" || $("#" + $(this).attr("for")).text() == null)
-            $(this).hide();
-    });
-
-    if (framework == thing) {
-        $(".frameworkOnly").show();
-        $("#sidebarVersion").hide();
-        $("#sidebarAddLevels").hide();
-    }
-
-    if (thing.id == thing.shortId()) {
-        $("#sidebarVersion").hide();
-    }
-
-    if (!framework.canEditAny(EcIdentityManager.getMyPks())) {
-        $("#sidebarVersion").prop('disabled', true);
-        $("#sidebarAddCompetencies").prop('disabled', true);
-        $("#sidebarAddLevels").prop('disabled', true);
-        $("#sidebarFeedback").html("Some edit options are limited: <li>You do not own this concept scheme.</li> ");
-    } else
-        $("#sidebarFeedback").html("");
-
-
-}
-
 editConceptSidebar = function () {
     $("#editFrameworkSection .viewMode").hide();
     $("#editFrameworkSection .editMode").show();

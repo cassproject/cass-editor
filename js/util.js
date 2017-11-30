@@ -45,9 +45,6 @@ if (queryParams.concepts == "true") {
     $("#formSection #nameSpan").text("Title");
     $("#formSection #name").attr("placeholder", "Enter the concept scheme title here.");
     $("#formSection #description").attr("placeholder", "Enter the concept scheme description here.");
-    $("#editFrameworkSection #sidebarName").text("Concept Scheme Title Here");
-    $("[for=\"sidebarNameInput\"]").text("Title");
-    $("#ceasnDataFields").remove();
     $("#sidebarVersion").remove();
     $("#sidebarAddCompetencies option").first().text("Add Concept");
     $("#sidebarAddCompetencies option[value=\"search\"]").remove();
