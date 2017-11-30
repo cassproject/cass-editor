@@ -79,8 +79,15 @@ openWebSocket = function (r) {
                     if ($("[id=\"" + wut.shortId() + "\"]").length > 0) {
                         var com = new Concept();
                         com.copyFrom(wut);
-                        window.fetches++;
-                        refreshCompetency(com);
+                        $("#tree [id='" + com.shortId() + "']").remove();
+                        if (com.narrows != null)
+                            for (var i = 0; i < com.narrows.length; i++) {
+
+                                window.fetches++;
+                                refreshCompetency(com).appendTo($("[id=\"" + com.narrows[i] + "\"]>ul"));
+                            }
+                        if (com.topConceptOf != null)
+                            refreshCompetency(com);
                         if (selectedCompetency != null)
                             if (selectedCompetency.shortId() == wut.shortId()) {
                                 selectedCompetency = com;

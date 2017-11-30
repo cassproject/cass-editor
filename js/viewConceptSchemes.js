@@ -1,7 +1,3 @@
-if (queryParams.select != null)
-    if (parent != window)
-        $("#frameworksBack").show();
-
 function searchConceptSchemes(paramObj) {
     loading("Loading concept schemes...");
     var searchTerm = $("#search").val();
@@ -26,10 +22,10 @@ function conceptSchemeSearch(server, searchTerm, subsearchTerm, paramObj, retry)
         search = "(" + searchTerm + ") AND (" + queryParams.filter + ")";
     else
         search = searchTerm;
-    EcFramework.search(server, search, function (frameworks) {
+    EcConceptScheme.search(server, search, function (frameworks) {
         for (var v = 0; v < frameworks.length; v++) {
             var fx = frameworks[v];
-            if (fx.name === undefined || fx.name == null || fx.name == "")
+            if (fx.title === undefined || fx.title == null || fx.title == "")
                 continue;
             if ($("[id='" + fx.shortId() + "']").length == 0) {
                 if ($("#frameworks").children().length > 0)
@@ -39,7 +35,7 @@ function conceptSchemeSearch(server, searchTerm, subsearchTerm, paramObj, retry)
                 p.attr("id", fx.shortId());
                 p.attr("subsearch", subsearchTerm);
                 p.click(function (evt) {
-                    loading("Loading framework...");
+                    loading("Loading concept scheme...");
                     var frameworkId = null;
                     var frameworkTarget = $(evt.target);
                     while (frameworkId == null && frameworkTarget.length > 0) {
@@ -47,8 +43,8 @@ function conceptSchemeSearch(server, searchTerm, subsearchTerm, paramObj, retry)
                         frameworkTarget = frameworkTarget.parent();
                     }
                     if (frameworkId == null)
-                        error("Critical: Couldn't find framework ID.");
-                    EcFramework.get(frameworkId, function (f) {
+                        error("Critical: Couldn't find concept scheme ID.");
+                    EcConceptScheme.get(frameworkId, function (f) {
                         framework = f;
                         populateFramework(subsearchTerm);
                         selectedCompetency = null;
@@ -56,11 +52,11 @@ function conceptSchemeSearch(server, searchTerm, subsearchTerm, paramObj, retry)
                     }, error);
                 });
                 var title = p.children().first();
-                title.text(fx.getName());
+                title.text(fx.title);
                 if (subsearchTerm != null)
                     p.prepend("<span style='float:right'>*Matches inside. <span>");
                 var desc = p.children().last();
-                desc.text(fx.getDescription());
+                desc.text(fx.description);
                 if (searchTerm != "*" && subsearchTerm == null)
                     p.mark(searchTerm);
             }
@@ -68,7 +64,7 @@ function conceptSchemeSearch(server, searchTerm, subsearchTerm, paramObj, retry)
         frameworkLoading--;
         if (frameworkLoading == 0) {
             if ($("#frameworks").html() == "")
-                $("#frameworks").html("<center>No frameworks found.</center>");
+                $("#frameworks").html("<center>No concept schemes found.</center>");
             showPage("#frameworksSection");
         }
     }, function (failure) {
@@ -81,36 +77,30 @@ function conceptSchemeSearch(server, searchTerm, subsearchTerm, paramObj, retry)
         } else {
             loading("Defaulting to exact search.");
             //var escapedSearch = $("#search").val().replaceAll(/([$-/:-?{-~!"^_`\[\]])/g, "\\$1");
-            frameworkSearch(server, "\"" + searchTerm + "\"", subsearchTerm, paramObj, true);
+            conceptSchemeSearch(server, "\"" + searchTerm + "\"", subsearchTerm, paramObj, true);
         }
     }, paramObj);
 }
 
 function conceptSchemeSearchByConcept(server, searchTerm, retry) {
     frameworkLoading++;
-    EcCompetency.search(server, searchTerm, function (competencies) {
+    EcConcept.search(server, searchTerm, function (competencies) {
         var subSearch = "";
         for (var v = 0; v < competencies.length; v++) {
+            if (subSearch.indexOf(competencies[v].inScheme) != -1)
+                continue;
             searchCompetencies.push(competencies[v].shortId());
             if (subSearch != "")
                 subSearch += " OR ";
-            subSearch += "competency:\"" + competencies[v].shortId() + "\"";
-            if (!EcRepository.shouldTryUrl(competencies[v].id)) {
-                if (subSearch != "")
-                    subSearch += " OR ";
-                var m = forge.md.md5.create();
-                m.update(competencies[v].id);
-                var md5 = m.digest().toHex();
-                subSearch += "competency:\"" + md5 + "\"";
-            }
+            subSearch += "@id:\"" + competencies[v].inScheme + "\"";
         }
         if (subSearch != "") {
-            frameworkSearch(server, subSearch, searchTerm);
+            conceptSchemeSearch(server, subSearch, searchTerm);
         }
         frameworkLoading--;
         if (frameworkLoading == 0) {
             if ($("#frameworks").html() == "")
-                $("#frameworks").html("<center>No frameworks found.</center>");
+                $("#frameworks").html("<center>No concept schemes found.</center>");
             showPage("#frameworksSection");
         }
     }, function (failure) {

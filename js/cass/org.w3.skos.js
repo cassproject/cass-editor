@@ -37,6 +37,7 @@ function() {
     EcRemoteLinkedData.call(this, "http://schema.cassproject.org/0.3/skos/", "Concept");
 };
 Concept = stjs.extend(Concept, EcRemoteLinkedData, [], function(constructor, prototype) {
+    constructor.myType = "http://schema.cassproject.org/0.3/skos/Concept";
     /**
      *  www.w3.org/2004/02/skos/core/topConceptOf
      *  Relates a concept to the concept scheme that it is a top level concept of.
@@ -68,6 +69,7 @@ function() {
     EcRemoteLinkedData.call(this, "http://schema.cassproject.org/0.3/skos/", "ConceptScheme");
 };
 ConceptScheme = stjs.extend(ConceptScheme, EcRemoteLinkedData, [], function(constructor, prototype) {
+    constructor.myType = "http://schema.cassproject.org/0.3/skos/ConceptScheme";
     /**
      *  www.w3.org/2004/02/skos/core/hasTopConcept
      *  Relates, by convention, a concept scheme to a concept which is topmost in the broader/narrower concept hierarchies for that scheme, providing an entry point to these hierarchies.

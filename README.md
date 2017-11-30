@@ -54,6 +54,12 @@ By default, the cass-editor provides a framework browser to select and edit fram
 
     ex:
     https://cassproject.github.io/cass-editor/index.html?view=true
+      
+## Concept mode
+By default, the cass-editor edits competency frameworks. To instead edit concept schemes, use `concepts=true`.
+
+    ex:
+    https://cassproject.github.io/cass-editor/index.html?concepts=true
     
 ## Select competencies in frameworks
 If your app needs the ability to select competencies from a framework, use `select=label` where 'label' is the tag you want the select button to have. ex: Add, Select, Import. Best used with `view=true`.

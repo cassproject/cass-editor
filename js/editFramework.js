@@ -418,6 +418,8 @@ conditionalDelete = function (id, depth) {
 }
 
 getValueOrNull = function (value) {
+    if (value === undefined)
+        return null;
     if (value === '')
         return null;
     else

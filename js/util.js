@@ -41,12 +41,22 @@ if (queryParams.concepts == "true") {
     conceptMode = true;
     $("#addFrameworkSection #title").text("Add a Concept Scheme");
     $("#addFrameworkSection #caption").text("Create a scheme below.");
-    $("#formSection #importButton").parent().remove();
-    $("#importSection").remove();
+    $(".absentForConcepts").remove();
     $("#formSection #nameSpan").text("Title");
     $("#formSection #name").attr("placeholder", "Enter the concept scheme title here.");
     $("#formSection #description").attr("placeholder", "Enter the concept scheme description here.");
-
+    $("#editFrameworkSection #sidebarName").text("Concept Scheme Title Here");
+    $("[for=\"sidebarNameInput\"]").text("Title");
+    $("#ceasnDataFields").remove();
+    $("#sidebarVersion").remove();
+    $("#sidebarAddCompetencies option").first().text("Add Concept");
+    $("#sidebarAddCompetencies option[value=\"search\"]").remove();
+    $("#sidebarAddLevels").remove();
+    $("#sidebarRemove").remove();
+    $("#sidebarExport option").each(function () {
+        $(this).text(this.text.replace("CASS", "SKOS"));
+    });
+    $("#confirmDialog #confirmText").text("Are you sure you want to delete this concept?");
 }
 
 if (!(window.ActiveXObject) && "ActiveXObject" in window) {

@@ -127,7 +127,8 @@ function afterRefresh(level, subsearch) {
     $("#tree").show().scrollTop(treeTop);
     if (selectedCompetency !== null) {
         highlightSelected($("[id=\"" + selectedCompetency.shortId() + "\"]"));
-        $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
+        if ($(".selected").length > 0)
+            $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
     }
 }
 
@@ -407,7 +408,7 @@ $("body").on("click", ".competency input", null, function (evt) {
     highlightSelected(me);
 
     if (conceptMode) {
-        //TODO
+        selectedCompetency = EcConcept.getBlocking(me.attr("id"));
     } else {
         selectedCompetency = EcCompetency.getBlocking(me.attr("id"));
         if (selectedCompetency == null)
@@ -609,7 +610,10 @@ exportSelected = function () {
                 "Accept": "text/n4"
             },
             success: function (data) {
-                download(framework.name + ".n4", data);
+                if (conceptMode)
+                    download(framework.title + ".n4", data);
+                else
+                    download(framework.name + ".n4", data);
             }
         });
     } else if (v == "cassrdfjson") {
@@ -619,7 +623,10 @@ exportSelected = function () {
                 "Accept": "application/rdf+json"
             },
             success: function (data) {
-                download(framework.name + ".rdf.json", JSON.stringify(data, null, 2));
+                if (conceptMode)
+                    download(framework.title + ".rdf.json", JSON.stringify(data, null, 2));
+                else
+                    download(framework.name + ".rdf.json", JSON.stringify(data, null, 2));
             }
         });
     } else if (v == "cassrdfxml") {
@@ -629,7 +636,10 @@ exportSelected = function () {
                 "Accept": "application/rdf+xml"
             },
             success: function (data) {
-                download(framework.name + ".rdf.xml", data);
+                if (conceptMode)
+                    download(framework.title + ".rdf.xml", data);
+                else
+                    download(framework.name + ".rdf.xml", data);
             }
         });
     } else if (v == "cassturtle") {
@@ -639,7 +649,10 @@ exportSelected = function () {
                 "Accept": "text/turtle"
             },
             success: function (data) {
-                download(framework.name + ".turtle", data);
+                if (conceptMode)
+                    download(framework.title + ".turtle", data);
+                else
+                    download(framework.name + ".turtle", data);
             }
         });
     } else if (v == "ceasn")
