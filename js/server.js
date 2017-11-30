@@ -165,7 +165,10 @@ for (var i = 0; i < servers.length; i++) {
     openWebSocket(r);
 }
 
-var iframePath = "/cass-editor/index.html?select=Add&selectRelations=true&view=true&origin=" + window.location.origin + "&server=" + r.selectedServer;
+var iframeRoot = queryParams.editorRoot;
+if (iframeRoot == null || iframeRoot === undefined)
+    iframeRoot = "";
+var iframePath = iframeRoot + "/index.html?select=Add&selectRelations=true&view=true&iframeRoot=" + iframeRoot + "&origin=" + window.location.origin + "&server=" + r.selectedServer;
 if (queryParams.webSocketOverride != null && queryParams.webSocketOverride !== undefined)
     iframePath += "&webSocketOverride=" + queryParams.webSocketOverride;
 if (queryParams.view != "true")
