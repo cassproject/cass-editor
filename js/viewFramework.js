@@ -12,6 +12,9 @@ if (queryParams.select != null) {
     $("#selectButton").show().text(queryParams.select);
     $("#selectAllButton").show();
 }
+if (queryParams.singleSelect != null) {
+    $("#selectButton").show().text(queryParams.singleSelect);
+}
 
 var framework = null;
 var selectedCompetency = null;
@@ -35,16 +38,21 @@ fetchFailure = function (failure) {
 
 function select() {
     var ary = [];
+    if ($("input:checkbox").length == 0)
+        if (selectedCompetency != null)
+            ary.push(selectedCompetency.shortId());
     $("input:checked").parent().each(function (f) {
         ary.push($(this).attr("id"));
         var rId = $(this).attr("relationId");
         if (rId != null && rId !== undefined && rId != "")
-            ary.push(rId);
+                ary.push(rId);
     });
-    parent.postMessage({
+    var message = {
         message: "selected",
         selected: ary
-    }, queryParams.origin);
+    };
+    console.log(message);
+    parent.postMessage(message, queryParams.origin);
 }
 
 function handleSelectAll(status) {

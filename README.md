@@ -67,6 +67,12 @@ If your app needs the ability to select competencies from a framework, use `sele
     ex:
     https://cassproject.github.io/cass-editor/index.html?select=Add
 
+## Select single competencies in frameworks
+If your app needs the ability to select a single competency from a framework, use `singleSelect=label` where 'label' is the tag you want the select button to have. ex: Add, Select, Import. Best used with `view=true`.
+
+    ex:
+    https://cassproject.github.io/cass-editor/index.html?singleSelect=Select
+
 ## Add new framework
 By default, the cass-editor provides a framework browser to select and edit frameworks. To start with a workflow of creating a framework, use `action=add`. This will expose the framework creation and import pages.
 
