@@ -45,6 +45,7 @@ function select() {
         ary.push($(this).attr("id"));
         var rId = $(this).attr("relationId");
         if (rId != null && rId !== undefined && rId != "")
+            if (queryParams.selectRelations == "true")
                 ary.push(rId);
     });
     var message = {
