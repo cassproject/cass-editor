@@ -130,7 +130,7 @@ Along with user credentials, the cass-editor can be configured to not show other
 # Overrides
 The cass-editor can be overridden to use particular settings.
 
-    iframeRoot helps any recursive iframes locate the root of the cass-editor. Examples include '/cass-editor' or 'https://cassproject.github.io/cass-editor'
+    iframeRoot helps any recursive iframes locate the root of the cass-editor. Examples include '/cass-editor/' or 'https://cassproject.github.io/cass-editor/'
     webSocketOverride helps the cass-editor connect to the websocket of CASS in case a reverse proxy is misbehaving when handling websockets (Looking at you, IIS.)
 
 # Events
