@@ -296,6 +296,8 @@ refreshSidebar = function () {
         if (!$(this).next().is("input,textarea"))
             return;
         var val = thing[$(this).next().attr(fieldChoice)];
+        if (EcArray.isArray(val))
+            val = val.join(", ");
         if (val === undefined || val == null || val == "")
             $(this).html("");
         else
@@ -309,6 +311,8 @@ refreshSidebar = function () {
             return;
         }
         var val = thing[$(this).attr(inputChoice)];
+        if (EcArray.isArray(val))
+            val = val.join(", ");
         if (val === undefined || val == null || val == "")
             $(this).val(null);
         else
