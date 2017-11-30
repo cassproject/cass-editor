@@ -311,11 +311,14 @@ refreshSidebar = function () {
             return;
         }
         var val = thing[$(this).attr(inputChoice)];
+        if (val === undefined || val == null || val == "")
+            if ($(this).attr("defaultToFramework") != null) 
+                val = framework[$(this).attr(inputChoice)];
         if (EcArray.isArray(val))
             val = val.join(", ");
-        if (val === undefined || val == null || val == "")
+        if (val === undefined || val == null || val == "") {
             $(this).val(null);
-        else
+        } else
             $(this).val(val);
     });
     $("#detailSlider button").each(function () {
