@@ -671,6 +671,21 @@ $('html').keydown(function (evt) {
             $('input').blur();
             $('select').blur();
         }
+        //Enable scrolling while in text field
+        //On up arrow
+        else if (evt.which === 38) {
+            var scroll = $('#detailSlider').scrollTop();
+
+            $('#detailSlider').scrollTop(scroll - 10);
+            return false;
+        }
+        //On down arrow
+        else if (evt.which === 40) {
+            var scroll = $('#detailSlider').scrollTop();
+
+            $('#detailSlider').scrollTop(scroll + 10);
+            return false;
+        }
     }
 });
 
