@@ -178,7 +178,7 @@ saveCompetency = function () {
         if (val == null)
             delete thing[$(this).attr(inputChoice)];
         else {
-            if ($(this).attr("plural")) {
+            if ($(this).attr("plural") != null) {
                 thing[$(this).attr(inputChoice)] = val.split(/, ?/);
                 if (thing[$(this).attr(inputChoice)].length == 1)
                     thing[$(this).attr(inputChoice)] = thing[$(this).attr(inputChoice)][0];
