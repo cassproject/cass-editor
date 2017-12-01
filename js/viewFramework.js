@@ -134,7 +134,7 @@ function afterRefresh(level, subsearch) {
     } else
         showPage("#editFrameworkSection", framework);
     $("#tree").show().scrollTop(treeTop);
-    if (selectedCompetency !== null) {
+    if (selectedCompetency != null && selectedCompetency !== undefined) {
         highlightSelected($("[id=\"" + selectedCompetency.shortId() + "\"]"));
         if ($(".selected").length > 0)
             $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
