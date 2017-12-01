@@ -123,3 +123,164 @@ function download(filename, text) {
         pom.click();
     }
 }
+
+highlightSelected = function (element) {
+    $('.selected').removeClass('selected');
+    $(element).addClass('selected');
+}
+
+var tourSkipAhead = false;
+startTour = function(step) {
+    localStorage.setItem('tourStatus', 'in progress');
+    var intro = introJs();
+    intro.setOptions({
+        steps: [
+            {
+                element: $('#frameworks')[0],
+                intro: 'You can scroll through this list to browse the different frameworks.'
+            },
+            {
+                element: $('#header')[0],
+                intro: 'Or you can search for a particular framework here.',
+                position: 'right'
+            },
+            {
+                element: $('#frameworks').children(':first')[0],
+                intro: 'You can click a framework for more information.'
+            },
+            {
+                element: $('#frameworkNameContainer')[0],
+                intro: 'This displays the current framework, you can click here to view more details about the framework itself.'
+            },
+            {
+                element: $('#tree')[0],
+                intro: 'This is the list of competencies that belong to this framework.'
+            },
+            {
+                element: $('#tree').children(':first')[0],
+                intro: 'You can click a competency for more information.'
+            },
+            {
+                element: $('#detailSlider')[0],
+                intro: 'This panel will list the properties of the selected framework or competency. Additionally, you can add new competencies or edit these properties here.'
+            }
+        ],
+        showStepNumbers: false
+    });
+
+    intro.oncomplete(function() {
+        cancelTour();
+    });
+
+    intro.onafterchange(function() {
+        $('.introjs-prevbutton').hide();
+        if (tourSkipAhead === false && this._currentStep === 3) {
+            $('.introjs-skipbutton').click();
+            $('#frameworks').children(':first').click();
+            setTimeout(function() {
+                tourSkipAhead = true;
+                startTour(4);
+            }, 3000);
+        } else if (this._currentStep === 6) {
+            $('#tree').children(':first').click();
+        }
+    });
+    if (step !== null)
+        intro.goToStepNumber(step).start();
+    else
+        intro.start();
+}
+
+cancelTour = function() {
+    localStorage.setItem('tourStatus', 'complete');
+}
+
+showTourDialog = function (callback) {
+    if (viewMode) return;
+    if (localStorage.getItem('tourStatus') === null || localStorage.getItem('tourStatus') === 'in progress') {
+        $("#tourDialog").show();
+        $("#confirmOverlay").show();
+
+        $("#acceptTourButton").on('click', function () {
+            callback(true);
+        });
+
+        $("#declineTourButton").on('click', function () {
+            callback(false);
+        });
+    }
+    
+}
+
+hideTourDialog = function (callback) {
+    if (viewMode) return;
+    $("#tourDialog").hide();
+    $("#confirmOverlay").hide();
+
+    $("#acceptTourButton").off();
+    $("#declineTourButton").off();
+}
+
+showCopyOrLinkDialog = function (callback) {
+    if (viewMode) return;
+    $("#copyOrLinkDialog").show();
+    $("#confirmOverlay").show();
+
+    $("#copyCompetenciesButton").on('click', function () {
+        callback(true);
+    });
+
+    $("#linkCompetenciesButton").on('click', function () {
+        callback(false);
+    });
+}
+
+hideCopyOrLinkDialog = function () {
+    if (viewMode) return;
+    $("#copyOrLinkDialog").hide();
+    $("#confirmOverlay").hide();
+    $("#linkCompetenciesButton").off();
+    $("#copyCompetenciesButton").off();
+}
+
+showConfirmDialog = function (callback, statement, action, id) {
+    if (viewMode) return;
+    if (action === 'delete') {
+        EcFramework.search(repo, "\"" + id + "\"", function (results) {
+            $("#confirmDialog").show();
+            $("#confirmOverlay").show();
+            if (results.length > 1) {
+                statement += ' Up to ' + results.length + ' other frameworks may break.';
+            }
+            $("#confirmText").text(statement);
+
+            $("#dialogConfirmButton").on('click', function () {
+                callback(true);
+            });
+            $("#dialogCancelButton").on('click', function () {
+                callback(false);
+            });
+        }, console.error, {})
+    } else {
+        $("#confirmDialog").show();
+        $("#confirmOverlay").show();
+        $("#confirmText").text(statement);
+
+        $("#dialogConfirmButton").on('click', function () {
+            callback(true);
+        });
+        $("#dialogCancelButton").on('click', function () {
+            callback(false);
+        });
+    }
+
+}
+
+hideConfirmDialog = function () {
+    if (viewMode) return;
+    $("#confirmDialog").hide();
+    $("#confirmOverlay").hide();
+    $("#dialogConfirmButton").off();
+    $("#dialogCancelButton").off();
+}
+

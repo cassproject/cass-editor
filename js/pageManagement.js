@@ -30,6 +30,14 @@ $(document).ready(function () {
         } else {
             searchFrameworks(createParamObj(5000));
         }
+        showTourDialog(function(response) {
+            if (response === true) {
+                startTour();
+            } else {
+                cancelTour();
+            }
+            hideTourDialog();
+        });
     });
 });
 

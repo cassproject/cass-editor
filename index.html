@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/jquery-ui.min.css">
     <link rel="stylesheet" href="css/jquery-ui.structure.min.css">
+    <link rel="stylesheet" href="css/introjs.min.css">
 </head>
 
 <body id="cassControl" style="height:100%;">
@@ -414,6 +415,16 @@
         <center id="status">Loading...</center>
     </div>
 
+    <div id="tourDialog" style="display: none;position: fixed;left: 50%;top: 50%;transform: translate(-50%, -50%);z-index: 15001;background-color: white;padding: 1rem;border-radius: 5px;">
+        <div>
+            <span>Looks like this is your first time here, would you like a guided tour?</span>
+        </div>
+        <div style="margin-top: 1rem;">
+            <button id="acceptTourButton" style="float: right;">Sure</button>
+            <button id="declineTourButton" style="float: left;">No thanks</button>
+        </div>
+    </div>
+
     <div id="copyOrLinkDialog" class="absentForConcepts editControl" style="display:none;position: fixed;left: 50%;top: 50%;transform: translate(-50%, -50%);z-index: 15001;background-color: white;padding: 1rem;border-radius: 5px;">
         <div>
             <span>Do you want to copy or link to the selected competencies?</span>
@@ -441,6 +452,7 @@
 
     <script src="js/vendor/jquery-3.2.1.min.js"></script>
     <script src="js/vendor/jquery-ui.min.js"></script>
+    <script src="js/vendor/intro.min.js"></script>
     <script src="js/vendor/papaparse.js"></script>
     <script src="forge/forge.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.0/jquery.mark.min.js"></script>
