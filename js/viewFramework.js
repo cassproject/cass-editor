@@ -300,7 +300,7 @@ renderSidebar = function (justLists) {
                     name = it["skos:definition"];
                 li.attr("id", val[i]).attr("title", val[i]).text(name);
                 if (!viewMode) {
-                    var x = li.prepend("<a style='float:right;'>X</a>").children().first();
+                    var x = li.prepend("<button style='float:right;'>X</button>").children().first();
                     (function (thing, u, id) {
                         x.click(function () {
                             EcArray.setRemove(thing[u], id);
