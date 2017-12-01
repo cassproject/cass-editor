@@ -138,8 +138,8 @@ function cappend(event) {
         console.log(event.data.selected);
         if (JSON.stringify(event.data.selected).indexOf("Concept") != -1) {
             attachUrlProperties(event.data.selected);
-            backPage();
-            backPage();
+            $("#selectConceptSection").hide();
+            $("#editFrameworkSection").show();
         } else showCopyOrLinkDialog(function (copy) {
             if (copy === true) {
                 copyCompetencies(event.data.selected);
