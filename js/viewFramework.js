@@ -402,11 +402,6 @@ refreshSidebar = function () {
             $(this).hide();
     });
 
-    var thing = framework;
-    if (selectedCompetency != null) {
-        thing = selectedCompetency;
-    }
-
     if (framework == thing) {
         $(".frameworkOnly").show();
         $("#sidebarVersion").hide();
