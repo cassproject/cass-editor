@@ -394,6 +394,11 @@ refreshSidebar = function () {
             $(this).hide();
     });
 
+    var thing = framework;
+    if (selectedCompetency != null) {
+        thing = selectedCompetency;
+    }
+
     if (framework == thing) {
         $(".frameworkOnly").show();
         $("#sidebarVersion").hide();
@@ -435,8 +440,6 @@ refreshSidebar = function () {
         $("#sidebarFeedback").html("Some edit options are limited: <li>You do not own this framework.</li> ");
     } else
         $("#sidebarFeedback").html("");
-
-
 }
 
 editSidebar = function () {
