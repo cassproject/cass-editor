@@ -51,6 +51,23 @@ addCompetency = function () {
     }
 }
 
+attachUrlProperties = function (results) {
+    if (conceptMode) return;
+    if (viewMode) return;
+    var resource = framework;
+    if (selectedCompetency != null)
+        resource = selectedCompetency;
+    for (var i = 0; i < results.length; i++) {
+        var thing = EcRepository.getBlocking(results[i]);
+        if (thing.isAny(new EcConcept().getTypes())) {
+            if (resource[$("#selectConceptSection").attr("destination")] == null)
+                resource[$("#selectConceptSection").attr("destination")] = [];
+            EcArray.setAdd(resource[$("#selectConceptSection").attr("destination")], thing.shortId());
+        }
+    }
+    renderSidebar(true);
+}
+
 appendCompetencies = function (results, newLink) {
     if (conceptMode) return;
     if (viewMode) return;

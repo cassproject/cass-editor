@@ -136,7 +136,11 @@ function cappend(event) {
     if (event.data.message == "selected") {
         console.log("I got " + event.data.selected.length + " selected items from the iframe");
         console.log(event.data.selected);
-        showCopyOrLinkDialog(function (copy) {
+        if (JSON.stringify(event.data.selected).indexOf("Concept") != -1) {
+            attachUrlProperties(event.data.selected);
+            $("#selectConceptSection").hide();
+            $("#editFrameworkSection").show();
+        } else showCopyOrLinkDialog(function (copy) {
             if (copy === true) {
                 copyCompetencies(event.data.selected);
             } else {
@@ -172,7 +176,13 @@ var iframePath = iframeRoot + "index.html?select=Add&selectRelations=true&view=t
 if (queryParams.webSocketOverride != null && queryParams.webSocketOverride !== undefined)
     iframePath += "&webSocketOverride=" + queryParams.webSocketOverride;
 if (queryParams.view != "true")
-    $("iframe").attr("src", iframePath);
+    $("#findCompetencyIframe").attr("src", iframePath);
+
+var iframeConceptPath = iframeRoot + "index.html?select=Add&concepts=true&iframeRoot=" + iframeRoot + "&ceasnDataFields=" + queryParams.ceasnDataFields + "&origin=" + window.location.origin + (queryParams.server == null ? "" : "&server=" + queryParams.server);
+if (queryParams.webSocketOverride != null && queryParams.webSocketOverride !== undefined)
+    iframeConceptPath += "&webSocketOverride=" + queryParams.webSocketOverride;
+if (queryParams.view != "true")
+    $("#selectConceptIframe").attr("src", iframeConceptPath);
 
 loadIdentity = function (callback) {
     if (queryParams.user == "self") {

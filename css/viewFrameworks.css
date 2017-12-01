@@ -30,7 +30,7 @@
     border: none;
     background-color: transparent;
     color: inherit;
-    width: calc(100% - 50px);
+    width: calc(100% - 50px - 10rem);
     height: 1.6rem;
     margin: 0px;
     padding: 0px;
