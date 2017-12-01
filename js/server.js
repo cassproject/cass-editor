@@ -90,7 +90,6 @@ openWebSocket = function (r) {
                             refreshCompetency(com);
                         if (selectedCompetency != null)
                             if (selectedCompetency.shortId() == wut.shortId()) {
-                                selectedCompetency = com;
                                 refreshSidebar();
                             }
                     }
