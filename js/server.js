@@ -77,7 +77,7 @@ openWebSocket = function (r) {
             if (new Concept().isA(wut.getFullType())) {
                 if (framework != null)
                     if ($("[id=\"" + wut.shortId() + "\"]").length > 0) {
-                        var com = new Concept();
+                        var com = new EcConcept();
                         com.copyFrom(wut);
                         $("#tree [id='" + com.shortId() + "']").remove();
                         if (com.narrows != null)
@@ -90,6 +90,7 @@ openWebSocket = function (r) {
                             refreshCompetency(com);
                         if (selectedCompetency != null)
                             if (selectedCompetency.shortId() == wut.shortId()) {
+                                selectedCompetency = com;
                                 refreshSidebar();
                             }
                     }
@@ -98,6 +99,8 @@ openWebSocket = function (r) {
                 if (framework != null)
                     if (framework.competency != null)
                         if (EcArray.has(framework.competency, wut.shortId()) || EcArray.has(framework.competency, wut.shortId()) || JSON.stringify(framework.competency).indexOf(EcCrypto.md5(wut.id)) != -1) {
+                            var com = new EcCompetency();
+                            com.copyFrom(wut);
                             populateFramework();
                             if (selectedCompetency != null)
                                 if (selectedCompetency.shortId() == wut.shortId()) {
