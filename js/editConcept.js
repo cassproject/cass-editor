@@ -9,7 +9,7 @@ addConcept = function () {
         c.generateId(repo.selectedServer);
         if (EcIdentityManager.ids.length > 0)
             c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-        c.title = "New Concept";
+        c["skos:definition"] = "New Concept";
         c.inScheme = framework.shortId();
         if (selectedCompetency != null) {
             if (selectedCompetency.broadens == null)
