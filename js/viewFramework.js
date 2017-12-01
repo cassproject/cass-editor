@@ -590,13 +590,32 @@ $('body').on('dragleave', '#frameworkNameContainer', function (evt) {
 });
 
 $('html').keydown(function (evt) {
+    //Focus the correct frame to capture keydown events
+    if ($(window.parent.document.getElementById('selectConceptSection')).css('display') === 'none' && $(window.parent.document.getElementById('findCompetencySection')).css('display') === 'none') {
+        setTimeout(function() {
+            parent.focus();
+        });
+    } else if ($('#selectConceptSection').length > 0 && $('#selectConceptSection').css('display') !== 'none') {
+        setTimeout(function() {
+            $('#selectConceptIframe')[0].contentWindow.focus();
+        });
+    } else if ($('#findCompetencySection').length > 0 && $('#findCompetencySection').css('display') !== 'none') {
+        setTimeout(function() {
+            $('#findCompetencyIframe')[0].contentWindow.focus();
+        });
+    } else {
+        setTimeout(function() {
+            $('#cassControl').focus();
+        });
+    }
+    
     //On escape
     if (evt.which === 27) {
         $(':focus').blur();
     } else if (!$('input').is(':focus') && !$('select').is(':focus') && !$('textarea').is(':focus')) {
         //If we're on the framework selection screen
         if ($('#frameworksSection').css('display') === 'block') {
-            var frameworkElementArray = document.getElementsByTagName('p');
+            var frameworkElementArray = document.getElementById('frameworks').querySelectorAll('p');
             if (frameworkSelectionIndex === null) {
                 frameworkSelectionIndex = 0;
                 $('#frameworks').find('.selected').each(function () {
@@ -607,7 +626,8 @@ $('html').keydown(function (evt) {
             }
             //On Down arrow
             if (evt.which === 40) {
-                if (frameworkSelectionIndex < frameworkElementArray.length)
+                $(':focus').blur();
+                if (frameworkSelectionIndex < frameworkElementArray.length - 1)
                     frameworkSelectionIndex++;
                 //clear any existing selected
                 $('#frameworks').find('.selected').each(function () {
@@ -618,6 +638,7 @@ $('html').keydown(function (evt) {
             }
             //On Up arrow
             else if (evt.which === 38) {
+                $(':focus').blur();
                 if (frameworkSelectionIndex > 0)
                     frameworkSelectionIndex--;
                 $('#frameworks').find('.selected').each(function () {
@@ -642,7 +663,7 @@ $('html').keydown(function (evt) {
             }
             //On down arrow
             if (evt.which === 40) {
-                $('button').blur();
+                $(':focus').blur();
                 if (competencySelectionIndex < competencyElementArray.length)
                     competencySelectionIndex++;
                 $(competencyElementArray[competencySelectionIndex]).click();
@@ -650,7 +671,7 @@ $('html').keydown(function (evt) {
             }
             //On up arrow
             else if (evt.which === 38) {
-                $('button').blur();
+                $(':focus').blur();
                 if (competencySelectionIndex >= 0)
                     competencySelectionIndex--;
                 if (competencySelectionIndex >= 0)
@@ -661,12 +682,12 @@ $('html').keydown(function (evt) {
             }
             //On left and right arrows
             else if (evt.which === 39) {
-                $('button').blur();
+                $(':focus').blur();
                 $(competencyElementArray[competencySelectionIndex]).find('.collapse').click();
                 $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
 
             } else if (evt.which === 37) {
-                $('button').blur();
+                $(':focus').blur();
                 $(competencyElementArray[competencySelectionIndex]).find('.collapse').click();
                 $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
             }
