@@ -372,6 +372,14 @@ refreshSidebar = function () {
 
     $('#detailSlider').show();
 
+    var thing = framework;
+    if (selectedCompetency != null) {
+        $('.ceasnCompetency .viewMode').show();
+        thing = selectedCompetency;
+    } else {
+        $('.ceasnCompetency').hide();
+    }
+
     if (queryParams.export === 'true') {
         $('.export').show();
     }
