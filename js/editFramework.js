@@ -189,6 +189,12 @@ saveCompetency = function () {
         }
     }
 
+    var nameString = $('#sidebarNameInput').val();
+    if ($.trim(nameString) === '') {
+        alert('Please enter a name');
+        return false;
+    }
+
 
     $("#detailSlider").find("input:visible,textarea:visible").each(function () {
         var val = getValueOrNull($(this).val());
