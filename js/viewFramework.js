@@ -300,18 +300,15 @@ renderSidebar = function (justLists) {
                     name = it["skos:definition"];
                 li.attr("id", val[i]).attr("title", val[i]).text(name);
                 if (!viewMode) {
-                    var x = li.prepend("<a tabindex='0' style='float:right;'>X</a>").children().first();
-                    (function (thing, u, id) {
+                    var x = li.prepend("<a class='editMode' tabindex='0' style='float:right;'>X</a>").children().first();
+                    (function (thing, u, id, li) {
                         x.click(function () {
                             EcArray.setRemove(thing[u], id);
                             if (thing[u].length == 0)
                                 delete thing[u];
-                            EcRepository.save(thing, function (x) {
-                                afterSave(x);
-                                refreshSidebar();
-                            }, error);
+                            li.remove();
                         })
-                    })(thing, u, val[i]);
+                    })(thing, u, val[i], li);
                 }
             }
         }
@@ -391,11 +388,12 @@ refreshSidebar = function () {
     $('#ceasnDataFields').find('p').text(null);
     $('#ceasnDataFields').find('input').val(null);
 
+    renderSidebar();
+
     $("sidebarFeedback").text("");
     $("#editFrameworkSection").find("button,input,textarea,select").prop('disabled', false);
     $("#editFrameworkSection .editMode").hide();
     $("#editFrameworkSection .viewMode").show();
-    renderSidebar();
 
     $("#editFrameworkSection label").each(function () {
         if ($(this).parent().children("#" + $(this).attr("for")).text() == "" || $(this).parent().children("#" + $(this).attr("for")).text() == null)
