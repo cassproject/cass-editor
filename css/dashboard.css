@@ -81,12 +81,14 @@ ul {
 }
 
 #frameworkName,
-#editFrameworkBack {
+#editFrameworkBack,
+#frameworksBack {
     font-size: 1.5rem;
     line-height: 2.3rem;
 }
 
-#editFrameworkBack {
+#editFrameworkBack,
+#frameworksBack {
     margin-left: .5rem;
 }
 
