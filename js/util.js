@@ -29,6 +29,7 @@ var conceptMode = false;
 
 if (queryParams.view == "true") {
     viewMode = true;
+    $("#createNewButton").remove();
     $("button.editControl").remove();
     $("select.editControl").remove();
     if (queryParams.ceasnDataFields == null) {
@@ -131,7 +132,7 @@ highlightSelected = function (element) {
 }
 
 var tourSkipAhead = false;
-startTour = function(step) {
+startTour = function (step) {
     localStorage.setItem('tourStatus', 'in progress');
     var intro = introJs();
     intro.setOptions({
@@ -169,16 +170,16 @@ startTour = function(step) {
         showStepNumbers: false
     });
 
-    intro.oncomplete(function() {
+    intro.oncomplete(function () {
         cancelTour();
     });
 
-    intro.onafterchange(function() {
+    intro.onafterchange(function () {
         $('.introjs-prevbutton').hide();
         if (tourSkipAhead === false && this._currentStep === 3) {
             $('.introjs-skipbutton').click();
             $('#frameworks').children(':first').click();
-            setTimeout(function() {
+            setTimeout(function () {
                 tourSkipAhead = true;
                 startTour(4);
             }, 3000);
@@ -192,7 +193,7 @@ startTour = function(step) {
         intro.start();
 }
 
-cancelTour = function() {
+cancelTour = function () {
     localStorage.setItem('tourStatus', 'complete');
 }
 
@@ -210,7 +211,7 @@ showTourDialog = function (callback) {
             callback(false);
         });
     }
-    
+
 }
 
 hideTourDialog = function (callback) {
@@ -284,4 +285,3 @@ hideConfirmDialog = function () {
     $("#dialogConfirmButton").off();
     $("#dialogCancelButton").off();
 }
-
