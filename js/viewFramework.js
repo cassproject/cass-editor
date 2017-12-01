@@ -590,7 +590,10 @@ $('body').on('dragleave', '#frameworkNameContainer', function (evt) {
 });
 
 $('html').keydown(function (evt) {
-    if (!$('input').is(':focus') && !$('select').is(':focus') && !$('textarea').is(':focus')) {
+    //On escape
+    if (evt.which === 27) {
+        $(':focus').blur();
+    } else if (!$('input').is(':focus') && !$('select').is(':focus') && !$('textarea').is(':focus')) {
         //If we're on the framework selection screen
         if ($('#frameworksSection').css('display') === 'block') {
             var frameworkElementArray = document.getElementsByTagName('p');
@@ -707,14 +710,9 @@ $('html').keydown(function (evt) {
 
         }
     } else {
-        //On escape
-        if (evt.which === 27) {
-            $('input').blur();
-            $('select').blur();
-        }
         //Enable scrolling while in text field
         //On up arrow
-        else if (evt.which === 38) {
+        if (evt.which === 38) {
             var scroll = $('#detailSlider').scrollTop();
 
             $('#detailSlider').scrollTop(scroll - 10);
