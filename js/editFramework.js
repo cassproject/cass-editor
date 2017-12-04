@@ -11,6 +11,7 @@ addCompetency = function () {
     if (addOrSearch == "search") {
         showPage("#findCompetencySection", framework);
     } else if (addOrSearch == "new") {
+        isFirstEdit = true;
         previousSelectedCompetency = selectedCompetency;
         var c = new EcCompetency();
         c.generateId(repo.selectedServer);
@@ -36,6 +37,7 @@ addCompetency = function () {
                         editSidebar();
                         $("#sidebarNameInput").focus();
                         afterSave();
+                        isFirstEdit = false;
                     }, error);
                 }, error);
             } else {
@@ -45,6 +47,7 @@ addCompetency = function () {
                     editSidebar();
                     $("#sidebarNameInput").focus();
                     afterSave();
+                    isFirstEdit = false;
                 }, error);
             }
         }, error);

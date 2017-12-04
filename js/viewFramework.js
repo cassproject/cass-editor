@@ -442,7 +442,7 @@ refreshSidebar = function () {
     } else
         $("#sidebarFeedback").html("");
 }
-
+isFirstEdit = false;
 editSidebar = function () {
     if (conceptMode)
         return editConceptSidebar();
@@ -490,33 +490,38 @@ editSidebar = function () {
         $('.ceasnCompetency').hide();
     }
 
-    var competencies = [];
-    var autocompleteDict = {};
+    if (selectedCompetency != null && isFirstEdit === true) {
+        var competencies = [];
+        var autocompleteDict = {};
 
-    $('.competencyName').each(function () {
-        var competency = $(this)[0].parentElement.parentElement;
-        if (!autocompleteDict.hasOwnProperty($(this).text())) {
-            competencies.push($(this).text());
-        }
-        autocompleteDict[$(this).text()] = competency.id;
+        $('.competencyName').each(function () {
+            var competency = $(this)[0].parentElement.parentElement;
+            if (!autocompleteDict.hasOwnProperty($(this).text())) {
+                competencies.push($(this).text());
+            }
+            autocompleteDict[$(this).text()] = competency.id;
 
-    });
+        });
 
-    $('#sidebarNameInput').autocomplete({
-        source: competencies,
-        select: function (event, ui) {
-            var competency = EcRepository.getBlocking(autocompleteDict[ui.item.value]);
-            var results = [];
-            results.push(competency.id);
+        $('#sidebarNameInput').autocomplete({
+            source: competencies,
+            select: function (event, ui) {
+                var competency = EcRepository.getBlocking(autocompleteDict[ui.item.value]);
+                var results = [];
+                results.push(competency.id);
 
-            //Delete the default created competency if selecting an existing one from dropdown
-            framework.removeCompetency(selectedCompetency.shortId());
-            framework.removeLevel(selectedCompetency.shortId());
-            conditionalDelete(selectedCompetency.shortId());
+                //Delete the default created competency if selecting an existing one from dropdown
+                framework.removeCompetency(selectedCompetency.shortId());
+                framework.removeLevel(selectedCompetency.shortId());
+                conditionalDelete(selectedCompetency.shortId());
+                EcRepository.save(framework, function() {}, error);
 
-            appendCompetencies(results, true);
-        }
-    });
+                appendCompetencies(results, true);
+            }
+        });
+    } else {
+        $('#sidebarNameInput').autocomplete = null;
+    }
 }
 
 $("body").on("click", ".collapse", null, function (evt) {
