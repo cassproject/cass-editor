@@ -87,12 +87,12 @@ function conceptSchemeSearchByConcept(server, searchTerm, retry) {
     EcConcept.search(server, searchTerm, function (competencies) {
         var subSearch = "";
         for (var v = 0; v < competencies.length; v++) {
-            if (subSearch.indexOf(competencies[v].inScheme) != -1)
+            if (subSearch.indexOf(competencies[v]["skos:inScheme"]) != -1)
                 continue;
             searchCompetencies.push(competencies[v].shortId());
             if (subSearch != "")
                 subSearch += " OR ";
-            subSearch += "@id:\"" + competencies[v].inScheme + "\"";
+            subSearch += "@id:\"" + competencies[v]["skos:inScheme"] + "\"";
         }
         if (subSearch != "") {
             conceptSchemeSearch(server, subSearch, searchTerm);
