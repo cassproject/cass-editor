@@ -31,7 +31,7 @@ addConcept = function () {
             if (framework["skos:hasTopConcept"] == null)
                 framework["skos:hasTopConcept"] = [];
             EcArray.setAdd(framework["skos:hasTopConcept"], c.shortId());
-            c.topConceptOf = framework.shortId();
+            c["skos:topConceptOf"] = framework.shortId();
             EcRepository.save(c, function () {
                 EcRepository.save(framework, function () {
                     selectedCompetency = c;
@@ -78,7 +78,7 @@ unlinkConcept = function (c) {
     if (framework["skos:hasTopConcept"] == null)
         framework["skos:hasTopConcept"] = [];
     EcArray.setAdd(framework["skos:hasTopConcept"], c.shortId());
-    c.topConceptOf = framework.shortId();
+    c["skos:topConceptOf"] = framework.shortId();
     EcRepository.save(c, function () {
         EcRepository.save(framework, afterSave, console.log);
     }, console.log);
@@ -132,7 +132,7 @@ deleteConceptInner = function (c) {
             EcConcept.get(c["skos:narrower"][i], function (concept) {
                 deleteConceptInner(concept);
             }, console.error);
-    if (c.topConceptOf != null) {
+    if (c["skos:topConceptOf"] != null) {
         EcArray.setRemove(framework["skos:hasTopConcept"], c.shortId());
         EcRepository.save(framework, afterSave, console.error);
     }
@@ -169,7 +169,7 @@ dropConceptShortcut = function (element) {
                         }, console.error);
                     delete c["skos:broader"];
                 }
-                delete c.topConceptOf;
+                delete c["skos:topConceptOf"];
                 if (EcArray.has(framework["skos:hasTopConcept"], c.shortId())) {
                     EcArray.setRemove(framework["skos:hasTopConcept"], c.shortId());
                     EcRepository.save(framework, afterSave, console.error);
@@ -210,7 +210,7 @@ dropAnyConcept = function (data, targetData) {
 
     var targetThing = EcRepository.getBlocking(targetData.competencyId);
     if (targetThing.isAny(new EcConceptScheme().getTypes())) {
-        thing.topConceptOf = targetThing.shortId();
+        thing["skos:topConceptOf"] = targetThing.shortId();
         if (targetThing["skos:hasTopConcept"] == null)
             targetThing["skos:hasTopConcept"] = [];
         EcArray.setAdd(targetThing["skos:hasTopConcept"], thing.shortId());
@@ -221,7 +221,7 @@ dropAnyConcept = function (data, targetData) {
         if (thing["skos:broader"] == null)
             thing["skos:broader"] = [];
         EcArray.setAdd(thing["skos:broader"], targetThing.shortId());
-        delete thing.topConceptOf;
+        delete thing["skos:topConceptOf"];
         EcArray.setRemove(framework["skos:hasTopConcept"], thing.shortId());
     }
     EcRepository.save(thing, function () {
@@ -243,7 +243,7 @@ detangleConcepts = function (me, data, targetData) {
         EcArray.setRemove(c["skos:broader"], me.parent().parent().attr("id"));
         if (c["skos:broader"] == null || c["skos:broader"].length == 0) {
             EcArray.setAdd(framework["skos:hasTopConcept"], c.shortId());
-            c.topConceptOf = framework.shortId();
+            c["skos:topConceptOf"] = framework.shortId();
             EcRepository.save(framework, part3, console.error); //Saving framework again.
             foundAgain = true;
         }
@@ -288,7 +288,7 @@ dropConcept = function (ev) {
         if (!ev.shiftKey) {
             var stage2 = function () {
                 var found = false;
-                delete c.topConceptOf;
+                delete c["skos:topConceptOf"];
                 data.competency = c;
                 if (EcArray.has(framework["skos:hasTopConcept"], c.shortId())) {
                     EcArray.setRemove(framework["skos:hasTopConcept"], c.shortId());

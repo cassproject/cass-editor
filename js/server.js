@@ -86,7 +86,7 @@ openWebSocket = function (r) {
                                 window.fetches++;
                                 refreshCompetency(com).appendTo($("[id=\"" + com["skos:broader"][i] + "\"]>ul"));
                             }
-                        if (com.topConceptOf != null)
+                        if (com["skos:topConceptOf"] != null)
                             refreshCompetency(com);
                         if (selectedCompetency != null)
                             if (selectedCompetency.shortId() == wut.shortId()) {
