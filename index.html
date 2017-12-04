@@ -155,13 +155,13 @@
             <button id="sidebarSave" class="editMode greenButton editControl" style="margin:0rem;" onclick="saveCompetency();">Save</button>
             <hr class="editMode">
 
-            <label for="sidebarNameInput" cassCompetency="Competency Name:" cassFramework="Framework Name:" ceasnCompetency="Competency Text:" ceasnFramework="Name" skosCompetency="Concept Definition:" skosFramework="Concept Scheme Title:" class="editMode" style="margin: 0px;">Name:</label>
+            <label for="sidebarNameInput" cassCompetency="Competency Name:" cassFramework="Framework Name:" ceasnCompetency="Competency Text:" ceasnFramework="Name" skosCompetency="Preferred Label:" skosFramework="Concept Scheme Title:" class="editMode" style="margin: 0px;">Name:</label>
             <h3 id="sidebarName" class="viewMode">Framework Name Here</h3>
-            <input id="sidebarNameInput" cassCompetency="name" cassFramework="name" ceasnCompetency="ceasn:competencyText" ceasnFramework="ceasn:name" skosCompetency="skos:definition" skosFramework="dcterms:title" class="editMode editControl" style="margin-top:0rem;width:calc(100% - 1rem);margin-bottom: 1rem;" value="Framework Name Here" />
+            <input id="sidebarNameInput" cassCompetency="name" cassFramework="name" ceasnCompetency="ceasn:competencyText" ceasnFramework="ceasn:name" skosCompetency="skos:prefLabel" skosFramework="dcterms:title" class="editMode editControl" style="margin-top:0rem;width:calc(100% - 1rem);margin-bottom: 1rem;" value="Framework Name Here" />
 
-            <label for="sidebarNameDescription" cassCompetency="Description:" cassFramework="Description:" ceasnCompetency="Comment:" ceasnFramework="Description:" skosCompetency="Note:" skosFramework="Description:" class="editMode" style="margin: 0px;">Description:</label>
+            <label for="sidebarNameDescription" cassCompetency="Description:" cassFramework="Description:" ceasnCompetency="Comment:" ceasnFramework="Description:" skosCompetency="Concept Definition:" skosFramework="Description:" class="editMode" style="margin: 0px;">Description:</label>
             <p id="sidebarDescription" class="viewMode">This is a super long description, it describes the things worth describing.</p>
-            <textarea id="sidebarDescriptionInput" cassCompetency="description" cassFramework="description" ceasnCompetency="ceasn:comment" ceasnFramework="ceasn:description" skosCompetency="skos:note" skosFramework="dcterms:description" class="editMode editControl" style="margin-top:0rem;width:calc(100% - 1rem);height:6rem;margin-bottom: 1rem;">This is a super long description, it describes the things worth describing.</textarea>
+            <textarea id="sidebarDescriptionInput" cassCompetency="description" cassFramework="description" ceasnCompetency="ceasn:comment" ceasnFramework="ceasn:description" skosCompetency="skos:definition" skosFramework="dcterms:description" class="editMode editControl" style="margin-top:0rem;width:calc(100% - 1rem);height:6rem;margin-bottom: 1rem;">This is a super long description, it describes the things worth describing.</textarea>
 
             <select id="sidebarVersion" class="viewMode editControl absentForConcepts absentForCeasn" style="display:block;margin-bottom:.5rem;" onclick="setCompetencyConfigurationManagement();">
                 <option selected value="noVersion">Shared: Updates automatically.</option>
@@ -220,9 +220,9 @@
                     <p id="sidebarHiddenLabel" class="viewMode" style="font-weight:bold;margin-top: 0;"></p>
                     <input id="sidebarHiddenLabelInput" cassCompetency="skos:hiddenLabel" skosCompetency="skos:hiddenLabel" plural="true" class="editMode editControl" style="width:calc(100% - 1rem);margin-bottom: 1rem;" />
 
-                    <label for="sidebarPreferredLabel" cassCompetency="Preferred Label:" skosCompetency="Preferred Label:" class="viewMode editMode" style="margin:0px;">Preferred Label:</label>
+                    <label for="sidebarPreferredLabel" cassCompetency="Note:" skosCompetency="Note:" class="viewMode editMode" style="margin:0px;">Note:</label>
                     <p id="sidebarPreferredLabel" class="viewMode" style="font-weight:bold;margin-top: 0;"></p>
-                    <input id="sidebarPreferredLabelInput" cassCompetency="skos:prefLabel" skosCompetency="skos:prefLabel" plural="true" class="editMode editControl" style="width:calc(100% - 1rem);margin-bottom: 1rem;" />
+                    <input id="sidebarPreferredLabelInput" cassCompetency="skos:note" skosCompetency="skos:note" plural="true" class="editMode editControl" style="width:calc(100% - 1rem);margin-bottom: 1rem;" />
 
                     <label for="sidebarCodedNotation" cassCompetency="Coded Notation:" ceasnCompetency="Coded Notation:" skosCompetency="Notation:" class="viewMode editMode" style="margin:0px;">Coded Notation:</label>
                     <p id="sidebarCodedNotation" class="viewMode" style="font-weight:bold;margin-top: 0;"></p>
