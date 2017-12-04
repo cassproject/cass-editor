@@ -58,10 +58,10 @@ function refreshConcept(col, level, subsearch, recurse) {
         treeNode.prepend("<input type='checkbox' tabIndex='-1'>");
     if (subsearch != null)
         treeNode.mark(subsearch);
-    if (col.broadens != null && col.broadens.length > 0) {
-        for (var i = 0; i < col.broadens.length; i++) {
+    if (col["skos:narrower"] != null && col["skos:narrower"].length > 0) {
+        for (var i = 0; i < col["skos:narrower"].length; i++) {
             me.fetches++;
-            EcConcept.get(col.broadens[i], function (concept) {
+            EcConcept.get(col["skos:narrower"][i], function (concept) {
                 refreshConcept(concept, level, subsearch, JSON.parse(JSON.stringify(recurse))).appendTo(treeNode.children("ul"));
 
                 if (me.fetches == 0) {
