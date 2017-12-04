@@ -80,13 +80,13 @@ openWebSocket = function (r) {
                         var com = new EcConcept();
                         com.copyFrom(wut);
                         $("#tree [id='" + com.shortId() + "']").remove();
-                        if (com.narrows != null)
-                            for (var i = 0; i < com.narrows.length; i++) {
+                        if (com["skos:broader"] != null)
+                            for (var i = 0; i < com["skos:broader"].length; i++) {
 
                                 window.fetches++;
-                                refreshCompetency(com).appendTo($("[id=\"" + com.narrows[i] + "\"]>ul"));
+                                refreshCompetency(com).appendTo($("[id=\"" + com["skos:broader"][i] + "\"]>ul"));
                             }
-                        if (com.topConceptOf != null)
+                        if (com["skos:topConceptOf"] != null)
                             refreshCompetency(com);
                         if (selectedCompetency != null)
                             if (selectedCompetency.shortId() == wut.shortId()) {

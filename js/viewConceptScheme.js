@@ -7,16 +7,16 @@ populateConceptScheme = function (subsearch) {
     if (queryParams.link == "true")
         $("#editFrameworkSection #frameworkLink").attr("href", framework.shortId()).show();
 
-    if (framework.hasTopConcept == null)
-        framework.hasTopConcept = [];
-    if (framework.hasTopConcept.length == 0) {
+    if (framework["skos:hasTopConcept"] == null)
+        framework["skos:hasTopConcept"] = [];
+    if (framework["skos:hasTopConcept"].length == 0) {
         if ($("#tree").html() == "")
             $("#tree").html("<br><br><center><h3>This concept scheme is empty.</h3></center>");
         showPage("#editFrameworkSection", framework);
     } else {
-        me.fetches += framework.hasTopConcept.length;
-        for (var i = 0; i < framework.hasTopConcept.length; i++) {
-            EcConcept.get(framework.hasTopConcept[i], function (c) {
+        me.fetches += framework["skos:hasTopConcept"].length;
+        for (var i = 0; i < framework["skos:hasTopConcept"].length; i++) {
+            EcConcept.get(framework["skos:hasTopConcept"][i], function (c) {
                 refreshConcept(c, null, subsearch);
             }, fetchFailure);
         }
@@ -49,19 +49,19 @@ function refreshConcept(col, level, subsearch, recurse) {
     var treeNode = null;
     treeNode = $("#tree").append("<li class = 'competency' draggable='true' ondragstart='dragConcept(event);' ondrop='dropConcept(event);' ondragover='allowConceptDrop(event);'><span></span><ul></ul></li>").children().last();
     treeNode.attr("id", col.shortId());
-    if (col["skos:note"] != null && col["skos:note"] != "NULL" && col["skos:note"] != col["skos:definition"])
-        treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").css('display', 'block').text(col["skos:note"]);
-    treeNode.children().first().prepend("<span/>").children().first().addClass("competencyName").text(col["skos:definition"]);
+    if (col["skos:prefLabel"] != null && col["skos:prefLabel"] != "NULL" && col["skos:prefLabel"] != col["skos:definition"])
+        treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").css('display', 'block').text(col["skos:definition"]);
+    treeNode.children().first().prepend("<span/>").children().first().addClass("competencyName").text(col["skos:prefLabel"]);
     if (queryParams.link == "true")
         treeNode.prepend(" <a style='float:right;' target='_blank'><i class='fa fa-link' aria-hidden='true'></a>").children().first().attr("href", col.shortId());
     if (queryParams.select != null)
         treeNode.prepend("<input type='checkbox' tabIndex='-1'>");
     if (subsearch != null)
         treeNode.mark(subsearch);
-    if (col.broadens != null && col.broadens.length > 0) {
-        for (var i = 0; i < col.broadens.length; i++) {
+    if (col["skos:narrower"] != null && col["skos:narrower"].length > 0) {
+        for (var i = 0; i < col["skos:narrower"].length; i++) {
             me.fetches++;
-            EcConcept.get(col.broadens[i], function (concept) {
+            EcConcept.get(col["skos:narrower"][i], function (concept) {
                 refreshConcept(concept, level, subsearch, JSON.parse(JSON.stringify(recurse))).appendTo(treeNode.children("ul"));
 
                 if (me.fetches == 0) {

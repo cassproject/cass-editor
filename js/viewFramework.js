@@ -297,7 +297,7 @@ renderSidebar = function (justLists) {
                 if (name == null)
                     name = it["ceasn:competencyText"];
                 if (name == null)
-                    name = it["skos:definition"];
+                    name = it["skos:prefLabel"];
                 li.attr("id", val[i]).attr("title", val[i]).text(name);
                 if (!viewMode) {
                     var x = li.prepend("<a class='editMode' tabindex='0' style='float:right;'>X</a>").children().first();
@@ -595,23 +595,23 @@ $('body').on('dragleave', '#frameworkNameContainer', function (evt) {
 $('html').keydown(function (evt) {
     //Focus the correct frame to capture keydown events
     if ($(window.parent.document.getElementById('selectConceptSection')).css('display') === 'none' && $(window.parent.document.getElementById('findCompetencySection')).css('display') === 'none') {
-        setTimeout(function() {
+        setTimeout(function () {
             parent.focus();
         });
     } else if ($('#selectConceptSection').length > 0 && $('#selectConceptSection').css('display') !== 'none') {
-        setTimeout(function() {
+        setTimeout(function () {
             $('#selectConceptIframe')[0].contentWindow.focus();
         });
     } else if ($('#findCompetencySection').length > 0 && $('#findCompetencySection').css('display') !== 'none') {
-        setTimeout(function() {
+        setTimeout(function () {
             $('#findCompetencyIframe')[0].contentWindow.focus();
         });
     } else {
-        setTimeout(function() {
+        setTimeout(function () {
             $('#cassControl').focus();
         });
     }
-    
+
     //On escape
     if (evt.which === 27) {
         $(':focus').blur();
