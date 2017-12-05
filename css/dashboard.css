@@ -29,12 +29,14 @@ body {
 }
 
 #tree {
-    border-top: 1px solid #000;
+/*    border-top: 1px solid #000;*/
     border-bottom: 1px solid #000;
     margin: 0px;
     padding-top: 0rem;
     max-height: calc(100% - 2.5rem);
     overflow: auto;
+    padding-left: 4.5rem;
+    padding-bottom: 1rem;
 }
 
 .pageWithSidebar {
@@ -95,6 +97,7 @@ ul {
 .competency {
     border-top: 1px solid transparent;
     border-bottom: 1px solid transparent;
+    padding-left: 1em;
 }
 
 .competency > span {}

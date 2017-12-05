@@ -48,6 +48,7 @@ select {
     top: 0;
     z-index: 10;
     margin: 0rem 0rem;
+    padding: .25em;
     width: 100%;
     height: 64px;
     /*    background-color: #414142;*/
@@ -184,6 +185,13 @@ select {
 #addFrameworkSection {
     max-width: 900px;
     margin: 0 auto;
+}
+
+.sidebar {
+    border-top: none !important;
+    border-right: none !important;
+    border-bottom: none !important;
+/*    border-left: 1px solid  !important;*/
 }
 
 #ceasnDataFields p {
