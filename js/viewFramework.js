@@ -734,6 +734,10 @@ $('html').keydown(function (evt) {
             }
             //On Enter
             else if (evt.which === 13) {
+                if ($('a').is(':focus')) {
+                    $('a:focus').click();
+                    return;
+                }
                 if (queryParams.select != null) {
                     if (evt.shiftKey)
                         $('#selectAllButton').click();
