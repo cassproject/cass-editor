@@ -30,14 +30,19 @@ $(document).ready(function () {
         } else {
             searchFrameworks(createParamObj(5000));
         }
-        showTourDialog(function(response) {
-            if (response === true) {
-                startTour();
-            } else {
-                cancelTour();
+        var tryShowTourDialog = setInterval(function() {
+            if (!$('#loading').is(':visible')) {
+                clearInterval(tryShowTourDialog);
+                showTourDialog(function(response) {
+                    if (response === true) {
+                        startTour();
+                    } else {
+                        cancelTour();
+                    }
+                    hideTourDialog();
+                });
             }
-            hideTourDialog();
-        });
+        }, 1000);
     });
 });
 

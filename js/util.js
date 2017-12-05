@@ -451,13 +451,8 @@ startTour = function (step) {
     intro.setOptions({
         steps: [
             {
-                element: $('#frameworks')[0],
-                intro: 'You can scroll through this list to browse the different frameworks.'
-            },
-            {
                 element: $('#header')[0],
-                intro: 'Or you can search for a particular framework here.',
-                position: 'right'
+                intro: 'You can search for a particular framework here.'
             },
             {
                 element: $('#frameworks').children(':first')[0],
@@ -468,10 +463,6 @@ startTour = function (step) {
                 intro: 'This displays the current framework, you can click here to view more details about the framework itself.'
             },
             {
-                element: $('#tree')[0],
-                intro: 'This is the list of competencies that belong to this framework.'
-            },
-            {
                 element: $('#tree').children(':first')[0],
                 intro: 'You can click a competency for more information.'
             },
@@ -480,7 +471,9 @@ startTour = function (step) {
                 intro: 'This panel will list the properties of the selected framework or competency. Additionally, you can add new competencies or edit these properties here.'
             }
         ],
-        showStepNumbers: false
+        showStepNumbers: false,
+        disableInteraction: true,
+        hideNext: true
     });
 
     intro.oncomplete(function () {
@@ -489,17 +482,19 @@ startTour = function (step) {
 
     intro.onafterchange(function () {
         $('.introjs-prevbutton').hide();
-        if (tourSkipAhead === false && this._currentStep === 3) {
+        $('.introjs-bullets').hide();
+        if (tourSkipAhead === false && this._currentStep === 2) {
             $('.introjs-skipbutton').click();
             $('#frameworks').children(':first').click();
             setTimeout(function () {
                 tourSkipAhead = true;
-                startTour(4);
+                startTour(3);
             }, 3000);
-        } else if (this._currentStep === 6) {
+        } else if (this._currentStep === 4) {
             $('#tree').children(':first').click();
         }
     });
+
     if (step !== null)
         intro.goToStepNumber(step).start();
     else
