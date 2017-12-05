@@ -628,6 +628,10 @@ $('html').keydown(function (evt) {
         });
     }
 
+    if ($('#tourDialog').is(':visible') || $('.introjsFloatingElement').is(':visible')) {
+        return;
+    }
+
     //On escape
     if (evt.which === 27) {
         $(':focus').blur();
