@@ -133,6 +133,13 @@ p.selected {
     border: 1px solid lightgray;
 }
 
+.ui-tooltip {
+    border-radius: 5px;
+    background-color: white;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.137255) 0px 4px 5px 0px, rgba(0, 0, 0, 0.117647) 0px 1px 10px 0px, rgba(0, 0, 0, 0.298039) 0px 2px 4px -1px;
+    box-shadow: rgba(0, 0, 0, 0.137255) 0px 4px 5px 0px, rgba(0, 0, 0, 0.117647) 0px 1px 10px 0px, rgba(0, 0, 0, 0.298039) 0px 2px 4px -1px;
+}
+
 /* Loading animation */
 
 #loading {

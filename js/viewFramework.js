@@ -235,21 +235,25 @@ renderSidebar = function (justLists) {
         fieldChoice = "cassCompetency";
         inputChoice = "cassCompetency";
         safeChoice = "cassCompetency";
+        initTooltips('cassCompetency');
     } else {
         labelChoice = "cassFramework";
         fieldChoice = "cassFramework";
         inputChoice = "cassFramework";
         safeChoice = "cassFramework";
+        initTooltips('cassFramework');
     }
     if (queryParams.ceasnDataFields == 'true') {
         if (thing == selectedCompetency) {
             labelChoice = "ceasnCompetency";
             $(".ceasnCompetency").show();
             $(".ceasnFramework").hide();
+            initTooltips('ceasnCompetency');
         } else {
             labelChoice = "ceasnFramework";
             $(".ceasnCompetency").hide();
             $(".ceasnFramework").show();
+            initTooltips('ceasnFramework');
         }
     }
     if (conceptMode) {
@@ -257,10 +261,12 @@ renderSidebar = function (justLists) {
             labelChoice = "skosCompetency";
             fieldChoice = "skosCompetency";
             inputChoice = "skosCompetency";
+            initTooltips('skosCompetency');
         } else {
             labelChoice = "skosFramework";
             fieldChoice = "skosFramework";
             inputChoice = "skosFramework";
+            initTooltips('skosFramework');
         }
     }
 

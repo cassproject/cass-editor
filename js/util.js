@@ -126,6 +126,319 @@ function download(filename, text) {
     }
 }
 
+initTooltips = function(type) {
+    if (type === 'cassCompetency') {
+        $('label[for="sidebarNameInput"]').tooltip({
+            content: 'The name of the competency.'
+        });
+        $('label[for="sidebarNameDescription"]').tooltip({
+            content: 'The description of the competency.'
+        });
+        $('label[for="sidebarAlternativeName"]').tooltip({
+            content: 'An alternative name for this competency.'
+        });
+        $('label[for="sidebarInLanguage"]').tooltip({
+            content: 'The primary language used in or by this competency framework or competency.'
+        });
+        $('label[for="sidebarChangeNote"]').tooltip({
+            content: 'TBD'
+        });
+        $('label[for="sidebarHiddenLabel"]').tooltip({
+            content: 'TBD'
+        });
+        $('label[for="sidebarPreferredLabel"]').tooltip({
+            content: 'TBD'
+        });
+        $('label[for="sidebarCodedNotation"]').tooltip({
+            content: 'An alphanumeric notation or ID code as defined by the promulgating body to identify this competency.'
+        });
+        $('label[for="sidebarCompetencyCategory"]').tooltip({
+            content: 'The textual label identifying the category of the competency as designated by the promulgating body.'
+        });
+        $('label[for="sidebarConceptKeyword"]').tooltip({
+            content: 'A word or phrase used by the promulgating agency to refine and differentiate individual competencies contextually.'
+        });
+        $('label[for="sidebarConceptTerm"]').tooltip({
+            content: 'A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual competencies contextually.'
+        });
+        $('label[for="sidebarAuthor"]').tooltip({
+            content: 'A person or organization chiefly responsible for the intellectual or artistic content of this competency framework or competency.'
+        });
+        $('label[for="sidebarAlternativeCodedNotation"]').tooltip({
+            content: 'An alphanumeric notation or ID code identifying this competency in common use among end-users.'
+        });
+        $('label[for="sidebarCreator"]').tooltip({
+            content: 'An entity primarily responsible for making this competency framework or competency.'
+        });
+        $('label[for="sidebarEducationLevelType"]').tooltip({
+            content: 'A general statement describing the education or training context. Alternatively, a more specific statement of the location of the audience in terms of its progression through an education or training context.'
+        });
+        $('label[for="sidebarIdentifier"]').tooltip({
+            content: 'An alternative URI by which this competency framework or competency is identified.'
+        });
+        $('label[for="sidebarLocalSubject"]').tooltip({
+            content: 'The text string denoting the subject of the competency framework or competency as designated by the promulgating agency.'
+        });
+        $('label[for="sidebarSkillEmbodied"]').tooltip({
+            content: 'Cognitive, affective, and psychomotor skills directly or indirectly embodied in this competency.'
+        });
+        $('label[for="sidebarWeight"]').tooltip({
+            content: 'An asserted measurement of the weight, degree, percent, or strength of a recommendation, requirement, or comparison.'
+        });
+    } else if (type === 'cassFramework') {
+        $('label[for="sidebarNameInput"]').tooltip({
+            content: 'The name of the framework.'
+        });
+        $('label[for="sidebarNameDescription"]').tooltip({
+            content: 'The description of the framework.'
+        });
+        $('label[for="sidebarInLanguage"]').tooltip({
+            content: 'The primary language used in or by this competency framework or competency.'
+        });
+        $('label[for="sidebarAuthor"]').tooltip({
+            content: 'A person or organization chiefly responsible for the intellectual or artistic content of this competency framework or competency.'
+        });
+        $('label[for="sidebarCreator"]').tooltip({
+            content: 'An entity primarily responsible for making this competency framework or competency.'
+        });
+        $('label[for="sidebarDateCopyrighted"]').tooltip({
+            content: 'Date of a statement of copyright for this competency framework, such as ©2017.'
+        });
+        $('label[for="sidebarLicense"]').tooltip({
+            content: 'A legal document giving official permission to do something with this competency framework.'
+        });
+        $('label[for="sidebarRights"]').tooltip({
+            content: 'Information about rights held in and over this competency framework.'
+        });
+        $('label[for="sidebarSource"]').tooltip({
+            content: 'The original competency framework which this competency framework is based on or derived from.'
+        });
+        $('label[for="sidebarCodedNotation"]').tooltip({
+            content: 'An alphanumeric notation or ID code as defined by the promulgating body to identify this framework.'
+        });
+        $('label[for="sidebarConceptKeyword"]').tooltip({
+            content: 'A word or phrase used by the promulgating agency to refine and differentiate individual competencies contextually.'
+        });
+        $('label[for="sidebarConceptTerm"]').tooltip({
+            content: 'A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual competencies contextually.'
+        });
+        $('label[for="sidebarDateCreated"]').tooltip({
+            content: 'Date of creation of this competency framework or competency.'
+        });
+        $('label[for="sidebarDateValidFrom"]').tooltip({
+            content: 'Beginning date of validity of this competency framework.'
+        });
+        $('label[for="sidebarDateValidUntil"]').tooltip({
+            content: 'End date of validity of this competency framework.'
+        });
+        $('label[for="sidebarIdentifier"]').tooltip({
+            content: 'An alternative URI by which this competency framework or competency is identified.'
+        });
+        $('label[for="sidebarLocalSubject"]').tooltip({
+            content: 'The text string denoting the subject of the competency framework or competency as designated by the promulgating agency.'
+        });
+        $('label[for="sidebarPublicationStatus"]').tooltip({
+            content: 'The publication status of the of this competency framework.'
+        });
+        $('label[for="sidebarPublisher"]').tooltip({
+            content: 'An entity responsible for making this competency framework available.'
+        });
+        $('label[for="sidebarHistoryNote"]').tooltip({
+            content: 'TBD'
+        });
+        $('label[for="sidebarRepositoryDate"]').tooltip({
+            content: 'TBD'
+        });
+        $('label[for="sidebarRightsHolder"]').tooltip({
+            content: 'An agent owning or managing rights over this competency framework.'
+        });
+    } else if (type === 'ceasnCompetency') {
+        $('label[for="sidebarNameInput"]').tooltip({
+            content: 'The text of the competency.'
+        });
+        $('label[for="sidebarNameDescription"]').tooltip({
+            content: 'Supplemental text provided by the promulgating body that clarifies the nature, scope or use of this competency.'
+        });
+        $('label[for="sidebarInLanguage"]').tooltip({
+            content: 'The primary language used in or by this competency framework or competency.'
+        });
+        $('label[for="sidebarCodedNotation"]').tooltip({
+            content: 'An alphanumeric notation or ID code as defined by the promulgating body to identify this competency.'
+        });
+        $('label[for="sidebarCompetencyCategory"]').tooltip({
+            content: 'The textual label identifying the category of the competency as designated by the promulgating body.'
+        });
+        $('label[for="sidebarConceptKeyword"]').tooltip({
+            content: 'A word or phrase used by the promulgating agency to refine and differentiate individual competencies contextually.'
+        });
+        $('label[for="sidebarConceptTerm"]').tooltip({
+            content: 'A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual competencies contextually.'
+        });
+        $('label[for="sidebarAuthor"]').tooltip({
+            content: 'A person or organization chiefly responsible for the intellectual or artistic content of this competency framework or competency.'
+        });
+        $('label[for="sidebarAlternativeCodedNotation"]').tooltip({
+            content: 'An alphanumeric notation or ID code identifying this competency in common use among end-users.'
+        });
+        $('label[for="sidebarCreator"]').tooltip({
+            content: 'An entity primarily responsible for making this competency framework or competency.'
+        });
+        $('label[for="sidebarEducationLevelType"]').tooltip({
+            content: 'A general statement describing the education or training context. Alternatively, a more specific statement of the location of the audience in terms of its progression through an education or training context.'
+        });
+        $('label[for="sidebarIdentifier"]').tooltip({
+            content: 'An alternative URI by which this competency framework or competency is identified.'
+        });
+        $('label[for="sidebarLocalSubject"]').tooltip({
+            content: 'The text string denoting the subject of the competency framework or competency as designated by the promulgating agency.'
+        });
+        $('label[for="sidebarSkillEmbodied"]').tooltip({
+            content: 'Cognitive, affective, and psychomotor skills directly or indirectly embodied in this competency.'
+        });
+        $('label[for="sidebarWeight"]').tooltip({
+            content: 'An asserted measurement of the weight, degree, percent, or strength of a recommendation, requirement, or comparison.'
+        });
+    } else if (type === 'ceasnFramework') {
+        $('label[for="sidebarNameInput"]').tooltip({
+            content: 'The name or title of this competency framework.'
+        });
+        $('label[for="sidebarNameDescription"]').tooltip({
+            content: 'A short description of this competency framework or competency.'
+        });
+        $('label[for="sidebarInLanguage"]').tooltip({
+            content: 'The primary language used in or by this competency framework or competency.'
+        });
+        $('label[for="sidebarAuthor"]').tooltip({
+            content: 'A person or organization chiefly responsible for the intellectual or artistic content of this competency framework or competency.'
+        });
+        $('label[for="sidebarCreator"]').tooltip({
+            content: 'An entity primarily responsible for making this competency framework or competency.'
+        });
+        $('label[for="sidebarDateCopyrighted"]').tooltip({
+            content: 'Date of a statement of copyright for this competency framework, such as ©2017.'
+        });
+        $('label[for="sidebarLicense"]').tooltip({
+            content: 'A legal document giving official permission to do something with this competency framework.'
+        });
+        $('label[for="sidebarRights"]').tooltip({
+            content: 'Information about rights held in and over this competency framework.'
+        });
+        $('label[for="sidebarSource"]').tooltip({
+            content: 'The original competency framework which this competency framework is based on or derived from.'
+        });
+        $('label[for="sidebarCodedNotation"]').tooltip({
+            content: 'An alphanumeric notation or ID code as defined by the promulgating body to identify this framework.'
+        });
+        $('label[for="sidebarConceptKeyword"]').tooltip({
+            content: 'A word or phrase used by the promulgating agency to refine and differentiate individual competencies contextually.'
+        });
+        $('label[for="sidebarConceptTerm"]').tooltip({
+            content: 'A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual competencies contextually.'
+        });
+        $('label[for="sidebarDateCreated"]').tooltip({
+            content: 'Date of creation of this competency framework or competency.'
+        });
+        $('label[for="sidebarDateValidFrom"]').tooltip({
+            content: 'Beginning date of validity of this competency framework.'
+        });
+        $('label[for="sidebarDateValidUntil"]').tooltip({
+            content: 'End date of validity of this competency framework.'
+        });
+        $('label[for="sidebarIdentifier"]').tooltip({
+            content: 'An alternative URI by which this competency framework or competency is identified.'
+        });
+        $('label[for="sidebarLocalSubject"]').tooltip({
+            content: 'The text string denoting the subject of the competency framework or competency as designated by the promulgating agency.'
+        });
+        $('label[for="sidebarPublicationStatus"]').tooltip({
+            content: 'The publication status of the of this competency framework.'
+        });
+        $('label[for="sidebarPublisher"]').tooltip({
+            content: 'An entity responsible for making this competency framework available.'
+        });
+        $('label[for="sidebarRepositoryDate"]').tooltip({
+            content: 'TBD'
+        });
+        $('label[for="sidebarRightsHolder"]').tooltip({
+            content: 'An agent owning or managing rights over this competency framework.'
+        });
+    } else if (type === 'skosCompetency') {
+        $('label[for="sidebarNameInput"]').tooltip({
+            content: 'TBD'
+        });
+        $('label[for="sidebarNameDescription"]').tooltip({
+            content: 'TBD'
+        });
+        $('label[for="sidebarAlternativeName"]').tooltip({
+            content: 'TBD'
+        });
+        $('label[for="sidebarInLanguage"]').tooltip({
+            content: 'TBD'
+        });
+        $('label[for="sidebarChangeNote"]').tooltip({
+            content: 'TBD'
+        });
+        $('label[for="sidebarHiddenLabel"]').tooltip({
+            content: 'TBD'
+        });
+        $('label[for="sidebarPreferredLabel"]').tooltip({
+            content: 'TBD'
+        });
+        $('label[for="sidebarCompetencyCategory"]').tooltip({
+            content: 'TBD'
+        });
+        $('label[for="sidebarConceptKeyword"]').tooltip({
+            content: 'TBD'
+        });
+        $('label[for="sidebarAuthor"]').tooltip({
+            content: 'TBD'
+        });
+        $('label[for="sidebarCreator"]').tooltip({
+            content: 'TBD'
+        });
+        $('label[for="sidebarIdentifier"]').tooltip({
+            content: 'TBD'
+        });
+    } else if (type === 'skosFramework') {
+        $('label[for="sidebarNameInput"]').tooltip({
+            content: 'TBD'
+        });
+        $('label[for="sidebarNameDescription"]').tooltip({
+            content: 'TBD'
+        });
+        $('label[for="sidebarInLanguage"]').tooltip({
+            content: 'TBD'
+        });
+        $('label[for="sidebarAuthor"]').tooltip({
+            content: 'TBD'
+        });
+        $('label[for="sidebarCreator"]').tooltip({
+            content: 'TBD'
+        });
+        $('label[for="sidebarDateCopyrighted"]').tooltip({
+            content: 'TBD'
+        });
+        $('label[for="sidebarLicense"]').tooltip({
+            content: 'TBD'
+        });
+        $('label[for="sidebarConceptKeyword"]').tooltip({
+            content: 'TBD'
+        });
+        $('label[for="sidebarPublicationStatus"]').tooltip({
+            content: 'TBD'
+        });
+        $('label[for="sidebarPublisher"]').tooltip({
+            content: 'TBD'
+        });
+        $('label[for="sidebarHistoryNote"]').tooltip({
+            content: 'TBD'
+        });
+        $('label[for="sidebarRightsHolder"]').tooltip({
+            content: 'TBD'
+        });
+    }
+}
+
 highlightSelected = function (element) {
     $('.selected').removeClass('selected');
     $(element).addClass('selected');
