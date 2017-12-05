@@ -473,7 +473,8 @@ startTour = function (step) {
         ],
         showStepNumbers: false,
         disableInteraction: true,
-        hideNext: true
+        hideNext: true,
+        exitOnOverlayClick: false
     });
 
     intro.oncomplete(function () {
