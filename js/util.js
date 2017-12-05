@@ -474,7 +474,8 @@ startTour = function (step) {
         showStepNumbers: false,
         disableInteraction: true,
         hideNext: true,
-        exitOnOverlayClick: false
+        exitOnOverlayClick: false,
+        keyboardNavigation: false
     });
 
     intro.oncomplete(function () {
