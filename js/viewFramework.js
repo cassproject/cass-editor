@@ -306,7 +306,7 @@ renderSidebar = function (justLists) {
                     name = it["skos:prefLabel"];
                 li.attr("id", val[i]).attr("title", val[i]).text(name);
                 if (!viewMode) {
-                    var x = li.prepend("<a class='editMode' tabindex='0' style='float:right;'>X</a>").children().first();
+                    var x = li.prepend("<a class='editMode' tabindex='0' style='float:right; cursor:pointer;'>×</a>").children().first();
                     (function (thing, u, id, li) {
                         x.click(function () {
                             EcArray.setRemove(thing[u], id);
