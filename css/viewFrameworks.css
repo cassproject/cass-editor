@@ -187,7 +187,17 @@ select {
 }
 
 #ceasnDataFields p {
-/*    display: inline-block;*/
+    display: inline-block;
+    margin-bottom: .33em;
+}
+
+#ceasnDataFields label {
+    cursor: help;
+}
+
+#ceasnDataFields label::before {
+  content: "\A";
+  white-space: pre;
 }
 
 /* CE Overrides */
