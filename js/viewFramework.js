@@ -652,6 +652,7 @@ $('html').keydown(function (evt) {
                 });
                 frameworkElementArray[frameworkSelectionIndex].classList.add('selected');
                 $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 100);
+                evt.preventDefault();
             }
             //On Up arrow
             else if (evt.which === 38) {
@@ -663,6 +664,7 @@ $('html').keydown(function (evt) {
                 });
                 frameworkElementArray[frameworkSelectionIndex].classList.add('selected');
                 $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 100);
+                evt.preventDefault();
             }
             //On enter
             else if (evt.which === 13) {
@@ -685,6 +687,7 @@ $('html').keydown(function (evt) {
                     competencySelectionIndex++;
                 $(competencyElementArray[competencySelectionIndex]).click();
                 $('#tree').scrollTop($('#tree').scrollTop() + $('.selected').position().top - 100);
+                evt.preventDefault();
             }
             //On up arrow
             else if (evt.which === 38) {
@@ -696,6 +699,7 @@ $('html').keydown(function (evt) {
                 else
                     $('#frameworkName').click();
                 $('#tree').scrollTop($('#tree').scrollTop() + $('.selected').position().top - 100);
+                evt.preventDefault();
             }
             //On left and right arrows
             else if (evt.which === 39) {
