@@ -18,7 +18,7 @@ body {
 .page {
     box-sizing: border-box;
     display: block;
-    position: absolute;
+    position: relative;
     top: 0rem;
     bottom: 0;
     padding: 0;
