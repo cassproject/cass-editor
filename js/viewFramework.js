@@ -450,6 +450,8 @@ refreshSidebar = function () {
 }
 isFirstEdit = false;
 editSidebar = function () {
+    if (viewMode)
+        return;
     if (conceptMode)
         return editConceptSidebar();
 
@@ -520,7 +522,7 @@ editSidebar = function () {
                 framework.removeCompetency(selectedCompetency.shortId());
                 framework.removeLevel(selectedCompetency.shortId());
                 conditionalDelete(selectedCompetency.shortId());
-                EcRepository.save(framework, function() {}, error);
+                EcRepository.save(framework, function () {}, error);
 
                 appendCompetencies(results, true);
             }
