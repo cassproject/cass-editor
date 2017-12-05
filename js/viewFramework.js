@@ -638,6 +638,10 @@ $('html').keydown(function (evt) {
         return;
     }
 
+    if ($('button').is(':focus')) {
+        return;
+    }
+
     //On escape
     if (evt.which === 27) {
         $(':focus').blur();

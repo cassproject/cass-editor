@@ -439,6 +439,13 @@ initTooltips = function(type) {
     }
 }
 
+resetSearch = function () {
+    if ($('#search').val() !== '') {
+        $('#search').val('');
+        searchFrameworks(createParamObj(5000));
+    }
+}
+
 highlightSelected = function (element) {
     $('.selected').removeClass('selected');
     $(element).addClass('selected');
