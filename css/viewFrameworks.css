@@ -187,12 +187,7 @@ select {
 }
 
 #ceasnDataFields p {
-    display: inline-block;
-}
-
-#ceasnDataFields p:after { 
-     content: "\A";
-     white-space: pre; 
+/*    display: inline-block;*/
 }
 
 /* CE Overrides */
