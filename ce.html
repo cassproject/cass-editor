@@ -9,303 +9,256 @@
     <link rel="icon" type="image/png" href="/images/icons/favicon.png" />
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Titillium+Web:400,400i,700,700i" rel="stylesheet">
-    <link href="https://www.credentialengine.org/Styles/Webfonts/Gilroy/Gilroy.css" rel="stylesheet" type="text/css" />
-    <link href="https://www.credentialengine.org/Styles/site.css?rand=15:24:56.9869294" rel="stylesheet" type="text/css" />
-    <script src="https://www.credentialengine.org/Scripts/site.js?rand=15:24:56.9869294"></script>
+    <link href="https://cass.credentialengine.org/Styles/Webfonts/Gilroy/Gilroy.css" rel="stylesheet" type="text/css" />
+    <link href="https://cass.credentialengine.org/Styles/site.css" rel="stylesheet" type="text/css" />
+    <script src="https://cass.credentialengine.org/Scripts/site.js"></script>
     <script src="https://use.fontawesome.com/48a8b07d4b.js"></script>
-    <script type="application/ld+json">
-        {
-            "@context": "http://www.schema.org",
-            "@graph": [{
-                    "@id": "http://www.credentialengine.org/",
-                    "@type": "Organization",
-                    "name": "Credential Engine",
-                    "logo": {
-                        "@type": "ImageObject",
-                        "url": "http://www.credentialengine.org/images/icons/logo.png"
-                    },
-                    "url": "http://www.credentialengine.org/"
-                },
-                {
-                    "@id": "_:website",
-                    "@type": "WebSite",
-                    "about": {
-                        "@id": "http://www.credentialengine.org/"
-                    },
-                    "url": "http://cass.credentialengine.org/"
-                }
-            ]
-        }
-
-    </script>
-    <script type="text/javascript">
-        ceAddFramework = function() {
-            var src = document.getElementsByTagName('iframe')[0].src;
-            if (src.indexOf('&action=add') == -1)
-                src += '&action=add';
-            document.getElementsByTagName('iframe')[0].setAttribute('src', src);
-        }
-    </script>
     <style>
         body {
-            padding-top: 142px;
+            padding-top: 0px;
+        }
+
+        body {
+            /*    border-top: 1px solid #CAD9DB;*/
+            border-bottom: 1px solid #CAD9DB;
+        }
+
+        #editFrameworkBack {
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        #title {
+            font-weight: bold;
+            font-size: 1.6rem;
+            cursor: pointer;
+            /*    margin: 0rem;*/
+            /*    margin-left: .5rem;*/
+            /*    line-height: 2rem;*/
+        }
+
+        *[draggable="true"] {
+            cursor: move;
+        }
+
+        #frameworks p a {
+            font-size: 24px;
+            font-weight: bold;
+            color: #607171;
+        }
+
+        #frameworks p a mark {
+            font-size: 24px;
+            font-weight: bold;
+            color: #607171;
+        }
+
+        #frameworks p span {
+            font-size: 16px;
+            font-family: Gibson, Tahoma, Arial, sans-serif;
+        }
+
+        #frameworks p span mark {
+            font-size: 16px;
+            font-family: Gibson, Tahoma, Arial, sans-serif;
+        }
+
+        #cassControl #header #search {
+/*            font-size: 20px;*/
+/*            color: #607171;*/
+        }
+
+        .competency {
+            background-image: none;
+            filter: none;
+            padding: .5em 0em .5em .5em;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+        .competency {
+            background-image: none;
+            filter: none;
+            padding: 0em;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+        .competency>span {
+            font-weight: bold;
+        }
+
+        .competency:hover {
+            border-color: transparent;
+            background-image: none;
+            filter: none;
+        }
+
+        .competency:hover>span>span {
+            color: #B55130;
+        }
+
+        .competency small {
+            font-size: .8rem;
+        }
+
+        .competency small mark {
+            font-size: .8rem;
+        }
+
+        .competency>small:active,
+        .competency>span:active {
+            /*    background-color: rgba(255, 215, 0, 0.46);*/
+        }
+
+        .selected.competency {
+            /*
+    background-color: #F5F5F5;
+    border: 1px solid #aaa;
+*/
+            border: 1px solid #CAD9DB;
+            background-color: #FCFCFC;
+        }
+
+        .selected.competency>span>span {
+            color: #B55130;
+            /*    color: #45A085;*/
+        }
+
+        .competency .collapse {
+            float: left;
+            margin-left: -2em;
+        }
+
+        .competency .collapse:hover {
+            color: #B55130;
+            cursor: pointer;
+        }
+
+        .sidebar {
+            background-color: white;
+            border: 1px solid #CAD9DB;
+            width: 33%;
+            margin-top: 3rem;
+            height: calc(100% - 3rem);
+            min-height: 60vh;
+            /*
+    position: fixed;
+    right: 0;
+    float: right;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-top: 1rem;
+    height: 100vh;
+    max-width: 50%;
+    width: 19rem;
+    overflow: hidden;
+*/
+        }
+
+        .pageWithSidebar {
+            padding-right: 34%;
+        }
+
+        #siteNavRow {
+            display: none;
+        }
+
+        #sidebarExport {
+            position: fixed;
+            top: 0px;
+            right: 0px;
         }
 
     </style>
-    <link href="theme/ce/ce.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
-    <div id="siteHeader">
-        <div id="siteLogoRow">
-            <div id="siteLogoBox">
-                <a id="siteLogo" href="https://www.credentialengine.org/" style="background-image:url('https://www.credentialengine.org/images/icons/logo.png');" alt="Site Logo"></a>
-                <div id="siteTagline">Moving Credentialing Forward</div>
-            </div>
-            <div id="siteLoginBox">
-
-            </div>
+    <div id="siteLogoRow">
+        <div id="siteLogoBox">
+            <a id="siteLogo" href="https://www.credentialengine.org/" style="background-image:url('https://www.credentialengine.org/images/icons/logo.png');" alt="Site Logo"></a>
+            <div id="siteTagline">Moving Credentialing Forward</div>
         </div>
-        <div id="siteNavRow">
-            <script type="application/ld+json">
-                {
-                    "@context": "http://www.schema.org/",
-                    "@graph": [{
-                        "@id": "_:146e66a5-3437-498e-99b8-977b816401ac",
-                        "@type": "SiteNavigationElement",
-                        "name": "About",
-                        "url": "https://www.credentialengine.org/about",
-                        "isPartOf": {
-                            "@id": "_:085137b6-e1fa-4bf8-96ea-740ec91197c7"
-                        },
-                        "hasPart": [{
-                            "@id": "_:99c7309c-77d8-4571-954d-4dc5fdb6cf51"
-                        }, {
-                            "@id": "_:c5f1b538-ce04-4f66-b3f0-90ed8e5211cd"
-                        }, {
-                            "@id": "_:a393ff53-4ec7-495c-b556-95b7af094afd"
-                        }]
-                    }, {
-                        "@id": "_:a1e9c6e9-0f11-427a-be3a-7faf99b6d6ef",
-                        "@type": "SiteNavigationElement",
-                        "name": "Advisory Groups",
-                        "url": "https://www.credentialengine.org/advisoryGroups",
-                        "isPartOf": {
-                            "@id": "_:085137b6-e1fa-4bf8-96ea-740ec91197c7"
-                        },
-                        "hasPart": [{
-                            "@id": "_:b2ab9ef3-5718-4d70-8370-0ea2e950e46e"
-                        }, {
-                            "@id": "_:3d92b119-fc4d-4ba7-ac78-507c6a0515b1"
-                        }, {
-                            "@id": "_:efcb2869-4331-46a6-a8e4-934edd3cff0a"
-                        }, {
-                            "@id": "_:e7a3cb41-d760-4505-b9a2-3955a37baef4"
-                        }, {
-                            "@id": "_:b5ae2e79-f55f-42fa-b81d-53ee16392609"
-                        }]
-                    }, {
-                        "@id": "_:70f2e999-9201-425e-be92-d64558ade667",
-                        "@type": "SiteNavigationElement",
-                        "name": "Credential Registry",
-                        "url": "https://www.credentialengine.org/credentialregistry",
-                        "isPartOf": {
-                            "@id": "_:085137b6-e1fa-4bf8-96ea-740ec91197c7"
-                        },
-                        "hasPart": [{
-                            "@id": "_:37e489f4-e0ae-4073-8c7b-e11bdd491cfb"
-                        }, {
-                            "@id": "_:a41f79e4-c6b6-46b4-a82c-447c594a55ec"
-                        }]
-                    }, {
-                        "@id": "_:33e04f49-a902-4cc9-b753-e676a26f7ffb",
-                        "@type": "SiteNavigationElement",
-                        "name": "News, Events, &amp; Resources",
-                        "url": "https://www.credentialengine.org/articles",
-                        "isPartOf": {
-                            "@id": "_:085137b6-e1fa-4bf8-96ea-740ec91197c7"
-                        },
-                        "hasPart": [{
-                            "@id": "_:8f5bc7b0-f3ad-4db0-9e13-60a84d77cd35"
-                        }]
-                    }, {
-                        "@id": "_:1f7b7d9c-d2da-4879-a5d1-5bf277bddace",
-                        "@type": "SiteNavigationElement",
-                        "name": "Contact",
-                        "url": "https://www.credentialengine.org/contact",
-                        "isPartOf": {
-                            "@id": "_:085137b6-e1fa-4bf8-96ea-740ec91197c7"
-                        }
-                    }, {
-                        "@id": "_:085137b6-e1fa-4bf8-96ea-740ec91197c7",
-                        "@type": "SiteNavigationElement",
-                        "name": "Home",
-                        "url": "https://www.credentialengine.org/",
-                        "hasPart": [{
-                            "@id": "_:146e66a5-3437-498e-99b8-977b816401ac"
-                        }, {
-                            "@id": "_:a1e9c6e9-0f11-427a-be3a-7faf99b6d6ef"
-                        }, {
-                            "@id": "_:70f2e999-9201-425e-be92-d64558ade667"
-                        }, {
-                            "@id": "_:33e04f49-a902-4cc9-b753-e676a26f7ffb"
-                        }, {
-                            "@id": "_:1f7b7d9c-d2da-4879-a5d1-5bf277bddace"
-                        }]
-                    }, {
-                        "@id": "_:99c7309c-77d8-4571-954d-4dc5fdb6cf51",
-                        "@type": "SiteNavigationElement",
-                        "name": "Staff",
-                        "url": "https://www.credentialengine.org/about/staff",
-                        "isPartOf": {
-                            "@id": "_:146e66a5-3437-498e-99b8-977b816401ac"
-                        }
-                    }, {
-                        "@id": "_:c5f1b538-ce04-4f66-b3f0-90ed8e5211cd",
-                        "@type": "SiteNavigationElement",
-                        "name": "Board",
-                        "url": "https://www.credentialengine.org/about/board",
-                        "isPartOf": {
-                            "@id": "_:146e66a5-3437-498e-99b8-977b816401ac"
-                        }
-                    }, {
-                        "@id": "_:a393ff53-4ec7-495c-b556-95b7af094afd",
-                        "@type": "SiteNavigationElement",
-                        "name": "Careers",
-                        "url": "https://www.credentialengine.org/about/careers",
-                        "isPartOf": {
-                            "@id": "_:146e66a5-3437-498e-99b8-977b816401ac"
-                        }
-                    }, {
-                        "@id": "_:b2ab9ef3-5718-4d70-8370-0ea2e950e46e",
-                        "@type": "SiteNavigationElement",
-                        "name": "Higher Education",
-                        "url": "https://www.credentialengine.org/advisorygroups/highereducation",
-                        "isPartOf": {
-                            "@id": "_:a1e9c6e9-0f11-427a-be3a-7faf99b6d6ef"
-                        }
-                    }, {
-                        "@id": "_:3d92b119-fc4d-4ba7-ac78-507c6a0515b1",
-                        "@type": "SiteNavigationElement",
-                        "name": "Business",
-                        "url": "https://www.credentialengine.org/advisorygroups/business",
-                        "isPartOf": {
-                            "@id": "_:a1e9c6e9-0f11-427a-be3a-7faf99b6d6ef"
-                        }
-                    }, {
-                        "@id": "_:efcb2869-4331-46a6-a8e4-934edd3cff0a",
-                        "@type": "SiteNavigationElement",
-                        "name": "Certification &amp; Licensure",
-                        "url": "https://www.credentialengine.org/advisorygroups/certification",
-                        "isPartOf": {
-                            "@id": "_:a1e9c6e9-0f11-427a-be3a-7faf99b6d6ef"
-                        }
-                    }, {
-                        "@id": "_:e7a3cb41-d760-4505-b9a2-3955a37baef4",
-                        "@type": "SiteNavigationElement",
-                        "name": "Quality Assurance",
-                        "url": "https://www.credentialengine.org/advisorygroups/qualityassurance",
-                        "isPartOf": {
-                            "@id": "_:a1e9c6e9-0f11-427a-be3a-7faf99b6d6ef"
-                        }
-                    }, {
-                        "@id": "_:b5ae2e79-f55f-42fa-b81d-53ee16392609",
-                        "@type": "SiteNavigationElement",
-                        "name": "Technical",
-                        "url": "https://www.credentialengine.org/advisorygroups/technical",
-                        "isPartOf": {
-                            "@id": "_:a1e9c6e9-0f11-427a-be3a-7faf99b6d6ef"
-                        }
-                    }, {
-                        "@id": "_:37e489f4-e0ae-4073-8c7b-e11bdd491cfb",
-                        "@type": "SiteNavigationElement",
-                        "name": "Registry Participants",
-                        "url": "https://www.credentialengine.org/credentialregistry/participants",
-                        "isPartOf": {
-                            "@id": "_:70f2e999-9201-425e-be92-d64558ade667"
-                        }
-                    }, {
-                        "@id": "_:a41f79e4-c6b6-46b4-a82c-447c594a55ec",
-                        "@type": "SiteNavigationElement",
-                        "name": "User Applications",
-                        "url": "https://www.credentialengine.org/credentialregistry/applications",
-                        "isPartOf": {
-                            "@id": "_:70f2e999-9201-425e-be92-d64558ade667"
-                        }
-                    }, {
-                        "@id": "_:8f5bc7b0-f3ad-4db0-9e13-60a84d77cd35",
-                        "@type": "SiteNavigationElement",
-                        "name": "Fact Sheets",
-                        "url": "https://www.credentialengine.org/articles/documents",
-                        "isPartOf": {
-                            "@id": "_:33e04f49-a902-4cc9-b753-e676a26f7ffb"
-                        }
-                    }]
-                }
+        <div id="siteLoginBox">
 
-            </script>
-            <div id="siteNavBox">
-                <button id="siteNavToggle"><i class="fa fa-bars"></i></button>
-                <div id="siteNavMain">
-                    <div class="siteNavArea hasSubNav">
-                        <a class="mainNavLink " href="https://www.credentialengine.org/about">About</a>
-                        <div class="siteSubNav">
-                            <a class="subNavLink " href="https://www.credentialengine.org/about/staff">Staff</a>
-                            <a class="subNavLink " href="https://www.credentialengine.org/about/board">Board</a>
-                            <a class="subNavLink " href="https://www.credentialengine.org/about/careers">Careers</a>
-                        </div>
-                    </div>
-                    <div class="siteNavArea hasSubNav">
-                        <a class="mainNavLink " href="https://www.credentialengine.org/advisoryGroups">Advisory Groups</a>
-                        <div class="siteSubNav">
-                            <a class="subNavLink " href="https://www.credentialengine.org/advisorygroups/highereducation">Higher Education</a>
-                            <a class="subNavLink " href="https://www.credentialengine.org/advisorygroups/business">Business</a>
-                            <a class="subNavLink " href="https://www.credentialengine.org/advisorygroups/certification">Certification &amp; Licensure</a>
-                            <a class="subNavLink " href="https://www.credentialengine.org/advisorygroups/qualityassurance">Quality Assurance</a>
-                            <a class="subNavLink " href="https://www.credentialengine.org/advisorygroups/technical">Technical</a>
-                        </div>
-                    </div>
-                    <div class="siteNavArea hasSubNav">
-                        <a class="mainNavLink " href="https://www.credentialengine.org/credentialregistry">Credential Registry</a>
-                        <div class="siteSubNav">
-                            <a class="subNavLink " href="https://www.credentialengine.org/credentialregistry/participants">Registry Participants</a>
-                            <a class="subNavLink " href="https://www.credentialengine.org/credentialregistry/applications">User Applications</a>
-                        </div>
-                    </div>
-                    <div class="siteNavArea hasSubNav">
-                        <a class="mainNavLink " href="https://www.credentialengine.org/articles">News, Events, &amp; Resources</a>
-                        <div class="siteSubNav">
-                            <a class="subNavLink " href="https://www.credentialengine.org/articles/documents">Fact Sheets</a>
-                        </div>
-                    </div>
-                    <div class="siteNavArea ">
-                        <a class="mainNavLink " href="https://www.credentialengine.org/contact">Contact</a>
-                    </div>
-                </div>
-            </div>
-            <div id="siteSearchBox">
-                <i class="fa fa-search" id="siteSearchIcon"></i>
-                <input type="text" id="siteSearchInput" />
-            </div>
         </div>
     </div>
-    <div style="height:calc(100vh - 396px);">
+    <div id="siteNavRow">
+        <div id="siteNavBox">
+            <button id="siteNavToggle"><i class="fa fa-bars"></i></button>
+            <div id="siteNavMain">
+                <div class="siteNavArea hasSubNav">
+                    <a class="mainNavLink " href="https://www.credentialengine.org/about">About</a>
+                    <div class="siteSubNav">
+                        <a class="subNavLink " href="https://www.credentialengine.org/about/staff">Staff</a>
+                        <a class="subNavLink " href="https://www.credentialengine.org/about/board">Board</a>
+                        <a class="subNavLink " href="https://www.credentialengine.org/about/careers">Careers</a>
+                    </div>
+                </div>
+                <div class="siteNavArea hasSubNav">
+                    <a class="mainNavLink " href="https://www.credentialengine.org/advisoryGroups">Advisory Groups</a>
+                    <div class="siteSubNav">
+                        <a class="subNavLink " href="https://www.credentialengine.org/advisorygroups/highereducation">Higher Education</a>
+                        <a class="subNavLink " href="https://www.credentialengine.org/advisorygroups/business">Business</a>
+                        <a class="subNavLink " href="https://www.credentialengine.org/advisorygroups/certification">Certification &amp; Licensure</a>
+                        <a class="subNavLink " href="https://www.credentialengine.org/advisorygroups/qualityassurance">Quality Assurance</a>
+                        <a class="subNavLink " href="https://www.credentialengine.org/advisorygroups/technical">Technical</a>
+                    </div>
+                </div>
+                <div class="siteNavArea hasSubNav">
+                    <a class="mainNavLink " href="https://www.credentialengine.org/credentialregistry">Credential Registry</a>
+                    <div class="siteSubNav">
+                        <a class="subNavLink " href="https://www.credentialengine.org/credentialregistry/participants">Registry Participants</a>
+                        <a class="subNavLink " href="https://www.credentialengine.org/credentialregistry/applications">User Applications</a>
+                    </div>
+                </div>
+                <div class="siteNavArea hasSubNav">
+                    <a class="mainNavLink " href="https://www.credentialengine.org/articles">News, Events, &amp; Resources</a>
+                    <div class="siteSubNav">
+                        <a class="subNavLink " href="https://www.credentialengine.org/articles/documents">Fact Sheets</a>
+                    </div>
+                </div>
+                <div class="siteNavArea ">
+                    <a class="mainNavLink " href="https://www.credentialengine.org/contact">Contact</a>
+                </div>
+            </div>
+        </div>
+        <div id="siteSearchBox">
+            <i class="fa fa-search" id="siteSearchIcon"></i>
+            <input type="text" id="siteSearchInput" />
+        </div>
+    </div>
+    <div style="height:calc(100vh - 396px + 316px);">
+        <style>
+            #banner {
+                background-color: #0F3E63;
+            }
+
+            #banner>h2 {
+                color: #FFF;
+                margin: 0;
+                padding: 5px 5px 10px 5px;
+            }
+
+            #banner span {
+                padding: 2px 10px;
+                color: #FFF;
+            }
+
+        </style>
         <div id="banner">
             <div style="float:right;">
                 <span style="font-size:.5rem;display:block;margin:0px;margin-right:.5rem;">Powered by:</span>
                 <a href="https://www.cassproject.org" style="margin:0px;" target="_blank">
-                            <img src="http://www.cassproject.org/img/CASS-Logo-website-white.png" class="powered-by-logo" width="69px" style="margin-top:-10px;margin-bottom:-10px; clip-path: inset(10px 0px 0px 0px)">
-                </a>
+					<img src="http://www.cassproject.org/img/CASS-Logo-website-white.png" class="powered-by-logo" width="69px" style="margin-top:-10px;margin-bottom:-10px; clip-path: inset(10px 0px 0px 0px)">
+				</a>
             </div>
-            
-            <h2 style="margin-bottom:0px;margin-left:69px;text-align:center;">Competency Framework Editor<small><br>Select any item to edit it. Click and drag an item to re-order it.</small></h2>
-            <div style="float:right;margin: 5px;position: relative;top: -40px;">
-                <button onclick="ceAddFramework();" style="display: block;padding: 2px 5px; width: 100%; margin-bottom: 1px; background-color: #0F3E63; color: #FFFFFF; border-radius: 4px; border: 1px solid transparent; opacity: 0.9; -webkit-appearance: none; white-space: normal; text-decoration: none;">Add Framework</button>
-            </div>
+            <h2 style="margin-bottom:0px;margin-left:69px;text-align:center;">Competency Framework Editor</h2>
         </div>
-        <iframe id="iframe" width="100%" style="border-top:1px black solid;height:calc(100vh - 490px);" frameborder="0"></iframe>
+        <iframe id="iframe" width="100%" style="border-top:1px black solid;height:calc(100vh - 450px + 316px);" frameborder="0"></iframe>
         <script>
-            document.getElementsByTagName("iframe")[0].setAttribute("src", "index.html?server=http://cass.credentialengine.org&link=true&ceasnDataFields=true&webSocketOverride=wss://cass.credentialengine.org:8080/ws/custom&origin=" + window.location.origin);
+            document.getElementsByTagName("iframe")[0].setAttribute("src", "index.html?server=https://cass.credentialengine.org/&ceasnDataFields=true&webSocketOverride=wss://cass.credentialengine.org:8080/ws/custom&origin=" + window.location.origin);
 
         </script>
     </div>
@@ -342,7 +295,7 @@
             </div>
         </div>
         <div class="bottomFooter">
-            <div class="loginMessage"><a href="https://www.credentialengine.org/account/login">Login</a></div>
+            <div class="loginMessage"><a href="editor.html">Login</a></div>
             <div class="siteCopyright">&copy; Copyright 2017 Credential Engine</div>
         </div>
     </div>
