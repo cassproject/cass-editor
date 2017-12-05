@@ -598,6 +598,14 @@ $('body').on('dragleave', '#frameworkNameContainer', function (evt) {
     $(this).removeClass('selected');
 });
 
+$('body').on('dblclick', '.competency', function (evt) {
+    editSidebar();
+});
+
+$('body').on('dblclick', '#frameworkNameContainer', function (evt) {
+    editSidebar();
+});
+
 $('html').keydown(function (evt) {
     //Focus the correct frame to capture keydown events
     if ($(window.parent.document.getElementById('selectConceptSection')).css('display') === 'none' && $(window.parent.document.getElementById('findCompetencySection')).css('display') === 'none') {
