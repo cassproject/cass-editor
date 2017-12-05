@@ -627,8 +627,14 @@ $('html').keydown(function (evt) {
             $('#cassControl').focus();
         });
     }
-
-    if ($('#tourDialog').is(':visible') || $('.introjsFloatingElement').is(':visible')) {
+    if ($('#tourDialog').is(':visible') || $('.introjsFloatingElement').is(':visible') || $(window.parent.document.getElementsByClassName('introjs-overlay')[0]).is(':visible')) {
+        if (evt.which === 13) {
+            if ($('.introjs-skipbutton').is(':focus')) {
+                $('.introjs-skipbutton').click();
+            } else if ($('.introjs-nextbutton').is(':focus')) {
+                $('.introjs-nextbutton').click();
+            }
+        }
         return;
     }
 
