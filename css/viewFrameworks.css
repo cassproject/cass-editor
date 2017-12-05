@@ -182,6 +182,10 @@ select {
     margin: 0;
 }
 
+#frameworkName {
+    cursor: pointer;
+}
+
 #addFrameworkSection {
     max-width: 900px;
     margin: 0 auto;
@@ -192,6 +196,10 @@ select {
     border-right: none !important;
     border-bottom: none !important;
 /*    border-left: 1px solid  !important;*/
+}
+
+#sidebarExport {
+    margin: 0.25em;
 }
 
 #ceasnDataFields p {
