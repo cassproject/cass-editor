@@ -484,6 +484,8 @@ startTour = function (step) {
     intro.onafterchange(function () {
         $('.introjs-prevbutton').hide();
         $('.introjs-bullets').hide();
+        $('.introjs-skipbutton').attr('tabindex', '2');
+        $('.introjs-nextbutton').attr('tabindex', '1');
         if (tourSkipAhead === false && this._currentStep === 2) {
             $('.introjs-skipbutton').click();
             $('#frameworks').children(':first').click();

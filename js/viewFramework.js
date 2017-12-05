@@ -450,6 +450,8 @@ refreshSidebar = function () {
 }
 isFirstEdit = false;
 editSidebar = function () {
+    if (viewMode)
+        return;
     if (conceptMode)
         return editConceptSidebar();
 
@@ -520,7 +522,7 @@ editSidebar = function () {
                 framework.removeCompetency(selectedCompetency.shortId());
                 framework.removeLevel(selectedCompetency.shortId());
                 conditionalDelete(selectedCompetency.shortId());
-                EcRepository.save(framework, function() {}, error);
+                EcRepository.save(framework, function () {}, error);
 
                 appendCompetencies(results, true);
             }
@@ -598,6 +600,14 @@ $('body').on('dragleave', '#frameworkNameContainer', function (evt) {
     $(this).removeClass('selected');
 });
 
+$('body').on('dblclick', '.competency', function (evt) {
+    editSidebar();
+});
+
+$('body').on('dblclick', '#frameworkNameContainer', function (evt) {
+    editSidebar();
+});
+
 $('html').keydown(function (evt) {
     //Focus the correct frame to capture keydown events
     if ($(window.parent.document.getElementById('selectConceptSection')).css('display') === 'none' && $(window.parent.document.getElementById('findCompetencySection')).css('display') === 'none') {
@@ -616,6 +626,10 @@ $('html').keydown(function (evt) {
         setTimeout(function () {
             $('#cassControl').focus();
         });
+    }
+
+    if ($('#tourDialog').is(':visible') || $('.introjsFloatingElement').is(':visible')) {
+        return;
     }
 
     //On escape
@@ -644,6 +658,7 @@ $('html').keydown(function (evt) {
                 });
                 frameworkElementArray[frameworkSelectionIndex].classList.add('selected');
                 $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 100);
+                evt.preventDefault();
             }
             //On Up arrow
             else if (evt.which === 38) {
@@ -655,6 +670,7 @@ $('html').keydown(function (evt) {
                 });
                 frameworkElementArray[frameworkSelectionIndex].classList.add('selected');
                 $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 100);
+                evt.preventDefault();
             }
             //On enter
             else if (evt.which === 13) {
@@ -677,6 +693,7 @@ $('html').keydown(function (evt) {
                     competencySelectionIndex++;
                 $(competencyElementArray[competencySelectionIndex]).click();
                 $('#tree').scrollTop($('#tree').scrollTop() + $('.selected').position().top - 100);
+                evt.preventDefault();
             }
             //On up arrow
             else if (evt.which === 38) {
@@ -688,6 +705,7 @@ $('html').keydown(function (evt) {
                 else
                     $('#frameworkName').click();
                 $('#tree').scrollTop($('#tree').scrollTop() + $('.selected').position().top - 100);
+                evt.preventDefault();
             }
             //On left and right arrows
             else if (evt.which === 39) {
