@@ -183,6 +183,8 @@ Task = stjs.extend(Task, null, [], function(constructor, prototype) {
     constructor.tasks = null;
     constructor.delayedFunctions = 0;
     constructor.immediateFunctions = 0;
+    constructor.asyncImmediateFunctions = 0;
+    constructor.runningAsyncFunctions = 0;
     constructor.immediate = function(c) {
         var currentMs = Date.now();
         var nextFrameMs = stjs.trunc(1000 / Task.desiredFps);
@@ -197,6 +199,27 @@ Task = stjs.extend(Task, null, [], function(constructor, prototype) {
             c();
         }
         return null;
+    };
+    constructor.asyncImmediate = function(c) {
+        Task.tasks.push(c);
+        Task.asyncImmediateFunctions++;
+        if (Task.runningAsyncFunctions < 10) {
+            Task.runningAsyncFunctions++;
+            return setTimeout(function() {
+                Task.asyncContinue();
+            }, 0);
+        }
+        return null;
+    };
+    constructor.asyncContinue = function() {
+        var keepGoing = function() {
+            Task.asyncContinue();
+        };
+        if (Task.tasks.length > 0) {
+            var c = Task.tasks.pop();
+            c(keepGoing);
+        } else 
+            Task.runningAsyncFunctions--;
     };
 }, {tasks: {name: "Array", arguments: ["CallbackOrFunction"]}}, {});
 /**
