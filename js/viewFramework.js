@@ -499,34 +499,32 @@ editSidebar = function () {
     }
 
     if (selectedCompetency != null && isFirstEdit === true) {
-        var competencies = [];
-        var autocompleteDict = {};
 
-        $('.competencyName').each(function () {
-            var competency = $(this)[0].parentElement.parentElement;
-            if (!autocompleteDict.hasOwnProperty($(this).text())) {
-                competencies.push($(this).text());
+        EcCompetency.search(repo, $(this).text(), function (results) {
+            var competencies = [];
+            var autocompleteDict = {};
+            for (var i = 0; i < results.length; i++) {
+                competencies.push(results[i].getName());
+                autocompleteDict[results[i].getName()] = results[i].shortId();
             }
-            autocompleteDict[$(this).text()] = competency.id;
+            $('#sidebarNameInput').autocomplete({
+                source: competencies,
+                select: function (event, ui) {
+                    var competency = EcRepository.getBlocking(autocompleteDict[ui.item.value]);
+                    var results = [];
+                    results.push(competency.shortId());
 
-        });
+                    //Delete the default created competency if selecting an existing one from dropdown
+                    framework.removeCompetency(selectedCompetency.shortId());
+                    framework.removeLevel(selectedCompetency.shortId());
+                    conditionalDelete(selectedCompetency.shortId());
+                    EcRepository.save(framework, function () {
+                        appendCompetencies(results, true);
+                    }, error);
 
-        $('#sidebarNameInput').autocomplete({
-            source: competencies,
-            select: function (event, ui) {
-                var competency = EcRepository.getBlocking(autocompleteDict[ui.item.value]);
-                var results = [];
-                results.push(competency.id);
-
-                //Delete the default created competency if selecting an existing one from dropdown
-                framework.removeCompetency(selectedCompetency.shortId());
-                framework.removeLevel(selectedCompetency.shortId());
-                conditionalDelete(selectedCompetency.shortId());
-                EcRepository.save(framework, function () {}, error);
-
-                appendCompetencies(results, true);
-            }
-        });
+                }
+            });
+        }, fetchFailure, {});
     } else {
         $('#sidebarNameInput').autocomplete = null;
     }
