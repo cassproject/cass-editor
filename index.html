@@ -310,6 +310,10 @@
                     <p id="sidebarAlternativeCodedNotation" class="viewMode" style="font-weight:bold;margin-top: 0;"></p>
                     <input id="sidebarAlternativeCodedNotationInput" cassCompetency="ceasn:altCodedNotation" ceasnCompetency="ceasn:altCodedNotation" plural="true" class="editMode editControl" style="width:calc(100% - 1rem);margin-bottom: 1rem;" />
 
+                    <label for="sidebarComplexityLevel" title="" class="viewMode editMode" style="margin:0px;">Complexity Level:</label>
+                    <ul id="sidebarComplexityLevelType" cassCompetency="ceasn:complexityLevel" ceasnCompetency="ceasn:complexityLevel" class="viewMode editMode" style="font-weight:bold;margin-top: 0;"></ul>
+                    <button id="sidebarComplexityLevelBrowse" cassCompetency="ceasn:complexityLevel" ceasnCompetency="ceasn:complexityLevel" plural="true" class="editMode editControl" style="width:calc(100% - 1rem);margin-bottom: 1rem;" onclick="$('#selectConceptSection').attr('destination','ceasn:complexityLevel');showPage('#selectConceptSection', framework);">Create or select...</button>
+
                     <label for="sidebarCreator" title="" cassCompetency="Creator:" ceasnCompetency="Creator:" skosCompetency="Creator:" class="viewMode editMode" style="margin:0px;">Creator:</label>
                     <p id="sidebarCreator" class="viewMode" style="font-weight:bold;margin-top: 0;"></p>
                     <input id="sidebarCreatorInput" cassCompetency="schema:creator" ceasnCompetency="ceasn:creator" plural="true" defaultToFramework="true" class="editMode editControl" style="width:calc(100% - 1rem);margin-bottom: 1rem;" />
