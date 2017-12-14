@@ -42,11 +42,20 @@ function select() {
         if (selectedCompetency != null)
             ary.push(selectedCompetency.shortId());
     $("input:checked").parent().each(function (f) {
-        ary.push($(this).attr("id"));
+        if (queryParams.selectVerbose == "true") {
+            ary.push(JSON.parse(EcCompetency.getBlocking($(this).attr("id")).toJson()));
+        } else {
+            ary.push($(this).attr("id"));
+        }
         var rId = $(this).attr("relationId");
         if (rId != null && rId !== undefined && rId != "")
-            if (queryParams.selectRelations == "true")
-                ary.push(rId);
+            if (queryParams.selectRelations == "true") {
+                if (queryParams.selectVerbose == "true") {
+                    ary.push(JSON.parse(EcAlignment.getBlocking(rId).toJson()));
+                } else {
+                    ary.push(rId);
+                }
+            }
     });
     var message = {
         message: "selected",

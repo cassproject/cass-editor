@@ -67,6 +67,12 @@ If your app needs the ability to select competencies from a framework, use `sele
     ex:
     https://cassproject.github.io/cass-editor/index.html?select=Add
 
+## Select verbose
+If your app needs to have the entire competency or relation returned as part of the selection, use `selectVerbose=true`.
+
+    ex:
+    https://cassproject.github.io/cass-editor/index.html?select=Add&selectVerbose=true
+
 ## Select single competencies in frameworks
 If your app needs the ability to select a single competency from a framework, use `singleSelect=label` where 'label' is the tag you want the select button to have. ex: Add, Select, Import. Best used with `view=true`.
 
@@ -153,6 +159,7 @@ On Selected:
 
     event.data.message == "selected"
     event.data.selected == [uri,uri,uri]
+    or, if selectVerbose is on, event.data.selected == [{Competency},{Competency},{Competency}]
 
 # Keyboard Shortcuts
 &uarr; & &darr; - Navigate up and down the list of frameworks and competencies.  
