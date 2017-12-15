@@ -506,7 +506,10 @@ editSidebar = function () {
     } else {
         $('.ceasnCompetency').hide();
     }
-
+    try {
+        $('#sidebarNameInput').autocomplete("destroy");
+        $('#sidebarNameInput').removeData('autocomplete');
+    } catch (e) {}
     if (selectedCompetency != null && isFirstEdit === true) {
 
         EcCompetency.search(repo, $(this).text(), function (results) {
@@ -556,6 +559,7 @@ $("body").on("click", ".competency input", null, function (evt) {
     evt.stopPropagation();
     $(evt.target).parent().find("input").prop("checked", evt.target.checked);
 }).on("click", ".competency", null, function (evt) {
+    isFirstEdit = false;
     var me = $(this);
     if (!$(this).hasClass("competency"))
         me = $(this).parents("competency");

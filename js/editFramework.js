@@ -37,7 +37,6 @@ addCompetency = function () {
                         editSidebar();
                         $("#sidebarNameInput").focus();
                         afterSave();
-                        isFirstEdit = false;
                     }, error);
                 }, error);
             } else {
@@ -47,7 +46,6 @@ addCompetency = function () {
                     editSidebar();
                     $("#sidebarNameInput").focus();
                     afterSave();
-                    isFirstEdit = false;
                 }, error);
             }
         }, error);
@@ -152,6 +150,7 @@ addLevel = function () {
 
 saveCompetency = function () {
     if (viewMode) return;
+    isFirstEdit = false;
 
     var labelChoice = null;
     var fieldChoice = null;
