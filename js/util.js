@@ -245,7 +245,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarCreator"]').tooltip({
-            content: 'An entity primarily responsible for making this competency framework or competency.',
+            content: 'A URI to an entity primarily responsible for making this competency framework or competency.',
             show: false,
             hide: false
         });
@@ -255,7 +255,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarLicense"]').tooltip({
-            content: 'A legal document giving official permission to do something with this competency framework.',
+            content: 'A URI to a legal document giving official permission to do something with this competency framework.',
             show: false,
             hide: false
         });
@@ -265,7 +265,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarSource"]').tooltip({
-            content: 'The original competency framework which this competency framework is based on or derived from.',
+            content: 'A URI to the original competency framework which this competency framework is based on or derived from.',
             show: false,
             hide: false
         });
@@ -315,7 +315,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarPublisher"]').tooltip({
-            content: 'An entity responsible for making this competency framework available.',
+            content: 'A URI to an entity responsible for making this competency framework available. ',
             show: false,
             hide: false
         });
@@ -330,7 +330,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarRightsHolder"]').tooltip({
-            content: 'An agent owning or managing rights over this competency framework.',
+            content: 'A URI to an agent owning or managing rights over this competency framework.',
             show: false,
             hide: false
         });

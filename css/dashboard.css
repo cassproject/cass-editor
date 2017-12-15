@@ -16,6 +16,20 @@ body {
     height: 100vh;
 }
 
+input:invalid {
+    background-color: darkorange;
+}
+
+.orangeUri {
+    display: none;
+}
+
+input:invalid:not([style*="display: none"]) ~ .orangeUri {
+    display: block;
+    color: orangered;
+    margin: 0px;
+}
+
 .page {
     box-sizing: border-box;
     display: block;
