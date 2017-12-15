@@ -241,11 +241,3 @@ if (window.addEventListener) {
 } else {
     window.attachEvent("onmessage", messageListener);
 }
-messageListener({
-    data: JSON.stringify({
-        action: "template",
-        framework: {
-            "http://bogus/property": "woo"
-        }
-    })
-});
