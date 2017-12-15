@@ -139,6 +139,15 @@ select {
     cursor: pointer;
 }
 
+#frameworks .properties {
+    display: inline-block;
+    background-color: rgba(27, 84, 86, 0.25);
+    border-radius: 4px;
+    border: 1px solid #CAD9DB;
+    margin-top: .25rem;
+    padding: .25rem;
+}
+
 #frameworks p:hover a,
 #frameworks p:hover span {
     /*    color: rgb(181, 81, 48);*/

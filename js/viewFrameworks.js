@@ -59,10 +59,15 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
                 });
                 var title = p.children().first();
                 title.text(fx.getName());
+                title.addClass("frameworkName");
                 if (subsearchTerm != null)
                     p.prepend("<span style='float:right'>*Matches inside. <span>");
                 var desc = p.children().last();
-                desc.text(fx.getDescription());
+                desc.addClass("frameworkDescription");
+                var description = fx.getDescription();
+                desc.text(description);
+                if (fx.competency != null)
+                    p.append("<span class='properties'>" + fx.competency.length + " items.</span>");
                 if (searchTerm != "*" && subsearchTerm == null)
                     p.mark(searchTerm);
             }
