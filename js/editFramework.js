@@ -301,11 +301,12 @@ removeCompetency = function () {
     if (viewMode) return;
     showConfirmDialog(function (confirmed) {
         if (confirmed === true) {
-            framework.removeCompetency(selectedCompetency.shortId());
-            selectedRelation = null;
-            selectedCompetency = null;
-            EcRepository.save(framework, afterSave, console.log);
-            refreshSidebar();
+            framework.removeCompetency(selectedCompetency.shortId(), function () {
+                selectedRelation = null;
+                selectedCompetency = null;
+                EcRepository.save(framework, afterSave, console.log);
+                refreshSidebar();
+            }, console.log);
         }
         hideConfirmDialog();
     }, "This will remove the competency from your framework (but not delete it), do you wish to continue?");
@@ -341,13 +342,14 @@ deleteCompetency = function () {
     } else {
         showConfirmDialog(function (confirmed) {
             if (confirmed === true) {
-                framework.removeCompetency(selectedCompetency.shortId());
-                framework.removeLevel(selectedCompetency.shortId());
-                selectedRelation = null;
-                conditionalDelete(selectedCompetency.shortId());
-                selectedCompetency = null;
-                EcRepository.save(framework, afterSave, console.log);
-                refreshSidebar();
+                framework.removeCompetency(selectedCompetency.shortId(), function () {
+                    framework.removeLevel(selectedCompetency.shortId());
+                    selectedRelation = null;
+                    conditionalDelete(selectedCompetency.shortId());
+                    selectedCompetency = null;
+                    EcRepository.save(framework, afterSave, console.log);
+                    refreshSidebar();
+                }, console.log);
             }
             hideConfirmDialog();
         }, "Are you sure you want to delete this competency? This will remove the competency from the system entirely, not just from your framework.", "delete", selectedCompetency.shortId());
