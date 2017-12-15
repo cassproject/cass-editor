@@ -126,7 +126,7 @@ function download(filename, text) {
     }
 }
 
-initTooltips = function(type) {
+initTooltips = function (type) {
     if (type === 'cassCompetency') {
         $('label[for="sidebarNameInput"]').tooltip({
             content: 'The name of the competency.',
@@ -149,17 +149,17 @@ initTooltips = function(type) {
             hide: false
         });
         $('label[for="sidebarChangeNote"]').tooltip({
-            content: 'TBD',
+            content: 'Documents fine-grained changes to a concept, for the purposes of administration and maintenance.',
             show: false,
             hide: false
         });
         $('label[for="sidebarHiddenLabel"]').tooltip({
-            content: 'TBD',
+            content: 'Alternate hidden labels for this concept.',
             show: false,
             hide: false
         });
         $('label[for="sidebarPreferredLabel"]').tooltip({
-            content: 'TBD',
+            content: 'Preferred display label for this concept.',
             show: false,
             hide: false
         });
@@ -320,12 +320,12 @@ initTooltips = function(type) {
             hide: false
         });
         $('label[for="sidebarHistoryNote"]').tooltip({
-            content: 'TBD',
+            content: 'Describes significant changes to the meaning or the form of a concept.',
             show: false,
             hide: false
         });
         $('label[for="sidebarRepositoryDate"]').tooltip({
-            content: 'TBD',
+            content: 'Date this was registered in the registry.',
             show: false,
             hide: false
         });
@@ -507,7 +507,7 @@ initTooltips = function(type) {
             hide: false
         });
         $('label[for="sidebarRepositoryDate"]').tooltip({
-            content: 'TBD',
+            content: 'Date this was registered in the registry.',
             show: false,
             hide: false
         });
@@ -518,17 +518,17 @@ initTooltips = function(type) {
         });
     } else if (type === 'skosCompetency') {
         $('label[for="sidebarNameInput"]').tooltip({
-            content: 'TBD',
+            content: 'Preferred display label for this concept.',
             show: false,
             hide: false
         });
         $('label[for="sidebarNameDescription"]').tooltip({
-            content: 'TBD',
+            content: 'Definition of this concept.',
             show: false,
             hide: false
         });
         $('label[for="sidebarAlternativeName"]').tooltip({
-            content: 'TBD',
+            content: 'Alternative display labels for this concept.',
             show: false,
             hide: false
         });
@@ -538,17 +538,17 @@ initTooltips = function(type) {
             hide: false
         });
         $('label[for="sidebarChangeNote"]').tooltip({
-            content: 'TBD',
+            content: 'Documents fine-grained changes to a concept, for the purposes of administration and maintenance.',
             show: false,
             hide: false
         });
         $('label[for="sidebarHiddenLabel"]').tooltip({
-            content: 'TBD',
+            content: 'Alternate hidden labels for this concept.',
             show: false,
             hide: false
         });
         $('label[for="sidebarPreferredLabel"]').tooltip({
-            content: 'TBD',
+            content: 'Preferred display label for this concept.',
             show: false,
             hide: false
         });
