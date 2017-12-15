@@ -203,7 +203,7 @@ Task = stjs.extend(Task, null, [], function(constructor, prototype) {
     constructor.asyncImmediate = function(c) {
         Task.tasks.push(c);
         Task.asyncImmediateFunctions++;
-        if (Task.runningAsyncFunctions < 10) {
+        if (Task.runningAsyncFunctions < 20) {
             Task.runningAsyncFunctions++;
             return setTimeout(function() {
                 Task.asyncContinue();

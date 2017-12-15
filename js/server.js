@@ -223,3 +223,29 @@ loadIdentity = function (callback) {
     } else
         callback();
 }
+
+var frameworkTemplate = null;
+var competencyTemplate = null;
+var messageListener = function (evt) {
+    var data = evt.data;
+    if (data != null && data != "")
+        data = JSON.parse(data);
+    if (data != null && data != "")
+        if (data.action == "template") {
+            EcFramework.template = data.framework;
+            EcCompetency.template = data.competency;
+        }
+};
+if (window.addEventListener) {
+    window.addEventListener("message", messageListener, false);
+} else {
+    window.attachEvent("onmessage", messageListener);
+}
+messageListener({
+    data: JSON.stringify({
+        action: "template",
+        framework: {
+            "http://bogus/property": "woo"
+        }
+    })
+});

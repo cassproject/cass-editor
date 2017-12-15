@@ -128,7 +128,21 @@ CASS can operate using credentials provided by the parent site. These credential
       window.location.origin
     );
     
-Note: The window will not proceed loading until it has received the 'identity' message.
+## Provide templates for frameworks and competencies.
+The cass-editor can be populated with templates that set initial properties of new competencies and frameworks. These templates are passed into the iframe via a message. To specify:
+
+    document.getElementById("iframe").contentWindow.postMessage(
+      JSON.stringify({
+        action: "template",
+        competency: {
+            "http://bogus/property": "woo"
+        },
+        framework: {
+            "http://bogus/property": "woo"
+        }
+      }),
+      window.location.origin
+    );
   
 ## Only show frameworks that individual owns.
 Along with user credentials, the cass-editor can be configured to not show others' frameworks. This functionality can be enabled by the URL parameter `show=mine`.
