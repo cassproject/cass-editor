@@ -244,7 +244,9 @@ detangleConcepts = function (me, data, targetData) {
         if (c["skos:broader"] == null || c["skos:broader"].length == 0) {
             EcArray.setAdd(framework["skos:hasTopConcept"], c.shortId());
             c["skos:topConceptOf"] = framework.shortId();
-            EcRepository.save(framework, part3, console.error); //Saving framework again.
+            EcRepository.save(c, function () {
+                EcRepository.save(framework, part3, console.error); //Saving framework again.
+            }, console.error);
             foundAgain = true;
         }
         if (!foundAgain)
