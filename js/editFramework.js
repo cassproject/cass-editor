@@ -497,6 +497,18 @@ getValueOrNull = function (value) {
 }
 
 var itemsSaving = 0;
+
+afterCopy = function () {
+    itemsSaving--;
+    loading(itemsSaving + " objects left to copy.");
+    if (itemsSaving == 0)
+        EcRepository.save(framework, function (stuff) {
+            refreshSidebar();
+            populateFramework();
+            afterSave(stuff);
+        }, error);
+}
+
 copyCompetencies = function (results) {
     if (conceptMode) return;
     if (viewMode) return;
@@ -513,11 +525,18 @@ copyCompetencies = function (results) {
             c['ceasn:derivedFrom'] = thing.id;
             copyDict[c['ceasn:derivedFrom']] = c;
             itemsSaving++;
-            EcRepository.save(c, function () {
-                itemsSaving--;
-                if (itemsSaving == 0)
-                    EcRepository.save(framework, afterSave, error);
-            }, error);
+            (function (c) {
+                Task.asyncImmediate(function (callback) {
+                    EcRepository.save(c, function () {
+                        afterCopy();
+                        callback();
+                    }, function (error) {
+                        error(error);
+                        afterCopy();
+                        callback();
+                    });
+                });
+            })(c);
         }
     }
     for (var i = 0; i < results.length; i++) {
@@ -542,12 +561,20 @@ copyCompetencies = function (results) {
                     framework.addRelation(r.id);
                     EcArray.setRemove(results, r.source);
                     itemsSaving++;
-                    EcRepository.save(r,
-                        function () {
-                            itemsSaving--;
-                            if (itemsSaving == 0)
-                                EcRepository.save(framework, afterSave, error);
-                        }, error);
+                    (function (r) {
+                        Task.asyncImmediate(function (callback) {
+                            EcRepository.save(r, function () {
+                                    afterCopy();
+                                    callback();
+                                },
+                                function (error) {
+                                    error(error);
+                                    afterCopy();
+                                    callback();
+                                }
+                            );
+                        });
+                    })(r);
                 }
             }
         }
@@ -570,18 +597,21 @@ copyCompetencies = function (results) {
                 if (r.source != r.target) {
                     itemsSaving++;
                     framework.addRelation(r.id);
-                    EcRepository.save(r,
-                        function () {
-                            itemsSaving--;
-                            if (itemsSaving == 0)
-                                EcRepository.save(framework, afterSave, error);
-                        }, error);
+                    (function (r) {
+                        Task.asyncImmediate(function (callback) {
+                            EcRepository.save(r, function () {
+                                    afterCopy();
+                                    callback();
+                                },
+                                function (error) {
+                                    error(error);
+                                    afterCopy();
+                                    callback();
+                                }
+                            );
+                        });
+                    })(r);
                 }
             }
     }
-    EcRepository.save(framework, function () {
-        refreshSidebar();
-        if (webSocketConnection == false)
-            populateFramework();
-    }, error);
 }

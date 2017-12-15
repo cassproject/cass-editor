@@ -59,6 +59,9 @@ openWebSocket = function (r) {
             delete EcRepository.cache[wut.id];
             delete EcRepository.cache[wut.shortId()];
 
+            if (!$("#editFrameworkSection").is(":visible"))
+                return;
+
             if (new ConceptScheme().isA(wut.getFullType()))
                 if (framework != null)
                     if (framework.shortId() == wut.shortId()) {

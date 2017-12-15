@@ -864,6 +864,9 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
                             log("Searching for exact ID:" + url + ", found more than one@:" + repo.selectedServer);
                         done = true;
                         delete (EcRepository.fetching)[url];
+                        if (EcRepository.caching) {
+                            (EcRepository.cache)[url] = strings[i];
+                        }
                         success(strings[i]);
                     }
                 }
@@ -890,6 +893,10 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
          else {
             for (var j = 0; j < strings.length; j++) {
                 if (strings[j].id == url) {
+                    delete (EcRepository.fetching)[url];
+                    if (EcRepository.caching) {
+                        (EcRepository.cache)[url] = strings[j];
+                    }
                     return strings[j];
                 }
             }
@@ -1233,6 +1240,7 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
                                 var url = urls[j];
                                 if (url.indexOf(md5) != -1) {
                                     (EcRepository.cache)[url] = d;
+                                    (EcRepository.cache)[d.id] = d;
                                     break;
                                 }
                             }
@@ -1261,6 +1269,7 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
                                     var url = urls[j];
                                     if (url.indexOf(md5) != -1) {
                                         (EcRepository.cache)[url] = d;
+                                        (EcRepository.cache)[d.id] = d;
                                         break;
                                     }
                                 }

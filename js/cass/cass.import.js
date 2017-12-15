@@ -279,7 +279,7 @@ ASNImport = stjs.extend(ASNImport, Importer, [], function(constructor, prototype
     /**
      *  Analyzes an ASN File for competencies and relationships.
      *  <p>
-     *  This should be called before import, the sucess callback returns an object
+     *  This should be called before import, the success callback returns an object
      *  indicating the number of competencies and relationships found.
      * 
      *  @param {Object}            file
