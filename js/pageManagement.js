@@ -30,10 +30,10 @@ $(document).ready(function () {
         } else {
             searchFrameworks(createParamObj(5000));
         }
-        var tryShowTourDialog = setInterval(function() {
+        var tryShowTourDialog = setInterval(function () {
             if (!$('#loading').is(':visible')) {
                 clearInterval(tryShowTourDialog);
-                showTourDialog(function(response) {
+                showTourDialog(function (response) {
                     if (response === true) {
                         startTour();
                     } else {
@@ -63,6 +63,7 @@ function gotoPage(pageId, state) {
     var p = $(".page:visible");
     if (p.length == 0 || (p.length == 1 && p[0] == $(pageId)[0]))
         $(pageId).show({
+            duration: 0,
             complete: function () {
                 $(".page").hide();
                 $(pageId).show();
@@ -70,8 +71,10 @@ function gotoPage(pageId, state) {
         });
     else
         $(".page:visible").hide({
+            duration: 0,
             complete: function () {
                 $(pageId).show({
+                    duration: 0,
                     complete: function () {
                         $(".page").hide();
                         $(pageId).show();
@@ -93,12 +96,17 @@ function loading(message) {
     var p = $(".page:visible");
     if (p.length == 0 || (p.length == 1 && p[0] == $("#loading")[0])) {
         $("#status").text(message);
-        $("#loading").show({})
+        $("#loading").show({
+            duration: 0
+        })
     } else
         $(".page:visible").hide({
+            duration: 0,
             complete: function () {
                 $("#status").text(message);
-                $("#loading").show({})
+                $("#loading").show({
+                    duration: 0
+                })
             }
         });
 }
