@@ -470,22 +470,33 @@ allowCompetencyDrop = function (ev) {
 }
 
 conditionalDelete = function (id, depth) {
-    if (viewMode) return;
-    if (depth == undefined || depth == null) depth = 0;
-    if (id == null || id == undefined)
-        console.trace("ID is undefined.");
-    if (depth < 5)
-        setTimeout(function () {
+    Task.asyncImmediate(function (callback) {
+        if (viewMode) return;
+        if (depth == undefined || depth == null) depth = 0;
+        if (id == null || id == undefined)
+            console.trace("ID is undefined.");
+        if (depth < 5)
             EcFramework.search(repo, "\"" + id + "\"", function (results) {
                 if (results.length <= 0) {
                     console.log("No references found for " + id + "... deleting.");
-                    EcRepository._delete(EcRepository.getBlocking(id), afterSave, console.log);
+                    EcRepository._delete(EcRepository.getBlocking(id), function (success) {
+                        callback();
+                        afterSave(success);
+                    }, function (failure) {
+                        console.log(failure);
+                        callback();
+                    });
                 } else {
                     console.log(results.length + " references found for " + id + "... Not deleting. Will see again in another second.");
-                    conditionalDelete(id, depth + 1);
+                    callback();
+                    setTimeout(function () {
+                        conditionalDelete(id, depth + 1);
+                    }, 1000);
                 }
             }, console.error, {});
-        }, 1000);
+        else
+            callback();
+    });
 }
 
 getValueOrNull = function (value) {
