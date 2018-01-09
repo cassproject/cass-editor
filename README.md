@@ -121,7 +121,7 @@ CASS can create and manage a local user that owns the frameworks and competencie
   Note: This method is risky, as a user that clears their localstorage will lose access to their frameworks and competencies.
   
 ## Operate using a provided set of user credentials.
-CASS can operate using credentials provided by the parent site. These credentials are passed into the iframe via a message, in order to avoid transmitting them over HTTP. Use `user=self`, and pass a RSA-OAEP 2048 bit PEM private key in via:
+CASS can operate using credentials provided by the parent site. These credentials are passed into the iframe via a message, in order to avoid transmitting them over HTTP. Use `user=wait`, and pass a RSA-OAEP 2048 bit PEM private key in via:
 
     document.getElementById("iframe").contentWindow.postMessage(
       JSON.stringify({action:"identity",identity:privateKey}),
