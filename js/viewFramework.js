@@ -289,13 +289,22 @@ renderSidebar = function (justLists) {
         $("#detailSlider p,h3").each(function () {
             if (!$(this).next().is("input,textarea"))
                 return;
+            $(this).html("");
             var val = thing[$(this).next().attr(fieldChoice)];
-            if (EcArray.isArray(val))
-                val = val.join(", ");
             if (val === undefined || val == null || val == "")
-                $(this).html("");
-            else
-                $(this).text(val);
+                return;
+            if (EcArray.isArray(val))
+                val = JSON.parse(JSON.stringify(val));
+            if (!EcArray.isArray(val))
+                val = [val];
+            for (var i = 0; i < val.length; i++) {
+                if (i > 0)
+                    $(this).append(", ");
+                if (val[i].toLowerCase().indexOf("http") != -1)
+                    $(this).append("<a/>").children().last().attr("href", val[i]).text(val[i]);
+                else
+                    $(this).append("<span/>").children().last().text(val[i]);
+            }
         });
     $("#detailSlider ul").each(function () {
         if (!$(this).next().is("input,textarea,button"))
