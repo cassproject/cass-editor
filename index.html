@@ -189,20 +189,19 @@
         <div id="header">
             <button id="createNewButton" style="float: right;" status="select" onclick='showPage("#addFrameworkSection");'>Create New</button>
             <span id="frameworksBack" onclick='parent.postMessage({message: "back"}, queryParams.origin);' style="float:left;display:none;"><i class="fa fa-arrow-circle-left" > </i></span>
-            <button onclick="resetSearch();" style="">&#215;</button>
             <input type="text" id="search" placeholder="Search...">
-
+            <button id="resetSearchButton" onclick="resetSearch();" style="">&#215;</button>
         </div>
         <center id="frameworks"></center>
     </div>
 
     <div id="editFrameworkSection" class="page pageWithSidebar" style="height:100%;display: none;">
         <div id="detailSlider" class="sidebar" style="display: none;">
-            <button id="sidebarDelete" class="editMode redButton editControl" style="margin:0rem;float:right;margin-left:4px;" onclick="deleteCompetency();">Delete</button>
-            <button id="sidebarRemove" class="editMode redButton editControl absentForConcepts" style="margin:0rem;float:right;margin-left:4px;" onclick="removeCompetency();">Remove</button>
-            <button id="sidebarUnlink" class="editMode editControl" style="margin:0rem;float:right;margin-left:4px;" onclick="unlinkCompetency();">Unlink</button>
-            <button id="sidebarCancel" class="editMode editControl" style="margin:0rem;" onclick="if (isFirstEdit && confirm('This is the first time editing the object, and the object has been created. Would you like to delete the object?')) deleteCompetency();refreshSidebar();">Cancel</button>
-            <button id="sidebarSave" class="editMode greenButton editControl" style="margin:0rem;" onclick="saveCompetency();">Save</button>
+            <button id="sidebarDelete" class="editMode redButton editControl" style="float:right;" onclick="deleteCompetency();">Delete</button>
+            <button id="sidebarRemove" class="editMode redButton editControl absentForConcepts" style="float:right;" onclick="removeCompetency();">Remove</button>
+            <button id="sidebarUnlink" class="editMode editControl" style="float:right;" onclick="unlinkCompetency();">Unlink</button>
+            <button id="sidebarCancel" class="editMode editControl" style="" onclick="if (isFirstEdit && confirm('This is the first time editing the object, and the object has been created. Would you like to delete the object?')) deleteCompetency();refreshSidebar();">Cancel</button>
+            <button id="sidebarSave" class="editMode greenButton editControl" style="" onclick="saveCompetency();">Save</button>
             <hr class="editMode">
 
             <label for="sidebarNameInput" title="" cassCompetency="Competency Name:" cassFramework="Framework Name:" ceasnCompetency="Competency Text:" ceasnFramework="Name" skosCompetency="Preferred Label:" skosFramework="Concept Scheme Title:" class="editMode" style="margin: 0px;">Name:</label>
@@ -488,20 +487,9 @@
     </div>
 
     <div id="loading" class="page" style="display:none;">
-        <div class='uil-default-css' style='margin-top:20px;transform:scale(0.71);'>
-            <div style='top:80px;left:93px;width:14px;height:40px;-webkit-transform:rotate(0deg) translate(0,-60px);transform:rotate(0deg) translate(0,-60px);border-radius:10px;position:absolute;'></div>
-            <div style='top:80px;left:93px;width:14px;height:40px;-webkit-transform:rotate(30deg) translate(0,-60px);transform:rotate(30deg) translate(0,-60px);border-radius:10px;position:absolute;'></div>
-            <div style='top:80px;left:93px;width:14px;height:40px;-webkit-transform:rotate(60deg) translate(0,-60px);transform:rotate(60deg) translate(0,-60px);border-radius:10px;position:absolute;'></div>
-            <div style='top:80px;left:93px;width:14px;height:40px;-webkit-transform:rotate(90deg) translate(0,-60px);transform:rotate(90deg) translate(0,-60px);border-radius:10px;position:absolute;'></div>
-            <div style='top:80px;left:93px;width:14px;height:40px;-webkit-transform:rotate(120deg) translate(0,-60px);transform:rotate(120deg) translate(0,-60px);border-radius:10px;position:absolute;'></div>
-            <div style='top:80px;left:93px;width:14px;height:40px;-webkit-transform:rotate(150deg) translate(0,-60px);transform:rotate(150deg) translate(0,-60px);border-radius:10px;position:absolute;'></div>
-            <div style='top:80px;left:93px;width:14px;height:40px;-webkit-transform:rotate(180deg) translate(0,-60px);transform:rotate(180deg) translate(0,-60px);border-radius:10px;position:absolute;'></div>
-            <div style='top:80px;left:93px;width:14px;height:40px;-webkit-transform:rotate(210deg) translate(0,-60px);transform:rotate(210deg) translate(0,-60px);border-radius:10px;position:absolute;'></div>
-            <div style='top:80px;left:93px;width:14px;height:40px;-webkit-transform:rotate(240deg) translate(0,-60px);transform:rotate(240deg) translate(0,-60px);border-radius:10px;position:absolute;'></div>
-            <div style='top:80px;left:93px;width:14px;height:40px;-webkit-transform:rotate(270deg) translate(0,-60px);transform:rotate(270deg) translate(0,-60px);border-radius:10px;position:absolute;'></div>
-            <div style='top:80px;left:93px;width:14px;height:40px;-webkit-transform:rotate(300deg) translate(0,-60px);transform:rotate(300deg) translate(0,-60px);border-radius:10px;position:absolute;'></div>
-            <div style='top:80px;left:93px;width:14px;height:40px;-webkit-transform:rotate(330deg) translate(0,-60px);transform:rotate(330deg) translate(0,-60px);border-radius:10px;position:absolute;'></div>
-        </div><br>
+        <i id="loadingCass" class="fa fa-circle-o-notch fa-spin fa-5x" style='margin-top:20px;margin-bottom:1rem;transform:scale(2.0);'> </i>
+        <i id="loadingCe" class="fa-spin-reverse" style='display: none;margin-top:20px;width:200px;height:200px;background-image:url("theme/ce/Credential-Engine_ce-logomark.svg")'></i>
+        <br>
         <center id="status">Loading...</center>
     </div>
 

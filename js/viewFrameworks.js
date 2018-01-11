@@ -7,8 +7,12 @@ function searchFrameworks(paramObj) {
         return searchConceptSchemes(paramObj);
     loading("Loading frameworks...");
     var searchTerm = $("#search").val();
-    if (searchTerm == null || searchTerm == "")
+    if (searchTerm == null || searchTerm == "") {
         searchTerm = "*";
+        $("#resetSearchButton").hide();
+    } else {
+        $("#resetSearchButton").show();
+    }
     $("#frameworks").html("");
     searchCompetencies = [];
     for (var i = 0; i < servers.length; i++) {

@@ -43,31 +43,18 @@ input:invalid:not([style*="display: none"]) ~ .orangeUri {
     /*    scroll-behavior: smooth;*/
 }
 
-#tree {
-    /*    border-top: 1px solid #000;*/
-    /*    border-bottom: 1px solid #000;*/
-    margin: 0px;
-    padding-top: 0rem;
-    max-height: calc(100% - 2.5rem);
-    overflow: auto;
-    padding-left: 4.5rem;
-    padding-bottom: 1rem;
-}
-
 .pageWithSidebar {
-    padding-right: 21rem;
+    padding-right: 22rem;
 }
 
 .sidebar {
     position: fixed;
     right: 0;
     float: right;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    padding-top: 1rem;
-    height: 100vh;
+    padding: .5rem;
+    height: calc(100vh - 1rem);
     max-width: 50%;
-    width: 19rem;
+    width: 21rem;
     border-left: 1px black solid;
     overflow: auto;
 }
@@ -169,204 +156,33 @@ p.selected {
     text-align: center;
 }
 
-@-webkit-keyframes uil-default-anim {
-    0% {
-        opacity: 1
-    }
-    100% {
-        opacity: 0
-    }
-}
-
-@keyframes uil-default-anim {
-    0% {
-        opacity: 1
-    }
-    100% {
-        opacity: 0
-    }
-}
-
 ul {
     list-style: none;
 }
 
-.uil-default-css > div {
-    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ffffff+100&0.5+0,0.5+100 */
-    background-image: -moz-linear-gradient(top, rgba(128, 128, 128, 0.5) 0%, rgba(128, 128, 128, 0.5) 100%);
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(128, 128, 128, 0.5)), color-stop(100%, rgba(128, 128, 128, 0.5)));
-    background-image: -webkit-linear-gradient(top, rgba(128, 128, 128, 0.5) 0%, rgba(128, 128, 128, 0.5) 100%);
-    background-image: -o-linear-gradient(top, rgba(128, 128, 128, 0.5) 0%, rgba(128, 128, 128, 0.5) 100%);
-    background-image: -ms-linear-gradient(top, rgba(128, 128, 128, 0.5) 0%, rgba(128, 128, 128, 0.5) 100%);
-    background-image: linear-gradient(to bottom, rgba(128, 128, 128, 0.5) 0%, rgba(128, 128, 128, 0.5) 100%);
-    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#80808080', endColorstr='#80808080', GradientType=0);
+.fa-spin-reverse {
+    -webkit-animation: fa-spin-reverse 2s infinite linear;
+    animation: fa-spin-reverse 2s infinite linear;
 }
 
-.uil-default-css > div:nth-of-type(1) {
-    -webkit-animation: uil-default-anim 1s linear infinite;
-    animation: uil-default-anim 1s linear infinite;
-    -webkit-animation-delay: -0.5s;
-    animation-delay: -0.5s;
+@-webkit-keyframes fa-spin-reverse {
+    100% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    0% {
+        -webkit-transform: rotate(359deg);
+        transform: rotate(359deg);
+    }
 }
 
-.uil-default-css {
-    display: inline-block;
-    position: relative;
-    background: none;
-    width: 200px;
-    height: 200px;
-}
-
-.uil-default-css > div:nth-of-type(2) {
-    -webkit-animation: uil-default-anim 1s linear infinite;
-    animation: uil-default-anim 1s linear infinite;
-    -webkit-animation-delay: -0.4166666666666667s;
-    animation-delay: -0.4166666666666667s;
-}
-
-.uil-default-css {
-    position: relative;
-    background: none;
-    width: 200px;
-    height: 200px;
-}
-
-.uil-default-css > div:nth-of-type(3) {
-    -webkit-animation: uil-default-anim 1s linear infinite;
-    animation: uil-default-anim 1s linear infinite;
-    -webkit-animation-delay: -0.33333333333333337s;
-    animation-delay: -0.33333333333333337s;
-}
-
-.uil-default-css {
-    position: relative;
-    background: none;
-    width: 200px;
-    height: 200px;
-}
-
-.uil-default-css > div:nth-of-type(4) {
-    -webkit-animation: uil-default-anim 1s linear infinite;
-    animation: uil-default-anim 1s linear infinite;
-    -webkit-animation-delay: -0.25s;
-    animation-delay: -0.25s;
-}
-
-.uil-default-css {
-    position: relative;
-    background: none;
-    width: 200px;
-    height: 200px;
-}
-
-.uil-default-css > div:nth-of-type(5) {
-    -webkit-animation: uil-default-anim 1s linear infinite;
-    animation: uil-default-anim 1s linear infinite;
-    -webkit-animation-delay: -0.16666666666666669s;
-    animation-delay: -0.16666666666666669s;
-}
-
-.uil-default-css {
-    position: relative;
-    background: none;
-    width: 200px;
-    height: 200px;
-}
-
-.uil-default-css > div:nth-of-type(6) {
-    -webkit-animation: uil-default-anim 1s linear infinite;
-    animation: uil-default-anim 1s linear infinite;
-    -webkit-animation-delay: -0.08333333333333331s;
-    animation-delay: -0.08333333333333331s;
-}
-
-.uil-default-css {
-    position: relative;
-    background: none;
-    width: 200px;
-    height: 200px;
-}
-
-.uil-default-css > div:nth-of-type(7) {
-    -webkit-animation: uil-default-anim 1s linear infinite;
-    animation: uil-default-anim 1s linear infinite;
-    -webkit-animation-delay: 0s;
-    animation-delay: 0s;
-}
-
-.uil-default-css {
-    position: relative;
-    background: none;
-    width: 200px;
-    height: 200px;
-}
-
-.uil-default-css > div:nth-of-type(8) {
-    -webkit-animation: uil-default-anim 1s linear infinite;
-    animation: uil-default-anim 1s linear infinite;
-    -webkit-animation-delay: 0.08333333333333337s;
-    animation-delay: 0.08333333333333337s;
-}
-
-.uil-default-css {
-    position: relative;
-    background: none;
-    width: 200px;
-    height: 200px;
-}
-
-.uil-default-css > div:nth-of-type(9) {
-    -webkit-animation: uil-default-anim 1s linear infinite;
-    animation: uil-default-anim 1s linear infinite;
-    -webkit-animation-delay: 0.16666666666666663s;
-    animation-delay: 0.16666666666666663s;
-}
-
-.uil-default-css {
-    position: relative;
-    background: none;
-    width: 200px;
-    height: 200px;
-}
-
-.uil-default-css > div:nth-of-type(10) {
-    -webkit-animation: uil-default-anim 1s linear infinite;
-    animation: uil-default-anim 1s linear infinite;
-    -webkit-animation-delay: 0.25s;
-    animation-delay: 0.25s;
-}
-
-.uil-default-css {
-    position: relative;
-    background: none;
-    width: 200px;
-    height: 200px;
-}
-
-.uil-default-css > div:nth-of-type(11) {
-    -webkit-animation: uil-default-anim 1s linear infinite;
-    animation: uil-default-anim 1s linear infinite;
-    -webkit-animation-delay: 0.33333333333333337s;
-    animation-delay: 0.33333333333333337s;
-}
-
-.uil-default-css {
-    position: relative;
-    background: none;
-    width: 200px;
-    height: 200px;
-}
-
-.uil-default-css > div:nth-of-type(12) {
-    -webkit-animation: uil-default-anim 1s linear infinite;
-    animation: uil-default-anim 1s linear infinite;
-    -webkit-animation-delay: 0.41666666666666663s;
-    animation-delay: 0.41666666666666663s;
-}
-
-.uil-default-css {
-    position: relative;
-    background: none;
-    width: 200px;
-    height: 200px;
+@keyframes fa-spin-reverse {
+    100% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    0% {
+        -webkit-transform: rotate(359deg);
+        transform: rotate(359deg);
+    }
 }

@@ -27,6 +27,11 @@ queryParams = queryParams();
 var viewMode = false;
 var conceptMode = false;
 
+if (queryParams.ceasnDataFields == "true") {
+    $("#loadingCass").hide();
+    $("#loadingCe").css("display", "inline-block");
+}
+
 if (queryParams.view == "true") {
     viewMode = true;
     $("#createNewButton").remove();

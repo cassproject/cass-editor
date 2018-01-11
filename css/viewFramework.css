@@ -9,3 +9,20 @@
 #ceasnDataFields ul:empty {
     display: none !important;
 }
+
+#tree {
+    margin: 0px;
+    padding-top: 0rem;
+    max-height: calc(100% - 3.0rem);
+    overflow: auto;
+    padding-left: 2.5rem;
+    padding-bottom: 1rem;
+}
+
+#tree ul {
+    padding-left: 1rem;
+}
+
+#detailSlider button {
+    margin-right: .1rem;
+}
