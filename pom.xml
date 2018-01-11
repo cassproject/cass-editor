@@ -71,7 +71,14 @@
                         <fileset>
                             <directory>js</directory>
                             <includes>
-                                <include>cass*.js</include>
+                                <include>cass-editor*.js</include>
+                            </includes>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                        <fileset>
+                            <directory>css</directory>
+                            <includes>
+                                <include>cass-editor*.css</include>
                             </includes>
                             <followSymlinks>false</followSymlinks>
                         </fileset>
@@ -90,11 +97,22 @@
                             <closureWarningLevels>
                                 <es5Strict>OFF</es5Strict>
                             </closureWarningLevels>
-                            <cssSourceDir>css</cssSourceDir>
+                            <cssSourceDir>.</cssSourceDir>
                             <cssSourceFiles>
+                                <cssSourceFile>css/dashboard.css</cssSourceFile>
+                                <cssSourceFile>css/viewFrameworks.css</cssSourceFile>
+                                <cssSourceFile>css/viewFramework.css</cssSourceFile>
+                                <cssSourceFile>css/font-awesome.min.css</cssSourceFile>
+                                <cssSourceFile>css/jquery-ui.min.css</cssSourceFile>
+                                <cssSourceFile>css/jquery-ui.structure.min.css</cssSourceFile>
+                                <cssSourceFile>css/introjs.min.css</cssSourceFile>
                             </cssSourceFiles>
                             <jsSourceDir>.</jsSourceDir>
                             <jsSourceFiles>
+                                <jsSourceFile>js/vendor/jquery-3.2.1.min.js</jsSourceFile>
+                                <jsSourceFile>js/vendor/jquery-ui.min.js</jsSourceFile>
+                                <jsSourceFile>js/vendor/intro.min.js</jsSourceFile>
+                                <jsSourceFile>js/vendor/jquery.mark.min.js</jsSourceFile>
                                 <jsSourceFile>forge/forge.min.js</jsSourceFile>
                                 <jsSourceFile>js/cass/require.js</jsSourceFile>
                                 <jsSourceFile>js/cass/papaparse.js</jsSourceFile>
@@ -119,13 +137,25 @@
                                 <jsSourceFile>js/cass/ebac.repository.js</jsSourceFile>
                                 <jsSourceFile>js/cass/cass.competency.js</jsSourceFile>
                                 <jsSourceFile>js/cass/cass.import.js</jsSourceFile>
+                                <jsSourceFile>js/util.js</jsSourceFile>
+                                <jsSourceFile>js/server.js</jsSourceFile>
+                                <jsSourceFile>js/editFramework.js</jsSourceFile>
+                                <jsSourceFile>js/viewFramework.js</jsSourceFile>
+                                <jsSourceFile>js/viewFrameworks.js</jsSourceFile>
+                                <jsSourceFile>js/editConcept.js</jsSourceFile>
+                                <jsSourceFile>js/viewConceptScheme.js</jsSourceFile>
+                                <jsSourceFile>js/viewConceptSchemes.js</jsSourceFile>
+                                <jsSourceFile>js/import.js</jsSourceFile>
+                                <jsSourceFile>js/pageManagement.js</jsSourceFile>
                             </jsSourceFiles>
                             <closureLanguageIn>ECMASCRIPT6</closureLanguageIn>
                             <closureLanguageOut>ECMASCRIPT5</closureLanguageOut>
                             <webappSourceDir>${basedir}</webappSourceDir>
                             <webappTargetDir>${basedir}</webappTargetDir>
+                            <cssTargetDir>css</cssTargetDir>
+                            <cssFinalFile>cass-editor.css</cssFinalFile>
                             <jsTargetDir>js</jsTargetDir>
-                            <jsFinalFile>cass.js</jsFinalFile>
+                            <jsFinalFile>cass-editor.js</jsFinalFile>
                             <jsEngine>CLOSURE</jsEngine>
                         </configuration>
                         <goals>

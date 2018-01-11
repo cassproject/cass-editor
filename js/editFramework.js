@@ -9,6 +9,7 @@ addCompetency = function () {
     if (viewMode) return;
     var addOrSearch = $("#sidebarAddCompetencies").val();
     if (addOrSearch == "search") {
+        initIframe();
         showPage("#findCompetencySection", framework);
     } else if (addOrSearch == "new") {
         isFirstEdit = true;
@@ -127,6 +128,7 @@ addLevel = function () {
     if (viewMode) return;
     var addOrSearch = $("#sidebarAddLevels").val();
     if (addOrSearch == "search") {
+        initIframe();
         gotoPage("#findCompetencySection", framework);
     } else if (addOrSearch == "new") {
         var c = new EcLevel();

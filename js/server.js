@@ -172,20 +172,25 @@ for (var i = 0; i < servers.length; i++) {
     openWebSocket(r);
 }
 
-var iframeRoot = queryParams.editorRoot;
-if (iframeRoot == null || iframeRoot === undefined)
-    iframeRoot = "";
-var iframePath = iframeRoot + "index.html?select=Add&selectRelations=true&view=true&iframeRoot=" + iframeRoot + "&origin=" + window.location.origin + (queryParams.server == null ? "" : "&server=" + queryParams.server);
-if (queryParams.webSocketOverride != null && queryParams.webSocketOverride !== undefined)
-    iframePath += "&webSocketOverride=" + queryParams.webSocketOverride;
-if (queryParams.view != "true")
-    $("#findCompetencyIframe").attr("src", iframePath);
+var iframeInit = false;
+initIframe = function () {
+    if (iframeInit == true) return;
+    iframeInit = true;
+    var iframeRoot = queryParams.editorRoot;
+    if (iframeRoot == null || iframeRoot === undefined)
+        iframeRoot = "";
+    var iframePath = iframeRoot + "index.html?select=Add&selectRelations=true&view=true&iframeRoot=" + iframeRoot + "&origin=" + window.location.origin + (queryParams.server == null ? "" : "&server=" + queryParams.server);
+    if (queryParams.webSocketOverride != null && queryParams.webSocketOverride !== undefined)
+        iframePath += "&webSocketOverride=" + queryParams.webSocketOverride;
+    if (queryParams.view != "true")
+        $("#findCompetencyIframe").attr("src", iframePath);
 
-var iframeConceptPath = iframeRoot + "index.html?select=Add&concepts=true&iframeRoot=" + iframeRoot + "&ceasnDataFields=" + queryParams.ceasnDataFields + "&origin=" + window.location.origin + (queryParams.server == null ? "" : "&server=" + queryParams.server);
-if (queryParams.webSocketOverride != null && queryParams.webSocketOverride !== undefined)
-    iframeConceptPath += "&webSocketOverride=" + queryParams.webSocketOverride;
-if (queryParams.view != "true")
-    $("#selectConceptIframe").attr("src", iframeConceptPath);
+    var iframeConceptPath = iframeRoot + "index.html?select=Add&concepts=true&iframeRoot=" + iframeRoot + "&ceasnDataFields=" + queryParams.ceasnDataFields + "&origin=" + window.location.origin + (queryParams.server == null ? "" : "&server=" + queryParams.server);
+    if (queryParams.webSocketOverride != null && queryParams.webSocketOverride !== undefined)
+        iframeConceptPath += "&webSocketOverride=" + queryParams.webSocketOverride;
+    if (queryParams.view != "true")
+        $("#selectConceptIframe").attr("src", iframeConceptPath);
+}
 
 loadIdentity = function (callback) {
     if (queryParams.user == "self") {

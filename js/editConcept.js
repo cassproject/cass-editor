@@ -2,6 +2,7 @@ addConcept = function () {
     if (viewMode) return;
     var addOrSearch = $("#sidebarAddCompetencies").val();
     if (addOrSearch == "search") {
+        initIframe();
         showPage("#findCompetencySection", framework);
     } else if (addOrSearch == "new") {
         previousSelectedCompetency = selectedCompetency;
