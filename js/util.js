@@ -79,7 +79,7 @@ $(document).ready(function () {
         var oHead = document.getElementsByTagName("head")[0];
         var arrStyleSheets = parent.document.getElementsByTagName("*");
         for (var i = 0; i < arrStyleSheets.length; i++)
-            if (parentStyleSheets[i].attributes.inherit == "true")
+            if (arrStyleSheets[i].attributes.inherit == "true")
                 if (arrStyleSheets[i].tagName.toLowerCase() == "link" || arrStyleSheets[i].tagName.toLowerCase() == "style")
                     oHead.appendChild(arrStyleSheets[i].cloneNode(true));
         try {
