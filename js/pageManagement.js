@@ -62,25 +62,16 @@ window.onpopstate = function (event) {
 function gotoPage(pageId, state) {
     var p = $(".page:visible");
     if (p.length == 0 || (p.length == 1 && p[0] == $(pageId)[0]))
-        $(pageId).show({
-            duration: 0,
-            complete: function () {
-                $(".page").hide();
-                $(pageId).show();
-            }
+        $(pageId).slideDown(400, function () {
+            $(".page").hide();
+            $(pageId).show();
         });
     else
-        $(".page:visible").hide({
-            duration: 0,
-            complete: function () {
-                $(pageId).show({
-                    duration: 0,
-                    complete: function () {
-                        $(".page").hide();
-                        $(pageId).show();
-                    }
-                });
-            }
+        $(".page:visible").slideUp(400, function () {
+            $(pageId).slideDown(400, function () {
+                $(".page").hide();
+                $(pageId).show();
+            });
         });
 }
 
