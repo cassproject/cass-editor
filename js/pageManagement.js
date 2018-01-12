@@ -28,7 +28,7 @@ $(document).ready(function () {
             defaultPage = "#importSection";
             showPage(defaultPage);
         } else {
-            searchFrameworks(createParamObj(5000));
+            searchFrameworks(createParamObj(20));
         }
         var tryShowTourDialog = setInterval(function () {
             if (!$('#loading').is(':visible')) {
@@ -99,14 +99,9 @@ function loading(message) {
         $("#loading").show({
             duration: 0
         })
-    } else
-        $(".page:visible").hide({
-            duration: 0,
-            complete: function () {
-                $("#status").text(message);
-                $("#loading").show({
-                    duration: 0
-                })
-            }
-        });
+    } else {
+        $(".page:visible").hide();
+        $("#status").text(message);
+        $("#loading").show();
+    }
 }

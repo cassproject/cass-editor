@@ -180,7 +180,7 @@
         </div>
     </div>
 
-    <div id="frameworksSection" class="page" style="height:100%;display: none;">
+    <div id="frameworksSection" class="page" style="display: none;">
         <div id="header">
             <button id="createNewButton" style="float: right;" status="select" onclick='showPage("#addFrameworkSection");'>Create New</button>
             <span id="frameworksBack" onclick='parent.postMessage({message: "back"}, queryParams.origin);' style="float:left;display:none;"><i class="fa fa-arrow-circle-left" > </i></span>
@@ -188,6 +188,8 @@
             <button id="resetSearchButton" onclick="resetSearch();" style="">&#215;</button>
         </div>
         <center id="frameworks"></center>
+        &nbsp;&nbsp;<a href="#" onclick="searchFrameworks(createParamObj(100));return false;">Load 100 frameworks...</a> |
+        <a href="#" onclick="searchFrameworks(createParamObj(5000));return false;">Load all frameworks...</a>
     </div>
 
     <div id="editFrameworkSection" class="page pageWithSidebar" style="height:100%;display: none;">

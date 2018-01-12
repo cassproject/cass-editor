@@ -5,6 +5,8 @@ if (queryParams.select != null)
 function searchFrameworks(paramObj) {
     if (conceptMode)
         return searchConceptSchemes(paramObj);
+    if (paramObj.size == null)
+        paramObj.size = 20;
     loading("Loading frameworks...");
     var searchTerm = $("#search").val();
     if (searchTerm == null || searchTerm == "") {
@@ -143,7 +145,7 @@ function frameworkSearchByCompetency(server, searchTerm, retry) {
 
 $("#search").keyup(function (event) {
     if (event.keyCode == '13') {
-        searchFrameworks(createParamObj(5000));
+        searchFrameworks(createParamObj(20));
     }
     return false;
 });

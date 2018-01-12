@@ -99,13 +99,13 @@
                             </closureWarningLevels>
                             <cssSourceDir>.</cssSourceDir>
                             <cssSourceFiles>
+                                <cssSourceFile>css/jquery-ui.min.css</cssSourceFile>
+                                <cssSourceFile>css/jquery-ui.structure.min.css</cssSourceFile>
+                                <cssSourceFile>css/font-awesome.min.css</cssSourceFile>
+                                <cssSourceFile>css/introjs.min.css</cssSourceFile>
                                 <cssSourceFile>css/dashboard.css</cssSourceFile>
                                 <cssSourceFile>css/viewFrameworks.css</cssSourceFile>
                                 <cssSourceFile>css/viewFramework.css</cssSourceFile>
-                                <cssSourceFile>css/font-awesome.min.css</cssSourceFile>
-                                <cssSourceFile>css/jquery-ui.min.css</cssSourceFile>
-                                <cssSourceFile>css/jquery-ui.structure.min.css</cssSourceFile>
-                                <cssSourceFile>css/introjs.min.css</cssSourceFile>
                             </cssSourceFiles>
                             <jsSourceDir>.</jsSourceDir>
                             <jsSourceFiles>
