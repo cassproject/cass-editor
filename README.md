@@ -27,14 +27,14 @@ Integrate the cass-editor into your website by nesting it into an iframe on your
 ```
 
 # CSS Inheritance
-The cass-editor attempts to read the stylesheets of the parent page and import them into the website. It may not be able to do this without your help.
+The cass-editor attempts to read the stylesheets of the parent page and import them into the website if they have `inherit="true"` as an attribute. It may not be able to do this without your help.
 
 ```
 An error message when headers are not set:
     ...Styles/Webfonts/Gibson/Gibson-Regular-webfont.woff2' from origin 'https://cassproject.github.io' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. Origin 'https://cassproject.github.io' is therefore not allowed access. The response had HTTP status code 404.
 ```
 
-To remedy this, your web server needs to allow cross-origin requests to the cassproject github.io site.
+To remedy this, your web server needs to allow cross-origin requests to the cassproject github.io site, or you can clone this repository and host it locally.
 
 ```
 Access-Control-Allow-Origin: https://cassproject.github.io
