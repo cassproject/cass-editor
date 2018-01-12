@@ -79,8 +79,8 @@ $(document).ready(function () {
         var oHead = document.getElementsByTagName("head")[0];
         var arrStyleSheets = parent.document.getElementsByTagName("*");
         for (var i = 0; i < arrStyleSheets.length; i++)
-            if (arrStyleSheets[i].attributes.inherit == "true")
-                if (arrStyleSheets[i].tagName.toLowerCase() == "link" || arrStyleSheets[i].tagName.toLowerCase() == "style")
+            if (arrStyleSheets[i].tagName.toLowerCase() == "link" || arrStyleSheets[i].tagName.toLowerCase() == "style")
+                if (arrStyleSheets[i].attributes.inherit != null)
                     oHead.appendChild(arrStyleSheets[i].cloneNode(true));
         try {
             importParentStyles();
@@ -92,8 +92,8 @@ function importParentStyles() {
     var parentStyleSheets = parent.document.styleSheets;
     var cssString = "";
     for (var i = 0, count = parentStyleSheets.length; i < count; ++i) {
-        if (parentStyleSheets[i].ownerNode.attributes.inherit == "true")
-            if (parentStyleSheets[i].cssRules) {
+        if (parentStyleSheets[i].cssRules)
+            if (parentStyleSheets[i].ownerNode.attributes.inherit != null) {
                 var cssRules = parentStyleSheets[i].cssRules;
                 for (var j = 0, countJ = cssRules.length; j < countJ; ++j)
                     cssString += cssRules[j].cssText;
