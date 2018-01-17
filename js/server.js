@@ -213,7 +213,7 @@ loadIdentity = function (callback) {
     } else if (queryParams.user == "wait") {
         var fun = function (evt) {
             var data = evt.data;
-            if (data != null)
+            if (data != null && data != "" && !EcObject.isObject(data))
                 data = JSON.parse(data);
             if (data.action == "identity") {
                 identity = new EcIdentity();
@@ -247,7 +247,7 @@ var frameworkTemplate = null;
 var competencyTemplate = null;
 var messageListener = function (evt) {
     var data = evt.data;
-    if (data != null && data != "")
+    if (data != null && data != "" && !EcObject.isObject(data))
         data = JSON.parse(data);
     if (data != null && data != "")
         if (data.action == "template") {
