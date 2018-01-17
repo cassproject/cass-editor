@@ -44,13 +44,6 @@ $(document).ready(function () {
             }
         }, 1000);
     });
-    if (queryParams.user == "wait") {
-        var message = {
-            message: "waiting"
-        };
-        console.log(message);
-        parent.postMessage(message, queryParams.origin);
-    }
 });
 
 function backPage() {

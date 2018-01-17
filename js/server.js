@@ -234,6 +234,11 @@ loadIdentity = function (callback) {
         } else {
             window.attachEvent("onmessage", fun);
         }
+        var message = {
+            message: "waiting"
+        };
+        console.log(message);
+        parent.postMessage(message, queryParams.origin);
     } else
         callback();
 }
