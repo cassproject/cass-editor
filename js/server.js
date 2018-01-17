@@ -221,6 +221,11 @@ loadIdentity = function (callback) {
                 identity.displayName = "You";
                 EcIdentityManager.addIdentity(identity);
                 callback();
+                var message = {
+                    message: "identityOk"
+                };
+                console.log(message);
+                parent.postMessage(message, queryParams.origin);
             }
         };
         if (window.addEventListener) {
@@ -242,6 +247,11 @@ var messageListener = function (evt) {
         if (data.action == "template") {
             EcFramework.template = data.framework;
             EcCompetency.template = data.competency;
+            var message = {
+                message: "templateOk"
+            };
+            console.log(message);
+            parent.postMessage(message, queryParams.origin);
         }
 };
 if (window.addEventListener) {
