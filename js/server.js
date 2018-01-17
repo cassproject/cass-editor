@@ -222,6 +222,7 @@ loadIdentity = function (callback) {
                 EcIdentityManager.addIdentity(identity);
                 callback();
                 var message = {
+                    action: "response",
                     message: "identityOk"
                 };
                 console.log(message);
@@ -248,6 +249,7 @@ var messageListener = function (evt) {
             EcFramework.template = data.framework;
             EcCompetency.template = data.competency;
             var message = {
+                action: "response",
                 message: "templateOk"
             };
             console.log(message);
