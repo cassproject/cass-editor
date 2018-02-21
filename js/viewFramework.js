@@ -41,6 +41,8 @@ function select() {
     if ($("input:checkbox").length == 0)
         if (selectedCompetency != null)
             ary.push(selectedCompetency.shortId());
+
+
     $("input:checked").parent().each(function (f) {
         if (queryParams.selectVerbose == "true") {
             ary.push(JSON.parse(EcCompetency.getBlocking($(this).attr("id")).toJson()));
@@ -61,6 +63,8 @@ function select() {
         message: "selected",
         selected: ary
     };
+    if (queryParams.selectVerbose == "true")
+        message.selectedFramework = framework;
     console.log(message);
     parent.postMessage(message, queryParams.origin);
 }

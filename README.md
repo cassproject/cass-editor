@@ -68,7 +68,7 @@ If your app needs the ability to select competencies from a framework, use `sele
     https://cassproject.github.io/cass-editor/index.html?select=Add
 
 ## Select verbose
-If your app needs to have the entire competency or relation returned as part of the selection, use `selectVerbose=true`.
+If your app needs to have the entire competency or relation returned as part of the selection, or the framework that the competencies were selected from use `selectVerbose=true`.
 
     ex:
     https://cassproject.github.io/cass-editor/index.html?select=Add&selectVerbose=true
@@ -173,7 +173,7 @@ On Selected:
 
     event.data.message == "selected"
     event.data.selected == [uri,uri,uri]
-    or, if selectVerbose is on, event.data.selected == [{Competency},{Competency},{Competency}]
+    or, if selectVerbose is on, event.data.selected == [{Competency},{Competency},{Competency}] and event.data.selectedFramework == {Framework}
 
 # Keyboard Shortcuts
 &uarr; & &darr; - Navigate up and down the list of frameworks and competencies.  
