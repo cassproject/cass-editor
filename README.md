@@ -175,6 +175,9 @@ On Selected:
     event.data.selected == [uri,uri,uri]
     or, if selectVerbose is on, event.data.selected == [{Competency},{Competency},{Competency}] and event.data.selectedFramework == {Framework}
 
+# Validation
+Most fields are not validated beyond the input type assigned to them. URLs, drop downs, datetimes and selectors all have inbuilt validation. The datetime format being used is ISO 8601.
+
 # Keyboard Shortcuts
 &uarr; & &darr; - Navigate up and down the list of frameworks and competencies.  
 &larr; & &rarr; - Expand and contract nested comptencies.  
