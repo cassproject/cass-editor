@@ -18,8 +18,11 @@ var frameworkId = "";
 var servers = ["https://dev.cassproject.org/api/"];
 var repo;
 
-if (queryParams.server != null)
+if (queryParams.server != null) {
+    if (queryParams.server.endsWith != null && queryParams.server.endsWith("/") == false)
+        queryParams.server = queryParams.server + "/";
     servers = [queryParams.server];
+}
 
 var webSocketBackoff = 100;
 var webSocketConnection = false;

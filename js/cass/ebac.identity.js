@@ -929,6 +929,7 @@ OAuth2FileBasedRemoteIdentityManager = stjs.extend(OAuth2FileBasedRemoteIdentity
     prototype.fetch = function(success, failure) {
         var o = new Object();
         (o)["scope"] = (this.configuration)[this.server + "Scope"];
+        (o)["display"] = "page";
         var me = this;
         hello.on("auth.login", function(o) {
             me.oauthLoginResponse = o;
