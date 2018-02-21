@@ -154,7 +154,7 @@
                             <webappTargetDir>${basedir}</webappTargetDir>
                             <cssTargetDir>css</cssTargetDir>
                             <cssFinalFile>cass-editor.css</cssFinalFile>
-                            <jsTargetDir>js</jsTargetDir>
+                            <jsTargetDir>js/cass</jsTargetDir>
                             <jsFinalFile>cass-editor.js</jsFinalFile>
                             <jsEngine>CLOSURE</jsEngine>
                         </configuration>
