@@ -16,6 +16,7 @@ addCompetency = function () {
         previousSelectedCompetency = selectedCompetency;
         var c = new EcCompetency();
         c.generateId(repo.selectedServer);
+        c["schema:dateCreated"] = new Date().toISOString();
         framework.addCompetency(c.id);
         if (EcIdentityManager.ids.length > 0)
             c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
@@ -25,6 +26,7 @@ addCompetency = function () {
             if (selectedCompetency != null) {
                 var r = new EcAlignment();
                 r.generateId(repo.selectedServer);
+                r["schema:dateCreated"] = new Date().toISOString();
                 r.target = selectedCompetency.shortId();
                 r.source = c.shortId();
                 r.relationType = Relation.NARROWS;
@@ -102,6 +104,7 @@ appendCompetencies = function (results, newLink) {
             if (selectedCompetency != null) {
                 var r = new EcAlignment();
                 r.generateId(repo.selectedServer);
+                r["schema:dateCreated"] = new Date().toISOString();
 
                 r.target = selectedCompetency.shortId();
                 r.source = thing.shortId();
@@ -133,6 +136,7 @@ addLevel = function () {
     } else if (addOrSearch == "new") {
         var c = new EcLevel();
         c.generateId(repo.selectedServer);
+        c["schema:dateCreated"] = new Date().toISOString();
         framework.addLevel(c.id);
         if (EcIdentityManager.ids.length > 0)
             c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
@@ -224,6 +228,7 @@ saveCompetency = function () {
         }
     });
 
+    thing["schema:dateModified"] = new Date().toISOString();
     if (selectedCompetency == null) {
         EcRepository.save(thing, function () {
             populateFramework();
@@ -241,6 +246,7 @@ createFramework = function () {
         return;
     framework = new EcFramework();
     framework.generateId(repo.selectedServer);
+    framework["schema:dateCreated"] = new Date().toISOString();
     if (EcIdentityManager.ids.length > 0)
         framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
     framework.name = $("#name").val();
@@ -421,6 +427,7 @@ dropAny = function (data, targetData) {
     } else if (thing.isAny(new EcCompetency().getTypes())) {
         var r = new EcAlignment();
         r.generateId(repo.selectedServer);
+        r["schema:dateCreated"] = new Date().toISOString();
         r.target = EcRemoteLinkedData.trimVersionFromUrl(targetData.competencyId);
         r.source = thing.shortId();
         if (r.target == r.source)
@@ -533,6 +540,7 @@ copyCompetencies = function (results) {
             var c = new EcCompetency();
             c.copyFrom(thing);
             c.generateId(repo.selectedServer);
+            c["schema:dateCreated"] = new Date().toISOString();
             framework.addCompetency(c.id);
             if (EcIdentityManager.ids.length > 0)
                 c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
@@ -564,6 +572,7 @@ copyCompetencies = function (results) {
                 var r = new EcAlignment();
                 r.copyFrom(thing);
                 r.generateId(repo.selectedServer);
+                r["schema:dateCreated"] = new Date().toISOString();
 
                 r.target = parent.shortId();
                 r.source = child.shortId();
@@ -600,6 +609,7 @@ copyCompetencies = function (results) {
 
                 var r = new EcAlignment();
                 r.generateId(repo.selectedServer);
+                r["schema:dateCreated"] = new Date().toISOString();
 
                 var child = copyDict[thing.id];
 

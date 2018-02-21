@@ -80,6 +80,7 @@ function importMedbiq() {
     if (identity != null)
         f.addOwner(identity.ppk.toPk());
     f.generateId(repo.selectedServer);
+    f["schema:dateCreated"] = new Date().toISOString();
     f.setName($("#importMedbiqFrameworkName").val());
     f.setDescription($("#importMedbiqFrameworkDescription").val());
     MedbiqImport.importCompetencies(repo.selectedServer, identity, function (competencies) {
@@ -160,6 +161,7 @@ function importCsv() {
     if (identity != null)
         f.addOwner(identity.ppk.toPk());
     f.generateId(repo.selectedServer);
+    f["schema:dateCreated"] = new Date().toISOString();
     f.setName($("#importCsvFrameworkName").val());
     f.setDescription($("#importCsvFrameworkDescription").val());
     CSVImport.importCompetencies(file, repo.selectedServer, identity, nameIndex, descriptionIndex, scopeIndex, idIndex, relations, sourceIndex, relationTypeIndex, targetIndex,
