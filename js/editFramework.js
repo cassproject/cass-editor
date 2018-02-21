@@ -22,6 +22,7 @@ addCompetency = function () {
             c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
         c["ceasn:inLanguage"] = framework["ceasn:inLanguage"];
         c.name = "New Competency";
+        framework["schema:dateModified"] = new Date().toISOString();
         EcRepository.save(c, function () {
             if (selectedCompetency != null) {
                 var r = new EcAlignment();
@@ -142,6 +143,7 @@ addLevel = function () {
             c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
         c.name = "New Level";
         c.competency = selectedCompetency.shortId();
+        framework["schema:dateModified"] = new Date().toISOString();
         EcRepository.save(c, function () {
             EcRepository.save(framework, function () {
                 selectedCompetency = c;
@@ -300,6 +302,7 @@ unlinkCompetency = function () {
     framework.removeRelation(selectedRelation.shortId());
     conditionalDelete(selectedRelation.shortId());
     selectedRelation = null;
+    framework["schema:dateModified"] = new Date().toISOString();
     EcRepository.save(framework, afterSave, console.log);
     refreshSidebar();
 }
@@ -309,6 +312,7 @@ removeCompetency = function () {
     if (viewMode) return;
     showConfirmDialog(function (confirmed) {
         if (confirmed === true) {
+            framework["schema:dateModified"] = new Date().toISOString();
             framework.removeCompetency(selectedCompetency.shortId(), function () {
                 selectedRelation = null;
                 selectedCompetency = null;
@@ -350,6 +354,7 @@ deleteCompetency = function () {
     } else {
         showConfirmDialog(function (confirmed) {
             if (confirmed === true) {
+                framework["schema:dateModified"] = new Date().toISOString();
                 framework.removeCompetency(selectedCompetency.shortId(), function () {
                     framework.removeLevel(selectedCompetency.shortId());
                     selectedRelation = null;
@@ -582,6 +587,7 @@ copyCompetencies = function (results) {
 
                 if (r.source != r.target) {
                     framework.addRelation(r.id);
+                    framework["schema:dateModified"] = new Date().toISOString();
                     EcArray.setRemove(results, r.source);
                     itemsSaving++;
                     (function (r) {
@@ -621,6 +627,7 @@ copyCompetencies = function (results) {
                 if (r.source != r.target) {
                     itemsSaving++;
                     framework.addRelation(r.id);
+                    framework["schema:dateModified"] = new Date().toISOString();
                     (function (r) {
                         Task.asyncImmediate(function (callback) {
                             EcRepository.save(r, function () {
