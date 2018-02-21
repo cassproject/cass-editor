@@ -829,3 +829,12 @@ Date.prototype.toDatetimeLocal =
         return YYYY + '-' + MM + '-' + DD + 'T' +
             HH + ':' + II + ':' + SS;
     };
+
+if (queryParams.css != null) {
+    var ss = document.createElement("link");
+    ss.type = "text/css";
+    ss.rel = "stylesheet";
+    ss.href = queryParams.css;
+    document.getElementsByTagName("head")[0].appendChild(ss);
+
+}

@@ -40,6 +40,8 @@ To remedy this, your web server needs to allow cross-origin requests to the cass
 Access-Control-Allow-Origin: https://cassproject.github.io
 ```
 
+Finally, to import a CSS file using a URL parameter, use `css=<url>`.
+
 # URL Parameters
 The cass-editor has many modes and options that can be enabled or disabled based on desired functionality. These options are passed as URL parameters.
 
