@@ -218,6 +218,9 @@ saveCompetency = function () {
                 else if (thing[$(this).attr(inputChoice)].length == 0)
                     delete thing[$(this).attr(inputChoice)];
             } else
+            if ($(this).attr("type") == "datetime-local")
+                thing[$(this).attr(inputChoice)] = new Date(val).toISOString();
+            else
                 thing[$(this).attr(inputChoice)] = val;
         }
     });

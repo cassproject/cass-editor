@@ -353,7 +353,9 @@ renderSidebar = function (justLists) {
                 val = val.join(", ");
             if (val === undefined || val == null || val == "") {
                 $(this).val(null);
-            } else
+            } else if ($(this).attr("type") == "datetime-local")
+                $(this).val(new Date(val).toDatetimeLocal());
+            else
                 $(this).val(val);
         });
     if (justLists != true)
