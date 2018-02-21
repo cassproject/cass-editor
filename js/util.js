@@ -113,7 +113,7 @@ function importParentStyles() {
 function createParamObj(size) {
     var paramObj = {};
     paramObj.size = size;
-    paramObj.sort = 'name.keyword';
+    paramObj.sort = '[ { "name.keyword": {"order" : "asc" , "unmapped_type" : "long",  "missing" : "_last"}} ]';
     if (queryParams.show != null && queryParams.show === 'mine')
         paramObj.ownership = 'me';
 
