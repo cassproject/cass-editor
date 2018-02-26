@@ -201,6 +201,12 @@
             <button id="sidebarSave" class="editMode greenButton editControl" style="" onclick="saveCompetency();">Save</button>
             <hr class="editMode">
 
+            <h4 class="editMode absentForConcepts ceasnCompetency" style="margin-bottom:0px;">General</h4>
+            <hr class="editMode absentForConcepts ceasnCompetency" style="margin-top:0px;">
+
+            <h4 class="editMode absentForConcepts ceasnFramework" style="margin-bottom:0px;">General</h4>
+            <hr class="editMode absentForConcepts ceasnFramework" style="margin-top:0px;">
+
             <label for="sidebarNameInput" title="" cassCompetency="Competency Name:" cassFramework="Framework Name:" ceasnCompetency="Competency Text:" ceasnFramework="Name" skosCompetency="Preferred Label:" skosFramework="Concept Scheme Title:" class="editMode" style="margin: 0px;">Name:</label>
             <h3 id="sidebarName" class="viewMode">Framework Name Here</h3>
             <input id="sidebarNameInput" cassCompetency="name" cassFramework="name" ceasnCompetency="ceasn:competencyText" ceasnFramework="ceasn:name" skosCompetency="skos:prefLabel" skosFramework="dcterms:title" class="editMode editControl" style="margin-top:0rem;width:calc(100% - 1rem);margin-bottom: 1rem;" value="Framework Name Here" />
@@ -245,9 +251,6 @@
             <div id="ceasnDataFields">
                 <form onsubmit="return false;">
                     <div class="ceasnCompetency">
-                        <h4 class="editMode absentForConcepts" style="margin-bottom:0px;">General</h4>
-                        <hr class="editMode absentForConcepts" style="margin-top:0px;">
-
                         <label for="sidebarCompetencyCategory" title="" cassCompetency="Type:" ceasnCompetency="Competency Category:" skosCompetency="Type:" class="viewMode editMode absentForConcepts" style="margin:0px;">Competency Category:</label>
                         <p id="sidebarCompetencyCategory" class="viewMode absentForConcepts" style="font-weight:bold;margin-top: 0;"></p>
                         <input id="sidebarCompetencyCategoryInput" cassCompetency="dcterms:type" ceasnCompetency="ceasn:competencyCategory" case="case:CFItemType" plural="true" class="editMode editControl absentForConcepts" style="width:calc(100% - 1rem);" />
@@ -349,9 +352,6 @@
 
                     </div>
                     <div class="ceasnFramework">
-                        <h4 class="editMode absentForConcepts" style="margin-bottom:0px;">General</h4>
-                        <hr class="editMode absentForConcepts" style="margin-top:0px;">
-
                         <label for="sidebarCreator" title="" cassFramework="Creator:" ceasnFramework="Creator:" skosFramework="Creator:" class="viewMode editMode" style="margin:0px;">Creator:</label>
                         <p id="sidebarCreator" class="viewMode" style="font-weight:bold;margin-top: 0;"></p>
                         <input id="sidebarCreatorInput" cassFramework="schema:creator" ceasnFramework="ceasn:creator" skosFramework="dcterms:creator" plural="true" type="url" class="editMode editControl" style="width:calc(100% - 1rem);" />
