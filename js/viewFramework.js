@@ -464,13 +464,29 @@ refreshSidebar = function () {
         $("#sidebarVersion").hide();
     }
 
+    $("#sidebarFeedback").html("");
     if (!framework.canEditAny(EcIdentityManager.getMyPks())) {
         $("#sidebarVersion").prop('disabled', true);
         $("#sidebarAddCompetencies").prop('disabled', true);
         $("#sidebarAddLevels").prop('disabled', true);
-        $("#sidebarFeedback").html("Some edit options are limited: <li>You do not own this framework.</li> ");
-    } else
-        $("#sidebarFeedback").html("");
+        if ($("#sidebarFeedback").html() == "")
+            $("#sidebarFeedback").append("Some edit options are limited:");
+        $("#sidebarFeedback").html("<li>You do not own this framework.</li> ");
+    }
+
+    if (!thing.canEditAny(EcIdentityManager.getMyPks())) {
+        $("#sidebarVersion").prop('disabled', true);
+        $("#sidebarAddCompetencies").prop('disabled', true);
+        $("#sidebarAddLevels").prop('disabled', true);
+        if ($("#sidebarFeedback").html() == "")
+            $("#sidebarFeedback").append("Some edit options are limited:");
+        if (thing == framework) {
+            $("#sidebarEdit").hide();
+        } else {
+            $("#sidebarFeedback").append("<li>You do not own this competency.</li> ");
+            $("#sidebarEdit").hide();
+        }
+    }
 }
 isFirstEdit = false;
 editSidebar = function () {
@@ -518,6 +534,7 @@ editSidebar = function () {
 
     if (selectedCompetency != null) {
         $('.ceasnCompetency .editMode').show();
+        $('.ceasnFramework').hide();
     } else {
         $('.ceasnCompetency').hide();
     }
