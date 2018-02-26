@@ -305,7 +305,7 @@ renderSidebar = function (justLists) {
                 if (i > 0)
                     $(this).append(", ");
                 if (val[i].toLowerCase().indexOf("http") != -1)
-                    $(this).append("<a/>").children().last().attr("href", val[i]).text(val[i]);
+                    $(this).append("<a target='_blank'/>").children().last().attr("href", val[i]).text(val[i]);
                 else
                     $(this).append("<span/>").children().last().text(val[i]);
             }
