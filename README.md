@@ -171,11 +171,28 @@ To bind the cass-editor from the parent page, use the following code:
 
 To ensure the iframe is passing the correct origin, pass the origin into the iframe using a URL parameter, `origin=originUrl`.
 
-On Selected:
+### On Selected:
 
     event.data.message == "selected"
     event.data.selected == [uri,uri,uri]
     or, if selectVerbose is on, event.data.selected == [{Competency},{Competency},{Competency}] and event.data.selectedFramework == {Framework}
+
+### Export:
+To export, send the iframe a message to export using a particular format.
+```javascript
+$("iframe")[0].contentWindow.postMessage({action:"export",schema:"ceasn"},window.location.origin);
+```
+You will receive in the parent page an event:
+```javascript
+message.data ~= {
+    action: "response",
+    message: "export",
+    schema: "<schema>",
+    format: "<format mimetype>",
+    data: "<data in JSON if JSON-compatible, string if not JSON compatible."
+}
+```
+Acceptable schemas are: "cass","cassn4","cass","cassrdfjson","cassrdfxml","cassturtle","ceasn","asn","case".
 
 # Validation
 Most fields are not validated beyond the input type assigned to them. URLs, drop downs, datetimes and selectors all have inbuilt validation. The datetime format being used is ISO 8601.

@@ -252,7 +252,7 @@ var messageListener = function (evt) {
     var data = evt.data;
     if (data != null && data != "" && !EcObject.isObject(data))
         data = JSON.parse(data);
-    if (data != null && data != "")
+    if (data != null && data != "") {
         if (data.action == "template") {
             EcFramework.template = data.framework;
             EcCompetency.template = data.competency;
@@ -262,7 +262,162 @@ var messageListener = function (evt) {
             };
             console.log(message);
             parent.postMessage(message, queryParams.origin);
+        } else if (data.action == "export") {
+            var v = data.schema;
+            var link;
+            var guid;
+            if (selectedCompetency != null) {
+                if (EcRepository.shouldTryUrl(selectedCompetency.id) == false) {
+                    link = repo.selectedServer + "data/" + EcCrypto.md5(selectedCompetency.id);
+                    guid = EcCrypto.md5(selectedCompetency.id);
+                } else {
+                    link = selectedCompetency.id;
+                    guid = selectedCompetency.getGuid();
+                }
+            } else {
+                if (EcRepository.shouldTryUrl(framework.id) == false) {
+                    link = repo.selectedServer + "data/" + EcCrypto.md5(framework.id);
+                    guid = EcCrypto.md5(framework.id);
+                } else {
+                    link = framework.id;
+                    guid = framework.getGuid();
+                }
+            }
+            if (v == "asn") {
+                $.ajax({
+                    url: link.replace("/data/", "/asn/"),
+                    success: function (data) {
+                        parent.postMessage({
+                            action: "response",
+                            message: "export",
+                            schema: "asn",
+                            format: "rdf+json",
+                            data: data
+                        }, queryParams.origin);
+                    }
+                });
+            } else if (v == "cass") {
+                $.ajax({
+                    url: link,
+                    success: function (data) {
+                        parent.postMessage({
+                            action: "response",
+                            message: "export",
+                            schema: "cass",
+                            format: "application/ld+json",
+                            data: data
+                        }, queryParams.origin);
+                    }
+                });
+            } else if (v == "cassn4") {
+                $.ajax({
+                    url: link,
+                    headers: {
+                        "Accept": "text/n4"
+                    },
+                    success: function (data) {
+                        parent.postMessage({
+                            action: "response",
+                            message: "export",
+                            schema: "cass",
+                            format: "text/n4",
+                            data: data
+                        }, queryParams.origin);
+                    }
+                });
+            } else if (v == "cassrdfjson") {
+                $.ajax({
+                    url: link,
+                    headers: {
+                        "Accept": "application/rdf+json"
+                    },
+                    success: function (data) {
+                        parent.postMessage({
+                            action: "response",
+                            message: "export",
+                            schema: "cass",
+                            format: "application/rdf+json",
+                            data: data
+                        }, queryParams.origin);
+                    }
+                });
+            } else if (v == "cassrdfxml") {
+                $.ajax({
+                    url: link,
+                    headers: {
+                        "Accept": "application/rdf+xml"
+                    },
+                    success: function (data) {
+                        if (conceptMode)
+                            parent.postMessage({
+                                action: "response",
+                                message: "export",
+                                schema: "cass",
+                                format: "application/rdf+xml",
+                                data: data
+                            }, queryParams.origin);
+                    }
+                });
+            } else if (v == "cassturtle") {
+                $.ajax({
+                    url: link,
+                    headers: {
+                        "Accept": "text/turtle"
+                    },
+                    success: function (data) {
+                        parent.postMessage({
+                            action: "response",
+                            message: "export",
+                            schema: "cass",
+                            format: "text/turtle",
+                            data: data
+                        }, queryParams.origin);
+                    }
+                });
+            } else if (v == "ceasn") {
+                $.ajax({
+                    url: link.replace("/data/", "/ceasn/"),
+                    success: function (data) {
+                        parent.postMessage({
+                            action: "response",
+                            message: "export",
+                            schema: "ceasn",
+                            format: "application/ld+json",
+                            data: data
+                        }, queryParams.origin);
+                    }
+                });
+            } else if (v == "case") {
+                if (selectedCompetency == null) {
+                    $.ajax({
+                        url: repo.selectedServer + "ims/case/v1p0/CFDocuments/" + guid,
+                        success: function (data) {
+                            parent.postMessage({
+                                action: "response",
+                                message: "export",
+                                schema: "case",
+                                format: "application/json",
+                                data: data
+                            }, queryParams.origin);
+                        }
+                    });
+                } else {
+                    $.ajax({
+                        url: repo.selectedServer + "ims/case/v1p0/CFItems/" + guid,
+                        success: function (data) {
+                            parent.postMessage({
+                                action: "response",
+                                message: "export",
+                                schema: "case",
+                                format: "json-ld",
+                                data: data
+                            }, queryParams.origin);
+                        }
+                    });
+                }
+            }
         }
+    }
 };
 if (window.addEventListener) {
     window.addEventListener("message", messageListener, false);
