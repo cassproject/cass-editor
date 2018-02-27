@@ -481,10 +481,10 @@ refreshSidebar = function () {
         if ($("#sidebarFeedback").html() == "")
             $("#sidebarFeedback").append("Some edit options are limited:");
         if (thing == framework) {
-            $("#sidebarEdit").hide();
+            //$("#sidebarEdit").hide();
         } else {
             $("#sidebarFeedback").append("<li>You do not own this competency.</li> ");
-            $("#sidebarEdit").hide();
+            //$("#sidebarEdit").hide();
         }
     }
 }
@@ -519,8 +519,10 @@ editSidebar = function () {
         $("#sidebarDelete").prop('disabled', true);
         if (thing == framework) {
             $("#sidebarFeedback").html("Some edit options are limited: <li>You do not own this framework.</li> ");
-        } else
+        } else {
             $("#sidebarFeedback").append("<li>You do not own this competency.</li> ");
+            $("#ceasnDataFields button,input,textarea,select").prop('disabled', true);
+        }
     }
 
     if (thing == framework) {
