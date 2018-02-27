@@ -639,7 +639,7 @@ EcAssertion = stjs.extend(EcAssertion, Assertion, [], function(constructor, prot
                 console.error(msg);
             return;
         }
-        EcRepository._save(this, success, failure);
+        EcRepository.save(this, success, failure);
     };
     prototype.addReader = function(newReader) {
         if (this.agent != null) {
@@ -850,7 +850,7 @@ EcRollupRule = stjs.extend(EcRollupRule, RollupRule, [], function(constructor, p
                 console.error(msg);
             return;
         }
-        EcRepository._save(this, success, failure);
+        EcRepository.save(this, success, failure);
     };
     /**
      *  Deletes this rollup rule from the server specified by it's ID
@@ -1232,7 +1232,7 @@ EcAlignment = stjs.extend(EcAlignment, Relation, [], function(constructor, proto
                 console.error(msg);
             return;
         }
-        EcRepository._save(this, success, failure);
+        EcRepository.save(this, success, failure);
     };
     /**
      *  Deletes the alignment from the server corresponding to its ID
@@ -1506,7 +1506,7 @@ EcLevel = stjs.extend(EcLevel, Level, [], function(constructor, prototype) {
                 console.error(msg);
             return;
         }
-        EcRepository._save(this, success, failure);
+        EcRepository.save(this, success, failure);
     };
     /**
      *  Deletes the level from it's repository
@@ -1701,7 +1701,7 @@ EcCompetency = stjs.extend(EcCompetency, Competency, [], function(constructor, p
         a.target = target.shortId();
         a.relationType = alignmentType;
         a.addOwner(owner.toPk());
-        EcRepository._save(a, success, failure);
+        EcRepository.save(a, success, failure);
         return a;
     };
     /**
@@ -1782,7 +1782,7 @@ EcCompetency = stjs.extend(EcCompetency, Competency, [], function(constructor, p
         l.description = description;
         l.name = name;
         l.addOwner(owner.toPk());
-        EcRepository._save(l, success, failure);
+        EcRepository.save(l, success, failure);
         return l;
     };
     /**
@@ -1876,7 +1876,7 @@ EcCompetency = stjs.extend(EcCompetency, Competency, [], function(constructor, p
         r.description = description;
         r.name = name;
         r.addOwner(owner.toPk());
-        EcRepository._save(r, success, failure);
+        EcRepository.save(r, success, failure);
         return r;
     };
     /**
@@ -1973,7 +1973,7 @@ EcCompetency = stjs.extend(EcCompetency, Competency, [], function(constructor, p
                 console.error(msg);
             return;
         }
-        EcRepository._save(this, success, failure);
+        EcRepository.save(this, success, failure);
     };
     /**
      *  Deletes the competency from the server
@@ -2436,7 +2436,7 @@ EcFramework = stjs.extend(EcFramework, Framework, [], function(constructor, prot
                 console.error(msg);
             return;
         }
-        EcRepository._save(this, success, failure);
+        EcRepository.save(this, success, failure);
     };
     /**
      *  Deletes this framework from the server specified by it's ID

@@ -18,17 +18,17 @@
         <dependency>
             <groupId>com.eduworks</groupId>
             <artifactId>cass.import</artifactId>
-            <version>SNAPSHOT</version>
+            <version>1.6.0</version>
         </dependency>
         <dependency>
             <groupId>com.eduworks</groupId>
             <artifactId>org.credentialengine</artifactId>
-            <version>SNAPSHOT</version>
+            <version>1.6.0</version>
         </dependency>
         <dependency>
             <groupId>com.eduworks</groupId>
             <artifactId>org.w3.skos</artifactId>
-            <version>SNAPSHOT</version>
+            <version>1.6.0</version>
         </dependency>
     </dependencies>
 
