@@ -293,7 +293,7 @@
 
                         <label for="sidebarConceptTerm" title="" class="viewMode editMode" style="margin:0px;">Concept Term:</label>
                         <ul id="sidebarConceptTerm" cassCompetency="ceasn:conceptTerm" ceasnCompetency="ceasn:conceptTerm" id="sidebarConceptTerm" class="viewMode editMode" style="font-weight:bold;margin-top: 0;"></ul>
-<button id="sidebarConceptTermBrowse" cassCompetency="ceasn:conceptTerm" ceasnCompetency="ceasn:conceptTerm" class="editMode editControl" plural="true" style="width:calc(100% - 1rem);" onclick="$('#selectConceptSection').attr('destination','ceasn:conceptTerm');initIframe();showPage('#selectConceptSection', framework);">Create or select...</button>
+                        <button id="sidebarConceptTermBrowse" cassCompetency="ceasn:conceptTerm" ceasnCompetency="ceasn:conceptTerm" class="editMode editControl" plural="true" style="width:calc(100% - 1rem);" onclick="$('#selectConceptSection').attr('destination','ceasn:conceptTerm');initIframe();showPage('#selectConceptSection', framework);">Create or select...</button>
 
                         <label for="sidebarSkillEmbodied" title="" cassCompetency="Skill Embodied:" ceasnCompetency="Skill Embodied:" class="viewMode editMode" style="margin:0px;">Skill Embodied:</label>
                         <p id="sidebarSkillEmbodied" class="viewMode" style="font-weight:bold;margin-top: 0;"></p>
@@ -331,6 +331,7 @@
                         <p id="sidebarCodedNotation" class="viewMode" style="font-weight:bold;margin-top: 0;"></p>
                         <input id="sidebarCodedNotationInput" cassCompetency="skos:notation" skosCompetency="skos:notation" plural="true" class="editMode editControl" style="width:calc(100% - 1rem);" />
 
+                        <!--
                         <label for="sidebarAuthor" title="" class="viewMode editMode absentForConcepts" cassCompetency="Author:" ceasnCompetency="Creator Name:" skosCompetency="Contributor:" defaultToFramework="true" style="margin:0px;">Author:</label>
                         <p id="sidebarAuthor" class="viewMode absentForConcepts" style="font-weight:bold;margin-top: 0;"></p>
                         <input id="sidebarAuthorInput" cassCompetency="schema:author" ceasnCompetency="ceasn:author" plural="true" defaultToFramework="true" class="editMode editControl absentForConcepts" style="width:calc(100% - 1rem);" />
@@ -338,7 +339,6 @@
                         <label for="sidebarAlternativeCodedNotation" title="" cassCompetency="Alternative Coded Notation:" ceasnCompetency="Alternative Coded Notation:" class="viewMode editMode" style="margin:0px;">Alternative Coded Notation:</label>
                         <p id="sidebarAlternativeCodedNotation" class="viewMode" style="font-weight:bold;margin-top: 0;"></p>
                         <input id="sidebarAlternativeCodedNotationInput" cassCompetency="ceasn:altCodedNotation" ceasnCompetency="ceasn:altCodedNotation" plural="true" class="editMode editControl" style="width:calc(100% - 1rem);" />
-<!--
 
                         <h4 class="editMode absentForConcepts" style="margin-bottom:0px;">Optional</h4>
                         <hr class="editMode absentForConcepts" style="margin-top:0px;">
