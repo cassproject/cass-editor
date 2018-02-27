@@ -57,7 +57,6 @@ addCompetency = function () {
 }
 
 attachUrlProperties = function (results) {
-    if (conceptMode) return;
     if (viewMode) return;
     var resource = framework;
     if (selectedCompetency != null)
