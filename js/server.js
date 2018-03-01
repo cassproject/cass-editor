@@ -153,7 +153,8 @@ function cappend(event) {
                 appendCompetencies(event.data.selected);
             }
             hideCopyOrLinkDialog();
-            $("#selectConceptSection").hide();
+            $("#selectConceptSection,#findCompetencySection").hide();
+            $("#editFrameworkSection").show();
         });
     } else if (event.data.message == "back")
         backPage();
