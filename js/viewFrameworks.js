@@ -19,10 +19,9 @@ function searchFrameworks(paramObj) {
     searchCompetencies = [];
     for (var i = 0; i < servers.length; i++) {
         frameworkSearch(servers[i], searchTerm, null, paramObj);
-        if (viewMode)
-            if (searchTerm != "*") {
-                frameworkSearchByCompetency(servers[i], searchTerm);
-            }
+        if (searchTerm != "*") {
+            frameworkSearchByCompetency(servers[i], searchTerm);
+        }
     }
 }
 var frameworkLoading = 0;
