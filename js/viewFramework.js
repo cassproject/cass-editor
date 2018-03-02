@@ -564,7 +564,7 @@ editSidebar = function () {
                     framework.removeCompetency(selectedCompetency.shortId());
                     framework.removeLevel(selectedCompetency.shortId());
                     conditionalDelete(selectedCompetency.shortId());
-                    EcRepository.save(framework, function () {
+                    repo.saveTo(framework, function () {
                         appendCompetencies(results, true);
                     }, error);
 

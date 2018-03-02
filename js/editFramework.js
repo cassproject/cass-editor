@@ -23,7 +23,7 @@ addCompetency = function () {
         c["ceasn:inLanguage"] = framework["ceasn:inLanguage"];
         c.name = "New Competency";
         framework["schema:dateModified"] = new Date().toISOString();
-        EcRepository.save(c, function () {
+        repo.saveTo(c, function () {
             if (selectedCompetency != null) {
                 var r = new EcAlignment();
                 r.generateId(repo.selectedServer);
@@ -34,8 +34,8 @@ addCompetency = function () {
                 if (EcIdentityManager.ids.length > 0)
                     r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                 framework.addRelation(r.id);
-                EcRepository.save(r, function () {
-                    EcRepository.save(framework, function () {
+                repo.saveTo(r, function () {
+                    repo.saveTo(framework, function () {
                         selectedCompetency = c;
                         refreshSidebar();
                         editSidebar();
@@ -44,7 +44,7 @@ addCompetency = function () {
                     }, error);
                 }, error);
             } else {
-                EcRepository.save(framework, function () {
+                repo.saveTo(framework, function () {
                     selectedCompetency = c;
                     refreshSidebar();
                     editSidebar();
@@ -114,13 +114,13 @@ appendCompetencies = function (results, newLink) {
 
                 if (r.source != r.target) {
                     framework.addRelation(r.id);
-                    EcRepository.save(r,
+                    repo.saveTo(r,
                         afterSave, error);
                 }
             }
     }
 
-    EcRepository.save(framework, function () {
+    repo.saveTo(framework, function () {
         refreshSidebar();
         $("#sidebarNameInput").focus();
     }, error);
@@ -143,8 +143,8 @@ addLevel = function () {
         c.name = "New Level";
         c.competency = selectedCompetency.shortId();
         framework["schema:dateModified"] = new Date().toISOString();
-        EcRepository.save(c, function () {
-            EcRepository.save(framework, function () {
+        repo.saveTo(c, function () {
+            repo.saveTo(framework, function () {
                 selectedCompetency = c;
                 refreshSidebar();
                 editSidebar();
@@ -234,11 +234,11 @@ saveCompetency = function () {
 
     thing["schema:dateModified"] = new Date().toISOString();
     if (selectedCompetency == null) {
-        EcRepository.save(thing, function () {
+        repo.saveTo(thing, function () {
             populateFramework();
         }, error);
     } else {
-        EcRepository.save(thing, afterSave, error);
+        repo.saveTo(thing, afterSave, error);
     }
     refreshSidebar();
 }
@@ -257,7 +257,7 @@ createFramework = function () {
     if ($("#description").val() != null && $("#description").val() != "")
         framework.description = $("#description").val();
     loading("Creating framework...");
-    EcRepository.save(framework, function () {
+    repo.saveTo(framework, function () {
         refreshSidebar();
         populateFramework();
         highlightSelected($('#frameworkNameContainer'));
@@ -272,13 +272,13 @@ setCompetencyConfigurationManagement = function () {
         for (var i = 0; i < framework.competency.length; i++) {
             if (framework.competency[i] == selectedCompetency.shortId()) {
                 framework.competency[i] = selectedCompetency.id;
-                EcRepository.save(framework, refreshSidebar, error);
+                repo.saveTo(framework, refreshSidebar, error);
             }
         }
         for (var i = 0; i < framework.level.length; i++) {
             if (framework.level[i] == selectedCompetency.shortId()) {
                 framework.level[i] = selectedCompetency.id;
-                EcRepository.save(framework, refreshSidebar, error);
+                repo.saveTo(framework, refreshSidebar, error);
             }
         }
     } else if (addOrSearch == "noVersion") {
@@ -286,13 +286,13 @@ setCompetencyConfigurationManagement = function () {
         for (var i = 0; i < framework.competency.length; i++) {
             if (framework.competency[i] == selectedCompetency.id) {
                 framework.competency[i] = selectedCompetency.shortId();
-                EcRepository.save(framework, refreshSidebar, error);
+                repo.saveTo(framework, refreshSidebar, error);
             }
         }
         for (var i = 0; i < framework.level.length; i++) {
             if (framework.level[i] == selectedCompetency.id) {
                 framework.level[i] = selectedCompetency.shortId();
-                EcRepository.save(framework, refreshSidebar, error);
+                repo.saveTo(framework, refreshSidebar, error);
             }
         }
     }
@@ -305,7 +305,7 @@ unlinkCompetency = function () {
     conditionalDelete(selectedRelation.shortId());
     selectedRelation = null;
     framework["schema:dateModified"] = new Date().toISOString();
-    EcRepository.save(framework, afterSave, console.log);
+    repo.saveTo(framework, afterSave, console.log);
     refreshSidebar();
 }
 
@@ -318,7 +318,7 @@ removeCompetency = function () {
             framework.removeCompetency(selectedCompetency.shortId(), function () {
                 selectedRelation = null;
                 selectedCompetency = null;
-                EcRepository.save(framework, afterSave, console.log);
+                repo.saveTo(framework, afterSave, console.log);
                 refreshSidebar();
             }, console.log);
         }
@@ -362,7 +362,7 @@ deleteCompetency = function () {
                     selectedRelation = null;
                     conditionalDelete(selectedCompetency.shortId());
                     selectedCompetency = null;
-                    EcRepository.save(framework, afterSave, console.log);
+                    repo.saveTo(framework, afterSave, console.log);
                     refreshSidebar();
                 }, console.log);
             }
@@ -427,7 +427,7 @@ dropAny = function (data, targetData) {
     var thing = EcRepository.getBlocking(data.competencyId);
     if (thing.isAny(new EcLevel().getTypes())) {
         thing.competency = targetData.competencyId;
-        EcRepository.save(thing, function () {
+        repo.saveTo(thing, function () {
             if (webSocketConnection == false)
                 populateFramework();
         }, error);
@@ -444,7 +444,7 @@ dropAny = function (data, targetData) {
             r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
         framework.addRelation(r.id);
         r.save(function () {}, error);
-        EcRepository.save(framework, function () {
+        repo.saveTo(framework, function () {
             if (data.relationId != null && data.relationId !== undefined)
                 conditionalDelete(data.relationId);
             if (webSocketConnection == false)
@@ -530,7 +530,7 @@ afterCopy = function () {
     itemsSaving--;
     loading(itemsSaving + " objects left to copy.");
     if (itemsSaving == 0)
-        EcRepository.save(framework, function (stuff) {
+        repo.saveTo(framework, function (stuff) {
             refreshSidebar();
             populateFramework();
             afterSave(stuff);
@@ -556,7 +556,7 @@ copyCompetencies = function (results) {
             itemsSaving++;
             (function (c) {
                 Task.asyncImmediate(function (callback) {
-                    EcRepository.save(c, function () {
+                    repo.saveTo(c, function () {
                         afterCopy();
                         callback();
                     }, function (error) {
@@ -594,7 +594,7 @@ copyCompetencies = function (results) {
                     itemsSaving++;
                     (function (r) {
                         Task.asyncImmediate(function (callback) {
-                            EcRepository.save(r, function () {
+                            repo.saveTo(r, function () {
                                     afterCopy();
                                     callback();
                                 },
@@ -632,7 +632,7 @@ copyCompetencies = function (results) {
                     framework["schema:dateModified"] = new Date().toISOString();
                     (function (r) {
                         Task.asyncImmediate(function (callback) {
-                            EcRepository.save(r, function () {
+                            repo.saveTo(r, function () {
                                     afterCopy();
                                     callback();
                                 },
