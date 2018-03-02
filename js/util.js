@@ -863,3 +863,22 @@ if (queryParams.css != null) {
     document.getElementsByTagName("head")[0].appendChild(ss);
 
 }
+
+var min = 300;
+var max = 3600;
+var mainmin = 300;
+
+$('#split-bar').mousedown(function (e) {
+    e.preventDefault();
+    $(document).mousemove(function (e) {
+        e.preventDefault();
+        var x = $(window).width() - e.pageX;
+        if (x > min && x < max && e.pageX < ($(window).width() - mainmin)) {
+          $('#detailSlider').css("width", x);
+          $('#editFrameworkSection').css("padding-right", x+16);
+        }
+    })
+});
+$(document).mouseup(function (e) {
+    $(document).unbind('mousemove');
+});

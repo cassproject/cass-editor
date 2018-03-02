@@ -60,18 +60,6 @@ input:invalid:not([style*="display: none"]) ~ .orangeUri {
     padding-right: 22rem;
 }
 
-.sidebar {
-    position: fixed;
-    right: 0;
-    float: right;
-    padding: .5rem;
-    height: calc(100vh - 1rem);
-    max-width: 50%;
-    width: 21rem;
-    border-left: 1px black solid;
-    overflow: auto;
-}
-
 #title {
     margin-top: 0rem;
     margin-bottom: .5rem;
@@ -404,20 +392,6 @@ select {
     /*    border-left: 1px solid  !important;*/
 }
 
-#ceasnDataFields p {
-    display: inline-block;
-    margin-bottom: .33em;
-}
-
-#ceasnDataFields label {
-    cursor: help;
-}
-
-#ceasnDataFields label::before {
-    content: "\A";
-    white-space: pre;
-}
-
 /* CE Overrides */
 
 input[type=button],
@@ -497,4 +471,47 @@ input.redButton {
 .link {
     margin-right: .2rem;
     margin-top: .2rem;
+}
+
+.sidebar {
+    position: fixed;
+    right: 0;
+    float: right;
+
+    padding: 0rem .5rem 0rem 0rem;
+    height: calc(100vh - 1rem);
+    max-width: 50%;
+    width: 21rem;
+    overflow: auto;
+}
+
+#split-bar {
+    background-color:black;
+    height:100%;
+    float: right;
+    width: 6px;
+    cursor: col-resize;
+}
+
+
+#detailSlider input,#detailSlider textarea,#detailSlider #ceasnDataFields button,#detailSlider #ceasnDataFields select{
+    margin-top: 0rem;
+    width: calc(100% - 1rem);
+}
+#detailSlider #ceasnDataFields select{
+	display:block;
+}
+
+#detailSlider p {
+    display: inline-block;
+    margin-bottom: .33em;
+}
+
+#detailSlider label {
+    cursor: help;
+}
+
+#detailSlider label::before {
+    content: "\A";
+    white-space: pre;
 }
