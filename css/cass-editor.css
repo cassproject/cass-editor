@@ -110,7 +110,10 @@ ul {
     line-height: 1.5rem;
 }
 
-.competency:hover,
+.competency:hover {
+    border-left: 2px solid #ddd;
+}
+
 .competency.selected,
 #frameworkNameContainer.selected,
 p.selected {
