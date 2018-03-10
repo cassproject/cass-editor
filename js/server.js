@@ -375,14 +375,14 @@ var messageListener = function (evt) {
                         }, queryParams.origin);
                     }
                 });
-            } else if (v == "ceasn") {
+            } else if (v == "ceasn" || v == "ctdlasn") {
                 $.ajax({
                     url: link.replace("/data/", "/ceasn/"),
                     success: function (data) {
                         parent.postMessage({
                             action: "response",
                             message: "export",
-                            schema: "ceasn",
+                            schema: v,
                             format: "application/ld+json",
                             data: data
                         }, queryParams.origin);
