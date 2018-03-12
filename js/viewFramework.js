@@ -152,6 +152,22 @@ function afterRefresh(level, subsearch) {
         if ($(".selected").length > 0)
             $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
     }
+    if (queryParams.ceasnDataFields == 'true') {
+        var sort = function () {
+            $(this).children().sort(function (a, b) {
+                var a = EcCompetency.getBlocking(a.getAttribute('id'));
+                var b = EcCompetency.getBlocking(b.getAttribute('id'));
+                var ax = a["ceasn:listID"];
+                var bx = b["ceasn:listID"];
+                if (ax == null) ax = "";
+                if (bx == null) bx = "";
+                return ax.localeCompare(bx, undefined, {
+                    numeric: true
+                });
+            }).detach().appendTo($(this));
+        };
+        $("#tree").each(sort).find("ul").each(sort);
+    }
 }
 
 function refreshCompetency(col, level, subsearch) {

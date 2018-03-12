@@ -258,7 +258,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarDateCopyrighted"]').tooltip({
-            content: 'Date of a statement of copyright for this competency framework, such as ©2017.',
+            content: 'Date of a statement of copyright for this competency framework.',
             show: false,
             hide: false
         });
@@ -418,6 +418,21 @@ initTooltips = function (type) {
             show: false,
             hide: false
         });
+        $('label[for="sidebarDerivedFrom"]').tooltip({
+            content: 'The URI of a competency from which this competency has been derived.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarListId"]').tooltip({
+            content: "An alphanumeric string indicating this competency's position in a list of competencies at the same level in some arbitrary hierarchy.",
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarComplexityLevel"]').tooltip({
+            content: "The expected performance level of a learner or professional as defined by a competency.",
+            show: false,
+            hide: false
+        });
     } else if (type === 'ceasnFramework') {
         $('label[for="sidebarNameInput"]').tooltip({
             content: 'The name or title of this competency framework.',
@@ -524,6 +539,16 @@ initTooltips = function (type) {
             show: false,
             hide: false
         });
+        $('label[for="sidebarDerivedFrom"]').tooltip({
+            content: 'The URI of a competency from which this competency has been derived.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarPublisherName"]').tooltip({
+            content: 'Name of an agent responsible for making this entity available.',
+            show: false,
+            hide: false
+        });
     } else if (type === 'skosCompetency') {
         $('label[for="sidebarNameInput"]').tooltip({
             content: 'Preferred display label for this concept.',
@@ -541,7 +566,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarInLanguage"]').tooltip({
-            content: 'TBD',
+            content: 'A language of the concept.',
             show: false,
             hide: false
         });
@@ -561,88 +586,88 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarCompetencyCategory"]').tooltip({
-            content: 'TBD',
+            content: 'The textual label identifying the category of the competency as designated by the promulgating body.',
             show: false,
             hide: false
         });
         $('label[for="sidebarConceptKeyword"]').tooltip({
-            content: 'TBD',
+            content: 'A word or phrase used by the promulgating agency to refine and differentiate individual competencies contextually.',
             show: false,
             hide: false
         });
         $('label[for="sidebarAuthor"]').tooltip({
-            content: 'TBD',
+            content: 'An entity responsible for making contributions to the resource.',
             show: false,
             hide: false
         });
         $('label[for="sidebarCreator"]').tooltip({
-            content: 'TBD',
+            content: 'An entity primarily responsible for making the resource.',
             show: false,
             hide: false
         });
         $('label[for="sidebarIdentifier"]').tooltip({
-            content: 'TBD',
+            content: 'An unambiguous reference to the resource within a given context.',
             show: false,
             hide: false
         });
     } else if (type === 'skosFramework') {
         $('label[for="sidebarNameInput"]').tooltip({
-            content: 'TBD',
+            content: 'Preferred display label for this scheme.',
             show: false,
             hide: false
         });
         $('label[for="sidebarNameDescription"]').tooltip({
-            content: 'TBD',
+            content: 'Definition of this scheme.',
             show: false,
             hide: false
         });
         $('label[for="sidebarInLanguage"]').tooltip({
-            content: 'TBD',
+            content: 'A language of the scheme.',
             show: false,
             hide: false
         });
         $('label[for="sidebarAuthor"]').tooltip({
-            content: 'TBD',
+            content: 'An entity responsible for making contributions to the resource.',
             show: false,
             hide: false
         });
         $('label[for="sidebarCreator"]').tooltip({
-            content: 'TBD',
+            content: 'An entity primarily responsible for making the resource.',
             show: false,
             hide: false
         });
         $('label[for="sidebarDateCopyrighted"]').tooltip({
-            content: 'TBD',
+            content: 'Date of a statement of copyright for this concept scheme.',
             show: false,
             hide: false
         });
         $('label[for="sidebarLicense"]').tooltip({
-            content: 'TBD',
+            content: 'A URI to a legal document giving official permission to do something with this scheme.',
             show: false,
             hide: false
         });
         $('label[for="sidebarConceptKeyword"]').tooltip({
-            content: 'TBD',
+            content: 'A word or phrase used by the promulgating agency to refine and differentiate schemes contextually.',
             show: false,
             hide: false
         });
         $('label[for="sidebarPublicationStatus"]').tooltip({
-            content: 'TBD',
+            content: 'The publication status of this scheme.',
             show: false,
             hide: false
         });
         $('label[for="sidebarPublisher"]').tooltip({
-            content: 'TBD',
+            content: 'A URI to an entity responsible for making this scheme available.',
             show: false,
             hide: false
         });
         $('label[for="sidebarHistoryNote"]').tooltip({
-            content: 'TBD',
+            content: 'Describes significant changes to the meaning or the form of a scheme.',
             show: false,
             hide: false
         });
         $('label[for="sidebarRightsHolder"]').tooltip({
-            content: 'TBD',
+            content: 'A URI to an agent owning or managing rights over this scheme.',
             show: false,
             hide: false
         });
@@ -838,3 +863,22 @@ if (queryParams.css != null) {
     document.getElementsByTagName("head")[0].appendChild(ss);
 
 }
+
+var min = 300;
+var max = 3600;
+var mainmin = 300;
+
+$('#split-bar').mousedown(function (e) {
+    e.preventDefault();
+    $(document).mousemove(function (e) {
+        e.preventDefault();
+        var x = $(window).width() - e.pageX;
+        if (x > min && x < max && e.pageX < ($(window).width() - mainmin)) {
+          $('#detailSlider').css("width", x);
+          $('#editFrameworkSection').css("padding-right", x+16);
+        }
+    })
+});
+$(document).mouseup(function (e) {
+    $(document).unbind('mousemove');
+});
