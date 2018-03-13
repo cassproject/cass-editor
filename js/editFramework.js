@@ -15,7 +15,10 @@ addCompetency = function () {
         isFirstEdit = true;
         previousSelectedCompetency = selectedCompetency;
         var c = new EcCompetency();
-        c.generateId(repo.selectedServer);
+        if (newObjectEndpoint != null)
+            c.generateShortId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
+        else
+            c.generateId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
         c["schema:dateCreated"] = new Date().toISOString();
         framework.addCompetency(c.id);
         if (EcIdentityManager.ids.length > 0)
@@ -26,7 +29,10 @@ addCompetency = function () {
         repo.saveTo(c, function () {
             if (selectedCompetency != null) {
                 var r = new EcAlignment();
-                r.generateId(repo.selectedServer);
+                if (newObjectEndpoint != null)
+                    r.generateShortId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
+                else
+                    r.generateId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
                 r["schema:dateCreated"] = new Date().toISOString();
                 r.target = selectedCompetency.shortId();
                 r.source = c.shortId();
@@ -71,12 +77,12 @@ attachUrlProperties = function (results) {
     }
     renderSidebar(true);
 }
-
+var previousSelectedCompetency = null;
 appendCompetencies = function (results, newLink) {
     if (conceptMode) return;
     if (viewMode) return;
     var selectedCompetency = selectedCompetency;
-    if (newLink !== null && newLink === true) {
+    if (newLink !== null && newLink === true && selectedCompetency == null && previousSelectedCompetency != null) {
         selectedCompetency = previousSelectedCompetency;
     }
     for (var i = 0; i < results.length; i++) {
@@ -103,7 +109,10 @@ appendCompetencies = function (results, newLink) {
         if (thing.isAny(new EcCompetency().getTypes()))
             if (selectedCompetency != null) {
                 var r = new EcAlignment();
-                r.generateId(repo.selectedServer);
+                if (newObjectEndpoint != null)
+                    r.generateShortId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
+                else
+                    r.generateId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
                 r["schema:dateCreated"] = new Date().toISOString();
 
                 r.target = selectedCompetency.shortId();
@@ -135,7 +144,10 @@ addLevel = function () {
         gotoPage("#findCompetencySection", framework);
     } else if (addOrSearch == "new") {
         var c = new EcLevel();
-        c.generateId(repo.selectedServer);
+        if (newObjectEndpoint != null)
+            c.generateShortId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
+        else
+            c.generateId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
         c["schema:dateCreated"] = new Date().toISOString();
         framework.addLevel(c.id);
         if (EcIdentityManager.ids.length > 0)
@@ -249,7 +261,10 @@ createFramework = function () {
     if ($("#name").val() == null || $("#name").val().trim() == "")
         return;
     framework = new EcFramework();
-    framework.generateId(repo.selectedServer);
+    if (newObjectEndpoint != null)
+        framework.generateShortId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
+    else
+        framework.generateId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
     framework["schema:dateCreated"] = new Date().toISOString();
     if (EcIdentityManager.ids.length > 0)
         framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
@@ -332,7 +347,7 @@ deleteCompetency = function () {
     if (selectedCompetency == null) {
         showConfirmDialog(function (confirmed) {
             if (confirmed === true) {
-                EcRepository._delete(framework, function (success) {
+                repo.deleteRegistered(framework, function (success) {
                     if (defaultPage == "#frameworksSection")
                         searchFrameworks(createParamObj(5000));
                     else
@@ -433,7 +448,10 @@ dropAny = function (data, targetData) {
         }, error);
     } else if (thing.isAny(new EcCompetency().getTypes())) {
         var r = new EcAlignment();
-        r.generateId(repo.selectedServer);
+        if (newObjectEndpoint != null)
+            r.generateShortId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
+        else
+            r.generateId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
         r["schema:dateCreated"] = new Date().toISOString();
         r.target = EcRemoteLinkedData.trimVersionFromUrl(targetData.competencyId);
         r.source = thing.shortId();
@@ -443,7 +461,7 @@ dropAny = function (data, targetData) {
         if (EcIdentityManager.ids.length > 0)
             r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
         framework.addRelation(r.id);
-        r.save(function () {}, error);
+        repo.saveTo(r, function () {}, error);
         repo.saveTo(framework, function () {
             if (data.relationId != null && data.relationId !== undefined)
                 conditionalDelete(data.relationId);
@@ -495,7 +513,7 @@ conditionalDelete = function (id, depth) {
             EcFramework.search(repo, "\"" + id + "\"", function (results) {
                 if (results.length <= 0) {
                     console.log("No references found for " + id + "... deleting.");
-                    EcRepository._delete(EcRepository.getBlocking(id), function (success) {
+                    repo.deleteRegistered(EcRepository.getBlocking(id), function (success) {
                         callback();
                         afterSave(success);
                     }, function (failure) {
@@ -546,7 +564,10 @@ copyCompetencies = function (results) {
         if (thing != null && thing.isAny(new EcCompetency().getTypes())) {
             var c = new EcCompetency();
             c.copyFrom(thing);
-            c.generateId(repo.selectedServer);
+            if (newObjectEndpoint != null)
+                c.generateShortId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
+            else
+                c.generateId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
             c["schema:dateCreated"] = new Date().toISOString();
             framework.addCompetency(c.id);
             if (EcIdentityManager.ids.length > 0)
@@ -578,7 +599,10 @@ copyCompetencies = function (results) {
             if (typeof parent !== 'undefined' && typeof child !== 'undefined') {
                 var r = new EcAlignment();
                 r.copyFrom(thing);
-                r.generateId(repo.selectedServer);
+                if (newObjectEndpoint != null)
+                    r.generateShortId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
+                else
+                    r.generateId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
                 r["schema:dateCreated"] = new Date().toISOString();
 
                 r.target = parent.shortId();
@@ -616,7 +640,10 @@ copyCompetencies = function (results) {
             if (selectedCompetency != null) {
 
                 var r = new EcAlignment();
-                r.generateId(repo.selectedServer);
+                if (newObjectEndpoint != null)
+                    r.generateShortId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
+                else
+                    r.generateId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
                 r["schema:dateCreated"] = new Date().toISOString();
 
                 var child = copyDict[thing.id];

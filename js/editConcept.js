@@ -7,7 +7,10 @@ addConcept = function () {
     } else if (addOrSearch == "new") {
         previousSelectedCompetency = selectedCompetency;
         var c = new EcConcept();
-        c.generateId(repo.selectedServer);
+        if (newObjectEndpoint != null)
+            c.generateShortId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
+        else
+            c.generateId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
         if (EcIdentityManager.ids.length > 0)
             c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
         c["skos:prefLabel"] = "New Concept";
@@ -51,7 +54,10 @@ createConceptScheme = function () {
     if ($("#name").val() == null || $("#name").val().trim() == "")
         return;
     framework = new EcConceptScheme();
-    framework.generateId(repo.selectedServer);
+    if (newObjectEndpoint != null)
+        framework.generateShortId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
+    else
+        framework.generateId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
     if (EcIdentityManager.ids.length > 0)
         framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
     framework["dcterms:title"] = $("#name").val();
@@ -92,14 +98,14 @@ deleteConcept = function (c) {
     if (c == null) {
         showConfirmDialog(function (confirmed) {
             if (confirmed === true) {
-                EcRepository._delete(framework, function (success) {
+                repo.deleteRegistered(framework, function (success) {
                     if (defaultPage == "#frameworksSection")
                         searchFrameworks(createParamObj(5000));
                     else
                         showPage(defaultPage);
                     EcConcept.search(repo, "skos%5C:inScheme:\"" + framework.shortId() + "\"", function (concepts) {
                         for (var i = 0; i < concepts.length; i++)
-                            EcRepository._delete(concepts[i], console.log, console.error);
+                            repo.deleteRegistered(concepts[i], console.log, console.error);
                     }, console.error);
                     framework = null;
                     selectedCompetency = null;
@@ -137,7 +143,7 @@ deleteConceptInner = function (c) {
         EcArray.setRemove(framework["skos:hasTopConcept"], c.shortId());
         repo.saveTo(framework, afterSave, console.error);
     }
-    EcRepository._delete(c, afterSave, console.error);
+    repo.deleteRegistered(c, afterSave, console.error);
 }
 
 dragConceptShortcut = function (element, isCopy) {

@@ -79,7 +79,10 @@ function importMedbiq() {
     var f = new EcFramework();
     if (identity != null)
         f.addOwner(identity.ppk.toPk());
-    f.generateId(repo.selectedServer);
+    if (newObjectEndpoint != null)
+        f.generateShortId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
+    else
+        f.generateId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
     f["schema:dateCreated"] = new Date().toISOString();
     f.setName($("#importMedbiqFrameworkName").val());
     f.setDescription($("#importMedbiqFrameworkDescription").val());
@@ -87,7 +90,7 @@ function importMedbiq() {
             importFiles.splice(0, 1);
             for (var i = 0; i < competencies.length; i++)
                 f.addCompetency(competencies[i].shortId());
-            f.save(function (success) {
+            repo.saveTo(f, function (success) {
                 importFiles.splice(0, 1);
                 if (importFiles.length > 0)
                     importFile();
@@ -160,7 +163,10 @@ function importCsv() {
     var f = new EcFramework();
     if (identity != null)
         f.addOwner(identity.ppk.toPk());
-    f.generateId(repo.selectedServer);
+    if (newObjectEndpoint != null)
+        f.generateShortId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
+    else
+        f.generateId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
     f["schema:dateCreated"] = new Date().toISOString();
     f.setName($("#importCsvFrameworkName").val());
     f.setDescription($("#importCsvFrameworkDescription").val());
@@ -174,7 +180,7 @@ function importCsv() {
             for (var i = 0; i < alignments.length; i++) {
                 f.relation.push(alignments[i].shortId());
             }
-            f.save(function (success) {
+            repo.saveTo(f, function (success) {
                 importFiles.splice(0, 1);
                 if (importFiles.length > 0)
                     importFile();
