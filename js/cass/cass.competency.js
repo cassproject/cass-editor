@@ -590,7 +590,7 @@ EcAssertion = stjs.extend(EcAssertion, Assertion, [], function(constructor, prot
             encryptedValues.push(EcEncryptedValue.encryptValue(evidences[i], this.id, this.subject.owner, this.subject.reader));
         this.evidence = encryptedValues;
     };
-    prototype.save = function(success, failure) {
+    prototype.save = function(success, failure, repo) {
         if (this.competency == null || this.competency == "") {
             var msg = "Failing to save: Competency cannot be missing";
             if (failure != null) 
@@ -639,7 +639,10 @@ EcAssertion = stjs.extend(EcAssertion, Assertion, [], function(constructor, prot
                 console.error(msg);
             return;
         }
-        EcRepository.save(this, success, failure);
+        if (repo == null) 
+            EcRepository.save(this, success, failure);
+         else 
+            repo.saveTo(this, success, failure);
     };
     prototype.addReader = function(newReader) {
         if (this.agent != null) {
@@ -833,7 +836,7 @@ EcRollupRule = stjs.extend(EcRollupRule, RollupRule, [], function(constructor, p
      *  @memberOf EcRollupRule
      *  @method save
      */
-    prototype.save = function(success, failure) {
+    prototype.save = function(success, failure, repo) {
         if (this.rule == null || this.rule == "") {
             var msg = "RollupRule Rule cannot be empty";
             if (failure != null) 
@@ -850,7 +853,10 @@ EcRollupRule = stjs.extend(EcRollupRule, RollupRule, [], function(constructor, p
                 console.error(msg);
             return;
         }
-        EcRepository.save(this, success, failure);
+        if (repo == null) 
+            EcRepository.save(this, success, failure);
+         else 
+            repo.saveTo(this, success, failure);
     };
     /**
      *  Deletes this rollup rule from the server specified by it's ID
@@ -1207,7 +1213,7 @@ EcAlignment = stjs.extend(EcAlignment, Relation, [], function(constructor, proto
      *  @memberOf EcAlignment
      *  @method save
      */
-    prototype.save = function(success, failure) {
+    prototype.save = function(success, failure, repo) {
         if (this.source == null || this.source == "") {
             var msg = "Source Competency cannot be missing";
             if (failure != null) 
@@ -1232,7 +1238,10 @@ EcAlignment = stjs.extend(EcAlignment, Relation, [], function(constructor, proto
                 console.error(msg);
             return;
         }
-        EcRepository.save(this, success, failure);
+        if (repo == null) 
+            EcRepository.save(this, success, failure);
+         else 
+            repo.saveTo(this, success, failure);
     };
     /**
      *  Deletes the alignment from the server corresponding to its ID
@@ -1344,8 +1353,6 @@ EcLevel = stjs.extend(EcLevel, Level, [], function(constructor, prototype) {
      *                                     Callback triggered if an error occurs while searching
      *  @param {Object}                    paramObj
      *                                     Search parameters object to pass in
-     *  @param size
-     *  @param start
      *  @memberOf EcLevel
      *  @method search
      *  @static
@@ -1392,8 +1399,6 @@ EcLevel = stjs.extend(EcLevel, Level, [], function(constructor, prototype) {
      *                                     Callback triggered if an error occurs while searching
      *  @param {Object}                    paramObj
      *                                     Search parameters object to pass in
-     *  @param size
-     *  @param start
      *  @memberOf EcLevel
      *  @method searchByCompetency
      *  @static
@@ -1448,14 +1453,18 @@ EcLevel = stjs.extend(EcLevel, Level, [], function(constructor, prototype) {
      *  @memberOf EcLevel
      *  @method addRelationship
      */
-    prototype.addRelationship = function(targetLevel, alignmentType, identity, server) {
+    prototype.addRelationship = function(targetLevel, alignmentType, identity, serverUrl, success, failure, repo) {
         var a = new EcAlignment();
         a.source = this.id;
         a.target = targetLevel.id;
         a.relationType = alignmentType;
         a.addOwner(identity.toPk());
-        a.generateId(server);
+        if (repo == null || repo.selectedServer.indexOf(serverUrl) != -1) 
+            a.generateId(serverUrl);
+         else 
+            a.generateShortId(serverUrl);
         a.signWith(identity);
+        a.save(success, failure, repo);
     };
     /**
      *  Method to set the name of this level
@@ -1489,7 +1498,7 @@ EcLevel = stjs.extend(EcLevel, Level, [], function(constructor, prototype) {
      *  @memberOf EcLevel
      *  @method save
      */
-    prototype.save = function(success, failure) {
+    prototype.save = function(success, failure, repo) {
         if (this.name == null || this.name == "") {
             var msg = "Level name cannot be empty";
             if (failure != null) 
@@ -1506,7 +1515,10 @@ EcLevel = stjs.extend(EcLevel, Level, [], function(constructor, prototype) {
                 console.error(msg);
             return;
         }
-        EcRepository.save(this, success, failure);
+        if (repo == null) 
+            EcRepository.save(this, success, failure);
+         else 
+            repo.saveTo(this, success, failure);
     };
     /**
      *  Deletes the level from it's repository
@@ -1694,14 +1706,17 @@ EcCompetency = stjs.extend(EcCompetency, Competency, [], function(constructor, p
      *  @memberOf EcCompetency
      *  @method addAlignment
      */
-    prototype.addAlignment = function(target, alignmentType, owner, server, success, failure) {
+    prototype.addAlignment = function(target, alignmentType, owner, serverUrl, success, failure, repo) {
         var a = new EcAlignment();
-        a.generateId(server);
+        if (repo == null || repo.selectedServer.indexOf(serverUrl) != -1) 
+            a.generateId(serverUrl);
+         else 
+            a.generateShortId(serverUrl);
         a.source = this.shortId();
         a.target = target.shortId();
         a.relationType = alignmentType;
         a.addOwner(owner.toPk());
-        EcRepository.save(a, success, failure);
+        a.save(success, failure, repo);
         return a;
     };
     /**
@@ -1775,14 +1790,17 @@ EcCompetency = stjs.extend(EcCompetency, Competency, [], function(constructor, p
      *  @memberOf EcCompetency
      *  @method addLevel
      */
-    prototype.addLevel = function(name, description, owner, server, success, failure) {
+    prototype.addLevel = function(name, description, owner, serverUrl, success, failure, repo) {
         var l = new EcLevel();
-        l.generateId(server);
+        if (repo == null || repo.selectedServer.indexOf(serverUrl) != -1) 
+            l.generateId(serverUrl);
+         else 
+            l.generateShortId(serverUrl);
         l.competency = this.shortId();
         l.description = description;
         l.name = name;
         l.addOwner(owner.toPk());
-        EcRepository.save(l, success, failure);
+        l.save(success, failure, repo);
         return l;
     };
     /**
@@ -1869,14 +1887,18 @@ EcCompetency = stjs.extend(EcCompetency, Competency, [], function(constructor, p
      *  @memberOf EcCompetency
      *  @method addRollupRule
      */
-    prototype.addRollupRule = function(name, description, owner, server, success, failure) {
+    prototype.addRollupRule = function(name, description, owner, serverUrl, success, failure, repo) {
         var r = new EcRollupRule();
-        r.generateId(server);
+        if (repo == null) 
+            if (repo == null || repo.selectedServer.indexOf(serverUrl) != -1) 
+                r.generateId(serverUrl);
+             else 
+                r.generateShortId(serverUrl);
         r.competency = this.shortId();
         r.description = description;
         r.name = name;
         r.addOwner(owner.toPk());
-        EcRepository.save(r, success, failure);
+        r.save(success, failure, repo);
         return r;
     };
     /**
@@ -1964,7 +1986,7 @@ EcCompetency = stjs.extend(EcCompetency, Competency, [], function(constructor, p
      *  @memberOf EcCompetency
      *  @method save
      */
-    prototype.save = function(success, failure) {
+    prototype.save = function(success, failure, repo) {
         if (this.name == null || this.name == "") {
             var msg = "Competency Name can not be empty";
             if (failure != null) 
@@ -1973,7 +1995,10 @@ EcCompetency = stjs.extend(EcCompetency, Competency, [], function(constructor, p
                 console.error(msg);
             return;
         }
-        EcRepository.save(this, success, failure);
+        if (repo == null) 
+            EcRepository.save(this, success, failure);
+         else 
+            repo.saveTo(this, success, failure);
     };
     /**
      *  Deletes the competency from the server
@@ -2427,7 +2452,7 @@ EcFramework = stjs.extend(EcFramework, Framework, [], function(constructor, prot
      *  @memberOf EcFramework
      *  @method save
      */
-    prototype.save = function(success, failure) {
+    prototype.save = function(success, failure, repo) {
         if (this.name == null || this.name == "") {
             var msg = "Framework Name Cannot be Empty";
             if (failure != null) 
@@ -2436,7 +2461,10 @@ EcFramework = stjs.extend(EcFramework, Framework, [], function(constructor, prot
                 console.error(msg);
             return;
         }
-        EcRepository.save(this, success, failure);
+        if (repo == null) 
+            EcRepository.save(this, success, failure);
+         else 
+            repo.saveTo(this, success, failure);
     };
     /**
      *  Deletes this framework from the server specified by it's ID

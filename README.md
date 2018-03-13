@@ -149,8 +149,19 @@ The cass-editor can be populated with templates that set initial properties of n
 ## Only show frameworks that individual owns.
 Along with user credentials, the cass-editor can be configured to not show others' frameworks. This functionality can be enabled by the URL parameter `show=mine`.
 
+## Use canonical identifiers.
+CASS supports the storage of objects where the @id parameter does not refer to the object in CASS.
+
+cass-editor can be configured via the `newObjectEndpoint` to create and edit objects with `@id` URIs or objects located outside of CASS.
+
+As an example, if `newObjectEndpoint=http://not.here/` and a new framework is created, the `@id` of the framework will be `http://not.here/<generated UUID>`.
+
+Additionally:
+-  This disables access to versioned objects, as versions will not be exposed (though versions are being stored).
+-  This option operates across imports where canonical @ids are not defined, CSV imports, etc.
+
 # Overrides
-The cass-editor can be overridden to use particular settings.
+The cass-editor can be overridden to assist in cross domain, iframe, and web socket connection issues.
 
 -  `editorRoot=<relative or absolute path>` helps any recursive iframes locate the root of the cass-editor. Examples include '/cass-editor/' or 'https://cassproject.github.io/cass-editor/'
 -  `webSocketOverride` helps the cass-editor connect to the websocket of CASS in case a reverse proxy is misbehaving when handling websockets (Looking at you, IIS.)
