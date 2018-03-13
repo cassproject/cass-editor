@@ -509,7 +509,7 @@ input.redButton {
 }
 
 #detailSlider p {
-    display: inline-block;
+    display: block;
     margin-bottom: .33em;
 }
 
