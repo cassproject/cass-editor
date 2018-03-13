@@ -341,7 +341,7 @@ ASNImport = stjs.extend(ASNImport, Importer, [], function(constructor, prototype
      *  @method importCompetencies
      *  @static
      */
-    constructor.importCompetencies = function(serverUrl, owner, createFramework, success, failure, incremental) {
+    constructor.importCompetencies = function(serverUrl, owner, createFramework, success, failure, incremental, repo) {
         ASNImport.competencies = {};
         if (createFramework) {
             ASNImport.importedFramework = new EcFramework();
@@ -354,7 +354,7 @@ ASNImport = stjs.extend(ASNImport, Importer, [], function(constructor, prototype
         ASNImport.createCompetencies(serverUrl, owner, function() {
             ASNImport.createRelationships(serverUrl, owner, ASNImport.jsonFramework, null, function() {
                 if (createFramework) {
-                    ASNImport.createFramework(serverUrl, owner, success, failure);
+                    ASNImport.createFramework(serverUrl, owner, success, failure, repo);
                 } else {
                     var compList = [];
                     for (var key in ASNImport.competencies) {
@@ -363,8 +363,8 @@ ASNImport = stjs.extend(ASNImport, Importer, [], function(constructor, prototype
                     if (success != null) 
                         success(compList, null);
                 }
-            }, failure, incremental);
-        }, failure, incremental);
+            }, failure, incremental, repo);
+        }, failure, incremental, repo);
     };
     /**
      *  Handles creating the competencies found during analysis, iterates through the
@@ -385,7 +385,7 @@ ASNImport = stjs.extend(ASNImport, Importer, [], function(constructor, prototype
      *  @private
      *  @static
      */
-    constructor.createCompetencies = function(serverUrl, owner, success, failure, incremental) {
+    constructor.createCompetencies = function(serverUrl, owner, success, failure, incremental, repo) {
         ASNImport.savedCompetencies = 0;
         for (var key in ASNImport.jsonCompetencies) {
             var comp = new EcCompetency();
@@ -397,16 +397,19 @@ ASNImport = stjs.extend(ASNImport, Importer, [], function(constructor, prototype
             comp.sameAs = key;
             if ((jsonComp)["http://purl.org/dc/terms/description"] != null) 
                 comp.description = (((jsonComp)["http://purl.org/dc/terms/description"])["0"])["value"];
-            comp.generateId(serverUrl);
+            if (repo == null || repo.selectedServer.indexOf(serverUrl) != -1) 
+                comp.generateId(serverUrl);
+             else 
+                comp.generateShortId(serverUrl);
             if (owner != null) 
                 comp.addOwner(owner.ppk.toPk());
             if (ASNImport.importedFramework != null) 
                 ASNImport.importedFramework.addCompetency(comp.shortId());
             ASNImport.competencies[key] = comp;
-            ASNImport.saveCompetency(success, failure, incremental, comp);
+            ASNImport.saveCompetency(success, failure, incremental, comp, repo);
         }
     };
-    constructor.saveCompetency = function(success, failure, incremental, comp) {
+    constructor.saveCompetency = function(success, failure, incremental, comp, repo) {
         Task.asyncImmediate(function(o) {
             var keepGoing = o;
             comp.save(function(p1) {
@@ -428,7 +431,7 @@ ASNImport = stjs.extend(ASNImport, Importer, [], function(constructor, prototype
             }, function(p1) {
                 failure("Failed to save competency");
                 keepGoing();
-            });
+            }, repo);
         });
     };
     /**
@@ -453,7 +456,7 @@ ASNImport = stjs.extend(ASNImport, Importer, [], function(constructor, prototype
      *  @private
      *  @static
      */
-    constructor.createRelationships = function(serverUrl, owner, node, nodeId, success, failure, incremental) {
+    constructor.createRelationships = function(serverUrl, owner, node, nodeId, success, failure, incremental, repo) {
         ASNImport.savedRelations = 0;
         if (ASNImport.relationCount == 0) {
             success();
@@ -468,17 +471,20 @@ ASNImport = stjs.extend(ASNImport, Importer, [], function(constructor, prototype
                     relation.relationType = "narrows";
                     relation.name = "";
                     relation.description = "";
-                    relation.generateId(serverUrl);
+                    if (repo == null || repo.selectedServer.indexOf(serverUrl) != -1) 
+                        relation.generateId(serverUrl);
+                     else 
+                        relation.generateShortId(serverUrl);
                     if (owner != null) 
                         relation.addOwner(owner.ppk.toPk());
                     if (ASNImport.importedFramework != null) 
                         ASNImport.importedFramework.addRelation(relation.shortId());
-                    ASNImport.saveRelation(success, failure, incremental, relation);
+                    ASNImport.saveRelation(success, failure, incremental, relation, repo);
                 }
-                ASNImport.createRelationships(serverUrl, owner, ASNImport.jsonCompetencies[(children[j])["value"]], (children[j])["value"], success, failure, incremental);
+                ASNImport.createRelationships(serverUrl, owner, ASNImport.jsonCompetencies[(children[j])["value"]], (children[j])["value"], success, failure, incremental, repo);
             }
     };
-    constructor.saveRelation = function(success, failure, incremental, relation) {
+    constructor.saveRelation = function(success, failure, incremental, relation, repo) {
         Task.asyncImmediate(function(o) {
             var keepGoing = o;
             relation.save(function(p1) {
@@ -496,7 +502,7 @@ ASNImport = stjs.extend(ASNImport, Importer, [], function(constructor, prototype
             }, function(p1) {
                 failure("Failed to save Relationship");
                 keepGoing();
-            });
+            }, repo);
         });
     };
     /**
@@ -515,10 +521,13 @@ ASNImport = stjs.extend(ASNImport, Importer, [], function(constructor, prototype
      *  @private
      *  @static
      */
-    constructor.createFramework = function(serverUrl, owner, success, failure) {
+    constructor.createFramework = function(serverUrl, owner, success, failure, repo) {
         ASNImport.importedFramework.name = (((ASNImport.jsonFramework)["http://purl.org/dc/elements/1.1/title"])["0"])["value"];
         ASNImport.importedFramework.description = (((ASNImport.jsonFramework)["http://purl.org/dc/terms/description"])["0"])["value"];
-        ASNImport.importedFramework.generateId(serverUrl);
+        if (repo == null || repo.selectedServer.indexOf(serverUrl) != -1) 
+            ASNImport.importedFramework.generateId(serverUrl);
+         else 
+            ASNImport.importedFramework.generateShortId(serverUrl);
         ASNImport.importedFramework.sameAs = ASNImport.frameworkUrl;
         if (owner != null) 
             ASNImport.importedFramework.addOwner(owner.ppk.toPk());
@@ -531,7 +540,7 @@ ASNImport = stjs.extend(ASNImport, Importer, [], function(constructor, prototype
                 success(compList, ASNImport.importedFramework);
         }, function(p1) {
             failure("Failed to save framework");
-        });
+        }, repo);
     };
 }, {jsonFramework: "Object", jsonCompetencies: {name: "Map", arguments: [null, "Object"]}, importedFramework: "EcFramework", competencies: {name: "Map", arguments: [null, "EcCompetency"]}, progressObject: "Object"}, {});
 /**
@@ -575,7 +584,7 @@ FrameworkImport = stjs.extend(FrameworkImport, null, [], function(constructor, p
      *  @method importCompetencies
      *  @static
      */
-    constructor.importCompetencies = function(source, target, copy, serverUrl, owner, success, failure) {
+    constructor.importCompetencies = function(source, target, copy, serverUrl, owner, success, failure, repo) {
         if (source == null) {
             failure("Source Framework not set");
             return;
@@ -600,7 +609,10 @@ FrameworkImport = stjs.extend(FrameworkImport, null, [], function(constructor, p
                 EcCompetency.get(id, function(comp) {
                     var competency = new EcCompetency();
                     competency.copyFrom(comp);
-                    competency.generateId(serverUrl);
+                    if (repo == null || repo.selectedServer.indexOf(serverUrl) != -1) 
+                        competency.generateId(serverUrl);
+                     else 
+                        competency.generateShortId(serverUrl);
                     FrameworkImport.compMap[comp.shortId()] = competency.shortId();
                     if (owner != null) 
                         competency.addOwner(owner.ppk.toPk());
@@ -617,7 +629,10 @@ FrameworkImport = stjs.extend(FrameworkImport, null, [], function(constructor, p
                                         EcAlignment.get(id, function(rel) {
                                             var relation = new EcAlignment();
                                             relation.copyFrom(rel);
-                                            relation.generateId(serverUrl);
+                                            if (repo == null || repo.selectedServer.indexOf(serverUrl) != -1) 
+                                                relation.generateId(serverUrl);
+                                             else 
+                                                relation.generateShortId(serverUrl);
                                             relation.source = FrameworkImport.compMap[rel.source];
                                             relation.target = FrameworkImport.compMap[rel.target];
                                             if (owner != null) 
@@ -633,13 +648,13 @@ FrameworkImport = stjs.extend(FrameworkImport, null, [], function(constructor, p
                                                             success(FrameworkImport.competencies, FrameworkImport.relations);
                                                         }, function(p1) {
                                                             failure(p1);
-                                                        });
+                                                        }, repo);
                                                     }
                                                     keepGoing2();
                                                 }, function(str) {
                                                     failure("Trouble Saving Copied Competency");
                                                     keepGoing2();
-                                                });
+                                                }, repo);
                                             });
                                             FrameworkImport.relations.push(relation);
                                         }, function(str) {
@@ -648,13 +663,13 @@ FrameworkImport = stjs.extend(FrameworkImport, null, [], function(constructor, p
                                     }
                                 }, function(p1) {
                                     failure(p1);
-                                });
+                                }, repo);
                             }
                             keepGoing();
                         }, function(str) {
                             failure("Trouble Saving Copied Competency");
                             keepGoing();
-                        });
+                        }, repo);
                     });
                     FrameworkImport.competencies.push(competency);
                 }, function(str) {
@@ -685,7 +700,7 @@ FrameworkImport = stjs.extend(FrameworkImport, null, [], function(constructor, p
                                                     }, function(p1) {
                                                         failure(p1);
                                                         keepGoing();
-                                                    });
+                                                    }, repo);
                                                 });
                                             }
                                         }, function(p1) {
@@ -695,7 +710,7 @@ FrameworkImport = stjs.extend(FrameworkImport, null, [], function(constructor, p
                                 }
                             }, function(p1) {
                                 failure(p1);
-                            });
+                            }, repo);
                         }
                     }, function(p1) {
                         failure(p1);
@@ -830,21 +845,24 @@ MedbiqImport = stjs.extend(MedbiqImport, Importer, [], function(constructor, pro
      *  @method importCompetencies
      *  @static
      */
-    constructor.importCompetencies = function(serverUrl, owner, success, failure, incremental) {
+    constructor.importCompetencies = function(serverUrl, owner, success, failure, incremental, repo) {
         MedbiqImport.progressObject = null;
         MedbiqImport.saved = 0;
         for (var i = 0; i < MedbiqImport.medbiqXmlCompetencies.length; i++) {
             var comp = MedbiqImport.medbiqXmlCompetencies[i];
-            comp.generateId(serverUrl);
+            if (repo == null || repo.selectedServer.indexOf(serverUrl) != -1) 
+                comp.generateId(serverUrl);
+             else 
+                comp.generateShortId(serverUrl);
             if (owner != null) 
                 comp.addOwner(owner.ppk.toPk());
-            MedbiqImport.saveCompetency(success, failure, incremental, comp);
+            MedbiqImport.saveCompetency(success, failure, incremental, comp, repo);
         }
     };
-    constructor.saveCompetency = function(success, failure, incremental, comp) {
+    constructor.saveCompetency = function(success, failure, incremental, comp, repo) {
         Task.asyncImmediate(function(o) {
             var keepGoing = o;
-            comp.save(function(p1) {
+            var scs = function(p1) {
                 MedbiqImport.saved++;
                 if (MedbiqImport.saved % MedbiqImport.INCREMENTAL_STEP == 0) {
                     if (MedbiqImport.progressObject == null) 
@@ -860,10 +878,12 @@ MedbiqImport = stjs.extend(MedbiqImport, Importer, [], function(constructor, pro
                     success(MedbiqImport.medbiqXmlCompetencies);
                 }
                 keepGoing();
-            }, function(p1) {
+            };
+            var err = function(p1) {
                 failure("Failed to Save Competency");
                 keepGoing();
-            });
+            };
+            comp.save(scs, err, repo);
         });
     };
 }, {medbiqXmlCompetencies: {name: "Array", arguments: ["EcCompetency"]}, progressObject: "Object"}, {});
@@ -986,7 +1006,7 @@ CSVImport = stjs.extend(CSVImport, null, [], function(constructor, prototype) {
      *  @method importCompetencies
      *  @static
      */
-    constructor.importCompetencies = function(file, serverUrl, owner, nameIndex, descriptionIndex, scopeIndex, idIndex, relations, sourceIndex, relationTypeIndex, destIndex, success, failure, incremental, uniquify) {
+    constructor.importCompetencies = function(file, serverUrl, owner, nameIndex, descriptionIndex, scopeIndex, idIndex, relations, sourceIndex, relationTypeIndex, destIndex, success, failure, incremental, uniquify, repo) {
         CSVImport.progressObject = null;
         CSVImport.importCsvLookup = new Object();
         if (nameIndex < 0) {
@@ -1014,7 +1034,10 @@ CSVImport = stjs.extend(CSVImport, null, [], function(constructor, prototype) {
                     competency.id = tabularData[i][idIndex];
                     CSVImport.transformId(tabularData[i][idIndex], competency, serverUrl);
                 } else {
-                    competency.generateId(serverUrl);
+                    if (repo == null || repo.selectedServer.indexOf(serverUrl) != -1) 
+                        competency.generateId(serverUrl);
+                     else 
+                        competency.generateShortId(serverUrl);
                 }
                 if (owner != undefined && owner != null) 
                     competency.addOwner(owner.ppk.toPk());
@@ -1041,11 +1064,11 @@ CSVImport = stjs.extend(CSVImport, null, [], function(constructor, prototype) {
             CSVImport.saved = 0;
             for (var i = 0; i < competencies.length; i++) {
                 var comp = competencies[i];
-                CSVImport.saveCompetency(comp, incremental, competencies, relations, success, serverUrl, owner, sourceIndex, relationTypeIndex, destIndex, failure);
+                CSVImport.saveCompetency(comp, incremental, competencies, relations, success, serverUrl, owner, sourceIndex, relationTypeIndex, destIndex, failure, repo);
             }
         }, error: failure});
     };
-    constructor.saveCompetency = function(comp, incremental, competencies, relations, success, serverUrl, owner, sourceIndex, relationTypeIndex, destIndex, failure) {
+    constructor.saveCompetency = function(comp, incremental, competencies, relations, success, serverUrl, owner, sourceIndex, relationTypeIndex, destIndex, failure, repo) {
         Task.asyncImmediate(function(o) {
             var keepGoing = o;
             comp.save(function(results) {
@@ -1060,7 +1083,7 @@ CSVImport = stjs.extend(CSVImport, null, [], function(constructor, prototype) {
                     if (relations == null) 
                         success(competencies, new Array());
                      else 
-                        CSVImport.importRelations(serverUrl, owner, relations, sourceIndex, relationTypeIndex, destIndex, competencies, success, failure, incremental);
+                        CSVImport.importRelations(serverUrl, owner, relations, sourceIndex, relationTypeIndex, destIndex, competencies, success, failure, incremental, repo);
                 }
                 keepGoing();
             }, function(results) {
@@ -1069,7 +1092,7 @@ CSVImport = stjs.extend(CSVImport, null, [], function(constructor, prototype) {
                     competencies[j]._delete(null, null, null);
                 }
                 keepGoing();
-            });
+            }, repo);
         });
     };
     /**
@@ -1100,7 +1123,7 @@ CSVImport = stjs.extend(CSVImport, null, [], function(constructor, prototype) {
      *  @private
      *  @static
      */
-    constructor.importRelations = function(serverUrl, owner, file, sourceIndex, relationTypeIndex, destIndex, competencies, success, failure, incremental) {
+    constructor.importRelations = function(serverUrl, owner, file, sourceIndex, relationTypeIndex, destIndex, competencies, success, failure, incremental, repo) {
         var relations = new Array();
         if (sourceIndex == null || sourceIndex < 0) {
             failure("Source Index not Set");
@@ -1132,20 +1155,23 @@ CSVImport = stjs.extend(CSVImport, null, [], function(constructor, prototype) {
                 alignment.relationType = relationTypeKey;
                 if (owner != null) 
                     alignment.addOwner(owner.ppk.toPk());
-                alignment.generateId(serverUrl);
+                if (repo == null || repo.selectedServer.indexOf(serverUrl) != -1) 
+                    alignment.generateId(serverUrl);
+                 else 
+                    alignment.generateShortId(serverUrl);
                 relations.push(alignment);
             }
             CSVImport.saved = 0;
             for (var i = 0; i < relations.length; i++) {
                 var relation = relations[i];
-                CSVImport.saveRelation(relation, incremental, relations, success, competencies, failure);
+                CSVImport.saveRelation(relation, incremental, relations, success, competencies, failure, repo);
             }
             if (CSVImport.saved == 0 && CSVImport.saved == relations.length) {
                 success(competencies, relations);
             }
         }, error: failure});
     };
-    constructor.saveRelation = function(relation, incremental, relations, success, competencies, failure) {
+    constructor.saveRelation = function(relation, incremental, relations, success, competencies, failure, repo) {
         Task.asyncImmediate(function(o) {
             var keepGoing = o;
             relation.save(function(results) {
@@ -1170,7 +1196,7 @@ CSVImport = stjs.extend(CSVImport, null, [], function(constructor, prototype) {
                     relations[j]._delete(null, null);
                 }
                 keepGoing();
-            });
+            }, repo);
         });
     };
     constructor.hasContextColumn = function(colNames) {
@@ -1219,7 +1245,7 @@ CSVImport = stjs.extend(CSVImport, null, [], function(constructor, prototype) {
             }
         }
     };
-    constructor.importData = function(file, serverUrl, owner, success, failure, incremental, idIndex, assignedContext, assignedType) {
+    constructor.importData = function(file, serverUrl, owner, success, failure, incremental, idIndex, assignedContext, assignedType, repo) {
         var objects = [];
         var hasAssignedContext = assignedContext != undefined && assignedContext != null && assignedContext.trim() != "";
         var hasAssignedType = assignedType != undefined && assignedType != null && assignedType.trim() != "";
@@ -1282,7 +1308,10 @@ CSVImport = stjs.extend(CSVImport, null, [], function(constructor, prototype) {
                     data.id = tabularData[i][idIndex];
                     CSVImport.transformId(tabularData[i][idIndex], data, serverUrl);
                 } else {
-                    data.generateId(serverUrl);
+                    if (repo == null || repo.selectedServer.indexOf(serverUrl) != -1) 
+                        data.generateId(serverUrl);
+                     else 
+                        data.generateShortId(serverUrl);
                 }
                 var shortId;
                 if (idIndex != null && idIndex != undefined && idIndex >= 0) {
@@ -1306,24 +1335,29 @@ CSVImport = stjs.extend(CSVImport, null, [], function(constructor, prototype) {
             for (var i = 0; i < objects.length; i++) {
                 var data = objects[i];
                 CSVImport.transformReferences(data);
-                CSVImport.saveTransformedData(data, incremental, objects, success, failure);
+                CSVImport.saveTransformedData(data, incremental, objects, success, failure, repo);
             }
         }, error: failure});
     };
-    constructor.saveTransformedData = function(data, incremental, objects, success, failure) {
+    constructor.saveTransformedData = function(data, incremental, objects, success, failure, repo) {
         Task.asyncImmediate(function(o) {
             var keepGoing = o;
-            EcRepository.save(data, function(results) {
+            var scs = function(results) {
                 CSVImport.saved++;
                 if (CSVImport.saved % CSVImport.INCREMENTAL_STEP == 0) 
                     incremental(CSVImport.saved);
                 if (CSVImport.saved == objects.length) 
                     success(objects);
                 keepGoing();
-            }, function(results) {
+            };
+            var err = function(results) {
                 failure("Failed to save object");
                 keepGoing();
-            });
+            };
+            if (repo == null) 
+                EcRepository.save(data, scs, err);
+             else 
+                repo.saveTo(data, scs, err);
         });
     };
 }, {importCsvLookup: "Object", progressObject: "Object"}, {});

@@ -7,7 +7,10 @@ addConcept = function () {
     } else if (addOrSearch == "new") {
         previousSelectedCompetency = selectedCompetency;
         var c = new EcConcept();
-        c.generateId(repo.selectedServer);
+        if (newObjectEndpoint != null)
+            c.generateShortId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
+        else
+            c.generateId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
         if (EcIdentityManager.ids.length > 0)
             c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
         c["skos:prefLabel"] = "New Concept";
@@ -19,8 +22,8 @@ addConcept = function () {
             if (c["skos:broader"] == null)
                 c["skos:broader"] = [];
             EcArray.setAdd(c["skos:broader"], selectedCompetency.shortId());
-            EcRepository.save(c, function () {
-                EcRepository.save(selectedCompetency, function () {
+            repo.saveTo(c, function () {
+                repo.saveTo(selectedCompetency, function () {
                     selectedCompetency = c;
                     refreshSidebar();
                     editSidebar();
@@ -33,8 +36,8 @@ addConcept = function () {
                 framework["skos:hasTopConcept"] = [];
             EcArray.setAdd(framework["skos:hasTopConcept"], c.shortId());
             c["skos:topConceptOf"] = framework.shortId();
-            EcRepository.save(c, function () {
-                EcRepository.save(framework, function () {
+            repo.saveTo(c, function () {
+                repo.saveTo(framework, function () {
                     selectedCompetency = c;
                     refreshSidebar();
                     editSidebar();
@@ -51,14 +54,17 @@ createConceptScheme = function () {
     if ($("#name").val() == null || $("#name").val().trim() == "")
         return;
     framework = new EcConceptScheme();
-    framework.generateId(repo.selectedServer);
+    if (newObjectEndpoint != null)
+        framework.generateShortId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
+    else
+        framework.generateId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
     if (EcIdentityManager.ids.length > 0)
         framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
     framework["dcterms:title"] = $("#name").val();
     if ($("#description").val() != null && $("#description").val() != "")
         framework["dcterms:description"] = $("#description").val();
     loading("Creating concept scheme...");
-    EcRepository.save(framework, function () {
+    repo.saveTo(framework, function () {
         refreshSidebar();
         populateFramework();
         highlightSelected($('#frameworkNameContainer'));
@@ -73,15 +79,15 @@ unlinkConcept = function (c) {
         for (var i = 0; i < c["skos:broader"].length; i++)
             EcConcept.get(c["skos:broader"][i], function (concept) {
                 EcArray.setRemove(concept["skos:narrower"], c.shortId());
-                EcRepository.save(concept, afterSave, console.error);
+                repo.saveTo(concept, afterSave, console.error);
             }, console.error);
     delete c["skos:broader"];
     if (framework["skos:hasTopConcept"] == null)
         framework["skos:hasTopConcept"] = [];
     EcArray.setAdd(framework["skos:hasTopConcept"], c.shortId());
     c["skos:topConceptOf"] = framework.shortId();
-    EcRepository.save(c, function () {
-        EcRepository.save(framework, afterSave, console.log);
+    repo.saveTo(c, function () {
+        repo.saveTo(framework, afterSave, console.log);
     }, console.log);
     refreshSidebar();
 }
@@ -92,14 +98,14 @@ deleteConcept = function (c) {
     if (c == null) {
         showConfirmDialog(function (confirmed) {
             if (confirmed === true) {
-                EcRepository._delete(framework, function (success) {
+                repo.deleteRegistered(framework, function (success) {
                     if (defaultPage == "#frameworksSection")
                         searchFrameworks(createParamObj(5000));
                     else
                         showPage(defaultPage);
                     EcConcept.search(repo, "skos%5C:inScheme:\"" + framework.shortId() + "\"", function (concepts) {
                         for (var i = 0; i < concepts.length; i++)
-                            EcRepository._delete(concepts[i], console.log, console.error);
+                            repo.deleteRegistered(concepts[i], console.log, console.error);
                     }, console.error);
                     framework = null;
                     selectedCompetency = null;
@@ -126,7 +132,7 @@ deleteConceptInner = function (c) {
         for (var i = 0; i < c["skos:broader"]; i++)
             EcConcept.get(c["skos:broader"][i], function (concept) {
                 EcArray.setRemove(concept["skos:narrower"], c.shortId());
-                EcRepository.save(concept, afterSave, console.error);
+                repo.saveTo(concept, afterSave, console.error);
             }, console.error);
     if (c["skos:narrower"] != null)
         for (var i = 0; i < c["skos:narrower"]; i++)
@@ -135,9 +141,9 @@ deleteConceptInner = function (c) {
             }, console.error);
     if (c["skos:topConceptOf"] != null) {
         EcArray.setRemove(framework["skos:hasTopConcept"], c.shortId());
-        EcRepository.save(framework, afterSave, console.error);
+        repo.saveTo(framework, afterSave, console.error);
     }
-    EcRepository._delete(c, afterSave, console.error);
+    repo.deleteRegistered(c, afterSave, console.error);
 }
 
 dragConceptShortcut = function (element, isCopy) {
@@ -166,14 +172,14 @@ dropConceptShortcut = function (element) {
                     for (var i = 0; i < c["skos:broader"].length; i++)
                         EcConcept.get(c["skos:broader"][i], function (concept) {
                             EcArray.setRemove(concept["skos:narrower"], c.shortId());
-                            EcRepository.save(concept, afterSave, console.error);
+                            repo.saveTo(concept, afterSave, console.error);
                         }, console.error);
                     delete c["skos:broader"];
                 }
                 delete c["skos:topConceptOf"];
                 if (EcArray.has(framework["skos:hasTopConcept"], c.shortId())) {
                     EcArray.setRemove(framework["skos:hasTopConcept"], c.shortId());
-                    EcRepository.save(framework, afterSave, console.error);
+                    repo.saveTo(framework, afterSave, console.error);
                 }
             }
             dropAnyConcept(dragShortcutData, targetData);
@@ -225,8 +231,8 @@ dropAnyConcept = function (data, targetData) {
         delete thing["skos:topConceptOf"];
         EcArray.setRemove(framework["skos:hasTopConcept"], thing.shortId());
     }
-    EcRepository.save(thing, function () {
-        EcRepository.save(targetThing, afterSave, console.error);
+    repo.saveTo(thing, function () {
+        repo.saveTo(targetThing, afterSave, console.error);
     }, console.error);
 
 }
@@ -234,7 +240,7 @@ dropAnyConcept = function (data, targetData) {
 detangleConcepts = function (me, data, targetData) {
 
     var part3 = function () {
-        EcRepository.save(c, function () {
+        repo.saveTo(c, function () {
             dropAnyConcept(data, targetData);
         }, console.error); //Saving main competency.
     }
@@ -245,8 +251,8 @@ detangleConcepts = function (me, data, targetData) {
         if (c["skos:broader"] == null || c["skos:broader"].length == 0) {
             EcArray.setAdd(framework["skos:hasTopConcept"], c.shortId());
             c["skos:topConceptOf"] = framework.shortId();
-            EcRepository.save(c, function () {
-                EcRepository.save(framework, part3, console.error); //Saving framework again.
+            repo.saveTo(c, function () {
+                repo.saveTo(framework, part3, console.error); //Saving framework again.
             }, console.error);
             foundAgain = true;
         }
@@ -261,7 +267,7 @@ detangleConcepts = function (me, data, targetData) {
             if (c["skos:broader"][i] == me.parent().parent().attr("id")) {
                 var concept = EcConcept.getBlocking(c["skos:broader"][i]);
                 EcArray.setRemove(concept["skos:narrower"], c.shortId());
-                EcRepository.save(concept, part2, console.error); //Saving parent concept again.
+                repo.saveTo(concept, part2, console.error); //Saving parent concept again.
                 found = true;
             }
     }
@@ -295,7 +301,7 @@ dropConcept = function (ev) {
                 data.competency = c;
                 if (EcArray.has(framework["skos:hasTopConcept"], c.shortId())) {
                     EcArray.setRemove(framework["skos:hasTopConcept"], c.shortId());
-                    EcRepository.save(framework, function () {
+                    repo.saveTo(framework, function () {
                         dropAnyConcept(data, targetData);
                     }, console.error); //Saving framework.
                     found = true;
@@ -310,7 +316,7 @@ dropConcept = function (ev) {
                 for (var i = 0; i < narrows.length; i++)
                     EcConcept.get(narrows[i], function (concept) {
                         EcArray.setRemove(concept["skos:narrower"], c.shortId());
-                        EcRepository.save(concept, stage2, console.error); //Saving previous parent.
+                        repo.saveTo(concept, stage2, console.error); //Saving previous parent.
                         found = true;
                     }, console.error);
             }
