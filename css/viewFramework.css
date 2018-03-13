@@ -39,26 +39,29 @@
 
     padding: 0rem .5rem 0rem 0rem;
     height: calc(100vh - 1rem);
-    max-width: 50%;
     width: 21rem;
     overflow: auto;
 }
 
 #split-bar {
-    background-color:black;
-    height:100%;
+    background-color: black;
+    height: 100%;
     float: right;
     width: 6px;
     cursor: col-resize;
 }
 
 
-#detailSlider input,#detailSlider textarea,#detailSlider #ceasnDataFields button,#detailSlider #ceasnDataFields select{
+#detailSlider input,
+#detailSlider textarea,
+#detailSlider #ceasnDataFields button,
+#detailSlider #ceasnDataFields select {
     margin-top: 0rem;
     width: calc(100% - 1rem);
 }
-#detailSlider #ceasnDataFields select{
-	display:block;
+
+#detailSlider #ceasnDataFields select {
+    display: block;
 }
 
 #detailSlider p {

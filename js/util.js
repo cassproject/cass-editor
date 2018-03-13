@@ -865,7 +865,6 @@ if (queryParams.css != null) {
 }
 
 var min = 300;
-var max = 3600;
 var mainmin = 300;
 
 $('#split-bar').mousedown(function (e) {
@@ -873,9 +872,9 @@ $('#split-bar').mousedown(function (e) {
     $(document).mousemove(function (e) {
         e.preventDefault();
         var x = $(window).width() - e.pageX;
-        if (x > min && x < max && e.pageX < ($(window).width() - mainmin)) {
-          $('#detailSlider').css("width", x);
-          $('#editFrameworkSection').css("padding-right", x+16);
+        if (x > min && x < (($(window).width() * 3) / 4) && e.pageX < ($(window).width() - mainmin)) {
+            $('#detailSlider').css("width", x);
+            $('#editFrameworkSection').css("padding-right", x + 16);
         }
     })
 });
