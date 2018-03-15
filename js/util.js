@@ -867,6 +867,12 @@ if (queryParams.css != null) {
 var min = 300;
 var mainmin = 300;
 
+$(window).resize(function (e) {
+
+    $('#detailSlider').css("width", Math.min((($(window).width() * 3) / 4), $('#detailSlider').width()));
+    $('#editFrameworkSection').css("padding-right", Math.min((($(window).width() * 3) / 4), $('#detailSlider').width()) + 16);
+});
+
 $('#split-bar').mousedown(function (e) {
     e.preventDefault();
     $(document).mousemove(function (e) {
