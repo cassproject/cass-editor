@@ -190,6 +190,27 @@ ul {
         transform: rotate(359deg);
     }
 }
+
+#importSection table {
+    border-spacing: 0px;
+    border: 1px black solid;
+}
+
+#importSection table th {
+    padding-right: 2rem;
+    margin: 0px;
+}
+
+#importSection table tr:first-child th {
+    border-bottom: 1px black solid;
+}
+
+#importSection table tr td {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    border-left: 1px black solid;
+    text-align: center;
+}
 button,
 a.button {
     padding: .25rem .5rem .25rem .5rem;
