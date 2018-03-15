@@ -180,6 +180,11 @@ function refreshCompetency(col, level, subsearch) {
         treeNode = $("[id='" + col.shortId() + "']");
         treeNode.remove();
     }
+    if (col.shortId() == queryParams.competencyId) {
+        selectedCompetency = col;
+        queryParams.competencyId = null;
+        renderSidebar();
+    }
     treeNode = $("#tree").append("<li class = 'competency' draggable='true' ondragstart='dragCompetency(event);' ondrop='dropCompetency(event);' ondragover='allowCompetencyDrop(event);'><span></span><ul></ul></li>").children().last();
     treeNode.attr("id", col.shortId());
     if (col.description != null && col.description != "NULL" && col.description != col.name)

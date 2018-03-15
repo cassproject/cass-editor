@@ -100,10 +100,16 @@ To jump directly to the import option of the above add menu, use `action=import`
     https://cassproject.github.io/cass-editor/index.html?action=import
     
 ## Edit a specific framework
-If you have a specific framework you are directing your users to edit, you can force the cass-editor to only show that framework by using `frameworkId=<url identifier of framework>`
+If you have a specific framework you are directing your users to edit or view, you can force the cass-editor to only show that framework by using `frameworkId=<url identifier of framework>`
 
     ex:
-    https://cassproject.github.io/cass-editor/index.html?frameworkId=https://dev.cassproject.org/api/data/schema.cassproject.org.0.3.Framework/fd9dbdae-6b10-46da-8256-1458b448bfab
+    https://cassproject.github.io/cass-editor/index.html?frameworkId=https://dev.cassproject.org/api/custom/data/schema.cassproject.org.0.2.Framework/76ffff33-bd15-4bf3-a007-4ce247d2216d
+    
+## Select a specific competency
+If you have a specific competency you are directing your users to edit or view, you can force the cass-editor to select that competency using `competencyId=<url identifier of competency>`. Must be used in conjunction with `frameworkId=<url identifier of framework>`
+
+    ex:
+    https://cassproject.github.io/cass-editor/index.html?frameworkId=https://dev.cassproject.org/api/custom/data/schema.cassproject.org.0.2.Framework/76ffff33-bd15-4bf3-a007-4ce247d2216d&competencyId=https://dev.cassproject.org/api/custom/data/schema.cassproject.org.0.2.Competency/onet:1.A.1.a.1
     
 ## Expose URL links
 If your users need the URLs for each framework or resource they are editing, you can enable link-showing by using `link=true`
