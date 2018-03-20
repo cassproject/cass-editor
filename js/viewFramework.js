@@ -22,6 +22,8 @@ var selectedRelation = null;
 //For keyboard controls
 var frameworkSelectionIndex = null;
 var competencySelectionIndex = null;
+//For skillEmbodied
+addSkillEmbodied = false;
 
 fetchFailure = function (failure) {
     this.fetches--;
@@ -35,6 +37,15 @@ fetchFailure = function (failure) {
         afterRefresh(true);
     }
 };
+
+function prepareToAddConcept(skillEmbodied) {
+    if (skillEmbodied) {
+        addSkillEmbodied = true;
+    }
+    else {
+        addSkillEmbodied = false;
+    }
+}
 
 function select() {
     var ary = [];

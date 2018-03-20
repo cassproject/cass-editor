@@ -308,11 +308,11 @@
 
                         <label for="sidebarConceptTerm" title="" class="viewMode editMode" style="margin:0px;">Concept Term:</label>
                         <ul id="sidebarConceptTerm" cassCompetency="ceasn:conceptTerm" ceasnCompetency="ceasn:conceptTerm" id="sidebarConceptTerm" class="viewMode editMode" style="font-weight:bold;margin-top: 0;"></ul>
-                        <button id="sidebarConceptTermBrowse" cassCompetency="ceasn:conceptTerm" ceasnCompetency="ceasn:conceptTerm" class="editMode editControl" plural="true" onclick="$('#selectConceptSection').attr('destination','ceasn:conceptTerm');initIframe();showPage('#selectConceptSection', framework);">Create or select...</button>
+                        <button id="sidebarConceptTermBrowse" cassCompetency="ceasn:conceptTerm" ceasnCompetency="ceasn:conceptTerm" class="editMode editControl" plural="true" onclick="$('#selectConceptSection').attr('destination','ceasn:conceptTerm');initIframe();showPage('#selectConceptSection', framework);prepareToAddConcept(false);">Create or select...</button>
 
                         <label for="sidebarSkillEmbodied" title="" cassCompetency="Skill Embodied:" ceasnCompetency="Skill Embodied:" class="viewMode editMode" style="margin:0px;">Skill Embodied:</label>
                         <ul id="sidebarSkillEmbodied" cassCompetency="ceasn:skillEmbodied" ceasnCompetency="ceasn:skillEmbodied" class="viewMode editMode" style="font-weight:bold;margin-top: 0;"></ul>
-                        <button id="sidebarSkillEmbodiedBrowse" cassCompetency="ceasn:skillEmbodied" ceasnCompetency="ceasn:skillEmbodied" class="editMode editControl" plural="true" onclick="$('#selectConceptSection').attr('destination','ceasn:conceptTerm');initIframe();showPage('#selectConceptSection', framework);">Create or select...</button>
+                        <button id="sidebarSkillEmbodiedBrowse" cassCompetency="ceasn:skillEmbodied" ceasnCompetency="ceasn:skillEmbodied" class="editMode editControl" plural="true" onclick="$('#selectConceptSection').attr('destination','ceasn:conceptTerm');initIframe();showPage('#selectConceptSection', framework);prepareToAddConcept(true);">Create or select...</button>
 
                         <h4 class="editMode absentForConcepts" style="margin-bottom:0px;">Scales</h4>
                         <hr class="editMode absentForConcepts" style="margin-top:0px;">
