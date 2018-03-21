@@ -234,11 +234,10 @@
                 <option selected value="noVersion">Shared: Updates automatically.</option>
                 <option value="version">Manual update only.</option>
             </select>
-            <select id="sidebarAddCompetencies" class="viewMode editControl" onclick="addCompetency();$(this).children().first().prop('selected', true);">
-                <option style="display:none;" disabled selected>Add Competencies</option>
-                <option class="absentForConcepts" value="search">Search...</option>
-                <option value="new">New</option>
-            </select>
+            <div id="sidebarAddCompetencies" class="viewMode editControl" value="" style="display: inline;">
+                <button id="sidebarSearchCompetencies" class="viewMode editControl" onclick="$('#sidebarAddCompetencies').attr('value', 'search');addCompetency();">Search...</button>
+                <button id="sidebarCreateCompetencies" class="viewMode editControl" onclick="$('#sidebarAddCompetencies').attr('value', 'new');addCompetency();">Create</button>
+            </div>
             <select id="sidebarAddLevels" class="absentForConcepts viewMode editControl absentForCeasn" onclick="addLevel();$(this).children().first().prop('selected', true);">
                 <option style="display:none;" disabled selected>Add Levels</option>
                 <option class="" value="search">Search...</option>
