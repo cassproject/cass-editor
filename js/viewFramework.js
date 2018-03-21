@@ -662,7 +662,12 @@ $('body').on('dragleave', '.competency', function (evt) {
 
 $('body').on('dragstart', '.competency', function (evt) {
     $(evt.target).click();
+    $('.competency').addClass('dashBorder');
 });
+
+$('body').on('dragend', '.competency', function (evt) {
+    $('.competency').removeClass('dashBorder');
+})
 
 $('body').on('dragenter', '#frameworkNameContainer', function (evt) {
     evt.preventDefault();

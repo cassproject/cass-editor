@@ -43,6 +43,10 @@
     overflow: auto;
 }
 
+.dashBorder {
+    border: 1px dashed gray !important;
+}
+
 #split-bar {
     background-color: black;
     height: 100%;
