@@ -319,7 +319,7 @@ renderSidebar = function (justLists) {
         $("#detailSlider label").each(function () {
             var label = $(this).attr(labelChoice);
             if (label != null)
-                $(this).text(label);
+                $(this).html("<i class='fa fa-info-circle'></i>" + ' ' + label);
         });
     if (justLists != true)
         $("#detailSlider p,h3").each(function () {
