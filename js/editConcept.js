@@ -1,6 +1,6 @@
 addConcept = function () {
     if (viewMode) return;
-    var addOrSearch = $("#sidebarAddCompetencies").val();
+    var addOrSearch = $("#sidebarAddCompetencies").attr('value');
     if (addOrSearch == "search") {
         initIframe();
         showPage("#findCompetencySection", framework);

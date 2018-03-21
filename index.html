@@ -235,7 +235,7 @@
                 <option value="version">Manual update only.</option>
             </select>
             <div id="sidebarAddCompetencies" class="viewMode editControl" value="" style="display: inline;">
-                <button id="sidebarSearchCompetencies" class="viewMode editControl" onclick="$('#sidebarAddCompetencies').attr('value', 'search');addCompetency();">Search...</button>
+                <button id="sidebarSearchCompetencies" class="viewMode editControl absentForConcepts" onclick="$('#sidebarAddCompetencies').attr('value', 'search');addCompetency();">Search...</button>
                 <button id="sidebarCreateCompetencies" class="viewMode editControl" onclick="$('#sidebarAddCompetencies').attr('value', 'new');addCompetency();">Create</button>
             </div>
             <select id="sidebarAddLevels" class="absentForConcepts viewMode editControl absentForCeasn" onclick="addLevel();$(this).children().first().prop('selected', true);">
