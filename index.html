@@ -251,18 +251,19 @@
             </select>
             <button id="sidebarEdit" class="viewMode blueButton editControl" style="margin:0rem;" onclick="editSidebar();">Edit</button>
 
-            <select id="sidebarExport" class="viewMode" onclick="exportSelected();$(this).children().first().prop('selected', true);">
-                <option style="display:none;" disabled selected>Download or view...</option>
-                <option class="absentForConcepts frameworkOnly" value="asn">Achievement Standards Network</option>
-                <option class="" value="cass">CASS (JSON-LD)</option>
-                <option class="" value="cassn4">CASS (RDF Quads)</option>
-                <option class="" value="cassrdfjson">CASS (RDF+JSON)</option>
-                <option class="" value="cassrdfxml">CASS (RDF+XML)</option>
-                <option class="" value="cassturtle">CASS (Turtle)</option>
-                <option class="absentForConcepts frameworkOnly" value="ceasn">Credential Engine ASN</option>
-                <option class="absentForConcepts frameworkOnly" value="csv">CSV</option>
-                <option class="absentForConcepts" value="case">IMS Global CASE</option>
-            </select>
+            <div id="sidebarExport" class="viewMode" value="">
+                <p>Download or View</p>
+                <hr />
+                <button class="absentForConcepts frameworkOnly" value="asn" onclick="$('#sidebarExport').attr('value', 'asn');exportSelected();">Achievement Standards Network</button>
+                <button class="" value="cass" onclick="$('#sidebarExport').attr('value', 'cass');exportSelected();">CASS (JSON-LD)</button>
+                <button class="" value="cassn4" onclick="$('#sidebarExport').attr('value', 'cassn4');exportSelected();">CASS (RDF Quads)</button>
+                <button class="" value="cassrdfjson" onclick="$('#sidebarExport').attr('value', 'cassrdfjson');exportSelected();">CASS (RDF+JSON)</button>
+                <button class="" value="cassrdfxml" onclick="$('#sidebarExport').attr('value', 'cassrdfxml');exportSelected();">CASS (RDF+XML)</button>
+                <button class="" value="cassturtle" onclick="$('#sidebarExport').attr('value', 'cassturtle');exportSelected();">CASS (Turtle)</button>
+                <button class="absentForConcepts frameworkOnly" value="ceasn" onclick="$('#sidebarExport').attr('value', 'ceasn');exportSelected();">Credential Engine ASN</button>
+                <button class="absentForConcepts frameworkOnly" value="csv" onclick="$('#sidebarExport').attr('value', 'csv');exportSelected();">CSV</button>
+                <button class="absentForConcepts" value="case" onclick="$('#sidebarExport').attr('value', 'case');exportSelected();">IMS Global CASE</button>
+            </div>
             <button id="sidebarViewJSON" class="export" style="margin: 0rem; display: none;" onclick="viewJSON();">View JSON</button>
             <!--             <button id="sidebarDownload" class="export" style="margin: 0rem; display: none;" onclick="downloadCopmpetencies();">Download</button>
  -->

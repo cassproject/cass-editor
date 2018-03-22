@@ -926,7 +926,7 @@ initULLengths = function () {
 }
 
 exportSelected = function () {
-    var v = $("#sidebarExport").val();
+    var v = $("#sidebarExport").attr('value');
     var link;
     var guid;
     if (selectedCompetency != null) {
