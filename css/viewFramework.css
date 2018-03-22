@@ -47,12 +47,55 @@
     border: 1px dashed gray !important;
 }
 
+.dot {
+    height: 4px;
+    width: 4px;
+    background-color: gray;
+    border-radius: 50%;
+    display: block;
+    position: relative;
+    top: 45%;
+    left: 2px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.arrow-left {
+    width: 0;
+    height: 0;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    border-right: 4px solid gray;
+    display: block;
+    position: relative;
+    top: 45%;
+    left: 2px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.arrow-right {
+    width: 0;
+    height: 0;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    border-left: 4px solid gray;
+    display: block;
+    position: relative;
+    top: 45%;
+    left: 2px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 #split-bar {
-    background-color: black;
+    background-color: transparent;
     height: 100%;
     float: right;
-    width: 6px;
+    width: 8px;
     cursor: col-resize;
+    border-left: 1px solid gray;
+    border-right: 1px solid gray;
 }
 
 
