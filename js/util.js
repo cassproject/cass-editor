@@ -720,6 +720,7 @@ startTour = function (step) {
 
     intro.oncomplete(function () {
         cancelTour();
+        selectedCompetency = null;
     });
 
     intro.onafterchange(function () {
