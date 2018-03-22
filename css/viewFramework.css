@@ -43,6 +43,10 @@
     overflow: auto;
 }
 
+.changedField {
+    background-color: #45A085;
+}
+
 .dashBorder {
     border: 1px dashed gray !important;
 }

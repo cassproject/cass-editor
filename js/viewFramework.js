@@ -24,6 +24,9 @@ var frameworkSelectionIndex = null;
 var competencySelectionIndex = null;
 //For skillEmbodied
 addSkillEmbodied = false;
+//For detecting changes during editing
+var changedFields = {};
+var ulLengths = {};
 
 fetchFailure = function (failure) {
     this.fetches--;
@@ -431,6 +434,8 @@ renderSidebar = function (justLists) {
 refreshSidebar = function () {
     if ($("#detailSlider").length == 0) return;
 
+    removeChangedFieldHighlight();
+
     $('#detailSlider').show();
 
     var thing = framework;
@@ -531,6 +536,11 @@ editSidebar = function () {
 
     $("#editFrameworkSection .viewMode").hide();
     $("#editFrameworkSection .editMode").show();
+
+    changedFields = {};
+    ulLengths = {};
+
+    initULLengths();
 
     var thing = framework;
     if (selectedCompetency != null)
@@ -649,6 +659,22 @@ $("body").on("click", ".competency input", null, function (evt) {
     refreshSidebar();
     evt.stopPropagation();
 });
+
+//Detect input field changes
+$('#detailSlider').on('input', function(evt) {
+    changedFields[evt.target.id] = 'input';
+    addChangedFieldHighlight();
+});
+
+//Detect UL length changes (For edit panel fields that don't use input fields)
+// $('#detailSlider').on('DOMSubtreeModified', 'ul', function(evt) {
+//     if (ulLengths[$(this).attr('id')] != undefined && $('#' + $(this).attr('id') + ' li').length != ulLengths[$(this).attr('id')]) {
+//         changedFields[$(this).attr('id')] = 'label';
+//     } else if (ulLengths[$(this).attr('id')] != undefined) {
+//         delete changedFields[$(this).attr('id')];
+//     }
+//     addChangedFieldHighlight();
+// });
 
 $('body').on('click', '#frameworkName', function (evt) {
     highlightSelected($('#frameworkNameContainer'));
@@ -873,6 +899,31 @@ $('html').keydown(function (evt) {
         }
     }
 });
+
+addChangedFieldHighlight = function () {
+    Object.keys(changedFields).forEach(function(key) {
+        if (changedFields[key] == 'label')
+            $('label[for="' + key + '"]').addClass('changedField');
+        else
+            $('#' + key).addClass('changedField');
+    });
+}
+
+removeChangedFieldHighlight = function () {
+    changedFields = {};
+    ulLengths = {};
+    $('#detailSlider .changedField').removeClass('changedField');
+}
+
+initULLengths = function () {
+    $('#detailSlider ul').each(function(index) {
+        ulLengths[$(this).attr('id')] = 0;
+    });
+
+    Object.keys(ulLengths).forEach(function(key) {
+        ulLengths[key] = $('#' + key + ' li').length;
+    });
+}
 
 exportSelected = function () {
     var v = $("#sidebarExport").val();
