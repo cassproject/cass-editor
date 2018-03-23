@@ -116,6 +116,10 @@ p.selected {
     filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#80808080', endColorstr='#80808080', GradientType=0);
 }
 
+#frameworkNameContainer.selected {
+    margin-right: 20px;
+}
+
 .competency > span > small {
     display: block;
 }

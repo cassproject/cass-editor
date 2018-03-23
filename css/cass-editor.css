@@ -129,6 +129,10 @@ p.selected {
     filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#80808080', endColorstr='#80808080', GradientType=0);
 }
 
+#frameworkNameContainer.selected {
+    margin-right: 20px;
+}
+
 .competency > span > small {
     display: block;
 }
@@ -501,11 +505,11 @@ input.redButton {
     position: fixed;
     right: 0;
     float: right;
-
     padding: 0rem .5rem 0rem 0rem;
     height: calc(100vh - 1rem);
     width: 21rem;
     overflow: auto;
+    min-width: 19rem;
 }
 
 .changedField {
@@ -565,6 +569,7 @@ input.redButton {
     cursor: col-resize;
     border-left: 1px solid gray;
     border-right: 1px solid gray;
+    margin-right: 10px;
 }
 
 
