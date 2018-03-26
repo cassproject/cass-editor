@@ -55,11 +55,10 @@
         <div style="padding: 1rem;">
             <div>
                 <h2 id="title">
-                    Import or Register a framework
+                    Import a framework
                 </h2>
                 <ul>
                     <li>Importing a framework creates a copy of the framework you provided. For all intents and purposes, you will own the new framework.</li>
-                    <li> Registering a framework creates a carbon copy of the framework, and cannot be modified.</li>
                 </ul>
                 <table>
                     <tr>
@@ -237,16 +236,17 @@
             <button id="sidebarEdit" class="viewMode blueButton editControl" style="margin:0rem;" onclick="editSidebar();">Edit</button>
 
             <select id="sidebarExport" class="viewMode" onclick="exportSelected();$(this).children().first().prop('selected', true);">
-                <option style="display:none;" disabled selected>Download or view...</option>
-                <option class="absentForConcepts frameworkOnly" value="asn">Achievement Standards Network</option>
+                <option style="display:none;" disabled selected>Download or view in...</option>
+                <option disabled>Schema (Format)</option>
+                <option class="absentForConcepts frameworkOnly" value="asn">Achievement Standards Network (JSON)</option>
                 <option class="" value="cass">CASS (JSON-LD)</option>
                 <option class="" value="cassn4">CASS (RDF Quads)</option>
                 <option class="" value="cassrdfjson">CASS (RDF+JSON)</option>
                 <option class="" value="cassrdfxml">CASS (RDF+XML)</option>
                 <option class="" value="cassturtle">CASS (Turtle)</option>
-                <option class="absentForConcepts frameworkOnly" value="ceasn">Credential Engine ASN</option>
-                <option class="absentForConcepts frameworkOnly" value="csv">CSV</option>
-                <option class="absentForConcepts" value="case">IMS Global CASE</option>
+                <option class="absentForConcepts frameworkOnly" value="ceasn">Credential Engine ASN (JSON-LD)</option>
+                <option class="absentForConcepts frameworkOnly" value="csv">Table (CSV)</option>
+                <option class="absentForConcepts" value="case">IMS Global CASE (JSON)</option>
             </select>
             <button id="sidebarViewJSON" class="export" style="margin: 0rem; display: none;" onclick="viewJSON();">View JSON</button>
             <!--             <button id="sidebarDownload" class="export" style="margin: 0rem; display: none;" onclick="downloadCopmpetencies();">Download</button>
