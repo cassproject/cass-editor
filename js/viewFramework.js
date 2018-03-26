@@ -44,8 +44,7 @@ fetchFailure = function (failure) {
 function prepareToAddConcept(skillEmbodied) {
     if (skillEmbodied) {
         addSkillEmbodied = true;
-    }
-    else {
+    } else {
         addSkillEmbodied = false;
     }
 }
@@ -661,7 +660,7 @@ $("body").on("click", ".competency input", null, function (evt) {
 });
 
 //Detect input field changes
-$('#detailSlider').on('input', function(evt) {
+$('#detailSlider').on('input', function (evt) {
     changedFields[evt.target.id] = 'input';
     addChangedFieldHighlight();
 });
@@ -901,7 +900,7 @@ $('html').keydown(function (evt) {
 });
 
 addChangedFieldHighlight = function () {
-    Object.keys(changedFields).forEach(function(key) {
+    Object.keys(changedFields).forEach(function (key) {
         if (changedFields[key] == 'label')
             $('label[for="' + key + '"]').addClass('changedField');
         else
@@ -916,11 +915,11 @@ removeChangedFieldHighlight = function () {
 }
 
 initULLengths = function () {
-    $('#detailSlider ul').each(function(index) {
+    $('#detailSlider ul').each(function (index) {
         ulLengths[$(this).attr('id')] = 0;
     });
 
-    Object.keys(ulLengths).forEach(function(key) {
+    Object.keys(ulLengths).forEach(function (key) {
         ulLengths[key] = $('#' + key + ' li').length;
     });
 }

@@ -49,6 +49,7 @@
 
 .dashBorder {
     border: 1px dashed gray !important;
+    border-radius: 4px;
 }
 
 .dot {
