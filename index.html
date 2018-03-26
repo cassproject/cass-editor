@@ -220,29 +220,14 @@
             <button id="sidebarUnlink" class="editMode editControl" style="float:right;" onclick="unlinkCompetency();">Unlink</button>
             <button id="sidebarCancel" class="editMode editControl" onclick="if (isFirstEdit && confirm('This is the first time editing the object, and the object has been created. Would you like to delete the object?')) deleteCompetency();refreshSidebar();">Cancel</button>
             <button id="sidebarSave" class="editMode greenButton editControl" onclick="saveCompetency();">Save</button>
-            <hr class="editMode">
-
-            <h4 class="editMode absentForConcepts ceasnCompetency" style="margin-bottom:0px;">General</h4>
-            <hr class="editMode absentForConcepts ceasnCompetency" style="margin-top:0px;">
-
-            <h4 class="editMode absentForConcepts ceasnFramework" style="margin-bottom:0px;">General</h4>
-            <hr class="editMode absentForConcepts ceasnFramework" style="margin-top:0px;">
-
-            <label for="sidebarNameInput" title="" cassCompetency="Competency Name:" cassFramework="Framework Name:" ceasnCompetency="Competency Text:" ceasnFramework="Name:" skosCompetency="Preferred Label:" skosFramework="Concept Scheme Title:" class="editMode" style="margin: 0px;">Name:</label>
-            <h3 id="sidebarName" class="viewMode">Framework Name Here</h3>
-            <textarea id="sidebarNameInput" cassCompetency="name" cassFramework="name" ceasnCompetency="ceasn:competencyText" ceasnFramework="ceasn:name" skosCompetency="skos:prefLabel" skosFramework="dcterms:title" class="editMode editControl" value="Framework Name Here"></textarea>
-
-            <label for="sidebarNameDescription" title="" cassCompetency="Description:" cassFramework="Description:" ceasnCompetency="Comment:" ceasnFramework="Description:" skosCompetency="Concept Definition:" skosFramework="Description:" class="editMode" style="margin: 0px;">Description:</label>
-            <p id="sidebarDescription" class="viewMode">This is a super long description, it describes the things worth describing.</p>
-            <textarea id="sidebarDescriptionInput" cassCompetency="description" cassFramework="description" ceasnCompetency="ceasn:comment" ceasnFramework="ceasn:description" skosCompetency="skos:definition" skosFramework="dcterms:description" class="editMode editControl" style="height:6rem;">This is a super long description, it describes the things worth describing.</textarea>
 
             <select id="sidebarVersion" class="viewMode editControl absentForConcepts absentForCeasn" style="display:block;" onclick="setCompetencyConfigurationManagement();">
                 <option selected value="noVersion">Shared: Updates automatically.</option>
                 <option value="version">Manual update only.</option>
             </select>
             <div id="sidebarAddCompetencies" class="viewMode editControl" value="" style="display: inline;">
-                <button id="sidebarSearchCompetencies" class="viewMode editControl absentForConcepts" onclick="$('#sidebarAddCompetencies').attr('value', 'search');addCompetency();">Search...</button>
-                <button id="sidebarCreateCompetencies" class="viewMode editControl" onclick="$('#sidebarAddCompetencies').attr('value', 'new');addCompetency();">Create</button>
+                <button id="sidebarSearchCompetencies" class="viewMode blueButton editControl absentForConcepts" onclick="$('#sidebarAddCompetencies').attr('value', 'search');addCompetency();" title="Attach children from other sources to this item.">Add Existing...</button>
+                <button id="sidebarCreateCompetencies" class="viewMode blueButton editControl" onclick="$('#sidebarAddCompetencies').attr('value', 'new');addCompetency();" title="Add a new child to this item.">Add New</button>
             </div>
             <select id="sidebarAddLevels" class="absentForConcepts viewMode editControl absentForCeasn" onclick="addLevel();$(this).children().first().prop('selected', true);">
                 <option style="display:none;" disabled selected>Add Levels</option>
@@ -266,6 +251,22 @@
             <button id="sidebarViewJSON" class="export" style="margin: 0rem; display: none;" onclick="viewJSON();">View JSON</button>
             <!--             <button id="sidebarDownload" class="export" style="margin: 0rem; display: none;" onclick="downloadCopmpetencies();">Download</button>
  -->
+            <hr>
+
+            <h4 class="editMode absentForConcepts ceasnCompetency" style="margin-bottom:0px;">General</h4>
+            <hr class="editMode absentForConcepts ceasnCompetency" style="margin-top:0px;">
+
+            <h4 class="editMode absentForConcepts ceasnFramework" style="margin-bottom:0px;">General</h4>
+            <hr class="editMode absentForConcepts ceasnFramework" style="margin-top:0px;">
+
+            <label for="sidebarNameInput" title="" cassCompetency="Competency Name:" cassFramework="Framework Name:" ceasnCompetency="Competency Text:" ceasnFramework="Name:" skosCompetency="Preferred Label:" skosFramework="Concept Scheme Title:" class="editMode" style="margin: 0px;">Name:</label>
+            <h3 id="sidebarName" class="viewMode">Framework Name Here</h3>
+            <textarea id="sidebarNameInput" cassCompetency="name" cassFramework="name" ceasnCompetency="ceasn:competencyText" ceasnFramework="ceasn:name" skosCompetency="skos:prefLabel" skosFramework="dcterms:title" class="editMode editControl" value="Framework Name Here"></textarea>
+
+            <label for="sidebarNameDescription" title="" cassCompetency="Description:" cassFramework="Description:" ceasnCompetency="Comment:" ceasnFramework="Description:" skosCompetency="Concept Definition:" skosFramework="Description:" class="editMode" style="margin: 0px;">Description:</label>
+            <p id="sidebarDescription" class="viewMode">This is a super long description, it describes the things worth describing.</p>
+            <textarea id="sidebarDescriptionInput" cassCompetency="description" cassFramework="description" ceasnCompetency="ceasn:comment" ceasnFramework="ceasn:description" skosCompetency="skos:definition" skosFramework="dcterms:description" class="editMode editControl" style="height:6rem;">This is a super long description, it describes the things worth describing.</textarea>
+
             <p><small id="sidebarFeedback" class="editControl"></small></p>
 
             <div id="ceasnDataFields">
