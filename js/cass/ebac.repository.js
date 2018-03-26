@@ -1437,16 +1437,16 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
     prototype.searchWithParams = function(originalQuery, originalParamObj, eachSuccess, success, failure) {
         if (EcRemote.async == false) {
             var result = this.searchWithParamsBlocking(originalQuery, originalParamObj);
-            if (result == null) 
+            if (result == null) {
                 if (failure != null) 
                     failure("Search failed.");
-                 else {
-                    for (var i = 0; i < result.length; i++) 
-                        if (eachSuccess != null) 
-                            eachSuccess(result[i]);
-                    if (success != null) 
-                        success(result);
-                }
+            } else {
+                for (var i = 0; i < result.length; i++) 
+                    if (eachSuccess != null) 
+                        eachSuccess(result[i]);
+                if (success != null) 
+                    success(result);
+            }
             return;
         }
         var query = originalQuery;
