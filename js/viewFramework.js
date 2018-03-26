@@ -494,20 +494,18 @@ refreshSidebar = function () {
 
     $("#sidebarFeedback").html("");
     if (!framework.canEditAny(EcIdentityManager.getMyPks())) {
-        $("#sidebarVersion").prop('disabled', true);
-        $("#sidebarAddCompetencies").prop('disabled', true);
-        $("#sidebarAddLevels").prop('disabled', true);
+        $("#sidebarVersion").hide();
+        $("#sidebarAddCompetencies").hide();
+        $("#sidebarAddLevels").hide();
         if ($("#sidebarFeedback").html() == "")
-            $("#sidebarFeedback").append("Some edit options are limited:");
-        $("#sidebarFeedback").html("<li>You do not own this framework.</li> ");
+            $("#sidebarFeedback").append("Edit options are limited:");
+        $("#sidebarFeedback").append("<li>You do not own this framework.</li> ");
     }
 
     if (!thing.canEditAny(EcIdentityManager.getMyPks())) {
-        $("#sidebarVersion").prop('disabled', true);
-        $("#sidebarAddCompetencies").prop('disabled', true);
-        $("#sidebarAddLevels").prop('disabled', true);
+        $("#sidebarEdit").hide();
         if ($("#sidebarFeedback").html() == "")
-            $("#sidebarFeedback").append("Some edit options are limited:");
+            $("#sidebarFeedback").append("Edit options are limited:");
         if (thing == framework) {
             //$("#sidebarEdit").hide();
         } else {

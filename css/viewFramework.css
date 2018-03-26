@@ -130,3 +130,7 @@
     content: "\A";
     white-space: pre;
 }
+
+#sidebarFeedback {
+    color: red;
+}
