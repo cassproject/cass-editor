@@ -22,8 +22,6 @@ var selectedRelation = null;
 //For keyboard controls
 var frameworkSelectionIndex = null;
 var competencySelectionIndex = null;
-//For skillEmbodied
-addSkillEmbodied = false;
 //For detecting changes during editing
 var changedFields = {};
 var ulLengths = {};
@@ -40,14 +38,6 @@ fetchFailure = function (failure) {
         afterRefresh(true);
     }
 };
-
-function prepareToAddConcept(skillEmbodied) {
-    if (skillEmbodied) {
-        addSkillEmbodied = true;
-    } else {
-        addSkillEmbodied = false;
-    }
-}
 
 function select() {
     var ary = [];

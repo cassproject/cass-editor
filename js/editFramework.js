@@ -70,15 +70,10 @@ attachUrlProperties = function (results) {
     for (var i = 0; i < results.length; i++) {
         var thing = EcRepository.getBlocking(results[i]);
         if (thing.isAny(new EcConcept().getTypes())) {
-            if (addSkillEmbodied) {
-                if (resource["ceasn:skillEmbodied"] == null)
-                    resource["ceasn:skillEmbodied"] = [];
-                EcArray.setAdd(resource["ceasn:skillEmbodied"], thing.shortId());
-            } else {
-                if (resource[$("#selectConceptSection").attr("destination")] == null)
-                    resource[$("#selectConceptSection").attr("destination")] = [];
-                EcArray.setAdd(resource[$("#selectConceptSection").attr("destination")], thing.shortId());
-            }
+
+            if (resource[$("#selectConceptSection").attr("destination")] == null)
+                resource[$("#selectConceptSection").attr("destination")] = [];
+            EcArray.setAdd(resource[$("#selectConceptSection").attr("destination")], thing.shortId());
         }
     }
     renderSidebar(true);
