@@ -646,6 +646,7 @@ $("body").on("click", ".competency input", null, function (evt) {
             selectedRelation = null;
     }
     refreshSidebar();
+    spitEvent("competencyClicked", selectedCompetency.shortId());
     evt.stopPropagation();
 });
 

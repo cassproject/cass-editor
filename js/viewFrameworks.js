@@ -57,6 +57,7 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
                         error("Critical: Couldn't find framework ID.");
                     EcFramework.get(frameworkId, function (f) {
                         framework = f;
+                        spitEvent("frameworkClicked", f.shortId());
                         populateFramework(subsearchTerm);
                         selectedCompetency = null;
                         refreshSidebar();

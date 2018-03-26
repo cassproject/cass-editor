@@ -75,6 +75,7 @@ openWebSocket = function (r) {
                         framework = new ConceptScheme();
                         framework.copyFrom(wut);
                         populateFramework();
+                        spitEvent("frameworkChanged", framework.shortId());
                     }
 
             if (new EcFramework().isA(wut.getFullType()))
@@ -83,6 +84,7 @@ openWebSocket = function (r) {
                         framework = new EcFramework();
                         framework.copyFrom(wut);
                         populateFramework();
+                        spitEvent("frameworkChanged", framework.shortId());
                     }
 
             if (new Concept().isA(wut.getFullType())) {
@@ -104,6 +106,7 @@ openWebSocket = function (r) {
                                 selectedCompetency = com;
                                 refreshSidebar();
                             }
+                        spitEvent("competencyChanged", selectedCompetency.shortId());
                     }
             }
             if (new EcCompetency().isA(wut.getFullType())) {
@@ -118,6 +121,7 @@ openWebSocket = function (r) {
                                     selectedCompetency = com;
                                     refreshSidebar();
                                 }
+                            spitEvent("competencyChanged", selectedCompetency.shortId());
                         }
             }
 
@@ -134,9 +138,9 @@ openWebSocket = function (r) {
                                     selectedCompetency = com;
                                     refreshSidebar();
                                 }
+                            spitEvent("competencyChanged", selectedCompetency.shortId());
                         }
             }
-
         }, error);
     };
 

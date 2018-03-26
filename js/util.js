@@ -134,6 +134,26 @@ function download(filename, text) {
     }
 }
 
+function spitEvent(message, id) {
+    var evt = {
+        message: message,
+        changed: id,
+        selectedFramework: framework == null ? null : framework.shortId(),
+        selectedCompetency: selectedCompetency == null ? null : selectedCompetency.shortId(),
+        selectedFrameworkName: framework == null ? null : framework.getName(),
+        selectedCompetencyName: selectedCompetency == null ? null : selectedCompetency.getName(),
+        visiblePage: $(".page:visible").attr("id"),
+    };
+    if (queryParams.ceasnDataFields == "true") {
+        evt.selectedFrameworkCtid = framework == null ? null : "ce-" + framework.getGuid();
+        evt.selectedCompetencyCtid = selectedCompetency == null ? null : "ce-" + selectedCompetency.getGuid();
+    }
+    console.log(evt);
+    if (parent != null)
+        if (queryParams.origin != null && queryParams.origin != '')
+            parent.postMessage(evt, queryParams.origin);
+}
+
 initTooltips = function (type) {
     if (type === 'cassCompetency') {
         $('label[for="sidebarNameInput"]').tooltip({

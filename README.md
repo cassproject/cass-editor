@@ -188,11 +188,15 @@ To bind the cass-editor from the parent page, use the following code:
 
 To ensure the iframe is passing the correct origin, pass the origin into the iframe using a URL parameter, `origin=originUrl`.
 
-### On Selected:
+### On Selected (`select=Add`):
 
     event.data.message == "selected"
     event.data.selected == [uri,uri,uri]
     or, if selectVerbose is on, event.data.selected == [{Competency},{Competency},{Competency}] and event.data.selectedFramework == {Framework}
+
+### On Clicked, On Changed, View Changes:
+
+    Changes when frameworks or competencies are clicked, changed, or the internal editor view changes are passed to the parent page. The mesasge types are `viewChanged`, `frameworkChanged`, `frameworkClicked`, `competencyChanged`, `competencyClicked`. See the console for additional fields that are passed.
 
 ### Export:
 To export, send the iframe a message to export using a particular format.

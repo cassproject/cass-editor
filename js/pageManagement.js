@@ -65,12 +65,14 @@ function gotoPage(pageId, state) {
         $(pageId).slideDown(400, function () {
             $(".page").hide();
             $(pageId).show();
+            spitEvent("viewChanged");
         });
     else
         $(".page:visible").slideUp(400, function () {
             $(pageId).slideDown(400, function () {
                 $(".page").hide();
                 $(pageId).show();
+                spitEvent("viewChanged");
             });
         });
 }
