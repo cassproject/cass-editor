@@ -154,7 +154,7 @@ function cappend(event) {
             attachUrlProperties(event.data.selected);
             $("#selectConceptSection").hide();
             $("#editFrameworkSection").show();
-        } else showCopyOrLinkDialog(function (copy) {
+        } else if (event.data.selected.length > 0) showCopyOrLinkDialog(function (copy) {
             if (copy === true) {
                 copyCompetencies(event.data.selected);
             } else {
