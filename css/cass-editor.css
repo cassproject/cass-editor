@@ -104,12 +104,6 @@ ul {
     cursor: -webkit-grab;
 }
 
-.grabbable:active {
-    cursor: grabbing;
-    cursor: -moz-grabbing;
-    cursor: -webkit-grabbing;
-}
-
 .competency {
     border-top: 1px solid transparent;
     border-bottom: 1px solid transparent;

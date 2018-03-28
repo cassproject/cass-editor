@@ -724,7 +724,7 @@ startTour = function (step) {
             },
             {
                 element: $('#tree').children(':first')[0],
-                intro: 'You can click a competency for more information.'
+                intro: 'You can click a competency for more information. If you have permission to edit the framework, you can also drag and drop competencies to rearrange them.'
             },
             {
                 element: $('#detailSlider')[0],
