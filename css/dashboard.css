@@ -84,6 +84,13 @@ ul {
     margin-left: .5rem;
 }
 
+.grabbable {
+    cursor: move;
+    cursor: grab;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+}
+
 .competency {
     border-top: 1px solid transparent;
     border-bottom: 1px solid transparent;
