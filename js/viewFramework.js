@@ -484,6 +484,9 @@ refreshSidebar = function () {
         if ($("#sidebarFeedback").html() == "")
             $("#sidebarFeedback").append("Edit options are limited:");
         $("#sidebarFeedback").append("<li>You do not own this framework.</li> ");
+        $("#tree").removeClass("grabbable");
+    } else {
+        $("#tree").addClass("grabbable");
     }
 
     if (!thing.canEditAny(EcIdentityManager.getMyPks())) {
