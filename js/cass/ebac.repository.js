@@ -1204,14 +1204,23 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
         }
         var me = this;
         if (data.owner != null && data.owner.length > 0) {
-            EcIdentityManager.signatureSheetForAsync(data.owner, 60000, data.id, function(signatureSheet) {
-                if (signatureSheet.length == 2 && me.adminKeys != null) {
-                    EcIdentityManager.signatureSheetForAsync(me.adminKeys, 60000, data.id, function(signatureSheet) {
+            if (EcRemote.async) {
+                EcIdentityManager.signatureSheetForAsync(data.owner, 60000, data.id, function(signatureSheet) {
+                    if (signatureSheet.length == 2 && me.adminKeys != null) {
+                        EcIdentityManager.signatureSheetForAsync(me.adminKeys, 60000, data.id, function(signatureSheet) {
+                            EcRemote._delete(targetUrl, signatureSheet, success, failure);
+                        }, failure);
+                    } else 
                         EcRemote._delete(targetUrl, signatureSheet, success, failure);
-                    }, failure);
+                }, failure);
+            } else {
+                var signatureSheet = EcIdentityManager.signatureSheetFor(data.owner, 60000, data.id);
+                if (signatureSheet.length == 2 && me.adminKeys != null) {
+                    signatureSheet = EcIdentityManager.signatureSheetFor(me.adminKeys, 60000, data.id);
+                    EcRemote._delete(targetUrl, signatureSheet, success, failure);
                 } else 
                     EcRemote._delete(targetUrl, signatureSheet, success, failure);
-            }, failure);
+            }
         } else {
             EcRemote._delete(targetUrl, "[]", success, failure);
         }

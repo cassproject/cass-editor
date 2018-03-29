@@ -7213,7 +7213,7 @@ EcRsaOaepAsyncWorker = stjs.extend(EcRsaOaepAsyncWorker, null, [], function(cons
     constructor.q1 = null;
     constructor.q2 = null;
     constructor.initWorker = function() {
-        if (window == null && (typeof self).equals("undefined")) {
+        if (window == null && ((typeof self).equals("undefined")) || Worker == undefined || Worker == null) {
             return;
         }
         if (!EcRemote.async) {
