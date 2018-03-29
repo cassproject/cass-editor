@@ -61,18 +61,18 @@ window.onpopstate = function (event) {
 
 function gotoPage(pageId, state) {
     var p = $(".page:visible");
-    if (p.length == 0 || (p.length == 1 && p[0] == $(pageId)[0]))
+    if (p.length == 0 || (p.length == 1 && p[0] == $(pageId)[0])) {
+        spitEvent("viewChanged");
         $(pageId).slideDown(400, function () {
             $(".page").hide();
             $(pageId).show();
-            spitEvent("viewChanged");
         });
-    else
+    } else
         $(".page:visible").slideUp(400, function () {
+            spitEvent("viewChanged");
             $(pageId).slideDown(400, function () {
                 $(".page").hide();
                 $(pageId).show();
-                spitEvent("viewChanged");
             });
         });
 }
