@@ -877,10 +877,12 @@ $('html').keydown(function (evt) {
 
 addChangedFieldHighlight = function () {
     Object.keys(changedFields).forEach(function (key) {
-        if (changedFields[key] == 'label')
+        if (changedFields[key] == 'label') {
             $('label[for="' + key + '"]').addClass('changedField');
-        else
-            $('#' + key).addClass('changedField');
+        }
+        else {
+            $('[id=' + key + ']').addClass('changedField');
+        }
     });
 }
 
