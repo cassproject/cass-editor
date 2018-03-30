@@ -23,6 +23,10 @@
     padding-left: 1rem;
 }
 
+.collapse {
+    cursor: pointer !important;
+}
+
 #detailSlider button {
     margin-right: .1rem;
 }
