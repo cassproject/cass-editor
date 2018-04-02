@@ -94,7 +94,7 @@ ul {
 .competency {
     border-top: 1px solid transparent;
     border-bottom: 1px solid transparent;
-    padding-left: 1em;
+    padding-left: calc(1em + 2px);
 }
 
 .competency > span {}
@@ -106,6 +106,7 @@ ul {
 
 .competency:hover {
     border-left: 2px solid #ddd;
+    padding-left: 1em;
 }
 
 .competency.selected,
