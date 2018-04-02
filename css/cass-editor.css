@@ -122,6 +122,18 @@ ul {
     padding-left: 1em;
 }
 
+.collapse .fa {
+    margin: 0 2px 0 0;
+}
+
+.competency:not(.expandable) {
+    padding-left: calc(34px + 2px + 2px);
+}
+
+.competency:not(.expandable):hover {
+    padding-left: calc(34px + 2px);
+}
+
 .competency.selected,
 #frameworkNameContainer.selected,
 p.selected {
