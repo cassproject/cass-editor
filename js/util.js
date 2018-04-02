@@ -145,10 +145,12 @@ function spitEvent(message, id) {
         visiblePage: $(".page:visible").attr("id"),
     };
     if (queryParams.ceasnDataFields == "true") {
-        if (framework.getGuid != null)
-            evt.selectedFrameworkCtid = framework == null ? null : "ce-" + framework.getGuid();
-        if (selectedCompetency.getGuid != null)
-            evt.selectedCompetencyCtid = selectedCompetency == null ? null : "ce-" + selectedCompetency.getGuid();
+        if (framework != null)
+            if (framework.getGuid != null)
+                evt.selectedFrameworkCtid = framework == null ? null : "ce-" + framework.getGuid();
+        if (selectedCompetency != null)
+            if (selectedCompetency.getGuid != null)
+                evt.selectedCompetencyCtid = selectedCompetency == null ? null : "ce-" + selectedCompetency.getGuid();
     }
     console.log(evt);
     if (parent != null)
