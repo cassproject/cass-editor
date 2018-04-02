@@ -37,6 +37,7 @@ if (queryParams.view == "true") {
     $("#createNewButton").remove();
     $("button.editControl").remove();
     $("select.editControl").remove();
+    $("#sidebarFeedback").remove();
     if (queryParams.ceasnDataFields == null) {
         $("#editFrameworkSection").removeClass("pageWithSidebar");
         $("#detailSlider").remove();
