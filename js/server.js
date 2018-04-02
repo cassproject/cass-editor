@@ -274,27 +274,32 @@ var messageListener = function (evt) {
         } else if (data.action == "export") {
             var v = data.schema;
             var link;
+            var fid;
             var guid;
             if (selectedCompetency != null) {
                 if (EcRepository.shouldTryUrl(selectedCompetency.id) == false) {
                     link = repo.selectedServer + "data/" + EcCrypto.md5(selectedCompetency.id);
+                    fid = repo.selectedServer + "data/" + EcCrypto.md5(framework.id);
                     guid = EcCrypto.md5(selectedCompetency.id);
                 } else {
                     link = selectedCompetency.id;
+                    fid = framework.id;
                     guid = selectedCompetency.getGuid();
                 }
             } else {
                 if (EcRepository.shouldTryUrl(framework.id) == false) {
                     link = repo.selectedServer + "data/" + EcCrypto.md5(framework.id);
+                    fid = repo.selectedServer + "data/" + EcCrypto.md5(framework.id);
                     guid = EcCrypto.md5(framework.id);
                 } else {
                     link = framework.id;
+                    fid = framework.id;
                     guid = framework.getGuid();
                 }
             }
             if (v == "asn") {
                 $.ajax({
-                    url: link.replace("/data/", "/asn/"),
+                    url: fid.replace("/data/", "/asn/"),
                     success: function (data) {
                         parent.postMessage({
                             action: "response",
@@ -385,7 +390,7 @@ var messageListener = function (evt) {
                 });
             } else if (v == "ceasn" || v == "ctdlasn") {
                 $.ajax({
-                    url: link.replace("/data/", "/ceasn/"),
+                    url: fid.replace("/data/", "/ceasn/"),
                     success: function (data) {
                         parent.postMessage({
                             action: "response",
