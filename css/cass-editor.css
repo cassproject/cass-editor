@@ -627,3 +627,20 @@ input.redButton {
 #sidebarFeedback {
     color: red;
 }
+
+.competencyCodedNotation {
+    margin-right: .25rem;
+    border-radius: 5px;
+    padding: .25rem;
+    background-image: -moz-linear-gradient(top, rgba(128, 128, 128, 0.1) 0%, rgba(128, 128, 128, 0.1) 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(128, 128, 128, 0.1)), color-stop(100%, rgba(128, 128, 128, 0.1)));
+    background-image: -webkit-linear-gradient(top, rgba(128, 128, 128, 0.1) 0%, rgba(128, 128, 128, 0.1) 100%);
+    background-image: -o-linear-gradient(top, rgba(128, 128, 128, 0.1) 0%, rgba(128, 128, 128, 0.1) 100%);
+    background-image: -ms-linear-gradient(top, rgba(128, 128, 128, 0.1) 0%, rgba(128, 128, 128, 0.1) 100%);
+    background-image: linear-gradient(to bottom, rgba(128, 128, 128, 0.1) 0%, rgba(128, 128, 128, 0.1) 100%);
+}
+
+.competencyListID {
+    margin-right: .25rem;
+    font-weight: bold;
+}

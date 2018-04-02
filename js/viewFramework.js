@@ -177,6 +177,12 @@ function refreshCompetency(col, level, subsearch) {
     if (col.description != null && col.description != "NULL" && col.description != col.name)
         treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").css('display', 'block').text(col.getDescription());
     treeNode.children().first().prepend("<span/>").children().first().addClass("competencyName").text(col.getName());
+    if (queryParams.ceasnDataFields == 'true') {
+        if (col["ceasn:codedNotation"] != null)
+            treeNode.children().first().prepend("<span/>").children().first().addClass("competencyCodedNotation").text(col["ceasn:codedNotation"]);
+        if (col["ceasn:listID"] != null)
+            treeNode.children().first().prepend("<span/>").children().first().addClass("competencyListID").text(col["ceasn:listID"]);
+    }
     if (col.competency != null) {
         level = true;
         $(".competency[id=\"" + col.competency + "\"]").children().last().append($(".competency[id=\"" + col.shortId() + "\"]"));
@@ -879,8 +885,7 @@ addChangedFieldHighlight = function () {
     Object.keys(changedFields).forEach(function (key) {
         if (changedFields[key] == 'label') {
             $('label[for="' + key + '"]').addClass('changedField');
-        }
-        else {
+        } else {
             $('[id=' + key + ']').addClass('changedField');
         }
     });
