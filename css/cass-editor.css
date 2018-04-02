@@ -453,7 +453,7 @@ button:hover,
     opacity: 1;
     box-shadow: inset 0 -5px rgba(0, 0, 0, 0.1);
     border: 1px solid #000000;
-    cursor: pointer;
+    cursor: pointer !important;
 }
 
 .greenButton,
@@ -497,6 +497,10 @@ input.redButton {
 
 #tree ul {
     padding-left: 1rem;
+}
+
+.collapse {
+    cursor: pointer !important;
 }
 
 #detailSlider button {

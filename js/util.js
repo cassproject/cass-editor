@@ -140,13 +140,15 @@ function spitEvent(message, id) {
         changed: id,
         selectedFramework: framework == null ? null : framework.shortId(),
         selectedCompetency: selectedCompetency == null ? null : selectedCompetency.shortId(),
-        selectedFrameworkName: framework == null ? null : framework.getName(),
-        selectedCompetencyName: selectedCompetency == null ? null : selectedCompetency.getName(),
+        selectedFrameworkName: framework == null ? null : (framework.getName == null ? framework["dcterms:title"] : framework.getName()),
+        selectedCompetencyName: selectedCompetency == null ? null : (selectedCompetency.getName == null ? selectedCompetency["skos:prefLabel"] : framework.getName()),
         visiblePage: $(".page:visible").attr("id"),
     };
     if (queryParams.ceasnDataFields == "true") {
-        evt.selectedFrameworkCtid = framework == null ? null : "ce-" + framework.getGuid();
-        evt.selectedCompetencyCtid = selectedCompetency == null ? null : "ce-" + selectedCompetency.getGuid();
+        if (framework.getGuid != null)
+            evt.selectedFrameworkCtid = framework == null ? null : "ce-" + framework.getGuid();
+        if (selectedCompetency.getGuid != null)
+            evt.selectedCompetencyCtid = selectedCompetency == null ? null : "ce-" + selectedCompetency.getGuid();
     }
     console.log(evt);
     if (parent != null)
