@@ -636,7 +636,7 @@ $("body").on("click", ".competency input", null, function (evt) {
 });
 
 //Detect input field changes
-$('#detailSlider').on('input', function (evt) {
+$('.sidebarEditSection').on('input', function (evt) {
     changedFields[evt.target.id] = 'input';
     addChangedFieldHighlight();
 });
