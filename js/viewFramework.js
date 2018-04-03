@@ -947,6 +947,13 @@ removeChangedFieldHighlight = function () {
     $('#detailSlider .changedField').removeClass('changedField');
 }
 
+playSavedAnimation = function () {
+    var elem = $('.selected')[0];
+    elem.classList.remove('savedCompetency');
+    void elem.offsetWidth;
+    elem.classList.add('savedCompetency');
+}
+
 initULLengths = function () {
     $('#detailSlider ul').each(function (index) {
         ulLengths[$(this).attr('id')] = 0;

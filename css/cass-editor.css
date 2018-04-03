@@ -559,6 +559,18 @@ input.redButton {
     background-color: rgba(69, 160, 133, .25);
 }
 
+@keyframes animateSavedCompetency {
+    0% {background-color: transparent;}
+    50% {background-color: #19da4db0;}
+    100% {background-color: transparent;}
+}
+
+.savedCompetency {
+    animation-name: animateSavedCompetency;
+    animation-duration: 1s;
+    animation-direction: normal;
+}
+
 .dashBorder {
     border: 1px dashed gray !important;
     border-radius: 4px;
