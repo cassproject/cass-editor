@@ -105,7 +105,10 @@ populateFramework = function (subsearch) {
     $("#editFrameworkSection #frameworkName").text(framework.getName());
     if (framework.competency != null)
         $("#editFrameworkSection #frameworkCount").text(framework.competency.length + " items");
-    $("#editFrameworkSection #frameworkDescription").text(framework.getDescription());
+    if (framework.getDescription() == "" || framework.getDescription() == null)
+        $("#editFrameworkSection #frameworkDescription").hide();
+    else
+        $("#editFrameworkSection #frameworkDescription").show().text(framework.getDescription());
     try {
         $("#editFrameworkSection #frameworkLastModified").text(new Date(framework.getTimestamp()).toLocaleString());
     } catch (e) {}
