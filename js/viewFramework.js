@@ -452,6 +452,8 @@ refreshSidebar = function () {
         $(".frameworkOnly").show();
         $("#sidebarVersion").hide();
         $("#sidebarAddLevels").hide();
+        $("#sidebarMoveUp").hide();
+        $("#sidebarMoveDown").hide();
         if (queryParams.ceasnDataFields === 'true') {
             $(".absentForCeasn").hide();
         }
@@ -487,6 +489,8 @@ refreshSidebar = function () {
         $("#sidebarVersion").hide();
         $("#sidebarAddCompetencies").hide();
         $("#sidebarAddLevels").hide();
+        $("#sidebarMoveUp").hide();
+        $("#sidebarMoveDown").hide();
         if ($("#sidebarFeedback").html() == "")
             $("#sidebarFeedback").append("Edit options are limited:");
         $("#sidebarFeedback").append("<li>You do not own this framework.</li> ");
@@ -787,8 +791,20 @@ $('html').keydown(function (evt) {
                 $('#frameworkName').click();
                 return;
             }
+            //On shift+down arrow
+            if (evt.shiftKey && evt.which === 40) {
+                competencySelectionIndex++;
+                moveDown();
+                evt.preventDefault();
+            }
+            //On shift+up arrow
+            else if (evt.shiftKey && evt.which === 38) {
+                competencySelectionIndex--;
+                moveUp();
+                evt.preventDefault();
+            }
             //On down arrow
-            if (evt.which === 40) {
+            else if (evt.which === 40) {
                 $(':focus').blur();
                 if (competencySelectionIndex < competencyElementArray.length)
                     competencySelectionIndex++;
@@ -813,7 +829,6 @@ $('html').keydown(function (evt) {
                 $(':focus').blur();
                 $(competencyElementArray[competencySelectionIndex]).find('.collapse').click();
                 $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
-
             } else if (evt.which === 37) {
                 $(':focus').blur();
                 $(competencyElementArray[competencySelectionIndex]).find('.collapse').click();

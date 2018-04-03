@@ -233,7 +233,11 @@
                 <option class="" value="search">Search...</option>
                 <option value="new">New</option>
             </select>
-            <button id="sidebarEdit" class="viewMode blueButton editControl" style="margin:0rem;" onclick="editSidebar();">Edit</button>
+            <button id="sidebarEdit" class="viewMode blueButton editControl" style="float:right;" onclick="editSidebar();">Edit</button>
+
+            <button id="sidebarMoveUp" class="viewMode editControl" onclick="moveUp();" title="Shift+Up">Move Up</button>
+
+            <button id="sidebarMoveDown" class="viewMode editControl" onclick="moveDown();" title="Shift+Down">Move Down</button>
 
             <select id="sidebarExport" class="viewMode" onclick="exportSelected();$(this).children().first().prop('selected', true);">
                 <option style="display:none;" disabled selected>Download or view in...</option>
@@ -248,9 +252,7 @@
                 <option class="absentForConcepts frameworkOnly" value="csv">Table (CSV)</option>
                 <option class="absentForConcepts" value="case">IMS Global CASE (JSON)</option>
             </select>
-            <button id="sidebarViewJSON" class="export" style="margin: 0rem; display: none;" onclick="viewJSON();">View JSON</button>
-            <!--             <button id="sidebarDownload" class="export" style="margin: 0rem; display: none;" onclick="downloadCopmpetencies();">Download</button>
- -->
+
             <p><small id="sidebarFeedback" class="editControl"></small></p>
 
             <hr>

@@ -676,3 +676,63 @@ copyCompetencies = function (results) {
             }
     }
 }
+
+moveUp = function () {
+    var moveThis = $("[id=\"" + selectedCompetency.id + "\"]");
+    var prevNodes = moveThis.prev();
+    if (prevNodes.length > 0) {
+        var done = false;
+        var lastNode = null;
+        for (var j = 0; j < framework.competency.length; j++) {
+            for (var i = 0; i < prevNodes.length; i++) {
+                if (framework.competency[j].startsWith($(prevNodes.get(i)).attr("id"))) {
+                    done = true;
+                    break;
+                }
+                if (!done)
+                    lastNode = framework.competency[j];
+            }
+            if (done) break;
+        }
+        if (j != framework.competency.length - 1) {
+            for (var i = 0; i < framework.competency.length; i++) {
+                if (framework.competency[i] == selectedCompetency.id)
+                    var currentNode = framework.competency.splice(i, 1);
+            }
+            framework.competency.splice(j, 0, currentNode[0]);
+            repo.saveTo(framework, function () {
+                populateFramework();
+            }, error);
+        }
+    }
+}
+
+moveDown = function () {
+    var moveThis = $("[id=\"" + selectedCompetency.id + "\"]");
+    var prevNodes = moveThis.next();
+    if (prevNodes.length > 0) {
+        var done = false;
+        var lastNode = null;
+        for (var j = 0; j < framework.competency.length; j++) {
+            for (var i = 0; i < prevNodes.length; i++) {
+                if (framework.competency[j].startsWith($(prevNodes.get(i)).attr("id"))) {
+                    done = true;
+                    break;
+                }
+                if (!done)
+                    lastNode = framework.competency[j];
+            }
+            if (done) break;
+        }
+        if (j != framework.competency.length) {
+            for (var i = 0; i < framework.competency.length; i++) {
+                if (framework.competency[i] == selectedCompetency.id)
+                    var currentNode = framework.competency.splice(i, 1);
+            }
+            framework.competency.splice(j, 0, currentNode[0]);
+            repo.saveTo(framework, function () {
+                populateFramework();
+            }, error);
+        }
+    }
+}
