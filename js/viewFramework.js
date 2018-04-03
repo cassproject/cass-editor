@@ -605,18 +605,20 @@ editSidebar = function () {
             $('#sidebarNameInput').autocomplete({
                 source: competencies,
                 select: function (event, ui) {
-                    var competency = EcRepository.getBlocking(autocompleteDict[ui.item.value]);
-                    var results = [];
-                    results.push(competency.shortId());
+                    if (confirm("Selecting this competency will delete the one you are currently creating and reuse an existing competency. You may not have permissions to edit this competency further. Would you like to continue?")) {
+                        var competency = EcRepository.getBlocking(autocompleteDict[ui.item.value]);
+                        var results = [];
+                        $(".changedField").removeClass("changedField");
+                        results.push(competency.shortId());
 
-                    //Delete the default created competency if selecting an existing one from dropdown
-                    framework.removeCompetency(selectedCompetency.shortId());
-                    framework.removeLevel(selectedCompetency.shortId());
-                    conditionalDelete(selectedCompetency.shortId());
-                    repo.saveTo(framework, function () {
-                        appendCompetencies(results, true);
-                    }, error);
-
+                        //Delete the default created competency if selecting an existing one from dropdown
+                        framework.removeCompetency(selectedCompetency.shortId());
+                        framework.removeLevel(selectedCompetency.shortId());
+                        conditionalDelete(selectedCompetency.shortId());
+                        repo.saveTo(framework, function () {
+                            appendCompetencies(results, true);
+                        }, error);
+                    }
                 }
             });
         }, fetchFailure, {});
