@@ -537,7 +537,7 @@ input.redButton {
 }
 
 .changedField {
-    background-color: #45A085;
+    background-color: rgba(69, 160, 133, .25);
 }
 
 .dashBorder {
