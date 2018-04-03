@@ -171,6 +171,7 @@ addLevel = function () {
 saveCompetency = function () {
     if (viewMode) return;
     isFirstEdit = false;
+    $(".changedField").removeClass("changedField");
 
     var labelChoice = null;
     var fieldChoice = null;

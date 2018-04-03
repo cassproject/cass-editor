@@ -244,6 +244,10 @@ function refreshCompetency(col, level, subsearch) {
 }
 
 renderSidebar = function (justLists) {
+    if ($(".changedField:visible").length > 0) {
+        if (!confirm("Some data has changed during edit. Do you want to discard changes?"))
+            return;
+    }
     var thing = framework;
     if (selectedCompetency != null) {
         $('.ceasnCompetency .viewMode').show();
@@ -412,6 +416,11 @@ renderSidebar = function (justLists) {
 
 refreshSidebar = function () {
     if ($("#detailSlider").length == 0) return;
+    if ($(".changedField:visible").length > 0) {
+        if (!confirm("Some data has changed during edit. Do you want to discard changes?")) {
+            return;
+        }
+    }
 
     removeChangedFieldHighlight();
 
@@ -623,6 +632,12 @@ $("body").on("click", ".competency input", null, function (evt) {
     evt.stopPropagation();
     $(evt.target).parent().find("input").prop("checked", evt.target.checked);
 }).on("click", ".competency", null, function (evt) {
+    if ($(".changedField:visible").length > 0) {
+        if (!confirm("Some data has changed during edit. Do you want to discard changes?")) {
+            evt.stopPropagation();
+            return;
+        }
+    }
     isFirstEdit = false;
     var me = $(this);
     if (!$(this).hasClass("competency"))
@@ -664,6 +679,12 @@ $('.sidebarEditSection').on('input', function (evt) {
 // });
 
 $('body').on('click', '#frameworkName', function (evt) {
+    if ($(".changedField:visible").length > 0) {
+        if (!confirm("Some data has changed during edit. Do you want to discard changes?")) {
+            evt.stopPropagation();
+            return;
+        }
+    }
     highlightSelected($('#frameworkNameContainer'));
 });
 
