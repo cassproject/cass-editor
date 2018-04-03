@@ -154,16 +154,20 @@ function cappend(event) {
             attachUrlProperties(event.data.selected);
             $("#selectConceptSection").hide();
             $("#editFrameworkSection").show();
-        } else if (event.data.selected.length > 0) showCopyOrLinkDialog(function (copy) {
-            if (copy === true) {
-                copyCompetencies(event.data.selected);
-            } else {
-                appendCompetencies(event.data.selected, true);
-            }
-            hideCopyOrLinkDialog();
-            $("#selectConceptSection,#findCompetencySection").hide();
-            $("#editFrameworkSection").show();
-        });
+        } else if (event.data.selected.length > 0) {
+            showCopyOrLinkDialog(function (copy) {
+                if (copy === true) {
+                    copyCompetencies(event.data.selected);
+                } else {
+                    appendCompetencies(event.data.selected, true);
+                }
+                hideCopyOrLinkDialog();
+                $("#selectConceptSection,#findCompetencySection").hide();
+                $("#editFrameworkSection").show();
+            });
+        } else if (event.data.selected.length <= 0) {
+            alert("No items have been selected.");
+        }
     } else if (event.data.message == "back")
         backPage();
 }
