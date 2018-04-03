@@ -219,7 +219,7 @@ Acceptable schemas are: "cass","cassn4","cass","cassrdfjson","cassrdfxml","casst
 Most fields are not validated beyond the input type assigned to them. URLs, drop downs, datetimes and selectors all have inbuilt validation. The datetime format being used is ISO 8601.
 
 # Keyboard Shortcuts
-&uarr; & &darr; - Navigate up and down the list of frameworks and competencies.  
+&uarr; & &darr; - Navigate up and down the list of frameworks and competencies. 
 &larr; & &rarr; - Expand and contract nested comptencies.  
 Enter - Select the current element.  
 Shift + Enter - Select all.  
@@ -230,3 +230,4 @@ Shift + X - Drag competency
 Shift + C - Drag and copy competency  
 Shift + V - Drop competency  
 Shift + U - Unlink competency
+Shift + &uarr; & Shift + &darr; - Move competency up and down in the list.
