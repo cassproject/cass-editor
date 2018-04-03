@@ -1045,3 +1045,21 @@ viewJSON = function () {
     var redirect = window.open(link, '_blank');
     redirect.location;
 }
+
+$.ajax({
+    url: "js/ietf-language-tags_json.json",
+    success: function (a) {
+        var tagList = a;
+        var tags = [];
+        for (var i = 0; i < tagList.length; i++) {
+            EcArray.setAdd(tags, tagList[i].lang);
+            EcArray.setAdd(tags, tagList[i].langType);
+        }
+        $('.ceasnCompetency #sidebarInLanguageInput').autocomplete({
+            source: tags
+        });
+        $('.ceasnFramework #sidebarInLanguageInput').autocomplete({
+            source: tags
+        });
+    }
+});
