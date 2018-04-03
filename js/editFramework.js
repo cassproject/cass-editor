@@ -172,6 +172,8 @@ saveCompetency = function () {
     if (viewMode) return;
     isFirstEdit = false;
     $(".changedField").removeClass("changedField");
+    //Trigger saved animation
+    playSavedAnimation();
 
     var labelChoice = null;
     var fieldChoice = null;
