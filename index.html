@@ -215,9 +215,8 @@
         </div>
         <div id="detailSlider" class="sidebar" style="display: none;">
             <button id="sidebarDelete" class="editMode redButton editControl" style="float:right;" onclick="deleteCompetency();">Delete</button>
-            <button id="sidebarRemove" class="editMode redButton editControl absentForConcepts" style="float:right;" onclick="removeCompetency();">Remove</button>
             <button id="sidebarUnlink" class="editMode editControl" style="float:right;" onclick="unlinkCompetency();">Unlink</button>
-            <button id="sidebarCancel" class="editMode editControl" onclick="if (isFirstEdit && confirm('This is the first time editing the object, and the object has been created. Would you like to delete the object?')) deleteCompetency();refreshSidebar();">Cancel</button>
+            <button id="sidebarCancel" class="editMode editControl" onclick="if (isFirstEdit && confirm('This is the first time editing the object, and the object has been created. Would you like to delete the object?')) {deleteCompetency();isFirstEdit = false;}refreshSidebar();">Cancel</button>
             <button id="sidebarSave" class="editMode greenButton editControl" onclick="saveCompetency();">Save</button>
 
             <select id="sidebarVersion" class="viewMode editControl absentForConcepts absentForCeasn" style="display:block;" onclick="setCompetencyConfigurationManagement();">
@@ -234,6 +233,7 @@
                 <option value="new">New</option>
             </select>
             <button id="sidebarEdit" class="viewMode blueButton editControl" style="float:right;" onclick="editSidebar();">Edit</button>
+            <button id="sidebarRemove" class="viewMode redButton editControl absentForConcepts" style="float:right;" onclick="removeCompetency();">Remove</button>
 
             <button id="sidebarMoveUp" class="viewMode editControl" onclick="moveUp();" title="Shift+Up">Move Up</button>
 
@@ -470,11 +470,12 @@
 
                             <label for="sidebarRights" title="" cassFramework="Rights:" ceasnFramework="Rights:" class="viewMode editMode" style="margin:0px;">Rights:</label>
                             <p id="sidebarRights" class="viewMode" style="font-weight:bold;margin-top: 0;"></p>
-                            <input id="sidebarRightsInput" cassFramework="dc:rights" ceasnFramework="ceasn:rights" class="editMode editControl" />
+                            <input id="sidebarRightsInput" cassFramework="dc:rights" ceasnFramework="ceasn:rights" type="url" class="editMode editControl" />
 
                             <label for="sidebarRights" title="" cassFramework="Rights:" skosFramework="Rights:" class="viewMode editMode" style="margin:0px;">Rights:</label>
                             <p id="sidebarRights" class="viewMode" style="font-weight:bold;margin-top: 0;"></p>
-                            <input id="sidebarRightsInput" cassFramework="dcterms:rights" skosFramework="dcterms:rights" class="editMode editControl" />
+                            <input id="sidebarRightsInput" cassFramework="dcterms:rights" skosFramework="dcterms:rights" type="url" class="editMode editControl" />
+                            <span class="orangeUri">Note: URI only.</span>
 
                             <label for="sidebarRightsHolder" title="" cassFramework="Rights Holder:" ceasnFramework="Rights Holder:" skosFramework="Rights Holder:" class="viewMode editMode" style="margin:0px;">Rights Holder:</label>
                             <p id="sidebarRightsHolder" class="viewMode" style="font-weight:bold;margin-top: 0;"></p>

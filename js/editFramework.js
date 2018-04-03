@@ -217,6 +217,10 @@ saveCompetency = function () {
         return false;
     }
 
+    if ($("input:invalid").filter(":visible").length > 0) {
+        if (confirm("Your edits include invalid data. If you continue, this could break export formats and cause other issues. Are you sure you want to save?") == false)
+            return false;
+    }
 
     $("#detailSlider").find("input:visible,textarea:visible").each(function () {
         var val = getValueOrNull($(this).val());
@@ -571,6 +575,7 @@ copyCompetencies = function (results) {
                 c.generateId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
             c["schema:dateCreated"] = new Date().toISOString();
             framework.addCompetency(c.id);
+            delete c.owner;
             if (EcIdentityManager.ids.length > 0)
                 c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
             c['ceasn:derivedFrom'] = thing.id;
