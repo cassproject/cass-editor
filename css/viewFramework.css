@@ -155,3 +155,24 @@
     margin-right: .25rem;
     font-weight: bold;
 }
+
+#frameworkNameContainer #frameworkDescription {
+    padding-left: 2.5rem;
+    font-size: smaller;
+}
+
+#frameworkNameContainer #frameworkCount {
+    display: inline-block;
+    background-color: rgba(84, 84, 84, 0.25);
+    border-radius: 4px;
+    border: 1px solid #CAD9DB;
+    font-size: .9rem;
+    margin-top: .25rem;
+    padding: .25rem;
+    float: right;
+    margin-right: .5rem;
+}
+
+#frameworkNameContainer #frameworkName {
+    padding-left: .25rem;
+}

@@ -894,22 +894,30 @@ var min = 300;
 var mainmin = 300;
 
 $(window).resize(function (e) {
-
     $('#detailSlider').css("width", Math.min((($(window).width() * 3) / 4), $('#detailSlider').width()));
     $('#editFrameworkSection').css("padding-right", Math.min((($(window).width() * 3) / 4), $('#detailSlider').width()) + 16);
 });
+
+resizeWindow = function (pageX) {
+    var x = $(window).width() - pageX;
+    if (x > min && x < (($(window).width() * 3) / 4) && pageX < ($(window).width() - mainmin)) {
+        $('#detailSlider').css("width", x - 8);
+        $('#editFrameworkSection').css("padding-right", x);
+    }
+}
 
 $('#split-bar').mousedown(function (e) {
     e.preventDefault();
     $(document).mousemove(function (e) {
         e.preventDefault();
-        var x = $(window).width() - e.pageX;
-        if (x > min && x < (($(window).width() * 3) / 4) && e.pageX < ($(window).width() - mainmin)) {
-            $('#detailSlider').css("width", x);
-            $('#editFrameworkSection').css("padding-right", x + 16);
-        }
+        resizeWindow(e.pageX);
     })
 });
+
+$(document).ready(function () {
+    resizeWindow($(window).width() / 2);
+});
+
 $(document).mouseup(function (e) {
     $(document).unbind('mousemove');
 });

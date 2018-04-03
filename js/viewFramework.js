@@ -103,6 +103,12 @@ populateFramework = function (subsearch) {
     $("#tree").hide().html("");
     me.fetches = 0;
     $("#editFrameworkSection #frameworkName").text(framework.getName());
+    if (framework.competency != null)
+        $("#editFrameworkSection #frameworkCount").text(framework.competency.length + " items");
+    $("#editFrameworkSection #frameworkDescription").text(framework.getDescription());
+    try {
+        $("#editFrameworkSection #frameworkLastModified").text(new Date(framework.getTimestamp()).toLocaleString());
+    } catch (e) {}
     if (queryParams.link == "true")
         $("#editFrameworkSection #frameworkLink").attr("href", framework.shortId()).show();
 
