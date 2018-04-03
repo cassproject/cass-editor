@@ -104,21 +104,23 @@ ul {
     line-height: 1.5rem;
 }
 
-.competency:hover {
+.competency .competency:hover {
     border-left: 2px solid #ddd;
     padding-left: 1em;
 }
 
+.collapse {
+    width: 0px;
+    float: left;
+}
+
 .collapse .fa {
-    margin: 0 2px 0 0;
-}
-
-.competency:not(.expandable) {
-    padding-left: calc(34px + 2px + 2px);
-}
-
-.competency:not(.expandable):hover {
-    padding-left: calc(34px + 2px);
+    margin: 0px;
+    padding: 0px;
+    width: 0px;
+    left: -17px;
+    top: 2px;
+    position: relative;
 }
 
 .competency.selected,

@@ -183,12 +183,13 @@ function refreshCompetency(col, level, subsearch) {
         if (col["ceasn:listID"] != null)
             treeNode.children().first().prepend("<span/>").children().first().addClass("competencyListID").text(col["ceasn:listID"]);
     }
+    treeNode.prepend("<span/>").children().first().addClass("collapse").css("visibility", "hidden").html('<i class="fa fa-minus-square" aria-hidden="true"></i> ');
     if (col.competency != null) {
         level = true;
         $(".competency[id=\"" + col.competency + "\"]").children().last().append($(".competency[id=\"" + col.shortId() + "\"]"));
         treeNode.children().first().append(" <small>(Performance Level)</small>");
         if (!$(".competency[id=\"" + col.competency + "\"]").hasClass("expandable"))
-            $(".competency[id=\"" + col.competency + "\"]").addClass("expandable").prepend("<span/>").children().first().addClass("collapse").html('<i class="fa fa-minus-square" aria-hidden="true"></i> ');
+            $(".competency[id=\"" + col.competency + "\"]").addClass("expandable").children(".collapse").css("visibility", "visible");
     }
     if (queryParams.link == "true")
         treeNode.prepend(" <a class='link' style='float:right;' target='_blank'><i class='fa fa-link' aria-hidden='true'></a>").children().first().attr("href", col.shortId());
@@ -210,7 +211,7 @@ function refreshCompetency(col, level, subsearch) {
                                     $("#tree>.competency[id=\"" + relation.source + "\"]").remove();
 
                                 if (!$(".competency[id=\"" + relation.target + "\"]").hasClass("expandable"))
-                                    $(".competency[id=\"" + relation.target + "\"]").addClass("expandable").prepend("<span/>").children().first().addClass("collapse").html('<i class="fa fa-minus-square" aria-hidden="true"></i> ');
+                                    $(".competency[id=\"" + relation.target + "\"]").addClass("expandable").children(".collapse").css("visibility", "visible");
                             }
                         }
                     }
