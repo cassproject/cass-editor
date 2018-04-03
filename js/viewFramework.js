@@ -454,6 +454,7 @@ refreshSidebar = function () {
         $("#sidebarAddLevels").hide();
         $("#sidebarMoveUp").hide();
         $("#sidebarMoveDown").hide();
+        $("#sidebarRemove").hide();
         if (queryParams.ceasnDataFields === 'true') {
             $(".absentForCeasn").hide();
         }
@@ -491,6 +492,7 @@ refreshSidebar = function () {
         $("#sidebarAddLevels").hide();
         $("#sidebarMoveUp").hide();
         $("#sidebarMoveDown").hide();
+        $("#sidebarRemove").hide();
         if ($("#sidebarFeedback").html() == "")
             $("#sidebarFeedback").append("Edit options are limited:");
         $("#sidebarFeedback").append("<li>You do not own this framework.</li> ");
