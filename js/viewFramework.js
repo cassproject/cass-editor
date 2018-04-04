@@ -164,6 +164,14 @@ function afterRefresh(level, subsearch) {
         if ($(".selected").length > 0)
             $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
     }
+    var sort = function () {
+        $(this).children().sort(function (a, b) {
+            var ax = framework.competency.indexOf(a.getAttribute('id'));
+            var bx = framework.competency.indexOf(b.getAttribute('id'));
+            return bx - ax;
+        }).detach().appendTo($(this));
+    };
+    $("#tree").each(sort).find("ul").each(sort);
 }
 
 function refreshCompetency(col, level, subsearch) {

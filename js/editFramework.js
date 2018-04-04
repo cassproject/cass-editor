@@ -702,7 +702,7 @@ moveUp = function () {
             }
             if (done) break;
         }
-        if (j != framework.competency.length - 1) {
+        if (j != framework.competency.length) {
             for (var i = 0; i < framework.competency.length; i++) {
                 if (framework.competency[i] == selectedCompetency.id)
                     var currentNode = framework.competency.splice(i, 1);
