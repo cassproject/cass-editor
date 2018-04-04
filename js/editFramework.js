@@ -704,7 +704,7 @@ moveUp = function () {
         }
         if (j != framework.competency.length) {
             for (var i = 0; i < framework.competency.length; i++) {
-                if (framework.competency[i] == selectedCompetency.id)
+                if (framework.competency[i].startsWith(selectedCompetency.shortId()))
                     var currentNode = framework.competency.splice(i, 1);
             }
             framework.competency.splice(j, 0, currentNode[0]);
@@ -734,7 +734,7 @@ moveDown = function () {
         }
         if (j != framework.competency.length) {
             for (var i = 0; i < framework.competency.length; i++) {
-                if (framework.competency[i] == selectedCompetency.id)
+                if (framework.competency[i].startsWith(selectedCompetency.shortId()))
                     var currentNode = framework.competency.splice(i, 1);
             }
             framework.competency.splice(j, 0, currentNode[0]);
