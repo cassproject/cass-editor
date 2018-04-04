@@ -2299,18 +2299,15 @@ EcFramework = stjs.extend(EcFramework, Framework, [], function(constructor, prot
         if (i >= this.relation.length && success != null) 
             success("");
          else 
-            EcRepository.get(this.relation[i], function(p1) {
-                var a = null;
-                try {
-                    a = new EcAlignment();
-                    a.copyFrom(p1);
-                }catch (e) {}
+            EcAlignment.get(this.relation[i], function(a) {
                 if (a != null && a.source == shortId || a.target == shortId || a.source == id || a.target == id) {
                     me.relation.splice(i, 1);
                     me.removeRelationshipsThatInclude(id, i, success, failure);
                 } else 
                     me.removeRelationshipsThatInclude(id, i + 1, success, failure);
-            }, failure);
+            }, function(s) {
+                me.removeRelationshipsThatInclude(id, i + 1, success, failure);
+            });
     };
     /**
      *  Helper method to remove levels associated with a competency from this framework
@@ -2333,15 +2330,15 @@ EcFramework = stjs.extend(EcFramework, Framework, [], function(constructor, prot
         if (i >= this.level.length && success != null) 
             success("");
          else 
-            EcRepository.get(this.level[i], function(p1) {
-                var a = new EcLevel();
-                a.copyFrom(p1);
+            EcLevel.get(this.level[i], function(a) {
                 if (a.competency == shortId || a.competency == id) {
                     me.level.splice(i, 1);
                     me.removeLevelsThatInclude(id, i, success, failure);
                 } else 
                     me.removeLevelsThatInclude(id, i + 1, success, failure);
-            }, failure);
+            }, function(s) {
+                me.removeLevelsThatInclude(id, i + 1, success, failure);
+            });
     };
     /**
      *  Adds a relation ID to the framework's list of relations
