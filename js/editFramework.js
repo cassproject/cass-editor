@@ -686,7 +686,7 @@ copyCompetencies = function (results) {
 }
 
 moveUp = function () {
-    var moveThis = $("[id=\"" + selectedCompetency.id + "\"]");
+    var moveThis = $("[id=\"" + selectedCompetency.shortId() + "\"]");
     var prevNodes = moveThis.prev();
     if (prevNodes.length > 0) {
         var done = false;
@@ -716,7 +716,7 @@ moveUp = function () {
 }
 
 moveDown = function () {
-    var moveThis = $("[id=\"" + selectedCompetency.id + "\"]");
+    var moveThis = $("[id=\"" + selectedCompetency.shortId() + "\"]");
     var prevNodes = moveThis.next();
     if (prevNodes.length > 0) {
         var done = false;
