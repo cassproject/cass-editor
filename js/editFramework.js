@@ -708,9 +708,7 @@ moveUp = function () {
                     var currentNode = framework.competency.splice(i, 1);
             }
             framework.competency.splice(j, 0, currentNode[0]);
-            repo.saveTo(framework, function () {
-                populateFramework();
-            }, error);
+            repo.saveTo(framework, afterSave, error);
         }
     }
 }
@@ -738,9 +736,7 @@ moveDown = function () {
                     var currentNode = framework.competency.splice(i, 1);
             }
             framework.competency.splice(j, 0, currentNode[0]);
-            repo.saveTo(framework, function () {
-                populateFramework();
-            }, error);
+            repo.saveTo(framework, afterSave, error);
         }
     }
 }
