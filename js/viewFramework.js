@@ -168,7 +168,7 @@ function afterRefresh(level, subsearch) {
         $(this).children().sort(function (a, b) {
             var ax = framework.competency.indexOf(a.getAttribute('id'));
             var bx = framework.competency.indexOf(b.getAttribute('id'));
-            return bx - ax;
+            return ax - bx;
         }).detach().appendTo($(this));
     };
     $("#tree").each(sort).find("ul").each(sort);
