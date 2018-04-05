@@ -143,6 +143,19 @@ function frameworkSearchByCompetency(server, searchTerm, retry) {
     });
 }
 
+function checkForChangesBeforeBack(event) {
+    if ($(".changedField:visible").length > 0) {
+        if (!confirm("Some data has changed during edit. Do you want to discard changes?")) {
+            event.stopPropagation();
+           return;
+        } else {
+            searchFrameworks(createParamObj(20));framework=null;selectedCompetency=null;
+        }
+    } else {
+        searchFrameworks(createParamObj(20));framework=null;selectedCompetency=null;
+    }
+}
+
 $("#search").keyup(function (event) {
     if (event.keyCode == '13') {
         searchFrameworks(createParamObj(20));
