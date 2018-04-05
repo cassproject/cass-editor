@@ -220,7 +220,7 @@ function refreshCompetency(col, level, subsearch) {
             for (var i = 0; i < framework.relation.length; i++) {
                 EcAlignment.get(framework.relation[i], function (relation) {
                     me.fetches--;
-                    if (relation.source !== undefined && relation.target !== undefined && relation.source != null && relation.target != null) {
+                    if (relation.source !== undefined && relation.target !== undefined && relation.source != null && relation.target != null && relation.source != relation.target) {
                         if (relation.relationType == "narrows") {
                             if ($(".competency[relationid=\"" + relation.shortId() + "\"]").length == 0) {
                                 $(".competency[id=\"" + relation.target + "\"]").children().last().append($(".competency[id=\"" + relation.source + "\"]").outerHTML()).children().last().attr("relationid", relation.shortId());
@@ -379,6 +379,66 @@ renderSidebar = function (justLists) {
             }
         }
     });
+    if (framework.relation != null && selectedCompetency != null) {
+        $("#detailSlider .relationList").html("");
+        if (viewMode)
+            $("#detailSlider .relationList").hide().prev().hide();
+        for (var i = 0; i < framework.relation.length; i++) {
+            var a = EcAlignment.getBlocking(framework.relation[i]);
+            if (a.source.startsWith(selectedCompetency.shortId())) {
+                var target = EcCompetency.getBlocking(a.target);
+                var li = $(".relationList[" + labelChoice + "=" + a.relationType + "]").append("<li/>").children().last();
+                li.text(target.getName());
+                li.attr("id", a.shortId());
+                if (viewMode)
+                    $(".relationList[" + labelChoice + "=" + a.relationType + "]").show().prev().show();
+                else {
+                    var x = li.prepend("<a class='viewMode frameworkEditControl' tabindex='0' style='float:right; cursor:pointer;'>×</a>").children().first();
+                    x.click(function () {
+                        framework.removeRelation($(this).parent().attr("id"));
+                        conditionalDelete($(this).parent().attr("id"));
+                        repo.saveTo(framework, afterSaveRender, error);
+                    });
+                }
+            }
+            if (a.relationType == Relation.IS_EQUIVALENT_TO || a.relationType == Relation.IS_RELATED_TO || a.relationType == "majorRelated" || a.relationType == "minorRelated") {
+                if (a.target.startsWith(selectedCompetency.shortId())) {
+                    var source = EcCompetency.getBlocking(a.source);
+                    var li = $(".relationList[" + labelChoice + "=" + a.relationType + "]").append("<li/>").children().last();
+                    li.text(source.getName());
+                    li.attr("id", a.shortId());
+                    if (viewMode)
+                        $(".relationList[" + labelChoice + "=" + a.relationType + "]").show().prev().show();
+                    else {
+                        var x = li.prepend("<a class='viewMode frameworkEditControl' tabindex='0' style='float:right; cursor:pointer;'>×</a>").children().first();
+                        x.click(function () {
+                            framework.removeRelation($(this).parent().attr("id"));
+                            conditionalDelete($(this).parent().attr("id"));
+                            repo.saveTo(framework, afterSaveRender, error);
+                        });
+                    }
+                }
+            }
+            if (a.relationType == Relation.NARROWS) {
+                if (a.target.startsWith(selectedCompetency.shortId())) {
+                    var source = EcCompetency.getBlocking(a.source);
+                    var li = $(".relationList[" + labelChoice + "=broadens]").append("<li/>").children().last();
+                    li.text(source.getName());
+                    li.attr("id", a.shortId());
+                    if (viewMode)
+                        $(".relationList[" + labelChoice + "=broadens]").show().prev().show();
+                    else {
+                        var x = li.prepend("<a class='viewMode frameworkEditControl' tabindex='0' style='float:right; cursor:pointer;'>×</a>").children().first();
+                        x.click(function () {
+                            framework.removeRelation($(this).parent().attr("id"));
+                            conditionalDelete($(this).parent().attr("id"));
+                            repo.saveTo(framework, afterSaveRender, error);
+                        });
+                    }
+                }
+            }
+        }
+    }
     if (justLists != true)
         $("#detailSlider input,textarea").each(function () {
             if ($(this).attr(safeChoice) != null && ($(this).attr(labelChoice) == null || $(this).attr(labelChoice) === undefined)) {
@@ -448,8 +508,10 @@ refreshSidebar = function () {
     if (selectedCompetency != null) {
         $('.ceasnCompetency .viewMode').show();
         thing = selectedCompetency;
+        $("#alignmentPanel").show();
     } else {
         $('.ceasnCompetency').hide();
+        $("#alignmentPanel").hide();
     }
 
     if (queryParams.export === 'true') {
@@ -470,13 +532,14 @@ refreshSidebar = function () {
     $("#editFrameworkSection .editMode").hide();
     $("#editFrameworkSection .viewMode").show();
 
-    $("#editFrameworkSection label").each(function () {
+    $("#editFrameworkSection label:not(.alwaysShowInViewMode)").each(function () {
         if ($(this).parent().children("#" + $(this).attr("for")).text() == "" || $(this).parent().children("#" + $(this).attr("for")).text() == null)
             $(this).hide();
     });
 
     if (framework == thing) {
         $(".frameworkOnly").show();
+        $(".competencyOnly").hide();
         $("#sidebarVersion").hide();
         $("#sidebarAddLevels").hide();
         $("#sidebarMoveUp").hide();
@@ -489,6 +552,8 @@ refreshSidebar = function () {
 
     if (thing == selectedCompetency) {
         $(".frameworkOnly").hide();
+        if (!viewMode)
+            $(".competencyOnly").show();
         if (framework.competency != null)
             if (EcArray.has(framework.competency.concat(framework.level), thing.shortId()))
                 $("#sidebarVersion option").prop('selected', false).first().prop('selected', true);
@@ -514,12 +579,7 @@ refreshSidebar = function () {
 
     $("#sidebarFeedback").html("");
     if (!framework.canEditAny(EcIdentityManager.getMyPks())) {
-        $("#sidebarVersion").hide();
-        $("#sidebarAddCompetencies").hide();
-        $("#sidebarAddLevels").hide();
-        $("#sidebarMoveUp").hide();
-        $("#sidebarMoveDown").hide();
-        $("#sidebarRemove").hide();
+        $(".frameworkEditControl").hide();
         if ($("#sidebarFeedback").html() == "")
             $("#sidebarFeedback").append("Edit options are limited:");
         $("#sidebarFeedback").append("<li>You do not own this framework.</li> ");
@@ -529,7 +589,7 @@ refreshSidebar = function () {
     }
 
     if (!thing.canEditAny(EcIdentityManager.getMyPks())) {
-        $("#sidebarEdit").hide();
+        $(".competencyEditControl").hide();
         if ($("#sidebarFeedback").html() == "")
             $("#sidebarFeedback").append("Edit options are limited:");
         if (thing == framework) {
@@ -596,6 +656,7 @@ editSidebar = function () {
         $('.ceasnFramework').hide();
     } else {
         $('.ceasnCompetency').hide();
+        $(".competencyOnly").hide();
     }
     try {
         $('#sidebarNameInput').autocomplete("destroy");
@@ -748,11 +809,15 @@ $('body').on('dblclick', '#frameworkNameContainer', function (evt) {
 
 $('html').keydown(function (evt) {
     //Focus the correct frame to capture keydown events
-    if ($(window.parent.document.getElementById('selectConceptSection')).css('display') === 'none' && $(window.parent.document.getElementById('findCompetencySection')).css('display') === 'none') {
+    if ($(window.parent.document.getElementById('selectConceptSection')).css('display') === 'none' && $(window.parent.document.getElementById('selectCompetencySection')).css('display') === 'none' && $(window.parent.document.getElementById('findCompetencySection')).css('display') === 'none') {
         setTimeout(function () {
             parent.focus();
         });
     } else if ($('#selectConceptSection').length > 0 && $('#selectConceptSection').css('display') !== 'none') {
+        setTimeout(function () {
+            $('#selectConceptIframe')[0].contentWindow.focus();
+        });
+    } else if ($('#selectCompetencySection').length > 0 && $('#selectCompetencySection').css('display') !== 'none') {
         setTimeout(function () {
             $('#selectConceptIframe')[0].contentWindow.focus();
         });
