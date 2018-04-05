@@ -902,7 +902,7 @@ $(window).resize(function (e) {
 resizeWindow = function (pageX) {
     if (queryParams.view == "true")
         return;
-    var x = $(window).width() - pageX;
+    var x = $(window).width() - pageX - 16;
     if (x > min && x < (($(window).width() * 3) / 4) && pageX < ($(window).width() - mainmin)) {
         $('#detailSlider').css("width", x - 8);
         $('#editFrameworkSection').css("padding-right", x);
