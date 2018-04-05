@@ -1022,9 +1022,11 @@ removeChangedFieldHighlight = function () {
 
 playSavedAnimation = function () {
     var elem = $('.selected')[0];
-    elem.classList.remove('savedCompetency');
-    void elem.offsetWidth;
-    elem.classList.add('savedCompetency');
+    if (elem) {
+        elem.classList.remove('savedCompetency');
+        void elem.offsetWidth;
+        elem.classList.add('savedCompetency');
+    }
 }
 
 initULLengths = function () {
