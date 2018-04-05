@@ -1,5 +1,13 @@
 afterSave = function (stuff) {
-    console.log(stuff);
+    if (webSocketConnection == false)
+        populateFramework();
+}
+afterSaveRender = function () {
+    afterSave();
+    renderSidebar();
+}
+afterSaveSidebar = function (stuff) {
+    refreshSidebar();
     if (webSocketConnection == false)
         populateFramework();
 }
