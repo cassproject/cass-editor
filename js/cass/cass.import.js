@@ -949,24 +949,10 @@ CSVImport = stjs.extend(CSVImport, null, [], function(constructor, prototype) {
      */
     constructor.transformId = function(oldId, newObject, selectedServer) {
         if (oldId == null || oldId == "") 
-            oldId = generateUUID();
-        if (oldId.indexOf("http") != -1) {
-            var parts = (oldId).split("/");
-            var guid = null;
-            var timestamp = null;
-            var pattern = new RegExp("^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$", "i");
-            for (var i = 0; i < parts.length; i++) {
-                if (!isNaN(parseInt(parts[i]))) 
-                    timestamp = parts[i];
-                 else if (pattern.test(parts[i])) 
-                    guid = parts[i];
-            }
-            if (guid == null) 
-                newObject.assignId(selectedServer, parts[parts.length - 2]);
-             else 
-                newObject.assignId(selectedServer, guid);
-        } else 
             newObject.assignId(selectedServer, oldId);
+         else if (oldId.indexOf("http") != -1) {
+            newObject.id = oldId;
+        }
     };
     /**
      *  Method to create competencies (and relationships if the parameters are passed in)
