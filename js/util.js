@@ -900,6 +900,8 @@ $(window).resize(function (e) {
 });
 
 resizeWindow = function (pageX) {
+    if (queryParams.view == "true")
+        return;
     var x = $(window).width() - pageX;
     if (x > min && x < (($(window).width() * 3) / 4) && pageX < ($(window).width() - mainmin)) {
         $('#detailSlider').css("width", x - 8);
