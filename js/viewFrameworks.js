@@ -74,8 +74,10 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
                 desc.text(description);
                 if (fx.competency != null)
                     p.append("<span class='properties'>" + fx.competency.length + " items.</span>");
-                if (searchTerm != "*" && subsearchTerm == null)
-                    p.mark(searchTerm);
+                if (searchTerm != "*" && subsearchTerm == null) {
+                    title.mark(searchTerm);
+                    desc.mark(searchTerm);
+                }
             }
         }
         frameworkLoading--;
@@ -147,12 +149,16 @@ function checkForChangesBeforeBack(event) {
     if ($(".changedField:visible").length > 0) {
         if (!confirm("Some data has changed during edit. Do you want to discard changes?")) {
             event.stopPropagation();
-           return;
+            return;
         } else {
-            searchFrameworks(createParamObj(20));framework=null;selectedCompetency=null;
+            searchFrameworks(createParamObj(20));
+            framework = null;
+            selectedCompetency = null;
         }
     } else {
-        searchFrameworks(createParamObj(20));framework=null;selectedCompetency=null;
+        searchFrameworks(createParamObj(20));
+        framework = null;
+        selectedCompetency = null;
     }
 }
 
