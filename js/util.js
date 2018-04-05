@@ -41,6 +41,7 @@ if (queryParams.view == "true") {
     if (queryParams.ceasnDataFields == null) {
         $("#editFrameworkSection").removeClass("pageWithSidebar");
         $("#detailSlider").remove();
+        $("#split-bar").remove();
     }
     EcRepository.cachingSearch = true;
 }
