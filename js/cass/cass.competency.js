@@ -2249,8 +2249,10 @@ EcFramework = stjs.extend(EcFramework, Framework, [], function(constructor, prot
             if (this.competency[i].equals(shortId) || this.competency[i].equals(id)) 
                 this.competency.splice(i, 1);
         if ((this.relation == null || this.relation.length == 0) && (this.level == null || this.level.length == 0)) 
-            if (success != null) 
+            if (success != null) {
                 success("");
+                return;
+            }
         EcFramework.relDone[id] = false;
         EcFramework.levelDone[id] = false;
         if (this.relation != null) {
