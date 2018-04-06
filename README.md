@@ -216,7 +216,7 @@ message.data ~= {
 Acceptable schemas are: "cass","cassn4","cass","cassrdfjson","cassrdfxml","cassturtle","ctdlasn","asn","case".
 
 # Validation
-Most fields are not validated beyond the input type assigned to them. URLs, drop downs, datetimes and selectors all have inbuilt validation. The datetime format being used is ISO 8601. The user is warned if they are saving invalid data.
+Most fields are not validated beyond the input type assigned to them. URLs, drop downs, datetimes and selectors all have inbuilt validation. The datetime format being used is ISO 8601. The user is prevented from saving invalid date. To change the behavior to warn the user if they are saving invalid data, set `allowValidationBypass=true`.
 
 # Keyboard Shortcuts
 &uarr; & &darr; - Navigate up and down the list of frameworks and competencies.  

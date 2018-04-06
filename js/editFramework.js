@@ -234,8 +234,13 @@ saveCompetency = function () {
     }
 
     if ($("input:invalid").filter(":visible").length > 0) {
-        if (confirm("Your edits include invalid data. If you continue, this could break export formats and cause other issues. Are you sure you want to save?") == false)
+        if (queryParams.allowValidationBypass == "true") {
+            if (confirm("Your edits include invalid data. If you continue, this could break export formats and cause other issues. Are you sure you want to save?") == false)
+                return false;
+        } else {
+            alert("Your changes contain invalid data. Please ensure all data is valid before saving.");
             return false;
+        }
     }
 
     $("#detailSlider").find("input:visible,textarea:visible").each(function () {
