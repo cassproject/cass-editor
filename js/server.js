@@ -84,6 +84,7 @@ openWebSocket = function (r) {
                         framework = new EcFramework();
                         framework.copyFrom(wut);
                         populateFramework();
+                        renderSidebar(true);
                         spitEvent("frameworkChanged", framework.shortId());
                     }
 

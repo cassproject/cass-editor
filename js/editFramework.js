@@ -4,7 +4,7 @@ afterSave = function (stuff) {
 }
 afterSaveRender = function () {
     afterSave();
-    renderSidebar();
+    renderSidebar(true);
 }
 afterSaveSidebar = function (stuff) {
     refreshSidebar();
