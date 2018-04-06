@@ -742,6 +742,11 @@ $("body").on("click", ".competency input", null, function (evt) {
 $('.sidebarEditSection').on('input', function (evt) {
     changedFields[evt.target.id] = 'input';
     addChangedFieldHighlight();
+    //Detect bad characters
+    if (!validateString($('#' + evt.target.id).val()))
+        setInvalidInput(evt.target.id);
+    else
+        setValidInput(evt.target.id);
 });
 
 //Detect UL length changes (For edit panel fields that don't use input fields)
@@ -1000,6 +1005,23 @@ $('html').keydown(function (evt) {
         }
     }
 });
+
+validateString = function (str) {
+    for (var i = 0; i < str.length; i++) {
+        var charCode = str.charCodeAt(i);
+        if (charCode > 65529 && charCode < 65535 || charCode === 160)
+            return false;
+    }
+    return true;
+}
+
+setInvalidInput = function (id) {
+    $('#' + id).addClass('invalidInput');
+}
+
+setValidInput = function (id) {
+    $('#' + id).removeClass('invalidInput');
+}
 
 addChangedFieldHighlight = function () {
     Object.keys(changedFields).forEach(function (key) {

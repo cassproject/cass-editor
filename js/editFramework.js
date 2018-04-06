@@ -179,6 +179,11 @@ addLevel = function () {
 saveCompetency = function () {
     if (viewMode) return;
     isFirstEdit = false;
+    //Alert for bad characters in input
+    if ($('.invalidInput').filter(':visible').length > 0) {
+        alert('Bad characters detected in input');
+        return false;
+    }
     $(".changedField").removeClass("changedField");
     //Trigger saved animation
     playSavedAnimation();
