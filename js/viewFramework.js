@@ -494,11 +494,6 @@ renderSidebar = function (justLists) {
 
 refreshSidebar = function () {
     if ($("#detailSlider").length == 0) return;
-    if ($(".changedField:visible").length > 0) {
-        if (!confirm("Some data has changed during edit. Do you want to discard changes?")) {
-            return;
-        }
-    }
 
     removeChangedFieldHighlight();
 
@@ -766,6 +761,8 @@ $('body').on('click', '#frameworkName', function (evt) {
             return;
         }
     }
+    selectedCompetency=null;
+    refreshSidebar();
     highlightSelected($('#frameworkNameContainer'));
 });
 
