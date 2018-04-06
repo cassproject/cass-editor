@@ -268,10 +268,12 @@ renderSidebar = function (justLists) {
     }
     var thing = framework;
     if (selectedCompetency != null) {
-        $('.ceasnCompetency .viewMode').show();
+        if (justLists != true)
+            $('.ceasnCompetency .viewMode').show();
         thing = selectedCompetency;
     } else {
-        $('.ceasnCompetency').hide();
+        if (justLists != true)
+            $('.ceasnCompetency').hide();
     }
 
     var labelChoice = null;
@@ -766,7 +768,7 @@ $('body').on('click', '#frameworkName', function (evt) {
             return;
         }
     }
-    selectedCompetency=null;
+    selectedCompetency = null;
     refreshSidebar();
     highlightSelected($('#frameworkNameContainer'));
 });
