@@ -274,8 +274,7 @@ saveCompetency = function () {
 createFramework = function () {
     if (conceptMode) return createConceptScheme();
     if (viewMode) return;
-    if ($("#name").val() == null || $("#name").val().trim() == "")
-        return;
+    isFirstEdit = true;
     framework = new EcFramework();
     if (newObjectEndpoint != null)
         framework.generateShortId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
@@ -284,15 +283,11 @@ createFramework = function () {
     framework["schema:dateCreated"] = new Date().toISOString();
     if (EcIdentityManager.ids.length > 0)
         framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-    framework.name = $("#name").val();
-    if ($("#description").val() != null && $("#description").val() != "")
-        framework.description = $("#description").val();
-    loading("Creating framework...");
-    repo.saveTo(framework, function () {
-        refreshSidebar();
-        populateFramework();
-        highlightSelected($('#frameworkNameContainer'));
-    }, error);
+    framework.name = "New Framework";
+    refreshSidebar();
+    editSidebar();
+    populateFramework();
+    highlightSelected($('#frameworkNameContainer'));
 }
 
 setCompetencyConfigurationManagement = function () {
@@ -361,29 +356,35 @@ deleteCompetency = function () {
     if (conceptMode) return deleteConcept();
     if (viewMode) return;
     if (selectedCompetency == null) {
-        showConfirmDialog(function (confirmed) {
-            if (confirmed === true) {
-                repo.deleteRegistered(framework, function (success) {
-                    if (defaultPage == "#frameworksSection")
-                        searchFrameworks(createParamObj(5000));
-                    else
-                        showPage(defaultPage);
-                    //Delete the framework, delete all non-used stuff.
-                    if (framework.competency != null)
-                        for (var i = 0; i < framework.competency.length; i++)
-                            conditionalDelete(framework.competency[i]);
-                    if (framework.relation != null)
-                        for (var i = 0; i < framework.relation.length; i++)
-                            conditionalDelete(framework.relation[i]);
-                    if (framework.level != null)
-                        for (var i = 0; i < framework.level.length; i++)
-                            conditionalDelete(framework.level[i]);
-                    framework = null;
-                    selectedCompetency = null;
-                }, console.log);
-            }
-            hideConfirmDialog();
-        }, "Are you sure you want to delete this framework? This will also delete all objects referenced in this framework that aren't found in other frameworks on this server.");
+        if (isFirstEdit)
+            if (defaultPage == "#frameworksSection")
+                searchFrameworks(createParamObj(20));
+            else
+                showPage(defaultPage);
+        else
+            showConfirmDialog(function (confirmed) {
+                if (confirmed === true) {
+                    repo.deleteRegistered(framework, function (success) {
+                        if (defaultPage == "#frameworksSection")
+                            searchFrameworks(createParamObj(20));
+                        else
+                            showPage(defaultPage);
+                        //Delete the framework, delete all non-used stuff.
+                        if (framework.competency != null)
+                            for (var i = 0; i < framework.competency.length; i++)
+                                conditionalDelete(framework.competency[i]);
+                        if (framework.relation != null)
+                            for (var i = 0; i < framework.relation.length; i++)
+                                conditionalDelete(framework.relation[i]);
+                        if (framework.level != null)
+                            for (var i = 0; i < framework.level.length; i++)
+                                conditionalDelete(framework.level[i]);
+                        framework = null;
+                        selectedCompetency = null;
+                    }, console.log);
+                }
+                hideConfirmDialog();
+            }, "Are you sure you want to delete this framework? This will also delete all objects referenced in this framework that aren't found in other frameworks on this server.");
     } else {
         showConfirmDialog(function (confirmed) {
             if (confirmed === true) {

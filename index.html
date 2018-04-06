@@ -12,45 +12,6 @@
 </head>
 
 <body id="cassControl">
-    <div id="addFrameworkSection" class="page" style="display: none;">
-        <div style="padding: 1rem;">
-            <div class="absentForConcepts" style="float:right;">
-                <button id="importButton" onclick='showPage("#importSection");'>Import...</button>
-            </div>
-            <div style="">
-                <h2 id="title">
-                    Add a Framework
-                </h2>
-                <span id="caption">Import a framework or create one below.</span>
-            </div>
-        </div>
-
-        <div id="formSection" style="width: calc(100% - 2rem); position: relative; padding-left: 1rem;
-    	padding-right: 1rem; display: table; border-collapse: separate;margin:0rem;border-spacing: 0px 10px;">
-            <div style="display: table-row">
-                <label id="nameSpan" style="display: table-cell; width: 15%;">Name</label>
-                <input type="text" id="name" style="display: table-cell; width: 85%;" placeholder="Enter the framework name here.">
-            </div>
-            <div style="display: table-row">
-                <label id="descriptionSpan" for="description" style="display: table-cell; width: 15%;">Description</label>
-                <textarea type="text" id="description" style="display: table-cell; width: 85%;" placeholder="Enter the framework description here."></textarea>
-            </div>
-        </div>
-
-        <hr style="position: relative; margin-left: 1rem; margin-right: 1rem;">
-
-        <div id="buttonSection" style="margin-left: 1rem;">
-            <div>
-                <div style="float:left; margin-right:1rem;">
-                    <button id="saveButton" onclick="createFramework();">Create</button>
-                </div>
-                <div style="float:left;">
-                    <button id="cancelButton" onclick="searchFrameworks(createParamObj(5000));">Cancel</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div id="importSection" class="page absentForConcepts" style="display: none;">
         <div style="padding: 1rem;">
             <div>
@@ -195,7 +156,8 @@
 
     <div id="frameworksSection" class="page" style="display: none;">
         <div id="header">
-            <button id="createNewButton" style="float: right;" status="select" onclick='showPage("#addFrameworkSection");'>Create New</button>
+            <button id="createNewButton" style="float: right;" status="select" onclick='createFramework();'>Create New</button>
+            <button id="importButton" class="absentForConcepts" style="float: right;" id="importButton" onclick='showPage("#importSection");'>Import...</button>
             <button id="frameworksHelpButton" style="float:right;" onclick='startTour();' title="Restarts the tutorial.">?</button>
             <span id="frameworksBack" onclick='parent.postMessage({message: "back"}, queryParams.origin);' style="float:left;display:none;"><i class="fa fa-arrow-circle-left" > </i></span>
             <input type="text" id="search" placeholder="Search...">
@@ -217,7 +179,7 @@
         <div id="detailSlider" class="sidebar" style="display: none;">
             <button id="sidebarDelete" class="editMode redButton editControl" style="float:right;" onclick="deleteCompetency();">Delete</button>
             <button id="sidebarUnlink" class="editMode editControl" style="float:right;" onclick="unlinkCompetency();">Unlink</button>
-            <button id="sidebarCancel" class="editMode editControl" onclick="if (isFirstEdit && confirm('This is the first time editing the object, and the object has been created. Would you like to delete the object?')) {deleteCompetency();isFirstEdit = false;}refreshSidebar();">Cancel</button>
+            <button id="sidebarCancel" class="editMode editControl" onclick="if (isFirstEdit && confirm('This object is new, and has not been saved. Delete it?')) {deleteCompetency();isFirstEdit = false;}refreshSidebar();">Cancel</button>
             <button id="sidebarSave" class="editMode greenButton editControl" onclick="saveCompetency();">Save</button>
 
             <div id="sidebarAddCompetencies" class="viewMode editControl frameworkEditControl" value="" style="display: inline;">

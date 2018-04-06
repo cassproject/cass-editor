@@ -23,8 +23,8 @@ $(document).ready(function () {
                 refreshSidebar();
             }, error);
         } else if (queryParams.action == "add") {
-            defaultPage = "#addFrameworkSection";
-            showPage(defaultPage);
+            defaultPage = "#frameworksSection";
+            createFramework();
         } else if (queryParams.action == "import") {
             defaultPage = "#importSection";
             showPage(defaultPage);
