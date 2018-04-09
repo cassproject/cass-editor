@@ -110,10 +110,23 @@ populateFramework = function (subsearch) {
     else
         $("#editFrameworkSection #frameworkDescription").show().text(framework.getDescription());
     try {
-        $("#editFrameworkSection #frameworkLastModified").text(new Date(framework.getTimestamp()).toLocaleString());
+        if (framework.getTimestamp() == null || isNaN(framework.getTimestamp()))
+            if (framework["schema:dateModified"] != null && framework["schema:dateModified"] !== undefined)
+                $("#editFrameworkSection #frameworkLastModified").text("Last modified " + moment(new Date(framework["schema:dateModified"])).fromNow() + ".").show();
+            else
+                $("#editFrameworkSection #frameworkLastModified").hide();
+        else
+            $("#editFrameworkSection #frameworkLastModified").text("Last modified " + moment(new Date(framework.getTimestamp())).fromNow() + ".").show();
     } catch (e) {}
-    if (queryParams.link == "true")
-        $("#editFrameworkSection #frameworkLink").attr("href", framework.shortId()).show();
+    try {
+        if (framework["schema:dateCreated"] != null && framework["schema:dateCreated"] !== undefined)
+            $("#editFrameworkSection #frameworkCreated").text("Created " + moment(new Date(framework["schema:dateCreated"])).fromNow() + ".").show();
+        else
+            $("#editFrameworkSection #frameworkCreated").hide();
+    } catch (e) {}
+    if (framework["ceasn:publisherName"] != null && framework["ceasn:publisherName"] !== undefined)
+        if (queryParams.link == "true")
+            $("#editFrameworkSection #frameworkLink").attr("href", framework.shortId()).show();
 
     if (framework.competency == null)
         framework.competency = [];

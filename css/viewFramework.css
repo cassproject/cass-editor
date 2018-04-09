@@ -56,9 +56,15 @@
 }
 
 @keyframes animateSavedCompetency {
-    0% {background-color: transparent;}
-    50% {background-color: #19da4db0;}
-    100% {background-color: transparent;}
+    0% {
+        background-color: transparent;
+    }
+    50% {
+        background-color: #19da4db0;
+    }
+    100% {
+        background-color: transparent;
+    }
 }
 
 .savedCompetency {
@@ -174,10 +180,14 @@
 
 #frameworkNameContainer #frameworkDescription {
     padding-left: 2.5rem;
+    padding-right: 1rem;
     font-size: smaller;
+    display: block;
 }
 
-#frameworkNameContainer #frameworkCount {
+#frameworkNameContainer #frameworkCount,
+#frameworkLastModified,
+#frameworkCreated {
     display: inline-block;
     background-color: rgba(84, 84, 84, 0.25);
     border-radius: 4px;
@@ -185,8 +195,7 @@
     font-size: .9rem;
     margin-top: .25rem;
     padding: .25rem;
-    float: right;
-    margin-right: .5rem;
+    margin-left: .5rem;
 }
 
 #frameworkNameContainer #frameworkName {
