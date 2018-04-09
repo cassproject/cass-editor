@@ -1057,12 +1057,15 @@ removeChangedFieldHighlight = function () {
 }
 
 playSavedAnimation = function () {
-    var elem = $('.selected')[0];
-    if (elem) {
-        elem.classList.remove('savedCompetency');
-        void elem.offsetWidth;
-        elem.classList.add('savedCompetency');
-    }
+    var elemID = $('.selected').attr('id');
+    setTimeout(function() {
+        var elem = document.getElementById(elemID);
+        if (elem) {
+            elem.classList.remove('savedCompetency');
+            void elem.offsetWidth;
+            elem.classList.add('savedCompetency');
+        }
+    }, 1000);
 }
 
 initULLengths = function () {
