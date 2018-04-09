@@ -330,3 +330,97 @@ allowConceptDrop = function (ev) {
     if (viewMode) return;
     ev.preventDefault();
 }
+
+//Touchscreen drag and drop
+handleTouchStartConcept = function (event) {
+    event.stopPropagation();
+    $(event.srcElement).click();
+    setGlobalTouchDragDataConcept(event.srcElement);
+}
+
+handleTouchMoveConcept = function (event) {
+    event.stopPropagation();
+    $('.competency').addClass('dashBorder');
+    var x = event.touches[0].clientX;
+    var y = event.touches[0].clientY;
+    var hoverElem = document.elementFromPoint(x, y);
+    if (hoverElem.classList.contains('competencyName') || hoverElem.classList.contains('competencyDescription') || hoverElem.classList.contains('competencyCodedNotation'))
+        hoverElem = hoverElem.parentNode.parentNode;
+    if (hoverElem.classList.contains('competency') || hoverElem.id == "frameworkNameContainer") {
+        $('.selected').removeClass('selected');
+        hoverElem.classList.add('selected');
+        globalTouchDragDestinationConcept = hoverElem.id;
+    }
+}
+
+handleTouchEndConcept = function (event) {
+    event.stopPropagation();
+    if (globalTouchDragDestinationConcept != null && globalTouchDragDataConcept != null) {
+        //Unlink competency
+        if (globalTouchDragDestinationConcept == "frameworkNameContainer") {
+            unlinkCompetency();
+        } else {
+            var targetElem = $(document.getElementById(globalTouchDragDestinationConcept));
+            var targetCompetencyId = targetElem.attr('id');
+            var targetRelationId = targetElem.attr('relationId');
+            var targetData = {
+                competencyId: targetCompetencyId,
+                relationId: targetRelationId
+            };
+
+            if (globalTouchDragDataConcept.competencyId != targetData.competencyId)  {
+                EcConcept.get(globalTouchDragDataConcept.competencyId, function (c) {
+                    if (!ev.shiftKey) {
+                        var stage2 = function () {
+                            var found = false;
+                            delete c["skos:topConceptOf"];
+                            globalTouchDragDataConcept.competency = c;
+                            if (EcArray.has(framework["skos:hasTopConcept"], c.shortId())) {
+                                EcArray.setRemove(framework["skos:hasTopConcept"], c.shortId());
+                                repo.saveTo(framework, function () {
+                                    dropAnyConcept(globalTouchDragDataConcept, targetData);
+                                }, console.error); //Saving framework.
+                                found = true;
+                            }
+                            if (!found)
+                                dropAnyConcept(globalTouchDragDataConcept, targetData);
+                        }
+                        var found = false;
+                        if (c["skos:broader"] != null) {
+                            var narrows = c["skos:broader"];
+                            delete c["skos:broader"];
+                            for (var i = 0; i < narrows.length; i++)
+                                EcConcept.get(narrows[i], function (concept) {
+                                    EcArray.setRemove(concept["skos:narrower"], c.shortId());
+                                    repo.saveTo(concept, stage2, console.error); //Saving previous parent.
+                                    found = true;
+                                }, console.error);
+                        }
+                        if (!found)
+                            stage2();
+                    }
+                });
+                dropAnyConcept(globalTouchDragDataConcept, targetData);
+            }
+        }
+    }
+    $('.competency').removeClass('dashBorder');
+    globalTouchDragDataConcept = null;
+    globalTouchDragDestinationConcept = null;
+}
+
+//Recursively get the li element we want for touchdrag
+setGlobalTouchDragDataConcept = function (obj) {
+    if (obj.localName === "li") {
+        //Super hacky, needs a more robust solution (attribute length may change and this would break)
+        var competencyId = obj.attributes[8].value;
+        var relationId = Object.keys(obj.attributes).length > 9 ? obj.attributes[9].value : null;
+
+        globalTouchDragDataConcept = {
+            competencyId: competencyId,
+            relationId: relationId
+        };
+    } else {
+        setGlobalTouchDragDataConcept(obj.parentNode);
+    }
+}
