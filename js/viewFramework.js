@@ -400,6 +400,8 @@ renderSidebar = function (justLists) {
             $("#detailSlider .relationList").hide().prev().hide();
         for (var i = 0; i < framework.relation.length; i++) {
             var a = EcAlignment.getBlocking(framework.relation[i]);
+            if (a == null)
+                continue;
             if (a.source.startsWith(selectedCompetency.shortId())) {
                 var target = EcCompetency.getBlocking(a.target);
                 var li = $(".relationList[" + labelChoice + "=" + a.relationType + "]").append("<li/>").children().last();
