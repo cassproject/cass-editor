@@ -143,7 +143,7 @@ function spitEvent(message, id) {
         selectedFramework: framework == null ? null : framework.shortId(),
         selectedCompetency: selectedCompetency == null ? null : selectedCompetency.shortId(),
         selectedFrameworkName: framework == null ? null : (framework.getName == null ? framework["dcterms:title"] : framework.getName()),
-        selectedCompetencyName: selectedCompetency == null ? null : (selectedCompetency.getName == null ? selectedCompetency["skos:prefLabel"] : framework.getName()),
+        selectedCompetencyName: selectedCompetency == null ? null : (selectedCompetency.getName == null ? selectedCompetency["skos:prefLabel"] : selectedCompetency.getName()),
         visiblePage: $(".page:visible").attr("id"),
     };
     if (queryParams.ceasnDataFields == "true") {
