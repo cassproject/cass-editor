@@ -530,6 +530,73 @@ allowCompetencyDrop = function (ev) {
     ev.preventDefault();
 }
 
+
+//Touchscreen drag and drop
+handleTouchStart = function (event) {
+    event.stopPropagation();
+    $(event.srcElement).click();
+    setGlobalTouchDragData(event.srcElement);
+}
+
+handleTouchMove = function (event) {
+    event.stopPropagation();
+    $('.competency').addClass('dashBorder');
+    var x = event.touches[0].clientX;
+    var y = event.touches[0].clientY;
+    var hoverElem = document.elementFromPoint(x, y);
+    if (hoverElem.classList.contains('competencyName') || hoverElem.classList.contains('competencyDescription') || hoverElem.classList.contains('competencyCodedNotation'))
+        hoverElem = hoverElem.parentNode.parentNode;
+    if (hoverElem.classList.contains('competency') || hoverElem.id == "frameworkNameContainer") {
+        $('.selected').removeClass('selected');
+        hoverElem.classList.add('selected');
+        globalTouchDragDestination = hoverElem.id;
+    }
+}
+
+handleTouchEnd = function (event) {
+    event.stopPropagation();
+    if (globalTouchDragDestination != null && globalTouchDragData != null) {
+        //Unlink competency
+        if (globalTouchDragDestination == "frameworkNameContainer") {
+            unlinkCompetency();
+        } else {
+            var targetElem = $(document.getElementById(globalTouchDragDestination));
+            var targetCompetencyId = targetElem.attr('id');
+            var targetRelationId = targetElem.attr('relationId');
+            var targetData = {
+                competencyId: targetCompetencyId,
+                relationId: targetRelationId
+            };
+
+            if (globalTouchDragData.relationId != null && globalTouchDragData.relationId != "") {
+                framework.removeRelation(globalTouchDragData.relationId);
+                conditionalDelete(targetData.relationId);
+            }
+
+            dropAny(globalTouchDragData, targetData);
+        }
+    }
+    $('.competency').removeClass('dashBorder');
+    globalTouchDragData = null;
+    globalTouchDragDestination = null;
+}
+
+//Recursively get the li element we want for touchdrag
+setGlobalTouchDragData = function (obj) {
+    if (obj.localName === "li") {
+        //Super hacky, needs a more robust solution (attribute length may change and this would break)
+        var competencyId = obj.attributes[8].value;
+        var relationId = Object.keys(obj.attributes).length > 9 ? obj.attributes[9].value : null;
+
+        globalTouchDragData = {
+            competencyId: competencyId,
+            relationId: relationId
+        };
+    } else {
+        setGlobalTouchDragData(obj.parentNode);
+    }
+}
+
 conditionalDelete = function (id, depth) {
     Task.asyncImmediate(function (callback) {
         if (viewMode) return;

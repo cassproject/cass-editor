@@ -1,3 +1,7 @@
+//For touch drag
+var globalTouchDragDestinationConcept = null;
+var globalTouchDragDataConcept = null;
+
 populateConceptScheme = function (subsearch) {
     var me = this;
     treeTop = $("#tree").scrollTop();
@@ -47,7 +51,7 @@ function refreshConcept(col, level, subsearch, recurse) {
     }
     recurse.push(col.shortId());
     var treeNode = null;
-    treeNode = $("#tree").append("<li class = 'competency' draggable='true' ondragstart='dragConcept(event);' ondrop='dropConcept(event);' ondragover='allowConceptDrop(event);'><span></span><ul></ul></li>").children().last();
+    treeNode = $("#tree").append("<li class = 'competency' draggable='true' ondragstart='dragConcept(event);' ontouchstart='handleTouchStartConcept(event)' ontouchmove='handleTouchMoveConcept(event);' ontouchend='handleTouchEndConcept(event);' ondrop='dropConcept(event);' ondragover='allowConceptDrop(event);'><span></span><ul></ul></li>").children().last();
     treeNode.attr("id", col.shortId());
     if (col["skos:prefLabel"] != null && col["skos:prefLabel"] != "NULL" && col["skos:prefLabel"] != col["skos:definition"])
         treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").css('display', 'block').text(col["skos:definition"]);
