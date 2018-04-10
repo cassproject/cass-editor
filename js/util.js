@@ -712,6 +712,8 @@ highlightSelected = function (element) {
 
 var tourSkipAhead = false;
 startTour = function (step) {
+    //Scroll to top of the frameworks list before starting the tour.
+    $('#frameworks').scrollTop(0);
     localStorage.setItem('tourStatus', 'in progress');
     var intro = introJs();
     intro.setOptions({
