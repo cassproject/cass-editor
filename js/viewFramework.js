@@ -402,13 +402,15 @@ renderSidebar = function (justLists) {
             var a = EcAlignment.getBlocking(framework.relation[i]);
             if (a == null)
                 continue;
-            if (a.source.startsWith(selectedCompetency.shortId())) {
-                var target = EcCompetency.getBlocking(a.target);
-                var li = $(".relationList[" + labelChoice + "=" + a.relationType + "]").append("<li/>").children().last();
-                li.text(target.getName());
+            var renderAlignment = function (displayCompetency, relationType) {
+                var li = $(".relationList[" + labelChoice + "=" + relationType + "]").append("<li/>").children().last();
+                if (displayCompetency == null)
+                    li.text(a.target);
+                else
+                    li.text(displayCompetency.getName());
                 li.attr("id", a.shortId());
                 if (viewMode)
-                    $(".relationList[" + labelChoice + "=" + a.relationType + "]").show().prev().show();
+                    $(".relationList[" + labelChoice + "=" + relationType + "]").show().prev().show();
                 else {
                     var x = li.prepend("<a class='viewMode frameworkEditControl' tabindex='0' style='float:right; cursor:pointer;'>×</a>").children().first();
                     x.click(function () {
@@ -417,41 +419,21 @@ renderSidebar = function (justLists) {
                         repo.saveTo(framework, afterSaveRender, error);
                     });
                 }
+            };
+            if (a.source.startsWith(selectedCompetency.shortId())) {
+                var target = EcCompetency.getBlocking(a.target);
+                renderAlignment(target, a.relationType);
             }
             if (a.relationType == Relation.IS_EQUIVALENT_TO || a.relationType == Relation.IS_RELATED_TO || a.relationType == "majorRelated" || a.relationType == "minorRelated") {
                 if (a.target.startsWith(selectedCompetency.shortId())) {
                     var source = EcCompetency.getBlocking(a.source);
-                    var li = $(".relationList[" + labelChoice + "=" + a.relationType + "]").append("<li/>").children().last();
-                    li.text(source.getName());
-                    li.attr("id", a.shortId());
-                    if (viewMode)
-                        $(".relationList[" + labelChoice + "=" + a.relationType + "]").show().prev().show();
-                    else {
-                        var x = li.prepend("<a class='viewMode frameworkEditControl' tabindex='0' style='float:right; cursor:pointer;'>×</a>").children().first();
-                        x.click(function () {
-                            framework.removeRelation($(this).parent().attr("id"));
-                            conditionalDelete($(this).parent().attr("id"));
-                            repo.saveTo(framework, afterSaveRender, error);
-                        });
-                    }
+                    renderAlignment(source, a.relationType);
                 }
             }
             if (a.relationType == Relation.NARROWS) {
                 if (a.target.startsWith(selectedCompetency.shortId())) {
                     var source = EcCompetency.getBlocking(a.source);
-                    var li = $(".relationList[" + labelChoice + "=broadens]").append("<li/>").children().last();
-                    li.text(source.getName());
-                    li.attr("id", a.shortId());
-                    if (viewMode)
-                        $(".relationList[" + labelChoice + "=broadens]").show().prev().show();
-                    else {
-                        var x = li.prepend("<a class='viewMode frameworkEditControl' tabindex='0' style='float:right; cursor:pointer;'>×</a>").children().first();
-                        x.click(function () {
-                            framework.removeRelation($(this).parent().attr("id"));
-                            conditionalDelete($(this).parent().attr("id"));
-                            repo.saveTo(framework, afterSaveRender, error);
-                        });
-                    }
+                    renderAlignment(source, "broadens");
                 }
             }
         }
@@ -1058,7 +1040,7 @@ removeChangedFieldHighlight = function () {
 
 playSavedAnimation = function () {
     var elemID = $('.selected').attr('id');
-    setTimeout(function() {
+    setTimeout(function () {
         var elem = document.getElementById(elemID);
         if (elem) {
             elem.classList.remove('savedCompetency');
