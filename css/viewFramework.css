@@ -65,6 +65,8 @@
     padding-top: 0rem;
     max-height: calc(100% - 3.0rem);
     overflow: auto;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
     padding-left: 2.5rem;
     padding-bottom: 1rem;
 }
@@ -94,6 +96,8 @@
     height: calc(100vh - 1rem);
     width: 21rem;
     overflow: auto;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
     min-width: 19rem;
 }
 

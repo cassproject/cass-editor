@@ -16,6 +16,8 @@ select {
     bottom: 0;
     display: block;
     overflow: hidden;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
     box-sizing: border-box;
     padding: 0;
     /*    padding-bottom: 3rem;*/
@@ -113,7 +115,8 @@ select {
 }
 
 #frameworks {
-    overflow-y: auto;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
     margin-top: 3.5rem;
     padding-top: 1rem;
     padding-left: 1rem;
