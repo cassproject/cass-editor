@@ -2,12 +2,62 @@
     margin: 0.25em;
 }
 
-#ceasnDataFields button {
-    margin-bottom: 1rem;
+.detailSliderEdit .viewMode:not(.editMode) {
+    display: none;
 }
 
-#ceasnDataFields ul:empty {
-    display: none !important;
+.detailSliderView .editMode:not(.viewMode) {
+    display: none;
+}
+
+.detailSliderCompetency .ceasnFramework:not(.ceasnCompetency) {
+    display: none;
+}
+
+.detailSliderFramework .ceasnCompetency:not(.ceasnFramework) {
+    display: none;
+}
+
+#ceasnDataFields button,
+#alignmentPanel button {
+    font-size: normal;
+    margin: 0px;
+    padding: 0px;
+    float: right;
+    margin-top: -5px;
+}
+
+#ceasnDataFields ul,
+#alignmentPanel ul {
+    border-top: 1px rgba(0, 0, 0, .5) solid;
+    padding-top: .25rem;
+    margin-top: .25rem;
+    margin-bottom: 0px;
+}
+
+#detailSlider p:empty,
+#detailSlider h3:empty {
+    display: none;
+}
+
+#detailSlider p,
+#detailSlider h3 {
+    border-top: 1px rgba(0, 0, 0, .5) solid;
+    margin-top: .25rem;
+    padding-top: .25rem;
+    margin-bottom: .25rem;
+}
+
+
+#ceasnDataFields ul li,
+#alignmentPanel ul li {
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+#ceasnDataFields ul:empty::after,
+#alignmentPanel ul:empty::after {
+    content: "None"
 }
 
 #tree {
@@ -78,6 +128,14 @@
     border-radius: 4px;
 }
 
+#sidebarFeedback {
+    display: block;
+}
+
+hr {
+    display: block;
+}
+
 .dot {
     height: 4px;
     width: 4px;
@@ -133,19 +191,13 @@
 
 #detailSlider input,
 #detailSlider textarea,
-#detailSlider #ceasnDataFields button,
 #detailSlider #ceasnDataFields select {
     margin-top: 0rem;
     width: calc(100% - 1rem);
 }
 
 #detailSlider #ceasnDataFields select {
-    display: block;
-}
-
-#detailSlider p {
-    display: block;
-    margin-bottom: .33em;
+    margin-bottom: 1rem;
 }
 
 #detailSlider label {

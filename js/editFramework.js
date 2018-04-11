@@ -272,9 +272,7 @@ saveCompetency = function () {
 
     thing["schema:dateModified"] = new Date().toISOString();
     if (selectedCompetency == null) {
-        repo.saveTo(thing, function () {
-            populateFramework();
-        }, error);
+        repo.saveTo(thing, afterSaveSidebar, error);
     } else {
         repo.saveTo(thing, afterSave, error);
     }

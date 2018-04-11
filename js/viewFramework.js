@@ -284,12 +284,7 @@ renderSidebar = function (justLists) {
     }
     var thing = framework;
     if (selectedCompetency != null) {
-        if (justLists != true)
-            $('.ceasnCompetency .viewMode').show();
         thing = selectedCompetency;
-    } else {
-        if (justLists != true)
-            $('.ceasnCompetency').hide();
     }
 
     var labelChoice = null;
@@ -313,13 +308,9 @@ renderSidebar = function (justLists) {
     if (queryParams.ceasnDataFields == 'true') {
         if (thing == selectedCompetency) {
             labelChoice = "ceasnCompetency";
-            $(".ceasnCompetency").show();
-            $(".ceasnFramework").hide();
             initTooltips('ceasnCompetency');
         } else {
             labelChoice = "ceasnFramework";
-            $(".ceasnCompetency").hide();
-            $(".ceasnFramework").show();
             initTooltips('ceasnFramework');
         }
     }
@@ -350,9 +341,12 @@ renderSidebar = function (justLists) {
             if (!$(this).next().is("input,textarea"))
                 return;
             $(this).html("");
+            $(this).prev("label").addClass("viewMode");
             var val = thing[$(this).next().attr(fieldChoice)];
-            if (val === undefined || val == null || val == "")
+            if (val === undefined || val == null || val == "") {
+                $(this).prev("label").removeClass("viewMode");
                 return;
+            }
             if (EcArray.isArray(val))
                 val = JSON.parse(JSON.stringify(val));
             if (!EcArray.isArray(val))
@@ -367,12 +361,13 @@ renderSidebar = function (justLists) {
             }
         });
     $("#detailSlider ul").each(function () {
-        if (!$(this).next().is("input,textarea,button"))
-            return;
-        var val = thing[$(this).next().attr(fieldChoice)];
+        var u = $(this).prev().attr(fieldChoice);
+        var val = thing[u];
         $(this).html("");
-        var u = $(this).next().attr(fieldChoice);
-        if (val != null) {
+        $(this).prev("label").addClass("viewMode");
+        if (val == null)
+            $(this).prev("label").removeClass("viewMode");
+        else {
             if (!EcArray.isArray(val)) val = [val];
             for (var i = 0; i < val.length; i++) {
                 var li = $(this).append("<li/>").children().last();
@@ -384,7 +379,7 @@ renderSidebar = function (justLists) {
                     name = it["skos:prefLabel"];
                 li.attr("id", val[i]).attr("title", val[i]).text(name);
                 if (!viewMode) {
-                    var x = li.prepend("<a class='editMode' tabindex='0' style='float:right; cursor:pointer;'>×</a>").children().first();
+                    var x = li.prepend("<a class='editMode' tabindex='0' style='float:right; cursor:pointer;'><i class='fa fa-times'></i></a>").children().first();
                     (function (thing, u, id, li) {
                         x.click(function () {
                             EcArray.setRemove(thing[u], id);
@@ -415,7 +410,7 @@ renderSidebar = function (justLists) {
                 if (viewMode)
                     $(".relationList[" + labelChoice + "=" + relationType + "]").show().prev().show();
                 else {
-                    var x = li.prepend("<a class='viewMode frameworkEditControl' tabindex='0' style='float:right; cursor:pointer;'>×</a>").children().first();
+                    var x = li.prepend("<button class='viewMode frameworkEditControl' tabindex='0' style='float:right; cursor:pointer;'><i class='fa fa-times'></i></button>").children().first();
                     x.click(function () {
                         framework.removeRelation($(this).parent().attr("id"));
                         conditionalDelete($(this).parent().attr("id"));
@@ -444,15 +439,22 @@ renderSidebar = function (justLists) {
     if (justLists != true)
         $("#detailSlider input,textarea").each(function () {
             if ($(this).attr(safeChoice) != null && ($(this).attr(labelChoice) == null || $(this).attr(labelChoice) === undefined)) {
-                $(this).prev().prev().remove();
-                $(this).prev().remove();
-                $(this).remove();
+                $(this).prev().prev().hide();
+                $(this).prev().hide();
+                $(this).hide();
                 return;
+            } else {
+                $(this).prev().prev().css("display", "");
+                $(this).prev().css("display", "");
+                $(this).css("display", "");
             }
+            $(this).prev("label").addClass("viewMode");
             var val = thing[$(this).attr(inputChoice)];
-            if (val === undefined || val == null || val == "")
+            if (val === undefined || val == null || val == "") {
+                $(this).prev("label").removeClass("viewMode");
                 if ($(this).attr("defaultToFramework") != null)
                     val = framework[$(this).attr(inputChoice)];
+            }
             if (EcArray.isArray(val))
                 val = val.join(", ");
             if (val === undefined || val == null || val == "") {
@@ -464,30 +466,39 @@ renderSidebar = function (justLists) {
         });
     if (justLists != true)
         $("#detailSlider button").each(function () {
+            $(this).prev("label").addClass("viewMode");
             if ($(this).attr(safeChoice) != null && ($(this).attr(labelChoice) == null || $(this).attr(labelChoice) === undefined)) {
-                $(this).prev().prev().remove();
-                $(this).prev().remove();
-                $(this).remove();
+                $(this).prev().hide();
+                $(this).next().hide();
+                $(this).hide();
                 return;
+            } else {
+                $(this).prev().css("display", "");
+                $(this).next().css("display", "");
+                $(this).css("display", "");
             }
             var val = thing[$(this).attr(inputChoice)];
-            if (val === undefined || val == null || val == "")
+            if (val === undefined || val == null || val == "") {
+                $(this).prev("label").removeClass("viewMode");
                 $(this).val(null);
-            else
+            } else {
                 $(this).val(val);
+            }
         });
     if (justLists != true)
         $("#detailSlider select").each(function () {
+            $(this).prev().prev("label").addClass("viewMode");
             if ($(this).attr(safeChoice) != null && ($(this).attr(labelChoice) == null || $(this).attr(labelChoice) === undefined)) {
-                $(this).prev().prev().remove();
-                $(this).prev().remove();
-                $(this).remove();
+                $(this).prev().prev().hide();
+                $(this).prev().hide();
+                $(this).hide();
                 return;
             }
             var val = thing[$(this).attr(inputChoice)];
-            if (val === undefined || val == null || val == "")
+            if (val === undefined || val == null || val == "") {
+                $(this).prev().prev("label").removeClass("viewMode");
                 $(this).find("option").prop('selected', false).first().prop('selected', true);
-            else {
+            } else {
                 $(this).find("option").prop('selected', false);
                 $(this).find("option[value=\"" + val + "\"]").prop('selected', true);
             }
@@ -496,6 +507,7 @@ renderSidebar = function (justLists) {
 
 refreshSidebar = function () {
     if ($("#detailSlider").length == 0) return;
+    $("#detailSlider").addClass("detailSliderView").removeClass("detailSliderEdit");
 
     removeChangedFieldHighlight();
 
@@ -503,11 +515,11 @@ refreshSidebar = function () {
 
     var thing = framework;
     if (selectedCompetency != null) {
-        $('.ceasnCompetency .viewMode').show();
+        $("#detailSlider").addClass("detailSliderCompetency").removeClass("detailSliderFramework");
         thing = selectedCompetency;
         $("#alignmentPanel").show();
     } else {
-        $('.ceasnCompetency').hide();
+        $("#detailSlider").addClass("detailSliderFramework").removeClass("detailSliderCompetency");
         $("#alignmentPanel").hide();
     }
 
@@ -515,7 +527,7 @@ refreshSidebar = function () {
         $('.export').show();
     }
 
-    if (queryParams.ceasnDataFields === 'true') {
+    if (queryParams.ceasnDataFields == 'true') {
         $('#ceasnDataFields').show();
     }
 
@@ -526,13 +538,7 @@ refreshSidebar = function () {
 
     $("sidebarFeedback").text("");
     $("#editFrameworkSection").find("button,input,textarea,select").prop('disabled', false);
-    $("#editFrameworkSection .editMode").hide();
-    $("#editFrameworkSection .viewMode").show();
-
-    $("#editFrameworkSection label:not(.alwaysShowInViewMode)").each(function () {
-        if ($(this).parent().children("#" + $(this).attr("for")).text() == "" || $(this).parent().children("#" + $(this).attr("for")).text() == null)
-            $(this).hide();
-    });
+    $("#ceasnDataFields ul:empty").hide();
 
     if (framework == thing) {
         $(".frameworkOnly").show();
@@ -603,14 +609,14 @@ editSidebar = function () {
         return;
     if (conceptMode)
         return editConceptSidebar();
-
-    $("#editFrameworkSection .viewMode").hide();
-    $("#editFrameworkSection .editMode").show();
+    $("#detailSlider").addClass("detailSliderEdit").removeClass("detailSliderView");
+    $("#editFrameworkSection label").css("display", "");
 
     changedFields = {};
     ulLengths = {};
 
     initULLengths();
+    renderSidebar();
 
     var thing = framework;
     if (selectedCompetency != null)
