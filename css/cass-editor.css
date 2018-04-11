@@ -303,8 +303,6 @@ select {
     /*    background-color: #414142;*/
     background-color: rgba(84, 84, 84, 0.25);
     text-align: center;
-    font-size: 2rem;
-
     -webkit-font-smoothing: antialiased;
 }
 
