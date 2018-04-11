@@ -497,12 +497,12 @@
                         <ul id="sidebarNarrows" cassCompetency="narrows" ceasnCompetency="narrows" class="viewMode editMode relationList competencyOnly"></ul>
 
                         <label for="sidebarMajor" title="" style="margin:0px;" cassCompetency="Major Overlap:" ceasnCompetency="Major Alignments:" class="viewMode editMode ceasnOnly competencyOnly">Major Alignment:</label>
-                        <button id="sidebarMajorBrowse" cassCompetency="majorRelated" ceasnCompetency="majorRelated" plural="true" class="viewMode editMode editControl frameworkEditControl competencyOnly" onclick="$('#selectCompetencySection').attr('relation','majorRelated');initIframe(true);showPage('#selectCompetencySection', framework);"><i class="fa fa-search-plus"></i></button>
-                        <ul id="sidebarMajor" cassCompetency="majorRelated" ceasnCompetency="majorRelated" class="viewMode editMode relationList competencyOnly"></ul>
+                        <button id="sidebarMajorBrowse" cassCompetency="majorRelated" ceasnCompetency="majorRelated" plural="true" class="viewMode editMode editControl ceasnOnly frameworkEditControl competencyOnly" onclick="$('#selectCompetencySection').attr('relation','majorRelated');initIframe(true);showPage('#selectCompetencySection', framework);"><i class="fa fa-search-plus"></i></button>
+                        <ul id="sidebarMajor" cassCompetency="majorRelated" ceasnCompetency="majorRelated" class="viewMode editMode relationList ceasnOnly competencyOnly"></ul>
 
                         <label for="sidebarMinor" title="" style="margin:0px;" cassCompetency="Minor Overlap:" ceasnCompetency="Minor Alignments:" class="viewMode editMode ceasnOnly competencyOnly">Minor Alignment:</label>
-                        <button id="sidebarMinorBrowse" ceasnCompetency="minorRelated" plural="true" class="viewMode editMode editControl frameworkEditControl competencyOnly" onclick="$('#selectCompetencySection').attr('relation','minorRelated');initIframe(true);showPage('#selectCompetencySection', framework);"><i class="fa fa-search-plus"></i></button>
-                        <ul id="sidebarMinor" cassCompetency="minorRelated" ceasnCompetency="minorRelated" class="viewMode editMode relationList competencyOnly"></ul>
+                        <button id="sidebarMinorBrowse" ceasnCompetency="minorRelated" plural="true" class="viewMode editMode editControl ceasnOnly frameworkEditControl competencyOnly" onclick="$('#selectCompetencySection').attr('relation','minorRelated');initIframe(true);showPage('#selectCompetencySection', framework);"><i class="fa fa-search-plus"></i></button>
+                        <ul id="sidebarMinor" cassCompetency="minorRelated" ceasnCompetency="minorRelated" class="viewMode editMode relationList ceasnOnly competencyOnly"></ul>
 
                         <label for="sidebarEnabled" title="" style="margin:0px;" cassCompetency="Is Enabled By:" class="viewMode editMode competencyOnly">Is Enabled By:</label>
                         <button id="sidebarEnabledBrowse" cassCompetency="isEnabledBy" plural="true" class="viewMode editMode editControl frameworkEditControl competencyOnly" onclick="$('#selectCompetencySection').attr('relation','isEnabledBy');initIframe(true);showPage('#selectCompetencySection', framework);"><i class="fa fa-search-plus"></i></button>
