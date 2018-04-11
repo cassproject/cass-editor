@@ -363,19 +363,35 @@ renderSidebar = function (justLists) {
     $("#detailSlider ul").each(function () {
         var u = $(this).prev().attr(fieldChoice);
         var val = thing[u];
+        if ($(this).attr(safeChoice) != null && ($(this).attr(labelChoice) == null || $(this).attr(labelChoice) === undefined)) {
+            $(this).prev().prev().hide();
+            $(this).prev().hide();
+            $(this).hide();
+            return;
+        } else {
+            $(this).prev().prev().css("display", "");
+            $(this).prev().css("display", "");
+            $(this).css("display", "");
+        }
         $(this).html("");
         $(this).prev("label").addClass("viewMode");
-        if (val == null)
-            $(this).prev("label").removeClass("viewMode");
-        else {
+        $(this).prev().prev("label").addClass("viewMode");
+        if (val == null) {
+            if ($(this).parents("#alignmentPanel").length == 0)
+                $(this).prev("label").removeClass("viewMode");
+        } else {
             if (!EcArray.isArray(val)) val = [val];
             for (var i = 0; i < val.length; i++) {
                 var li = $(this).append("<li/>").children().last();
                 var it = EcRepository.getBlocking(val[i]);
-                var name = it.name;
-                if (name == null)
+                var name;
+                if (it == null)
+                    name = val[i];
+                else if (it.name != null)
+                    name = it.name;
+                else if (it["ceasn:competencyText"] != null)
                     name = it["ceasn:competencyText"];
-                if (name == null)
+                else if (it["skos:prefLabel"] != null)
                     name = it["skos:prefLabel"];
                 li.attr("id", val[i]).attr("title", val[i]).text(name);
                 if (!viewMode) {
@@ -479,7 +495,8 @@ renderSidebar = function (justLists) {
             }
             var val = thing[$(this).attr(inputChoice)];
             if (val === undefined || val == null || val == "") {
-                $(this).prev("label").removeClass("viewMode");
+                if ($(this).parents("#alignmentPanel").length == 0) // Not a button to add an item to a list
+                    $(this).prev("label").removeClass("viewMode");
                 $(this).val(null);
             } else {
                 $(this).val(val);
@@ -528,7 +545,10 @@ refreshSidebar = function () {
     }
 
     if (queryParams.ceasnDataFields == 'true') {
+        $("#detailSlider").addClass("detailSliderCeasn");
         $('#ceasnDataFields').show();
+    } else {
+        $("#detailSlider").addClass("detailSliderCass");
     }
 
     $('#ceasnDataFields').find('p').text(null);
@@ -541,8 +561,6 @@ refreshSidebar = function () {
     $("#ceasnDataFields ul:empty").hide();
 
     if (framework == thing) {
-        $(".frameworkOnly").show();
-        $(".competencyOnly").hide();
         $("#sidebarVersion").hide();
         $("#sidebarAddLevels").hide();
         $("#sidebarMoveUp").hide();
@@ -554,9 +572,6 @@ refreshSidebar = function () {
     }
 
     if (thing == selectedCompetency) {
-        $(".frameworkOnly").hide();
-        if (!viewMode)
-            $(".competencyOnly").show();
         if (framework.competency != null)
             if (EcArray.has(framework.competency.concat(framework.level), thing.shortId()))
                 $("#sidebarVersion option").prop('selected', false).first().prop('selected', true);
@@ -654,13 +669,6 @@ editSidebar = function () {
         $("#sidebarUnlink").prop('disabled', true);
     }
 
-    if (selectedCompetency != null) {
-        $('.ceasnCompetency .editMode').show();
-        $('.ceasnFramework').hide();
-    } else {
-        $('.ceasnCompetency').hide();
-        $(".competencyOnly").hide();
-    }
     try {
         $('#sidebarNameInput').autocomplete("destroy");
         $('#sidebarNameInput').removeData('autocomplete');

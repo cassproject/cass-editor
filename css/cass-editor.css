@@ -529,6 +529,14 @@ input.redButton {
     margin: 0.25em;
 }
 
+.detailSliderCeasn .absentForCeasn {
+    display: none;
+}
+
+.detailSliderCass .ceasnOnly {
+    display: none;
+}
+
 .detailSliderEdit .viewMode:not(.editMode) {
     display: none;
 }
@@ -541,7 +549,15 @@ input.redButton {
     display: none;
 }
 
+.detailSliderCompetency .frameworkOnly {
+    display: none;
+}
+
 .detailSliderFramework .ceasnCompetency:not(.ceasnFramework) {
+    display: none;
+}
+
+.detailSliderFramework .competencyOnly {
     display: none;
 }
 
