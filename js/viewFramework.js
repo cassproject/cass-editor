@@ -418,18 +418,18 @@ renderSidebar = function (justLists) {
                     });
                 }
             };
-            if (a.source.startsWith(selectedCompetency.shortId())) {
+            if (a.source == selectedCompetency.shortId()) {
                 var target = EcCompetency.getBlocking(a.target);
                 renderAlignment(target, a.relationType);
             }
             if (a.relationType == Relation.IS_EQUIVALENT_TO || a.relationType == Relation.IS_RELATED_TO || a.relationType == "majorRelated" || a.relationType == "minorRelated") {
-                if (a.target.startsWith(selectedCompetency.shortId())) {
+                if (a.target == selectedCompetency.shortId()) {
                     var source = EcCompetency.getBlocking(a.source);
                     renderAlignment(source, a.relationType);
                 }
             }
             if (a.relationType == Relation.NARROWS) {
-                if (a.target.startsWith(selectedCompetency.shortId())) {
+                if (a.target == selectedCompetency.shortId()) {
                     var source = EcCompetency.getBlocking(a.source);
                     renderAlignment(source, "broadens");
                 }
