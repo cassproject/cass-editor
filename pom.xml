@@ -113,6 +113,7 @@
                                 <jsSourceFile>js/vendor/jquery-ui.min.js</jsSourceFile>
                                 <jsSourceFile>js/vendor/intro.min.js</jsSourceFile>
                                 <jsSourceFile>js/vendor/jquery.mark.min.js</jsSourceFile>
+                                <jsSourceFile>js/vendor/uuid.js</jsSourceFile>
                                 <jsSourceFile>forge/forge.min.js</jsSourceFile>
                                 <jsSourceFile>js/cass/require.js</jsSourceFile>
                                 <jsSourceFile>js/cass/papaparse.js</jsSourceFile>
@@ -146,6 +147,7 @@
                                 <jsSourceFile>js/viewConceptScheme.js</jsSourceFile>
                                 <jsSourceFile>js/viewConceptSchemes.js</jsSourceFile>
                                 <jsSourceFile>js/import.js</jsSourceFile>
+                                <jsSourceFile>js/import-case.js</jsSourceFile>
                                 <jsSourceFile>js/pageManagement.js</jsSourceFile>
                             </jsSourceFiles>
                             <closureLanguageIn>ECMASCRIPT6</closureLanguageIn>
