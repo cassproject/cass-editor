@@ -148,11 +148,24 @@ function spitEvent(message, id) {
     };
     if (queryParams.ceasnDataFields == "true") {
         if (framework != null)
-            if (framework.getGuid != null)
-                evt.selectedFrameworkCtid = framework == null ? null : "ce-" + framework.getGuid();
+            if (framework.getGuid != null) {
+                if (framework.getGuid().startsWith("ce-"))
+                    evt.selectedFrameworkCtid = framework == null ? null : framework.getGuid();
+                else if (framework.getGuid().matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"))
+                    evt.selectedFrameworkCtid = framework == null ? null : "ce-" + framework.getGuid();
+                else
+                    evt.selectedFrameworkCtid = "ce-" + new UUID(3, "nil", framework.shortId()).format();
+
+            }
         if (selectedCompetency != null)
-            if (selectedCompetency.getGuid != null)
-                evt.selectedCompetencyCtid = selectedCompetency == null ? null : "ce-" + selectedCompetency.getGuid();
+            if (selectedCompetency.getGuid != null) {
+                if (selectedCompetency.getGuid().startsWith("ce-"))
+                    evt.selectedCompetencyCtid = selectedCompetency == null ? null : selectedCompetency.getGuid();
+                else if (selectedCompetency.getGuid().matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"))
+                    evt.selectedCompetencyCtid = selectedCompetency == null ? null : "ce-" + selectedCompetency.getGuid();
+                else
+                    evt.selectedCompetencyCtid = "ce-" + new UUID(3, "nil", framework.shortId() + selectedCompetency.shortId()).format();
+            }
     }
     console.log(evt);
     if (parent != null)
