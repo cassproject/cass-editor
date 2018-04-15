@@ -1,6 +1,7 @@
 var caseImportTemplate = $("#caseImportList").html();
 
 detectEndpoint1 = function () {
+    $("#caseImportSection #importButton").show();
     $("#urlEndpointSuccess").hide();
     $("#urlEndpointError").hide();
     var url = $("#urlEndpoint").val();
