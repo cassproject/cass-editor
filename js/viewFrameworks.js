@@ -19,7 +19,7 @@ function searchFrameworks(paramObj) {
     searchCompetencies = [];
     for (var i = 0; i < servers.length; i++) {
         frameworkSearch(servers[i], searchTerm, null, paramObj);
-        if (searchTerm != "*") {
+        if (searchTerm != "*" && paramObj.frameworksOnly != true) {
             frameworkSearchByCompetency(servers[i], searchTerm);
         }
     }
@@ -141,7 +141,7 @@ function frameworkSearchByCompetency(server, searchTerm, retry) {
             frameworkSearchByCompetency(server, "\"" + searchTerm + "\"", true);
         }
     }, {
-        size: 5000
+        size: 100
     });
 }
 

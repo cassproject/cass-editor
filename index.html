@@ -24,7 +24,7 @@
                 </ul>
                 <table>
                     <tr>
-                        <th>Allowed Format:</th>
+                        <th>Allowed File Format:</th>
                         <td>CSV</td>
                         <td>XML</td>
                         <td>RDF+JSON</td>
@@ -33,7 +33,14 @@
                         <th>Allowed Schema:</th>
                         <td>CASS</td>
                         <td>Medbiquitous</td>
-                        <td>ASN</td>
+                        <td>Achievement Standards Network</td>
+                    </tr>
+                </table>
+                <br>
+                <table>
+                    <tr>
+                        <td>Allowed Endpoint:</td>
+                        <td>IMS CASE</td>
                     </tr>
                 </table>
             </div>
@@ -42,6 +49,14 @@
             <center style="width:100%">
                 <input type="file" name="files[]" id="file" data-multiple-caption="{count} files selected" multiple hidden/>
                 <label for="file" style="">Drag and drop a file here<br> or <button href="#" onClick="$(this).parent().click()">Browse...</button></label>
+            </center>
+        </div>
+        <hr>
+        <div id="importUrlForm" style="margin:1rem;">
+            <center style="width:100%">
+                <label for="urlEndpoint" style="">or, paste an endpoint URL to detect frameworks: </label>
+                <br>
+                <input type="text" name="urlEndpoint" id="urlEndpoint" style="width:calc(100% - 2rem)" /><br><small id="urlEndpointSuccess" style="display:none;" class="greenButton">Success text.</small> <small id="urlEndpointError" style="display:none;" class="redButton">Error text.</small>
             </center>
         </div>
 
@@ -111,6 +126,7 @@
             </div>
         </div>
     </div>
+
     <div id="asnImportSection" class="page" style="display:none;margin-left: 1rem;">
         <h3 id="asnImportHeader">Import ASN</h3>
         <i>This will import an ASN file.</i>
@@ -123,6 +139,30 @@
                 <div style="float:left;">
                     <button id="importButton" onclick="importAsn();">Import</button>
                     <button id="cancelButton" onclick="backPage();">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="caseImportSection" class="page" style="display:none;margin-left: 1rem;">
+        <h3 id="caseImportHeader">Import from IMS CASE endpoint</h3>
+        <i>This will import selected frameworks from an IMS CASE server such as OpenSALT.</i>
+        <hr>
+        <ul id="caseImportList">
+            <li class="caseImportTemplate unfinished">
+                <input type="checkbox">
+                <i class="loading fa fa-circle-o-notch fa-spin" style="display:none;"> </i>
+                <i class="success fa fa-check" style="display:none;"> </i>
+                <i class="error fa fa-exclamation-triangle" style="display:none;"> </i>
+                <span class="caseImportTitle"> </span>
+            </li>
+        </ul>
+        <hr>
+        <div id="buttonSection">
+            <div>
+                <div style="float:left;">
+                    <button id="importButton" onclick="importCase();">Import</button>
+                    <button id="cancelButton" onclick='$(".caseImportTemplate.unfinished").removeClass("unfinished");backPage();'>Back</button>
                 </div>
             </div>
         </div>

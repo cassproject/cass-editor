@@ -41,7 +41,7 @@ function importFile() {
         }, function (error) {
             {
                 alert(error);
-                showPage("importSection");
+                showPage("#importSection");
             }
         });
     } else if (file.name.endsWith(".json")) {
@@ -53,7 +53,7 @@ function importFile() {
         }, function (error) {
             {
                 alert(error);
-                showPage("importSection");
+                showPage("#importSection");
             }
         });
     } else if (file.name.endsWith(".xml")) {
@@ -65,7 +65,7 @@ function importFile() {
         }, function (error) {
             {
                 alert(error);
-                showPage("importSection");
+                showPage("#importSection");
             }
         });
     }
