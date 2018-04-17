@@ -199,7 +199,7 @@
         <div id="header">
             <button id="createNewButton" style="float: right;" status="select" onclick='createFramework();'><i class="fa fa-plus"></i></button>
             <button id="importButton" class="absentForConcepts" style="float: right;" id="importButton" onclick='showPage("#importSection");'><i class="fa fa-upload"></i></button>
-            <button id="frameworksHelpButton" style="float:right;" onclick='startTour();' title="Restarts the tutorial."><i class="fa fa-question"></i></button>
+            <button id="frameworksHelpButton" style="float:right;" onclick='tourSkipAhead=false;startTour();' title="Restarts the tutorial."><i class="fa fa-question"></i></button>
             <span id="frameworksBack" onclick='parent.postMessage({message: "back"}, queryParams.origin);' style="float:left;display:none;"><i class="fa fa-arrow-circle-left" > </i></span>
             <input type="text" id="search" placeholder="Search...">
             <button id="resetSearchButton" onclick="resetSearch();" style="">&#215;</button>
