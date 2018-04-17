@@ -259,13 +259,19 @@
             <small id="sidebarFeedback" class="editControl"></small>
 
             <table style="border:0px;" width="100%">
-                <tr>
-                    <td style="vertical-align: top;min-width:50%;max-width:100%">
-                        <h4 class="editMode absentForConcepts ceasnCompetency" style="margin-bottom:0px;">Required</h4>
+                <tr style="vertical-align: top;min-width:50%;max-width:100%">
+                    <td>
+                        <h2 class="editMode absentForConcepts ceasnCompetency" style="margin-bottom:0px;">Required</h2>
                         <hr class="editMode absentForConcepts ceasnCompetency" style="margin-top:0px;">
 
-                        <h4 class="editMode absentForConcepts ceasnFramework" style="margin-bottom:0px;">Required</h4>
+                        <h2 class="editMode absentForConcepts ceasnFramework" style="margin-bottom:0px;">Required</h2>
                         <hr class="editMode absentForConcepts ceasnFramework" style="margin-top:0px;">
+
+                        <h2 class="viewMode absentForConcepts ceasnCompetency" style="margin-bottom:0px;">Properties</h2>
+                        <hr class="viewMode absentForConcepts ceasnCompetency" style="margin-top:0px;">
+
+                        <h2 class="viewMode absentForConcepts ceasnFramework" style="margin-bottom:0px;">Properties</h2>
+                        <hr class="viewMode absentForConcepts ceasnFramework" style="margin-top:0px;">
 
                         <div class="sidebarEditSection">
                             <label for="sidebarNameInput" title="" cassCompetency="Competency Name:" cassFramework="Framework Name:" ceasnCompetency="Competency Text:" ceasnFramework="Name:" skosCompetency="Preferred Label:" skosFramework="Concept Scheme Title:" class="editMode" style="margin: 0px;">Name:</label>
@@ -279,7 +285,7 @@
                             <div id="ceasnDataFields">
                                 <form onsubmit="return false;">
                                     <div class="ceasnCompetency">
-                                        <h4 class="editMode absentForConcepts" style="margin-bottom:0px;">Required if available</h4>
+                                        <h2 class="editMode absentForConcepts" style="margin-bottom:0px;">Required if available</h2>
                                         <hr class="editMode absentForConcepts" style="margin-top:0px;">
 
                                         <label for="sidebarCodedNotation" title="" cassCompetency="Coded Notation:" ceasnCompetency="Coded Notation:" class="viewMode editMode" style="margin:0px;">Coded Notation:</label>
@@ -303,7 +309,7 @@
                                         <button id="sidebarEducationLevelTypeBrowse" cassCompetency="ceasn:educationLevelType" ceasnCompetency="ceasn:educationLevelType" plural="true" class="editMode editControl" onclick="$('#selectConceptSection').attr('destination','ceasn:educationLevelType');initIframe();showPage('#selectConceptSection', framework);"><i class="fa fa-search-plus"></i></button>
                                         <ul id="sidebarEducationLevelType" cassCompetency="ceasn:educationLevelType" ceasnCompetency="ceasn:educationLevelType" class="viewMode editMode" style="font-weight:bold;"></ul>
 
-                                        <h4 class="editMode absentForConcepts" style="margin-bottom:0px;">Recommended</h4>
+                                        <h2 class="editMode absentForConcepts" style="margin-bottom:0px;">Recommended</h2>
                                         <hr class="editMode absentForConcepts" style="margin-top:0px;">
 
                                         <label for="sidebarWeight" title="" cassCompetency="Weight:" ceasnCompetency="Weight:" class="viewMode editMode absentForConcepts" style="margin: 0px">Weight:</label>
@@ -364,7 +370,7 @@
                             <p id="sidebarAlternativeCodedNotation" class="viewMode" style="font-weight:bold;"></p>
                             <input id="sidebarAlternativeCodedNotationInput" cassCompetency="ceasn:altCodedNotation" ceasnCompetency="ceasn:altCodedNotation" plural="true" class="editMode editControl" />
 
-                            <h4 class="editMode absentForConcepts" style="margin-bottom:0px;">Optional</h4>
+                            <h2 class="editMode absentForConcepts" style="margin-bottom:0px;">Optional</h2>
                             <hr class="editMode absentForConcepts" style="margin-top:0px;">
 
                             <label for="sidebarCreator" title="" cassCompetency="Creator:" ceasnCompetency="Creator:" skosCompetency="Creator:" class="viewMode editMode" style="margin:0px;">Creator:</label>
@@ -392,7 +398,7 @@
                                         <p id="sidebarInLanguage" class="viewMode" style="font-weight:bold;"></p>
                                         <input id="sidebarInLanguageInput" cassFramework="schema:inLanguage" ceasnFramework="ceasn:inLanguage" skosFramework="dcterms:language" plural="true" class="editMode editControl" />
 
-                                        <h4 class="editMode absentForConcepts" style="margin-bottom:0px;">Required if available</h4>
+                                        <h2 class="editMode absentForConcepts" style="margin-bottom:0px;">Required if available</h2>
                                         <hr class="editMode absentForConcepts" style="margin-top:0px;">
 
                                         <label for="sidebarPublisher" title="" cassFramework="Publisher:" ceasnFramework="Publisher:" skosFramework="Publisher:" class="viewMode editMode" style="margin:0px;">Publisher:</label>
@@ -409,7 +415,7 @@
                                         <input id="sidebarSourceInput" cassFramework="dc:source" ceasnFramework="ceasn:source" type="url" plural="true" class="editMode editControl" />
                                         <span class="orangeUri">Note: URI only.</span>
 
-                                        <h4 class="editMode absentForConcepts" style="margin-bottom:0px;">Recommended</h4>
+                                        <h2 class="editMode absentForConcepts" style="margin-bottom:0px;">Recommended</h2>
                                         <hr class="editMode absentForConcepts" style="margin-top:0px;">
 
                                         <label for="sidebarDateCopyrighted" title="" cassFramework="Date Copyrighted:" ceasnFramework="Date Copyrighted:" skosFramework="Date Copyrighted:" class="viewMode editMode" style="margin:0px;">Date Copyrighted:</label>
@@ -431,7 +437,7 @@
                                         <span class="orangeUri">Note: URI only.</span>
 
                                         <!--
-                            <h4 class="editMode absentForConcepts" style="margin-bottom:0px;">Optional</h4>
+                            <h2 class="editMode absentForConcepts" style="margin-bottom:0px;">Optional</h2>
                             <hr class="editMode absentForConcepts" style="margin-top:0px;">
 
                             <label for="sidebarCodedNotation" title="" cassFramework="Identifier:" ceasnFramework="Coded Notation:" class="viewMode editMode" style="margin:0px;">Coded Notation:</label>
@@ -470,7 +476,7 @@
                                         <input id="sidebarDerivedFromInput" cassFramework="ceasn:derivedFrom" ceasnFramework="ceasn:derivedFrom" type="url" plural="true" class="editMode editControl" />
                                         <span class="orangeUri">Note: URI only.</span>
 
-                                        <h4 class="editMode absentForConcepts" style="margin-bottom:0px;">Optional</h4>
+                                        <h2 class="editMode absentForConcepts" style="margin-bottom:0px;">Optional</h2>
                                         <hr class="editMode absentForConcepts" style="margin-top:0px;">
 
                                         <label for="sidebarConceptKeyword" title="" cassFramework="Keywords:" ceasnFramework="Keywords:" skosFramework="Concept Keyword:" class="viewMode editMode" style="margin:0px;">Concept Keyword:</label>
@@ -516,8 +522,10 @@
                             </div>
                         </div>
                     </td>
-                    <td id="alignmentPanel" style="vertical-align: top;padding-left:.5rem;min-width:50%;" width="50%">
-                        <h4 class="viewMode editMode absentForConcepts competencyOnly" style="margin-bottom:0px;">Alignments</h4>
+                </tr>
+                <tr id="alignmentPanel" style="vertical-align: top;padding-left:.5rem;;min-width:50%;max-width:100%">
+                    <td>
+                        <h2 class="viewMode editMode absentForConcepts competencyOnly" style="margin-bottom:0px;">Alignments</h2>
                         <hr class="viewMode editMode absentForConcepts competencyOnly" style="margin-top:0px;">
 
                         <label for="sidebarRequires" title="" style="margin:0px;" cassCompetency="Requires:" ceasnCompetency="Prerequisite Alignments:" class="viewMode editMode competencyOnly">Requires:</label>
@@ -528,11 +536,11 @@
                         <button id="sidebarEquivalentBrowse" cassCompetency="isEquivalentTo" ceasnCompetency="isEquivalentTo" plural="true" class="viewMode editMode editControl frameworkEditControl competencyOnly" onclick="$('#selectCompetencySection').attr('relation','isEquivalentTo');initIframe(true);showPage('#selectCompetencySection', framework);"><i class="fa fa-search-plus"></i></button>
                         <ul id="sidebarEquivalent" cassCompetency="isEquivalentTo" ceasnCompetency="isEquivalentTo" class="viewMode editMode relationList competencyOnly"></ul>
 
-                        <label for="sidebarBroadens" title="" style="margin:0px;" cassCompetency="Broadens:" ceasnCompetency="Broadens Alignments:" class="viewMode editMode competencyOnly">Broadens:</label>
+                        <label for="sidebarBroadens" title="" style="margin:0px;" cassCompetency="Broadens:" ceasnCompetency="Narrow Alignments:" class="viewMode editMode competencyOnly">Broadens:</label>
                         <button id="sidebarBroadensBrowse" cassCompetency="broadens" ceasnCompetency="broadens" plural="true" class="viewMode editMode editControl frameworkEditControl competencyOnly" onclick="$('#selectCompetencySection').attr('relation','broadens');initIframe(true);showPage('#selectCompetencySection', framework);"><i class="fa fa-search-plus"></i></button>
                         <ul id="sidebarBroadens" cassCompetency="broadens" ceasnCompetency="broadens" class="viewMode editMode relationList competencyOnly"></ul>
 
-                        <label for="sidebarNarrows" title="" style="margin:0px;" cassCompetency="Narrows:" ceasnCompetency="Narrows Alignments:" class="viewMode editMode competencyOnly">Narrows:</label>
+                        <label for="sidebarNarrows" title="" style="margin:0px;" cassCompetency="Narrows:" ceasnCompetency="Broad Alignments:" class="viewMode editMode competencyOnly">Narrows:</label>
                         <button id="sidebarNarrowsBrowse" cassCompetency="narrows" ceasnCompetency="narrows" plural="true" class="viewMode editMode editControl frameworkEditControl competencyOnly" onclick="$('#selectCompetencySection').attr('relation','narrows');initIframe(true);showPage('#selectCompetencySection', framework);"><i class="fa fa-search-plus"></i></button>
                         <ul id="sidebarNarrows" cassCompetency="narrows" ceasnCompetency="narrows" class="viewMode editMode relationList competencyOnly"></ul>
 

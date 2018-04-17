@@ -34,6 +34,10 @@
     display: none;
 }
 
+#detailSlider h2 {
+    text-align: right;
+}
+
 #ceasnDataFields button,
 #alignmentPanel button {
     font-size: normal;
