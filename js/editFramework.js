@@ -517,7 +517,7 @@ dropCompetency = function (ev) {
     if (!ev.shiftKey)
         if (data.relationId != null && data.relationId != "") {
             framework.removeRelation(data.relationId);
-            conditionalDelete(targetData.relationId);
+            conditionalDelete(data.relationId);
         }
     dropAny(data, targetData);
 }
@@ -596,33 +596,35 @@ setGlobalTouchDragData = function (obj) {
 }
 
 conditionalDelete = function (id, depth) {
-    Task.asyncImmediate(function (callback) {
-        if (viewMode) return;
-        if (depth == undefined || depth == null) depth = 0;
-        if (id == null || id == undefined)
-            console.trace("ID is undefined.");
-        if (depth < 5)
-            EcFramework.search(repo, "\"" + id + "\"", function (results) {
-                if (results.length <= 0) {
-                    console.log("No references found for " + id + "... deleting.");
-                    repo.deleteRegistered(EcRepository.getBlocking(id), function (success) {
+    (function (id, depth) {
+        Task.asyncImmediate(function (callback) {
+            if (viewMode) return;
+            if (depth == undefined || depth == null) depth = 0;
+            if (id == null || id == undefined)
+                console.trace("ID is undefined.");
+            if (depth < 5)
+                EcFramework.search(repo, "\"" + id + "\"", function (results) {
+                    if (results.length <= 0) {
+                        console.log("No references found for " + id + "... deleting.");
+                        repo.deleteRegistered(EcRepository.getBlocking(id), function (success) {
+                            callback();
+                            afterSave(success);
+                        }, function (failure) {
+                            console.log(failure);
+                            callback();
+                        });
+                    } else {
+                        console.log(results.length + " references found for " + id + "... Not deleting. Will see again in another second.");
                         callback();
-                        afterSave(success);
-                    }, function (failure) {
-                        console.log(failure);
-                        callback();
-                    });
-                } else {
-                    console.log(results.length + " references found for " + id + "... Not deleting. Will see again in another second.");
-                    callback();
-                    setTimeout(function () {
-                        conditionalDelete(id, depth + 1);
-                    }, 1000);
-                }
-            }, console.error, {});
-        else
-            callback();
-    });
+                        setTimeout(function () {
+                            conditionalDelete(id, depth + 1);
+                        }, 1000);
+                    }
+                }, console.error, {});
+            else
+                callback();
+        });
+    })(id, depth);
 }
 
 getValueOrNull = function (value) {
