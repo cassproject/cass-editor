@@ -238,13 +238,15 @@ function refreshCompetency(col, level, subsearch) {
                     me.fetches--;
                     if (relation.source !== undefined && relation.target !== undefined && relation.source != null && relation.target != null && relation.source != relation.target) {
                         if (relation.relationType == "narrows") {
+                            var source = EcCompetency.getBlocking(relation.source);
+                            var target = EcCompetency.getBlocking(relation.target);
                             if ($(".competency[relationid=\"" + relation.shortId() + "\"]").length == 0) {
-                                $(".competency[id=\"" + relation.target + "\"]").children().last().append($(".competency[id=\"" + relation.source + "\"]").outerHTML()).children().last().attr("relationid", relation.shortId());
-                                if ($(".competency[id=\"" + relation.target + "\"]").length > 0)
-                                    $("#tree>.competency[id=\"" + relation.source + "\"]").remove();
+                                $(".competency[id=\"" + target.shortId() + "\"]").children().last().append($(".competency[id=\"" + source.shortId() + "\"]").outerHTML()).children().last().attr("relationid", relation.shortId());
+                                if ($(".competency[id=\"" + target.shortId() + "\"]").length > 0)
+                                    $("#tree>.competency[id=\"" + source.shortId() + "\"]").remove();
 
-                                if (!$(".competency[id=\"" + relation.target + "\"]").hasClass("expandable"))
-                                    $(".competency[id=\"" + relation.target + "\"]").addClass("expandable").children(".collapse").css("visibility", "visible");
+                                if (!$(".competency[id=\"" + target.shortId() + "\"]").hasClass("expandable"))
+                                    $(".competency[id=\"" + target.shortId() + "\"]").addClass("expandable").children(".collapse").css("visibility", "visible");
                             }
                         }
                     }
@@ -253,12 +255,6 @@ function refreshCompetency(col, level, subsearch) {
                         for (var i = 0; i < framework.relation.length; i++) {
                             EcAlignment.get(framework.relation[i], function (relation) {
                                 me.fetches--;
-                                if (relation.source !== undefined) {
-                                    if (relation.relationType == "requires") {
-                                        if ($(".competency[id=\"" + relation.target + "\"]").prevAll(".competency[id=\"" + relation.source + "\"]").length > 0)
-                                            $(".competency[id=\"" + relation.target + "\"]").insertBefore($(".competency[id=\"" + relation.source + "\"]"));
-                                    }
-                                }
                                 if (me.fetches == 0) {
                                     if ($("#tree").html() == "")
                                         $("#tree").html("<br><br><center><h3>This framework is empty.</h3></center>");
