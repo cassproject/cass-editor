@@ -240,28 +240,21 @@ function refreshCompetency(col, level, subsearch) {
                         if (relation.relationType == "narrows") {
                             var source = EcCompetency.getBlocking(relation.source);
                             var target = EcCompetency.getBlocking(relation.target);
-                            if ($(".competency[relationid=\"" + relation.shortId() + "\"]").length == 0) {
-                                $(".competency[id=\"" + target.shortId() + "\"]").children().last().append($(".competency[id=\"" + source.shortId() + "\"]").outerHTML()).children().last().attr("relationid", relation.shortId());
-                                if ($(".competency[id=\"" + target.shortId() + "\"]").length > 0)
-                                    $("#tree>.competency[id=\"" + source.shortId() + "\"]").remove();
+                            if (source != null && target != null)
+                                if ($(".competency[relationid=\"" + relation.shortId() + "\"]").length == 0) {
+                                    $(".competency[id=\"" + target.shortId() + "\"]").children().last().append($(".competency[id=\"" + source.shortId() + "\"]").outerHTML()).children().last().attr("relationid", relation.shortId());
+                                    if ($(".competency[id=\"" + target.shortId() + "\"]").length > 0)
+                                        $("#tree>.competency[id=\"" + source.shortId() + "\"]").remove();
 
-                                if (!$(".competency[id=\"" + target.shortId() + "\"]").hasClass("expandable"))
-                                    $(".competency[id=\"" + target.shortId() + "\"]").addClass("expandable").children(".collapse").css("visibility", "visible");
-                            }
+                                    if (!$(".competency[id=\"" + target.shortId() + "\"]").hasClass("expandable"))
+                                        $(".competency[id=\"" + target.shortId() + "\"]").addClass("expandable").children(".collapse").css("visibility", "visible");
+                                }
                         }
                     }
                     if (me.fetches == 0) {
-                        me.fetches += framework.relation.length;
-                        for (var i = 0; i < framework.relation.length; i++) {
-                            EcAlignment.get(framework.relation[i], function (relation) {
-                                me.fetches--;
-                                if (me.fetches == 0) {
-                                    if ($("#tree").html() == "")
-                                        $("#tree").html("<br><br><center><h3>This framework is empty.</h3></center>");
-                                    afterRefresh(level, subsearch);
-                                }
-                            }, fetchFailure);
-                        }
+                        if ($("#tree").html() == "")
+                            $("#tree").html("<br><br><center><h3>This framework is empty.</h3></center>");
+                        afterRefresh(level, subsearch);
                     }
                 }, fetchFailure);
             }
