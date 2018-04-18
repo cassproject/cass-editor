@@ -528,7 +528,6 @@ allowCompetencyDrop = function (ev) {
     ev.preventDefault();
 }
 
-
 //Touchscreen drag and drop
 handleTouchStart = function (event) {
     event.stopPropagation();

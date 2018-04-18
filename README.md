@@ -166,6 +166,11 @@ Additionally:
 -  This disables access to versioned objects, as versions will not be exposed (though versions are being stored).
 -  This option operates across imports where canonical @ids are not defined, CSV imports, etc.
 
+# Alternate Schema
+The cass-editor can orient towards either a basic CASS schema or a Credential Engine CTDL-ASN schema.
+
+-  `ceasnDataFields=true` enables and renames fields to accompany the CTDL-ASN fields. Many of these fields map to schema.org properties, but some map only to CTDL-ASN properties.
+
 # Overrides
 The cass-editor can be overridden to assist in cross domain, iframe, and web socket connection issues.
 
