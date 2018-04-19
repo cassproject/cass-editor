@@ -853,6 +853,8 @@ $('html').keydown(function (evt) {
     }
 
     if ($('button').is(':focus')) {
+        if (evt.which === 27)
+            $(':focus').blur();
         return;
     }
 
