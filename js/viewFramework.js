@@ -843,6 +843,7 @@ $('html').keydown(function (evt) {
     }
     if ($('#tourDialog').is(':visible') || $('.introjsFloatingElement').is(':visible') || $(window.parent.document.getElementsByClassName('introjs-overlay')[0]).is(':visible')) {
         if (evt.which === 13) {
+            console.log('this 3');
             if ($('.introjs-skipbutton').is(':focus')) {
                 $('.introjs-skipbutton').click();
             } else if ($('.introjs-nextbutton').is(':focus')) {
@@ -861,6 +862,7 @@ $('html').keydown(function (evt) {
         $(':focus').blur();
     } else if (!$('input').is(':focus') && !$('select').is(':focus') && !$('textarea').is(':focus')) {
         //If we're on the framework selection screen
+        console.log('this 4');
         if ($('#frameworksSection').css('display') === 'block') {
             var frameworkElementArray = document.getElementById('frameworks').querySelectorAll('p');
             if (frameworkSelectionIndex === null) {
@@ -898,12 +900,14 @@ $('html').keydown(function (evt) {
             }
             //On enter
             else if (evt.which === 13) {
+                console.log('this 2');
                 $(frameworkElementArray[frameworkSelectionIndex]).click();
                 frameworkSelectionIndex = null;
             }
         }
         //If we're on the editFrameworks section
         else if ($('#editFrameworkSection').css('display') === 'block') {
+            console.log('this 5');
             var competencyElementArray = $('#tree').find('.competency:visible');
             if (competencySelectionIndex === null) {
                 competencySelectionIndex = -1;
@@ -959,6 +963,7 @@ $('html').keydown(function (evt) {
             }
             //On Enter
             else if (evt.which === 13) {
+                console.log('this 1');
                 if ($('a').is(':focus')) {
                     $('a:focus').click();
                     return;
@@ -997,6 +1002,7 @@ $('html').keydown(function (evt) {
 
         }
     } else {
+        console.log('this 6');
         //Enable scrolling while in text field
         //On up arrow
         if (evt.which === 38) {
@@ -1010,6 +1016,11 @@ $('html').keydown(function (evt) {
             var scroll = $('#detailSlider').scrollTop();
 
             $('#detailSlider').scrollTop(scroll + 10);
+            return false;
+        }
+        //On enter
+        else if (evt.which === 13) {
+            evt.preventDefault();
             return false;
         }
     }
