@@ -218,47 +218,48 @@
             <span class="arrow-right"></span>
         </div>
         <div id="detailSlider" class="sidebar" style="display: none;">
-            <button id="sidebarDelete" class="editMode redButton editControl" style="float:right;" onclick="deleteCompetency();"><i class="fa fa-trash" title="Delete from all frameworks."></i></button>
-            <button id="sidebarUnlink" class="editMode editControl" style="float:right;" onclick="unlinkCompetency();" title="Remove (but do not delete)."><i class="fa fa-minus"></i></button>
-            <button id="sidebarCancel" class="editMode editControl" onclick="if (isFirstEdit && confirm('This object is new, and has not been saved. Delete it?')) {deleteCompetency();isFirstEdit = false;}refreshSidebar();" title="Cancel Edit."><i class="fa fa-times"></i></button>
-            <button id="sidebarSave" class="editMode greenButton editControl" onclick="saveCompetency();" title="Save."><i class="fa fa-check"></i></button>
-            <button id="sidebarSearchCompetencies" class="viewMode blueButton editControl absentForConcepts" onclick="$('#sidebarAddCompetencies').attr('value', 'search');addCompetency();" title="Attach children from other sources to the selected item."><i class="fa fa-search-plus"></i></button>
-            <button id="sidebarAddCompetencies" class="viewMode blueButton editControl" onclick="$('#sidebarAddCompetencies').attr('value', 'new');addCompetency();" title="Add a new child to the selected item."><i class="fa fa-plus"></i></button>
-            <select id="sidebarAddLevels" class="absentForConcepts viewMode editControl absentForCeasn frameworkEditControl" onclick="addLevel();$(this).children().first().prop('selected', true);">
-                <option style="display:none;" disabled selected>Add Levels</option>
-                <option class="" value="search">Search...</option>
-                <option value="new">New</option>
-            </select>
-            <select id="sidebarVersion" class="viewMode editControl absentForConcepts absentForCeasn frameworkEditControl" onclick="setCompetencyConfigurationManagement();">
-                <option selected value="noVersion">Shared: Updates automatically.</option>
-                <option value="version">Manual update only.</option>
-            </select>
-            <button id="sidebarEdit" class="viewMode blueButton editControl competencyEditControl" style="float:right;" onclick="editSidebar();" title="Edit."><i class="fa fa-edit"></i></button>
-            <button id="sidebarRemove" class="viewMode redButton editControl absentForConcepts frameworkEditControl" style="float:right;" onclick="removeCompetency();" title="Remove (but do not delete)."><i class="fa fa-minus"></i></button>
+            <div class="sidebarToolbar">
+                <button id="sidebarDelete" class="editMode redButton editControl" style="float:right;" onclick="deleteCompetency();"><i class="fa fa-trash" title="Delete from all frameworks."></i></button>
+                <button id="sidebarUnlink" class="editMode editControl" style="float:right;" onclick="unlinkCompetency();" title="Remove (but do not delete)."><i class="fa fa-minus"></i></button>
+                <button id="sidebarCancel" class="editMode editControl" onclick="if (isFirstEdit && confirm('This object is new, and has not been saved. Delete it?')) {deleteCompetency();isFirstEdit = false;}refreshSidebar();" title="Cancel Edit."><i class="fa fa-times"></i></button>
+                <button id="sidebarSave" class="editMode greenButton editControl" onclick="saveCompetency();" title="Save."><i class="fa fa-check"></i></button>
+                <button id="sidebarSearchCompetencies" class="viewMode blueButton editControl absentForConcepts" onclick="$('#sidebarAddCompetencies').attr('value', 'search');addCompetency();" title="Attach children from other sources to the selected item."><i class="fa fa-search-plus"></i></button>
+                <button id="sidebarAddCompetencies" class="viewMode blueButton editControl" onclick="$('#sidebarAddCompetencies').attr('value', 'new');addCompetency();" title="Add a new child to the selected item."><i class="fa fa-plus"></i></button>
+                <select id="sidebarAddLevels" class="absentForConcepts viewMode editControl absentForCeasn frameworkEditControl" onclick="addLevel();$(this).children().first().prop('selected', true);">
+                    <option style="display:none;" disabled selected>Add Levels</option>
+                    <option class="" value="search">Search...</option>
+                    <option value="new">New</option>
+                </select>
+                <select id="sidebarVersion" class="viewMode editControl absentForConcepts absentForCeasn frameworkEditControl" onclick="setCompetencyConfigurationManagement();">
+                    <option selected value="noVersion">Shared: Updates automatically.</option>
+                    <option value="version">Manual update only.</option>
+                </select>
+                <button id="sidebarEdit" class="viewMode blueButton editControl competencyEditControl" style="float:right;" onclick="editSidebar();" title="Edit."><i class="fa fa-edit"></i></button>
+                <button id="sidebarRemove" class="viewMode redButton editControl absentForConcepts frameworkEditControl" style="float:right;" onclick="removeCompetency();" title="Remove (but do not delete)."><i class="fa fa-minus"></i></button>
 
-            <button id="sidebarMoveUp" class="viewMode editControl absentForConcepts frameworkEditControl" onclick="moveUp();" title="Move Up in hierarchy. Shortcut: Shift+Up"><i class="fa fa-arrow-up"></i></button>
+                <button id="sidebarMoveUp" class="viewMode editControl absentForConcepts frameworkEditControl" onclick="moveUp();" title="Move Up in hierarchy. Shortcut: Shift+Up"><i class="fa fa-arrow-up"></i></button>
 
-            <button id="sidebarMoveDown" class="viewMode editControl absentForConcepts frameworkEditControl" onclick="moveDown();" title="Move Down in hierarchy. Shortcut: Shift+Down"><i class="fa fa-arrow-down"></i></button>
+                <button id="sidebarMoveDown" class="viewMode editControl absentForConcepts frameworkEditControl" onclick="moveDown();" title="Move Down in hierarchy. Shortcut: Shift+Down"><i class="fa fa-arrow-down"></i></button>
 
-            <select id="sidebarExport" class="viewMode" onclick="exportSelected();$(this).children().first().prop('selected', true);">
-                <option style="display:none;" disabled selected>Download or view in...</option>
-                <option disabled>Schema (Format)</option>
-                <option class="absentForConcepts frameworkOnly" value="asn">Achievement Standards Network (JSON)</option>
-                <option class="" value="cass">CASS (JSON-LD)</option>
-                <option class="" value="cassn4">CASS (RDF Quads)</option>
-                <option class="" value="cassrdfjson">CASS (RDF+JSON)</option>
-                <option class="" value="cassrdfxml">CASS (RDF+XML)</option>
-                <option class="" value="cassturtle">CASS (Turtle)</option>
-                <option class="absentForConcepts frameworkOnly" value="ceasn">Credential Engine ASN (JSON-LD)</option>
-                <option class="absentForConcepts frameworkOnly" value="csv">Table (CSV)</option>
-                <option class="absentForConcepts" value="case">IMS Global CASE (JSON)</option>
-            </select>
+                <select id="sidebarExport" class="viewMode" onclick="exportSelected();$(this).children().first().prop('selected', true);">
+                    <option style="display:none;" disabled selected>Download or view in...</option>
+                    <option disabled>Schema (Format)</option>
+                    <option class="absentForConcepts frameworkOnly" value="asn">Achievement Standards Network (JSON)</option>
+                    <option class="" value="cass">CASS (JSON-LD)</option>
+                    <option class="" value="cassn4">CASS (RDF Quads)</option>
+                    <option class="" value="cassrdfjson">CASS (RDF+JSON)</option>
+                    <option class="" value="cassrdfxml">CASS (RDF+XML)</option>
+                    <option class="" value="cassturtle">CASS (Turtle)</option>
+                    <option class="absentForConcepts frameworkOnly" value="ceasn">Credential Engine ASN (JSON-LD)</option>
+                    <option class="absentForConcepts frameworkOnly" value="csv">Table (CSV)</option>
+                    <option class="absentForConcepts" value="case">IMS Global CASE (JSON)</option>
+                </select>
 
-            <hr style="margin:0px;padding:0px;">
+                <hr style="margin:0px;padding:0px;margin-top: 0.3rem">
 
-            <small id="sidebarFeedback" class="editControl"></small>
-
-            <table style="border:0px;" width="100%">
+                <small id="sidebarFeedback" class="editControl"></small>
+            </div>
+            <table style="border:0px; margin-top: 2rem;" width="100%">
                 <tr style="vertical-align: top;min-width:50%;max-width:100%">
                     <td>
                         <h2 class="editMode absentForConcepts ceasnCompetency" style="margin-bottom:0px;">Required</h2>

@@ -563,6 +563,13 @@ input.redButton {
     text-align: right;
 }
 
+.sidebarToolbar {
+    position: fixed;
+    width: inherit;
+    background: white;
+    z-index: 1;
+}
+
 #ceasnDataFields button,
 #alignmentPanel button {
     font-size: normal;
