@@ -830,7 +830,7 @@ $('html').keydown(function (evt) {
         });
     } else if ($('#selectCompetencySection').length > 0 && $('#selectCompetencySection').css('display') !== 'none') {
         setTimeout(function () {
-            $('#selectConceptIframe')[0].contentWindow.focus();
+            $('#selectCompetencyIframe')[0].contentWindow.focus();
         });
     } else if ($('#findCompetencySection').length > 0 && $('#findCompetencySection').css('display') !== 'none') {
         setTimeout(function () {
