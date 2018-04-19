@@ -530,9 +530,11 @@ allowCompetencyDrop = function (ev) {
 
 //Touchscreen drag and drop
 handleTouchStart = function (event) {
-    event.stopPropagation();
-    $(event.srcElement).click();
-    setGlobalTouchDragData(event.srcElement);
+    if (!$(event.srcElement).hasClass('collapse') && !$(event.srcElement).hasClass('fa')) {
+        event.stopPropagation();
+        $(event.srcElement).click();
+        setGlobalTouchDragData(event.srcElement);
+    }
 }
 
 handleTouchMove = function (event) {
@@ -580,17 +582,19 @@ handleTouchEnd = function (event) {
 
 //Recursively get the li element we want for touchdrag
 setGlobalTouchDragData = function (obj) {
-    if (obj.localName === "li") {
-        //Super hacky, needs a more robust solution (attribute length may change and this would break)
-        var competencyId = obj.attributes[8].value;
-        var relationId = Object.keys(obj.attributes).length > 9 ? obj.attributes[9].value : null;
+    if (obj && obj.localName) {
+        if (obj.localName === "li") {
+            //Super hacky, needs a more robust solution (attribute length may change and this would break)
+            var competencyId = obj.attributes[8].value;
+            var relationId = Object.keys(obj.attributes).length > 9 ? obj.attributes[9].value : null;
 
-        globalTouchDragData = {
-            competencyId: competencyId,
-            relationId: relationId
-        };
-    } else {
-        setGlobalTouchDragData(obj.parentNode);
+            globalTouchDragData = {
+                competencyId: competencyId,
+                relationId: relationId
+            };
+        } else {
+            setGlobalTouchDragData(obj.parentNode);
+        }
     }
 }
 
