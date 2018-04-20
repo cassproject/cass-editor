@@ -14,6 +14,22 @@
         /*Makes things clickable on iOS*/
         cursor: pointer !important;
     }
+    #tree {
+        overflow-y: scroll !important;
+        -webkit-overflow-scrolling: touch;
+    }
+    .sidebar {
+         overflow-y: scroll !important;
+        -webkit-overflow-scrolling: touch;
+    }
+    #frameworksSection {
+        overflow-y: scroll !important;
+        -webkit-overflow-scrolling: touch;
+    }
+    #frameworks {
+        overflow-y: scroll !important;
+        -webkit-overflow-scrolling: touch;
+    }
 }
 
 button,
