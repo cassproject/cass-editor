@@ -6898,7 +6898,7 @@ EcRsaOaep = stjs.extend(EcRsaOaep, null, [], function(constructor, prototype) {
      *  @static
      */
     constructor.encrypt = function(pk, plaintext) {
-        if ($ == null) {
+        if ((typeof httpStatus) != "undefined") {
             return rsaEncrypt(plaintext, pk.toPem());
         }
         return forge.util.encode64(pk.pk.encrypt(plaintext, "RSA-OAEP"));
@@ -6922,7 +6922,7 @@ EcRsaOaep = stjs.extend(EcRsaOaep, null, [], function(constructor, prototype) {
             }
         }
         var result;
-        if ($ == null) {
+        if ((typeof httpStatus) != "undefined") {
             result = rsaDecrypt(ciphertext, ppk.toPem());
         } else {
             result = ppk.ppk.decrypt(forge.util.decode64(ciphertext), "RSA-OAEP");
@@ -6944,7 +6944,7 @@ EcRsaOaep = stjs.extend(EcRsaOaep, null, [], function(constructor, prototype) {
      *  @static
      */
     constructor.sign = function(ppk, text) {
-        if ($ == null) {
+        if ((typeof httpStatus) != "undefined") {
             return rsaSign(text, ppk.toPem());
         }
         var s = forge.md.sha1.create();
@@ -6979,7 +6979,7 @@ EcRsaOaep = stjs.extend(EcRsaOaep, null, [], function(constructor, prototype) {
      *  @method verify
      */
     constructor.verify = function(pk, text, signature) {
-        if ($ == null) {
+        if ((typeof httpStatus) != "undefined") {
             return rsaVerify(signature, pk.toPem(), text);
         }
         var s = forge.md.sha1.create();
@@ -7155,7 +7155,7 @@ EcAesCtr = stjs.extend(EcAesCtr, null, [], function(constructor, prototype) {
      *  @static
      */
     constructor.encrypt = function(plaintext, secret, iv) {
-        if ($ == null && forge.util.decode64(secret).length == 16 && forge.util.decode64(iv).length == 16) 
+        if ((typeof httpStatus) != "undefined" && forge.util.decode64(secret).length == 16 && forge.util.decode64(iv).length == 16) 
             return aesEncrypt(plaintext, iv, secret);
         var c = forge.cipher.createCipher("AES-CTR", forge.util.decode64(secret));
         c.start(new EcAesParameters(iv));
@@ -7182,7 +7182,7 @@ EcAesCtr = stjs.extend(EcAesCtr, null, [], function(constructor, prototype) {
             if (cacheGet != null) 
                 return cacheGet;
         }
-        if ($ == null && forge.util.decode64(secret).length == 16 && forge.util.decode64(iv).length == 16) {
+        if ((typeof httpStatus) != "undefined" && forge.util.decode64(secret).length == 16 && forge.util.decode64(iv).length == 16) {
             var result = aesDecrypt(ciphertext, iv, secret);
             if (EcCrypto.caching) 
                 (EcCrypto.decryptionCache)[secret + iv + ciphertext] = result;
@@ -7558,7 +7558,7 @@ EcRsaOaepAsync = stjs.extend(EcRsaOaepAsync, null, [], function(constructor, pro
             success(EcRsaOaep.encrypt(pk, text));
             return;
         }
-        if (window.crypto == null || window.crypto.subtle == null) {
+        if (window == null || window.crypto == null || window.crypto.subtle == null) {
             EcRsaOaepAsyncWorker.encrypt(pk, text, success, failure);
             return;
         }
@@ -7695,7 +7695,7 @@ EcRsaOaepAsync = stjs.extend(EcRsaOaepAsync, null, [], function(constructor, pro
 var EcAesCtrAsync = function() {};
 EcAesCtrAsync = stjs.extend(EcAesCtrAsync, null, [], function(constructor, prototype) {
     constructor.encrypt = function(text, secret, iv, success, failure) {
-        if (window.crypto == null || window.crypto.subtle == null) {
+        if (window == null || window.crypto == null || window.crypto.subtle == null) {
             EcAesCtrAsyncWorker.encrypt(text, secret, iv, success, failure);
             return;
         }
