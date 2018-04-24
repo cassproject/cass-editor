@@ -142,6 +142,8 @@ function spitEvent(message, id) {
         changed: id,
         selectedFramework: framework == null ? null : framework.shortId(),
         selectedCompetency: selectedCompetency == null ? null : selectedCompetency.shortId(),
+        selectedFrameworkObject: framework == null ? null : JSON.parse(framework.toJson()),
+        selectedCompetencyObject: selectedCompetency == null ? null : JSON.parse(selectedCompetency.toJson()),
         selectedFrameworkName: framework == null ? null : (framework.getName == null ? framework["dcterms:title"] : framework.getName()),
         selectedCompetencyName: selectedCompetency == null ? null : (selectedCompetency.getName == null ? selectedCompetency["skos:prefLabel"] : selectedCompetency.getName()),
         visiblePage: $(".page:visible").attr("id"),
