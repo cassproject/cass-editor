@@ -914,6 +914,7 @@ $(window).resize(function (e) {
     $('#detailSlider').css("width", Math.min((($(window).width() * 3) / 4), $('#detailSlider').width()));
     $('#editFrameworkSection').css("padding-right", Math.min((($(window).width() * 3) / 4), $('#detailSlider').width()) + 16);
     $("#tree").height("calc(" + window.visualViewport.height + "px - " + $("#tree").position().top + "px)");
+    $(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
 });
 
 resizeWindow = function (pageX) {
@@ -925,6 +926,7 @@ resizeWindow = function (pageX) {
         $('#editFrameworkSection').css("padding-right", x);
     }
     $("#tree").height("calc(" + window.visualViewport.height + "px - " + $("#tree").position().top + "px)");
+    $(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
 }
 
 $('#split-bar').mousedown(function (e) {

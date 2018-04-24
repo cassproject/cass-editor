@@ -605,7 +605,7 @@ refreshSidebar = function () {
             $("#sidebarFeedback").append("<li>You do not own this competency.</li> ");
             //$("#sidebarEdit").hide();
         }
-    }
+    }$(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
 }
 isFirstEdit = false;
 editSidebar = function () {
@@ -694,6 +694,7 @@ editSidebar = function () {
     } else {
         $('#sidebarNameInput').autocomplete = null;
     }
+    $(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
 }
 
 $("body").on("click", ".collapse", null, function (evt) {

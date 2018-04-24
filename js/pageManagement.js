@@ -75,6 +75,7 @@ function gotoPage(pageId, state) {
                 $(".page").hide();
                 $(pageId).show();
                 $("#tree").height("calc(" + window.visualViewport.height + "px - " + $("#tree").position().top + "px)");
+                $(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
             });
         });
 }
