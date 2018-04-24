@@ -530,7 +530,9 @@ allowCompetencyDrop = function (ev) {
 
 //Touchscreen drag and drop
 handleTouchStart = function (event) {
-    if (!$(event.srcElement).hasClass('collapse') && !$(event.srcElement).hasClass('fa')) {
+    //Drag and drop when using 2+ fingers
+    console.log(event);
+    if (!$(event.srcElement).hasClass('collapse') && !$(event.srcElement).hasClass('fa') && event.touches.length > 1) {
         event.stopPropagation();
         $(event.srcElement).click();
         setGlobalTouchDragData(event.srcElement);
@@ -539,16 +541,18 @@ handleTouchStart = function (event) {
 
 handleTouchMove = function (event) {
     event.stopPropagation();
-    $('.competency').addClass('dashBorder');
-    var x = event.touches[0].clientX;
-    var y = event.touches[0].clientY;
-    var hoverElem = document.elementFromPoint(x, y);
-    if (hoverElem.classList.contains('competencyName') || hoverElem.classList.contains('competencyDescription') || hoverElem.classList.contains('competencyCodedNotation'))
-        hoverElem = hoverElem.parentNode.parentNode;
-    if (hoverElem.classList.contains('competency') || hoverElem.id == "frameworkNameContainer") {
-        $('.selected').removeClass('selected');
-        hoverElem.classList.add('selected');
-        globalTouchDragDestination = hoverElem.id;
+    if (globalTouchDragData != null) {
+        $('.competency').addClass('dashBorder');
+        var x = event.touches[0].clientX;
+        var y = event.touches[0].clientY;
+        var hoverElem = document.elementFromPoint(x, y);
+        if (hoverElem.classList.contains('competencyName') || hoverElem.classList.contains('competencyDescription') || hoverElem.classList.contains('competencyCodedNotation'))
+            hoverElem = hoverElem.parentNode.parentNode;
+        if (hoverElem.classList.contains('competency') || hoverElem.id == "frameworkNameContainer") {
+            $('.selected').removeClass('selected');
+            hoverElem.classList.add('selected');
+            globalTouchDragDestination = hoverElem.id;
+        }
     }
 }
 

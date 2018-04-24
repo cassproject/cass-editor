@@ -230,7 +230,7 @@ Enter - Select the current element.
 Shift + Enter - Select all.  
 Backspace - Go back.  
 Tab - Switch focus between the buttons and text fields on the page.  
-Escape - Step out of a text field to return to navigation.  
+Escape - Return to list navigation.  
 Shift + X - Drag competency  
 Shift + C - Drag and copy competency  
 Shift + V - Drop competency  
