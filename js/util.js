@@ -174,17 +174,16 @@ function spitEvent(message, id) {
 }
 
 initTooltips = function (type) {
+    $('label').each(function () {
+        var title = $(this).attr(type + "Title");
+        if (title != null && title !== undefined && title != "")
+            $(this).tooltip({
+                content: title,
+                show: false,
+                hide: false
+            });
+    });
     if (type === 'cassCompetency') {
-        $('label[for="sidebarNameInput"]').tooltip({
-            content: 'The name of the competency.',
-            show: false,
-            hide: false
-        });
-        $('label[for="sidebarNameDescription"]').tooltip({
-            content: 'The description of the competency.',
-            show: false,
-            hide: false
-        });
         $('label[for="sidebarAlternativeName"]').tooltip({
             content: 'An alternative name for this competency.',
             show: false,

@@ -275,11 +275,11 @@
                         <hr class="viewMode absentForConcepts ceasnFramework" style="margin-top:0px;">
 
                         <div class="sidebarEditSection">
-                            <label for="sidebarNameInput" title="" cassCompetency="Competency Name:" cassFramework="Framework Name:" ceasnCompetency="Competency Text:" ceasnFramework="Name:" skosCompetency="Preferred Label:" skosFramework="Concept Scheme Title:" class="editMode" style="margin: 0px;">Name:</label>
+                            <label for="sidebarNameInput" title="" cassCompetency="Competency Name:" cassCompetencyTitle="The name of the competency." cassFramework="Framework Name:" ceasnCompetency="Competency Text:" ceasnFramework="Name:" skosCompetency="Preferred Label:" skosFramework="Concept Scheme Title:" class="editMode" style="margin: 0px;">Name:</label>
                             <h3 id="sidebarName" class="viewMode">Framework Name Here</h3>
                             <textarea id="sidebarNameInput" cassCompetency="name" cassFramework="name" ceasnCompetency="ceasn:competencyText" ceasnFramework="ceasn:name" skosCompetency="skos:prefLabel" skosFramework="dcterms:title" class="editMode editControl" value="Framework Name Here"></textarea>
 
-                            <label for="sidebarNameDescription" title="" cassCompetency="Description:" cassFramework="Description:" ceasnFramework="Description:" skosCompetency="Concept Definition:" skosFramework="Description:" class="editMode" style="margin: 0px;">Description:</label>
+                            <label for="sidebarNameDescription" title="" cassCompetency="Description:" cassCompetencyTitle="The description of the competency." cassFramework="Description:" ceasnFramework="Description:" skosCompetency="Concept Definition:" skosFramework="Description:" class="editMode" style="margin: 0px;">Description:</label>
                             <p id="sidebarDescription" class="viewMode">This is a super long description, it describes the things worth describing.</p>
                             <textarea id="sidebarDescriptionInput" cassCompetency="description" cassFramework="description" ceasnFramework="ceasn:description" skosCompetency="skos:definition" skosFramework="dcterms:description" class="editMode editControl" style="height:6rem;">This is a super long description, it describes the things worth describing.</textarea>
 
@@ -342,7 +342,7 @@
                                         <button id="sidebarComplexityLevelBrowse" cassCompetency="ceasn:complexityLevel" plural="true" class="editMode editControl" onclick="$('#selectConceptSection').attr('destination','ceasn:complexityLevel');initIframe();showPage('#selectConceptSection', framework);"><i class="fa fa-search-plus"></i></button>
                                         <ul id="sidebarComplexityLevel" cassCompetency="ceasn:complexityLevel" class="viewMode editMode" style="font-weight:bold;"></ul>
 
-                                        <label for="sidebarAlternativeName" title="" cassCompetency="Alternative Name:" skosCompetency="Alternative Label:" class="viewMode editMode" style="margin:0px;">Alternative Name:</label>
+                                        <label for="sidebarAlternativeName" title="" cassCompetency="Alternative Name:" cassCompetencyTitle="An alternative name for this competency." skosCompetency="Alternative Label:" class="viewMode editMode" style="margin:0px;">Alternative Name:</label>
                                         <p id="sidebarAlternativeName" class="viewMode" style="font-weight:bold;"></p>
                                         <input id="sidebarAlternativeNameInput" cassCompetency="schema:alternateName" skosCompetency="skos:altLabel" plural="true" class="editMode editControl" />
 
