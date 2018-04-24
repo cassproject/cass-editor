@@ -828,7 +828,6 @@ EcRemote = stjs.extend(EcRemote, null, [], function(constructor, prototype) {
         url = EcRemote.upgradeHttpToHttps(url);
         var xhr = new XMLHttpRequest();
         xhr.open("GET", url, EcRemote.async);
-        xhr.setRequestHeader("Cache-Control", "no-cache");
         xhr.onreadystatechange = function() {
             if (xhr.readyState == 4 && xhr.status == 200) 
                 success(xhr.responseText);
