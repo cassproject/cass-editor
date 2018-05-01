@@ -900,14 +900,17 @@ EcRemote = stjs.extend(EcRemote, null, [], function(constructor, prototype) {
     };
     constructor.getSuccessJSONCallback = function(success, failure) {
         return function(s) {
+            var o;
             try {
-                var o = JSON.parse(s);
-                success(o);
-                return;
+                o = JSON.parse(s);
             }catch (ex) {
-                failure(ex);
+                if (ex == null) 
+                    failure("An unspecified error occurred during a network request.");
+                 else 
+                    failure(ex);
+                return;
             }
-            failure("An unspecified error occurred during a network request.");
+            success(o);
         };
     };
 }, {}, {});
