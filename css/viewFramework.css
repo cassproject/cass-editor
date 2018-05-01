@@ -35,7 +35,7 @@
 }
 
 #detailSlider h2 {
-    text-align: right;
+    text-align: left;
 }
 
 .sidebarToolbar {
@@ -85,6 +85,10 @@
 #ceasnDataFields ul:empty::after,
 #alignmentPanel ul:empty::after {
     content: "None"
+}
+
+.optionalFields {
+    display: none;
 }
 
 #tree {

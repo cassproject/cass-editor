@@ -1068,6 +1068,11 @@ playSavedAnimation = function () {
     }, 1000);
 }
 
+toggleDiv = function (chevronId, id) {
+    $('#' + chevronId).toggleClass('fa-chevron-up fa-chevron-down');
+    $('#' + id).slideToggle(400);
+}
+
 initULLengths = function () {
     $('#detailSlider ul').each(function (index) {
         ulLengths[$(this).attr('id')] = 0;
