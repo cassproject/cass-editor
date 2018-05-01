@@ -123,7 +123,7 @@ EcRemoteLinkedData = stjs.extend(EcRemoteLinkedData, EcLinkedData, [], function(
      */
     prototype.generateId = function(server) {
         this.id = server;
-        if (!this.id.endsWith("/")) 
+        if (!this.id.endsWith("/") && !this.id.endsWith("ce-")) 
             this.id += "/";
         this.id += "data/";
         this.id += this.getDottedType();
@@ -141,7 +141,7 @@ EcRemoteLinkedData = stjs.extend(EcRemoteLinkedData, EcLinkedData, [], function(
      */
     prototype.generateShortId = function(server) {
         this.id = server;
-        if (!this.id.endsWith("/")) 
+        if (!this.id.endsWith("/") && !this.id.endsWith("ce-")) 
             this.id += "/";
         this.id += generateUUID();
     };
