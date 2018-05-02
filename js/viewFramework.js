@@ -619,6 +619,11 @@ editSidebar = function () {
     changedFields = {};
     ulLengths = {};
 
+    //Don't persist the invalidInput class between edits
+    $('.invalidInput').each(function() {
+        $(this).removeClass('invalidInput');
+    });
+
     initULLengths();
     renderSidebar();
 
