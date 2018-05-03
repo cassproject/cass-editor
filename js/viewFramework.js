@@ -619,6 +619,11 @@ editSidebar = function () {
     changedFields = {};
     ulLengths = {};
 
+    //Don't persist the invalidInput class between edits
+    $('.invalidInput').each(function() {
+        $(this).removeClass('invalidInput');
+    });
+
     initULLengths();
     renderSidebar();
 
@@ -1066,6 +1071,11 @@ playSavedAnimation = function () {
             elem.classList.add('savedCompetency');
         }
     }, 1000);
+}
+
+toggleDiv = function (chevronId, id) {
+    $('#' + chevronId).toggleClass('fa-chevron-up fa-chevron-down');
+    $('#' + id).slideToggle(400);
 }
 
 initULLengths = function () {

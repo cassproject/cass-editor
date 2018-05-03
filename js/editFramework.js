@@ -180,8 +180,7 @@ saveCompetency = function () {
     if (viewMode) return;
     isFirstEdit = false;
     //Alert for bad characters in input
-    if ($('.invalidInput').filter(':visible').length > 0) {
-        alert('Bad characters detected in input');
+    if (alertBadCharacters() === false) {
         return false;
     }
     $(".changedField").removeClass("changedField");

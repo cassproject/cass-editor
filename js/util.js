@@ -175,6 +175,21 @@ function spitEvent(message, id) {
             parent.postMessage(evt, queryParams.origin);
 }
 
+alertBadCharacters = function () {
+    var badInputs = $('.invalidInput');
+    console.log(badInputs);
+    if (badInputs.length > 0) {
+        var inputNames = [];
+        for (var i = 0; i < badInputs.length; i++) {
+            var fieldName = $('#' + badInputs[i].id + 'Label').text().slice(0, -1);
+            inputNames.push(fieldName);
+        }
+        alert('Bad characters detected in input fields: ' + inputNames);
+        return false;
+    }
+    return true;
+}
+
 initTooltips = function (type) {
     $('label').each(function () {
         var title = $(this).attr(type + "Title");

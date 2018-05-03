@@ -573,7 +573,7 @@ input.redButton {
 }
 
 #detailSlider h2 {
-    text-align: right;
+    text-align: left;
 }
 
 .sidebarToolbar {
@@ -625,10 +625,14 @@ input.redButton {
     content: "None"
 }
 
+.optionalFields {
+    display: none;
+}
+
 #tree {
     margin: 0px;
     padding-top: 0rem;
-    overflow: scroll;
+    overflow: auto;
     padding-left: 2.5rem;
     padding-bottom: 1rem;
 }
