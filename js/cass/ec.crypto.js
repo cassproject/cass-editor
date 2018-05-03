@@ -7558,7 +7558,7 @@ EcRsaOaepAsync = stjs.extend(EcRsaOaepAsync, null, [], function(constructor, pro
             success(EcRsaOaep.encrypt(pk, text));
             return;
         }
-        if (window == null || window.crypto == null || window.crypto.subtle == null) {
+        if (EcBrowserDetection.isIeOrEdge() || window == null || window.crypto == null || window.crypto.subtle == null) {
             EcRsaOaepAsyncWorker.encrypt(pk, text, success, failure);
             return;
         }
@@ -7592,7 +7592,7 @@ EcRsaOaepAsync = stjs.extend(EcRsaOaepAsync, null, [], function(constructor, pro
             success(EcRsaOaep.decrypt(ppk, text));
             return;
         }
-        if (window.crypto == null || window.crypto.subtle == null) {
+        if (EcBrowserDetection.isIeOrEdge() || window == null || window.crypto == null || window.crypto.subtle == null) {
             EcRsaOaepAsyncWorker.decrypt(ppk, text, success, failure);
             return;
         }
@@ -7618,7 +7618,7 @@ EcRsaOaepAsync = stjs.extend(EcRsaOaepAsync, null, [], function(constructor, pro
             success(EcRsaOaep.sign(ppk, text));
             return;
         }
-        if (window.crypto == null || window.crypto.subtle == null) {
+        if (EcBrowserDetection.isIeOrEdge() || window == null || window.crypto == null || window.crypto.subtle == null) {
             EcRsaOaepAsyncWorker.sign(ppk, text, success, failure);
             return;
         }
@@ -7644,7 +7644,7 @@ EcRsaOaepAsync = stjs.extend(EcRsaOaepAsync, null, [], function(constructor, pro
             success(EcRsaOaep.signSha256(ppk, text));
             return;
         }
-        if (window.crypto == null || window.crypto.subtle == null) {
+        if (EcBrowserDetection.isIeOrEdge() || window == null || window.crypto == null || window.crypto.subtle == null) {
             EcRsaOaepAsyncWorker.sign(ppk, text, success, failure);
             return;
         }
@@ -7670,7 +7670,7 @@ EcRsaOaepAsync = stjs.extend(EcRsaOaepAsync, null, [], function(constructor, pro
             success(EcRsaOaep.verify(pk, text, signature));
             return;
         }
-        if (window.crypto == null || window.crypto.subtle == null) {
+        if (EcBrowserDetection.isIeOrEdge() || window == null || window.crypto == null || window.crypto.subtle == null) {
             EcRsaOaepAsyncWorker.verify(pk, text, signature, success, failure);
             return;
         }
