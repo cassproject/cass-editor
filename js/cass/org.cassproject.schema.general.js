@@ -175,6 +175,23 @@ EcRemoteLinkedData = stjs.extend(EcRemoteLinkedData, EcLinkedData, [], function(
      *  @param {string} uniqueIdentifier Canonical identifier. Must contain a letter or symbol.
      *  @method assignId
      */
+    constructor.veryShortId = function(server, uniqueIdentifier) {
+        var id;
+        id = server;
+        if (!id.endsWith("/")) 
+            id += "/";
+        id += "data/";
+        id += uniqueIdentifier;
+        return id;
+    };
+    /**
+     *  Will generate an identifier using the server URL provided (usually from
+     *  an EcRepository) and unique identifier.
+     * 
+     *  @param {string} server Base URL of the server's repository functionality.
+     *  @param {string} uniqueIdentifier Canonical identifier. Must contain a letter or symbol.
+     *  @method assignId
+     */
     prototype.assignIdAndVersion = function(server, uniqueIdentifier, version) {
         this.id = server;
         if (!this.id.endsWith("/")) 
