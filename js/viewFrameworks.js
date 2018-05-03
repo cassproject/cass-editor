@@ -15,6 +15,8 @@ function searchFrameworks(paramObj) {
     } else {
         $("#resetSearchButton").show();
     }
+    if (searchTerm != "*")
+        delete paramObj.sort;
     $("#frameworks").html("");
     searchCompetencies = [];
     for (var i = 0; i < servers.length; i++) {
