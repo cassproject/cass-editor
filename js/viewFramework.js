@@ -206,7 +206,6 @@ function refreshCompetency(col, level, subsearch) {
         renderSidebar();
     }
     var draggable = viewMode ? 'false' : 'true';
-    console.log(draggable);
     treeNode = $("#tree").append("<li class = 'competency' draggable='" + draggable + "' ondragstart='dragCompetency(event);' ontouchstart='handleTouchStart(event)' ontouchmove='handleTouchMove(event);' ontouchend='handleTouchEnd(event);' ondrop='dropCompetency(event);' ondragover='allowCompetencyDrop(event);'><span></span><ul></ul></li>").children().last();
     treeNode.attr("id", col.shortId());
     if (col.description != null && col.description != "NULL" && col.description != col.name)
