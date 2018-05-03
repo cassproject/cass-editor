@@ -115,7 +115,6 @@
                                 <jsSourceFile>js/vendor/jquery.mark.min.js</jsSourceFile>
                                 <jsSourceFile>js/vendor/uuid.js</jsSourceFile>
                                 <jsSourceFile>forge/forge.min.js</jsSourceFile>
-                                <jsSourceFile>js/cass/require.js</jsSourceFile>
                                 <jsSourceFile>js/cass/papaparse.js</jsSourceFile>
                                 <jsSourceFile>js/cass/FileSaver.js</jsSourceFile>
                                 <jsSourceFile>js/cass/xml2json.js</jsSourceFile>
