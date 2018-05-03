@@ -926,7 +926,10 @@ var mainmin = 300;
 
 $(window).resize(function (e) {
     $('#detailSlider').css("width", Math.min((($(window).width() * 3) / 4), $('#detailSlider').width()));
-    $('.sidebarToolbar').css("width", Math.min((($(window).width() * 3) / 4), $('.sidebarToolbar').width()));
+    var width = parseInt($('#detailSlider').css("width"));
+    if ($('#detailSlider').hasScrollBar())
+        width -= 17;
+    $('.sidebarToolbar').css("width", width + 'px');
     $('#editFrameworkSection').css("padding-right", Math.min((($(window).width() * 3) / 4), $('#detailSlider').width()) + 16);
     $("#tree").height("calc(" + $(window).outerHeight() + "px - " + $("#tree").position().top + "px)");
 
@@ -939,7 +942,10 @@ resizeWindow = function (pageX) {
     var x = $(window).width() - pageX - 16;
     if (x > min && x < (($(window).width() * 3) / 4) && pageX < ($(window).width() - mainmin)) {
         $('#detailSlider').css("width", x - 8);
-        $('.sidebarToolbar').css("width", x - 8);
+        var width = parseInt($('#detailSlider').css("width"));
+        if ($('#detailSlider').hasScrollBar())
+            width -= 17;
+        $('.sidebarToolbar').css("width", width + 'px');
         $('#editFrameworkSection').css("padding-right", x);
     }
     $("#tree").height("calc(" + $(window).outerHeight() + "px - " + $("#tree").position().top + "px)");
@@ -961,3 +967,9 @@ $(document).ready(function () {
 $(document).mouseup(function (e) {
     $(document).unbind('mousemove');
 });
+
+(function($) {
+    $.fn.hasScrollBar = function() {
+        return this.get(0).scrollHeight > this.height();
+    }
+})(jQuery);
