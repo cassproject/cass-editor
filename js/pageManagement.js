@@ -74,7 +74,7 @@ function gotoPage(pageId, state) {
             $(pageId).slideDown(400, function () {
                 $(".page").hide();
                 $(pageId).show();
-                $("#tree").height("calc(" + window.visualViewport.height + "px - " + $("#tree").position().top + "px)");
+                $("#tree").height("calc(" + $(window).outerHeight() + "px - " + $("#tree").position().top + "px)");
                 $(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
             });
         });

@@ -812,6 +812,7 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
      *  @static
      */
     constructor.get = function(url, success, failure) {
+        var originalUrl = url;
         if (EcRemote.async == false) {
             var result = EcRepository.getBlocking(url);
             if (result == null) 
@@ -825,7 +826,7 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
             if ((EcRepository.cache)[url] != null) {
                 if (EcRemote.async) {
                     Task.immediate(function() {
-                        success((EcRepository.cache)[url]);
+                        success((EcRepository.cache)[originalUrl]);
                     });
                 } else {
                     success((EcRepository.cache)[url]);
@@ -836,7 +837,7 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
                 if ((EcRepository.fetching)[url] != null) {
                     if ((EcRepository.fetching)[url] > new Date().getTime()) {
                         setTimeout(function() {
-                            EcRepository.get(url, success, failure);
+                            EcRepository.get(originalUrl, success, failure);
                         }, 100);
                         return;
                     }
@@ -845,17 +846,22 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
             }
         }
         if (!EcRepository.shouldTryUrl(url)) {
-            EcRepository.find(url, "Could not locate object. May be due to EcRepository.alwaysTryUrl flag.", new Object(), 0, success, failure);
-            return;
+            if (EcRepository.repos.length == 1) 
+                url = EcRemoteLinkedData.veryShortId(EcRepository.repos[0].selectedServer, EcCrypto.md5(url));
+             else {
+                EcRepository.find(url, "Could not locate object. May be due to EcRepository.alwaysTryUrl flag.", new Object(), 0, success, failure);
+                return;
+            }
         }
         var fd = new FormData();
+        var finalUrl = url;
         if (EcRepository.unsigned) {
-            EcRemote.getExpectingObject(url, null, function(p1) {
-                delete (EcRepository.fetching)[url];
+            EcRemote.getExpectingObject(finalUrl, null, function(p1) {
+                delete (EcRepository.fetching)[originalUrl];
                 var d = new EcRemoteLinkedData("", "");
                 d.copyFrom(p1);
                 if (d.getFullType() == null) {
-                    EcRepository.find(url, JSON.stringify(p1), new Object(), 0, success, failure);
+                    EcRepository.find(originalUrl, JSON.stringify(p1), new Object(), 0, success, failure);
                     return;
                 }
                 if (EcRepository.caching) {
@@ -864,22 +870,22 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
                 }
                 success(d);
             }, function(p1) {
-                EcRepository.find(url, p1, new Object(), 0, success, failure);
+                EcRepository.find(originalUrl, p1, new Object(), 0, success, failure);
             });
         } else 
             EcIdentityManager.signatureSheetAsync(60000, url, function(p1) {
-                if ((EcRepository.cache)[url] != null) {
-                    delete (EcRepository.fetching)[url];
-                    success((EcRepository.cache)[url]);
+                if ((EcRepository.cache)[originalUrl] != null) {
+                    delete (EcRepository.fetching)[originalUrl];
+                    success((EcRepository.cache)[originalUrl]);
                     return;
                 }
                 fd.append("signatureSheet", p1);
-                EcRemote.postExpectingObject(url, null, fd, function(p1) {
-                    delete (EcRepository.fetching)[url];
+                EcRemote.postExpectingObject(finalUrl, null, fd, function(p1) {
+                    delete (EcRepository.fetching)[originalUrl];
                     var d = new EcRemoteLinkedData("", "");
                     d.copyFrom(p1);
                     if (d.getFullType() == null) {
-                        EcRepository.find(url, JSON.stringify(p1), new Object(), 0, success, failure);
+                        EcRepository.find(originalUrl, JSON.stringify(p1), new Object(), 0, success, failure);
                         return;
                     }
                     if (EcRepository.caching) {
@@ -888,7 +894,7 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
                     }
                     success(d);
                 }, function(p1) {
-                    EcRepository.find(url, p1, new Object(), 0, success, failure);
+                    EcRepository.find(originalUrl, p1, new Object(), 0, success, failure);
                 });
             }, failure);
     };
@@ -989,39 +995,45 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
      *  @static
      */
     constructor.getBlocking = function(url) {
-        if (url == null) 
+        var originalUrl = url;
+        if (originalUrl == null) 
             return null;
         if (EcRepository.caching) {
-            if ((EcRepository.cache)[url] != null) {
-                return (EcRepository.cache)[url];
+            if ((EcRepository.cache)[originalUrl] != null) {
+                return (EcRepository.cache)[originalUrl];
             }
         }
-        if (!EcRepository.shouldTryUrl(url)) {
-            return EcRepository.findBlocking(url, "Could not locate object. May be due to EcRepository.alwaysTryUrl flag.", new Object(), 0);
+        if (!EcRepository.shouldTryUrl(originalUrl)) {
+            if (EcRepository.repos.length == 1) 
+                url = EcRemoteLinkedData.veryShortId(EcRepository.repos[0].selectedServer, EcCrypto.md5(url));
+             else {
+                return EcRepository.findBlocking(originalUrl, "Could not locate object. May be due to EcRepository.alwaysTryUrl flag.", new Object(), 0);
+            }
         }
         var fd = new FormData();
         var p1 = null;
         if (EcRepository.unsigned == false) {
-            p1 = EcIdentityManager.signatureSheet(60000, url);
+            p1 = EcIdentityManager.signatureSheet(60000, originalUrl);
             fd.append("signatureSheet", p1);
         }
         var oldAsync = EcRemote.async;
         EcRemote.async = false;
-        EcRemote.postExpectingObject(url, null, fd, function(p1) {
+        var finalUrl = url;
+        EcRemote.postExpectingObject(finalUrl, null, fd, function(p1) {
             var d = new EcRemoteLinkedData("", "");
             d.copyFrom(p1);
             if (d.getFullType() == null) {
-                EcRepository.findBlocking(url, JSON.stringify(p1), new Object(), 0);
+                EcRepository.findBlocking(originalUrl, JSON.stringify(p1), new Object(), 0);
                 return;
             }
-            (EcRepository.cache)[url] = d;
+            (EcRepository.cache)[originalUrl] = d;
         }, function(s) {
-            (EcRepository.cache)[url] = EcRepository.findBlocking(url, s, new Object(), 0);
+            (EcRepository.cache)[originalUrl] = EcRepository.findBlocking(originalUrl, s, new Object(), 0);
         });
         EcRemote.async = oldAsync;
-        var result = (EcRepository.cache)[url];
+        var result = (EcRepository.cache)[originalUrl];
         if (!EcRepository.caching) {
-            (EcRepository.cache)[url] = null;
+            (EcRepository.cache)[originalUrl] = null;
         }
         return result;
     };
