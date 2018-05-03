@@ -205,7 +205,9 @@ function refreshCompetency(col, level, subsearch) {
         queryParams.competencyId = null;
         renderSidebar();
     }
-    treeNode = $("#tree").append("<li class = 'competency' draggable='true' ondragstart='dragCompetency(event);' ontouchstart='handleTouchStart(event)' ontouchmove='handleTouchMove(event);' ontouchend='handleTouchEnd(event);' ondrop='dropCompetency(event);' ondragover='allowCompetencyDrop(event);'><span></span><ul></ul></li>").children().last();
+    var draggable = viewMode ? 'false' : 'true';
+    console.log(draggable);
+    treeNode = $("#tree").append("<li class = 'competency' draggable='" + draggable + "' ondragstart='dragCompetency(event);' ontouchstart='handleTouchStart(event)' ontouchmove='handleTouchMove(event);' ontouchend='handleTouchEnd(event);' ondrop='dropCompetency(event);' ondragover='allowCompetencyDrop(event);'><span></span><ul></ul></li>").children().last();
     treeNode.attr("id", col.shortId());
     if (col.description != null && col.description != "NULL" && col.description != col.name)
         treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").css('display', 'block').text(col.getDescription());
@@ -783,36 +785,52 @@ $('body').on('click', '#frameworkName', function (evt) {
 });
 
 $('body').on('dragover', '.competency', function (evt) {
+    if (viewMode)
+        return;
     $(this).addClass('selected');
 });
 
 $('body').on('dragleave', '.competency', function (evt) {
+    if (viewMode)
+        return;
     $(this).removeClass('selected');
 });
 
 $('body').on('dragstart', '.competency', function (evt) {
+    if (viewMode)
+        return;
     $(evt.target).click();
     $('.competency').addClass('dashBorder');
 });
 
 $('body').on('dragenter', '.competency', function (evt) {
+    if (viewMode)
+        return;
     evt.preventDefault();
 });
 
 $('body').on('dragend', '.competency', function (evt) {
+    if (viewMode)
+        return;
     $('.competency').removeClass('dashBorder');
 })
 
 $('body').on('dragenter', '#frameworkNameContainer', function (evt) {
+    if (viewMode)
+        return;
     evt.preventDefault();
 });
 
 $('body').on('dragover', '#frameworkNameContainer', function (evt) {
+    if (viewMode)
+        return;
     evt.preventDefault();
     $(this).addClass('selected');
 });
 
 $('body').on('dragleave', '#frameworkNameContainer', function (evt) {
+    if (viewMode)
+        return;
     $(this).removeClass('selected');
 });
 

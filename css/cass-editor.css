@@ -139,16 +139,17 @@ ul {
 }
 
 .grabbable {
-    cursor: move;
-    cursor: grab;
-    cursor: -moz-grab;
-    cursor: -webkit-grab;
+    cursor: move !important;
+    cursor: grab !important;
+    cursor: -moz-grab !important;
+    cursor: -webkit-grab !important;
 }
 
 .competency {
     border-top: 1px solid transparent;
     border-bottom: 1px solid transparent;
     padding-left: calc(1em + 2px);
+    cursor: default;
 }
 
 .competency > span {}

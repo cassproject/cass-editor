@@ -529,6 +529,8 @@ allowCompetencyDrop = function (ev) {
 
 //Touchscreen drag and drop
 handleTouchStart = function (event) {
+    if (viewMode)
+        return;
     //Drag and drop when using 2+ fingers
     console.log(event);
     if (!$(event.srcElement).hasClass('collapse') && !$(event.srcElement).hasClass('fa') && event.touches.length > 1) {
@@ -539,6 +541,8 @@ handleTouchStart = function (event) {
 }
 
 handleTouchMove = function (event) {
+    if (viewMode)
+        return;
     event.stopPropagation();
     if (globalTouchDragData != null) {
         $('.competency').addClass('dashBorder');
@@ -556,6 +560,8 @@ handleTouchMove = function (event) {
 }
 
 handleTouchEnd = function (event) {
+    if (viewMode)
+        return;
     event.stopPropagation();
     if (globalTouchDragDestination != null && globalTouchDragData != null) {
         //Unlink competency

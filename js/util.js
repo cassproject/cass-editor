@@ -177,7 +177,6 @@ function spitEvent(message, id) {
 
 alertBadCharacters = function () {
     var badInputs = $('.invalidInput');
-    console.log(badInputs);
     if (badInputs.length > 0) {
         var inputNames = [];
         for (var i = 0; i < badInputs.length; i++) {
