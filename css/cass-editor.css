@@ -31,7 +31,7 @@
         overflow-y: scroll !important;
         -webkit-overflow-scrolling: touch;
     }
-    .sidebar {
+    .sidebarInner {
          overflow-y: scroll !important;
         -webkit-overflow-scrolling: touch;
     }
@@ -662,8 +662,13 @@ input.redButton {
     padding: 0rem .5rem 0rem 0rem;
     height: calc(100vh - 1rem);
     width: 21rem;
-    overflow: auto;
     min-width: 19rem;
+}
+
+.sidebarInner {
+    position: relative;
+    overflow: auto;
+    height:calc(100vh - 1rem);
 }
 
 .changedField {
