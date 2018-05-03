@@ -197,7 +197,7 @@ p.selected {
     border: 1px solid lightgray;
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
-    max-height: 20rem;
+    max-height: 10rem;
 }
 
 .ui-tooltip {
