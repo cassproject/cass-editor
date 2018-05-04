@@ -596,8 +596,10 @@ refreshSidebar = function () {
             $("#sidebarFeedback").append("Edit options are limited:");
         $("#sidebarFeedback").append("<li>You do not own this framework.</li> ");
         $("#tree .competency").removeClass("grabbable");
+        $(".ownerRequired").hide();
     } else {
         $("#tree .competency").addClass("grabbable");
+        $(".ownerRequired").show();
     }
 
     if (!thing.canEditAny(EcIdentityManager.getMyPks())) {
