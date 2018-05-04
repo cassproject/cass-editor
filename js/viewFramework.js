@@ -205,7 +205,11 @@ function refreshCompetency(col, level, subsearch) {
         queryParams.competencyId = null;
         renderSidebar();
     }
-    var draggable = viewMode ? 'false' : 'true';
+    var draggable;
+    if (!viewMode && framework.canEditAny(EcIdentityManager.getMyPks()))
+        draggable = 'true';
+    else 
+        draggable = 'false';
     treeNode = $("#tree").append("<li class = 'competency' draggable='" + draggable + "' ondragstart='dragCompetency(event);' ontouchstart='handleTouchStart(event)' ontouchmove='handleTouchMove(event);' ontouchend='handleTouchEnd(event);' ondrop='dropCompetency(event);' ondragover='allowCompetencyDrop(event);'><span></span><ul></ul></li>").children().last();
     treeNode.attr("id", col.shortId());
     if (col.description != null && col.description != "NULL" && col.description != col.name)
@@ -591,9 +595,9 @@ refreshSidebar = function () {
         if ($("#sidebarFeedback").html() == "")
             $("#sidebarFeedback").append("Edit options are limited:");
         $("#sidebarFeedback").append("<li>You do not own this framework.</li> ");
-        $("#tree").removeClass("grabbable");
+        $("#tree .competency").removeClass("grabbable");
     } else {
-        $("#tree").addClass("grabbable");
+        $("#tree .competency").addClass("grabbable");
     }
 
     if (!thing.canEditAny(EcIdentityManager.getMyPks())) {
