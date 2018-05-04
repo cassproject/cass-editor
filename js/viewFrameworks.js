@@ -31,9 +31,22 @@ var frameworkLoading = 0;
 function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
     frameworkLoading++;
     var search = "";
-    if (queryParams.filter != null)
-        search = "(" + searchTerm + ") AND (" + queryParams.filter + ")";
-    else
+    if (queryParams.filter != null || queryParams.show != null) {
+        search = "(" + searchTerm + ")";
+        if (queryParams.filter != null)
+            search += " AND (" + queryParams.filter + ")";
+        if (queryParams.show != null && queryParams.show == "mine") {
+            search += " AND (";
+                for (var i = 0; i < EcIdentityManager.ids.length; i++) {
+                    if (i != 0) {
+                        search += " OR ";
+                    }
+                    var id = EcIdentityManager.ids[i];
+                    search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
+                }
+                search += ")";
+        }
+    } else
         search = searchTerm;
     EcFramework.search(server, search, function (frameworks) {
         for (var v = 0; v < frameworks.length; v++) {
