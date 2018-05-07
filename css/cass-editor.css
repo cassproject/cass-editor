@@ -660,7 +660,7 @@ input.redButton {
     right: 0;
     float: right;
     padding: 0rem .5rem 0rem 0rem;
-    height: calc(100vh - 1rem);
+    height: calc(100vh - 4rem);
     width: 21rem;
     min-width: 19rem;
 }
