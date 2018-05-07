@@ -938,7 +938,6 @@ $('html').keydown(function (evt) {
             var competencyElementArray = $('#tree').find('.competency:visible');
             if (competencySelectionIndex === null) {
                 competencySelectionIndex = -1;
-                $('#frameworkName').click();
                 return;
             }
             //On shift+down arrow
