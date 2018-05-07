@@ -870,7 +870,28 @@ $('html').keydown(function (evt) {
             $('#cassControl').focus();
         });
     }
-    if ($('#tourDialog').is(':visible') || $('.introjsFloatingElement').is(':visible') || $(window.parent.document.getElementsByClassName('introjs-overlay')[0]).is(':visible')) {
+    //Only tab between the tour dialog buttons when they are visible
+    if ($('#tourDialog').is(':visible')) {
+        if (evt.which === 9) {
+            evt.preventDefault();
+            if ($('#acceptTourButton').is(':focus')) {
+                $('#declineTourButton').focus();
+            } else {
+                $('#acceptTourButton').focus();
+            }
+        }
+        return;
+    }
+    if ($('.introjsFloatingElement').is(':visible') || $(window.parent.document.getElementsByClassName('introjs-overlay')[0]).is(':visible')) {
+        //Custom tabbing for tour buttons
+        if (evt.which === 9) {
+            evt.preventDefault();
+            if ($('.introjs-nextbutton').is(':focus')) {
+                $('.introjs-skipbutton').focus();
+            } else {
+                $('.introjs-nextbutton').focus();
+            }
+        }
         if (evt.which === 13) {
             if ($('.introjs-skipbutton').is(':focus')) {
                 $('.introjs-skipbutton').click();
