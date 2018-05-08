@@ -612,7 +612,15 @@ refreshSidebar = function () {
             $("#sidebarFeedback").append("<li>You do not own this competency.</li> ");
             //$("#sidebarEdit").hide();
         }
-    }$(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
+    }
+    //Make sure the selected item actually has the selected class.
+    if (selectedCompetency != null) {
+        $("[id='" + selectedCompetency.shortId() + "']").addClass('selected');
+    } else if (framework != null) {
+        $('#frameworkNameContainer').addClass('selected');
+    }
+    $(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
+
 }
 isFirstEdit = false;
 editSidebar = function () {
