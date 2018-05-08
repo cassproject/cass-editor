@@ -102,12 +102,13 @@ openWebSocket = function (r) {
                             }
                         if (com["skos:topConceptOf"] != null)
                             refreshCompetency(com);
-                        if (selectedCompetency != null)
+                        if (selectedCompetency != null) {
                             if (selectedCompetency.shortId() == wut.shortId()) {
                                 selectedCompetency = com;
                                 refreshSidebar();
                             }
-                        spitEvent("competencyChanged", selectedCompetency.shortId());
+                            spitEvent("competencyChanged", selectedCompetency.shortId());
+                        }
                     }
             }
             if (new EcCompetency().isA(wut.getFullType())) {
@@ -117,12 +118,13 @@ openWebSocket = function (r) {
                             var com = new EcCompetency();
                             com.copyFrom(wut);
                             populateFramework();
-                            if (selectedCompetency != null)
+                            if (selectedCompetency != null) {
                                 if (selectedCompetency.shortId() == wut.shortId()) {
                                     selectedCompetency = com;
                                     refreshSidebar();
                                 }
-                            spitEvent("competencyChanged", selectedCompetency.shortId());
+                                spitEvent("competencyChanged", selectedCompetency.shortId());
+                            }
                         }
             }
 
@@ -134,12 +136,13 @@ openWebSocket = function (r) {
                             com.copyFrom(wut);
                             window.fetches++;
                             refreshCompetency(com);
-                            if (selectedCompetency != null)
+                            if (selectedCompetency != null) {
                                 if (selectedCompetency.shortId() == wut.shortId()) {
                                     selectedCompetency = com;
                                     refreshSidebar();
                                 }
-                            spitEvent("competencyChanged", selectedCompetency.shortId());
+                                spitEvent("competencyChanged", selectedCompetency.shortId());
+                            }
                         }
             }
         }, error);
