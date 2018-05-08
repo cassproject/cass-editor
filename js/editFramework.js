@@ -356,7 +356,7 @@ removeCompetency = function () {
             }, console.log);
         }
         hideConfirmDialog();
-    }, "This will remove the competency from your framework (but not delete it), do you wish to continue?");
+    }, "This will remove the competency from your framework (but not delete it), do you wish to continue?", "Cancel", "Confirm");
 }
 
 deleteCompetency = function () {
@@ -391,7 +391,7 @@ deleteCompetency = function () {
                     }, console.log);
                 }
                 hideConfirmDialog();
-            }, "Are you sure you want to delete this framework? This will also delete all objects referenced in this framework that aren't found in other frameworks on this server.");
+            }, "Are you sure you want to delete this framework? This will also delete all objects referenced in this framework that aren't found in other frameworks on this server.", "Cancel", "Confirm");
     } else {
         showConfirmDialog(function (confirmed) {
             if (confirmed === true) {
@@ -406,7 +406,7 @@ deleteCompetency = function () {
                 }, console.log);
             }
             hideConfirmDialog();
-        }, "Are you sure you want to delete this competency? This will remove the competency from the system entirely, not just from your framework.", "delete", selectedCompetency.shortId());
+        }, "Are you sure you want to delete this competency? This will remove the competency from the system entirely, not just from your framework.", "Cancel", "Confirm", "delete", selectedCompetency.shortId());
     }
 }
 

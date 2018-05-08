@@ -112,7 +112,7 @@ deleteConcept = function (c) {
                 }, console.log);
             }
             hideConfirmDialog();
-        }, "Are you sure you want to delete this concept scheme? This will also delete all concepts referenced in this scheme.");
+        }, "Are you sure you want to delete this concept scheme? This will also delete all concepts referenced in this scheme.", "Cancel", "Confirm");
     } else {
         showConfirmDialog(function (confirmed) {
             if (confirmed === true) {
@@ -123,7 +123,7 @@ deleteConcept = function (c) {
                 refreshSidebar();
             }
             hideConfirmDialog();
-        }, "Are you sure you want to delete this concept?", "delete", selectedCompetency.shortId());
+        }, "Are you sure you want to delete this concept?", "Cancel", "Confirm", "delete", selectedCompetency.shortId());
     }
 }
 

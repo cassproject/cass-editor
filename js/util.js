@@ -494,12 +494,12 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarNameDescription"]').tooltip({
-            content: 'A short description of this competency framework or competency.',
+            content: 'A short description of this competency or competency framework.',
             show: false,
             hide: false
         });
         $('label[for="sidebarInLanguage"]').tooltip({
-            content: 'The primary language used in or by this competency framework or competency.',
+            content: 'The primary language used in this competency or competency framework. Languages in this field are represented by ISO language codes.',
             show: false,
             hide: false
         });
@@ -509,7 +509,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarCreator"]').tooltip({
-            content: 'An entity primarily responsible for making this competency framework or competency.',
+            content: 'The primary entity responsible for making this competency or competency framework.',
             show: false,
             hide: false
         });
@@ -529,7 +529,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarSource"]').tooltip({
-            content: 'The original competency framework which this competency framework is based on or derived from.',
+            content: 'The webpage where the original competency framework this framework was derived from can be found.',
             show: false,
             hide: false
         });
@@ -549,7 +549,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarDateCreated"]').tooltip({
-            content: 'Date of creation of this competency framework or competency.',
+            content: 'The date this competency or competency framework was created.',
             show: false,
             hide: false
         });
@@ -564,7 +564,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarIdentifier"]').tooltip({
-            content: 'An alternative URI by which this competency framework or competency is identified.',
+            content: 'An alternative URI by which this competency or competency framework is identified.',
             show: false,
             hide: false
         });
@@ -574,12 +574,12 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarPublicationStatus"]').tooltip({
-            content: 'The publication status of the of this competency framework.',
+            content: 'The publication status of this competency framework.',
             show: false,
             hide: false
         });
         $('label[for="sidebarPublisher"]').tooltip({
-            content: 'An entity responsible for making this competency framework available.',
+            content: 'The entity responsible for making this competency framework available.',
             show: false,
             hide: false
         });
@@ -589,7 +589,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarRightsHolder"]').tooltip({
-            content: 'An agent owning or managing rights over this competency framework.',
+            content: 'The agent owning or managing rights over this competency framework.',
             show: false,
             hide: false
         });
@@ -599,7 +599,12 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarPublisherName"]').tooltip({
-            content: 'Name of an agent responsible for making this entity available.',
+            content: 'Name of the agent responsible for making this entity available.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarEducationLevelType"]').tooltip({
+            content: 'A general statement describing the education or training context. Alternatively, a more specific statement of the location of the audience in terms of its progression through an education or training context.',
             show: false,
             hide: false
         });
@@ -854,8 +859,10 @@ hideCopyOrLinkDialog = function () {
     $("#copyCompetenciesButton").off();
 }
 
-showConfirmDialog = function (callback, statement, action, id) {
+showConfirmDialog = function (callback, statement, cancelText, confirmText, action, id) {
     if (viewMode) return;
+    $("#dialogCancelButton").text(cancelText);
+    $("#dialogConfirmButton").text(confirmText);
     if (action === 'delete') {
         EcFramework.search(repo, "\"" + id + "\"", function (results) {
             $("#confirmDialog").show();
