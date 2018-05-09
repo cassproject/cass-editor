@@ -225,7 +225,7 @@ Most fields are not validated beyond the input type assigned to them. URLs, drop
 
 # Keyboard Shortcuts
 &uarr; & &darr; - Navigate up and down the list of frameworks and competencies.  
-&larr; & &rarr; - Expand and contract nested comptencies.  
+&larr; & &rarr; - Expand and contract nested competencies.  
 Enter - Select the current element.  
 Shift + Enter - Select all.  
 Backspace - Go back.  
