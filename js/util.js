@@ -260,7 +260,7 @@ initTooltips = function (type) {
             show: false,
             hide: false
         });
-        $('label[for="sidebarEducationLevelType"]').tooltip({
+        $('label[for="sidebarEducationLevel"]').tooltip({
             content: 'A general statement describing the education or training context. Alternatively, a more specific statement of the location of the audience in terms of its progression through an education or training context.',
             show: false,
             hide: false
@@ -447,7 +447,7 @@ initTooltips = function (type) {
             show: false,
             hide: false
         });
-        $('label[for="sidebarEducationLevelType"]').tooltip({
+        $('label[for="sidebarEducationLevel"]').tooltip({
             content: 'A general statement describing the education or training context. Alternatively, a more specific statement of the location of the audience in terms of its progression through an education or training context.',
             show: false,
             hide: false
@@ -574,7 +574,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarPublicationStatus"]').tooltip({
-            content: 'The publication status of this competency framework.',
+            content: 'Publication status of the source competency framework. The original framework may be drafted, published, or depreciated outside of this system.',
             show: false,
             hide: false
         });
@@ -603,7 +603,7 @@ initTooltips = function (type) {
             show: false,
             hide: false
         });
-        $('label[for="sidebarEducationLevelType"]').tooltip({
+        $('label[for="sidebarEducationLevel"]').tooltip({
             content: 'A general statement describing the education or training context. Alternatively, a more specific statement of the location of the audience in terms of its progression through an education or training context.',
             show: false,
             hide: false
