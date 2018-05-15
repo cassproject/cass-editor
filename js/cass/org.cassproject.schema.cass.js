@@ -324,7 +324,7 @@ Relation = stjs.extend(Relation, CreativeWork, [], function(constructor, prototy
      *  Equivalent relations define two objects that are effectively equivalent.
      *  Equivalent relations are bidirectional.
      * 
-     *  @property IS_RELATED_TO
+     *  @property IS_EQUIVALENT_TO
      *  @static
      *  @type string
      */
