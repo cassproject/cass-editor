@@ -208,14 +208,14 @@ function refreshCompetency(col, level, subsearch) {
     var draggable;
     if (!viewMode && framework.canEditAny(EcIdentityManager.getMyPks()))
         draggable = 'true';
-    else 
+    else
         draggable = 'false';
     treeNode = $("#tree").append("<li class = 'competency' draggable='" + draggable + "' ondragstart='dragCompetency(event);' ontouchstart='handleTouchStart(event)' ontouchmove='handleTouchMove(event);' ontouchend='handleTouchEnd(event);' ondrop='dropCompetency(event);' ondragover='allowCompetencyDrop(event);'><span></span><ul></ul></li>").children().last();
     treeNode.attr("id", col.shortId());
     if (col.description != null && col.description != "NULL" && col.description != col.name)
         treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").css('display', 'block').text(col.getDescription());
     treeNode.children().first().prepend("<span/>").children().first().addClass("competencyName").text(col.getName());
-    if (queryParams.ceasnDataFields == 'true') {
+    if (queryParams.ceasnDataFields == 'true' || queryParams.tlaProfile == 'true') {
         if (col["ceasn:codedNotation"] != null)
             treeNode.children().first().prepend("<span/>").children().first().addClass("competencyCodedNotation").text(col["ceasn:codedNotation"]);
         if (col["ceasn:listID"] != null)
@@ -538,7 +538,7 @@ refreshSidebar = function () {
         $('.export').show();
     }
 
-    if (queryParams.ceasnDataFields == 'true') {
+    if (queryParams.ceasnDataFields == 'true' || queryParams.tlaProfile == 'true') {
         $("#detailSlider").addClass("detailSliderCeasn");
         $('#ceasnDataFields').show();
     } else {
@@ -560,7 +560,7 @@ refreshSidebar = function () {
         $("#sidebarMoveUp").hide();
         $("#sidebarMoveDown").hide();
         $("#sidebarRemove").hide();
-        if (queryParams.ceasnDataFields === 'true') {
+        if (queryParams.ceasnDataFields === 'true' || queryParams.tlaProfile == 'true') {
             $(".absentForCeasn").hide();
         }
     }
@@ -575,7 +575,7 @@ refreshSidebar = function () {
                 else
                     console.log("Error. Version not certain.");
             }
-        if (queryParams.ceasnDataFields === 'true') {
+        if (queryParams.ceasnDataFields === 'true' || queryParams.tlaProfile == 'true') {
             $(".absentForCeasn").hide();
         }
     }
@@ -635,7 +635,7 @@ editSidebar = function () {
     ulLengths = {};
 
     //Don't persist the invalidInput class between edits
-    $('.invalidInput').each(function() {
+    $('.invalidInput').each(function () {
         $(this).removeClass('invalidInput');
     });
 
