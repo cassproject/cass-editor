@@ -38,7 +38,7 @@ if (queryParams.view == "true") {
     $("button.editControl").remove();
     $("select.editControl").remove();
     $("#sidebarFeedback").remove();
-    if (queryParams.ceasnDataFields == null) {
+    if (queryParams.ceasnDataFields == null && queryParams.tlaProfile == null) {
         $("#editFrameworkSection").removeClass("pageWithSidebar");
         $("#detailSlider").remove();
         $("#split-bar").remove();
