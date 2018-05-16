@@ -51,8 +51,11 @@ addConcept = function () {
 
 createConceptScheme = function () {
     if (viewMode) return;
+    var csTitle;
     if ($("#name").val() == null || $("#name").val().trim() == "")
-        return;
+        csTitle = "New Concept Scheme";
+    else
+        csTitle = $("#name").val().trim();
     framework = new EcConceptScheme();
     if (newObjectEndpoint != null)
         framework.generateShortId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
@@ -60,7 +63,7 @@ createConceptScheme = function () {
         framework.generateId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
     if (EcIdentityManager.ids.length > 0)
         framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-    framework["dcterms:title"] = $("#name").val();
+    framework["dcterms:title"] = csTitle;
     if ($("#description").val() != null && $("#description").val() != "")
         framework["dcterms:description"] = $("#description").val();
     loading("Creating concept scheme...");
