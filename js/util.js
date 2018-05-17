@@ -487,6 +487,11 @@ initTooltips = function (type) {
             show: false,
             hide: false
         });
+        $('label[for="sidebarEducationLevelType"]').tooltip({
+            content: "A general statement describing the education or training context. Alternatively, a more specific statement of the location of the audience in terms of its progression through an education or training context.",
+            show: false,
+            hide: false
+        });
     } else if (type === 'ceasnFramework') {
         $('label[for="sidebarNameInput"]').tooltip({
             content: 'The name or title of this competency framework.',
