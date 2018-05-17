@@ -285,6 +285,51 @@ initTooltips = function (type) {
             show: false,
             hide: false
         });
+        $('label[for="sidebarRequires"]').tooltip({
+            content: 'Another competency is prerequisite for this.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarEquivalent').tooltip({
+            content: 'Represents same capability in all aspects to another competency.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarBroadens').tooltip({
+            content: 'Covers other relevant competencies not found in this competency.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarNarrows').tooltip({
+            content: 'A sub-competency relationship which has relevance to this competency.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarMajor').tooltip({
+            content: 'Another competency which has major relevance or overlap with this competency.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarMinor').tooltip({
+            content: 'Another competency which has minor relevance or overlap with this competency.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarEnabled').tooltip({
+            content: 'A recommended option that speeds up acquisition of this competency.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarRelated').tooltip({
+            content: 'This competency has some degree of overlap with another.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarDesires').tooltip({
+            content: 'Recommended, assumed, or expected competency not essential to acquisition of this competency.',
+            show: false,
+            hide: false
+        });
     } else if (type === 'cassFramework') {
         $('label[for="sidebarNameInput"]').tooltip({
             content: 'The name of the framework.',
@@ -396,6 +441,51 @@ initTooltips = function (type) {
             show: false,
             hide: false
         });
+        $('label[for="sidebarRequires"]').tooltip({
+            content: 'Another competency framework or competency is prerequisite for this.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarEquivalent').tooltip({
+            content: 'Represents same capability in all aspects to another competency framework or competency.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarBroadens').tooltip({
+            content: 'Covers other relevant competencies not found in this competency framework or competency.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarNarrows').tooltip({
+            content: 'A sub-competency relationship which has relevance to this competency framework or competency.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarMajor').tooltip({
+            content: 'Another competency framework or competency which has major relevance or overlap with this.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarMinor').tooltip({
+            content: 'Another competency framework or competency which has minor relevance or overlap with this.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarEnabled').tooltip({
+            content: 'A recommended option that speeds up acquisition of this competency framework or competency.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarRelated').tooltip({
+            content: 'This competency framework or competency has some degree of overlap with another.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarDesires').tooltip({
+            content: 'Recommended, assumed, or expected competency framework or competency not essential to acquisition of this.',
+            show: false,
+            hide: false
+        });
     } else if (type === 'ceasnCompetency') {
         $('label[for="sidebarNameInput"]').tooltip({
             content: 'The text of the competency.',
@@ -489,6 +579,46 @@ initTooltips = function (type) {
         });
         $('label[for="sidebarEducationLevelType"]').tooltip({
             content: "A general statement describing the education or training context. Alternatively, a more specific statement of the location of the audience in terms of its progression through an education or training context.",
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarRequires"]').tooltip({
+            content: 'Another competency is prerequisite for this.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarBroadens').tooltip({
+            content: 'Covers other relevant competencies not found in this competency.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarNarrows').tooltip({
+            content: 'A sub-competency relationship which has relevance to this competency.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarMajor').tooltip({
+            content: 'Another competency which has major relevance or overlap with this competency.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarMinor').tooltip({
+            content: 'Another competency which has minor relevance or overlap with this competency.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarEnabled').tooltip({
+            content: 'A recommended option that speeds up acquisition of this competency.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarRelated').tooltip({
+            content: 'This competency has some degree of overlap with another.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarDesires').tooltip({
+            content: 'Recommended, assumed, or expected competency not essential to acquisition of this competency.',
             show: false,
             hide: false
         });
@@ -613,6 +743,51 @@ initTooltips = function (type) {
             show: false,
             hide: false
         });
+        $('label[for="sidebarRequires"]').tooltip({
+            content: 'Another competency or competency framework is prerequisite for this.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarEquivalent').tooltip({
+            content: 'Represents same capability in all aspects to another competency or competency framework.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarBroadens').tooltip({
+            content: 'Covers other relevant competencies not found in this competency or competency framework.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarNarrows').tooltip({
+            content: 'A sub-competency relationship which has relevance to this competency or competency framework.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarMajor').tooltip({
+            content: 'Another competency or competency framework which has major relevance or overlap with this.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarMinor').tooltip({
+            content: 'Another competency framework or competency which has minor relevance or overlap with this.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarEnabled').tooltip({
+            content: 'A recommended option that speeds up acquisition of this competency framework or competency.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarRelated').tooltip({
+            content: 'This competency framework or competency has some degree of overlap with another.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarDesires').tooltip({
+            content: 'Recommended, assumed, or expected competency framework or competency not essential to acquisition of this.',
+            show: false,
+            hide: false
+        });
     } else if (type === 'skosCompetency') {
         $('label[for="sidebarNameInput"]').tooltip({
             content: 'Preferred display label for this concept.',
@@ -674,6 +849,51 @@ initTooltips = function (type) {
             show: false,
             hide: false
         });
+        $('label[for="sidebarRequires"]').tooltip({
+            content: 'Another concept is prerequisite for this.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarEquivalent').tooltip({
+            content: 'Represents same capability in all aspects to another concept.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarBroadens').tooltip({
+            content: 'Covers other relevant concepts not found in this concept.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarNarrows').tooltip({
+            content: 'A sub-concept relationship which has relevance to this concept.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarMajor').tooltip({
+            content: 'Another concept which has major relevance or overlap with this concept.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarMinor').tooltip({
+            content: 'Another concept which has minor relevance or overlap with this concept.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarEnabled').tooltip({
+            content: 'A recommended option that speeds up acquisition of this concept.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarRelated').tooltip({
+            content: 'This concept has some degree of overlap with another concept.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarDesires').tooltip({
+            content: 'Recommended, assumed, or expected concept not essential to acquisition of this concept.',
+            show: false,
+            hide: false
+        });
     } else if (type === 'skosFramework') {
         $('label[for="sidebarNameInput"]').tooltip({
             content: 'Preferred display label for this scheme.',
@@ -732,6 +952,51 @@ initTooltips = function (type) {
         });
         $('label[for="sidebarRightsHolder"]').tooltip({
             content: 'A URI to an agent owning or managing rights over this scheme.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarRequires"]').tooltip({
+            content: 'Another scheme is prerequisite for this.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarEquivalent').tooltip({
+            content: 'Represents same capability in all aspects to another scheme.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarBroadens').tooltip({
+            content: 'Covers other relevant schemes not found in this scheme.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarNarrows').tooltip({
+            content: 'A sub-scheme relationship which has relevance to this scheme.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarMajor').tooltip({
+            content: 'Another scheme which has major relevance or overlap with this scheme.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarMinor').tooltip({
+            content: 'Another scheme which has minor relevance or overlap with this scheme.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarEnabled').tooltip({
+            content: 'A recommended option that speeds up acquisition of this scheme.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarRelated').tooltip({
+            content: 'This scheme has some degree of overlap with another scheme.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarDesires').tooltip({
+            content: 'Recommended, assumed, or expected scheme not essential to acquisition of this scheme.',
             show: false,
             hide: false
         });
