@@ -521,6 +521,8 @@ renderSidebar = function (justLists) {
                 $(this).find("option[value=\"" + val + "\"]").prop('selected', true);
             }
         });
+
+    $('.sidebarAccordion').addClass('forceShow');
 }
 
 refreshSidebar = function () {
@@ -648,6 +650,8 @@ editSidebar = function () {
 
     initULLengths();
     renderSidebar();
+
+    $('.sidebarAccordion').removeClass('forceShow');
 
     var thing = framework;
     if (selectedCompetency != null)
