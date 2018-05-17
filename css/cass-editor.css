@@ -827,3 +827,7 @@ hr {
 #frameworkNameContainer #frameworkName {
     padding-left: .25rem;
 }
+
+.forceShow {
+    display: block !important;
+}

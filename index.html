@@ -297,7 +297,7 @@
                                         <h2 class="editMode absentForConcepts" style="margin-bottom:0px;cursor:pointer;" onclick="toggleDiv('competencyRequiredAvailableChevron', 'competencyRequiredAvailable');">Required if available <i class="fa fa-chevron-up" id="competencyRequiredAvailableChevron" style="float:right;"></i></h2>
                                         <hr class="editMode absentForConcepts" style="margin-top:0px;">
 
-                                        <div class="requiredFields" id="competencyRequiredAvailable">
+                                        <div class="requiredFields sidebarAccordion" id="competencyRequiredAvailable">
 
                                             <label id="sidebarAlternativeCodedNotationInputLabel" for="sidebarCodedNotation" title="" cassCompetency="Coded Notation:" ceasnCompetency="Coded Notation:" class="viewMode editMode" style="margin:0px;">Coded Notation:</label>
                                             <p id="sidebarCodedNotation" class="viewMode" style="font-weight:bold;"></p>
@@ -324,7 +324,7 @@
                                         <h2 class="editMode absentForConcepts" style="margin-bottom:0px;cursor:pointer;" onclick="toggleDiv('competencyRecommendedChevron', 'competencyRecommended');">Recommended <i class="fa fa-chevron-down" id="competencyRecommendedChevron" style="float:right;"></i></h2>
                                         <hr class="editMode absentForConcepts" style="margin-top:0px;">
 
-                                        <div class="optionalFields" id="competencyRecommended">
+                                        <div class="optionalFields sidebarAccordion" id="competencyRecommended">
 
                                             <label id="sidebarWeightInputLabel" for="sidebarWeight" title="" cassCompetency="Weight:" ceasnCompetency="Weight:" class="viewMode editMode absentForConcepts" style="margin: 0px">Weight:</label>
                                             <p id="sidebarWeight" class="viewMode absentForConcepts" style="font-weight: bold;"></p>
@@ -414,7 +414,7 @@
 
                                         <h2 class="editMode absentForConcepts" style="margin-bottom:0px;cursor:pointer;" onclick="toggleDiv('frameworkRequiredAvailableChevron', 'frameworkRequiredAvailable');">Required if available <i class="fa fa-chevron-up" id="frameworkRequiredAvailableChevron" style="float:right;"></i></h2>
                                         <hr class="editMode absentForConcepts" style="margin-top:0px;">
-                                        <div class="requiredFields" id="frameworkRequiredAvailable">
+                                        <div class="requiredFields sidebarAccordion" id="frameworkRequiredAvailable">
 
                                             <label id="sidebarPublisherInputLabel" for="sidebarPublisher" title="" cassFramework="Publisher:" ceasnFramework="Publisher:" skosFramework="Publisher:" class="viewMode editMode" style="margin:0px;">Publisher:</label>
                                             <p id="sidebarPublisher" class="viewMode" style="font-weight:bold;"></p>
@@ -434,7 +434,7 @@
                                         <h2 class="editMode absentForConcepts" style="margin-bottom:0px;cursor:pointer;" onclick="toggleDiv('frameworkRecommendedChevron', 'frameworkRecommended');">Recommended <i class="fa fa-chevron-down" id="frameworkRecommendedChevron" style="float:right;"></i></h2>
                                         <hr class="editMode absentForConcepts" style="margin-top:0px;">
 
-                                        <div class="optionalFields" id="frameworkRecommended">
+                                        <div class="optionalFields sidebarAccordion" id="frameworkRecommended">
 
                                             <label id="sidebarDateCopyrightedInputLabel" for="sidebarDateCopyrighted" title="" cassFramework="Date Copyrighted:" ceasnFramework="Date Copyrighted:" skosFramework="Date Copyrighted:" class="viewMode editMode" style="margin:0px;">Date Copyrighted:</label>
                                             <p id="sidebarDateCopyrighted" class="viewMode" style="font-weight:bold;"></p>
@@ -492,7 +492,7 @@
 
 
 
-                                            <label id="sidebarDerivedFromInputLabel" for="sidebarDerivedFrom" title="" cassFramework="Derived From:" ceasnFramework="Attribution:" class="viewMode editMode" style="margin:0px;">Derived From:</label>
+                                            <label id="sidebarDerivedFromInputLabel" for="sidebarDerivedFrom" title="" cassFramework="Derived From:" ceasnFramework="Derived From:" class="viewMode editMode" style="margin:0px;">Derived From:</label>
                                             <p id="sidebarDerivedFrom" class="viewMode" style="font-weight:bold;"></p>
                                             <input id="sidebarDerivedFromInput" cassFramework="ceasn:derivedFrom" ceasnFramework="ceasn:derivedFrom" type="url" plural="true" class="editMode editControl" />
                                             <span class="orangeUri">Note: URI only.</span>
@@ -502,7 +502,7 @@
                                         <h2 class="editMode absentForConcepts" style="margin-bottom:0px;cursor:pointer;" onclick="toggleDiv('frameworkOptionalChevron', 'frameworkOptional');">Optional <i class="fa fa-chevron-down" id="frameworkOptionalChevron" style="float:right;"></i></h2>
                                         <hr class="editMode absentForConcepts" style="margin-top:0px;">
 
-                                        <div class="optionalFields" id="frameworkOptional">
+                                        <div class="optionalFields sidebarAccordion" id="frameworkOptional">
 
                                             <label id="sidebarConceptKeywordInputLabel" for="sidebarConceptKeyword" title="" cassFramework="Keywords:" ceasnFramework="Keywords:" skosFramework="Concept Keyword:" class="viewMode editMode" style="margin:0px;">Concept Keyword:</label>
                                             <p id="sidebarConceptKeyword" class="viewMode" style="font-weight:bold;"></p>
@@ -553,7 +553,7 @@
                             <h2 class="viewMode editMode absentForConcepts competencyOnly" style="margin-bottom:0px;cursor:pointer;" onclick="toggleDiv('alignmentsOptionalChevron', 'alignmentsOptional');">Alignments <i class="fa fa-chevron-down" id="alignmentsOptionalChevron" style="float:right;"></i></h2>
                             <hr class="viewMode editMode absentForConcepts competencyOnly" style="margin-top:0px;">
 
-                            <div class="optionalFields" id="alignmentsOptional">
+                            <div class="optionalFields sidebarAccordion" id="alignmentsOptional">
 
                                 <label for="sidebarRequires" title="" style="margin:0px;" cassCompetency="Requires:" ceasnCompetency="Prerequisite Alignments:" class="viewMode editMode competencyOnly">Requires:</label>
                                 <button id="sidebarRequiresBrowse" cassCompetency="requires" ceasnCompetency="requires" plural="true" class="viewMode editMode editControl frameworkEditControl competencyOnly" onclick="$('#selectCompetencySection').attr('relation','requires');initIframe(true);showPage('#selectCompetencySection', framework);"><i class="fa fa-search-plus"></i></button>
