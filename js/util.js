@@ -529,7 +529,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarSource"]').tooltip({
-            content: 'The webpage where the original competency framework this framework was derived from can be found.',
+            content: 'The original competency framework which this competency framework is based on or derived from.',
             show: false,
             hide: false
         });
