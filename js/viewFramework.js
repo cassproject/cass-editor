@@ -322,6 +322,13 @@ renderSidebar = function (justLists) {
         }
     }
 
+    //Display cassCompetency only fields
+    if (!conceptMode && thing == selectedCompetency && queryParams.ceasnDataFields !== 'true') {
+        $('.cassCompetency').show();
+    } else {
+        $('.cassCompetency').hide();
+    }
+
     if (justLists != true)
         $("#detailSlider label").each(function () {
             var label = $(this).attr(labelChoice);
