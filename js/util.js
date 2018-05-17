@@ -599,7 +599,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarDerivedFrom"]').tooltip({
-            content: 'The URI of a competency from which this competency has been derived.',
+            content: 'A third party version of the entity being referenced that has been modified in meaning through editing, extension, or refinement.',
             show: false,
             hide: false
         });
