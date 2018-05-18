@@ -1024,27 +1024,39 @@ startTour = function (step) {
     $('#frameworks').scrollTop(0);
     localStorage.setItem('tourStatus', 'in progress');
     var intro = introJs();
+    var frameworkTerm = conceptMode ? 'concept scheme' : 'framework';
+    var competencyTerm = conceptMode ? 'concept' : 'competency';
+    var frameworkTermPlural = conceptMode ? 'concept schemes' : 'frameworks';
+    var competencyTermPlural = conceptMode ? 'concepts' : 'competencies';
     intro.setOptions({
         steps: [
             {
                 element: $('#header')[0],
-                intro: 'You can search for a particular framework here.'
+                intro: 'You can search for a particular ' + frameworkTerm + ' here.'
+            },
+            {
+                element: $('#header > #importButton')[0],
+                intro: 'Clicking here will let you import a ' + frameworkTerm + '.'
+            },
+            {
+                element: $('#createNewButton')[0],
+                intro: 'Or you can click here to create a brand new ' + frameworkTerm + '.'
             },
             {
                 element: $('#frameworks').children(':first')[0],
-                intro: 'You can click a framework for more information.'
+                intro: 'You can click on a ' + frameworkTerm + ' for more information.'
             },
             {
                 element: $('#frameworkNameContainer')[0],
-                intro: 'This displays the current framework, you can click here to view more details about the framework itself.'
+                intro: 'This displays the current ' + frameworkTerm + ', you can click here to view more details about the ' + frameworkTerm + ' itself.'
             },
             {
                 element: $('#tree').children(':first')[0],
-                intro: 'You can click a competency for more information. If you have permission to edit the framework, you can also drag and drop competencies to rearrange them.'
+                intro: 'You can click a ' + competencyTerm + ' for more information. If you have permission to edit the ' + frameworkTerm + ', you can also drag and drop ' + competencyTermPlural + ' to rearrange them.'
             },
             {
                 element: $('#detailSlider')[0],
-                intro: 'This panel will list the properties of the selected framework or competency. Additionally, you can add new competencies or edit these properties here.'
+                intro: 'This panel will list the properties of the selected ' + frameworkTerm + ' or ' + competencyTerm + '. Additionally, you can add new ' + competencyTermPlural + ' or edit these properties here.'
             }
         ],
         showStepNumbers: false,
@@ -1055,8 +1067,12 @@ startTour = function (step) {
     });
 
     intro.oncomplete(function () {
+        //This gets called on start for some reason, so don't let it do anything when that happens
+        if (this._currentStep === 0)
+            return;
         cancelTour();
         selectedCompetency = null;
+        $('#editFrameworkBack').click();
     });
 
     intro.onafterchange(function () {
@@ -1064,15 +1080,41 @@ startTour = function (step) {
         $('.introjs-bullets').hide();
         $('.introjs-skipbutton').attr('tabindex', '2');
         $('.introjs-nextbutton').attr('tabindex', '1');
-        if (tourSkipAhead === false && this._currentStep === 2) {
+        if (tourSkipAhead === false && this._currentStep === 4) {
             $('.introjs-skipbutton').click();
             $('#frameworks').children(':first').click();
-            setTimeout(function () {
-                tourSkipAhead = true;
-                startTour(3);
-            }, 3000);
-        } else if (this._currentStep === 4) {
+            //Create a poll that waits for the framework to finish loading, then start the next step.
+            tourWaitForLoad = setInterval(function() {
+                if ($('#frameworkNameContainer').is(':visible')) {
+                    clearInterval(tourWaitForLoad);
+                    tourSkipAhead = true;
+                    startTour(5);
+                }
+            }, 1000);
+        } else if (this._currentStep === 6) {
             $('#tree').children(':first').click();
+        } else if (tourSkipAhead === false && this._currentStep === 3) {
+            //If there are no frameworks, start creating a new one to continue the tour
+            if ($('#frameworks').children(':first')[0].tagName === 'CENTER') {
+                $('.introjs-skipbutton').click();
+                $('#createNewButton').click();
+                //Polling again
+                tourWaitForLoad = setInterval(function() {
+                    if ($('#frameworkNameContainer').is(':visible')) {
+                        clearInterval(tourWaitForLoad);
+                        tourSkipAhead = true;
+                        startTour(5);
+                    }
+                }, 1000);
+            }
+        } else if (this._currentStep === 5) {
+            //If no competencies, skip this step
+            if ($('#tree').children(':first')[0].tagName === 'BR')
+                intro.nextStep();
+        } else if (this._currentStep === 1) {
+            //If concept mode, skip this step
+            if (conceptMode)
+                intro.nextStep();
         }
     });
 
