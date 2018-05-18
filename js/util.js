@@ -583,27 +583,32 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarRequires"]').tooltip({
-            content: 'Another competency is prerequisite for this.',
+            content: 'This competency is a prerequisite to the referenced competency.',
+            show: false,
+            hide: false
+        });
+        $('label[for="sidebarEquivalent').tooltip({
+            content: 'Relevant concepts in this competency and the referenced competency are coextensive.',
             show: false,
             hide: false
         });
         $('label[for="sidebarBroadens').tooltip({
-            content: 'Covers other relevant competencies not found in this competency.',
+            content: 'Covers all of the relevant concepts in this competency as well as relevant concepts not found in this competency.',
             show: false,
             hide: false
         });
         $('label[for="sidebarNarrows').tooltip({
-            content: 'A sub-competency relationship which has relevance to this competency.',
+            content: 'Covers all of the relevant concepts in the referenced competency as well as relevant concepts not found in the referenced competency.',
             show: false,
             hide: false
         });
         $('label[for="sidebarMajor').tooltip({
-            content: 'Another competency which has major relevance or overlap with this competency.',
+            content: 'Major overlap of relevant concepts between this competency and the referenced competency.',
             show: false,
             hide: false
         });
         $('label[for="sidebarMinor').tooltip({
-            content: 'Another competency which has minor relevance or overlap with this competency.',
+            content: 'Minor overlap of relevant concepts between this competency and the referenced competency.',
             show: false,
             hide: false
         });
@@ -744,32 +749,32 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarRequires"]').tooltip({
-            content: 'Another competency or competency framework is prerequisite for this.',
+            content: 'This competency framework is a prerequisite to the referenced competency framework.',
             show: false,
             hide: false
         });
         $('label[for="sidebarEquivalent').tooltip({
-            content: 'Represents same capability in all aspects to another competency or competency framework.',
+            content: 'Relevant concepts in this competency framework and the referenced competency framework are coextensive.',
             show: false,
             hide: false
         });
         $('label[for="sidebarBroadens').tooltip({
-            content: 'Covers other relevant competencies not found in this competency or competency framework.',
+            content: 'Covers all of the relevant concepts in this competency or competency framework as well as relevant concepts not found in this competency or competency framework.',
             show: false,
             hide: false
         });
         $('label[for="sidebarNarrows').tooltip({
-            content: 'A sub-competency relationship which has relevance to this competency or competency framework.',
+            content: 'Covers all of the relevant concepts in the referenced competency framework as well as relevant concepts not found in the referenced competency framework.',
             show: false,
             hide: false
         });
         $('label[for="sidebarMajor').tooltip({
-            content: 'Another competency or competency framework which has major relevance or overlap with this.',
+            content: 'Major overlap of relevant concepts between this competency framework and the referenced competency framework.',
             show: false,
             hide: false
         });
         $('label[for="sidebarMinor').tooltip({
-            content: 'Another competency framework or competency which has minor relevance or overlap with this.',
+            content: 'Minor overlap of relevant concepts between this competency framework and the referenced competency framework.',
             show: false,
             hide: false
         });
