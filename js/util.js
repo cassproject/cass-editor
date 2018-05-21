@@ -256,7 +256,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarCreator"]').tooltip({
-            content: 'An entity primarily responsible for making this competency framework or competency.',
+            content: 'An entity primarily responsible for making this competency framework or competency. For example, http://example.com/?t=idforFrameworkOwningorg',
             show: false,
             hide: false
         });
@@ -266,7 +266,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarIdentifier"]').tooltip({
-            content: 'An alternative URI by which this competency framework or competency is identified.',
+            content: 'An alternative URI by which this competency framework or competency is identified. For example, https://sandbox.credentialengineregistry.org/',
             show: false,
             hide: false
         });
@@ -352,7 +352,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarCreator"]').tooltip({
-            content: 'A URI to an entity primarily responsible for making this competency framework or competency.',
+            content: 'A URI to an entity primarily responsible for making this competency framework or competency. For example, http://example.com/?t=idforFrameworkOwningorg',
             show: false,
             hide: false
         });
@@ -362,17 +362,17 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarLicense"]').tooltip({
-            content: 'A URI to a legal document giving official permission to do something with this competency framework.',
+            content: 'A URI to a legal document giving official permission to do something with this competency framework. For example, https://sandbox.credentialengineregistry.org/',
             show: false,
             hide: false
         });
         $('label[for="sidebarRights"]').tooltip({
-            content: 'Information about rights held in and over this competency framework.',
+            content: 'Information about rights held in and over this competency framework. For example, http://example.com/?t=idforRights',
             show: false,
             hide: false
         });
         $('label[for="sidebarSource"]').tooltip({
-            content: 'A URI to the original competency framework which this competency framework is based on or derived from.',
+            content: 'A URI to the original competency framework which this competency framework is based on or derived from. For example, http://example.com/?t=source',
             show: false,
             hide: false
         });
@@ -407,7 +407,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarIdentifier"]').tooltip({
-            content: 'An alternative URI by which this competency framework or competency is identified.',
+            content: 'An alternative URI by which this competency framework or competency is identified. For example, https://sandbox.credentialengineregistry.org/',
             show: false,
             hide: false
         });
@@ -422,12 +422,12 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarPublisher"]').tooltip({
-            content: 'A URI to an entity responsible for making this competency framework available. ',
+            content: 'A URI to an entity responsible for making this competency framework available. For example, http://example.com/?t=idforFrameworkPublishingorg',
             show: false,
             hide: false
         });
         $('label[for="sidebarHistoryNote"]').tooltip({
-            content: 'Describes significant changes to the meaning or the form of a concept.',
+            content: 'Describes significant changes to the meaning or the form of a concept. For example, http://example.com/?t=idforHistoryNote',
             show: false,
             hide: false
         });
@@ -437,7 +437,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarRightsHolder"]').tooltip({
-            content: 'A URI to an agent owning or managing rights over this competency framework.',
+            content: 'A URI to an agent owning or managing rights over this competency framework. For example, http://example.com/?t=idforRights',
             show: false,
             hide: false
         });
@@ -533,7 +533,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarCreator"]').tooltip({
-            content: 'An entity primarily responsible for making this competency framework or competency.',
+            content: 'An entity primarily responsible for making this competency framework or competency. For example, http://example.com/?t=idforFrameworkOwningorg',
             show: false,
             hide: false
         });
@@ -543,7 +543,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarIdentifier"]').tooltip({
-            content: 'An alternative URI by which this competency framework or competency is identified.',
+            content: 'An alternative URI by which this competency framework or competency is identified. For example, https://sandbox.credentialengineregistry.org/',
             show: false,
             hide: false
         });
@@ -563,7 +563,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarDerivedFrom"]').tooltip({
-            content: 'The URI of a competency from which this competency has been derived.',
+            content: 'The URI of a competency from which this competency has been derived. For example, http://example.com/?t=derivedFrom',
             show: false,
             hide: false
         });
@@ -649,7 +649,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarCreator"]').tooltip({
-            content: 'The primary entity responsible for making this competency or competency framework.',
+            content: 'The primary entity responsible for making this competency or competency framework. For example, http://example.com/?t=idforFrameworkOwningorg',
             show: false,
             hide: false
         });
@@ -659,17 +659,17 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarLicense"]').tooltip({
-            content: 'A legal document giving official permission to do something with this competency framework.',
+            content: 'A legal document giving official permission to do something with this competency framework. For example, https://sandbox.credentialengineregistry.org/',
             show: false,
             hide: false
         });
         $('label[for="sidebarRights"]').tooltip({
-            content: 'Information about rights held in and over this competency framework.',
+            content: 'Information about rights held in and over this competency framework. For example, http://example.com/?t=idforRights',
             show: false,
             hide: false
         });
         $('label[for="sidebarSource"]').tooltip({
-            content: 'The original competency framework which this competency framework is based on or derived from.',
+            content: 'The original competency framework which this competency framework is based on or derived from. For example, http://example.com/?t=source',
             show: false,
             hide: false
         });
@@ -704,7 +704,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarIdentifier"]').tooltip({
-            content: 'An alternative URI by which this competency or competency framework is identified.',
+            content: 'An alternative URI by which this competency or competency framework is identified. For example, https://sandbox.credentialengineregistry.org/',
             show: false,
             hide: false
         });
@@ -719,7 +719,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarPublisher"]').tooltip({
-            content: 'The entity responsible for making this competency framework available.',
+            content: 'The entity responsible for making this competency framework available. For example, http://example.com/?t=idforFrameworkPublishingorg',
             show: false,
             hide: false
         });
@@ -729,12 +729,12 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarRightsHolder"]').tooltip({
-            content: 'The agent owning or managing rights over this competency framework.',
+            content: 'The agent owning or managing rights over this competency framework. For example, http://example.com/?t=idforRights',
             show: false,
             hide: false
         });
         $('label[for="sidebarDerivedFrom"]').tooltip({
-            content: 'A third party version of the entity being referenced that has been modified in meaning through editing, extension, or refinement.',
+            content: 'A third party version of the entity being referenced that has been modified in meaning through editing, extension, or refinement. For example, http://example.com/?t=derivedFrom',
             show: false,
             hide: false
         });
@@ -845,12 +845,12 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarCreator"]').tooltip({
-            content: 'An entity primarily responsible for making the resource.',
+            content: 'An entity primarily responsible for making the resource. For example, http://example.com/?t=idforFrameworkOwningorg',
             show: false,
             hide: false
         });
         $('label[for="sidebarIdentifier"]').tooltip({
-            content: 'An unambiguous reference to the resource within a given context.',
+            content: 'An unambiguous reference to the resource within a given context. For example, https://sandbox.credentialengineregistry.org/',
             show: false,
             hide: false
         });
@@ -921,7 +921,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarCreator"]').tooltip({
-            content: 'An entity primarily responsible for making the resource.',
+            content: 'An entity primarily responsible for making the resource. For example, http://example.com/?t=idforFrameworkOwningorg',
             show: false,
             hide: false
         });
@@ -931,7 +931,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarLicense"]').tooltip({
-            content: 'A URI to a legal document giving official permission to do something with this scheme.',
+            content: 'A URI to a legal document giving official permission to do something with this scheme. For example, https://sandbox.credentialengineregistry.org/',
             show: false,
             hide: false
         });
@@ -946,17 +946,17 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarPublisher"]').tooltip({
-            content: 'A URI to an entity responsible for making this scheme available.',
+            content: 'A URI to an entity responsible for making this scheme available.  For example, http://example.com/?t=idforFrameworkPublishingorg',
             show: false,
             hide: false
         });
         $('label[for="sidebarHistoryNote"]').tooltip({
-            content: 'Describes significant changes to the meaning or the form of a scheme.',
+            content: 'Describes significant changes to the meaning or the form of a scheme. For example, http://example.com/?t=idforHistoryNote',
             show: false,
             hide: false
         });
         $('label[for="sidebarRightsHolder"]').tooltip({
-            content: 'A URI to an agent owning or managing rights over this scheme.',
+            content: 'A URI to an agent owning or managing rights over this scheme. For example, http://example.com/?t=idforRights',
             show: false,
             hide: false
         });
