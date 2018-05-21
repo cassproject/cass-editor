@@ -202,7 +202,7 @@ function cappend(event) {
             alert("No items have been selected.");
         }
     } else if (event.data.message == "back")
-        backPage();
+        gotoPage('#editFrameworkSection');
 }
 
 for (var i = 0; i < servers.length; i++) {

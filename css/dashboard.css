@@ -211,6 +211,10 @@ p.selected {
     border: 1px solid blue;
 }
 
+.introjs-tooltip {
+    z-index: 99999999 !important;
+}
+
 /* Loading animation */
 
 #loading {
