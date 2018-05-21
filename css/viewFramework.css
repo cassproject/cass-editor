@@ -260,7 +260,7 @@ hr {
     background-image: linear-gradient(to bottom, rgba(128, 128, 128, 0.1) 0%, rgba(128, 128, 128, 0.1) 100%);
 }
 
-.competencyListID {
+.competencyListID,.competencyType {
     margin-right: .25rem;
     font-weight: bold;
 }

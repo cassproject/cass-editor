@@ -220,6 +220,8 @@ function refreshCompetency(col, level, subsearch) {
             treeNode.children().first().prepend("<span/>").children().first().addClass("competencyCodedNotation").text(col["ceasn:codedNotation"]);
         if (col["ceasn:listID"] != null)
             treeNode.children().first().prepend("<span/>").children().first().addClass("competencyListID").text(col["ceasn:listID"]);
+        if (col["dcterms:type"] != null)
+            treeNode.children().first().prepend("<span/>").children().first().addClass("competencyType").text(col["dcterms:type"]);
     }
     treeNode.prepend("<span/>").children().first().addClass("collapse").css("visibility", "hidden").html('<i class="fa fa-minus-square" aria-hidden="true"></i> ');
     if (col.competency != null) {
