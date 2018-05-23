@@ -241,7 +241,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarConceptTerm"]').tooltip({
-            content: 'A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual competencies contextually. Separate each term with commas.',
+            content: 'A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual competencies contextually.',
             show: false,
             hide: false
         });
@@ -276,7 +276,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarSkillEmbodied"]').tooltip({
-            content: 'Cognitive, affective, and psychomotor skills directly or indirectly embodied in this competency. Separate each skill with commas.',
+            content: 'Cognitive, affective, and psychomotor skills directly or indirectly embodied in this competency.',
             show: false,
             hide: false
         });
@@ -286,47 +286,47 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarRequires"]').tooltip({
-            content: 'Another competency is prerequisite for this. Separate each prerequisite with commas.',
+            content: 'Another competency is prerequisite for this.',
             show: false,
             hide: false
         });
         $('label[for="sidebarEquivalent').tooltip({
-            content: 'Represents same capability in all aspects to another competency. Separate each with commas.',
+            content: 'Represents same capability in all aspects to another competency.',
             show: false,
             hide: false
         });
         $('label[for="sidebarBroadens').tooltip({
-            content: 'Covers other relevant competencies not found in this competency. Separate each with commas.',
+            content: 'Covers other relevant competencies not found in this competency.',
             show: false,
             hide: false
         });
         $('label[for="sidebarNarrows').tooltip({
-            content: 'A sub-competency relationship which has relevance to this competency. Separate each with commas.',
+            content: 'A sub-competency relationship which has relevance to this competency.',
             show: false,
             hide: false
         });
         $('label[for="sidebarMajor').tooltip({
-            content: 'Another competency which has major relevance or overlap with this competency. Separate each with commas.',
+            content: 'Another competency which has major relevance or overlap with this competency.',
             show: false,
             hide: false
         });
         $('label[for="sidebarMinor').tooltip({
-            content: 'Another competency which has minor relevance or overlap with this competency. Separate each with commas.',
+            content: 'Another competency which has minor relevance or overlap with this competency.',
             show: false,
             hide: false
         });
         $('label[for="sidebarEnabled').tooltip({
-            content: 'A recommended option that speeds up acquisition of this competency. Separate each option with commas.',
+            content: 'A recommended option that speeds up acquisition of this competency.',
             show: false,
             hide: false
         });
         $('label[for="sidebarRelated').tooltip({
-            content: 'This competency has some degree of overlap with another. Separate each overlap with commas.',
+            content: 'This competency has some degree of overlap with another.',
             show: false,
             hide: false
         });
         $('label[for="sidebarDesires').tooltip({
-            content: 'Recommended, assumed, or expected competency not essential to acquisition of this competency. Separate each with commas.',
+            content: 'Recommended, assumed, or expected competency not essential to acquisition of this competency.',
             show: false,
             hide: false
         });
@@ -387,7 +387,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarConceptTerm"]').tooltip({
-            content: 'A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual competencies contextually. Separate each term with commas.',
+            content: 'A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual competencies contextually.',
             show: false,
             hide: false
         });
@@ -442,47 +442,47 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarRequires"]').tooltip({
-            content: 'Another competency framework or competency is prerequisite for this. Separate each prerequisite with commas.',
+            content: 'Another competency framework or competency is prerequisite for this.',
             show: false,
             hide: false
         });
         $('label[for="sidebarEquivalent').tooltip({
-            content: 'Represents same capability in all aspects to another competency framework or competency. Separate each with commas.',
+            content: 'Represents same capability in all aspects to another competency framework or competency.',
             show: false,
             hide: false
         });
         $('label[for="sidebarBroadens').tooltip({
-            content: 'Covers other relevant competencies not found in this competency framework or competency. Separate each with commas.',
+            content: 'Covers other relevant competencies not found in this competency framework or competency.',
             show: false,
             hide: false
         });
         $('label[for="sidebarNarrows').tooltip({
-            content: 'A sub-competency relationship which has relevance to this competency framework or competency. Separate each with commas.',
+            content: 'A sub-competency relationship which has relevance to this competency framework or competency.',
             show: false,
             hide: false
         });
         $('label[for="sidebarMajor').tooltip({
-            content: 'Another competency framework or competency which has major relevance or overlap with this. Separate each with commas.',
+            content: 'Another competency framework or competency which has major relevance or overlap with this.',
             show: false,
             hide: false
         });
         $('label[for="sidebarMinor').tooltip({
-            content: 'Another competency framework or competency which has minor relevance or overlap with this. Separate each with commas.',
+            content: 'Another competency framework or competency which has minor relevance or overlap with this.',
             show: false,
             hide: false
         });
         $('label[for="sidebarEnabled').tooltip({
-            content: 'A recommended option that speeds up acquisition of this competency framework or competency. Separate each option with commas.',
+            content: 'A recommended option that speeds up acquisition of this competency framework or competency.',
             show: false,
             hide: false
         });
         $('label[for="sidebarRelated').tooltip({
-            content: 'This competency framework or competency has some degree of overlap with another. Separate each overlap with commas.',
+            content: 'This competency framework or competency has some degree of overlap with another.',
             show: false,
             hide: false
         });
         $('label[for="sidebarDesires').tooltip({
-            content: 'Recommended, assumed, or expected competency framework or competency not essential to acquisition of this. Separate each with commas.',
+            content: 'Recommended, assumed, or expected competency framework or competency not essential to acquisition of this.',
             show: false,
             hide: false
         });
@@ -518,7 +518,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarConceptTerm"]').tooltip({
-            content: 'A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual competencies contextually. Separate each term with commas.',
+            content: 'A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual competencies contextually.',
             show: false,
             hide: false
         });
@@ -553,7 +553,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarSkillEmbodied"]').tooltip({
-            content: 'Cognitive, affective, and psychomotor skills directly or indirectly embodied in this competency. Separate each skill with commas.',
+            content: 'Cognitive, affective, and psychomotor skills directly or indirectly embodied in this competency.',
             show: false,
             hide: false
         });
@@ -573,57 +573,57 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarComplexityLevel"]').tooltip({
-            content: "The expected performance level of a learner or professional as defined by a competency. Separate each level with commas.",
+            content: "The expected performance level of a learner or professional as defined by a competency.",
             show: false,
             hide: false
         });
         $('label[for="sidebarEducationLevelType"]').tooltip({
-            content: "A general statement describing the education or training context. Alternatively, a more specific statement of the location of the audience in terms of its progression through an education or training context. Separate each level with commas.",
+            content: "A general statement describing the education or training context. Alternatively, a more specific statement of the location of the audience in terms of its progression through an education or training context.",
             show: false,
             hide: false
         });
         $('label[for="sidebarRequires"]').tooltip({
-            content: 'This competency is a prerequisite to the referenced competency. Separate each prerequisite with commas.',
+            content: 'This competency is a prerequisite to the referenced competency.',
             show: false,
             hide: false
         });
         $('label[for="sidebarEquivalent').tooltip({
-            content: 'Relevant concepts in this competency and the referenced competency are coextensive. Separate each with commas.',
+            content: 'Relevant concepts in this competency and the referenced competency are coextensive.',
             show: false,
             hide: false
         });
         $('label[for="sidebarBroadens').tooltip({
-            content: 'Covers all of the relevant concepts in this competency as well as relevant concepts not found in this competency. Separate each with commas.',
+            content: 'Covers all of the relevant concepts in this competency as well as relevant concepts not found in this competency.',
             show: false,
             hide: false
         });
         $('label[for="sidebarNarrows').tooltip({
-            content: 'Covers all of the relevant concepts in the referenced competency as well as relevant concepts not found in the referenced competency. Separate each with commas.',
+            content: 'Covers all of the relevant concepts in the referenced competency as well as relevant concepts not found in the referenced competency.',
             show: false,
             hide: false
         });
         $('label[for="sidebarMajor').tooltip({
-            content: 'Major overlap of relevant concepts between this competency and the referenced competency. Separate each with commas.',
+            content: 'Major overlap of relevant concepts between this competency and the referenced competency.',
             show: false,
             hide: false
         });
         $('label[for="sidebarMinor').tooltip({
-            content: 'Minor overlap of relevant concepts between this competency and the referenced competency. Separate each with commas.',
+            content: 'Minor overlap of relevant concepts between this competency and the referenced competency.',
             show: false,
             hide: false
         });
         $('label[for="sidebarEnabled').tooltip({
-            content: 'A recommended option that speeds up acquisition of this competency. Separate each option with commas.',
+            content: 'A recommended option that speeds up acquisition of this competency.',
             show: false,
             hide: false
         });
         $('label[for="sidebarRelated').tooltip({
-            content: 'This competency has some degree of overlap with another. Separate each overlap with commas.',
+            content: 'This competency has some degree of overlap with another.',
             show: false,
             hide: false
         });
         $('label[for="sidebarDesires').tooltip({
-            content: 'Recommended, assumed, or expected competency not essential to acquisition of this competency. Separate each with commas.',
+            content: 'Recommended, assumed, or expected competency not essential to acquisition of this competency.',
             show: false,
             hide: false
         });
@@ -684,7 +684,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarConceptTerm"]').tooltip({
-            content: 'A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual competencies contextually. Separate each term with commas.',
+            content: 'A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual competencies contextually.',
             show: false,
             hide: false
         });
@@ -749,47 +749,47 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarRequires"]').tooltip({
-            content: 'This competency framework is a prerequisite to the referenced competency framework. Separate each prerequisite with commas.',
+            content: 'This competency framework is a prerequisite to the referenced competency framework.',
             show: false,
             hide: false
         });
         $('label[for="sidebarEquivalent').tooltip({
-            content: 'Relevant concepts in this competency framework and the referenced competency framework are coextensive. Separate each with commas.',
+            content: 'Relevant concepts in this competency framework and the referenced competency framework are coextensive.',
             show: false,
             hide: false
         });
         $('label[for="sidebarBroadens').tooltip({
-            content: 'Covers all of the relevant concepts in this competency or competency framework as well as relevant concepts not found in this competency or competency framework. Separate each with commas.',
+            content: 'Covers all of the relevant concepts in this competency or competency framework as well as relevant concepts not found in this competency or competency framework.',
             show: false,
             hide: false
         });
         $('label[for="sidebarNarrows').tooltip({
-            content: 'Covers all of the relevant concepts in the referenced competency framework as well as relevant concepts not found in the referenced competency framework. Separate each with commas.',
+            content: 'Covers all of the relevant concepts in the referenced competency framework as well as relevant concepts not found in the referenced competency framework.',
             show: false,
             hide: false
         });
         $('label[for="sidebarMajor').tooltip({
-            content: 'Major overlap of relevant concepts between this competency framework and the referenced competency framework. Separate each with commas.',
+            content: 'Major overlap of relevant concepts between this competency framework and the referenced competency framework.',
             show: false,
             hide: false
         });
         $('label[for="sidebarMinor').tooltip({
-            content: 'Minor overlap of relevant concepts between this competency framework and the referenced competency framework. Separate each with commas.',
+            content: 'Minor overlap of relevant concepts between this competency framework and the referenced competency framework.',
             show: false,
             hide: false
         });
         $('label[for="sidebarEnabled').tooltip({
-            content: 'A recommended option that speeds up acquisition of this competency framework or competency. Separate each option with commas.',
+            content: 'A recommended option that speeds up acquisition of this competency framework or competency. ',
             show: false,
             hide: false
         });
         $('label[for="sidebarRelated').tooltip({
-            content: 'This competency framework or competency has some degree of overlap with another. Separate each overlap with commas.',
+            content: 'This competency framework or competency has some degree of overlap with another.',
             show: false,
             hide: false
         });
         $('label[for="sidebarDesires').tooltip({
-            content: 'Recommended, assumed, or expected competency framework or competency not essential to acquisition of this. Separate each with commas.',
+            content: 'Recommended, assumed, or expected competency framework or competency not essential to acquisition of this.',
             show: false,
             hide: false
         });
@@ -855,47 +855,47 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarRequires"]').tooltip({
-            content: 'Another concept is prerequisite for this. Separate each prerequisite with commas.',
+            content: 'Another concept is prerequisite for this.',
             show: false,
             hide: false
         });
         $('label[for="sidebarEquivalent').tooltip({
-            content: 'Represents same capability in all aspects to another concept. Separate each with commas.',
+            content: 'Represents same capability in all aspects to another concept.',
             show: false,
             hide: false
         });
         $('label[for="sidebarBroadens').tooltip({
-            content: 'Covers other relevant concepts not found in this concept. Separate each with commas.',
+            content: 'Covers other relevant concepts not found in this concept.',
             show: false,
             hide: false
         });
         $('label[for="sidebarNarrows').tooltip({
-            content: 'A sub-concept relationship which has relevance to this concept. Separate each with commas.',
+            content: 'A sub-concept relationship which has relevance to this concept.',
             show: false,
             hide: false
         });
         $('label[for="sidebarMajor').tooltip({
-            content: 'Another concept which has major relevance or overlap with this concept. Separate each with commas.',
+            content: 'Another concept which has major relevance or overlap with this concept.',
             show: false,
             hide: false
         });
         $('label[for="sidebarMinor').tooltip({
-            content: 'Another concept which has minor relevance or overlap with this concept. Separate each with commas.',
+            content: 'Another concept which has minor relevance or overlap with this concept.',
             show: false,
             hide: false
         });
         $('label[for="sidebarEnabled').tooltip({
-            content: 'A recommended option that speeds up acquisition of this concept. Separate each option with commas.',
+            content: 'A recommended option that speeds up acquisition of this concept.',
             show: false,
             hide: false
         });
         $('label[for="sidebarRelated').tooltip({
-            content: 'This concept has some degree of overlap with another concept. Separate each overlap with commas.',
+            content: 'This concept has some degree of overlap with another concept.',
             show: false,
             hide: false
         });
         $('label[for="sidebarDesires').tooltip({
-            content: 'Recommended, assumed, or expected concept not essential to acquisition of this concept. Separate each with commas.',
+            content: 'Recommended, assumed, or expected concept not essential to acquisition of this concept.',
             show: false,
             hide: false
         });
@@ -961,47 +961,47 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarRequires"]').tooltip({
-            content: 'Another scheme is prerequisite for this. Separate each prerequisite with commas.',
+            content: 'Another scheme is prerequisite for this.',
             show: false,
             hide: false
         });
         $('label[for="sidebarEquivalent').tooltip({
-            content: 'Represents same capability in all aspects to another scheme. Separate each with commas.',
+            content: 'Represents same capability in all aspects to another scheme.',
             show: false,
             hide: false
         });
         $('label[for="sidebarBroadens').tooltip({
-            content: 'Covers other relevant schemes not found in this scheme. Separate each with commas.',
+            content: 'Covers other relevant schemes not found in this scheme.',
             show: false,
             hide: false
         });
         $('label[for="sidebarNarrows').tooltip({
-            content: 'A sub-scheme relationship which has relevance to this scheme. Separate each with commas.',
+            content: 'A sub-scheme relationship which has relevance to this scheme.',
             show: false,
             hide: false
         });
         $('label[for="sidebarMajor').tooltip({
-            content: 'Another scheme which has major relevance or overlap with this scheme. Separate each with commas.',
+            content: 'Another scheme which has major relevance or overlap with this scheme.',
             show: false,
             hide: false
         });
         $('label[for="sidebarMinor').tooltip({
-            content: 'Another scheme which has minor relevance or overlap with this scheme. Separate each with commas.',
+            content: 'Another scheme which has minor relevance or overlap with this scheme.',
             show: false,
             hide: false
         });
         $('label[for="sidebarEnabled').tooltip({
-            content: 'A recommended option that speeds up acquisition of this scheme. Separate each option with commas.',
+            content: 'A recommended option that speeds up acquisition of this scheme.',
             show: false,
             hide: false
         });
         $('label[for="sidebarRelated').tooltip({
-            content: 'This scheme has some degree of overlap with another scheme. Separate each overlap with commas.',
+            content: 'This scheme has some degree of overlap with another scheme.',
             show: false,
             hide: false
         });
         $('label[for="sidebarDesires').tooltip({
-            content: 'Recommended, assumed, or expected scheme not essential to acquisition of this scheme. Separate each with commas.',
+            content: 'Recommended, assumed, or expected scheme not essential to acquisition of this scheme.',
             show: false,
             hide: false
         });
