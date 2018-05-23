@@ -204,15 +204,14 @@ function cappend(event) {
     } else if (event.data.message == "back") {
         gotoPage('#editFrameworkSection');
     } else if (event.data.message == "highlighted") {
+        if (!event.data.highlightTarget)
+            return;
         var elem = $('[id="' + event.data.highlightTarget + '"]');
         if (elem.length && elem.is(':visible')) {
             $('[id="' + event.data.highlightTarget + '"]').click();
             $('#tree').animate({
                 scrollTop: elem.offset().top
             }, 1000);
-        } else {
-            console.log("Highlight failed");
-            console.log(event.data);
         }
     }
 }
