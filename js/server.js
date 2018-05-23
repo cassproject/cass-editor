@@ -75,6 +75,7 @@ openWebSocket = function (r) {
                         framework = new ConceptScheme();
                         framework.copyFrom(wut);
                         populateFramework();
+                        playSavedAnimation('frameworkNameContainer');
                         spitEvent("frameworkChanged", framework.shortId());
                     }
 
@@ -85,6 +86,7 @@ openWebSocket = function (r) {
                         framework.copyFrom(wut);
                         populateFramework();
                         renderSidebar(true);
+                        playSavedAnimation('frameworkNameContainer');
                         spitEvent("frameworkChanged", framework.shortId());
                     }
 
@@ -109,6 +111,7 @@ openWebSocket = function (r) {
                             }
                             spitEvent("competencyChanged", selectedCompetency.shortId());
                         }
+                        playSavedAnimation(wut.shortId());
                     }
             }
             if (new EcCompetency().isA(wut.getFullType())) {
@@ -125,6 +128,7 @@ openWebSocket = function (r) {
                                 }
                                 spitEvent("competencyChanged", selectedCompetency.shortId());
                             }
+                            playSavedAnimation(wut.shortId());
                         }
             }
 
@@ -143,6 +147,7 @@ openWebSocket = function (r) {
                                 }
                                 spitEvent("competencyChanged", selectedCompetency.shortId());
                             }
+                            playSavedAnimation(wut.shortId());
                         }
             }
         }, error);

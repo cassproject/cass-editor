@@ -1125,10 +1125,9 @@ removeChangedFieldHighlight = function () {
     $('#detailSlider .changedField').removeClass('changedField');
 }
 
-playSavedAnimation = function () {
-    var elemID = $('.selected').attr('id');
+playSavedAnimation = function (id) {
     setTimeout(function () {
-        var elem = document.getElementById(elemID);
+        var elem = document.getElementById(id);
         if (elem) {
             elem.classList.remove('savedCompetency');
             void elem.offsetWidth;
