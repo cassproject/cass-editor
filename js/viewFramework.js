@@ -336,6 +336,10 @@ renderSidebar = function (justLists) {
         $('.cassCompetency').hide();
     }
 
+    //Set the URL field
+    $('#sidebarURL').text(thing.shortId());
+    $('#sidebarURL').attr('href', thing.shortId());
+
     if (justLists != true)
         $("#detailSlider label").each(function () {
             var label = $(this).attr(labelChoice);
