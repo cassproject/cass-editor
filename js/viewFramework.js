@@ -11,9 +11,14 @@
 if (queryParams.select != null) {
     $("#selectButton").show().text(queryParams.select);
     $("#selectAllButton").show();
+    if (queryParams.select == "" || queryParams.select == "select")
+        $('#selectButton').hide();
 }
+
 if (queryParams.singleSelect != null) {
     $("#selectButton").show().text(queryParams.singleSelect);
+    if (queryParams.select == "" || queryParams.select == "select")
+        $('#selectButton').hide();
 }
 
 var framework = null;
