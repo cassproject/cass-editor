@@ -388,9 +388,12 @@ renderSidebar = function (justLists) {
         $(this).html("");
         $(this).prev("label").addClass("viewMode");
         $(this).prev().prev("label").addClass("viewMode");
-        if (val == null) {
-            if ($(this).parents("#alignmentPanel").length == 0)
+        if (val === undefined || val == null || val == "") {
+            if ($(this).parents("#alignmentPanel").length == 0) {
                 $(this).prev("label").removeClass("viewMode");
+                $(this).prev().prev("label").removeClass("viewMode");
+                $(this).hide();
+            }
         } else {
             if (!EcArray.isArray(val)) val = [val];
             for (var i = 0; i < val.length; i++) {
