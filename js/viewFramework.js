@@ -1104,6 +1104,10 @@ $('html').keydown(function (evt) {
     }
 });
 
+$("body").on("webkitAnimationEnd oanimationend msAnimationEnd animationend", ".savedCompetency", function() {
+    $(".savedCompetency").removeClass('savedCompetency');
+});
+
 validateString = function (str) {
     for (var i = 0; i < str.length; i++) {
         var charCode = str.charCodeAt(i);
