@@ -84,9 +84,9 @@ openWebSocket = function (r) {
                     if (framework.shortId() == wut.shortId()) {
                         framework = new EcFramework();
                         framework.copyFrom(wut);
-                        populateFramework();
                         renderSidebar(true);
                         playSavedAnimation('frameworkNameContainer');
+                        populateFramework();
                         spitEvent("frameworkChanged", framework.shortId());
                     }
 

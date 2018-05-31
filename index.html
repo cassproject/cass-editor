@@ -603,7 +603,7 @@
 
 
         </div>
-        <div id="frameworkNameContainer" ondrop="unlinkCompetency();" ontouchend="handleTouchEnd(event);">
+        <div id="frameworkNameContainer" ondrop="unlinkCompetency(event);" ontouchend="handleTouchEnd(event);">
             <button id="selectButton" class="greenButton" style="float:right;display:none;" onclick='select();'>&gt;</button>
             <button id="selectAllButton" style="float: right;display: none;" status="select" onclick='handleSelectAll($("#selectAllButton").attr("status"));'>Select All</button>
             <span id="editFrameworkBack" onclick='checkForChangesBeforeBack(event);' style="float:left;"><i class="fa fa-arrow-circle-left" > </i></span>&nbsp;

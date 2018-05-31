@@ -329,7 +329,9 @@ setCompetencyConfigurationManagement = function () {
     }
 }
 
-unlinkCompetency = function () {
+unlinkCompetency = function (ev) {
+    if (ev && ev.preventDefault)
+        ev.preventDefault();
     if (conceptMode) return unlinkConcept();
     if (viewMode) return;
     framework.removeRelation(selectedRelation.shortId());
@@ -494,6 +496,7 @@ dropAny = function (data, targetData) {
 }
 
 dropCompetency = function (ev) {
+    ev.preventDefault();
     if (conceptMode) return dropConcept();
     if (viewMode) return;
     ev.stopPropagation();
@@ -502,7 +505,7 @@ dropCompetency = function (ev) {
         data = JSON.parse(data);
     else
         return;
-    ev.dataTransfer.clearData("text");
+    //ev.dataTransfer.clearData("text");
 
     var targetData = {};
     var tgt = $(ev.target);
