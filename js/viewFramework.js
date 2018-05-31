@@ -366,8 +366,20 @@ renderSidebar = function (justLists) {
             for (var i = 0; i < val.length; i++) {
                 if (i > 0)
                     $(this).append(", ");
-                if (val[i].toLowerCase().indexOf("http") != -1)
-                    $(this).append("<a target='_blank'/>").children().last().attr("href", val[i]).text(val[i]);
+                if (val[i].toLowerCase().indexOf("http") != -1) {
+                    var linkText = val[i];
+                    $.ajax({
+                        dataType: "json",
+                        url: val[i],
+                        async: false,
+                        success: function(data) {
+                            if (data && data['ceterms:name']) {
+                                linkText = data['ceterms:name'];
+                            }
+                        }
+                    });
+                    $(this).append("<a target='_blank'/>").children().last().attr("href", val[i]).text(linkText);
+                }
                 else
                     $(this).append("<span/>").children().last().text(val[i]);
             }
