@@ -124,7 +124,8 @@ openWebSocket = function (r) {
                             if (selectedCompetency != null) {
                                 if (selectedCompetency.shortId() == wut.shortId()) {
                                     selectedCompetency = com;
-                                    refreshSidebar();
+                                    if (!$('.detailSliderEdit').length)
+                                        refreshSidebar();
                                 }
                                 spitEvent("competencyChanged", selectedCompetency.shortId());
                             }
