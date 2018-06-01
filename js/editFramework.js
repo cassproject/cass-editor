@@ -411,7 +411,7 @@ deleteCompetency = function () {
 }
 
 dragShortcut = function (element, isCopy) {
-    if (conceptMode) return dragConceptShortcut();
+    if (conceptMode) return dragConceptShortcut(element, isCopy);
     if (viewMode) return;
     dragShortcutData = {
         competencyId: $(element).attr('id'),
@@ -421,7 +421,7 @@ dragShortcut = function (element, isCopy) {
 }
 
 dropShortcut = function (element) {
-    if (conceptMode) return dropConceptShortcut();
+    if (conceptMode) return dropConceptShortcut(element);
     if (viewMode) return;
     if (dragShortcutData != null) {
         var targetData = {};
