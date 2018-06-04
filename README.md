@@ -87,6 +87,12 @@ If your app needs the ability to select a single competency and the relations as
     ex:
     https://cassproject.github.io/cass-editor/index.html?select=Add&selectRelation=true
 
+## Trigger select functionality from the parent frame
+If your app needs the ability trigger the select action from outside of the cass-editor iframe, send the iframe the postMessage `{"message":"select"}`. Additionally, if you wish to hide the select button and use one on your page instead, use `select=` without a value.
+    
+    ex:
+    https://cassproject.github.io/cass-editor/index.html?select=
+
 ## Add new framework
 By default, the cass-editor provides a framework browser to select and edit frameworks. To start with a workflow of creating a framework, use `action=add`. This will expose the framework creation and import pages.
 
