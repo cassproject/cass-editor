@@ -193,6 +193,7 @@ function afterRefresh(level, subsearch) {
         }).detach().appendTo($(this));
     };
     $("#tree").each(sort).find("ul").each(sort);
+    resizeEditFrameworkSection();
 }
 
 function refreshCompetency(col, level, subsearch) {

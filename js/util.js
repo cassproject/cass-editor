@@ -1264,6 +1264,10 @@ resizeWindow = function (pageX) {
         $('#detailSlider').css("width", x - 8);
         $('#editFrameworkSection').css("padding-right", x);
     }
+    resizeEditFrameworkSection();
+}
+
+resizeEditFrameworkSection = function() {
     $("#tree").height("calc(" + $(window).outerHeight() + "px - " + $("#tree").position().top + "px)");
     $(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
 }
