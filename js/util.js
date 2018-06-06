@@ -498,7 +498,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarInLanguage"]').tooltip({
-            content: 'The primary language used in or by this competency framework or competency.Separate each language with commas.',
+            content: 'The primary language used in or by this competency framework or competency. Separate each language with commas.',
             show: false,
             hide: false
         });
@@ -628,6 +628,11 @@ initTooltips = function (type) {
             hide: false
         });
     } else if (type === 'ceasnFramework') {
+        $('label[for="sidebarIsVersionOf"]').tooltip({
+            content: 'A related competency framework of which this competency framework is a version, edition, or adaptation.',
+            show: false,
+            hide: false
+        });
         $('label[for="sidebarNameInput"]').tooltip({
             content: 'The name or title of this competency framework.',
             show: false,
