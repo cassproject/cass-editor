@@ -412,7 +412,7 @@ renderSidebar = function (justLists) {
         $(this).prev("label").addClass("viewMode");
         $(this).prev().prev("label").addClass("viewMode");
         if (val === undefined || val == null || val == "") {
-            if ($(this).parents("#alignmentPanel").length == 0) {
+            if ($(this).parents("#alignmentPanel").length == 0 && $('#detailSlider').hasClass('detailSliderView')) {
                 $(this).prev("label").removeClass("viewMode");
                 $(this).prev().prev("label").removeClass("viewMode");
                 $(this).hide();
