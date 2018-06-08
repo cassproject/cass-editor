@@ -63,6 +63,8 @@ if (queryParams.concepts == "true") {
         $(this).text(this.text.replace("CASS", "SKOS"));
     });
     $("#confirmDialog #confirmText").text("Are you sure you want to delete this concept?");
+} else {
+    $(".absentForCompetencies").remove();
 }
 
 if (!(window.ActiveXObject) && "ActiveXObject" in window) {

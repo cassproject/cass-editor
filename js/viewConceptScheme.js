@@ -85,8 +85,18 @@ function refreshConcept(col, level, subsearch, recurse) {
 }
 
 editConceptSidebar = function () {
-    $("#editFrameworkSection .viewMode").hide();
-    $("#editFrameworkSection .editMode").show();
+    $("#detailSlider").addClass("detailSliderEdit").removeClass("detailSliderView");
+    $("#editFrameworkSection label").css("display", "");
+
+    changedFields = {};
+    ulLengths = {};
+
+    //Don't persist the invalidInput class between edits
+    $('.invalidInput').each(function () {
+        $(this).removeClass('invalidInput');
+    });
+
+    $('.sidebarAccordion').removeClass('forceShow');
 
     var thing = framework;
     if (selectedCompetency != null)
