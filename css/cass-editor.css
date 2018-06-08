@@ -530,8 +530,18 @@ input.greenButton {
     color: #FFFFFF;
 }
 
+.turquoiseButton,
+input.turquoiseButton {
+    border-color: transparent !important;
+    background-color: #417892;
+    color: #FFFFFF;
+    position: relative;
+}
+
 button.greenButton:hover,
-.button.greenButton:focus {
+.button.greenButton:focus,
+button.turquoiseButton:hover,
+.button.turquoiseButton:focus {
     background-color: #A3CEC5;
 }
 

@@ -176,7 +176,7 @@ addLevel = function () {
     }
 }
 
-saveCompetency = function () {
+saveCompetency = function (addAnother) {
     if (viewMode) return;
     isFirstEdit = false;
     //Alert for bad characters in input
@@ -274,6 +274,15 @@ saveCompetency = function () {
         repo.saveTo(thing, afterSave, error);
     }
     refreshSidebar();
+    //Reselect the parent of the selected competency, or the framework if there is no parent competency
+    if (addAnother && addAnother == "true") {
+        var elem = $('[id="' + thing.shortId() + '"]');
+        if (elem.parent().attr('id') == 'tree') {
+            $('#frameworkName').click();
+        }
+        else
+            elem.parent().parent().click();
+    }
 }
 
 createFramework = function () {
