@@ -281,10 +281,8 @@ saveCompetency = function (addAnother) {
             $('#frameworkName').click();
         else
             elem.parent().parent().click();
-        setTimeout(function() {
-            $('#sidebarAddCompetencies').click();
-        }, 500);
         
+        $('#sidebarAddCompetencies').click();
     }
 }
 
