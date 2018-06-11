@@ -203,42 +203,42 @@ initTooltips = function (type) {
     });
     if (type === 'cassCompetency') {
         $('label[for="sidebarAlternativeName"]').tooltip({
-            content: 'An alternative name for this competency. Separate each name with commas.',
+            content: 'An alternative name for this competency. Separate each name with a comma.',
             show: false,
             hide: false
         });
         $('label[for="sidebarInLanguage"]').tooltip({
-            content: 'The primary language used in or by this competency framework or competency. Separate each language with commas.',
+            content: 'The primary language used in or by this competency framework or competency. Separate each language with a comma.',
             show: false,
             hide: false
         });
         $('label[for="sidebarChangeNote"]').tooltip({
-            content: 'Documents fine-grained changes to a concept, for the purposes of administration and maintenance. Separate each change with commas.',
+            content: 'Documents fine-grained changes to a concept, for the purposes of administration and maintenance. Separate each change with a comma.',
             show: false,
             hide: false
         });
         $('label[for="sidebarHiddenLabel"]').tooltip({
-            content: 'Alternate hidden labels for this concept. Separate each label with commas.',
+            content: 'Alternate hidden labels for this concept. Separate each label with a comma.',
             show: false,
             hide: false
         });
         $('label[for="sidebarPreferredLabel"]').tooltip({
-            content: 'Preferred display label for this concept. Separate each label with commas.',
+            content: 'Preferred display label for this concept. Separate each label with a comma.',
             show: false,
             hide: false
         });
         $('label[for="sidebarCodedNotation"]').tooltip({
-            content: 'An alphanumeric notation or ID code as defined by the promulgating body to identify this competency. Separate each code with commas.',
+            content: 'An alphanumeric notation or ID code as defined by the promulgating body to identify this competency. Separate each code with a comma.',
             show: false,
             hide: false
         });
         $('label[for="sidebarCompetencyCategory"]').tooltip({
-            content: 'The textual label identifying the category of the competency as designated by the promulgating body. Separate each label with commas.',
+            content: 'The textual label identifying the category of the competency as designated by the promulgating body. Separate each label with a comma.',
             show: false,
             hide: false
         });
         $('label[for="sidebarConceptKeyword"]').tooltip({
-            content: 'A word or phrase used by the promulgating agency to refine and differentiate individual competencies contextually. Separate each concept with commas.',
+            content: 'A word or phrase used by the promulgating agency to refine and differentiate individual competencies contextually. Separate each concept with a comma.',
             show: false,
             hide: false
         });
@@ -258,7 +258,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarCreator"]').tooltip({
-            content: 'An entity primarily responsible for making this competency framework or competency. For example, https://credentialengineregistry.org/. Separate each entity with commas.',
+            content: 'An entity primarily responsible for making this competency framework or competency. For example, https://credentialengineregistry.org/. Separate each entity with a comma.',
             show: false,
             hide: false
         });
@@ -268,7 +268,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarIdentifier"]').tooltip({
-            content: 'An alternative URI by which this competency framework or competency is identified. For example, https://sandbox.credentialengineregistry.org/. Separate each URI with commas.',
+            content: 'An alternative URI by which this competency framework or competency is identified. For example, https://sandbox.credentialengineregistry.org/. Separate each URI with a comma.',
             show: false,
             hide: false
         });
@@ -344,7 +344,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarInLanguage"]').tooltip({
-            content: 'The primary language used in or by this competency framework or competency. Separate each language with commas.',
+            content: 'The primary language used in or by this competency framework or competency. Separate each language with a comma.',
             show: false,
             hide: false
         });
@@ -354,7 +354,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarCreator"]').tooltip({
-            content: 'A URI to an entity primarily responsible for making this competency framework or competency. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. Separate each entity with commas.',
+            content: 'A URI to an entity primarily responsible for making this competency framework or competency. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. Separate each entity with a comma.',
             show: false,
             hide: false
         });
@@ -374,17 +374,17 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarSource"]').tooltip({
-            content: 'A URI to the original competency framework which this competency framework is based on or derived from. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. Separate each original with commas.',
+            content: 'A URI to the original competency framework which this competency framework is based on or derived from. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. Separate each original with a comma.',
             show: false,
             hide: false
         });
         $('label[for="sidebarCodedNotation"]').tooltip({
-            content: 'An alphanumeric notation or ID code as defined by the promulgating body to identify this framework. Separate each code with commas.',
+            content: 'An alphanumeric notation or ID code as defined by the promulgating body to identify this framework. Separate each code with a comma.',
             show: false,
             hide: false
         });
         $('label[for="sidebarConceptKeyword"]').tooltip({
-            content: 'A word or phrase used by the promulgating agency to refine and differentiate individual competencies contextually. Separate each concept with commas.',
+            content: 'A word or phrase used by the promulgating agency to refine and differentiate individual competencies contextually. Separate each concept with a comma.',
             show: false,
             hide: false
         });
@@ -409,7 +409,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarIdentifier"]').tooltip({
-            content: 'An alternative URI by which this competency framework or competency is identified. For example, https://sandbox.credentialengineregistry.org/. Separate each URI with commas.',
+            content: 'An alternative URI by which this competency framework or competency is identified. For example, https://sandbox.credentialengineregistry.org/. Separate each URI with a comma.',
             show: false,
             hide: false
         });
@@ -424,12 +424,12 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarPublisher"]').tooltip({
-            content: 'A URI to an entity responsible for making this competency framework available. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. Separate each entity with commas.',
+            content: 'A URI to an entity responsible for making this competency framework available. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. Separate each entity with a comma.',
             show: false,
             hide: false
         });
         $('label[for="sidebarHistoryNote"]').tooltip({
-            content: 'Describes significant changes to the meaning or the form of a concept. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. Separate each change with commas.',
+            content: 'Describes significant changes to the meaning or the form of a concept. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. Separate each change with a comma.',
             show: false,
             hide: false
         });
@@ -500,22 +500,22 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarInLanguage"]').tooltip({
-            content: 'The primary language used in or by this competency framework or competency. Separate each language with commas.',
+            content: 'The primary language used in or by this competency framework or competency. Separate each language with a comma.',
             show: false,
             hide: false
         });
         $('label[for="sidebarCodedNotation"]').tooltip({
-            content: 'An alphanumeric notation or ID code as defined by the promulgating body to identify this competency. Separate each code with commas.',
+            content: 'An alphanumeric notation or ID code as defined by the promulgating body to identify this competency. Separate each code with a comma.',
             show: false,
             hide: false
         });
         $('label[for="sidebarCompetencyCategory"]').tooltip({
-            content: 'The textual label identifying the category of the competency as designated by the promulgating body. Separate each label with commas.',
+            content: 'The textual label identifying the category of the competency as designated by the promulgating body. Separate each label with a comma.',
             show: false,
             hide: false
         });
         $('label[for="sidebarConceptKeyword"]').tooltip({
-            content: 'A word or phrase used by the promulgating agency to refine and differentiate individual competencies contextually. Separate each concept with commas.',
+            content: 'A word or phrase used by the promulgating agency to refine and differentiate individual competencies contextually. Separate each concept with a comma.',
             show: false,
             hide: false
         });
@@ -535,7 +535,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarCreator"]').tooltip({
-            content: 'An entity primarily responsible for making this competency framework or competency. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. Separate each entity with commas.',
+            content: 'An entity primarily responsible for making this competency framework or competency. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. Separate each entity with a comma.',
             show: false,
             hide: false
         });
@@ -545,7 +545,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarIdentifier"]').tooltip({
-            content: 'An alternative URI by which this competency framework or competency is identified. For example, https://sandbox.credentialengineregistry.org/. Separate each URI with commas.',
+            content: 'An alternative URI by which this competency framework or competency is identified. For example, https://sandbox.credentialengineregistry.org/. Separate each URI with a comma.',
             show: false,
             hide: false
         });
@@ -565,7 +565,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarDerivedFrom"]').tooltip({
-            content: 'The URI of a competency from which this competency has been derived. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.  Separate each entity with commas.',
+            content: 'The URI of a competency from which this competency has been derived. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.  Separate each entity with a comma.',
             show: false,
             hide: false
         });
@@ -646,7 +646,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarInLanguage"]').tooltip({
-            content: 'The primary language used in this competency or competency framework. Languages in this field are represented by ISO language codes. Separate each language with commas.',
+            content: 'The primary language used in this competency or competency framework. Languages in this field are represented by ISO language codes. Separate each language with a comma.',
             show: false,
             hide: false
         });
@@ -656,7 +656,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarCreator"]').tooltip({
-            content: 'The primary entity responsible for making this competency or competency framework. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. Separate each entity with commas.',
+            content: 'The primary entity responsible for making this competency or competency framework. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. Separate each entity with a comma.',
             show: false,
             hide: false
         });
@@ -676,17 +676,17 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarSource"]').tooltip({
-            content: 'The original competency framework which this competency framework is based on or derived from. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. Separate each original with commas.',
+            content: 'The original competency framework which this competency framework is based on or derived from. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. Separate each original with a comma.',
             show: false,
             hide: false
         });
         $('label[for="sidebarCodedNotation"]').tooltip({
-            content: 'An alphanumeric notation or ID code as defined by the promulgating body to identify this framework. Separate each code with commas.',
+            content: 'An alphanumeric notation or ID code as defined by the promulgating body to identify this framework. Separate each code with a comma.',
             show: false,
             hide: false
         });
         $('label[for="sidebarConceptKeyword"]').tooltip({
-            content: 'A word or phrase used by the promulgating agency to refine and differentiate individual competencies contextually. Separate each concept with commas.',
+            content: 'A word or phrase used by the promulgating agency to refine and differentiate individual competencies contextually. Separate each concept with a comma.',
             show: false,
             hide: false
         });
@@ -711,7 +711,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarIdentifier"]').tooltip({
-            content: 'An alternative URI by which this competency or competency framework is identified. For example, https://sandbox.credentialengineregistry.org/. Separate each URI with commas.',
+            content: 'An alternative URI by which this competency or competency framework is identified. For example, https://sandbox.credentialengineregistry.org/. Separate each URI with a comma.',
             show: false,
             hide: false
         });
@@ -726,7 +726,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarPublisher"]').tooltip({
-            content: 'The entity responsible for making this competency framework available. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. Separate each entity with commas.',
+            content: 'The entity responsible for making this competency framework available. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. Separate each entity with a comma.',
             show: false,
             hide: false
         });
@@ -741,12 +741,12 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarDerivedFrom"]').tooltip({
-            content: 'A third party version of the entity being referenced that has been modified in meaning through editing, extension, or refinement. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. Separate each entity with commas.',
+            content: 'A third party version of the entity being referenced that has been modified in meaning through editing, extension, or refinement. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. Separate each entity with a comma.',
             show: false,
             hide: false
         });
         $('label[for="sidebarPublisherName"]').tooltip({
-            content: 'Name of the agent responsible for making this entity available. Separate each name with commas.',
+            content: 'Name of the agent responsible for making this entity available. Separate each name with a comma.',
             show: false,
             hide: false
         });
@@ -812,37 +812,37 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarAlternativeName"]').tooltip({
-            content: 'Alternative display labels for this concept. Separate each label with commas.',
+            content: 'Alternative display labels for this concept. Separate each label with a comma.',
             show: false,
             hide: false
         });
         $('label[for="sidebarInLanguage"]').tooltip({
-            content: 'Language of the concept. Separate each language with commas.',
+            content: 'Language of the concept. Separate each language with a comma.',
             show: false,
             hide: false
         });
         $('label[for="sidebarChangeNote"]').tooltip({
-            content: 'Documents fine-grained changes to a concept, for the purposes of administration and maintenance. Separate each change with commas.',
+            content: 'Documents fine-grained changes to a concept, for the purposes of administration and maintenance. Separate each change with a comma.',
             show: false,
             hide: false
         });
         $('label[for="sidebarHiddenLabel"]').tooltip({
-            content: 'Alternate hidden labels for this concept. Separate each label with commas.',
+            content: 'Alternate hidden labels for this concept. Separate each label with a comma.',
             show: false,
             hide: false
         });
         $('label[for="sidebarPreferredLabel"]').tooltip({
-            content: 'Preferred display label for this concept. Separate each label with commas.',
+            content: 'Preferred display label for this concept. Separate each label with a comma.',
             show: false,
             hide: false
         });
         $('label[for="sidebarCompetencyCategory"]').tooltip({
-            content: 'The textual label identifying the category of the competency as designated by the promulgating body. Separate each label with commas.',
+            content: 'The textual label identifying the category of the competency as designated by the promulgating body. Separate each label with a comma.',
             show: false,
             hide: false
         });
         $('label[for="sidebarConceptKeyword"]').tooltip({
-            content: 'A word or phrase used by the promulgating agency to refine and differentiate individual competencies contextually. Separate each concept with commas.',
+            content: 'A word or phrase used by the promulgating agency to refine and differentiate individual competencies contextually. Separate each concept with a comma.',
             show: false,
             hide: false
         });
@@ -852,12 +852,12 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarCreator"]').tooltip({
-            content: 'An entity primarily responsible for making the resource. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.Separate each entity with commas. ',
+            content: 'An entity primarily responsible for making the resource. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.Separate each entity with a comma.',
             show: false,
             hide: false
         });
         $('label[for="sidebarIdentifier"]').tooltip({
-            content: 'An unambiguous reference to the resource within a given context. For example, https://sandbox.credentialengineregistry.org/. Separate each reference with commas.',
+            content: 'An unambiguous reference to the resource within a given context. For example, https://sandbox.credentialengineregistry.org/. Separate each reference with a comma.',
             show: false,
             hide: false
         });
@@ -918,7 +918,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarInLanguage"]').tooltip({
-            content: 'Language of the scheme. Separate each language with commas.',
+            content: 'Language of the scheme. Separate each language with a comma.',
             show: false,
             hide: false
         });
@@ -928,7 +928,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarCreator"]').tooltip({
-            content: 'An entity primarily responsible for making the resource. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. Separate each entity with commas.',
+            content: 'An entity primarily responsible for making the resource. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. Separate each entity with a comma.',
             show: false,
             hide: false
         });
@@ -943,7 +943,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarConceptKeyword"]').tooltip({
-            content: 'A word or phrase used by the promulgating agency to refine and differentiate schemes contextually. Separate each concept with commas.',
+            content: 'A word or phrase used by the promulgating agency to refine and differentiate schemes contextually. Separate each concept with a comma.',
             show: false,
             hide: false
         });
@@ -953,7 +953,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarPublisher"]').tooltip({
-            content: 'A URI to an entity responsible for making this scheme available. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. Separate each entity with commas.',
+            content: 'A URI to an entity responsible for making this scheme available. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. Separate each entity with a comma.',
             show: false,
             hide: false
         });
