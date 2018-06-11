@@ -62,7 +62,10 @@ function refreshConcept(col, level, subsearch, recurse) {
         treeNode.prepend("<input type='checkbox' tabIndex='-1'>");
     if (subsearch != null)
         treeNode.mark(subsearch);
+    treeNode.prepend("<span/>").children().first().addClass("collapse").css("visibility", "hidden").html('<i class="fa fa-minus-square" aria-hidden="true"></i> ');
     if (col["skos:narrower"] != null && col["skos:narrower"].length > 0) {
+        if (!$(".competency[id=\"" + col.shortId() + "\"]").hasClass("expandable"))
+            $(".competency[id=\"" + col.shortId() + "\"]").addClass("expandable").children(".collapse").css("visibility", "visible");
         for (var i = 0; i < col["skos:narrower"].length; i++) {
             me.fetches++;
             EcConcept.get(col["skos:narrower"][i], function (concept) {
