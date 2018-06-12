@@ -259,7 +259,7 @@ function refreshCompetency(col, level, subsearch) {
                                     if ($(".competency[id=\"" + target.shortId() + "\"]").length > 0)
                                         $("#tree>.competency[id=\"" + source.shortId() + "\"]").remove();
 
-                                    if (!$(".competency[id=\"" + target.shortId() + "\"]").hasClass("expandable"))
+                                    if ($(".competency[id=\"" + source.shortId() + "\"]").length && !$(".competency[id=\"" + target.shortId() + "\"]").hasClass("expandable"))
                                         $(".competency[id=\"" + target.shortId() + "\"]").addClass("expandable").children(".collapse").css("visibility", "visible");
                                 }
                         }
@@ -474,7 +474,10 @@ renderSidebar = function (justLists) {
             };
             if (a.source == selectedCompetency.shortId()) {
                 var target = EcCompetency.getBlocking(a.target);
-                renderAlignment(target, a.relationType);
+                if (a.relationType == Relation.NARROWS && $('[id="' + target.shortId() + '"]').length && queryParams.ceasnDataFields == 'true')
+                    renderAlignment(target, "isChildOf");
+                else
+                    renderAlignment(target, a.relationType);
             }
             if (a.relationType == Relation.IS_EQUIVALENT_TO || a.relationType == Relation.IS_RELATED_TO || a.relationType == "majorRelated" || a.relationType == "minorRelated") {
                 if (a.target == selectedCompetency.shortId()) {
@@ -485,7 +488,10 @@ renderSidebar = function (justLists) {
             if (a.relationType == Relation.NARROWS) {
                 if (a.target == selectedCompetency.shortId()) {
                     var source = EcCompetency.getBlocking(a.source);
-                    renderAlignment(source, "broadens");
+                    if ($('[id="' + source.shortId() + '"]').length && queryParams.ceasnDataFields == 'true')
+                        renderAlignment(source, "hasChild");
+                    else
+                        renderAlignment(source, "broadens");
                 }
             }
         }
@@ -586,19 +592,19 @@ refreshSidebar = function () {
 
     if (queryParams.ceasnDataFields == 'true' || queryParams.tlaProfile == 'true') {
         $("#detailSlider").addClass("detailSliderCeasn");
-        $('#ceasnDataFields').show();
+        $('.ceasnDataFields').show();
     } else {
         $("#detailSlider").addClass("detailSliderCass");
     }
 
-    $('#ceasnDataFields').find('p').text(null);
-    $('#ceasnDataFields').find('input').val(null);
+    $('.ceasnDataFields').find('p').text(null);
+    $('.ceasnDataFields').find('input').val(null);
 
     renderSidebar();
 
     $("sidebarFeedback").text("");
     $("#editFrameworkSection").find("button,input,textarea,select").prop('disabled', false);
-    $("#ceasnDataFields ul:empty").hide();
+    $(".ceasnDataFields:not(.exempt) ul:empty").hide();
 
     if (framework == thing) {
         $("#sidebarVersion").hide();
@@ -713,7 +719,7 @@ editSidebar = function () {
             $("#sidebarFeedback").html("Some edit options are limited: <li>You do not own this framework.</li> ");
         } else {
             $("#sidebarFeedback").append("<li>You do not own this competency.</li> ");
-            $("#ceasnDataFields button,input,textarea,select").prop('disabled', true);
+            $(".ceasnDataFields button,input,textarea,select").prop('disabled', true);
         }
     }
 

@@ -188,7 +188,7 @@ p.selected {
     display: block;
 }
 
-#ceasnDataFields {
+.ceasnDataFields {
     display: none;
 }
 

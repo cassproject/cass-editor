@@ -339,7 +339,7 @@
                                     </div>
                                 </div>
                                 <!-- Ceasn Only Properties -->
-                                <div id="ceasnDataFields">
+                                <div class="ceasnDataFields">
                                     <!-- Ceasn Competency Properties -->
                                     <div class="ceasnCompetency">
                                         <!-- Competency Category -->
@@ -537,6 +537,15 @@
                             <h2 class="viewMode editMode competencyOnly" style="margin-bottom:0px;cursor:pointer;" onclick="toggleDiv('alignmentsOptionalChevron', 'alignmentsOptional');">Connections <i class="fa fa-chevron-down" id="alignmentsOptionalChevron" style="float:right;"></i></h2>
                             <hr class="viewMode editMode competencyOnly" style="margin-top:0px;">
                             <div class="optionalFields" id="alignmentsOptional">
+                                <!-- hasChild and isChildOf -->
+                                <div class="ceasnDataFields exempt">
+                                    <!-- Has Child -->
+                                    <label for="sidebarHasChild" title="" style="margin:0px;" ceasnCompetency="Has Child:" skosCompetency="Has Child:" class="viewMode editMode competencyOnly">hasChild:</label>
+                                    <ul id="sidebarHasChild" ceasnCompetency="hasChild" skosCompetency="hasChild" class="viewMode editMode relationList competencyOnly"></ul>
+                                    <!-- Child Of -->
+                                    <label for="sidebarIsChildOf" title="" style="margin:0px;" ceasnCompetency="Child Of:" skosCompetency="Child Of:" class="viewMode editMode competencyOnly">isChildOf:</label>
+                                    <ul id="sidebarIsChildOf" ceasnCompetency="isChildOf" skosCompetency="isChildOf" class="viewMode editMode relationList competencyOnly"></ul>
+                                </div>
                                 <!-- Narrows -->
                                 <label for="sidebarNarrows" title="" style="margin:0px;" cassCompetency="Narrows:" ceasnCompetency="Broad Alignments:" class="viewMode editMode competencyOnly absentForConcepts">Narrows:</label>
                                 <button id="sidebarNarrowsBrowse" cassCompetency="narrows" ceasnCompetency="narrows" plural="true" class="viewMode editMode editControl frameworkEditControl competencyOnly absentForConcepts" onclick="$('#selectCompetencySection').attr('relation','narrows');initIframe(true);showPage('#selectCompetencySection', framework);"><i class="fa fa-search-plus"></i></button>

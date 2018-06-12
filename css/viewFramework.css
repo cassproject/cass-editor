@@ -45,7 +45,7 @@
     z-index: 1;
 }
 
-#ceasnDataFields button,
+.ceasnDataFields button,
 #alignmentPanel button {
     font-size: normal;
     margin: 0px;
@@ -54,7 +54,7 @@
     margin-top: -5px;
 }
 
-#ceasnDataFields ul,
+.ceasnDataFields ul,
 #alignmentPanel ul {
     border-top: 1px rgba(0, 0, 0, .5) solid;
     padding-top: .25rem;
@@ -76,13 +76,13 @@
 }
 
 
-#ceasnDataFields ul li,
+.ceasnDataFields ul li,
 #alignmentPanel ul li {
     margin-top: 2px;
     margin-bottom: 2px;
 }
 
-#ceasnDataFields ul:empty::after,
+.ceasnDataFields ul:empty::after,
 #alignmentPanel ul:empty::after {
     content: "None"
 }
@@ -226,12 +226,12 @@ hr {
 
 #detailSlider input,
 #detailSlider textarea,
-#detailSlider #ceasnDataFields select {
+#detailSlider .ceasnDataFields select {
     margin-top: 0.5rem;
     width: calc(100% - 1rem);
 }
 
-#detailSlider #ceasnDataFields select {
+#detailSlider .ceasnDataFields select {
     margin-bottom: 1rem;
 }
 
