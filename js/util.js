@@ -213,7 +213,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarChangeNote"]').tooltip({
-            content: 'Documents fine-grained changes to a concept, for the purposes of administration and maintenance. Separate each change with a comma.',
+            content: 'Documents fine-grained changes to a concept, for the purposes of administration and maintenance. Separate each change note with a comma.',
             show: false,
             hide: false
         });
@@ -374,7 +374,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarSource"]').tooltip({
-            content: 'A URI to the original competency framework which this competency framework is based on or derived from. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. Separate each original with a comma.',
+            content: 'A URI to the original competency framework which this competency framework is based on or derived from. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. Separate each original framework with a comma.',
             show: false,
             hide: false
         });
@@ -429,7 +429,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarHistoryNote"]').tooltip({
-            content: 'Describes significant changes to the meaning or the form of a concept. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. Separate each change with a comma.',
+            content: 'Describes significant changes to the meaning or the form of a concept. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. Separate each change note with a comma.',
             show: false,
             hide: false
         });
@@ -676,7 +676,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarSource"]').tooltip({
-            content: 'The original competency framework which this competency framework is based on or derived from. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. Separate each original with a comma.',
+            content: 'The original competency framework which this competency framework is based on or derived from. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. Separate each original framework with a comma.',
             show: false,
             hide: false
         });
@@ -822,7 +822,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarChangeNote"]').tooltip({
-            content: 'Documents fine-grained changes to a concept, for the purposes of administration and maintenance. Separate each change with a comma.',
+            content: 'Documents fine-grained changes to a concept, for the purposes of administration and maintenance. Separate each change note with a comma.',
             show: false,
             hide: false
         });
