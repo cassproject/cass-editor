@@ -565,7 +565,9 @@ renderSidebar = function (justLists) {
             }
         });
 
-    $('.sidebarAccordion').addClass('forceShow');
+    //Force show the properties that would normally be hidden by the accordion in view mode.
+    if ($('#detailSlider').hasClass('detailSliderView'))
+        $('.sidebarAccordion').addClass('forceShow');
 }
 
 refreshSidebar = function () {
