@@ -35,6 +35,7 @@ function afterConceptRefresh(level, subsearch) {
         if ($(".selected").length > 0)
             $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
     }
+    collapseCompetencies();
 }
 
 function refreshConcept(col, level, subsearch, recurse) {

@@ -193,6 +193,7 @@ function afterRefresh(level, subsearch) {
         }).detach().appendTo($(this));
     };
     $("#tree").each(sort).find("ul").each(sort);
+    collapseCompetencies();
     resizeEditFrameworkSection();
 }
 
@@ -841,6 +842,31 @@ $('.sidebarEditSection').on('input', function (evt) {
 //     addChangedFieldHighlight();
 // });
 
+//Store which competencies the user has collapsed in localstorage so it persists
+$('body').on('click', '.collapse', function (evt) {
+    var competency = $(this).parent();
+    var competencyId = competency.attr('id');
+    var state;
+
+    if ($(this).hasClass('collapsed'))
+        state = 'collapsed';
+    else
+        state = 'expanded';
+
+    var collapseDict = JSON.parse(localStorage.getItem('collapseDict'));
+    if (collapseDict == null)
+        collapseDict = {};
+    if (collapseDict[framework.id] == null)
+        collapseDict[framework.id] = {};
+
+    if (state === 'expanded')
+        delete collapseDict[framework.id][competencyId];
+    else
+        collapseDict[framework.id][competencyId] = state;
+
+    localStorage.setItem('collapseDict', JSON.stringify(collapseDict));
+});
+
 $('body').on('click', '#frameworkName', function (evt) {
     if ($(".changedField:visible").length > 0) {
         if (!confirm("Some data has changed during edit. Do you want to discard changes?")) {
@@ -1138,6 +1164,19 @@ $('html').keydown(function (evt) {
 $("body").on("webkitAnimationEnd oanimationend msAnimationEnd animationend", ".savedCompetency", function() {
     $(".savedCompetency").removeClass('savedCompetency');
 });
+
+collapseCompetencies = function() {
+    var collapseDict = JSON.parse(localStorage.getItem('collapseDict'));
+    if (collapseDict != null && collapseDict[framework.id] != null)
+        Object.keys(collapseDict[framework.id]).forEach(function(key) {
+            if (collapseDict[framework.id][key] === 'collapsed') {
+                var elem = $('[id="' + key + '"]');
+                elem.children('.collapse').addClass('collapsed');
+                elem.children('.collapse').children('i').removeClass('fa-minus-square').addClass('fa-plus-square');
+                elem.children('ul').hide();
+            }
+        });
+}
 
 validateString = function (str) {
     for (var i = 0; i < str.length; i++) {
