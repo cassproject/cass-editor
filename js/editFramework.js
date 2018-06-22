@@ -242,7 +242,7 @@ saveCompetency = function (addAnother) {
 
     $("#detailSlider").find("input:visible,textarea:visible").each(function () {
         //Temporarily ignore publisher name to test new feature
-        if (!$(this).hasClass('sidebarPublisherNameInput')) {
+        if (!$(this).hasClass('sidebarPublisherNameInput') && !$(this).hasClass('sidebarConceptPublisherNameInput')) {
             var val = getValueOrNull($(this).val());
             if (val == null)
                 delete thing[$(this).attr(inputChoice)];

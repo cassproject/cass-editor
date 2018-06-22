@@ -499,7 +499,7 @@ renderSidebar = function (justLists) {
     if (justLists != true)
         $("#detailSlider input,textarea").each(function () {
             //Temporarily ignore publishername to test new feature
-            if (!$(this).hasClass('publisherNameInput')) {
+            if (!$(this).hasClass('sidebarPublisherNameInput') && !$(this).hasClass('sidebarConceptPublisherNameInput')) {
                 if ($(this).attr(safeChoice) != null && ($(this).attr(labelChoice) == null || $(this).attr(labelChoice) === undefined)) {
                     $(this).prev().prev().hide();
                     $(this).prev().hide();

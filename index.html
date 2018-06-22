@@ -293,8 +293,13 @@
                                 <span class="orangeUri">Note: URI only. Example, http://example.com/?t=idforFrameworkPublishingorg</span>
                                 <!-- Concept Scheme Publisher Name -->
                                 <label id="sidebarConceptPublisherNameInputLabel" for="sidebarConceptPublisherName" title="" skosFramework="Publisher Name:" skosFrameworkTitle="Name of the agent responsible for making this entity available. Separate each name with a comma." class="viewMode editMode absentForCompetencies frameworkOnly" style="margin:0px;">Publisher Name:</label>
-                                <p id="sidebarConceptPublisherName" class="viewMode absentForCompetencies frameworkOnly" style="font-weight:bold;"></p>
-                                <input id="sidebarConceptPublisherNameInput" skosFramework="ceasn:publisherName" plural="true" class="editMode editControl absentForCompetencies frameworkOnly" />
+                                <p id="sidebarConceptPublisherName" class="viewMode absentForCompetencies frameworkOnly sidebarViewList" style="font-weight:bold;"></p>
+                                <input id="sidebarConceptPublisherNameInput" skosFramework="ceasn:publisherName" plural="true" class="editMode editControl absentForCompetencies frameworkOnly sidebarConceptPublisherNameInput" />
+                                <div class="sidebarInputGroup">
+                                    <div class="addInputContainer">
+                                        <button id="addConceptPublisherNameInput" data-target="sidebarConceptPublisherNameInput" class="editMode editControl addInputButton frameworkOnly absentForCompetencies"><i class="fa fa-plus"></i></button>
+                                    </div>
+                                </div>
                                 <!-- Concept Scheme Language -->
                                 <label id="sidebarConceptInLanguageInputLabel" for="sidebarConceptInLanguage" title="" skosFramework="Language:" skosFrameworkTitle="Language of the scheme. Separate each language with a comma." class="viewMode editMode absentForCompetencies frameworkOnly" style="margin:0px;">In Language:</label>
                                 <p id="sidebarConceptInLanguage" class="viewMode absentForCompetencies frameworkOnly" style="font-weight:bold;"></p>
@@ -413,7 +418,7 @@
                                         <!-- Creator -->
                                         <label id="sidebarCreatorInputLabel" for="sidebarCreator" title="" cassFramework="Creator:" ceasnFramework="Creator:" class="viewMode editMode absentForConcepts" style="margin:0px;">Creator:</label>
                                         <p id="sidebarCreator" class="viewMode absentForConcepts" style="font-weight:bold;"></p>
-                                        <input id="sidebarCreatorInput" cassFramework="schema:creator" ceasnFramework="ceasn:creator" plural="true" type="url" class="editMode editControl" />
+                                        <input id="sidebarCreatorInput" cassFramework="schema:creator" ceasnFramework="ceasn:creator" plural="true" type="url" class="editMode editControl absentForConcepts" />
                                         <span class="orangeUri">Note: URI only. Example, http://example.com/?t=idforFrameworkOwningorg</span>
                                         <!-- Publisher Name -->
                                         <label id="sidebarPublisherNameInputLabel" for="sidebarPublisherName" title="" cassFramework="Publisher Name:" ceasnFramework="Publisher Name:" class="viewMode editMode absentForConcepts" style="margin:0px;">Publisher Name:</label>
@@ -421,7 +426,7 @@
                                         <input id="sidebarPublisherNameInput" cassFramework="ceasn:publisherName" ceasnFramework="ceasn:publisherName" plural="true" class="sidebarPublisherNameInput editMode editControl absentForConcepts" />
                                         <div class="sidebarInputGroup">
                                             <div class="addInputContainer">
-                                                <button id="addPublisherNameInput" data-target="sidebarPublisherNameInput" class="editMode editControl addInputButton"><i class="fa fa-plus"></i></button>
+                                                <button id="addPublisherNameInput" data-target="sidebarPublisherNameInput" class="editMode editControl addInputButton absentForConcepts"><i class="fa fa-plus"></i></button>
                                             </div>
                                         </div>
                                         <!-- Publisher -->
