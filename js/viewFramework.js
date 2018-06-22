@@ -537,6 +537,11 @@ renderSidebar = function (justLists) {
             baseField.css("display", "");
             baseField.prev("label").addClass("viewMode");
 
+            //Clear additional input fields if the property isn't present
+            if (thing[baseField.attr(inputChoice)] == null) {
+                baseField.next().find('input').remove();
+            }
+
             if (EcArray.isArray(thing[baseField.attr(inputChoice)])) {
                 var val = thing[baseField.attr(inputChoice)][0];
                 if (val == null)
