@@ -652,6 +652,12 @@ input.redButton {
     content: "None"
 }
 
+.addInputContainer {
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
 .optionalFields {
     display: none;
 }
@@ -695,6 +701,10 @@ input.redButton {
     position: relative;
     overflow: auto;
     height:calc(100vh - 1rem);
+}
+
+.sidebarViewList span {
+    display: table;
 }
 
 .changedField {

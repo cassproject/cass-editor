@@ -366,8 +366,6 @@ renderSidebar = function (justLists) {
             if (!EcArray.isArray(val))
                 val = [val];
             for (var i = 0; i < val.length; i++) {
-                if (i > 0)
-                    $(this).append(", ");
                 if (val[i].toLowerCase().indexOf("http") != -1) {
                     var linkText = val[i];
                     var elem = $(this);
@@ -392,8 +390,9 @@ renderSidebar = function (justLists) {
                         }
                     });
                 }
-                else
+                else {
                     $(this).append("<span/>").children().last().text(val[i]);
+                }
             }
         });
     $("#detailSlider ul").each(function () {
@@ -499,32 +498,74 @@ renderSidebar = function (justLists) {
     }
     if (justLists != true)
         $("#detailSlider input,textarea").each(function () {
-            if ($(this).attr(safeChoice) != null && ($(this).attr(labelChoice) == null || $(this).attr(labelChoice) === undefined)) {
-                $(this).prev().prev().hide();
-                $(this).prev().hide();
-                $(this).hide();
-                return;
-            } else {
-                $(this).prev().prev().css("display", "");
-                $(this).prev().css("display", "");
-                $(this).css("display", "");
+            //Temporarily ignore publishername to test new feature
+            if (!$(this).hasClass('publisherNameInput')) {
+                if ($(this).attr(safeChoice) != null && ($(this).attr(labelChoice) == null || $(this).attr(labelChoice) === undefined)) {
+                    $(this).prev().prev().hide();
+                    $(this).prev().hide();
+                    $(this).hide();
+                    return;
+                } else {
+                    $(this).prev().prev().css("display", "");
+                    $(this).prev().css("display", "");
+                    $(this).css("display", "");
+                }
+                $(this).prev("label").addClass("viewMode");
+                var val = thing[$(this).attr(inputChoice)];
+                if (val === undefined || val == null || val == "") {
+                    $(this).prev("label").removeClass("viewMode");
+                    if ($(this).attr("defaultToFramework") != null)
+                        val = framework[$(this).attr(inputChoice)];
+                }
+                if (EcArray.isArray(val))
+                    val = val.join(", ");
+                if (val === undefined || val == null || val == "") {
+                    $(this).val(null);
+                } else if ($(this).attr("type") == "datetime-local")
+                    $(this).val(new Date(val).toDatetimeLocal().substring(0, new Date(val).toDatetimeLocal().length - 3));
+                else
+                    $(this).val(val);
             }
-            $(this).prev("label").addClass("viewMode");
-            var val = thing[$(this).attr(inputChoice)];
-            if (val === undefined || val == null || val == "") {
-                $(this).prev("label").removeClass("viewMode");
-                if ($(this).attr("defaultToFramework") != null)
-                    val = framework[$(this).attr(inputChoice)];
-            }
-            if (EcArray.isArray(val))
-                val = val.join(", ");
-            if (val === undefined || val == null || val == "") {
-                $(this).val(null);
-            } else if ($(this).attr("type") == "datetime-local")
-                $(this).val(new Date(val).toDatetimeLocal().substring(0, new Date(val).toDatetimeLocal().length - 3));
-            else
-                $(this).val(val);
         });
+
+    if (justLists != true)
+        $("#detailSlider").find('.sidebarInputGroup').each(function() {
+            //Get the base input field first
+            var baseField = $(this).prev();
+            baseField.prev().prev().css("display", "");
+            baseField.prev().css("display", "");
+            baseField.css("display", "");
+            baseField.prev("label").addClass("viewMode");
+
+            if (EcArray.isArray(thing[baseField.attr(inputChoice)])) {
+                var val = thing[baseField.attr(inputChoice)][0];
+                if (val == null)
+                    baseField.val('');
+                else
+                    baseField.val(val);
+
+                //Create the input fields if needed and they aren't there yet
+                if (thing[baseField.attr(inputChoice)].length > 1 && $(this).find('input').length < 1) {
+                    for (var i = 1; i < thing[baseField.attr(inputChoice)].length; i++) {
+                        var newInput = $(baseField[0].cloneNode(false));
+                        newInput.addClass('inputCopy');
+                        newInput.val('');
+                        newInput.insertBefore($(this).find('.addInputContainer'));
+                    }
+                }
+
+                $(this).find('input').each(function(i) {
+                    
+                    var val = thing[$(this).attr(inputChoice)][i+1];
+                    if (val == null) {
+                        $(this).remove();
+                    } else {
+                        $(this).val(val);
+                    }
+                });
+            }
+        });
+
     if (justLists != true)
         $("#detailSlider button").each(function () {
             $(this).prev("label").addClass("viewMode");
@@ -830,6 +871,15 @@ $('.sidebarEditSection').on('input', function (evt) {
         setInvalidInput(evt.target.id);
     else
         setValidInput(evt.target.id);
+});
+
+//Click handler for addInput buttons
+$('body').on('click', '.addInputButton', function (evt) {
+    var originalElem = $('.' + $(this).attr('data-target')).first();
+    var newElem = $(originalElem[0].cloneNode(false));
+    newElem.addClass('inputCopy');
+    newElem.val('');
+    newElem.insertBefore($(this).parent());
 });
 
 //Detect UL length changes (For edit panel fields that don't use input fields)

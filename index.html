@@ -417,8 +417,13 @@
                                         <span class="orangeUri">Note: URI only. Example, http://example.com/?t=idforFrameworkOwningorg</span>
                                         <!-- Publisher Name -->
                                         <label id="sidebarPublisherNameInputLabel" for="sidebarPublisherName" title="" cassFramework="Publisher Name:" ceasnFramework="Publisher Name:" class="viewMode editMode absentForConcepts" style="margin:0px;">Publisher Name:</label>
-                                        <p id="sidebarPublisherName" class="viewMode absentForConcepts" style="font-weight:bold;"></p>
-                                        <input id="sidebarPublisherNameInput" cassFramework="ceasn:publisherName" ceasnFramework="ceasn:publisherName" plural="true" class="editMode editControl absentForConcepts" />
+                                        <p id="sidebarPublisherName" class="viewMode absentForConcepts sidebarViewList" style="font-weight:bold;"></p>
+                                        <input id="sidebarPublisherNameInput" cassFramework="ceasn:publisherName" ceasnFramework="ceasn:publisherName" plural="true" class="sidebarPublisherNameInput editMode editControl absentForConcepts" />
+                                        <div class="sidebarInputGroup">
+                                            <div class="addInputContainer">
+                                                <button id="addPublisherNameInput" data-target="sidebarPublisherNameInput" class="editMode editControl addInputButton"><i class="fa fa-plus"></i></button>
+                                            </div>
+                                        </div>
                                         <!-- Publisher -->
                                         <label id="sidebarPublisherInputLabel" for="sidebarPublisher" title="" cassFramework="Publisher:" ceasnFramework="Publisher:" class="viewMode editMode absentForConcepts" style="margin:0px;">Publisher:</label>
                                         <p id="sidebarPublisher" class="viewMode absentForConcepts" style="font-weight:bold;"></p>

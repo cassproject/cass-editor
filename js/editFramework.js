@@ -241,23 +241,48 @@ saveCompetency = function (addAnother) {
     }
 
     $("#detailSlider").find("input:visible,textarea:visible").each(function () {
-        var val = getValueOrNull($(this).val());
-        if (val == null)
-            delete thing[$(this).attr(inputChoice)];
-        else {
-            if ($(this).attr("plural") != null) {
-                thing[$(this).attr(inputChoice)] = val.split(/, ?/);
-                if (thing[$(this).attr(inputChoice)].length == 1)
-                    thing[$(this).attr(inputChoice)] = thing[$(this).attr(inputChoice)][0];
-                else if (thing[$(this).attr(inputChoice)].length == 0)
-                    delete thing[$(this).attr(inputChoice)];
-            } else
-            if ($(this).attr("type") == "datetime-local")
-                thing[$(this).attr(inputChoice)] = new Date(val).toISOString();
-            else
-                thing[$(this).attr(inputChoice)] = val;
+        //Temporarily ignore publisher name to test new feature
+        if (!$(this).hasClass('sidebarPublisherNameInput')) {
+            var val = getValueOrNull($(this).val());
+            if (val == null)
+                delete thing[$(this).attr(inputChoice)];
+            else {
+                if ($(this).attr("plural") != null) {
+                    thing[$(this).attr(inputChoice)] = val.split(/, ?/);
+                    if (thing[$(this).attr(inputChoice)].length == 1)
+                        thing[$(this).attr(inputChoice)] = thing[$(this).attr(inputChoice)][0];
+                    else if (thing[$(this).attr(inputChoice)].length == 0)
+                        delete thing[$(this).attr(inputChoice)];
+                } else
+                if ($(this).attr("type") == "datetime-local")
+                    thing[$(this).attr(inputChoice)] = new Date(val).toISOString();
+                else
+                    thing[$(this).attr(inputChoice)] = val;
+            }
         }
     });
+
+    $("#detailSlider").find('.sidebarInputGroup').each(function() {
+        var vals = [];
+        var whichInputChoice = $(this).prev().attr(inputChoice);
+
+        //Get the base input field first
+        var val = getValueOrNull($(this).prev().val());
+        if (val != null)
+            vals.push(val);
+
+        $(this).find('input:visible,textarea:visible').each(function() {
+            var val = getValueOrNull($(this).val());
+            if (val != null)
+                vals.push(val);
+        });
+        if (vals.length > 0) {
+            thing[whichInputChoice] = vals;
+        } else {
+            delete thing[whichInputChoice];
+        }
+    });
+
     $("#detailSlider").find("select:visible").each(function () {
         var val = $(this).find("option:selected").attr("value");
         if (val === undefined || val == null || val == "")
