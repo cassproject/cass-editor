@@ -542,13 +542,13 @@ renderSidebar = function (justLists) {
                 baseField.next().find('input').remove();
             }
 
-            if (EcArray.isArray(thing[baseField.attr(inputChoice)])) {
-                var val = thing[baseField.attr(inputChoice)][0];
-                if (val == null)
-                    baseField.val('');
-                else
-                    baseField.val(val);
+            var val = EcArray.isArray(thing[baseField.attr(inputChoice)]) ? thing[baseField.attr(inputChoice)][0] : thing[baseField.attr(inputChoice)];
+            if (val == null)
+                baseField.val('');
+            else
+                baseField.val(val);
 
+            if (EcArray.isArray(thing[baseField.attr(inputChoice)])) {
                 //Create the input fields if needed and they aren't there yet
                 if (thing[baseField.attr(inputChoice)].length > 1 && $(this).find('input').length < 1) {
                     for (var i = 1; i < thing[baseField.attr(inputChoice)].length; i++) {
