@@ -142,6 +142,10 @@
     display: table;
 }
 
+#detailSlider p > a {
+    display: table;
+}
+
 .changedField {
     background-color: rgba(69, 160, 133, .25);
 }

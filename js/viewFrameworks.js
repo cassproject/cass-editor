@@ -89,6 +89,45 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
                 desc.text(description);
                 if (fx.competency != null)
                     p.append("<span class='properties'>" + fx.competency.length + " items.</span>");
+                //Display additional data on frameworks in search results
+                if (queryParams.ceasnDataFields == 'true') {
+                    if (fx['ceasn:publisherName'] != null) {
+                        var publisherName = EcArray.isArray(fx['ceasn:publisherName']) ? fx['ceasn:publisherName'] : [fx['ceasn:publisherName']];
+                        for (var i in publisherName) {
+                            p.append("<span class='properties'>" + publisherName[i] + "</span>");
+                        }
+                    }
+                    else {
+                        if (fx['schema:publisher'] != null) {
+                            var publisher = EcArray.isArray(fx['schema:publisher']) ? fx['schema:publisher'] : [fx['schema:publisher']];
+                            getArrayOfResolvedUrls(publisher, function(result) {
+                                if (result.length > 0) {
+                                    for (var i in result) {
+                                        p.append("<span class='properties'>" + result[i] + "</span>");
+                                    }
+                                } else {
+                                    var creator = EcArray.isArray(fx['schema:creator']) ? fx['schema:creator'] : [fx['schema:creator']];
+                                    getArrayOfResolvedUrls(creator, function(result2) {
+                                        if (result2.length > 0) {
+                                            for (var i in result2) {
+                                                p.append("<span class='properties'>" + result2[i] + "</span>");
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                        } else if (fx['schema:creator'] != null) {
+                            var creator = EcArray.isArray(fx['schema:creator']) ? fx['schema:creator'] : [fx['schema:creator']];
+                            getArrayOfResolvedUrls(creator, function(result) {
+                                if (result.length > 0) {
+                                    for (var i in result) {
+                                        p.append("<span class='properties'>" + result[i] + "</span>");
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
                 if (searchTerm != "*" && subsearchTerm == null) {
                     title.mark(searchTerm);
                     desc.mark(searchTerm);

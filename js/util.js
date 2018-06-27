@@ -1279,6 +1279,64 @@ resizeEditFrameworkSection = function() {
     $(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
 }
 
+resolveNameFromUrl = function(url, callback) {
+    $.ajax({
+        dataType: "json",
+        url: url,
+        async: true,
+        success: function(data) {
+            var name = null;
+            if (data) {
+                if (data['ceterms:name'])
+                    name = data['ceterms:name'];
+                else if (data['name'])
+                    name = data['name'];
+                else if (data['schema:name'])
+                    name = data['schema:name'];
+                else if (data['title'])
+                    name = data['title'];
+            }
+            callback(name);
+        }
+    });
+}
+
+resolveNameFromUrlWithElem = function(url, elem, callback) {
+    $.ajax({
+        dataType: "json",
+        url: url,
+        async: true,
+        success: function(data) {
+            var name = null;
+            if (data) {
+                if (data['ceterms:name'])
+                    name = data['ceterms:name'];
+                else if (data['name'])
+                    name = data['name'];
+                else if (data['schema:name'])
+                    name = data['schema:name'];
+                else if (data['title'])
+                    name = data['title'];
+            }
+            callback(name, elem);
+        }
+    });
+}
+
+getArrayOfResolvedUrls = function(urls, callback) {
+    var names = [];
+    var counter = 0;
+    for (var i in urls) {
+        resolveNameFromUrl(urls[i], function(result) {
+            if (result != null)
+                names.push(result);
+            counter++;
+            if (counter == urls.length)
+                callback(names);
+        });
+    }
+}
+
 $('#split-bar').mousedown(function (e) {
     e.preventDefault();
     $(document).mousemove(function (e) {
