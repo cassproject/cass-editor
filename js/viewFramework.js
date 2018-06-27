@@ -285,6 +285,7 @@ renderSidebar = function (justLists) {
         if (!confirm("Some data has changed during edit. Do you want to discard changes?"))
             return;
     }
+
     var thing = framework;
     if (selectedCompetency != null) {
         thing = selectedCompetency;
@@ -612,9 +613,28 @@ renderSidebar = function (justLists) {
             }
         });
 
-    //Force show the properties that would normally be hidden by the accordion in view mode.
+    //Hide or show section headers in viewmode based on if they have any populated fields
     if ($('#detailSlider').hasClass('detailSliderView'))
-        $('.sidebarAccordion').addClass('forceShow');
+        $('.sidebarAccordion').each(function() {
+            var counter = 0;
+            $(this).children('p').each(function() {
+                if (!$(this).is(':empty')) {
+                    counter++;
+                }
+            });
+            $(this).children('ul').each(function() {
+                if ($(this).children('li').length > 0) {
+                    counter++;
+                }
+            });
+            if (counter > 0) {
+                $(this).prev().addClass('viewMode');
+                $(this).prev().prev().addClass('viewMode');
+            } else {
+                $(this).prev().removeClass('viewMode');
+                $(this).prev().prev().removeClass('viewMode');
+            }
+        });
 }
 
 refreshSidebar = function () {
