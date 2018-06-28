@@ -463,24 +463,29 @@ renderSidebar = function (justLists) {
             };
             if (a.source == selectedCompetency.shortId()) {
                 var target = EcCompetency.getBlocking(a.target);
-                if (target != null && a.relationType == Relation.NARROWS && $('[id="' + target.shortId() + '"]').length && queryParams.ceasnDataFields == 'true')
-                    renderAlignment(target, "isChildOf");
-                else
-                    renderAlignment(target, a.relationType);
+                if (target != null) {
+                    if (a.relationType == Relation.NARROWS && $('[id="' + target.shortId() + '"]').length && queryParams.ceasnDataFields == 'true')
+                        renderAlignment(target, "isChildOf");
+                    else
+                        renderAlignment(target, a.relationType);
+                }
             }
             if (a.relationType == Relation.IS_EQUIVALENT_TO || a.relationType == Relation.IS_RELATED_TO || a.relationType == "majorRelated" || a.relationType == "minorRelated") {
                 if (a.target == selectedCompetency.shortId()) {
                     var source = EcCompetency.getBlocking(a.source);
-                    renderAlignment(source, a.relationType);
+                    if (source != null)
+                        renderAlignment(source, a.relationType);
                 }
             }
             if (a.relationType == Relation.NARROWS) {
                 if (a.target == selectedCompetency.shortId()) {
                     var source = EcCompetency.getBlocking(a.source);
-                    if (source != null && $('[id="' + source.shortId() + '"]').length && queryParams.ceasnDataFields == 'true')
-                        renderAlignment(source, "hasChild");
-                    else
-                        renderAlignment(source, "broadens");
+                    if (source != null) {
+                        if ($('[id="' + source.shortId() + '"]').length && queryParams.ceasnDataFields == 'true')
+                            renderAlignment(source, "hasChild");
+                        else
+                            renderAlignment(source, "broadens");
+                    }
                 }
             }
         }
