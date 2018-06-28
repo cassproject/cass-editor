@@ -463,7 +463,7 @@ renderSidebar = function (justLists) {
             };
             if (a.source == selectedCompetency.shortId()) {
                 var target = EcCompetency.getBlocking(a.target);
-                if (a.relationType == Relation.NARROWS && $('[id="' + target.shortId() + '"]').length && queryParams.ceasnDataFields == 'true')
+                if (target != null && a.relationType == Relation.NARROWS && $('[id="' + target.shortId() + '"]').length && queryParams.ceasnDataFields == 'true')
                     renderAlignment(target, "isChildOf");
                 else
                     renderAlignment(target, a.relationType);
@@ -477,7 +477,7 @@ renderSidebar = function (justLists) {
             if (a.relationType == Relation.NARROWS) {
                 if (a.target == selectedCompetency.shortId()) {
                     var source = EcCompetency.getBlocking(a.source);
-                    if ($('[id="' + source.shortId() + '"]').length && queryParams.ceasnDataFields == 'true')
+                    if (source != null && $('[id="' + source.shortId() + '"]').length && queryParams.ceasnDataFields == 'true')
                         renderAlignment(source, "hasChild");
                     else
                         renderAlignment(source, "broadens");
