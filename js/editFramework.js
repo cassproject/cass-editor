@@ -54,6 +54,7 @@ addCompetency = function () {
                         refreshSidebar();
                         editSidebar();
                         $("#sidebarNameInput").focus();
+                        $("#sidebarNameInput").select();
                         afterSave();
                     }, error);
                 }, error);
@@ -63,6 +64,7 @@ addCompetency = function () {
                     refreshSidebar();
                     editSidebar();
                     $("#sidebarNameInput").focus();
+                    $("#sidebarNameInput").select();
                     afterSave();
                 }, error);
             }
@@ -141,6 +143,7 @@ appendCompetencies = function (results, newLink) {
     repo.saveTo(framework, function () {
         refreshSidebar();
         $("#sidebarNameInput").focus();
+        $("#sidebarNameInput").select();
     }, error);
 }
 
@@ -170,6 +173,7 @@ addLevel = function () {
                 refreshSidebar();
                 editSidebar();
                 $("#sidebarNameInput").focus();
+                $("#sidebarNameInput").select();
                 afterSave();
             }, error);
         }, error);
@@ -311,6 +315,7 @@ saveCompetency = function (addAnother) {
     }
 }
 
+var createFrameworkDelay;
 createFramework = function () {
     if (conceptMode) return createConceptScheme();
     if (viewMode) return;
@@ -328,6 +333,13 @@ createFramework = function () {
     editSidebar();
     populateFramework();
     highlightSelected($('#frameworkNameContainer'));
+    createFrameworkDelay = setInterval(function() {
+        if ($('#sidebarNameInput').is(':visible')) {
+            $('#sidebarNameInput').focus();
+            $('#sidebarNameInput').select();
+            clearInterval(createFrameworkDelay);
+        }
+    }, 1000);
 }
 
 setCompetencyConfigurationManagement = function () {

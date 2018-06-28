@@ -28,6 +28,7 @@ addConcept = function () {
                     refreshSidebar();
                     editSidebar();
                     $("#sidebarNameInput").focus();
+                    $("#sidebarNameInput").select();
                     afterSave();
                 }, error);
             }, error);
@@ -42,6 +43,7 @@ addConcept = function () {
                     refreshSidebar();
                     editSidebar();
                     $("#sidebarNameInput").focus();
+                    $("#sidebarNameInput").select();
                     afterSave();
                 }, error);
             }, error);
@@ -69,8 +71,16 @@ createConceptScheme = function () {
     loading("Creating concept scheme...");
     repo.saveTo(framework, function () {
         refreshSidebar();
+        editSidebar();
         populateFramework();
         highlightSelected($('#frameworkNameContainer'));
+        createFrameworkDelay = setInterval(function() {
+            if ($('#sidebarNameInput').is(':visible')) {
+                $('#sidebarNameInput').focus();
+                $('#sidebarNameInput').select();
+                clearInterval(createFrameworkDelay);
+            }
+        }, 1000);
     }, error);
 }
 
