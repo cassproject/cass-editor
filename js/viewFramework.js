@@ -387,12 +387,10 @@ renderSidebar = function (justLists) {
         var u = $(this).prev().attr(fieldChoice);
         var val = thing[u];
         if ($(this).attr(safeChoice) != null && ($(this).attr(labelChoice) == null || $(this).attr(labelChoice) === undefined)) {
-            $(this).prev().prev().hide();
             $(this).prev().hide();
             $(this).hide();
             return;
         } else {
-            $(this).prev().prev().css("display", "");
             $(this).prev().css("display", "");
             $(this).css("display", "");
         }
@@ -436,8 +434,9 @@ renderSidebar = function (justLists) {
     });
     if (framework.relation != null && selectedCompetency != null) {
         $("#detailSlider .relationList").html("");
-        if (viewMode)
-            $("#detailSlider .relationList").hide().prev().hide();
+        if (viewMode) {
+            $("#detailSlider .relationList:not(.exempt)").hide().prev().hide();
+        }
         for (var i = 0; i < framework.relation.length; i++) {
             var a = EcAlignment.getBlocking(framework.relation[i]);
             if (a == null)
