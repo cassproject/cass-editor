@@ -598,6 +598,7 @@ renderSidebar = function (justLists) {
             } else {
                 $(this).find("option").prop('selected', false);
                 $(this).find("option[value=\"" + val + "\"]").prop('selected', true);
+                $(this).prev('p').text($(this).find('option[value]:selected').text());
             }
         });
 
