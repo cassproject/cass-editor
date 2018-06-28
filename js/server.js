@@ -251,6 +251,8 @@ initIframe = function (comp) {
         var iframeCompetencyPath = iframeRoot + "index.html?select=Align with...&view=true&back=true&frameworkId=" + framework.shortId() + "&iframeRoot=" + iframeRoot + "&origin=" + window.location.origin + (queryParams.server == null ? "" : "&server=" + queryParams.server + (queryParams.newObjectEndpoint == null ? "" : "&newObjectEndpoint=" + queryParams.newObjectEndpoint));
         if (queryParams.webSocketOverride != null && queryParams.webSocketOverride !== undefined)
             iframeCompetencyPath += "&webSocketOverride=" + queryParams.webSocketOverride;
+        if (queryParams.ceasnDataFields != null && queryParams.ceasnDataFields != undefined)
+            iframeCompetencyPath += "&ceasnDataFields=" + queryParams.ceasnDataFields;
         if (queryParams.view != "true")
             $("#selectCompetencyIframe").attr("src", iframeCompetencyPath);
     }
@@ -261,12 +263,16 @@ initIframe = function (comp) {
     var iframePath = iframeRoot + "index.html?select=Add&selectRelations=true&view=true&iframeRoot=" + iframeRoot + "&origin=" + window.location.origin + (queryParams.server == null ? "" : "&server=" + queryParams.server + (queryParams.newObjectEndpoint == null ? "" : "&newObjectEndpoint=" + queryParams.newObjectEndpoint));
     if (queryParams.webSocketOverride != null && queryParams.webSocketOverride !== undefined)
         iframePath += "&webSocketOverride=" + queryParams.webSocketOverride;
+    if (queryParams.ceasnDataFields != null && queryParams.ceasnDataFields != undefined)
+        iframePath += "&ceasnDataFields=" + queryParams.ceasnDataFields;
     if (queryParams.view != "true")
         $("#findCompetencyIframe").attr("src", iframePath);
 
     var iframeConceptPath = iframeRoot + "index.html?select=Add&concepts=true&iframeRoot=" + iframeRoot + "&ceasnDataFields=" + queryParams.ceasnDataFields + "&origin=" + window.location.origin + (queryParams.server == null ? "" : "&server=" + queryParams.server) + (queryParams.newObjectEndpoint == null ? "" : "&newObjectEndpoint=" + queryParams.newObjectEndpoint);
     if (queryParams.webSocketOverride != null && queryParams.webSocketOverride !== undefined)
         iframeConceptPath += "&webSocketOverride=" + queryParams.webSocketOverride;
+    if (queryParams.ceasnDataFields != null && queryParams.ceasnDataFields != undefined)
+        iframeConceptPath += "&ceasnDataFields=" + queryParams.ceasnDataFields;
     if (queryParams.view != "true")
         $("#selectConceptIframe").attr("src", iframeConceptPath);
 }

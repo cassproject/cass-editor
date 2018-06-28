@@ -387,10 +387,12 @@ renderSidebar = function (justLists) {
         var u = $(this).prev().attr(fieldChoice);
         var val = thing[u];
         if ($(this).attr(safeChoice) != null && ($(this).attr(labelChoice) == null || $(this).attr(labelChoice) === undefined)) {
+            $(this).prev().prev("label").hide();
             $(this).prev().hide();
             $(this).hide();
             return;
         } else {
+            $(this).prev().prev("label").css("display", "");
             $(this).prev().css("display", "");
             $(this).css("display", "");
         }
