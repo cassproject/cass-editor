@@ -892,6 +892,17 @@ $('.sidebarEditSection').on('input', function (evt) {
         setValidInput(evt.target.id);
 });
 
+// Trim input field changes when input field lose focus
+$('.sidebarEditSection').on("focusout", function (evt) {
+    if (changedFields[evt.target.id] == 'input') {
+        if (validateString($('#' + evt.target.id).val())) {
+            // trim input
+            var inputVal = $('#' + evt.target.id).val();
+            $('#' + evt.target.id).val(inputVal.trim());
+        }
+    }
+});
+
 //Click handler for addInput buttons
 $('body').on('click', '.addInputButton', function (evt) {
     var originalElem = $('.' + $(this).attr('data-target')).first();
