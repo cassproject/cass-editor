@@ -100,17 +100,17 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
                     else {
                         if (fx['schema:publisher'] != null) {
                             var publisher = EcArray.isArray(fx['schema:publisher']) ? fx['schema:publisher'] : [fx['schema:publisher']];
-                            getArrayOfResolvedUrls(publisher, function(result) {
+                            getArrayOfResolvedUrlsWithElem(publisher, p, function(result, elem) {
                                 if (result.length > 0) {
                                     for (var i in result) {
-                                        p.append("<span class='properties'>" + result[i] + "</span>");
+                                        elem.append("<span class='properties'>" + result[i] + "</span>");
                                     }
                                 } else {
                                     var creator = EcArray.isArray(fx['schema:creator']) ? fx['schema:creator'] : [fx['schema:creator']];
-                                    getArrayOfResolvedUrls(creator, function(result2) {
+                                    getArrayOfResolvedUrlsWithElem(creator, elem, function(result2, elem2) {
                                         if (result2.length > 0) {
                                             for (var i in result2) {
-                                                p.append("<span class='properties'>" + result2[i] + "</span>");
+                                                elem2.append("<span class='properties'>" + result2[i] + "</span>");
                                             }
                                         }
                                     });
@@ -118,10 +118,10 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
                             });
                         } else if (fx['schema:creator'] != null) {
                             var creator = EcArray.isArray(fx['schema:creator']) ? fx['schema:creator'] : [fx['schema:creator']];
-                            getArrayOfResolvedUrls(creator, function(result) {
+                            getArrayOfResolvedUrlsWithElem(creator, p, function(result, elem) {
                                 if (result.length > 0) {
                                     for (var i in result) {
-                                        p.append("<span class='properties'>" + result[i] + "</span>");
+                                        elem.append("<span class='properties'>" + result[i] + "</span>");
                                     }
                                 }
                             });

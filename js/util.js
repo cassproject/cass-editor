@@ -1323,16 +1323,16 @@ resolveNameFromUrlWithElem = function(url, elem, callback) {
     });
 }
 
-getArrayOfResolvedUrls = function(urls, callback) {
+getArrayOfResolvedUrlsWithElem = function(urls, elem, callback) {
     var names = [];
     var counter = 0;
     for (var i in urls) {
-        resolveNameFromUrl(urls[i], function(result) {
+        resolveNameFromUrlWithElem(urls[i], elem, function(result) {
             if (result != null)
                 names.push(result);
             counter++;
             if (counter == urls.length)
-                callback(names);
+                callback(names, elem);
         });
     }
 }
