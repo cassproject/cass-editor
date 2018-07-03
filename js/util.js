@@ -565,7 +565,7 @@ initTooltips = function (type) {
             hide: false
         });
         $('label[for="sidebarDerivedFrom"]').tooltip({
-            content: 'The URI of a competency from which this competency has been derived. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.  Separate each entity with a comma.',
+            content: 'The URI of a competency from which this competency has been derived. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. Separate each entity with a comma.',
             show: false,
             hide: false
         });
