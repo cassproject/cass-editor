@@ -491,35 +491,32 @@ renderSidebar = function (justLists) {
         }
     }
     if (justLists != true)
-        $("#detailSlider input,textarea").each(function () {
-            //Temporarily ignore publishername to test new feature
-            if (!$(this).hasClass('sidebarPublisherNameInput') && !$(this).hasClass('sidebarConceptPublisherNameInput')) {
-                if ($(this).attr(safeChoice) != null && ($(this).attr(labelChoice) == null || $(this).attr(labelChoice) === undefined)) {
-                    $(this).prev().prev().hide();
-                    $(this).prev().hide();
-                    $(this).hide();
-                    return;
-                } else {
-                    $(this).prev().prev().css("display", "");
-                    $(this).prev().css("display", "");
-                    $(this).css("display", "");
-                }
-                $(this).prev("label").addClass("viewMode");
-                var val = thing[$(this).attr(inputChoice)];
-                if (val === undefined || val == null || val == "") {
-                    $(this).prev("label").removeClass("viewMode");
-                    if ($(this).attr("defaultToFramework") != null)
-                        val = framework[$(this).attr(inputChoice)];
-                }
-                if (EcArray.isArray(val))
-                    val = val.join(", ");
-                if (val === undefined || val == null || val == "") {
-                    $(this).val(null);
-                } else if ($(this).attr("type") == "datetime-local")
-                    $(this).val(new Date(val).toDatetimeLocal().substring(0, new Date(val).toDatetimeLocal().length - 3));
-                else
-                    $(this).val(val);
+        $("#detailSlider input:not([plural]),textarea").each(function () {
+            if ($(this).attr(safeChoice) != null && ($(this).attr(labelChoice) == null || $(this).attr(labelChoice) === undefined)) {
+                $(this).prev().prev().hide();
+                $(this).prev().hide();
+                $(this).hide();
+                return;
+            } else {
+                $(this).prev().prev().css("display", "");
+                $(this).prev().css("display", "");
+                $(this).css("display", "");
             }
+            $(this).prev("label").addClass("viewMode");
+            var val = thing[$(this).attr(inputChoice)];
+            if (val === undefined || val == null || val == "") {
+                $(this).prev("label").removeClass("viewMode");
+                if ($(this).attr("defaultToFramework") != null)
+                    val = framework[$(this).attr(inputChoice)];
+            }
+            if (EcArray.isArray(val))
+                val = val.join(", ");
+            if (val === undefined || val == null || val == "") {
+                $(this).val(null);
+            } else if ($(this).attr("type") == "datetime-local")
+                $(this).val(new Date(val).toDatetimeLocal().substring(0, new Date(val).toDatetimeLocal().length - 3));
+            else
+                $(this).val(val);
         });
 
     if (justLists != true)

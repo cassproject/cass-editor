@@ -655,7 +655,7 @@ input.redButton {
 .addInputContainer {
     position: relative;
     display: flex;
-    justify-content: center;
+    padding-left: 0.5rem;
 }
 
 .optionalFields {
@@ -703,8 +703,14 @@ input.redButton {
     height:calc(100vh - 1rem);
 }
 
-.sidebarViewList span {
+.sidebarViewList span,
+.sidebarViewList a {
     display: table;
+}
+
+p.sidebarViewList,
+h3.sidebarViewList {
+    padding-left: 40px;
 }
 
 #detailSlider p > a {
