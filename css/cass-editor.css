@@ -655,7 +655,7 @@ input.redButton {
 .addInputContainer {
     position: relative;
     display: flex;
-    padding-left: 0.5rem;
+    justify-content: flex-end;
 }
 
 .optionalFields {
