@@ -94,7 +94,15 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
                     if (fx['ceasn:publisherName'] != null) {
                         var publisherName = EcArray.isArray(fx['ceasn:publisherName']) ? fx['ceasn:publisherName'] : [fx['ceasn:publisherName']];
                         for (var i in publisherName) {
-                            p.append("<span class='properties'>" + publisherName[i] + "</span>");
+                            if (publisherName[i].toLowerCase().indexOf("http") != -1) {
+                                var anchor = p;
+                                resolveNameFromUrlWithElem(publisherName[i], anchor, function(result, elem) {
+                                    if (result != null) {
+                                        anchor.append("<span class='properties'>" + result + "</span>");
+                                    }
+                                });
+                            } else
+                                p.append("<span class='properties'>" + publisherName[i] + "</span>");
                         }
                     }
                     else {
