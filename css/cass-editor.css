@@ -610,7 +610,7 @@ input.redButton {
     z-index: 1;
 }
 
-.ceasnDataFields button,
+.ceasnDataFields button:not(.addInputButton),
 #alignmentPanel button {
     font-size: normal;
     margin: 0px;

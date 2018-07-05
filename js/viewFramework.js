@@ -907,6 +907,8 @@ $('body').on('click', '.addInputButton', function (evt) {
     newElem.addClass('inputCopy');
     newElem.val('');
     newElem.insertBefore($(this).parent());
+    if ($(this).attr('data-autocomplete-field') === 'true')
+        setLanguageTagAutocomplete();
 });
 
 //Detect UL length changes (For edit panel fields that don't use input fields)
@@ -1414,6 +1416,29 @@ viewJSON = function () {
     redirect.location;
 }
 
+setLanguageTagAutocomplete = function() {
+    $.ajax({
+        url: "js/ietf-language-tags_json.json",
+        success: function (a) {
+            var tagList = a;
+            var tags = [];
+            for (var i = 0; i < tagList.length; i++) {
+                EcArray.setAdd(tags, tagList[i].lang);
+                EcArray.setAdd(tags, tagList[i].langType);
+            }
+            $('.sidebarInLanguageInput').autocomplete({
+                source: tags
+            });
+            $('.sidebarFrameworkInLanguageInput').autocomplete({
+                source: tags
+            });
+            $('.sidebarConceptInLanguageInput').autocomplete({
+                source: tags
+            });
+        }
+    });
+}
+
 $.ajax({
     url: "js/ietf-language-tags_json.json",
     success: function (a) {
@@ -1423,10 +1448,13 @@ $.ajax({
             EcArray.setAdd(tags, tagList[i].lang);
             EcArray.setAdd(tags, tagList[i].langType);
         }
-        $('.ceasnCompetency #sidebarInLanguageInput').autocomplete({
+        $('.sidebarInLanguageInput').autocomplete({
             source: tags
         });
-        $('.ceasnFramework #sidebarInLanguageInput').autocomplete({
+        $('.sidebarFrameworkInLanguageInput').autocomplete({
+            source: tags
+        });
+        $('.sidebarConceptInLanguageInput').autocomplete({
             source: tags
         });
     }

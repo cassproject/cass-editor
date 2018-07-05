@@ -98,7 +98,7 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
                                 var anchor = p;
                                 resolveNameFromUrlWithElem(publisherName[i], anchor, function(result, elem) {
                                     if (result != null) {
-                                        anchor.append("<span class='properties'>" + result + "</span>");
+                                        elem.append("<span class='properties'>" + result + "</span>");
                                     }
                                 });
                             } else
