@@ -342,6 +342,8 @@ renderSidebar = function (justLists) {
     //Set the URL field
     $('#sidebarURL').text(thing.shortId());
     $('#sidebarURL').attr('href', thing.shortId());
+    //Set the CTID field
+    $('#sidebarCTID').text(thing.getGuid());
 
     if (justLists != true)
         $("#detailSlider label").each(function () {

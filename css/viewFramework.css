@@ -45,6 +45,14 @@
     z-index: 1;
 }
 
+.recordKeys {
+    background-color: rgba(128, 128, 128, 0.1);
+    border-radius: 5px;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-bottom: 1rem;
+}
+
 .ceasnDataFields button:not(.addInputButton),
 #alignmentPanel button {
     font-size: normal;
