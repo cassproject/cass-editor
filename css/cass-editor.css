@@ -78,7 +78,7 @@ input:invalid {
     display: none;
 }
 
-input:invalid:not([style*="display: none"]) + .orangeUri {
+.orangeUri.active {
     display: block;
     color: orangered;
     margin: 0px;

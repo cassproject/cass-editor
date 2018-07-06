@@ -731,6 +731,9 @@ refreshSidebar = function () {
     } else if (framework != null) {
         $('#frameworkNameContainer').addClass('selected');
     }
+    //Hide URI error messages
+    $('.orangeUri').removeClass('active');
+    //Resize the sidebar
     $(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
 
 }
@@ -880,6 +883,11 @@ $("body").on("click", ".competency input", null, function (evt) {
 
 //Detect input field changes
 $('.sidebarEditSection').on('input', function (evt) {
+    //Show or hide the error message when an input is invalid
+    if ($('.' + evt.target.id).is(':invalid'))
+        $('#' + evt.target.id + 'Span').addClass('active');
+    else
+        $('#' + evt.target.id + 'Span').removeClass('active');
     changedFields[evt.target.id] = 'input';
     addChangedFieldHighlight();
     //Detect bad characters
