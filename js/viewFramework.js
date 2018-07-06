@@ -546,6 +546,8 @@ renderSidebar = function (justLists) {
                 if (thing[baseField.attr(inputChoice)].length > 1 && $(this).find('input').length < 1) {
                     for (var i = 1; i < thing[baseField.attr(inputChoice)].length; i++) {
                         var newInput = $(baseField[0].cloneNode(false));
+                        var uuid = new UUID(4);
+                        newInput.attr('id', uuid.format());
                         newInput.addClass('inputCopy');
                         newInput.val('');
                         newInput.insertBefore($(this).find('.addInputContainer'));
@@ -886,10 +888,10 @@ $("body").on("click", ".competency input", null, function (evt) {
 //Detect input field changes
 $('.sidebarEditSection').on('input', function (evt) {
     //Show or hide the error message when an input is invalid
-    if ($('.' + evt.target.id).is(':invalid'))
-        $('#' + evt.target.id + 'Span').addClass('active');
+    if ($('.' + evt.target.getAttribute('data-group')).is(':invalid'))
+        $('#' + evt.target.getAttribute('data-group') + 'Span').addClass('active');
     else
-        $('#' + evt.target.id + 'Span').removeClass('active');
+        $('#' + evt.target.getAttribute('data-group') + 'Span').removeClass('active');
     changedFields[evt.target.id] = 'input';
     addChangedFieldHighlight();
     //Detect bad characters
@@ -912,8 +914,10 @@ $('.sidebarEditSection').on("focusout", function (evt) {
 
 //Click handler for addInput buttons
 $('body').on('click', '.addInputButton', function (evt) {
-    var originalElem = $('.' + $(this).attr('data-target')).first();
+    var originalElem = $('#' + $(this).attr('data-target')).first();
     var newElem = $(originalElem[0].cloneNode(false));
+    var uuid = new UUID(4);
+    newElem.attr('id', uuid.format());
     newElem.addClass('inputCopy');
     newElem.val('');
     newElem.insertBefore($(this).parent());
