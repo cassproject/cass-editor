@@ -711,8 +711,7 @@ input.redButton {
     height:calc(100vh - 1rem);
 }
 
-.sidebarViewList span,
-.sidebarViewList a {
+.sidebarViewList span {
     display: table;
 }
 
@@ -721,8 +720,28 @@ h3.sidebarViewList {
     padding-left: 40px;
 }
 
-#detailSlider p > a {
-    display: table;
+.sidebarPropertyLink {
+    display: flex;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.sidebarPropertyLink button {
+    float: none !important;
+    margin-right: 0.5rem !important;
+}
+
+.clipboardTextArea {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 2em;
+    height: 2em;
+    padding: 0;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    background: transparent;
 }
 
 .changedField {

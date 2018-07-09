@@ -467,6 +467,36 @@ resizeEditFrameworkSection = function() {
     $(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
 }
 
+copyToClipboard = function(evt) {
+    var target = $(evt.currentTarget);
+    var text = target.parent().next().attr('href');
+    var textarea = document.createElement('textarea');
+    textarea.classList.add('clipboardTextArea');
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    try {
+        var successful = document.execCommand('copy');
+        var msg = successful ? 'successful' : 'unsuccessful';
+        console.log('Copying text command was ' + msg);
+        if (msg === 'successful') {
+            target.children().first().removeClass('fa-clipboard');
+            target.children().first().addClass('fa-check');
+            setTimeout(function() {
+                target.children().first().removeClass('fa-check');
+                target.children().first().addClass('fa-clipboard');
+            }, 2000);
+        }
+    } catch (err) {
+        console.log(err);
+        console.log('Oops, unable to copy');
+    }
+
+    document.body.removeChild(textarea);
+}
+
 resolveNameFromUrl = function(url, callback) {
     $.ajax({
         dataType: "json",

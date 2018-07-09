@@ -372,8 +372,9 @@ renderSidebar = function (justLists) {
                 if (val[i].toLowerCase().indexOf("http") != -1) {
                     var linkText = val[i];
                     var elem = $(this);
-                    elem.append("<a target='_blank'/>").children().last().attr("href", val[i]).text(linkText);
-                    var anchor = elem.children().last();
+                    elem.append("<div class='sidebarPropertyLink'><a target='_blank'/></div>").children().last().children().last().attr("href", val[i]).text(linkText);
+                    var anchor = elem.children().last().children().last();
+                    elem.children().last().prepend("<div><button title='Copy URL to the clipboard.' onclick='copyToClipboard(event);'><i class='fa fa-clipboard'></i></button></div>");
                     resolveNameFromUrlWithElem(val[i], anchor, function(result, elem) {
                         if (result != null) {
                             elem.text(result);
