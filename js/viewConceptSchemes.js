@@ -17,6 +17,7 @@ var frameworkLoading = 0;
 
 function conceptSchemeSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
     frameworkLoading++;
+    paramObj.sort = '[ { "dcterms:title.keyword": {"order" : "asc" , "unmapped_type" : "long",  "missing" : "_last"}} ]';
     var search = "";
     if (queryParams.filter != null)
         search = "(" + searchTerm + ") AND (" + queryParams.filter + ")";
