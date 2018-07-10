@@ -857,6 +857,10 @@ hr {
     white-space: pre;
 }
 
+#detailSlider a {
+    word-break: break-all;
+}
+
 #sidebarFeedback {
     color: red;
 }
