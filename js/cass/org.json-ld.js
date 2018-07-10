@@ -18,7 +18,7 @@ function(context, type) {
     this.setContextAndType(context, type);
 };
 EcLinkedData = stjs.extend(EcLinkedData, null, [], function(constructor, prototype) {
-    constructor.atProperties = ["id", "type", "schema", "context", "signature", "owner", "reader", "encryptedType"];
+    constructor.atProperties = ["id", "type", "schema", "context", "signature", "graph", "owner", "reader", "encryptedType"];
     /**
      *  JSON-LD @type field.
      * 
@@ -292,7 +292,10 @@ EcLinkedData = stjs.extend(EcLinkedData, null, [], function(constructor, prototy
         if (this.context != null && this.type != null) {
             if (!EcObject.isObject(this.context)) {
                 var context = (!this.context.endsWith("/") ? this.context + "/" : this.context);
-                a.push(context + this.type);
+                if (this.type.indexOf(context) == 0) 
+                    a.push(this.type);
+                 else 
+                    a.push(context + this.type);
             }
         }
         return a;
