@@ -244,25 +244,22 @@ saveCompetency = function (addAnother) {
         }
     }
 
-    $("#detailSlider").find("input:visible,textarea:visible").each(function () {
-        //Temporarily ignore publisher name to test new feature
-        if (!$(this).hasClass('sidebarPublisherNameInput') && !$(this).hasClass('sidebarConceptPublisherNameInput')) {
-            var val = getValueOrNull($(this).val());
-            if (val == null)
-                delete thing[$(this).attr(inputChoice)];
-            else {
-                if ($(this).attr("plural") != null) {
-                    thing[$(this).attr(inputChoice)] = val.split(/, ?/);
-                    if (thing[$(this).attr(inputChoice)].length == 1)
-                        thing[$(this).attr(inputChoice)] = thing[$(this).attr(inputChoice)][0];
-                    else if (thing[$(this).attr(inputChoice)].length == 0)
-                        delete thing[$(this).attr(inputChoice)];
-                } else
-                if ($(this).attr("type") == "datetime-local")
-                    thing[$(this).attr(inputChoice)] = new Date(val).toISOString();
-                else
-                    thing[$(this).attr(inputChoice)] = val;
-            }
+    $("#detailSlider").find("input:not([plural]):visible,textarea:not([plural]):visible").each(function () {
+        var val = getValueOrNull($(this).val());
+        if (val == null)
+            delete thing[$(this).attr(inputChoice)];
+        else {
+            if ($(this).attr("plural") != null) {
+                thing[$(this).attr(inputChoice)] = val.split(/, ?/);
+                if (thing[$(this).attr(inputChoice)].length == 1)
+                    thing[$(this).attr(inputChoice)] = thing[$(this).attr(inputChoice)][0];
+                else if (thing[$(this).attr(inputChoice)].length == 0)
+                    delete thing[$(this).attr(inputChoice)];
+            } else
+            if ($(this).attr("type") == "datetime-local")
+                thing[$(this).attr(inputChoice)] = new Date(val).toISOString();
+            else
+                thing[$(this).attr(inputChoice)] = val;
         }
     });
 

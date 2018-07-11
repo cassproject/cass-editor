@@ -494,7 +494,7 @@ renderSidebar = function (justLists) {
         }
     }
     if (justLists != true)
-        $("#detailSlider input:not([plural]),textarea").each(function () {
+        $("#detailSlider input:not([plural]),textarea:not([plural])").each(function () {
             if ($(this).attr(safeChoice) != null && ($(this).attr(labelChoice) == null || $(this).attr(labelChoice) === undefined)) {
                 $(this).prev().prev().hide();
                 $(this).prev().hide();
@@ -533,7 +533,7 @@ renderSidebar = function (justLists) {
 
             //Clear additional input fields if the property isn't present
             if (thing[baseField.attr(inputChoice)] == null) {
-                baseField.next().find('input').remove();
+                baseField.next().find('input,textarea').remove();
             }
 
             var val = EcArray.isArray(thing[baseField.attr(inputChoice)]) ? thing[baseField.attr(inputChoice)][0] : thing[baseField.attr(inputChoice)];
@@ -544,7 +544,7 @@ renderSidebar = function (justLists) {
 
             if (EcArray.isArray(thing[baseField.attr(inputChoice)])) {
                 //Create the input fields if needed and they aren't there yet
-                if (thing[baseField.attr(inputChoice)].length > 1 && $(this).find('input').length < 1) {
+                if (thing[baseField.attr(inputChoice)].length > 1 && ($(this).find('input,textarea').length < thing[baseField.attr(inputChoice)].length - 1)) {
                     for (var i = 1; i < thing[baseField.attr(inputChoice)].length; i++) {
                         var newInput = $(baseField[0].cloneNode(false));
                         var uuid = new UUID(4);
@@ -555,7 +555,7 @@ renderSidebar = function (justLists) {
                     }
                 }
 
-                $(this).find('input').each(function(i) {
+                $(this).find('input,textarea').each(function(i) {
                     
                     var val = thing[$(this).attr(inputChoice)][i+1];
                     if (val == null) {
