@@ -70,9 +70,11 @@ function select() {
                 }
             }
     });
+
     var message = {
         message: "selected",
-        selected: ary
+        selected: ary,
+        type: conceptMode ? 'Concept' : 'Competency'
     };
     if (queryParams.selectVerbose == "true")
         message.selectedFramework = framework;
@@ -563,6 +565,11 @@ renderSidebar = function (justLists) {
                     } else {
                         $(this).val(val);
                     }
+                });
+            } else {
+                //There is only one value, remove all additional input fields.
+                $(this).find('input,textarea').each(function(i) {
+                    $(this).remove();
                 });
             }
         });

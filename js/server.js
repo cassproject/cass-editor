@@ -160,7 +160,7 @@ function cappend(event) {
     if (event.data.message == "selected") {
         console.log("I got " + event.data.selected.length + " selected items from the iframe");
         console.log(event.data.selected);
-        if (JSON.stringify(event.data.selected).indexOf("Concept") != -1) {
+        if (event.data.type == 'Concept') {
             attachUrlProperties(event.data.selected);
             $("#selectConceptSection").hide();
             $("#editFrameworkSection").show();
