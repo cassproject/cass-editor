@@ -126,7 +126,8 @@ populateFramework = function (subsearch) {
     frameworkDescription = EcArray.isArray(frameworkDescription) ? frameworkDescription : [frameworkDescription];
     $("#editFrameworkSection #frameworkDescription").children().remove();
     for (var i in frameworkDescription) {
-        $("#editFrameworkSection #frameworkDescription").append($('<span>' + frameworkDescription[i] + '</span>'));
+        if (frameworkDescription[i] != null && frameworkDescription[i] != 'NULL' && frameworkDescription[i] != '')
+            $("#editFrameworkSection #frameworkDescription").append($('<span>' + frameworkDescription[i] + '</span>'));
     }
     try {
         if (framework.getTimestamp() == null || isNaN(framework.getTimestamp()))
