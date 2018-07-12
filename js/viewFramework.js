@@ -112,13 +112,22 @@ populateFramework = function (subsearch) {
     treeTop = $("#tree").scrollTop();
     $("#tree").hide().html("");
     me.fetches = 0;
-    $("#editFrameworkSection #frameworkName").text(framework.getName());
+    var frameworkName = framework.getName();
+    frameworkName = EcArray.isArray(frameworkName) ? frameworkName : [frameworkName];
+    $("#editFrameworkSection #frameworkAKA").children().remove();
+    $("#editFrameworkSection #frameworkName").text(frameworkName[0]);
+    for (var i = 1; i < frameworkName.length; i++) {
+        $("#editFrameworkSection #frameworkAKA").append($('<span>AKA: ' + frameworkName[i] + '</span>'));
+    }
     if (framework.competency != null)
         $("#editFrameworkSection #frameworkCount").text(framework.competency.length + " items");
-    if (framework.getDescription() == "" || framework.getDescription() == null)
-        $("#editFrameworkSection #frameworkDescription").hide();
-    else
-        $("#editFrameworkSection #frameworkDescription").show().text(framework.getDescription());
+
+    var frameworkDescription = framework.getDescription();
+    frameworkDescription = EcArray.isArray(frameworkDescription) ? frameworkDescription : [frameworkDescription];
+    $("#editFrameworkSection #frameworkDescription").children().remove();
+    for (var i in frameworkDescription) {
+        $("#editFrameworkSection #frameworkDescription").append($('<span>' + frameworkDescription[i] + '</span>'));
+    }
     try {
         if (framework.getTimestamp() == null || isNaN(framework.getTimestamp()))
             if (framework["schema:dateModified"] != null && framework["schema:dateModified"] !== undefined)
@@ -221,9 +230,18 @@ function refreshCompetency(col, level, subsearch) {
         draggable = 'false';
     treeNode = $("#tree").append("<li class = 'competency' draggable='" + draggable + "' ondragstart='dragCompetency(event);' ontouchstart='handleTouchStart(event)' ontouchmove='handleTouchMove(event);' ontouchend='handleTouchEnd(event);' ondrop='dropCompetency(event);' ondragover='allowCompetencyDrop(event);'><span></span><ul></ul></li>").children().last();
     treeNode.attr("id", col.shortId());
-    if (col.description != null && col.description != "NULL" && col.description != col.name)
-        treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").css('display', 'block').text(col.getDescription());
-    treeNode.children().first().prepend("<span/>").children().first().addClass("competencyName").text(col.getName());
+    var competencyDescription = col.description;
+    competencyDescription = EcArray.isArray(competencyDescription) ? competencyDescription : [competencyDescription];
+    for (var i = competencyDescription.length - 1; i >= 0; i--) {
+        if (competencyDescription[i] != null && competencyDescription[i] != "NULL" && competencyDescription[i] != col.name)
+            treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").css('display', 'block').text(competencyDescription[i]);
+    }
+    var competencyName = col.getName();
+    competencyName = EcArray.isArray(competencyName) ? competencyName : [competencyName];
+    treeNode.children().first().prepend("<span/>").children().first().addClass("competencyName").text(competencyName[0]);
+    for (var i = competencyName.length - 1; i > 0; i--) {
+        treeNode.children().first().find('.competencyName').after($('<span class="competencyAKA">AKA: ' + competencyName[i] + '</span>'));
+    }
     if (queryParams.ceasnDataFields == 'true' || queryParams.tlaProfile == 'true') {
         if (col["ceasn:codedNotation"] != null)
             treeNode.children().first().prepend("<span/>").children().first().addClass("competencyCodedNotation").text(col["ceasn:codedNotation"]);

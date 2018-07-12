@@ -79,18 +79,26 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
                     }, error);
                 });
                 var title = p.children().first();
-                title.text(fx.getName());
+                var frameworkName = fx.getName();
+                frameworkName = EcArray.isArray(frameworkName) ? frameworkName : [frameworkName];
+                title.text(frameworkName[0]);
                 title.addClass("frameworkName");
                 if (subsearchTerm != null)
                     p.prepend("<span style='float:right'>*Matches inside. <span>");
                 var desc = p.children().last();
-                desc.addClass("frameworkDescription");
-                var description = fx.getDescription();
-                desc.text(description);
+                var frameworkDescription = fx.getDescription();
+                frameworkDescription = EcArray.isArray(frameworkDescription) ? frameworkDescription : [frameworkDescription];
+                for (var i in frameworkDescription) {
+                    if (frameworkDescription[i] != null && frameworkDescription[i] != "")
+                        desc.append($('<span class="frameworkDescription">' + frameworkDescription[i] + '</span>'));
+                }
                 if (fx.competency != null)
-                    p.append("<span class='properties'>" + fx.competency.length + " items.</span>");
+                p.append("<span class='properties'>" + fx.competency.length + " items.</span>");
                 //Display additional data on frameworks in search results
                 if (queryParams.ceasnDataFields == 'true') {
+                    for (var i = 1; i < frameworkName.length; i++) {
+                        p.append("<span class='properties'>AKA: " + frameworkName[i] + "</span>");
+                    }
                     if (fx['ceasn:publisherName'] != null) {
                         var publisherName = EcArray.isArray(fx['ceasn:publisherName']) ? fx['ceasn:publisherName'] : [fx['ceasn:publisherName']];
                         for (var i in publisherName) {

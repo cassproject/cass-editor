@@ -882,7 +882,22 @@ hr {
     font-weight: bold;
 }
 
-#frameworkNameContainer #frameworkDescription {
+.competencyAKA {
+    display: inline-block;
+    background-color: rgba(84, 84, 84, 0.25);
+    border-radius: 4px;
+    border: 1px solid #CAD9DB;
+    font-size: .9rem;
+    margin-right: 0.25rem;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+}
+
+.competencyName {
+    margin-right: 0.25rem;
+}
+
+#frameworkNameContainer #frameworkDescription > span {
     padding-left: 2.5rem;
     padding-right: 1rem;
     font-size: smaller;
@@ -891,7 +906,8 @@ hr {
 
 #frameworkNameContainer #frameworkCount,
 #frameworkLastModified,
-#frameworkCreated {
+#frameworkCreated,
+#frameworkAKA > span {
     display: inline-block;
     background-color: rgba(84, 84, 84, 0.25);
     border-radius: 4px;
