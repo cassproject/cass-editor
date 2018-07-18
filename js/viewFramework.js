@@ -156,10 +156,8 @@ populateFramework = function (subsearch) {
         framework.level = [];
     var fun = function (success) {
         if (framework.competency.length == 0) {
-            if ($("#tree").html() == "") {
+            if ($("#tree").html() == "")
                 $("#tree").html("<br><br><center><h3>This framework is empty.</h3></center>");
-                $("#tree").show();
-            }
             showPage("#editFrameworkSection", framework);
         } else {
             me.fetches += framework.competency.length;
@@ -277,35 +275,16 @@ function refreshCompetency(col, level, subsearch) {
                         if (relation.relationType == "narrows") {
                             var source = EcCompetency.getBlocking(relation.source);
                             var target = EcCompetency.getBlocking(relation.target);
-                            if (source != null && target != null) {
+                            if (source != null && target != null)
                                 if ($(".competency[relationid=\"" + relation.shortId() + "\"]").length == 0) {
-                                    // if source & target competency exists...
-                                    if ($(".competency[id=\"" + target.shortId() + "\"]").length &&
-                                        $(".competency[id=\"" + source.shortId() + "\"]").length) {
-                                        $(".competency[id=\"" + target.shortId() + "\"]").children().last().append($(".competency[id=\"" + source.shortId() + "\"]").outerHTML()).children().last().attr("relationid", relation.shortId());
-                                        // if source & target both are at top of tree, remove source
-                                        if ($("#tree > .competency[id=\"" + target.shortId() + "\"]").length &&
-                                            $("#tree > .competency[id=\"" + source.shortId() + "\"]").length) {
-                                                $("#tree > .competency[id=\"" + source.shortId() + "\"]").remove();
-                                        }
-                                        if (!$(".competency[id=\"" + target.shortId() + "\"]").hasClass("expandable"))
-                                            $(".competency[id=\"" + target.shortId() + "\"]").addClass("expandable").children(".collapse").css("visibility", "visible");
-                                    } else {
-                                        if (!$(".competency[id=\"" + target.shortId() + "\"]").length)
-                                            console.error("Cannot set up relation "+ relation.shortId() + " target "+target.shortId()+ " not found!");
-                                        if (!$(".competency[id=\"" + source.shortId() + "\"]").length)
-                                            console.error("Cannot set up relation "+ relation.shortId() + " source "+source.shortId()+ " not found!");
-                                    }
-                                } else {
-                                    console.warn("Relation "+ relation.shortId() + " already exists in another competency.");
-                                }// end if relation not set up
-                            } else {
-                                if (!source)
-                                    console.error("Relation source is unavailable!");
-                                if (!target)
-                                    console.error("Relation target is unavailable!");
-                            }//end if source & target
-                        } // relation type is narrows
+                                    $(".competency[id=\"" + target.shortId() + "\"]").children().last().append($(".competency[id=\"" + source.shortId() + "\"]").outerHTML()).children().last().attr("relationid", relation.shortId());
+                                    if ($(".competency[id=\"" + target.shortId() + "\"]").length > 0)
+                                        $("#tree>.competency[id=\"" + source.shortId() + "\"]").remove();
+
+                                    if ($(".competency[id=\"" + source.shortId() + "\"]").length && !$(".competency[id=\"" + target.shortId() + "\"]").hasClass("expandable"))
+                                        $(".competency[id=\"" + target.shortId() + "\"]").addClass("expandable").children(".collapse").css("visibility", "visible");
+                                }
+                        }
                     }
                     if (me.fetches == 0) {
                         if ($("#tree").html() == "")
