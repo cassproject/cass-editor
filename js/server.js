@@ -160,11 +160,12 @@ function cappend(event) {
     if (event.data.message == "selected") {
         console.log("I got " + event.data.selected.length + " selected items from the iframe");
         console.log(event.data.selected);
-        if (event.data.type == 'Concept') {
+        /*if (event.data.type == 'Concept') {
             attachUrlProperties(event.data.selected);
             $("#selectConceptSection").hide();
             $("#editFrameworkSection").show();
-        } else if ($("#selectCompetencySection:visible").length > 0) {
+        } else */
+        if ($("#selectConceptSection:visible").length > 0 || $("#selectCompetencySection:visible").length > 0) {
             var targets = event.data.selected;
             var thing = selectedCompetency;
             for (var i = 0; i < targets.length; i++) {
@@ -178,7 +179,11 @@ function cappend(event) {
                 r.source = thing.shortId();
                 if (r.target == r.source)
                     return;
-                r.relationType = $("#selectCompetencySection").attr("relation");
+                if ($("#selectConceptSection:visible").length > 0) {
+                    r.relationType = $("#selectConceptSection").attr("relation");
+                } else {
+                    r.relationType = $("#selectCompetencySection").attr("relation");
+                }
                 if (r.relationType == "broadens") {
                     var dosedo = r.target;
                     r.target = r.source;
@@ -187,11 +192,28 @@ function cappend(event) {
                 }
                 if (EcIdentityManager.ids.length > 0)
                     r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-                framework.addRelation(r.id);
+                if (event.data.type == 'Concept') {
+                    if (framework.relation == null)
+                        framework.relation = new Array();
+                    var isNew = true;
+                    var idx = 0;
+                    while (isNew && idx < framework.relation.length) {
+                        if (EcRemoteLinkedData.trimVersionFromUrl(framework.relation[idx]).equals(r.id))
+                            isNew = false;
+                        idx++;
+                    }
+                    if (isNew)
+                        framework.relation.push(r.id);
+                } else {
+                    framework.addRelation(r.id);
+                }
                 repo.saveTo(r, function () {}, error);
             }
             repo.saveTo(framework, afterSaveRender, error);
-            $("#selectCompetencySection").hide();
+            if ($("#selectCompetencySection:visible").length > 0)
+                $("#selectCompetencySection").hide();
+            if ($("#selectConceptSection:visible").length > 0)
+                $("#selectConceptSection").hide();
             $("#editFrameworkSection").show();
         } else if (event.data.selected.length > 0) {
             showCopyOrLinkDialog(function (copy) {

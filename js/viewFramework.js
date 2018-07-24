@@ -492,47 +492,72 @@ renderSidebar = function (justLists) {
                 var li = $(".relationList[" + labelChoice + "=" + relationType + "]").append("<li/>").children().last();
                 if (displayCompetency == null)
                     li.text(a.target);
-                else
+                else if (conceptMode) {
+                    if (displayCompetency["skos:prefLabel"] != null)
+                        li.text(displayCompetency["skos:prefLabel"]);
+                    else
+                        li.text(displayCompetency.shortId());
+                } else {
                     li.text(displayCompetency.getName());
+                }
                 li.attr("id", a.shortId());
                 if (viewMode)
                     $(".relationList[" + labelChoice + "=" + relationType + "]").show().prev().show();
                 else {
                     var x = li.prepend("<button class='viewMode frameworkEditControl' tabindex='0' style='float:right; cursor:pointer;'><i class='fa fa-times'></i></button>").children().first();
                     x.click(function () {
-                        framework.removeRelation($(this).parent().attr("id"));
+                        if (conceptMode){
+                            var trimId = EcRemoteLinkedData.trimVersionFromUrl($(this).parent().attr("id"));
+                            for (var i = 0; i < framework.relation.length; i++)
+                                if (EcRemoteLinkedData.trimVersionFromUrl(framework.relation[i]).equals(trimId))
+                                    framework.relation.splice(i, 1);
+                        } else {
+                            framework.removeRelation($(this).parent().attr("id"));
+                        }
                         conditionalDelete($(this).parent().attr("id"));
                         repo.saveTo(framework, afterSaveRender, error);
                     });
                 }
             };
+            var target;
             if (a.source == selectedCompetency.shortId()) {
-                var target = EcCompetency.getBlocking(a.target);
-                if (target != null) {
-                    if (a.relationType == Relation.NARROWS && $('[id="' + target.shortId() + '"]').length && queryParams.ceasnDataFields == 'true')
-                        renderAlignment(target, "isChildOf");
-                    else
-                        renderAlignment(target, a.relationType);
-                }
+                if (conceptMode)
+                    target = EcConcept.getBlocking(a.target);
+                else
+                    target = EcCompetency.getBlocking(a.target);
             }
-            if (a.relationType == Relation.IS_EQUIVALENT_TO || a.relationType == Relation.IS_RELATED_TO || a.relationType == "majorRelated" || a.relationType == "minorRelated") {
-                if (a.target == selectedCompetency.shortId()) {
-                    var source = EcCompetency.getBlocking(a.source);
-                    if (source != null)
+            if (target != null) {
+                if (a.relationType == Relation.NARROWS &&
+                    $('[id="' + target.shortId() + '"]').length &&
+                    queryParams.ceasnDataFields == 'true')
+                    renderAlignment(target, "isChildOf");
+                else
+                    renderAlignment(target, a.relationType);
+            }//end if target
+            var source;
+            if (a.target == selectedCompetency.shortId()) {
+                if (conceptMode)
+                    source = EcConcept.getBlocking(a.source);
+                else
+                    source = EcCompetency.getBlocking(a.source);
+            }
+            if (source != null) {
+                if (conceptMode) {
+                    renderAlignment(source, a.relationType);
+                } else { // not concept but competency
+                    if (a.relationType == Relation.IS_EQUIVALENT_TO ||
+                        a.relationType == Relation.IS_RELATED_TO ||
+                        a.relationType == "majorRelated" ||
+                        a.relationType == "minorRelated")
                         renderAlignment(source, a.relationType);
-                }
-            }
-            if (a.relationType == Relation.NARROWS) {
-                if (a.target == selectedCompetency.shortId()) {
-                    var source = EcCompetency.getBlocking(a.source);
-                    if (source != null) {
-                        if ($('[id="' + source.shortId() + '"]').length && queryParams.ceasnDataFields == 'true')
+                    if (a.relationType == Relation.NARROWS)
+                        if ($('[id="' + source.shortId() + '"]').length &&
+                            queryParams.ceasnDataFields == 'true')
                             renderAlignment(source, "hasChild");
                         else
                             renderAlignment(source, "broadens");
-                    }
                 }
-            }
+            }//end if source
         }
     }
     if (justLists != true)
