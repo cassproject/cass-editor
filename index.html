@@ -16,6 +16,7 @@
         <div style="padding: 1rem;">
             <div>
                 <h2 id="title">
+                    <span onclick='backPage();' style="float:left;margin-right: 0.5rem;"><i class="fa fa-arrow-circle-left" > </i></span>
                     Import a framework
                 </h2>
                 <ul>
@@ -61,14 +62,6 @@
                 <input type="text" name="urlEndpoint" id="urlEndpoint" style="width:calc(100% - 2rem)" />
                 <br><small id="urlEndpointSuccess" style="display:none;" class="greenButton">Success text.</small> <small id="urlEndpointError" style="display:none;" class="redButton">Error text.</small>
             </center>
-        </div>
-        <hr style="position: relative; margin-left: 1rem; margin-right: 1rem;">
-        <div id="buttonSection" style="margin-left: 1rem;">
-            <div>
-                <div style="float:left;">
-                    <button id="cancelButton" onclick="backPage();">Cancel</button>
-                </div>
-            </div>
         </div>
     </div>
     <div id="csvImportSection" class="page absentForConcepts" style="display:none;margin-left: 1rem;">
