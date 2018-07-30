@@ -611,11 +611,12 @@ input.redButton {
 }
 
 .recordKeys {
+    font-size: 12px;
     background-color: rgba(128, 128, 128, 0.1);
     border-radius: 5px;
-    padding-left: 2rem;
-    padding-right: 2rem;
-    padding-bottom: 1rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    padding-bottom: 0.25rem;
 }
 
 .ceasnDataFields button:not(.addInputButton),

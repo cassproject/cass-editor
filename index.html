@@ -256,17 +256,17 @@
                 <table style="border:0px; margin-top: 3rem;" width="100%">
                     <tr style="vertical-align: top;min-width:50%;max-width:100%">
                         <td>
-                            <h2 class="editMode viewMode" style="margin-bottom:0px;">Keys</h2>
+                            <h2 onclick="toggleDiv('recordKeysChevron', 'recordKeys');" class="editMode viewMode" style="margin-bottom:0px;cursor: pointer;">Keys <i class="fa fa-chevron-down" id="recordKeysChevron" style="float:right;"></i></h2>
                             <hr class="editMode viewMode" style="margin-top:0px;">
-                            <div class="recordKeys">
+                            <div id="recordKeys" class="recordKeys sidebarAccordion exempt">
                                 <!-- URL -->
                                 <div>
                                     <label id="sidebarURLLabel" for="sidebarURL" title="" cassCompetency="Competency URL:" cassCompetencyTitle="The URL of the competency." cassFrameworkTitle="The URL of the framework." ceasnCompetencyTitle="The URL of the competency." ceasnFrameworkTitle="The URL of the framework." skosCompetencyTitle="The URL of the concept." skosFrameworkTitle="The URL of the concept scheme." cassFramework="Framework URL:" ceasnCompetency="Competency URL:" ceasnFramework="Framework URL:" skosCompetency="Concept URL:" skosFramework="Concept Scheme URL:" class="viewMode editMode">URL:</label>
-                                    <p class="viewMode editMode"><a target="_blank" href="#" id="sidebarURL" class="viewMode editMode">URL</a></p>
+                                    <p class="viewMode editMode"><div style="margin-top: 0;" class="sidebarPropertyLink"><div><button title='Copy URL to the clipboard.' onclick='copyToClipboard(event);'><i class='fa fa-clipboard'></i></button></div><a target="_blank" href="#" id="sidebarURL" class="viewMode editMode">URL</a></div></p>
                                 </div>
                                 <div>
                                     <label id="sidebarCTIDLabel" for="sidebarCTID" title="" cassCompetency="CTID:" cassCompetencyTitle="The CTID of the competency." cassFramework="CTID:" cassFrameworkTitle="The CTID of the framework." ceasnCompetency="CTID:" ceasnCompetencyTitle="The CTID of the competency." ceasnFramework="CTID:" ceasnFrameworkTitle="The CTID of the framework." skosCompetency="CTID:" skosCompetencyTitle="The CTID of the concept." skosFramework="CTID:" skosFrameworkTitle="The CTID of the concept scheme." class="viewMode editMode">CTID:</label>
-                                    <p id="sidebarCTID" style="word-break: break-all;" class="viewMode editMode">CTID</p>
+                                    <p style="word-break: break-all;" class="viewMode editMode"><div style="margin-top: 0;" class="sidebarPropertyLink"><div><button title='Copy URL to the clipboard.' onclick='copyToClipboard(event);'><i class='fa fa-clipboard'></i></button></div><a style="text-decoration: none;color: black;cursor: default;pointer-events: none;" target="_blank" href="#" id="sidebarCTID" class="viewMode editMode">CTID</a></div></p>
                                 </div>
                             </div>
                             <h2 class="editMode viewMode absentForConcepts ceasnCompetency" style="margin-bottom:0px;">General</h2>
@@ -699,7 +699,7 @@
                                 <ul id="sidebarCloseMatch" skosCompetency="closeMatch" class="viewMode editMode relationList competencyOnly absentForCompetencies"></ul>
                                 <!-- Exact Match -->
                                 <label for="sidebarExactMatch" title="" style="margin:0px;" skosCompetency="Exact Match:" skosCompetencyTitle="A concept in a different concept scheme that can be used interchangeably for this concept with a high degree of confidence." class="viewMode editMode competencyOnly absentForCompetencies">Exact Match:</label>
-                                <button id="sidebarExactMatchBrowse" skosCompetency="Exact Match" plural="true" class="viewMode editMode editControl frameworkEditControl competencyOnly absentForCompetencies" onclick="$('#selectConceptSection').attr('relation','ExactMatch');initIframe(true);showPage('#selectConceptSection', framework);"><i class="fa fa-search-plus"></i></button>
+                                <button id="sidebarExactMatchBrowse" skosCompetency="Exact Match" plural="true" class="viewMode editMode editControl frameworkEditControl competencyOnly absentForCompetencies" onclick="$('#selectConceptSection').attr('relation','exactMatch');initIframe(true);showPage('#selectConceptSection', framework);"><i class="fa fa-search-plus"></i></button>
                                 <ul id="sidebarExactMatch" skosCompetency="exactMatch" class="viewMode editMode relationList competencyOnly absentForCompetencies"></ul>
                                 <!-- Narrow Match -->
                                 <label for="sidebarNarrowMatch" title="" style="margin:0px;" skosCompetency="Narrow Match:" skosCompetencyTitle="A concept in a different concept scheme that is hierarchically narrower than this concept." class="viewMode editMode competencyOnly absentForCompetencies">Narrow Match:</label>

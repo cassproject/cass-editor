@@ -365,6 +365,7 @@ renderSidebar = function (justLists) {
     $('#sidebarURL').attr('href', thing.shortId());
     //Set the CTID field
     $('#sidebarCTID').text(thing.getGuid());
+    $('#sidebarCTID').attr('href', thing.getGuid());
 
     if (justLists != true)
         $("#detailSlider label").each(function () {
@@ -637,7 +638,7 @@ renderSidebar = function (justLists) {
 
     //Hide or show section headers in viewmode based on if they have any populated fields
     if ($('#detailSlider').hasClass('detailSliderView'))
-        $('.sidebarAccordion').each(function() {
+        $('.sidebarAccordion:not(.exempt)').each(function() {
             var counter = 0;
             $(this).children('p').each(function() {
                 if (!$(this).is(':empty')) {
