@@ -407,15 +407,18 @@ deleteCompetency = function () {
     if (conceptMode) return deleteConcept();
     if (viewMode) return;
     if (selectedCompetency == null) {
-        if (isFirstEdit)
+        if (isFirstEdit) {
+            spitEvent("FrameworkDeleted", framework.shortId());
             if (defaultPage == "#frameworksSection")
                 searchFrameworks(createParamObj(20));
             else
                 showPage(defaultPage);
+        }
         else
             showConfirmDialog(function (confirmed) {
                 if (confirmed === true) {
                     repo.deleteRegistered(framework, function (success) {
+                        spitEvent("FrameworkDeleted", framework.shortId());
                         if (defaultPage == "#frameworksSection")
                             searchFrameworks(createParamObj(20));
                         else
