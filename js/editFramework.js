@@ -408,7 +408,7 @@ deleteCompetency = function () {
     if (viewMode) return;
     if (selectedCompetency == null) {
         if (isFirstEdit) {
-            spitEvent("FrameworkDeleted", framework.shortId());
+            spitEvent("frameworkDeleted", framework.shortId());
             if (defaultPage == "#frameworksSection")
                 searchFrameworks(createParamObj(20));
             else
@@ -418,7 +418,7 @@ deleteCompetency = function () {
             showConfirmDialog(function (confirmed) {
                 if (confirmed === true) {
                     repo.deleteRegistered(framework, function (success) {
-                        spitEvent("FrameworkDeleted", framework.shortId());
+                        spitEvent("frameworkDeleted", framework.shortId());
                         if (defaultPage == "#frameworksSection")
                             searchFrameworks(createParamObj(20));
                         else
