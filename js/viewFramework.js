@@ -33,6 +33,10 @@ var ulLengths = {};
 //For touch drag
 var globalTouchDragDestination = null;
 var globalTouchDragData = null;
+//Async tracker
+var runningAsyncFunctions = {};
+//Alignment cache
+var alignmentCache = {};
 
 fetchFailure = function (failure) {
     this.fetches--;
@@ -472,8 +476,12 @@ renderSidebar = function (justLists) {
                 var li = $(".relationList[" + labelChoice + "=" + relationType + "]").append("<li/>").children().last();
                 if (displayCompetency == null)
                     li.text(a.target);
-                else
-                    li.text(displayCompetency.getName());
+                else {
+                    if (displayCompetency.getName)
+                        li.text(displayCompetency.getName());
+                    else
+                        li.text(displayCompetency);
+                }
                 li.attr("id", a.shortId());
                 if (viewMode)
                     $(".relationList[" + labelChoice + "=" + relationType + "]").show().prev().show();
@@ -487,30 +495,113 @@ renderSidebar = function (justLists) {
                 }
             };
             if (a.source == selectedCompetency.shortId()) {
-                var target = EcCompetency.getBlocking(a.target);
-                if (target != null) {
-                    if (a.relationType == Relation.NARROWS && $('[id="' + target.shortId() + '"]').length && queryParams.ceasnDataFields == 'true')
-                        renderAlignment(target, "isChildOf");
-                    else
-                        renderAlignment(target, a.relationType);
-                }
+                //Passing vars in closure so they are correct when the async function executes.
+                (function(a, renderAlignment) {
+                    //Use the cached version if we already have it to be faster.
+                    if (alignmentCache[framework.id] != null && alignmentCache[framework.id][a.id] != null && alignmentCache[framework.id][a.id].target != null) {
+                        if (a.relationType == Relation.NARROWS && alignmentCache[framework.id][a.id].target.shortId && framework.competency.indexOf(alignmentCache[framework.id][a.id].target.shortId()) > -1 && queryParams.ceasnDataFields == 'true')
+                            renderAlignment(alignmentCache[framework.id][a.id].target, "isChildOf");
+                        else
+                            renderAlignment(alignmentCache[framework.id][a.id].target, a.relationType);
+                    } else {
+                        if (runningAsyncFunctions[a.id] == null) {
+                            runningAsyncFunctions[a.id] = 1;
+                            EcCompetency.get(a.target, function(target) {
+                                if (target != null) {
+                                    if (a.relationType == Relation.NARROWS && framework.competency.indexOf(target.shortId()) > -1 && queryParams.ceasnDataFields == 'true')
+                                        renderAlignment(target, "isChildOf");
+                                    else
+                                        renderAlignment(target, a.relationType);
+                                }
+                                delete runningAsyncFunctions[a.id];
+                                if (alignmentCache[framework.id] == null)
+                                    alignmentCache[framework.id] = {};
+                                if (alignmentCache[framework.id][a.id] == null)
+                                    alignmentCache[framework.id][a.id] = {};
+                                alignmentCache[framework.id][a.id].target = target;
+                            }, function() {
+                                renderAlignment(a.target, a.relationType);
+                                delete runningAsyncFunctions[a.id];
+                                if (alignmentCache[framework.id] == null)
+                                    alignmentCache[framework.id] = {};
+                                if (alignmentCache[framework.id][a.id] == null)
+                                    alignmentCache[framework.id][a.id] = {};
+                                alignmentCache[framework.id][a.id].target = a.target;
+                            });
+                        }
+                    }
+                })(a, renderAlignment);
             }
             if (a.relationType == Relation.IS_EQUIVALENT_TO || a.relationType == Relation.IS_RELATED_TO || a.relationType == "majorRelated" || a.relationType == "minorRelated") {
                 if (a.target == selectedCompetency.shortId()) {
-                    var source = EcCompetency.getBlocking(a.source);
-                    if (source != null)
-                        renderAlignment(source, a.relationType);
+                    //Passing vars in closure so they are correct when the async function executes.
+                    (function(a, renderAlignment) {
+                        //Use the cached version if we already have it to be faster.
+                        if (alignmentCache[framework.id] != null && alignmentCache[framework.id][a.id] != null && alignmentCache[framework.id][a.id].source != null) {
+                            renderAlignment(alignmentCache[framework.id][a.id].source, a.relationType);
+                        } else {
+                            if (runningAsyncFunctions[a.id] == null) {
+                                runningAsyncFunctions[a.id] = 1;
+                                EcCompetency.get(a.source, function(source) {
+                                    if (source != null)
+                                        renderAlignment(source, a.relationType);
+                                    delete runningAsyncFunctions[a.id];
+                                    if (alignmentCache[framework.id] == null)
+                                        alignmentCache[framework.id] = {};
+                                    if (alignmentCache[framework.id][a.id] == null)
+                                        alignmentCache[framework.id][a.id] = {};
+                                    alignmentCache[framework.id][a.id].source = source;
+                                }, function() {
+                                    renderAlignment(a.source, a.relationType);
+                                    delete runningAsyncFunctions[a.id];
+                                    if (alignmentCache[framework.id] == null)
+                                        alignmentCache[framework.id] = {};
+                                    if (alignmentCache[framework.id][a.id] == null)
+                                        alignmentCache[framework.id][a.id] = {};
+                                    alignmentCache[framework.id][a.id].source = a.source;
+                                });
+                            }
+                        }
+                    })(a, renderAlignment);
                 }
             }
             if (a.relationType == Relation.NARROWS) {
                 if (a.target == selectedCompetency.shortId()) {
-                    var source = EcCompetency.getBlocking(a.source);
-                    if (source != null) {
-                        if ($('[id="' + source.shortId() + '"]').length && queryParams.ceasnDataFields == 'true')
-                            renderAlignment(source, "hasChild");
-                        else
-                            renderAlignment(source, "broadens");
-                    }
+                    //Passing vars in closure so they are correct when the async function executes.
+                    (function(a, renderAlignment) {
+                        //Use the cached version if we already have it to be faster.
+                        if (alignmentCache[framework.id] != null && alignmentCache[framework.id][a.id] != null && alignmentCache[framework.id][a.id].source != null) {
+                            if (alignmentCache[framework.id][a.id].source.shortId && framework.competency.indexOf(alignmentCache[framework.id][a.id].source.shortId()) > -1 && queryParams.ceasnDataFields == 'true')
+                                renderAlignment(alignmentCache[framework.id][a.id].source, "hasChild");
+                            else
+                                renderAlignment(alignmentCache[framework.id][a.id].source, "broadens");
+                        } else {
+                            if (runningAsyncFunctions[a.id] == null) {
+                                runningAsyncFunctions[a.id] = 1;
+                                EcCompetency.get(a.source, function(source) {
+                                    if (source != null)
+                                        if (framework.competency.indexOf(source.shortId()) > -1 && queryParams.ceasnDataFields == 'true')
+                                            renderAlignment(source, "hasChild");
+                                        else
+                                            renderAlignment(source, "broadens");
+                                    delete runningAsyncFunctions[a.id];
+                                    if (alignmentCache[framework.id] == null)
+                                        alignmentCache[framework.id] = {};
+                                    if (alignmentCache[framework.id][a.id] == null)
+                                        alignmentCache[framework.id][a.id] = {};
+                                    alignmentCache[framework.id][a.id].source = source;
+                                }, function() {
+                                    renderAlignment(a.source, "broadens");
+                                    delete runningAsyncFunctions[a.id];
+                                    if (alignmentCache[framework.id] == null)
+                                        alignmentCache[framework.id] = {};
+                                    if (alignmentCache[framework.id][a.id] == null)
+                                        alignmentCache[framework.id][a.id] = {};
+                                    alignmentCache[framework.id][a.id].source = a.source;
+                                });
+                            }
+                        }
+                    })(a, renderAlignment);
                 }
             }
         }
