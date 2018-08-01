@@ -472,7 +472,7 @@ renderSidebar = function (justLists) {
             var a = EcAlignment.getBlocking(framework.relation[i]);
             if (a == null)
                 continue;
-            var renderAlignment = function (displayCompetency, relationType) {
+            var renderAlignment = function (a, displayCompetency, relationType) {
                 var li = $(".relationList[" + labelChoice + "=" + relationType + "]").append("<li/>").children().last();
                 if (displayCompetency == null)
                     li.text(a.target);
@@ -498,35 +498,35 @@ renderSidebar = function (justLists) {
                 //Passing vars in closure so they are correct when the async function executes.
                 (function(a, renderAlignment) {
                     //Use the cached version if we already have it to be faster.
-                    if (alignmentCache[framework.id] != null && alignmentCache[framework.id][a.id] != null && alignmentCache[framework.id][a.id].target != null) {
-                        if (a.relationType == Relation.NARROWS && alignmentCache[framework.id][a.id].target.shortId && framework.competency.indexOf(alignmentCache[framework.id][a.id].target.shortId()) > -1 && queryParams.ceasnDataFields == 'true')
-                            renderAlignment(alignmentCache[framework.id][a.id].target, "isChildOf");
+                    if (alignmentCache[framework.shortId()] != null && alignmentCache[framework.shortId()][a.shortId()] != null && alignmentCache[framework.shortId()][a.shortId()].target != null) {
+                        if (a.relationType == Relation.NARROWS && alignmentCache[framework.shortId()][a.shortId()].target.shortId && framework.competency.indexOf(alignmentCache[framework.shortId()][a.shortId()].target.shortId()) > -1 && queryParams.ceasnDataFields == 'true')
+                            renderAlignment(a, alignmentCache[framework.shortId()][a.shortId()].target, "isChildOf");
                         else
-                            renderAlignment(alignmentCache[framework.id][a.id].target, a.relationType);
+                            renderAlignment(a, alignmentCache[framework.shortId()][a.shortId()].target, a.relationType);
                     } else {
-                        if (runningAsyncFunctions[a.id] == null) {
-                            runningAsyncFunctions[a.id] = 1;
+                        if (runningAsyncFunctions[a.shortId()] == null) {
+                            runningAsyncFunctions[a.shortId()] = 1;
                             EcCompetency.get(a.target, function(target) {
                                 if (target != null) {
                                     if (a.relationType == Relation.NARROWS && framework.competency.indexOf(target.shortId()) > -1 && queryParams.ceasnDataFields == 'true')
-                                        renderAlignment(target, "isChildOf");
+                                        renderAlignment(a, target, "isChildOf");
                                     else
-                                        renderAlignment(target, a.relationType);
+                                        renderAlignment(a, target, a.relationType);
                                 }
-                                delete runningAsyncFunctions[a.id];
-                                if (alignmentCache[framework.id] == null)
-                                    alignmentCache[framework.id] = {};
-                                if (alignmentCache[framework.id][a.id] == null)
-                                    alignmentCache[framework.id][a.id] = {};
-                                alignmentCache[framework.id][a.id].target = target;
+                                delete runningAsyncFunctions[a.shortId()];
+                                if (alignmentCache[framework.shortId()] == null)
+                                    alignmentCache[framework.shortId()] = {};
+                                if (alignmentCache[framework.shortId()][a.shortId()] == null)
+                                    alignmentCache[framework.shortId()][a.shortId()] = {};
+                                alignmentCache[framework.shortId()][a.shortId()].target = target;
                             }, function() {
-                                renderAlignment(a.target, a.relationType);
-                                delete runningAsyncFunctions[a.id];
-                                if (alignmentCache[framework.id] == null)
-                                    alignmentCache[framework.id] = {};
-                                if (alignmentCache[framework.id][a.id] == null)
-                                    alignmentCache[framework.id][a.id] = {};
-                                alignmentCache[framework.id][a.id].target = a.target;
+                                renderAlignment(a, a.target, a.relationType);
+                                delete runningAsyncFunctions[a.shortId()];
+                                if (alignmentCache[framework.shortId()] == null)
+                                    alignmentCache[framework.shortId()] = {};
+                                if (alignmentCache[framework.shortId()][a.shortId()] == null)
+                                    alignmentCache[framework.shortId()][a.shortId()] = {};
+                                alignmentCache[framework.shortId()][a.shortId()].target = a.target;
                             });
                         }
                     }
@@ -537,28 +537,28 @@ renderSidebar = function (justLists) {
                     //Passing vars in closure so they are correct when the async function executes.
                     (function(a, renderAlignment) {
                         //Use the cached version if we already have it to be faster.
-                        if (alignmentCache[framework.id] != null && alignmentCache[framework.id][a.id] != null && alignmentCache[framework.id][a.id].source != null) {
-                            renderAlignment(alignmentCache[framework.id][a.id].source, a.relationType);
+                        if (alignmentCache[framework.shortId()] != null && alignmentCache[framework.shortId()][a.shortId()] != null && alignmentCache[framework.shortId()][a.shortId()].source != null) {
+                            renderAlignment(a, alignmentCache[framework.shortId()][a.shortId()].source, a.relationType);
                         } else {
-                            if (runningAsyncFunctions[a.id] == null) {
-                                runningAsyncFunctions[a.id] = 1;
+                            if (runningAsyncFunctions[a.shortId()] == null) {
+                                runningAsyncFunctions[a.shortId()] = 1;
                                 EcCompetency.get(a.source, function(source) {
                                     if (source != null)
-                                        renderAlignment(source, a.relationType);
-                                    delete runningAsyncFunctions[a.id];
-                                    if (alignmentCache[framework.id] == null)
-                                        alignmentCache[framework.id] = {};
-                                    if (alignmentCache[framework.id][a.id] == null)
-                                        alignmentCache[framework.id][a.id] = {};
-                                    alignmentCache[framework.id][a.id].source = source;
+                                        renderAlignment(a, source, a.relationType);
+                                    delete runningAsyncFunctions[a.shortId()];
+                                    if (alignmentCache[framework.shortId()] == null)
+                                        alignmentCache[framework.shortId()] = {};
+                                    if (alignmentCache[framework.shortId()][a.shortId()] == null)
+                                        alignmentCache[framework.shortId()][a.shortId()] = {};
+                                    alignmentCache[framework.shortId()][a.shortId()].source = source;
                                 }, function() {
-                                    renderAlignment(a.source, a.relationType);
-                                    delete runningAsyncFunctions[a.id];
-                                    if (alignmentCache[framework.id] == null)
-                                        alignmentCache[framework.id] = {};
-                                    if (alignmentCache[framework.id][a.id] == null)
-                                        alignmentCache[framework.id][a.id] = {};
-                                    alignmentCache[framework.id][a.id].source = a.source;
+                                    renderAlignment(a, a.source, a.relationType);
+                                    delete runningAsyncFunctions[a.shortId()];
+                                    if (alignmentCache[framework.shortId()] == null)
+                                        alignmentCache[framework.shortId()] = {};
+                                    if (alignmentCache[framework.shortId()][a.shortId()] == null)
+                                        alignmentCache[framework.shortId()][a.shortId()] = {};
+                                    alignmentCache[framework.shortId()][a.shortId()].source = a.source;
                                 });
                             }
                         }
@@ -570,34 +570,34 @@ renderSidebar = function (justLists) {
                     //Passing vars in closure so they are correct when the async function executes.
                     (function(a, renderAlignment) {
                         //Use the cached version if we already have it to be faster.
-                        if (alignmentCache[framework.id] != null && alignmentCache[framework.id][a.id] != null && alignmentCache[framework.id][a.id].source != null) {
-                            if (alignmentCache[framework.id][a.id].source.shortId && framework.competency.indexOf(alignmentCache[framework.id][a.id].source.shortId()) > -1 && queryParams.ceasnDataFields == 'true')
-                                renderAlignment(alignmentCache[framework.id][a.id].source, "hasChild");
+                        if (alignmentCache[framework.shortId()] != null && alignmentCache[framework.shortId()][a.shortId()] != null && alignmentCache[framework.shortId()][a.shortId()].source != null) {
+                            if (alignmentCache[framework.shortId()][a.shortId()].source.shortId && framework.competency.indexOf(alignmentCache[framework.shortId()][a.shortId()].source.shortId()) > -1 && queryParams.ceasnDataFields == 'true')
+                                renderAlignment(a, alignmentCache[framework.shortId()][a.shortId()].source, "hasChild");
                             else
-                                renderAlignment(alignmentCache[framework.id][a.id].source, "broadens");
+                                renderAlignment(a, alignmentCache[framework.shortId()][a.shortId()].source, "broadens");
                         } else {
-                            if (runningAsyncFunctions[a.id] == null) {
-                                runningAsyncFunctions[a.id] = 1;
+                            if (runningAsyncFunctions[a.shortId()] == null) {
+                                runningAsyncFunctions[a.shortId()] = 1;
                                 EcCompetency.get(a.source, function(source) {
                                     if (source != null)
                                         if (framework.competency.indexOf(source.shortId()) > -1 && queryParams.ceasnDataFields == 'true')
-                                            renderAlignment(source, "hasChild");
+                                            renderAlignment(a, source, "hasChild");
                                         else
-                                            renderAlignment(source, "broadens");
-                                    delete runningAsyncFunctions[a.id];
-                                    if (alignmentCache[framework.id] == null)
-                                        alignmentCache[framework.id] = {};
-                                    if (alignmentCache[framework.id][a.id] == null)
-                                        alignmentCache[framework.id][a.id] = {};
-                                    alignmentCache[framework.id][a.id].source = source;
+                                            renderAlignment(a, source, "broadens");
+                                    delete runningAsyncFunctions[a.shortId()];
+                                    if (alignmentCache[framework.shortId()] == null)
+                                        alignmentCache[framework.shortId()] = {};
+                                    if (alignmentCache[framework.shortId()][a.shortId()] == null)
+                                        alignmentCache[framework.shortId()][a.shortId()] = {};
+                                    alignmentCache[framework.shortId()][a.shortId()].source = source;
                                 }, function() {
-                                    renderAlignment(a.source, "broadens");
-                                    delete runningAsyncFunctions[a.id];
-                                    if (alignmentCache[framework.id] == null)
-                                        alignmentCache[framework.id] = {};
-                                    if (alignmentCache[framework.id][a.id] == null)
-                                        alignmentCache[framework.id][a.id] = {};
-                                    alignmentCache[framework.id][a.id].source = a.source;
+                                    renderAlignment(a, a.source, "broadens");
+                                    delete runningAsyncFunctions[a.shortId()];
+                                    if (alignmentCache[framework.shortId()] == null)
+                                        alignmentCache[framework.shortId()] = {};
+                                    if (alignmentCache[framework.shortId()][a.shortId()] == null)
+                                        alignmentCache[framework.shortId()][a.shortId()] = {};
+                                    alignmentCache[framework.shortId()][a.shortId()].source = a.source;
                                 });
                             }
                         }
@@ -699,6 +699,7 @@ renderSidebar = function (justLists) {
                 $(this).css("display", "");
             }
             var val = thing[$(this).attr(inputChoice)];
+            $(this).attr('data-choice', inputChoice);
             if (val === undefined || val == null || val == "") {
                 if ($(this).parents("#alignmentPanel").length == 0) // Not a button to add an item to a list
                     $(this).prev("label").removeClass("viewMode");
@@ -868,6 +869,7 @@ editSidebar = function () {
         return editConceptSidebar();
     $("#detailSlider").addClass("detailSliderEdit").removeClass("detailSliderView");
     $("#editFrameworkSection label").css("display", "");
+    $('.orangeUri').removeClass('active');
 
     changedFields = {};
     ulLengths = {};
@@ -1015,6 +1017,19 @@ $('.sidebarEditSection').on('input', function (evt) {
     addChangedFieldHighlight();
     //Detect bad characters
     if (!validateString($('#' + evt.target.id).val()))
+        setInvalidInput(evt.target.id);
+    else
+        setValidInput(evt.target.id);
+});
+
+//Detect alignment input field changes
+$('#alignmentPanel').on('input', function(evt) {
+    var inputField = $(evt.target);
+    if (inputField.is(':invalid'))
+        inputField.next('span').addClass('active');
+    else
+        inputField.next('span').removeClass('active');
+    if (!validateString(inputField.val()))
         setInvalidInput(evt.target.id);
     else
         setValidInput(evt.target.id);
@@ -1570,6 +1585,31 @@ setLanguageTagAutocomplete = function() {
             });
         }
     });
+}
+
+handleAlignmentInput = function(event) {
+    var button = $(event.currentTarget);
+    if (button.attr('data-mode') == 'Add') {
+        button.next().next('input').val('');
+        button.next().next('input').removeClass('hidden');
+        button.attr('data-mode', 'Save');
+        button.children().first().removeClass('fa-plus').addClass('fa-check');
+        button.addClass('nudge');
+        button.attr('title', 'Save this relation.');
+        button.next().next('input').focus();
+    } else if (button.attr('data-mode') == 'Save') {
+        if (!isEmpty(button.next().next('input').val()) && !button.next().next('input').is(':invalid')) {
+            addAlignments([button.next().next('input').val()], selectedCompetency, button.attr(button.attr('data-choice')));
+        } else if (!isEmpty(button.next().next('input').val()))
+            alert('Alignments must be a URI.');
+        if (!button.next().next('input').is(':invalid')) {
+            button.next().next('input').addClass('hidden');
+            button.attr('data-mode', 'Add');
+            button.children().first().removeClass('fa-check').addClass('fa-plus');
+            button.attr('title', 'Add a relation with a URI.');
+            button.removeClass('nudge');
+        }
+    }
 }
 
 $.ajax({

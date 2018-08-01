@@ -72,6 +72,33 @@ addCompetency = function () {
     }
 }
 
+addAlignments = function(targets, thing, relationType) {
+    for (var i = 0; i < targets.length; i++) {
+        var r = new EcAlignment();
+        if (newObjectEndpoint != null)
+            r.generateShortId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
+        else
+            r.generateId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
+        r["schema:dateCreated"] = new Date().toISOString();
+        r.target = EcRemoteLinkedData.trimVersionFromUrl(targets[i]);
+        r.source = thing.shortId();
+        if (r.target == r.source)
+            return;
+        r.relationType = relationType ? relationType : $("#selectCompetencySection").attr("relation");
+        if (r.relationType == "broadens") {
+            var dosedo = r.target;
+            r.target = r.source;
+            r.source = dosedo;
+            r.relationType = "narrows";
+        }
+        if (EcIdentityManager.ids.length > 0)
+            r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+        framework.addRelation(r.id);
+        repo.saveTo(r, function () {}, error);
+    }
+    repo.saveTo(framework, afterSaveRender, error);
+}
+
 attachUrlProperties = function (results) {
     if (viewMode) return;
     var resource = framework;

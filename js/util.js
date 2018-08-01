@@ -467,6 +467,10 @@ resizeEditFrameworkSection = function() {
     $(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
 }
 
+isEmpty = function(str) {
+    return !str.replace(/^\s+/g, '').length;
+}
+
 copyToClipboard = function(evt) {
     var target = $(evt.currentTarget);
     var text = target.parent().next().attr('href');

@@ -106,6 +106,18 @@
     display: none;
 }
 
+.alignmentAddButton {
+    margin-left: 1rem !important;
+}
+
+.alignmentAddButton.nudge {
+    margin-left: 0.7rem !important;
+}
+
+.alignmentInput.hidden {
+    display: none !important;
+}
+
 #tree {
     margin: 0px;
     padding-top: 0rem;
