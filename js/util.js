@@ -471,6 +471,23 @@ isEmpty = function(str) {
     return !str.replace(/^\s+/g, '').length;
 }
 
+saveToAutocompleteCache = function(key, value) {
+    if (sidebarAutocompleteCache != null) {
+        if (sidebarAutocompleteCache[key] == null)
+            sidebarAutocompleteCache[key] = new Set();
+        sidebarAutocompleteCache[key].add(value);
+    }
+}
+
+attachCustomAutocomplete = function(elem) {
+    if (sidebarAutocompleteCache != null && sidebarAutocompleteCache[elem.getAttribute('id')] != null) {
+        var array = Array.from(sidebarAutocompleteCache[elem.getAttribute('id')]);
+        $(elem).autocomplete({
+            source: array
+        });
+    }
+}
+
 copyToClipboard = function(evt) {
     var target = $(evt.currentTarget);
     var text = target.parent().next().attr('href');

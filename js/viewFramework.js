@@ -37,6 +37,8 @@ var globalTouchDragData = null;
 var runningAsyncFunctions = {};
 //Alignment cache
 var alignmentCache = {};
+//Sidebar Input autocomplete cache
+var sidebarAutocompleteCache = {};
 
 fetchFailure = function (failure) {
     this.fetches--;
@@ -956,6 +958,9 @@ editSidebar = function () {
     } else {
         $('#sidebarNameInput').autocomplete = null;
     }
+    $('input[data-autocompleteCache="true"]').each(function() {
+        attachCustomAutocomplete(this);
+    });
     $(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
 }
 
