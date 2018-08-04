@@ -1164,6 +1164,10 @@ $('body').on('dblclick', '#frameworkNameContainer', function (evt) {
     editSidebar();
 });
 
+$('#sidebarDateCopyrightedInput').on('input', function() {
+    validateYearOnly(this);
+});
+
 $('html').keydown(function (evt) {
     //Focus the correct frame to capture keydown events
     if ($(window.parent.document.getElementById('selectConceptSection')).css('display') === 'none' && $(window.parent.document.getElementById('selectCompetencySection')).css('display') === 'none' && $(window.parent.document.getElementById('findCompetencySection')).css('display') === 'none') {
@@ -1412,6 +1416,13 @@ validateString = function (str) {
             return false;
     }
     return true;
+}
+
+validateYearOnly = function (elem) {
+    if ($(elem).val().length === 4 && $(elem).val().match(/^[0-9]+$/) != null)
+        elem.setCustomValidity("");
+    else
+        elem.setCustomValidity("Year only YYYY");
 }
 
 setInvalidInput = function (id) {
