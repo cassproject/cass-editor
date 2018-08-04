@@ -264,7 +264,7 @@ function refreshCompetency(col, level, subsearch) {
             $(".competency[id=\"" + col.competency + "\"]").addClass("expandable").children(".collapse").css("visibility", "visible");
     }
     if (queryParams.link == "true")
-        treeNode.prepend(" <a class='link' title='Right click to copy link address.' style='float:right;' target='_blank'><i class='fa fa-link' aria-hidden='true'></a>").children().first().attr("href", col.shortId());
+        treeNode.prepend(" <a class='link' title='Click to navigate to link address. Right click to copy link address.' style='float:right;' target='_blank'><i class='fa fa-link' aria-hidden='true'></a>").children().first().attr("href", col.shortId());
     if (queryParams.select != null)
         treeNode.prepend("<input type='checkbox' tabIndex='-1'>");
     if (subsearch != null)
