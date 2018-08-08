@@ -196,6 +196,10 @@ function cappend(event) {
                 scrollTop: elem.offset().top
             }, 1000);
         }
+    } else if (event.data.message == "highlightedCompetencies") {
+        if (!event.data.competencies)
+            return;
+        highlightCompetencies(event.data.competencies);
     } else if (event.data.message == "select") {
         if ($('#editFrameworkSection').is(':visible') && queryParams.select != null) {
             select();

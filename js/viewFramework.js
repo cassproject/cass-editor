@@ -211,6 +211,7 @@ function afterRefresh(level, subsearch) {
         }).detach().appendTo($(this));
     };
     $("#tree").each(sort).find("ul").each(sort);
+    highlightCompetencies();
     collapseCompetencies();
     resizeEditFrameworkSection();
 }
@@ -1601,6 +1602,20 @@ setLanguageTagAutocomplete = function() {
             });
         }
     });
+}
+
+highlightCompetencies = function(competencies) {
+    var idArray;
+    if (competencies)
+        idArray = competencies
+    else if (queryParams.highlightCompetencies != null)
+        idArray = queryParams.highlightedCompetencies
+    if (idArray != null) {
+        $('.highlightedCompetency').removeClass('highlightedCompetency');
+        for (id in idArray) {
+            $('[id="' + idArray[id] + '"]').addClass('highlightedCompetency');
+        }
+    }
 }
 
 handleAlignmentInput = function(event) {

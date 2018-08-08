@@ -938,3 +938,7 @@ hr {
 .forceShow {
     display: block !important;
 }
+
+.highlightedCompetency > span > .competencyName {
+    background-color: yellow;
+}
