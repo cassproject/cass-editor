@@ -1425,7 +1425,7 @@ validateString = function (str) {
 }
 
 validateYearOnly = function (elem) {
-    if ($(elem).val().length === 4 && $(elem).val().match(/^[0-9]+$/) != null)
+    if ($(elem).val().length === 0 || ($(elem).val().length === 4 && $(elem).val().match(/^[0-9]+$/) != null))
         elem.setCustomValidity("");
     else
         elem.setCustomValidity("Year only YYYY");
