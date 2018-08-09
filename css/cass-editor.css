@@ -729,6 +729,7 @@ input.redButton {
 .sidebarInner {
     position: relative;
     overflow: auto;
+    width: inherit;
     height:calc(100vh - 1rem);
 }
 
@@ -878,7 +879,8 @@ hr {
     white-space: pre;
 }
 
-#detailSlider a {
+#detailSlider a,
+#detailSlider li {
     word-break: break-all;
 }
 
