@@ -386,13 +386,13 @@
                                             </div>
                                         </div>
                                         <!-- List ID -->
-                                        <label id="sidebarListIdInputLabel" for="sidebarListId" title="" cassCompetency="List ID:" cassCompetencyTitle="An alphanumeric string indicating this competency's position in a list of competencies at the same level in some arbitrary hierarchy." ceasnCompetency="List ID:" ceasnCompetencyTitle="An alphanumeric string indicating this competency's position in a list of competencies at the same level in some arbitrary hierarchy." class="viewMode editMode" style="margin:0px;">List ID:</label>
-                                        <p id="sidebarListId" class="viewMode sidebarViewList" style="font-weight:bold;"></p>
-                                        <input id="sidebarListIdInput" cassCompetency="ceasn:listID" ceasnCompetency="ceasn:listID" data-group="sidebarListIdInput" class="editMode editControl sidebarListIdInput" />
+                                        <label id="sidebarListIdInputLabel" for="sidebarListId" title="" cassCompetency="List ID:" cassCompetencyTitle="An alphanumeric string indicating this competency's position in a list of competencies at the same level in some arbitrary hierarchy." ceasnCompetency="List ID:" ceasnCompetencyTitle="An alphanumeric string indicating this competency's position in a list of competencies at the same level in some arbitrary hierarchy." class="viewMode editMode absentForConcepts" style="margin:0px;">List ID:</label>
+                                        <p id="sidebarListId" class="viewMode sidebarViewList absentForConcepts" style="font-weight:bold;"></p>
+                                        <input id="sidebarListIdInput" cassCompetency="ceasn:listID" ceasnCompetency="ceasn:listID" data-group="sidebarListIdInput" class="editMode editControl absentForConcepts sidebarListIdInput" />
                                         <!-- Competency Context Section -->
                                         <h2 class="editMode absentForConcepts" style="margin-bottom:0px;cursor:pointer;" onclick="toggleDiv('competencyContextChevron', 'competencyContext');">Context <i class="fa fa-chevron-up" id="competencyContextChevron" style="float:right;"></i></h2>
                                         <hr class="editMode viewMode absentForConcepts" style="margin-top:0px;">
-                                        <div class="sidebarAccordion" id="competencyContext">
+                                        <div class="sidebarAccordion absentForConcepts" id="competencyContext">
                                             <!-- Alternative Coded Notation -->
                                             <label id="sidebarAlternativeCodedNotationInputLabel" for="sidebarAlternativeCodedNotation" title="" cassCompetency="Coded Notation:" cassCompetencyTitle="An alphanumeric notation or ID code identifying this competency in common use among end-users." ceasnCompetency="Coded Notation:" ceasnCompetencyTitle="An alphanumeric notation or ID code identifying this competency in common use among end-users." class="viewMode editMode" style="margin:0px;">Coded Notation:</label>
                                             <p id="sidebarAlternativeCodedNotation" class="viewMode sidebarViewList" style="font-weight:bold;"></p>
@@ -416,7 +416,7 @@
                                         <!-- Competency Tagging Section -->
                                         <h2 class="editMode absentForConcepts" style="margin-bottom:0px;cursor:pointer;" onclick="toggleDiv('competencyTaggingChevron', 'competencyTagging');">Tagging <i class="fa fa-chevron-up" id="competencyTaggingChevron" style="float:right;"></i></h2>
                                         <hr class="editMode viewMode absentForConcepts" style="margin-top:0px;">
-                                        <div class="sidebarAccordion" id="competencyTagging">
+                                        <div class="sidebarAccordion absentForConcepts" id="competencyTagging">
                                             <!-- Concept Keyword -->
                                             <label id="sidebarConceptKeywordInputLabel" for="sidebarConceptKeyword" title="" cassCompetency="Keywords:" cassCompetencyTitle="A word or phrase used by the promulgating agency to refine and differentiate individual competencies contextually. One concept per line." ceasnCompetency="Concept Keyword:" ceasnCompetencyTitle="A word or phrase used by the promulgating agency to refine and differentiate individual competencies contextually. One concept per line." skosCompetency="Concept Keyword:" skosCompetencyTitle="A word or phrase used by the promulgating agency to refine and differentiate individual concepts contextually. One concept per line." class="viewMode editMode" style="margin:0px;">Concept Keyword:</label>
                                             <p id="sidebarConceptKeyword" class="viewMode sidebarViewList" style="font-weight:bold;"></p>
@@ -438,7 +438,7 @@
                                         <!-- Competency Scales Section -->
                                         <h2 class="editMode absentForConcepts" style="margin-bottom:0px;cursor:pointer;" onclick="toggleDiv('competencyScalesChevron', 'competencyScales');">Scales <i class="fa fa-chevron-up" id="competencyScalesChevron" style="float:right;"></i></h2>
                                         <hr class="editMode viewMode absentForConcepts" style="margin-top:0px;">
-                                        <div class="sidebarAccordion" id="competencyScales">
+                                        <div class="sidebarAccordion absentForConcepts" id="competencyScales">
                                             <!-- Complexity Level -->
                                             <label for="sidebarComplexityLevel" title="" cassCompetency="Complexity Level:" cassCompetencyTitle="The expected performance level of a learner or professional as defined by a competency." ceasnCompetency="Complexity Level:" ceasnCompetencyTitle="The expected performance level of a learner or professional as defined by a competency." class="viewMode editMode" style="margin:0px;">Complexity Level:</label>
                                             <button id="sidebarComplexityLevelBrowse" cassCompetency="ceasn:complexityLevel" ceasnCompetency="ceasn:complexityLevel" plural="true" class="editMode editControl" onclick="$('#selectConceptSection').attr('destination','ceasn:complexityLevel');initIframe();showPage('#selectConceptSection', framework);"><i class="fa fa-search-plus"></i></button>
@@ -510,7 +510,7 @@
                                         <!-- Framework Connections Section -->
                                         <h2 class="editMode absentForConcepts" style="margin-bottom:0px;cursor:pointer;" onclick="toggleDiv('frameworkConnectionsChevron', 'frameworkConnections');">Connections <i class="fa fa-chevron-up" id="frameworkConnectionsChevron" style="float:right;"></i></h2>
                                         <hr class="editMode viewMode absentForConcepts" style="margin-top:0px;">
-                                        <div class="sidebarAccordion" id="frameworkConnections">
+                                        <div class="sidebarAccordion absentForConcepts" id="frameworkConnections">
                                             <!-- Derived From -->
                                             <label id="sidebarFrameworkDerivedFromInputLabel" for="sidebarDerivedFrom" title="" cassFramework="Derived From:" cassFrameworkTitle="A third party version of the entity being referenced that has been modified in meaning through editing, extension, or refinement. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. One entity per line." ceasnFramework="Derived From:" ceasnFrameworkTitle="A third party version of the entity being referenced that has been modified in meaning through editing, extension, or refinement. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. One entity per line." class="viewMode editMode" style="margin:0px;">Derived From:</label>
                                             <p id="sidebarFrameworkDerivedFrom" class="viewMode sidebarViewList" style="font-weight:bold;"></p>
