@@ -49,6 +49,7 @@ select {
     color: black;
     font-weight: 200;
     font-size: 1.5rem;
+    padding-right: 3rem;
 }
 
 #header input:hover,
@@ -88,10 +89,9 @@ select {
 
 #resetSearchButton {
     position: relative;
-    right: 3rem;
+    margin-left: -3rem;
     border: none;
     font-size: 2rem;
-    top: 0.3rem;
     padding-bottom: 0.5rem;
 }
 
