@@ -389,6 +389,10 @@
                                                 <button title="Add another value." id="addInLanguageInput" data-target="sidebarInLanguageInput" data-autocomplete-field="true" class="editMode editControl addInputButton absentForConcepts"><i class="fa fa-plus"></i></button>
                                             </div>
                                         </div>
+                                        <!-- List ID -->
+                                        <label id="sidebarListIdInputLabel" for="sidebarListId" title="" cassCompetency="List ID:" cassCompetencyTitle="An alphanumeric string indicating this competency's position in a list of competencies at the same level in some arbitrary hierarchy." ceasnCompetency="List ID:" ceasnCompetencyTitle="An alphanumeric string indicating this competency's position in a list of competencies at the same level in some arbitrary hierarchy." class="viewMode editMode" style="margin:0px;">List ID:</label>
+                                        <p id="sidebarListId" class="viewMode sidebarViewList" style="font-weight:bold;"></p>
+                                        <input id="sidebarListIdInput" cassCompetency="ceasn:listID" ceasnCompetency="ceasn:listID" data-group="sidebarListIdInput" class="editMode editControl sidebarListIdInput" />
                                         <!-- Competency Context Section -->
                                         <h2 class="editMode absentForConcepts" style="margin-bottom:0px;cursor:pointer;" onclick="toggleDiv('competencyContextChevron', 'competencyContext');">Context <i class="fa fa-chevron-up" id="competencyContextChevron" style="float:right;"></i></h2>
                                         <hr class="editMode absentForConcepts" style="margin-top:0px;">
@@ -412,10 +416,6 @@
                                                 </div>
                                             </div>
                                             <span id="sidebarIdentifierInputSpan" class="orangeUri">Note: URI only. For example, https://sandbox.credentialengineregistry.org/.</span>
-                                            <!-- List ID -->
-                                            <label id="sidebarListIdInputLabel" for="sidebarListId" title="" cassCompetency="List ID:" cassCompetencyTitle="An alphanumeric string indicating this competency's position in a list of competencies at the same level in some arbitrary hierarchy." ceasnCompetency="List ID:" ceasnCompetencyTitle="An alphanumeric string indicating this competency's position in a list of competencies at the same level in some arbitrary hierarchy." class="viewMode editMode" style="margin:0px;">List ID:</label>
-                                            <p id="sidebarListId" class="viewMode sidebarViewList" style="font-weight:bold;"></p>
-                                            <input id="sidebarListIdInput" cassCompetency="ceasn:listID" ceasnCompetency="ceasn:listID" data-group="sidebarListIdInput" class="editMode editControl sidebarListIdInput" />
                                         </div>
                                         <!-- Competency Tagging Section -->
                                         <h2 class="editMode absentForConcepts" style="margin-bottom:0px;cursor:pointer;" onclick="toggleDiv('competencyTaggingChevron', 'competencyTagging');">Tagging <i class="fa fa-chevron-up" id="competencyTaggingChevron" style="float:right;"></i></h2>
