@@ -275,6 +275,7 @@ function refreshCompetency(col, level, subsearch) {
     if (me.fetches == 0) {
         if (framework.relation != undefined && framework.relation.length > 0) {
             me.fetches += framework.relation.length;
+            var targetSourceArray = {};
             for (var i = 0; i < framework.relation.length; i++) {
                 EcAlignment.get(framework.relation[i], function (relation) {
                     me.fetches--;
@@ -285,9 +286,19 @@ function refreshCompetency(col, level, subsearch) {
                             if (source != null && target != null)
                                 if ($(".competency[relationid=\"" + relation.shortId() + "\"]").length == 0) {
                                     $(".competency[id=\"" + target.shortId() + "\"]").children().last().append($(".competency[id=\"" + source.shortId() + "\"]").outerHTML()).children().last().attr("relationid", relation.shortId());
-                                    if ($(".competency[id=\"" + target.shortId() + "\"]").length > 0)
-                                        $("#tree>.competency[id=\"" + source.shortId() + "\"]").remove();
-
+                                    if ($(".competency[id=\"" + target.shortId() + "\"]").length > 0 &&
+                                        $("#tree>.competency[id=\"" + source.shortId() + "\"]").length > 0) {
+                                            let isRemoveSource = true;
+                                            if(targetSourceArray[target.shortId()] && source.shortId() === targetSourceArray[target.shortId()]){
+                                                console.log("Removing "+source.name+ " will be reverse of previous removal.");
+                                                isRemoveSource = false;
+                                            }
+                                            if (isRemoveSource){
+                                                targetSourceArray[source.shortId()] = target.shortId();
+                                                //console.log("Target '" + target.name + "' exists, remove source '" + source.name + "'");
+                                                $("#tree>.competency[id=\"" + source.shortId() + "\"]").remove();
+                                            }
+                                    }
                                     if ($(".competency[id=\"" + source.shortId() + "\"]").length && !$(".competency[id=\"" + target.shortId() + "\"]").hasClass("expandable"))
                                         $(".competency[id=\"" + target.shortId() + "\"]").addClass("expandable").children(".collapse").css("visibility", "visible");
                                 }
