@@ -289,12 +289,12 @@ function refreshCompetency(col, level, subsearch) {
                                     if ($(".competency[id=\"" + target.shortId() + "\"]").length > 0 &&
                                         $("#tree>.competency[id=\"" + source.shortId() + "\"]").length > 0) {
                                             let isRemoveSource = true;
-                                            if(targetSourceArray[target.shortId()] && source.shortId() === targetSourceArray[target.shortId()]){
+                                            if(targetSourceArray[source.shortId()] && target.shortId() === targetSourceArray[source.shortId()]){
                                                 console.log("Removing "+source.name+ " will be reverse of previous removal.");
                                                 isRemoveSource = false;
                                             }
                                             if (isRemoveSource){
-                                                targetSourceArray[source.shortId()] = target.shortId();
+                                                targetSourceArray[target.shortId()] = source.shortId();
                                                 //console.log("Target '" + target.name + "' exists, remove source '" + source.name + "'");
                                                 $("#tree>.competency[id=\"" + source.shortId() + "\"]").remove();
                                             }
@@ -490,7 +490,12 @@ renderSidebar = function (justLists) {
                 var li = $(".relationList[" + labelChoice + "=" + relationType + "]").append("<li/>").children().last();
                 if (displayCompetency == null)
                     li.text(a.target);
-                else {
+                else if (conceptMode) {
+                    if (displayCompetency["skos:prefLabel"] != null)
+                        li.text(displayCompetency["skos:prefLabel"]);
+                    else
+                        li.text(displayCompetency.shortId());
+                } else {
                     if (displayCompetency.getName)
                         li.text(displayCompetency.getName());
                     else
@@ -502,7 +507,14 @@ renderSidebar = function (justLists) {
                 else {
                     var x = li.prepend("<button class='viewMode frameworkEditControl' tabindex='0' style='float:right; cursor:pointer;'><i class='fa fa-times'></i></button>").children().first();
                     x.click(function () {
-                        framework.removeRelation($(this).parent().attr("id"));
+                        if (conceptMode){
+                            let trimId = EcRemoteLinkedData.trimVersionFromUrl($(this).parent().attr("id"));
+                            for (let i = 0; i < framework.relation.length; i++)
+                                if (EcRemoteLinkedData.trimVersionFromUrl(framework.relation[i]).equals(trimId))
+                                    framework.relation.splice(i, 1);
+                        } else {
+                            framework.removeRelation($(this).parent().attr("id"));
+                        }
                         conditionalDelete($(this).parent().attr("id"));
                         repo.saveTo(framework, afterSaveRender, error);
                     });
@@ -520,28 +532,53 @@ renderSidebar = function (justLists) {
                     } else {
                         if (runningAsyncFunctions[a.shortId()] == null) {
                             runningAsyncFunctions[a.shortId()] = 1;
-                            EcCompetency.get(a.target, function(target) {
-                                if (target != null) {
-                                    if (a.relationType == Relation.NARROWS && framework.competency.indexOf(target.shortId()) > -1 && queryParams.ceasnDataFields == 'true')
-                                        renderAlignment(a, target, "isChildOf");
-                                    else
-                                        renderAlignment(a, target, a.relationType);
-                                }
-                                delete runningAsyncFunctions[a.shortId()];
-                                if (alignmentCache[framework.shortId()] == null)
-                                    alignmentCache[framework.shortId()] = {};
-                                if (alignmentCache[framework.shortId()][a.shortId()] == null)
-                                    alignmentCache[framework.shortId()][a.shortId()] = {};
-                                alignmentCache[framework.shortId()][a.shortId()].target = target;
-                            }, function() {
-                                renderAlignment(a, a.target, a.relationType);
-                                delete runningAsyncFunctions[a.shortId()];
-                                if (alignmentCache[framework.shortId()] == null)
-                                    alignmentCache[framework.shortId()] = {};
-                                if (alignmentCache[framework.shortId()][a.shortId()] == null)
-                                    alignmentCache[framework.shortId()][a.shortId()] = {};
-                                alignmentCache[framework.shortId()][a.shortId()].target = a.target;
-                            });
+                            if (conceptMode){
+                                EcConcept.get(a.target, function (target) {
+                                    if (target != null) {
+                                        if (a.relationType == Relation.NARROWS && framework.competency.indexOf(target.shortId()) > -1 && queryParams.ceasnDataFields == 'true')
+                                            renderAlignment(a, target, "isChildOf");
+                                        else
+                                            renderAlignment(a, target, a.relationType);
+                                    }
+                                    delete runningAsyncFunctions[a.shortId()];
+                                    if (alignmentCache[framework.shortId()] == null)
+                                        alignmentCache[framework.shortId()] = {};
+                                    if (alignmentCache[framework.shortId()][a.shortId()] == null)
+                                        alignmentCache[framework.shortId()][a.shortId()] = {};
+                                    alignmentCache[framework.shortId()][a.shortId()].target = target;
+                                }, function () {
+                                    renderAlignment(a, a.target, a.relationType);
+                                    delete runningAsyncFunctions[a.shortId()];
+                                    if (alignmentCache[framework.shortId()] == null)
+                                        alignmentCache[framework.shortId()] = {};
+                                    if (alignmentCache[framework.shortId()][a.shortId()] == null)
+                                        alignmentCache[framework.shortId()][a.shortId()] = {};
+                                    alignmentCache[framework.shortId()][a.shortId()].target = a.target;
+                                }); //EcConcept.get
+                            } else {
+                                EcCompetency.get(a.target, function (target) {
+                                    if (target != null) {
+                                        if (a.relationType == Relation.NARROWS && framework.competency.indexOf(target.shortId()) > -1 && queryParams.ceasnDataFields == 'true')
+                                            renderAlignment(a, target, "isChildOf");
+                                        else
+                                            renderAlignment(a, target, a.relationType);
+                                    }
+                                    delete runningAsyncFunctions[a.shortId()];
+                                    if (alignmentCache[framework.shortId()] == null)
+                                        alignmentCache[framework.shortId()] = {};
+                                    if (alignmentCache[framework.shortId()][a.shortId()] == null)
+                                        alignmentCache[framework.shortId()][a.shortId()] = {};
+                                    alignmentCache[framework.shortId()][a.shortId()].target = target;
+                                }, function () {
+                                    renderAlignment(a, a.target, a.relationType);
+                                    delete runningAsyncFunctions[a.shortId()];
+                                    if (alignmentCache[framework.shortId()] == null)
+                                        alignmentCache[framework.shortId()] = {};
+                                    if (alignmentCache[framework.shortId()][a.shortId()] == null)
+                                        alignmentCache[framework.shortId()][a.shortId()] = {};
+                                    alignmentCache[framework.shortId()][a.shortId()].target = a.target;
+                                }); //EcCompetency.get
+                            }
                         }
                     }
                 })(a, renderAlignment);
@@ -556,29 +593,50 @@ renderSidebar = function (justLists) {
                         } else {
                             if (runningAsyncFunctions[a.shortId()] == null) {
                                 runningAsyncFunctions[a.shortId()] = 1;
-                                EcCompetency.get(a.source, function(source) {
-                                    if (source != null)
-                                        renderAlignment(a, source, a.relationType);
-                                    delete runningAsyncFunctions[a.shortId()];
-                                    if (alignmentCache[framework.shortId()] == null)
-                                        alignmentCache[framework.shortId()] = {};
-                                    if (alignmentCache[framework.shortId()][a.shortId()] == null)
-                                        alignmentCache[framework.shortId()][a.shortId()] = {};
-                                    alignmentCache[framework.shortId()][a.shortId()].source = source;
-                                }, function() {
-                                    renderAlignment(a, a.source, a.relationType);
-                                    delete runningAsyncFunctions[a.shortId()];
-                                    if (alignmentCache[framework.shortId()] == null)
-                                        alignmentCache[framework.shortId()] = {};
-                                    if (alignmentCache[framework.shortId()][a.shortId()] == null)
-                                        alignmentCache[framework.shortId()][a.shortId()] = {};
-                                    alignmentCache[framework.shortId()][a.shortId()].source = a.source;
-                                });
+                                if (conceptMode) {
+                                    EcConcept.get(a.source, function(source) {
+                                        if (source != null)
+                                            renderAlignment(a, source, a.relationType);
+                                        delete runningAsyncFunctions[a.shortId()];
+                                        if (alignmentCache[framework.shortId()] == null)
+                                            alignmentCache[framework.shortId()] = {};
+                                        if (alignmentCache[framework.shortId()][a.shortId()] == null)
+                                            alignmentCache[framework.shortId()][a.shortId()] = {};
+                                        alignmentCache[framework.shortId()][a.shortId()].source = source;
+                                    }, function() {
+                                        renderAlignment(a, a.source, a.relationType);
+                                        delete runningAsyncFunctions[a.shortId()];
+                                        if (alignmentCache[framework.shortId()] == null)
+                                            alignmentCache[framework.shortId()] = {};
+                                        if (alignmentCache[framework.shortId()][a.shortId()] == null)
+                                            alignmentCache[framework.shortId()][a.shortId()] = {};
+                                        alignmentCache[framework.shortId()][a.shortId()].source = a.source;
+                                    });
+                                } else {
+                                    EcCompetency.get(a.source, function(source) {
+                                        if (source != null)
+                                            renderAlignment(a, source, a.relationType);
+                                        delete runningAsyncFunctions[a.shortId()];
+                                        if (alignmentCache[framework.shortId()] == null)
+                                            alignmentCache[framework.shortId()] = {};
+                                        if (alignmentCache[framework.shortId()][a.shortId()] == null)
+                                            alignmentCache[framework.shortId()][a.shortId()] = {};
+                                        alignmentCache[framework.shortId()][a.shortId()].source = source;
+                                    }, function() {
+                                        renderAlignment(a, a.source, a.relationType);
+                                        delete runningAsyncFunctions[a.shortId()];
+                                        if (alignmentCache[framework.shortId()] == null)
+                                            alignmentCache[framework.shortId()] = {};
+                                        if (alignmentCache[framework.shortId()][a.shortId()] == null)
+                                            alignmentCache[framework.shortId()][a.shortId()] = {};
+                                        alignmentCache[framework.shortId()][a.shortId()].source = a.source;
+                                    });
+                                }//end if conceptMode
                             }
                         }
                     })(a, renderAlignment);
                 }
-            }
+            }//end if EQUIVALENT or RELATED TO
             if (a.relationType == Relation.NARROWS) {
                 if (a.target == selectedCompetency.shortId()) {
                     //Passing vars in closure so they are correct when the async function executes.
@@ -592,27 +650,51 @@ renderSidebar = function (justLists) {
                         } else {
                             if (runningAsyncFunctions[a.shortId()] == null) {
                                 runningAsyncFunctions[a.shortId()] = 1;
-                                EcCompetency.get(a.source, function(source) {
-                                    if (source != null)
-                                        if (framework.competency.indexOf(source.shortId()) > -1 && queryParams.ceasnDataFields == 'true')
-                                            renderAlignment(a, source, "hasChild");
-                                        else
-                                            renderAlignment(a, source, "broadens");
-                                    delete runningAsyncFunctions[a.shortId()];
-                                    if (alignmentCache[framework.shortId()] == null)
-                                        alignmentCache[framework.shortId()] = {};
-                                    if (alignmentCache[framework.shortId()][a.shortId()] == null)
-                                        alignmentCache[framework.shortId()][a.shortId()] = {};
-                                    alignmentCache[framework.shortId()][a.shortId()].source = source;
-                                }, function() {
-                                    renderAlignment(a, a.source, "broadens");
-                                    delete runningAsyncFunctions[a.shortId()];
-                                    if (alignmentCache[framework.shortId()] == null)
-                                        alignmentCache[framework.shortId()] = {};
-                                    if (alignmentCache[framework.shortId()][a.shortId()] == null)
-                                        alignmentCache[framework.shortId()][a.shortId()] = {};
-                                    alignmentCache[framework.shortId()][a.shortId()].source = a.source;
-                                });
+                                if (conceptMode) {
+                                    EcConcept.get(a.source, function(source) {
+                                        if (source != null)
+                                            if (framework.competency.indexOf(source.shortId()) > -1)
+                                                renderAlignment(a, source, "hasChild");
+                                            else
+                                                renderAlignment(a, source, "broadens");
+                                        delete runningAsyncFunctions[a.shortId()];
+                                        if (alignmentCache[framework.shortId()] == null)
+                                            alignmentCache[framework.shortId()] = {};
+                                        if (alignmentCache[framework.shortId()][a.shortId()] == null)
+                                            alignmentCache[framework.shortId()][a.shortId()] = {};
+                                        alignmentCache[framework.shortId()][a.shortId()].source = source;
+                                    }, function() {
+                                        renderAlignment(a, a.source, "broadens");
+                                        delete runningAsyncFunctions[a.shortId()];
+                                        if (alignmentCache[framework.shortId()] == null)
+                                            alignmentCache[framework.shortId()] = {};
+                                        if (alignmentCache[framework.shortId()][a.shortId()] == null)
+                                            alignmentCache[framework.shortId()][a.shortId()] = {};
+                                        alignmentCache[framework.shortId()][a.shortId()].source = a.source;
+                                    });
+                                } else {
+                                    EcCompetency.get(a.source, function(source) {
+                                        if (source != null)
+                                            if (framework.competency.indexOf(source.shortId()) > -1 && queryParams.ceasnDataFields == 'true')
+                                                renderAlignment(a, source, "hasChild");
+                                            else
+                                                renderAlignment(a, source, "broadens");
+                                        delete runningAsyncFunctions[a.shortId()];
+                                        if (alignmentCache[framework.shortId()] == null)
+                                            alignmentCache[framework.shortId()] = {};
+                                        if (alignmentCache[framework.shortId()][a.shortId()] == null)
+                                            alignmentCache[framework.shortId()][a.shortId()] = {};
+                                        alignmentCache[framework.shortId()][a.shortId()].source = source;
+                                    }, function() {
+                                        renderAlignment(a, a.source, "broadens");
+                                        delete runningAsyncFunctions[a.shortId()];
+                                        if (alignmentCache[framework.shortId()] == null)
+                                            alignmentCache[framework.shortId()] = {};
+                                        if (alignmentCache[framework.shortId()][a.shortId()] == null)
+                                            alignmentCache[framework.shortId()][a.shortId()] = {};
+                                        alignmentCache[framework.shortId()][a.shortId()].source = a.source;
+                                    });
+                                }//end if conceptMode
                             }
                         }
                     })(a, renderAlignment);

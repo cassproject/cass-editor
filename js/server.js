@@ -161,7 +161,7 @@ function cappend(event) {
         console.log("I got " + event.data.selected.length + " selected items from the iframe");
         console.log(event.data.selected);
         if (event.data.type == 'Concept') {
-            attachUrlProperties(event.data.selected);
+            addAlignments(event.data.selected, selectedCompetency, $("#selectConceptSection").attr("relation"));
             $("#selectConceptSection").hide();
             $("#editFrameworkSection").show();
         } else if ($("#selectCompetencySection:visible").length > 0) {

@@ -93,7 +93,21 @@ addAlignments = function(targets, thing, relationType) {
         }
         if (EcIdentityManager.ids.length > 0)
             r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-        framework.addRelation(r.id);
+        if (thing.type == 'Concept') {
+            if (framework.relation == null)
+                framework.relation = new Array();
+            let isNew = true;
+            let idx = 0;
+            while (isNew && idx < framework.relation.length) {
+                if (EcRemoteLinkedData.trimVersionFromUrl(framework.relation[idx]).equals(r.id))
+                    isNew = false;
+                idx++;
+            }
+            if (isNew)
+                framework.relation.push(r.id);
+        } else {
+            framework.addRelation(r.id);
+        }
         repo.saveTo(r, function () {}, error);
     }
     repo.saveTo(framework, afterSaveRender, error);
