@@ -13,15 +13,27 @@ $(document).ready(function () {
     loadIdentity(function () {
         if (queryParams.frameworkId != null) {
             defaultPage = "#editFrameworkSection";
-            loading("Loading framework...");
+
             if (queryParams.back != "true")
                 $("#editFrameworkBack").hide();
-            EcFramework.get(queryParams.frameworkId, function (f) {
-                framework = f;
-                populateFramework();
-                selectedCompetency = null;
-                refreshSidebar();
-            }, error);
+            if (queryParams.frameworkId.toLowerCase().indexOf("conceptscheme") != -1){
+                loading("Loading concept scheme...");
+                conceptMode = true;
+                EcConceptScheme.get(queryParams.frameworkId, function (f) {
+                    framework = f;
+                    populateFramework(); // populateConceptScheme if conceptMode
+                    selectedCompetency = null;
+                    refreshSidebar();
+                }, error);
+            } else {
+                loading("Loading framework...");
+                EcFramework.get(queryParams.frameworkId, function (f) {
+                    framework = f;
+                    populateFramework();
+                    selectedCompetency = null;
+                    refreshSidebar();
+                }, error);
+            }
         } else if (queryParams.action == "add") {
             defaultPage = "#frameworksSection";
             createFramework();
