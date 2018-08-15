@@ -494,7 +494,7 @@ renderSidebar = function (justLists) {
                     if (displayCompetency["skos:prefLabel"] != null)
                         li.text(displayCompetency["skos:prefLabel"]);
                     else
-                        li.text(displayCompetency.shortId());
+                        li.text(displayCompetency);
                 } else {
                     if (displayCompetency.getName)
                         li.text(displayCompetency.getName());
