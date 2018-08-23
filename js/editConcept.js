@@ -5,6 +5,7 @@ addConcept = function () {
         initIframe();
         showPage("#findCompetencySection", framework);
     } else if (addOrSearch == "new") {
+        isFirstEdit = true;
         previousSelectedCompetency = selectedCompetency;
         var c = new EcConcept();
         if (newObjectEndpoint != null)
