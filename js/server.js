@@ -160,8 +160,12 @@ function cappend(event) {
     if (event.data.message == "selected") {
         console.log("I got " + event.data.selected.length + " selected items from the iframe");
         console.log(event.data.selected);
-        if (event.data.type == 'Concept') {
+        if (conceptMode && event.data.type == 'Concept') {
             addAlignments(event.data.selected, selectedCompetency, $("#selectConceptSection").attr("relation"));
+            $("#selectConceptSection").hide();
+            $("#editFrameworkSection").show();
+        } else if (event.data.type == 'Concept') {
+            attachUrlProperties(event.data.selected);
             $("#selectConceptSection").hide();
             $("#editFrameworkSection").show();
         } else if ($("#selectCompetencySection:visible").length > 0) {
