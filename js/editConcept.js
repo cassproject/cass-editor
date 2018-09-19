@@ -143,13 +143,13 @@ deleteConcept = function (c) {
 
 deleteConceptInner = function (c) {
     if (c["skos:broader"] != null)
-        for (var i = 0; i < c["skos:broader"]; i++)
+        for (var i = 0; i < c["skos:broader"].length; i++)
             EcConcept.get(c["skos:broader"][i], function (concept) {
                 EcArray.setRemove(concept["skos:narrower"], c.shortId());
                 repo.saveTo(concept, afterSave, console.error);
             }, console.error);
     if (c["skos:narrower"] != null)
-        for (var i = 0; i < c["skos:narrower"]; i++)
+        for (var i = 0; i < c["skos:narrower"].length; i++)
             EcConcept.get(c["skos:narrower"][i], function (concept) {
                 deleteConceptInner(concept);
             }, console.error);
