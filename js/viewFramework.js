@@ -643,7 +643,7 @@ renderSidebar = function (justLists) {
                     (function(a, renderAlignment) {
                         //Use the cached version if we already have it to be faster.
                         if (alignmentCache[framework.shortId()] != null && alignmentCache[framework.shortId()][a.shortId()] != null && alignmentCache[framework.shortId()][a.shortId()].source != null) {
-                            if (alignmentCache[framework.shortId()][a.shortId()].source.shortId && framework.competency.indexOf(alignmentCache[framework.shortId()][a.shortId()].source.shortId()) > -1 && queryParams.ceasnDataFields == 'true')
+                            if (alignmentCache[framework.shortId()][a.shortId()].source.shortId && framework.competency.indexOf(alignmentCache[framework.shortId()][a.shortId()].source.shortId()) > -1 && queryParams.ceasnDataFields == 'true' && !conceptMode)
                                 renderAlignment(a, alignmentCache[framework.shortId()][a.shortId()].source, "hasChild");
                             else
                                 renderAlignment(a, alignmentCache[framework.shortId()][a.shortId()].source, "broadens");
@@ -870,7 +870,7 @@ refreshSidebar = function () {
         $('.export').show();
     }
 
-    if (queryParams.ceasnDataFields == 'true' || queryParams.tlaProfile == 'true') {
+    if (!conceptMode && queryParams.ceasnDataFields == 'true' || queryParams.tlaProfile == 'true') {
         $("#detailSlider").addClass("detailSliderCeasn");
         $('.ceasnDataFields').show();
     } else {
