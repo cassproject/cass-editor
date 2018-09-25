@@ -16,8 +16,7 @@
         <div style="padding: 1rem;">
             <div>
                 <h2 id="title">
-                    <span onclick='backPage();' style="float:left;margin-right: 0.5rem;"><i class="fa fa-arrow-circle-left" > </i></span>
-                    Import a framework
+                    <span onclick='backPage();' style="float:left;margin-right: 0.5rem;"><i class="fa fa-arrow-circle-left" > </i></span> Import a framework
                 </h2>
                 <ul>
                     <li>Importing a framework creates a copy of the framework you provided. For all intents and purposes, you will own the new framework.</li>
@@ -64,11 +63,24 @@
             </center>
         </div>
     </div>
+    <div id="ctdlasncsvImportSection" class="page absentForConcepts" style="display:none;margin-left: 1rem;">
+        <h3 id="csvImportHeader">Import CTDL-ASN CSV</h3>
+        <i>This will import a CTDL-ASN formatted CSV.</i>
+        <hr>
+        <div id="buttonSection">
+            <div>
+                <div style="float:left;">
+                    <button id="importButton" onclick="importCtdlAsnCsv();">Import</button>
+                    <button id="cancelButton" onclick="backPage();">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div id="csvImportSection" class="page absentForConcepts" style="display:none;margin-left: 1rem;">
         <h3 id="csvImportHeader">Import CSV</h3>
         <i>This will import a CSV. (with headers as the first row, please!)</i>
         <hr>
-        <div style="width: calc(100% - 2rem); position: relative; padding-left: 1rem;
+        <div id="importCsvTable" style="width: calc(100% - 2rem); position: relative; padding-left: 1rem;
         padding-right: 1rem; display: table; border-collapse: separate;margin:0rem;border-spacing: 0px 10px;">
             <div class="trow">
                 <label style="display: table-cell; width: 25%;">Step 1: Name the framework.</label>
@@ -255,11 +267,17 @@
                                 <!-- URL -->
                                 <div>
                                     <label id="sidebarURLLabel" for="sidebarURL" title="" cassCompetency="Competency URL:" cassCompetencyTitle="The URL of the competency." cassFrameworkTitle="The URL of the framework." ceasnCompetencyTitle="The URL of the competency." ceasnFrameworkTitle="The URL of the framework." skosCompetencyTitle="The URL of the concept." skosFrameworkTitle="The URL of the concept scheme." cassFramework="Framework URL:" ceasnCompetency="Competency URL:" ceasnFramework="Framework URL:" skosCompetency="Concept URL:" skosFramework="Concept Scheme URL:" class="viewMode editMode">URL:</label>
-                                    <p class="viewMode editMode"><div style="margin-top: 0;" class="sidebarPropertyLink"><div><button title='Copy URL to the clipboard.' onclick='copyToClipboard(event);'><i class='fa fa-clipboard'></i></button></div><a target="_blank" href="#" id="sidebarURL" class="viewMode editMode">URL</a></div></p>
+                                    <p class="viewMode editMode">
+                                        <div style="margin-top: 0;" class="sidebarPropertyLink">
+                                            <div><button title='Copy URL to the clipboard.' onclick='copyToClipboard(event);'><i class='fa fa-clipboard'></i></button></div><a target="_blank" href="#" id="sidebarURL" class="viewMode editMode">URL</a></div>
+                                    </p>
                                 </div>
                                 <div>
                                     <label id="sidebarCTIDLabel" for="sidebarCTID" title="" cassCompetency="CTID:" cassCompetencyTitle="The CTID of the competency." cassFramework="CTID:" cassFrameworkTitle="The CTID of the framework." ceasnCompetency="CTID:" ceasnCompetencyTitle="The CTID of the competency." ceasnFramework="CTID:" ceasnFrameworkTitle="The CTID of the framework." skosCompetency="CTID:" skosCompetencyTitle="The CTID of the concept." skosFramework="CTID:" skosFrameworkTitle="The CTID of the concept scheme." class="viewMode editMode">CTID:</label>
-                                    <p style="word-break: break-all;" class="viewMode editMode"><div style="margin-top: 0;" class="sidebarPropertyLink"><div><button title='Copy URL to the clipboard.' onclick='copyToClipboard(event);'><i class='fa fa-clipboard'></i></button></div><a style="text-decoration: none;color: black;cursor: default;pointer-events: none;" target="_blank" href="#" id="sidebarCTID" class="viewMode editMode">CTID</a></div></p>
+                                    <p style="word-break: break-all;" class="viewMode editMode">
+                                        <div style="margin-top: 0;" class="sidebarPropertyLink">
+                                            <div><button title='Copy URL to the clipboard.' onclick='copyToClipboard(event);'><i class='fa fa-clipboard'></i></button></div><a style="text-decoration: none;color: black;cursor: default;pointer-events: none;" target="_blank" href="#" id="sidebarCTID" class="viewMode editMode">CTID</a></div>
+                                    </p>
                                 </div>
                             </div>
                             <h2 class="editMode viewMode" style="margin-bottom:0px;">General</h2>

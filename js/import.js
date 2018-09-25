@@ -17,32 +17,39 @@ function importFile() {
     $("#csvImportHeader").text("Import " + file.name);
     $("#importCsvFrameworkName").val(file.name.replace(".csv", ""));
     if (file.name.endsWith(".csv")) {
-        CSVImport.analyzeFile(file, function (data) {
-            $("#importCsvColumnName").html("<option>N/A</option>");
-            $("#importCsvColumnDescription").html("<option>N/A</option>");
-            $("#importCsvColumnScope").html("<option>N/A</option>");
-            $("#importCsvColumnId").html("<option>N/A</option>");
-            for (var i = 0; i < data[0].length; i++) {
-                $("#importCsvColumnName").append("<option/>").children().last().text(data[0][i]).attr("index", i);
-                if (data[0][i].toLowerCase().indexOf("name") != -1)
-                    $("#importCsvColumnName").children().last().prop("selected", true);
-                $("#importCsvColumnDescription").append("<option/>").children().last().text(data[0][i]).attr("index", i);
-                if (data[0][i].toLowerCase().indexOf("description") != -1)
-                    $("#importCsvColumnDescription").children().last().prop("selected", true);
-                $("#importCsvColumnScope").append("<option/>").children().last().text(data[0][i]).attr("index", i);
-                if (data[0][i].toLowerCase().indexOf("scope") != -1)
-                    $("#importCsvColumnScope").children().last().prop("selected", true);
-                $("#importCsvColumnId").append("<option/>").children().last().text(data[0][i]).attr("index", i);
-                if (data[0][i].toLowerCase().indexOf("id") != -1)
-                    $("#importCsvColumnId").children().last().prop("selected", true);
-            }
-            $("#csvImportSection #importButton").text("Import " + (maxCsvCompetencies = (data.length - 1)) + " items.");
-            showPage("#csvImportSection");
-        }, function (error) {
-            {
-                alert(error);
-                showPage("#importSection");
-            }
+        CTDLASNCSVImport.analyzeFile(file, function (frameworkCount, competencyCount) {
+            $("#ctdlasncsvImportSection #importButton").text("Import " + frameworkCount + " frameworks and " + competencyCount + " competencies.");
+            showPage("#ctdlasncsvImportSection");
+
+        }, function (errorMsg) {
+            CSVImport.analyzeFile(file, function (data) {
+                $("#importCsvColumnName").html("<option>N/A</option>");
+                $("#importCsvColumnDescription").html("<option>N/A</option>");
+                $("#importCsvColumnScope").html("<option>N/A</option>");
+                $("#importCsvColumnId").html("<option>N/A</option>");
+                $("#importCsvTable").show();
+                for (var i = 0; i < data[0].length; i++) {
+                    $("#importCsvColumnName").append("<option/>").children().last().text(data[0][i]).attr("index", i);
+                    if (data[0][i].toLowerCase().indexOf("name") != -1)
+                        $("#importCsvColumnName").children().last().prop("selected", true);
+                    $("#importCsvColumnDescription").append("<option/>").children().last().text(data[0][i]).attr("index", i);
+                    if (data[0][i].toLowerCase().indexOf("description") != -1)
+                        $("#importCsvColumnDescription").children().last().prop("selected", true);
+                    $("#importCsvColumnScope").append("<option/>").children().last().text(data[0][i]).attr("index", i);
+                    if (data[0][i].toLowerCase().indexOf("scope") != -1)
+                        $("#importCsvColumnScope").children().last().prop("selected", true);
+                    $("#importCsvColumnId").append("<option/>").children().last().text(data[0][i]).attr("index", i);
+                    if (data[0][i].toLowerCase().indexOf("id") != -1)
+                        $("#importCsvColumnId").children().last().prop("selected", true);
+                }
+                $("#csvImportSection #importButton").text("Import " + (maxCsvCompetencies = (data.length - 1)) + " items.");
+                showPage("#csvImportSection");
+            }, function (error) {
+                {
+                    alert(error);
+                    showPage("#importSection");
+                }
+            });
         });
     } else if (file.name.endsWith(".json")) {
         ASNImport.analyzeFile(file, function (data) {
@@ -147,8 +154,34 @@ function importAsn() {
         }, repo);
 }
 
-function importCsv() {
+function importCtdlAsnCsv() {
+    CTDLASNCSVImport.importFrameworksAndCompetencies(repo, importFiles[0], function (frameworks, competencies, relations) {
+        var all = frameworks.concat(competencies).concat(relations);
+        var ah = new EcAsyncHelper();
+        var counter = 0;
+        ah.each(all, function (f, callback) {
+            Task.asyncImmediate(function (callback) {
+                repo.saveTo(f, function (success) {
+                    counter++;
+                    loading(ah.counter - counter + " objects remaining to save.");
+                    callback();
+                }, function (failure) {
+                    error(failure);
+                    backPage();
+                });
+            });
+        }, function (allDone) {
+            Task.asyncImmediate(function (callback) {
+                showPage("#frameworksSection");
+            });
+        });
+    }, function (failure) {
+        error(failure);
+        backPage();
+    });
+}
 
+function importCsv() {
     var nameIndex = parseInt($("#importCsvColumnName option:selected").attr("index"));
     var descriptionIndex = parseInt($("#importCsvColumnDescription option:selected").attr("index"));
     var scopeIndex = parseInt($("#importCsvColumnScope option:selected").attr("index"));
