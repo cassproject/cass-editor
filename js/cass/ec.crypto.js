@@ -1,13 +1,3 @@
-var AlgorithmIdentifier = function() {};
-AlgorithmIdentifier = stjs.extend(AlgorithmIdentifier, null, [], function(constructor, prototype) {
-    prototype.name = null;
-    prototype.modulusLength = 0;
-    prototype.length = 0;
-    prototype.publicExponent = null;
-    prototype.hash = null;
-    prototype.iv = null;
-    prototype.counter = null;
-}, {iv: "ArrayBuffer", counter: "ArrayBuffer"}, {});
 /**
  *  @author Fritz
  */
@@ -21,6 +11,16 @@ EcCrypto = stjs.extend(EcCrypto, null, [], function(constructor, prototype) {
         return m.digest().toHex();
     };
 }, {decryptionCache: "Object"}, {});
+var AlgorithmIdentifier = function() {};
+AlgorithmIdentifier = stjs.extend(AlgorithmIdentifier, null, [], function(constructor, prototype) {
+    prototype.name = null;
+    prototype.modulusLength = 0;
+    prototype.length = 0;
+    prototype.publicExponent = null;
+    prototype.hash = null;
+    prototype.iv = null;
+    prototype.counter = null;
+}, {iv: "ArrayBuffer", counter: "ArrayBuffer"}, {});
 /**
  *  Helper classes for dealing with RSA Public Keys.
  * 
@@ -7694,9 +7694,13 @@ EcRsaOaepAsync = stjs.extend(EcRsaOaepAsync, null, [], function(constructor, pro
 }, {}, {});
 var EcAesCtrAsync = function() {};
 EcAesCtrAsync = stjs.extend(EcAesCtrAsync, null, [], function(constructor, prototype) {
-    constructor.encrypt = function(text, secret, iv, success, failure) {
+    constructor.encrypt = function(plaintext, secret, iv, success, failure) {
         if (window == null || window.crypto == null || window.crypto.subtle == null) {
-            EcAesCtrAsyncWorker.encrypt(text, secret, iv, success, failure);
+            EcAesCtrAsyncWorker.encrypt(plaintext, secret, iv, success, failure);
+            return;
+        }
+        if (EcRemote.async == false) {
+            success(EcAesCtr.encrypt(plaintext, secret, iv));
             return;
         }
         var keyUsages = new Array();
@@ -7706,7 +7710,7 @@ EcAesCtrAsync = stjs.extend(EcAesCtrAsync, null, [], function(constructor, proto
         algorithm.counter = base64.decode(iv);
         algorithm.length = 128;
         var data;
-        data = str2ab(text);
+        data = str2ab(plaintext);
         window.crypto.subtle.importKey("raw", base64.decode(secret), algorithm, false, keyUsages).then(function(key) {
             var p = window.crypto.subtle.encrypt(algorithm, key, data);
             p.then(function(p1) {
@@ -7714,17 +7718,20 @@ EcAesCtrAsync = stjs.extend(EcAesCtrAsync, null, [], function(constructor, proto
             }, failure);
         }, failure);
     };
-    constructor.decrypt = function(text, secret, iv, success, failure) {
+    constructor.decrypt = function(ciphertext, secret, iv, success, failure) {
         if (EcCrypto.caching) {
-            var cacheGet = (EcCrypto.decryptionCache)[secret + iv + text];
+            var cacheGet = (EcCrypto.decryptionCache)[secret + iv + ciphertext];
             if (cacheGet != null) {
                 success(cacheGet);
                 return;
             }
         }
         if (window.crypto == null || window.crypto.subtle == null) {
-            EcAesCtrAsyncWorker.decrypt(text, secret, iv, success, failure);
+            EcAesCtrAsyncWorker.decrypt(ciphertext, secret, iv, success, failure);
             return;
+        }
+        if (EcRemote.async == false) {
+            success(EcAesCtr.decrypt(ciphertext, secret, iv));
         }
         var keyUsages = new Array();
         keyUsages.push("encrypt", "decrypt");
@@ -7733,7 +7740,7 @@ EcAesCtrAsync = stjs.extend(EcAesCtrAsync, null, [], function(constructor, proto
         algorithm.counter = base64.decode(iv);
         algorithm.length = 128;
         var data;
-        data = base64.decode(text);
+        data = base64.decode(ciphertext);
         window.crypto.subtle.importKey("raw", base64.decode(secret), algorithm, false, keyUsages).then(function(key) {
             var p = window.crypto.subtle.decrypt(algorithm, key, data);
             p.then(function(p1) {

@@ -728,10 +728,13 @@ EcRemote = stjs.extend(EcRemote, null, [], function(constructor, prototype) {
             xhr.open("POST", url, EcRemote.async);
             var xhrx = xhr;
             xhr.onreadystatechange = function() {
-                if (xhrx.readyState == 4 && xhrx.status == 200) 
-                    successCallback(xhrx.responseText);
-                 else if (xhrx.readyState == 4) 
-                    failureCallback(xhrx.responseText);
+                if (xhrx.readyState == 4 && xhrx.status == 200) {
+                    if (successCallback != null) 
+                        successCallback(xhrx.responseText);
+                } else if (xhrx.readyState == 4) {
+                    if (failureCallback != null) 
+                        failureCallback(xhrx.responseText);
+                }
             };
         }
         var theBoundary = null;
@@ -751,11 +754,13 @@ EcRemote = stjs.extend(EcRemote, null, [], function(constructor, prototype) {
                 xhr.setRequestHeader("Content-Type", "multipart/form-data; boundary=" + (fd)["_boundary"]);
             fd = all;
         } else {}
-        if (EcRemote.async) 
-            (xhr)["timeout"] = EcRemote.timeout;
+        if (xhr != null) 
+            if (EcRemote.async) 
+                (xhr)["timeout"] = EcRemote.timeout;
         if ((typeof httpStatus) != "undefined") {
             var result = JSON.stringify(httpPost(fd, url, "multipart/form-data; boundary=" + theBoundary, "false", theBoundary));
-            successCallback(result);
+            if (successCallback != null) 
+                successCallback(result);
         } else {
             xhr.send(fd);
         }
@@ -792,16 +797,22 @@ EcRemote = stjs.extend(EcRemote, null, [], function(constructor, prototype) {
     constructor.getExpectingString = function(server, service, success, failure) {
         var url = EcRemote.urlAppend(server, service);
         url = EcRemote.upgradeHttpToHttps(url);
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", url, EcRemote.async);
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState == 4 && xhr.status == 200) 
-                success(xhr.responseText);
-             else if (xhr.readyState == 4) 
-                failure(xhr.responseText);
-        };
-        if (EcRemote.async) 
-            (xhr)["timeout"] = EcRemote.timeout;
+        var xhr = null;
+        if ((typeof httpStatus) == "undefined") {
+            xhr = new XMLHttpRequest();
+            xhr.open("GET", url, EcRemote.async);
+            var xhrx = xhr;
+            xhr.onreadystatechange = function() {
+                if (xhrx.readyState == 4 && xhrx.status == 200) 
+                    success(xhrx.responseText);
+                 else if (xhrx.readyState == 4) 
+                    failure(xhrx.responseText);
+            };
+        }
+        if (xhr != null) {
+            if (EcRemote.async) 
+                (xhr)["timeout"] = EcRemote.timeout;
+        }
         if ((typeof httpStatus) != "undefined") {
             success(JSON.stringify(httpGet(url)));
         } else {
@@ -833,19 +844,32 @@ EcRemote = stjs.extend(EcRemote, null, [], function(constructor, prototype) {
      */
     constructor._delete = function(url, signatureSheet, success, failure) {
         url = EcRemote.upgradeHttpToHttps(url);
-        var xhr = new XMLHttpRequest();
-        xhr.open("DELETE", url, EcRemote.async);
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState == 4 && xhr.status == 200) 
-                success(xhr.responseText);
-             else if (xhr.readyState == 4) 
-                failure(xhr.responseText);
-        };
-        if (EcRemote.async) 
-            (xhr)["timeout"] = EcRemote.timeout;
-        xhr.setRequestHeader("signatureSheet", signatureSheet);
+        var xhr = null;
+        if ((typeof httpStatus) == "undefined") {
+            xhr = new XMLHttpRequest();
+            xhr.open("DELETE", url, EcRemote.async);
+            var xhrx = xhr;
+            xhr.onreadystatechange = function() {
+                if (xhrx.readyState == 4 && xhrx.status == 200) {
+                    if (success != null) 
+                        success(xhrx.responseText);
+                } else if (xhrx.readyState == 4) {
+                    if (failure != null) 
+                        failure(xhrx.responseText);
+                }
+            };
+        }
+        if (xhr != null) {
+            if (EcRemote.async) 
+                (xhr)["timeout"] = EcRemote.timeout;
+            xhr.setRequestHeader("signatureSheet", signatureSheet);
+        }
         if ((typeof httpStatus) != "undefined") {
-            success(httpDelete(url));
+            if (success != null) {
+                var sso = new Object();
+                (sso)["signatureSheet"] = signatureSheet;
+                success(httpDelete(url, null, null, null, sso));
+            }
         } else {
             xhr.send();
         }
