@@ -477,6 +477,87 @@ renderSidebar = function (justLists) {
             }
         }
     });
+    // Display Concept's broader or narrower connections
+    if (conceptMode && selectedCompetency != null) {
+        var renderConceptConnection = function(cId, displayConcept, relationType){
+            var connectionsList = $(".relationList[" + labelChoice + "=" + relationType + "]").append("<li/>").children().last();
+            if (displayConcept == null){
+                connectionsList.text(cId);
+            } else {
+                if (displayConcept["skos:prefLabel"] != null)
+                    connectionsList.text(displayConcept["skos:prefLabel"]);
+                else
+                    connectionsList.text(displayConcept);
+            }
+            connectionsList.attr("id", cId);
+            $(".relationList[" + labelChoice + "=" + relationType + "]").show().prev().show();
+        }//function renderConceptConnection
+        if (selectedCompetency["skos:broader"] != null){
+            for (var bc = 0; bc < selectedCompetency["skos:broader"].length; bc++){
+                (function(conceptId, renderConceptConnection) {
+                    if (alignmentCache[framework.shortId()] != null && alignmentCache[framework.shortId()][conceptId] != null && alignmentCache[framework.shortId()][conceptId].target.shortId() > -1) {
+                        renderConceptConnection(conceptId, alignmentCache[framework.shortId()][conceptId].target, "isChildOf");
+                    } else {
+                        if (runningAsyncFunctions[conceptId] == null) {
+                            runningAsyncFunctions[conceptId] = 1;
+                            EcConcept.get(conceptId, function (broaderConcept) {
+                                if (broaderConcept != null)
+                                    renderConceptConnection(conceptId, broaderConcept, "isChildOf");
+                                delete runningAsyncFunctions[conceptId];
+                                if (alignmentCache[framework.shortId()] == null)
+                                    alignmentCache[framework.shortId()] = {};
+                                if (alignmentCache[framework.shortId()][conceptId] == null)
+                                    alignmentCache[framework.shortId()][conceptId] = {};
+                                alignmentCache[framework.shortId()][conceptId].target = broaderConcept;
+                                }, function () {
+                                    renderConceptConnection(conceptId, conceptId, "isChildOf");
+                                    delete runningAsyncFunctions[conceptId];
+                                    if (alignmentCache[framework.shortId()] == null)
+                                        alignmentCache[framework.shortId()] = {};
+                                    if (alignmentCache[framework.shortId()][conceptId] == null)
+                                        alignmentCache[framework.shortId()][conceptId] = {};
+                                    alignmentCache[framework.shortId()][conceptId].target = conceptId;
+                                }
+                            );
+                        }
+                    }//end if cached exists
+                })(selectedCompetency["skos:broader"][bc], renderConceptConnection);
+            }//end for each narrower
+        }//end if broader
+        if (selectedCompetency["skos:narrower"] != null){
+            for (var nc = 0; nc < selectedCompetency["skos:narrower"].length; nc++){
+                (function(conceptId, renderConceptConnection) {
+                    if (alignmentCache[framework.shortId()] != null && alignmentCache[framework.shortId()][conceptId] != null && alignmentCache[framework.shortId()][conceptId].source.shortId() > -1) {
+                        renderConceptConnection(conceptId, alignmentCache[framework.shortId()][conceptId].source, "hasChild");
+                    } else {
+                        if (runningAsyncFunctions[conceptId] == null) {
+                            runningAsyncFunctions[conceptId] = 1;
+                            EcConcept.get(conceptId, function(narrowerConcept) {
+                                    if (narrowerConcept != null)
+                                        renderConceptConnection(conceptId, narrowerConcept, "hasChild");
+                                    delete runningAsyncFunctions[conceptId];
+                                    if (alignmentCache[framework.shortId()] == null)
+                                        alignmentCache[framework.shortId()] = {};
+                                    if (alignmentCache[framework.shortId()][conceptId] == null)
+                                        alignmentCache[framework.shortId()][conceptId] = {};
+                                    alignmentCache[framework.shortId()][conceptId].source = narrowerConcept;
+                                }, function() {
+                                    renderConceptConnection(conceptId, conceptId, "hasChild");
+                                    delete runningAsyncFunctions[conceptId];
+                                    if (alignmentCache[framework.shortId()] == null)
+                                        alignmentCache[framework.shortId()] = {};
+                                    if (alignmentCache[framework.shortId()][conceptId] == null)
+                                        alignmentCache[framework.shortId()][conceptId] = {};
+                                    alignmentCache[framework.shortId()][conceptId].source = conceptId;
+                                }
+                            );
+                        }
+                    }//end if cached exists
+                })(selectedCompetency["skos:narrower"][nc], renderConceptConnection);
+            }//end for each narrower
+        }//end if narrower
+    }//end if conceptMode & concept selected
+    // Note: ConceptScheme, if framework, may or may not have relations.
     if (framework.relation != null && selectedCompetency != null) {
         $("#detailSlider .relationList").html("");
         if (viewMode) {
@@ -870,7 +951,7 @@ refreshSidebar = function () {
         $('.export').show();
     }
 
-    if (!conceptMode && queryParams.ceasnDataFields == 'true' || queryParams.tlaProfile == 'true') {
+    if (queryParams.ceasnDataFields == 'true' || queryParams.tlaProfile == 'true') {
         $("#detailSlider").addClass("detailSliderCeasn");
         $('.ceasnDataFields').show();
     } else {
