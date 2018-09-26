@@ -496,13 +496,13 @@ renderSidebar = function (justLists) {
             for (var bc = 0; bc < selectedCompetency["skos:broader"].length; bc++){
                 (function(conceptId, renderConceptConnection) {
                     if (alignmentCache[framework.shortId()] != null && alignmentCache[framework.shortId()][conceptId] != null && alignmentCache[framework.shortId()][conceptId].target.shortId() > -1) {
-                        renderConceptConnection(conceptId, alignmentCache[framework.shortId()][conceptId].target, "isChildOf");
+                        renderConceptConnection(conceptId, alignmentCache[framework.shortId()][conceptId].target, "hasChild");
                     } else {
                         if (runningAsyncFunctions[conceptId] == null) {
                             runningAsyncFunctions[conceptId] = 1;
                             EcConcept.get(conceptId, function (broaderConcept) {
                                 if (broaderConcept != null)
-                                    renderConceptConnection(conceptId, broaderConcept, "isChildOf");
+                                    renderConceptConnection(conceptId, broaderConcept, "hasChild");
                                 delete runningAsyncFunctions[conceptId];
                                 if (alignmentCache[framework.shortId()] == null)
                                     alignmentCache[framework.shortId()] = {};
@@ -510,7 +510,7 @@ renderSidebar = function (justLists) {
                                     alignmentCache[framework.shortId()][conceptId] = {};
                                 alignmentCache[framework.shortId()][conceptId].target = broaderConcept;
                                 }, function () {
-                                    renderConceptConnection(conceptId, conceptId, "isChildOf");
+                                    renderConceptConnection(conceptId, conceptId, "hasChild");
                                     delete runningAsyncFunctions[conceptId];
                                     if (alignmentCache[framework.shortId()] == null)
                                         alignmentCache[framework.shortId()] = {};
@@ -528,13 +528,13 @@ renderSidebar = function (justLists) {
             for (var nc = 0; nc < selectedCompetency["skos:narrower"].length; nc++){
                 (function(conceptId, renderConceptConnection) {
                     if (alignmentCache[framework.shortId()] != null && alignmentCache[framework.shortId()][conceptId] != null && alignmentCache[framework.shortId()][conceptId].source.shortId() > -1) {
-                        renderConceptConnection(conceptId, alignmentCache[framework.shortId()][conceptId].source, "hasChild");
+                        renderConceptConnection(conceptId, alignmentCache[framework.shortId()][conceptId].source, "isChildOf");
                     } else {
                         if (runningAsyncFunctions[conceptId] == null) {
                             runningAsyncFunctions[conceptId] = 1;
                             EcConcept.get(conceptId, function(narrowerConcept) {
                                     if (narrowerConcept != null)
-                                        renderConceptConnection(conceptId, narrowerConcept, "hasChild");
+                                        renderConceptConnection(conceptId, narrowerConcept, "isChildOf");
                                     delete runningAsyncFunctions[conceptId];
                                     if (alignmentCache[framework.shortId()] == null)
                                         alignmentCache[framework.shortId()] = {};
@@ -542,7 +542,7 @@ renderSidebar = function (justLists) {
                                         alignmentCache[framework.shortId()][conceptId] = {};
                                     alignmentCache[framework.shortId()][conceptId].source = narrowerConcept;
                                 }, function() {
-                                    renderConceptConnection(conceptId, conceptId, "hasChild");
+                                    renderConceptConnection(conceptId, conceptId, "isChildOf");
                                     delete runningAsyncFunctions[conceptId];
                                     if (alignmentCache[framework.shortId()] == null)
                                         alignmentCache[framework.shortId()] = {};
