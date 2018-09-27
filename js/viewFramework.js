@@ -1045,6 +1045,7 @@ editSidebar = function () {
                         repo.saveTo(framework, function () {
                             appendCompetencies(results, true);
                         }, error);
+                        selectedCompetency = competency;
                     }
                 }
             });
