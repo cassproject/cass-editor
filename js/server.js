@@ -329,6 +329,29 @@ var messageListener = function (evt) {
             };
             console.log(message);
             parent.postMessage(message, queryParams.origin);
+        } else if (data.action == "set") {
+            if (data.id != null)
+                var d = EcRepository.getBlocking(data.id);
+            delete data.id;
+            delete data.action;
+            for (var key in EcObject.keys(data)) {
+                d[key] = data[key];
+            }
+            EcRepository.save(d, function (success) {
+                var message = {
+                    action: "response",
+                    message: "setOk"
+                };
+                console.log(message);
+                parent.postMessage(message, queryParams.origin);
+            }, function (failure) {
+                var message = {
+                    action: "response",
+                    message: "setFail"
+                };
+                console.log(message);
+                parent.postMessage(message, queryParams.origin);
+            });
         } else if (data.action == "export") {
             var v = data.schema;
             var link;

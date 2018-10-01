@@ -226,6 +226,20 @@ message.data ~= {
 ```
 Acceptable schemas are: "cass","cassn4","cass","cassrdfjson","cassrdfxml","cassturtle","ctdlasn","asn","case".
 
+### Set Data Helper:
+To set some data in an object:
+```javascript
+$("iframe")[0].contentWindow.postMessage(
+  {
+   action:"set", 
+   id:"https://id of the object to set",
+   key1:value1,
+   key2:value2
+  }
+,window.location.origin);
+```
+A response event will be sent: "setOk","setFail" after the save is attempted.
+
 # Validation
 Most fields are not validated beyond the input type assigned to them. URLs, drop downs, datetimes and selectors all have inbuilt validation. The datetime format being used is ISO 8601. The user is prevented from saving invalid date. To change the behavior to warn the user if they are saving invalid data, set `allowValidationBypass=true`.
 
