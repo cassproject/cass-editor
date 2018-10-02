@@ -288,16 +288,16 @@ function refreshCompetency(col, level, subsearch) {
                                     $(".competency[id=\"" + target.shortId() + "\"]").children().last().append($(".competency[id=\"" + source.shortId() + "\"]").outerHTML()).children().last().attr("relationid", relation.shortId());
                                     if ($(".competency[id=\"" + target.shortId() + "\"]").length > 0 &&
                                         $("#tree>.competency[id=\"" + source.shortId() + "\"]").length > 0) {
-                                            let isRemoveSource = true;
-                                            if(targetSourceArray[source.shortId()] && target.shortId() === targetSourceArray[source.shortId()]){
-                                                console.log("Removing "+source.name+ " will be reverse of previous removal.");
-                                                isRemoveSource = false;
-                                            }
-                                            if (isRemoveSource){
-                                                targetSourceArray[target.shortId()] = source.shortId();
-                                                //console.log("Target '" + target.name + "' exists, remove source '" + source.name + "'");
-                                                $("#tree>.competency[id=\"" + source.shortId() + "\"]").remove();
-                                            }
+                                        let isRemoveSource = true;
+                                        if (targetSourceArray[source.shortId()] && target.shortId() === targetSourceArray[source.shortId()]) {
+                                            console.log("Removing " + source.name + " will be reverse of previous removal.");
+                                            isRemoveSource = false;
+                                        }
+                                        if (isRemoveSource) {
+                                            targetSourceArray[target.shortId()] = source.shortId();
+                                            //console.log("Target '" + target.name + "' exists, remove source '" + source.name + "'");
+                                            $("#tree>.competency[id=\"" + source.shortId() + "\"]").remove();
+                                        }
                                     }
                                     if ($(".competency[id=\"" + source.shortId() + "\"]").length && !$(".competency[id=\"" + target.shortId() + "\"]").hasClass("expandable"))
                                         $(".competency[id=\"" + target.shortId() + "\"]").addClass("expandable").children(".collapse").css("visibility", "visible");
@@ -415,13 +415,12 @@ renderSidebar = function (justLists) {
                     elem.append("<div class='sidebarPropertyLink'><a target='_blank'/></div>").children().last().children().last().attr("href", val[i]).text(linkText);
                     var anchor = elem.children().last().children().last();
                     elem.children().last().prepend("<div><button title='Copy URL to the clipboard.' onclick='copyToClipboard(event);'><i class='fa fa-clipboard'></i></button></div>");
-                    resolveNameFromUrlWithElem(val[i], anchor, function(result, elem) {
+                    resolveNameFromUrlWithElem(val[i], anchor, function (result, elem) {
                         if (result != null) {
                             elem.text(result);
                         }
                     });
-                }
-                else {
+                } else {
                     $(this).append("<span/>").children().last().text(val[i]);
                 }
             }
@@ -479,9 +478,9 @@ renderSidebar = function (justLists) {
     });
     // Display Concept's broader or narrower connections
     if (conceptMode && selectedCompetency != null) {
-        var renderConceptConnection = function(cId, displayConcept, relationType){
+        var renderConceptConnection = function (cId, displayConcept, relationType) {
             var connectionsList = $(".relationList[" + labelChoice + "=" + relationType + "]").append("<li/>").children().last();
-            if (displayConcept == null){
+            if (displayConcept == null) {
                 connectionsList.text(cId);
             } else {
                 if (displayConcept["skos:prefLabel"] != null)
@@ -491,10 +490,10 @@ renderSidebar = function (justLists) {
             }
             connectionsList.attr("id", cId);
             $(".relationList[" + labelChoice + "=" + relationType + "]").show().prev().show();
-        }//function renderConceptConnection
-        if (selectedCompetency["skos:broader"] != null){
-            for (var bc = 0; bc < selectedCompetency["skos:broader"].length; bc++){
-                (function(conceptId, renderConceptConnection) {
+        } //function renderConceptConnection
+        if (selectedCompetency["skos:broader"] != null) {
+            for (var bc = 0; bc < selectedCompetency["skos:broader"].length; bc++) {
+                (function (conceptId, renderConceptConnection) {
                     if (alignmentCache[framework.shortId()] != null && alignmentCache[framework.shortId()][conceptId] != null && alignmentCache[framework.shortId()][conceptId].target.shortId() > -1) {
                         renderConceptConnection(conceptId, alignmentCache[framework.shortId()][conceptId].target, "hasChild");
                     } else {
@@ -509,54 +508,52 @@ renderSidebar = function (justLists) {
                                 if (alignmentCache[framework.shortId()][conceptId] == null)
                                     alignmentCache[framework.shortId()][conceptId] = {};
                                 alignmentCache[framework.shortId()][conceptId].target = broaderConcept;
-                                }, function () {
-                                    renderConceptConnection(conceptId, conceptId, "hasChild");
-                                    delete runningAsyncFunctions[conceptId];
-                                    if (alignmentCache[framework.shortId()] == null)
-                                        alignmentCache[framework.shortId()] = {};
-                                    if (alignmentCache[framework.shortId()][conceptId] == null)
-                                        alignmentCache[framework.shortId()][conceptId] = {};
-                                    alignmentCache[framework.shortId()][conceptId].target = conceptId;
-                                }
-                            );
+                            }, function () {
+                                renderConceptConnection(conceptId, conceptId, "hasChild");
+                                delete runningAsyncFunctions[conceptId];
+                                if (alignmentCache[framework.shortId()] == null)
+                                    alignmentCache[framework.shortId()] = {};
+                                if (alignmentCache[framework.shortId()][conceptId] == null)
+                                    alignmentCache[framework.shortId()][conceptId] = {};
+                                alignmentCache[framework.shortId()][conceptId].target = conceptId;
+                            });
                         }
-                    }//end if cached exists
+                    } //end if cached exists
                 })(selectedCompetency["skos:broader"][bc], renderConceptConnection);
-            }//end for each narrower
-        }//end if broader
-        if (selectedCompetency["skos:narrower"] != null){
-            for (var nc = 0; nc < selectedCompetency["skos:narrower"].length; nc++){
-                (function(conceptId, renderConceptConnection) {
+            } //end for each narrower
+        } //end if broader
+        if (selectedCompetency["skos:narrower"] != null) {
+            for (var nc = 0; nc < selectedCompetency["skos:narrower"].length; nc++) {
+                (function (conceptId, renderConceptConnection) {
                     if (alignmentCache[framework.shortId()] != null && alignmentCache[framework.shortId()][conceptId] != null && alignmentCache[framework.shortId()][conceptId].source.shortId() > -1) {
                         renderConceptConnection(conceptId, alignmentCache[framework.shortId()][conceptId].source, "isChildOf");
                     } else {
                         if (runningAsyncFunctions[conceptId] == null) {
                             runningAsyncFunctions[conceptId] = 1;
-                            EcConcept.get(conceptId, function(narrowerConcept) {
-                                    if (narrowerConcept != null)
-                                        renderConceptConnection(conceptId, narrowerConcept, "isChildOf");
-                                    delete runningAsyncFunctions[conceptId];
-                                    if (alignmentCache[framework.shortId()] == null)
-                                        alignmentCache[framework.shortId()] = {};
-                                    if (alignmentCache[framework.shortId()][conceptId] == null)
-                                        alignmentCache[framework.shortId()][conceptId] = {};
-                                    alignmentCache[framework.shortId()][conceptId].source = narrowerConcept;
-                                }, function() {
-                                    renderConceptConnection(conceptId, conceptId, "isChildOf");
-                                    delete runningAsyncFunctions[conceptId];
-                                    if (alignmentCache[framework.shortId()] == null)
-                                        alignmentCache[framework.shortId()] = {};
-                                    if (alignmentCache[framework.shortId()][conceptId] == null)
-                                        alignmentCache[framework.shortId()][conceptId] = {};
-                                    alignmentCache[framework.shortId()][conceptId].source = conceptId;
-                                }
-                            );
+                            EcConcept.get(conceptId, function (narrowerConcept) {
+                                if (narrowerConcept != null)
+                                    renderConceptConnection(conceptId, narrowerConcept, "isChildOf");
+                                delete runningAsyncFunctions[conceptId];
+                                if (alignmentCache[framework.shortId()] == null)
+                                    alignmentCache[framework.shortId()] = {};
+                                if (alignmentCache[framework.shortId()][conceptId] == null)
+                                    alignmentCache[framework.shortId()][conceptId] = {};
+                                alignmentCache[framework.shortId()][conceptId].source = narrowerConcept;
+                            }, function () {
+                                renderConceptConnection(conceptId, conceptId, "isChildOf");
+                                delete runningAsyncFunctions[conceptId];
+                                if (alignmentCache[framework.shortId()] == null)
+                                    alignmentCache[framework.shortId()] = {};
+                                if (alignmentCache[framework.shortId()][conceptId] == null)
+                                    alignmentCache[framework.shortId()][conceptId] = {};
+                                alignmentCache[framework.shortId()][conceptId].source = conceptId;
+                            });
                         }
-                    }//end if cached exists
+                    } //end if cached exists
                 })(selectedCompetency["skos:narrower"][nc], renderConceptConnection);
-            }//end for each narrower
-        }//end if narrower
-    }//end if conceptMode & concept selected
+            } //end for each narrower
+        } //end if narrower
+    } //end if conceptMode & concept selected
     // Note: ConceptScheme, if framework, may or may not have relations.
     if (framework.relation != null && selectedCompetency != null) {
         $("#detailSlider .relationList").html("");
@@ -588,7 +585,7 @@ renderSidebar = function (justLists) {
                 else {
                     var x = li.prepend("<button class='viewMode frameworkEditControl' tabindex='0' style='float:right; cursor:pointer;'><i class='fa fa-times'></i></button>").children().first();
                     x.click(function () {
-                        if (conceptMode){
+                        if (conceptMode) {
                             let trimId = EcRemoteLinkedData.trimVersionFromUrl($(this).parent().attr("id"));
                             for (let i = 0; i < framework.relation.length; i++)
                                 if (EcRemoteLinkedData.trimVersionFromUrl(framework.relation[i]).equals(trimId))
@@ -603,7 +600,7 @@ renderSidebar = function (justLists) {
             };
             if (a.source == selectedCompetency.shortId()) {
                 //Passing vars in closure so they are correct when the async function executes.
-                (function(a, renderAlignment) {
+                (function (a, renderAlignment) {
                     //Use the cached version if we already have it to be faster.
                     if (alignmentCache[framework.shortId()] != null && alignmentCache[framework.shortId()][a.shortId()] != null && alignmentCache[framework.shortId()][a.shortId()].target != null) {
                         if (a.relationType == Relation.NARROWS && alignmentCache[framework.shortId()][a.shortId()].target.shortId && framework.competency.indexOf(alignmentCache[framework.shortId()][a.shortId()].target.shortId()) > -1 && queryParams.ceasnDataFields == 'true')
@@ -613,7 +610,7 @@ renderSidebar = function (justLists) {
                     } else {
                         if (runningAsyncFunctions[a.shortId()] == null) {
                             runningAsyncFunctions[a.shortId()] = 1;
-                            if (conceptMode){
+                            if (conceptMode) {
                                 EcConcept.get(a.target, function (target) {
                                     if (target != null) {
                                         if (a.relationType == Relation.NARROWS && framework.competency.indexOf(target.shortId()) > -1 && queryParams.ceasnDataFields == 'true')
@@ -667,7 +664,7 @@ renderSidebar = function (justLists) {
             if (a.relationType == Relation.IS_EQUIVALENT_TO || a.relationType == Relation.IS_RELATED_TO || a.relationType == "majorRelated" || a.relationType == "minorRelated") {
                 if (a.target == selectedCompetency.shortId()) {
                     //Passing vars in closure so they are correct when the async function executes.
-                    (function(a, renderAlignment) {
+                    (function (a, renderAlignment) {
                         //Use the cached version if we already have it to be faster.
                         if (alignmentCache[framework.shortId()] != null && alignmentCache[framework.shortId()][a.shortId()] != null && alignmentCache[framework.shortId()][a.shortId()].source != null) {
                             renderAlignment(a, alignmentCache[framework.shortId()][a.shortId()].source, a.relationType);
@@ -675,7 +672,7 @@ renderSidebar = function (justLists) {
                             if (runningAsyncFunctions[a.shortId()] == null) {
                                 runningAsyncFunctions[a.shortId()] = 1;
                                 if (conceptMode) {
-                                    EcConcept.get(a.source, function(source) {
+                                    EcConcept.get(a.source, function (source) {
                                         if (source != null)
                                             renderAlignment(a, source, a.relationType);
                                         delete runningAsyncFunctions[a.shortId()];
@@ -684,7 +681,7 @@ renderSidebar = function (justLists) {
                                         if (alignmentCache[framework.shortId()][a.shortId()] == null)
                                             alignmentCache[framework.shortId()][a.shortId()] = {};
                                         alignmentCache[framework.shortId()][a.shortId()].source = source;
-                                    }, function() {
+                                    }, function () {
                                         renderAlignment(a, a.source, a.relationType);
                                         delete runningAsyncFunctions[a.shortId()];
                                         if (alignmentCache[framework.shortId()] == null)
@@ -694,7 +691,7 @@ renderSidebar = function (justLists) {
                                         alignmentCache[framework.shortId()][a.shortId()].source = a.source;
                                     });
                                 } else {
-                                    EcCompetency.get(a.source, function(source) {
+                                    EcCompetency.get(a.source, function (source) {
                                         if (source != null)
                                             renderAlignment(a, source, a.relationType);
                                         delete runningAsyncFunctions[a.shortId()];
@@ -703,7 +700,7 @@ renderSidebar = function (justLists) {
                                         if (alignmentCache[framework.shortId()][a.shortId()] == null)
                                             alignmentCache[framework.shortId()][a.shortId()] = {};
                                         alignmentCache[framework.shortId()][a.shortId()].source = source;
-                                    }, function() {
+                                    }, function () {
                                         renderAlignment(a, a.source, a.relationType);
                                         delete runningAsyncFunctions[a.shortId()];
                                         if (alignmentCache[framework.shortId()] == null)
@@ -712,16 +709,16 @@ renderSidebar = function (justLists) {
                                             alignmentCache[framework.shortId()][a.shortId()] = {};
                                         alignmentCache[framework.shortId()][a.shortId()].source = a.source;
                                     });
-                                }//end if conceptMode
+                                } //end if conceptMode
                             }
                         }
                     })(a, renderAlignment);
                 }
-            }//end if EQUIVALENT or RELATED TO
+            } //end if EQUIVALENT or RELATED TO
             if (a.relationType == Relation.NARROWS) {
                 if (a.target == selectedCompetency.shortId()) {
                     //Passing vars in closure so they are correct when the async function executes.
-                    (function(a, renderAlignment) {
+                    (function (a, renderAlignment) {
                         //Use the cached version if we already have it to be faster.
                         if (alignmentCache[framework.shortId()] != null && alignmentCache[framework.shortId()][a.shortId()] != null && alignmentCache[framework.shortId()][a.shortId()].source != null) {
                             if (alignmentCache[framework.shortId()][a.shortId()].source.shortId && framework.competency.indexOf(alignmentCache[framework.shortId()][a.shortId()].source.shortId()) > -1 && queryParams.ceasnDataFields == 'true' && !conceptMode)
@@ -732,7 +729,7 @@ renderSidebar = function (justLists) {
                             if (runningAsyncFunctions[a.shortId()] == null) {
                                 runningAsyncFunctions[a.shortId()] = 1;
                                 if (conceptMode) {
-                                    EcConcept.get(a.source, function(source) {
+                                    EcConcept.get(a.source, function (source) {
                                         if (source != null)
                                             if (framework.competency.indexOf(source.shortId()) > -1)
                                                 renderAlignment(a, source, "hasChild");
@@ -744,7 +741,7 @@ renderSidebar = function (justLists) {
                                         if (alignmentCache[framework.shortId()][a.shortId()] == null)
                                             alignmentCache[framework.shortId()][a.shortId()] = {};
                                         alignmentCache[framework.shortId()][a.shortId()].source = source;
-                                    }, function() {
+                                    }, function () {
                                         renderAlignment(a, a.source, "broadens");
                                         delete runningAsyncFunctions[a.shortId()];
                                         if (alignmentCache[framework.shortId()] == null)
@@ -754,7 +751,7 @@ renderSidebar = function (justLists) {
                                         alignmentCache[framework.shortId()][a.shortId()].source = a.source;
                                     });
                                 } else {
-                                    EcCompetency.get(a.source, function(source) {
+                                    EcCompetency.get(a.source, function (source) {
                                         if (source != null)
                                             if (framework.competency.indexOf(source.shortId()) > -1 && queryParams.ceasnDataFields == 'true')
                                                 renderAlignment(a, source, "hasChild");
@@ -766,7 +763,7 @@ renderSidebar = function (justLists) {
                                         if (alignmentCache[framework.shortId()][a.shortId()] == null)
                                             alignmentCache[framework.shortId()][a.shortId()] = {};
                                         alignmentCache[framework.shortId()][a.shortId()].source = source;
-                                    }, function() {
+                                    }, function () {
                                         renderAlignment(a, a.source, "broadens");
                                         delete runningAsyncFunctions[a.shortId()];
                                         if (alignmentCache[framework.shortId()] == null)
@@ -775,7 +772,7 @@ renderSidebar = function (justLists) {
                                             alignmentCache[framework.shortId()][a.shortId()] = {};
                                         alignmentCache[framework.shortId()][a.shortId()].source = a.source;
                                     });
-                                }//end if conceptMode
+                                } //end if conceptMode
                             }
                         }
                     })(a, renderAlignment);
@@ -813,7 +810,7 @@ renderSidebar = function (justLists) {
         });
 
     if (justLists != true)
-        $("#detailSlider").find('.sidebarInputGroup').each(function() {
+        $("#detailSlider").find('.sidebarInputGroup').each(function () {
             //Get the base input field first
             var baseField = $(this).prev();
             baseField.prev().prev().css("display", "");
@@ -845,9 +842,9 @@ renderSidebar = function (justLists) {
                     }
                 }
 
-                $(this).find('input,textarea').each(function(i) {
-                    
-                    var val = thing[$(this).attr(inputChoice)][i+1];
+                $(this).find('input,textarea').each(function (i) {
+
+                    var val = thing[$(this).attr(inputChoice)][i + 1];
                     if (val == null) {
                         $(this).remove();
                     } else {
@@ -856,7 +853,7 @@ renderSidebar = function (justLists) {
                 });
             } else {
                 //There is only one value, remove all additional input fields.
-                $(this).find('input,textarea').each(function(i) {
+                $(this).find('input,textarea').each(function (i) {
                     $(this).remove();
                 });
             }
@@ -907,14 +904,14 @@ renderSidebar = function (justLists) {
 
     //Hide or show section headers in viewmode based on if they have any populated fields
     if ($('#detailSlider').hasClass('detailSliderView'))
-        $('.sidebarAccordion:not(.exempt)').each(function() {
+        $('.sidebarAccordion:not(.exempt)').each(function () {
             var counter = 0;
-            $(this).children('p').each(function() {
+            $(this).children('p').each(function () {
                 if (!$(this).is(':empty')) {
                     counter++;
                 }
             });
-            $(this).children('ul').each(function() {
+            $(this).children('ul').each(function () {
                 if ($(this).children('li').length > 0) {
                     counter++;
                 }
@@ -1134,7 +1131,7 @@ editSidebar = function () {
     } else {
         $('#sidebarNameInput').autocomplete = null;
     }
-    $('input[data-autocompleteCache="true"]').each(function() {
+    $('input[data-autocompleteCache="true"]').each(function () {
         attachCustomAutocomplete(this);
     });
     $(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
@@ -1204,7 +1201,7 @@ $('.sidebarEditSection').on('input', function (evt) {
 });
 
 //Detect alignment input field changes
-$('#alignmentPanel').on('input', function(evt) {
+$('#alignmentPanel').on('input', function (evt) {
     var inputField = $(evt.target);
     if (inputField.is(':invalid'))
         inputField.next('span').addClass('active');
@@ -1345,7 +1342,7 @@ $('body').on('dblclick', '#frameworkNameContainer', function (evt) {
     editSidebar();
 });
 
-$('#sidebarDateCopyrightedInput').on('input', function() {
+$('#sidebarDateCopyrightedInput').on('input', function () {
     validateYearOnly(this);
 });
 
@@ -1573,14 +1570,14 @@ $('html').keydown(function (evt) {
     }
 });
 
-$("body").on("webkitAnimationEnd oanimationend msAnimationEnd animationend", ".savedCompetency", function() {
+$("body").on("webkitAnimationEnd oanimationend msAnimationEnd animationend", ".savedCompetency", function () {
     $(".savedCompetency").removeClass('savedCompetency');
 });
 
-collapseCompetencies = function() {
+collapseCompetencies = function () {
     var collapseDict = JSON.parse(localStorage.getItem('collapseDict'));
     if (collapseDict != null && collapseDict[framework.id] != null)
-        Object.keys(collapseDict[framework.id]).forEach(function(key) {
+        Object.keys(collapseDict[framework.id]).forEach(function (key) {
             if (collapseDict[framework.id][key] === 'collapsed') {
                 var elem = $('[id="' + key + '"]');
                 elem.children('.collapse').addClass('collapsed');
@@ -1756,7 +1753,7 @@ viewJSON = function () {
     redirect.location;
 }
 
-setLanguageTagAutocomplete = function() {
+setLanguageTagAutocomplete = function () {
     $.ajax({
         url: "js/ietf-language-tags_json.json",
         success: function (a) {
@@ -1779,7 +1776,7 @@ setLanguageTagAutocomplete = function() {
     });
 }
 
-highlightCompetencies = function(competencies) {
+highlightCompetencies = function (competencies) {
     var idArray;
     if (competencies)
         idArray = competencies
@@ -1793,7 +1790,7 @@ highlightCompetencies = function(competencies) {
     }
 }
 
-handleAlignmentInput = function(event) {
+handleAlignmentInput = function (event) {
     var button = $(event.currentTarget);
     if (button.attr('data-mode') == 'Add') {
         button.next().next('input').val('');
