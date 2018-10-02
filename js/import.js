@@ -159,20 +159,37 @@ function importCtdlAsnCsv() {
         var all = frameworks.concat(competencies).concat(relations);
         var ah = new EcAsyncHelper();
         var counter = 0;
+        var failed = 0;
         ah.each(all, function (f, callback) {
-            Task.asyncImmediate(function (callback) {
+            if (f.isAny(new EcFramework().getTypes())) {
+                framework = f;
+                if (parent != null && queryParams.origin != null && queryParams.origin != "")
+                    parent.postMessage({
+                        message: "importFinished",
+                        framework: f.id
+                    }, queryParams.origin);
+            }
+            Task.asyncImmediate(function (callback2) {
                 repo.saveTo(f, function (success) {
                     counter++;
-                    loading(ah.counter - counter + " objects remaining to save.");
+                    loading(ah.counter + " objects remaining to save. " + (failed > 0 ? (failed + " failed to save.") : ""));
                     callback();
+                    callback2();
                 }, function (failure) {
-                    error(failure);
-                    backPage();
+                    counter++;
+                    failed++;
+                    loading(ah.counter + " objects remaining to save. " + (failed > 0 ? (failed + " failed to save.") : ""));
+                    callback();
+                    callback2();
                 });
             });
         }, function (allDone) {
             Task.asyncImmediate(function (callback) {
-                showPage("#frameworksSection");
+                showPage("framework");
+                populateFramework();
+                selectedCompetency = null;
+                refreshSidebar();
+                callback();
             });
         });
     }, function (failure) {
