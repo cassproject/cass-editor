@@ -954,6 +954,7 @@ refreshSidebar = function () {
     if (queryParams.ceasnDataFields == 'true' || queryParams.tlaProfile == 'true') {
         $("#detailSlider").addClass("detailSliderCeasn");
         $('.ceasnDataFields').show();
+        $("#sidebarDateValidFromInput,#sidebarDateValidUntilInput").attr("type", "date");
     } else {
         $("#detailSlider").addClass("detailSliderCass");
     }
