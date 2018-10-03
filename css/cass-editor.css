@@ -952,3 +952,15 @@ hr {
 .highlightedCompetency > span > .competencyName {
     background-color: yellow;
 }
+.flow {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+
+.panel {
+	width: 20rem;
+	margin: .7rem;
+	padding: .3rem;
+	border: 1px gray solid;
+}
