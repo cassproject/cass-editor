@@ -40,7 +40,9 @@ function afterConceptRefresh(level, subsearch) {
 
 function refreshConcept(col, level, subsearch, recurse) {
     var me = this;
-    me.fetches--;
+    if (me.fetches > 0) {
+        me.fetches--;
+    }
     if (recurse == null) recurse = [];
     if (EcArray.has(recurse, col.shortId())) {
         if (me.fetches == 0) {
