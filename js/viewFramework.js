@@ -1110,6 +1110,7 @@ editSidebar = function () {
 			}
 			$('#sidebarNameInput').autocomplete({
 				source: competencies,
+				appendTo: '.sidebarEditSection',
 				select: function (event, ui) {
 					if (confirm("Selecting this competency will delete the one you are currently creating and reuse an existing competency. You may not have permissions to edit this competency further. Would you like to continue?")) {
 						var competency = EcRepository.getBlocking(autocompleteDict[ui.item.value]);
@@ -1766,14 +1767,20 @@ setLanguageTagAutocomplete = function () {
 					value: tagList[i].subtag
 				});
 			}
-			$('.sidebarInLanguageInput').autocomplete({
-				source: tags
+			$('#sidebarInLanguageInput').autocomplete({
+				source: tags,
+				appendTo: '.ceasnDataFields',
+				minLength: 2
 			});
-			$('.sidebarFrameworkInLanguageInput').autocomplete({
-				source: tags
+			$('#sidebarFrameworkInLanguageInput').autocomplete({
+				source: tags,
+				appendTo: '.ceasnDataFields',
+				minLength: 2
 			});
-			$('.sidebarConceptInLanguageInput').autocomplete({
-				source: tags
+			$('#sidebarConceptInLanguageInput').autocomplete({
+				source: tags,
+				appendTo: '.ceasnDataFields',
+				minLength: 2
 			});
 		}
 	});
@@ -1829,14 +1836,20 @@ $.ajax({
 				value: tagList[i].subtag
 			});
 		}
-		$('.sidebarInLanguageInput').autocomplete({
-			source: tags
+		$('#sidebarInLanguageInput').autocomplete({
+			source: tags,
+			appendTo: '.ceasnDataFields',
+			minLength: 2
 		});
-		$('.sidebarFrameworkInLanguageInput').autocomplete({
-			source: tags
+		$('#sidebarFrameworkInLanguageInput').autocomplete({
+			source: tags,
+			appendTo: '.ceasnDataFields',
+			minLength: 2
 		});
-		$('.sidebarConceptInLanguageInput').autocomplete({
-			source: tags
+		$('#sidebarConceptInLanguageInput').autocomplete({
+			source: tags,
+			appendTo: '.ceasnDataFields',
+			minLength: 2
 		});
 	}
 });
