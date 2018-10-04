@@ -1117,24 +1117,25 @@ editSidebar = function () {
 						$(".changedField").removeClass("changedField");
 						results.push(competency.shortId());
 
-						//Delete the default created competency if selecting an existing one from dropdown
-						framework.removeCompetency(selectedCompetency.shortId());
-						framework.removeLevel(selectedCompetency.shortId());
-						conditionalDelete(selectedCompetency.shortId());
-						repo.saveTo(framework, function () {
-							appendCompetencies(results, true);
-						}, error);
-					}
-				}
-			});
-		}, fetchFailure, {});
-	} else {
-		$('#sidebarNameInput').autocomplete = null;
-	}
-	$('input[data-autocompleteCache="true"]').each(function () {
-		attachCustomAutocomplete(this);
-	});
-	$(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
+                        //Delete the default created competency if selecting an existing one from dropdown
+                        framework.removeCompetency(selectedCompetency.shortId());
+                        framework.removeLevel(selectedCompetency.shortId());
+                        conditionalDelete(selectedCompetency.shortId());
+                        repo.saveTo(framework, function () {
+                            appendCompetencies(results, true);
+                        }, error);
+                        selectedCompetency = competency;
+                    }
+                }
+            });
+        }, fetchFailure, {});
+    } else {
+        $('#sidebarNameInput').autocomplete = null;
+    }
+    $('input[data-autocompleteCache="true"]').each(function() {
+        attachCustomAutocomplete(this);
+    });
+    $(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
 }
 
 $("body").on("click", ".collapse", null, function (evt) {
