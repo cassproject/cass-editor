@@ -245,6 +245,9 @@ dropAnyConcept = function (data, targetData) {
         delete thing["skos:topConceptOf"];
         EcArray.setRemove(framework["skos:hasTopConcept"], thing.shortId());
     }
+    // replaced selected concept with changed concept
+    selectedCompetency = thing;
+    refreshSidebar();
     repo.saveTo(thing, function () {
         repo.saveTo(targetThing, afterSave, console.error);
     }, console.error);

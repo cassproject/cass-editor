@@ -89,13 +89,12 @@
 					<p style="text-align:justify">If you know the URL of a IMS CASE Repository, such as OpenSalt, you can import published frameworks from that repository.</p>
 					<p style="text-align:justify">This import maintains the URLs of the CASE frameworks and changes both the format and schema used to store the CASE frameworks in CaSS, but does not change any of the data.</p>
 					<p style="text-align:justify">After entering the endpoint below, you can select which frameworks you would like to import.</p>
-					<button style="font-size:x-small" onclick="$('#urlEndpoint').val('https://opensalt.net');detectEndpoint1();">Example: Connect to OpenSalt.net</button>
+					<button style="font-size:x-small" onclick="$('#urlEndpoint').val('https://opensalt.net');">Example: Connect to OpenSalt.net</button>
 				</div>
 			</div>
-			<center style="width:100%">
-				<input type="text" name="urlEndpoint" id="urlEndpoint" style="width:calc(100% - 2rem)" placeholder="https://case.yourorganization.com" />
-				<br><small id="urlEndpointSuccess" style="display:none;" class="greenButton">Success text.</small> <small id="urlEndpointError" style="display:none;" class="redButton">Error text.</small>
-			</center>
+			<input type="text" name="urlEndpoint" id="urlEndpoint" style="width:calc(100% - 2rem);" placeholder="https://case.yourorganization.com" />
+			<br><small id="urlEndpointSuccess" style="display:none;" class="greenButton">Success text.</small> <small id="urlEndpointError" style="display:none;" class="redButton">Error text.</small>
+			<br><button id="urlEndpointButton">Connect</button>
 		</div>
 	</div>
 	<div id="ctdlasncsvImportSection" class="page absentForConcepts" style="display:none;margin-left: 1rem;">

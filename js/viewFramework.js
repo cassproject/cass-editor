@@ -1117,24 +1117,25 @@ editSidebar = function () {
 						$(".changedField").removeClass("changedField");
 						results.push(competency.shortId());
 
-						//Delete the default created competency if selecting an existing one from dropdown
-						framework.removeCompetency(selectedCompetency.shortId());
-						framework.removeLevel(selectedCompetency.shortId());
-						conditionalDelete(selectedCompetency.shortId());
-						repo.saveTo(framework, function () {
-							appendCompetencies(results, true);
-						}, error);
-					}
-				}
-			});
-		}, fetchFailure, {});
-	} else {
-		$('#sidebarNameInput').autocomplete = null;
-	}
-	$('input[data-autocompleteCache="true"]').each(function () {
-		attachCustomAutocomplete(this);
-	});
-	$(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
+                        //Delete the default created competency if selecting an existing one from dropdown
+                        framework.removeCompetency(selectedCompetency.shortId());
+                        framework.removeLevel(selectedCompetency.shortId());
+                        conditionalDelete(selectedCompetency.shortId());
+                        repo.saveTo(framework, function () {
+                            appendCompetencies(results, true);
+                        }, error);
+                        selectedCompetency = competency;
+                    }
+                }
+            });
+        }, fetchFailure, {});
+    } else {
+        $('#sidebarNameInput').autocomplete = null;
+    }
+    $('input[data-autocompleteCache="true"]').each(function() {
+        attachCustomAutocomplete(this);
+    });
+    $(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
 }
 
 $("body").on("click", ".collapse", null, function (evt) {
@@ -1760,8 +1761,10 @@ setLanguageTagAutocomplete = function () {
 			var tagList = a;
 			var tags = [];
 			for (var i = 0; i < tagList.length; i++) {
-				EcArray.setAdd(tags, tagList[i].lang);
-				EcArray.setAdd(tags, tagList[i].langType);
+				tags.push({
+					label: tagList[i].description,
+					value: tagList[i].subtag
+				});
 			}
 			$('.sidebarInLanguageInput').autocomplete({
 				source: tags
@@ -1821,8 +1824,10 @@ $.ajax({
 		var tagList = a;
 		var tags = [];
 		for (var i = 0; i < tagList.length; i++) {
-			EcArray.setAdd(tags, tagList[i].lang);
-			EcArray.setAdd(tags, tagList[i].langType);
+			tags.push({
+				label: tagList[i].description,
+				value: tagList[i].subtag
+			});
 		}
 		$('.sidebarInLanguageInput').autocomplete({
 			source: tags
