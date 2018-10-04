@@ -1760,8 +1760,10 @@ setLanguageTagAutocomplete = function () {
 			var tagList = a;
 			var tags = [];
 			for (var i = 0; i < tagList.length; i++) {
-				EcArray.setAdd(tags, tagList[i].lang);
-				EcArray.setAdd(tags, tagList[i].langType);
+				tags.push({
+					label: tagList[i].description,
+					value: tagList[i].subtag
+				});
 			}
 			$('.sidebarInLanguageInput').autocomplete({
 				source: tags
@@ -1821,8 +1823,10 @@ $.ajax({
 		var tagList = a;
 		var tags = [];
 		for (var i = 0; i < tagList.length; i++) {
-			EcArray.setAdd(tags, tagList[i].lang);
-			EcArray.setAdd(tags, tagList[i].langType);
+			tags.push({
+				label: tagList[i].description,
+				value: tagList[i].subtag
+			});
 		}
 		$('.sidebarInLanguageInput').autocomplete({
 			source: tags
