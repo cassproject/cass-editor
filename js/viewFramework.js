@@ -494,7 +494,7 @@ renderSidebar = function (justLists) {
 		if (selectedCompetency["skos:broader"] != null) {
 			for (var bc = 0; bc < selectedCompetency["skos:broader"].length; bc++) {
 				(function (conceptId, renderConceptConnection) {
-					if (alignmentCache[framework.shortId()] != null && alignmentCache[framework.shortId()][conceptId] != null && alignmentCache[framework.shortId()][conceptId].target.shortId() > -1) {
+					if (alignmentCache[framework.shortId()] != null && alignmentCache[framework.shortId()][conceptId] != null && alignmentCache[framework.shortId()][conceptId].target != null && alignmentCache[framework.shortId()][conceptId].target.shortId() > -1) {
 						renderConceptConnection(conceptId, alignmentCache[framework.shortId()][conceptId].target, "hasChild");
 					} else {
 						if (runningAsyncFunctions[conceptId] == null) {
@@ -525,7 +525,7 @@ renderSidebar = function (justLists) {
 		if (selectedCompetency["skos:narrower"] != null) {
 			for (var nc = 0; nc < selectedCompetency["skos:narrower"].length; nc++) {
 				(function (conceptId, renderConceptConnection) {
-					if (alignmentCache[framework.shortId()] != null && alignmentCache[framework.shortId()][conceptId] != null && alignmentCache[framework.shortId()][conceptId].source.shortId() > -1) {
+					if (alignmentCache[framework.shortId()] != null && alignmentCache[framework.shortId()][conceptId] != null && alignmentCache[framework.shortId()][conceptId].source != null && alignmentCache[framework.shortId()][conceptId].source.shortId() > -1) {
 						renderConceptConnection(conceptId, alignmentCache[framework.shortId()][conceptId].source, "isChildOf");
 					} else {
 						if (runningAsyncFunctions[conceptId] == null) {
