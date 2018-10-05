@@ -494,7 +494,7 @@ renderSidebar = function (justLists) {
 		if (selectedCompetency["skos:broader"] != null) {
 			for (var bc = 0; bc < selectedCompetency["skos:broader"].length; bc++) {
 				(function (conceptId, renderConceptConnection) {
-					if (alignmentCache[framework.shortId()] != null && alignmentCache[framework.shortId()][conceptId] != null && alignmentCache[framework.shortId()][conceptId].target.shortId() > -1) {
+					if (alignmentCache[framework.shortId()] != null && alignmentCache[framework.shortId()][conceptId] != null && alignmentCache[framework.shortId()][conceptId].target != null && alignmentCache[framework.shortId()][conceptId].target.shortId() > -1) {
 						renderConceptConnection(conceptId, alignmentCache[framework.shortId()][conceptId].target, "hasChild");
 					} else {
 						if (runningAsyncFunctions[conceptId] == null) {
@@ -525,7 +525,7 @@ renderSidebar = function (justLists) {
 		if (selectedCompetency["skos:narrower"] != null) {
 			for (var nc = 0; nc < selectedCompetency["skos:narrower"].length; nc++) {
 				(function (conceptId, renderConceptConnection) {
-					if (alignmentCache[framework.shortId()] != null && alignmentCache[framework.shortId()][conceptId] != null && alignmentCache[framework.shortId()][conceptId].source.shortId() > -1) {
+					if (alignmentCache[framework.shortId()] != null && alignmentCache[framework.shortId()][conceptId] != null && alignmentCache[framework.shortId()][conceptId].source != null && alignmentCache[framework.shortId()][conceptId].source.shortId() > -1) {
 						renderConceptConnection(conceptId, alignmentCache[framework.shortId()][conceptId].source, "isChildOf");
 					} else {
 						if (runningAsyncFunctions[conceptId] == null) {
@@ -1110,6 +1110,7 @@ editSidebar = function () {
 			}
 			$('#sidebarNameInput').autocomplete({
 				source: competencies,
+				appendTo: '.sidebarEditSection',
 				select: function (event, ui) {
 					if (confirm("Selecting this competency will delete the one you are currently creating and reuse an existing competency. You may not have permissions to edit this competency further. Would you like to continue?")) {
 						var competency = EcRepository.getBlocking(autocompleteDict[ui.item.value]);
@@ -1766,14 +1767,20 @@ setLanguageTagAutocomplete = function () {
 					value: tagList[i].subtag
 				});
 			}
-			$('.sidebarInLanguageInput').autocomplete({
-				source: tags
+			$('#sidebarInLanguageInput').autocomplete({
+				source: tags,
+				appendTo: '.ceasnDataFields',
+				minLength: 2
 			});
-			$('.sidebarFrameworkInLanguageInput').autocomplete({
-				source: tags
+			$('#sidebarFrameworkInLanguageInput').autocomplete({
+				source: tags,
+				appendTo: '.ceasnDataFields',
+				minLength: 2
 			});
-			$('.sidebarConceptInLanguageInput').autocomplete({
-				source: tags
+			$('#sidebarConceptInLanguageInput').autocomplete({
+				source: tags,
+				appendTo: '.ceasnDataFields',
+				minLength: 2
 			});
 		}
 	});
@@ -1829,14 +1836,20 @@ $.ajax({
 				value: tagList[i].subtag
 			});
 		}
-		$('.sidebarInLanguageInput').autocomplete({
-			source: tags
+		$('#sidebarInLanguageInput').autocomplete({
+			source: tags,
+			appendTo: '.ceasnDataFields',
+			minLength: 2
 		});
-		$('.sidebarFrameworkInLanguageInput').autocomplete({
-			source: tags
+		$('#sidebarFrameworkInLanguageInput').autocomplete({
+			source: tags,
+			appendTo: '.ceasnDataFields',
+			minLength: 2
 		});
-		$('.sidebarConceptInLanguageInput').autocomplete({
-			source: tags
+		$('#sidebarConceptInLanguageInput').autocomplete({
+			source: tags,
+			appendTo: '.ceasnDataFields',
+			minLength: 2
 		});
 	}
 });
