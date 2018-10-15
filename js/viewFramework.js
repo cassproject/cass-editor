@@ -220,9 +220,11 @@ function refreshCompetency(col, level, subsearch) {
 	if (conceptMode)
 		return refreshConcept(col, level, subsearch);
 	var me = this;
-	me.fetches--;
+	if (me.fetches > 0)
+		me.fetches--;
 	var treeNode = null;
 	if ($("#tree [id='" + col.shortId() + "']").length > 0) {
+		//console.log("refreshCompetency - remove existing in tree "+col.shortId());
 		treeNode = $("[id='" + col.shortId() + "']");
 		treeNode.remove();
 	}
@@ -236,6 +238,10 @@ function refreshCompetency(col, level, subsearch) {
 		draggable = 'true';
 	else
 		draggable = 'false';
+
+	if ($("#tree>.competency[id=\"" + col.shortId() + "\"]").length > 0) {
+		console.log("WARNING: within tree hierarchy already exists "+col.shortId());
+	}
 	treeNode = $("#tree").append("<li class = 'competency' draggable='" + draggable + "' ondragstart='dragCompetency(event);' ontouchstart='handleTouchStart(event)' ontouchmove='handleTouchMove(event);' ontouchend='handleTouchEnd(event);' ondrop='dropCompetency(event);' ondragover='allowCompetencyDrop(event);'><span></span><ul></ul></li>").children().last();
 	treeNode.attr("id", col.shortId());
 	var competencyDescription = col.description;
@@ -1141,14 +1147,18 @@ editSidebar = function () {
 
 $("body").on("click", ".collapse", null, function (evt) {
 	$(this).parent().children("ul").slideToggle();
-
+	let state;
 	if ($(this).hasClass('collapsed')) {
 		$(this).removeClass('collapsed');
 		$(this).html('<i class="fa fa-minus-square" aria-hidden="true"></i> ');
+		state = 'expanded';
 	} else {
 		$(this).addClass('collapsed');
 		$(this).html('<i class="fa fa-plus-square" aria-hidden="true"></i> ');
+		state = 'collapsed';
 	}
+	// update localstorage collapseDict(ionary) which competency is collapsed (or expanded)
+	collapseCompetencyTracking(framework.shortId(), $(this).parent().attr('id'), state);
 });
 
 
@@ -1248,31 +1258,6 @@ $('body').on('click', '.addInputButton', function (evt) {
 //     }
 //     addChangedFieldHighlight();
 // });
-
-//Store which competencies the user has collapsed in localstorage so it persists
-$('body').on('click', '.collapse', function (evt) {
-	var competency = $(this).parent();
-	var competencyId = competency.attr('id');
-	var state;
-
-	if ($(this).hasClass('collapsed'))
-		state = 'collapsed';
-	else
-		state = 'expanded';
-
-	var collapseDict = JSON.parse(localStorage.getItem('collapseDict'));
-	if (collapseDict == null)
-		collapseDict = {};
-	if (collapseDict[framework.id] == null)
-		collapseDict[framework.id] = {};
-
-	if (state === 'expanded')
-		delete collapseDict[framework.id][competencyId];
-	else
-		collapseDict[framework.id][competencyId] = state;
-
-	localStorage.setItem('collapseDict', JSON.stringify(collapseDict));
-});
 
 $('body').on('click', '#frameworkName', function (evt) {
 	if ($(".changedField:visible").length > 0) {
@@ -1576,11 +1561,42 @@ $("body").on("webkitAnimationEnd oanimationend msAnimationEnd animationend", ".s
 	$(".savedCompetency").removeClass('savedCompetency');
 });
 
+//Store which competency user has collapsed in localstorage so it persists
+collapseCompetencyTracking = function(fId, cId, toggleState) {
+	var collapseDict = JSON.parse(localStorage.getItem('collapseDict'));
+	if (collapseDict == null)
+		collapseDict = {};
+
+	if (fId == null){
+		console.log("collapseCompetencyTracking failed! Given undefined framework Id.");
+		return false;
+	}
+	if (cId == null){
+		console.log("collapseCompetencyTracking failed! Given undefined competency Id.");
+		return false;
+	}
+	if (collapseDict[fId] == null)
+		collapseDict[fId] = {};
+
+	if (toggleState == null) {
+		console.log("collapseCompetencyTracking failed! Given undefined toggle state.");
+		return false;
+	} else {
+		if (toggleState === 'expanded' && collapseDict[fId][cId] != null)
+			delete collapseDict[fId][cId];
+		else
+			collapseDict[fId][cId] = toggleState;
+
+		localStorage.setItem('collapseDict', JSON.stringify(collapseDict));
+	}
+}
+
 collapseCompetencies = function () {
 	var collapseDict = JSON.parse(localStorage.getItem('collapseDict'));
-	if (collapseDict != null && collapseDict[framework.id] != null)
-		Object.keys(collapseDict[framework.id]).forEach(function (key) {
-			if (collapseDict[framework.id][key] === 'collapsed') {
+	var fId = framework.shortId();
+	if (collapseDict != null && collapseDict[fId] != null)
+		Object.keys(collapseDict[fId]).forEach(function (key) {
+			if (collapseDict[fId][key] === 'collapsed') {
 				var elem = $('[id="' + key + '"]');
 				elem.children('.collapse').addClass('collapsed');
 				elem.children('.collapse').children('i').removeClass('fa-minus-square').addClass('fa-plus-square');

@@ -36,6 +36,7 @@ addCompetency = function () {
         framework["schema:dateModified"] = new Date().toISOString();
         repo.saveTo(c, function () {
             if (selectedCompetency != null) {
+                collapseCompetencyTracking(framework.shortId(),selectedCompetency.shortId(),"expanded");
                 var r = new EcAlignment();
                 if (newObjectEndpoint != null)
                     r.generateShortId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
