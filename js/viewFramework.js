@@ -1759,6 +1759,9 @@ setLanguageTagAutocomplete = function () {
 	$.ajax({
 		url: "js/ietf-language-tags_json.json",
 		success: function (a) {
+			if (typeof a === 'string') {
+				a = JSON.parse(a);
+			}
 			var tagList = a;
 			var tags = [];
 			for (var i = 0; i < tagList.length; i++) {
@@ -1767,17 +1770,17 @@ setLanguageTagAutocomplete = function () {
 					value: tagList[i].subtag
 				});
 			}
-			$('#sidebarInLanguageInput').autocomplete({
+			$('.sidebarInLanguageInput:last').autocomplete({
 				source: tags,
 				appendTo: '.ceasnDataFields',
 				minLength: 2
 			});
-			$('#sidebarFrameworkInLanguageInput').autocomplete({
+			$('.sidebarFrameworkInLanguageInput:last').autocomplete({
 				source: tags,
 				appendTo: '.ceasnDataFields',
 				minLength: 2
 			});
-			$('#sidebarConceptInLanguageInput').autocomplete({
+			$('.sidebarConceptInLanguageInput:last').autocomplete({
 				source: tags,
 				appendTo: '.ceasnDataFields',
 				minLength: 2
@@ -1828,6 +1831,9 @@ handleAlignmentInput = function (event) {
 $.ajax({
 	url: "js/ietf-language-tags_json.json",
 	success: function (a) {
+		if (typeof a === 'string') {
+			a = JSON.parse(a);
+		}
 		var tagList = a;
 		var tags = [];
 		for (var i = 0; i < tagList.length; i++) {
