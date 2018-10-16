@@ -17,6 +17,7 @@ addConcept = function () {
         c["skos:prefLabel"] = "New Concept";
         c["skos:inScheme"] = framework.shortId();
         if (selectedCompetency != null) {
+            collapseCompetencyTracking(framework.shortId(),selectedCompetency.shortId(),"expanded");
             if (selectedCompetency["skos:narrower"] == null)
                 selectedCompetency["skos:narrower"] = [];
             EcArray.setAdd(selectedCompetency["skos:narrower"], c.shortId());
