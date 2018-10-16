@@ -217,6 +217,10 @@ p.selected {
     overflow: hidden;
 }
 
+ul.ui-autocomplete {
+    display:none;
+}
+
 .ui-tooltip {
     border-radius: 5px;
     background-color: white;
