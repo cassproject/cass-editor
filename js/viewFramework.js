@@ -979,6 +979,7 @@ refreshSidebar = function () {
 		$("#sidebarRemove").hide();
 		if (queryParams.ceasnDataFields === 'true' || queryParams.tlaProfile == 'true') {
 			$(".absentForCeasn").hide();
+			$(".ceasnDataFields").show();
 		}
 	}
 
@@ -994,6 +995,7 @@ refreshSidebar = function () {
 			}
 		if (queryParams.ceasnDataFields === 'true' || queryParams.tlaProfile == 'true') {
 			$(".absentForCeasn").hide();
+			$(".ceasnDataFields").show();
 		}
 	}
 
@@ -1143,6 +1145,9 @@ editSidebar = function () {
         attachCustomAutocomplete(this);
     });
     $(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
+    if (queryParams.ceasnDataFields === 'true' || queryParams.tlaProfile == 'true') {
+		$(".ceasnDataFields").show();
+	}
 }
 
 $("body").on("click", ".collapse", null, function (evt) {
