@@ -1458,6 +1458,14 @@ $('html').keydown(function (evt) {
 		}
 		//If we're on the editFrameworks section
 		else if ($('#editFrameworkSection').css('display') === 'block') {
+			// asterisk key or Shift+8 = asterisk(*)
+			if (evt.which === 170 || (evt.shiftKey && evt.which === 56)) {
+				expandAllCompetencies();
+			}
+			// slash (forward)
+			else if (evt.which === 191) {
+				collapseAllCompetencies();
+			}
 			var competencyElementArray = $('#tree').find('.competency:visible');
 			if (competencySelectionIndex === null) {
 				competencySelectionIndex = -1;
@@ -1635,6 +1643,7 @@ collapseCompetencies = function () {
 				var elem = $('[id="' + key + '"]');
 				elem.children('.collapse').addClass('collapsed');
 				elem.children('.collapse').children('i').removeClass('fa-minus-square').addClass('fa-plus-square');
+				elem.children('ul').slideToggle();
 				elem.children('ul').hide();
 			}
 		});
@@ -1651,7 +1660,7 @@ expandAllCompetencies = function() {
 		if (competency.length > 0) {
 			if (competency.hasClass('expandable')) {
 				if (competency.children('.collapse').hasClass('collapsed')){
-					competency.children("ul").slideToggle();
+					competency.children('ul').slideToggle();
 					competency.children('.collapse').removeClass('collapsed');
 					competency.children('.collapse').children('i').removeClass('fa-plus-square').addClass('fa-minus-square');
 					collapseCompetencyTracking(framework.shortId(), competencyId, 'expanded');
