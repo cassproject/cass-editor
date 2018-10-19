@@ -1442,18 +1442,29 @@ $('html').keydown(function (evt) {
 		}
 		//If we're on the editFrameworks section
 		else if ($('#editFrameworkSection').css('display') === 'block') {
-			var competencyElementArray = $('#tree').find('.competency:visible');
-			if (competencySelectionIndex === null) {
+			let competencyElementArray = $('#tree').find('.competency:visible');
+			if (competencySelectionIndex == null ||
+				competencySelectionIndex >= competencyElementArray.length)
 				competencySelectionIndex = -1;
-				return;
+			// set selection index to selected competency if previous selection no longer selected competency
+			if (selectedCompetency != null){
+				if (competencySelectionIndex < 0 ||
+					competencyElementArray[competencySelectionIndex].id != selectedCompetency.shortId()) {
+					for (var i = 0; i < competencyElementArray.length; i++) {
+						if (competencyElementArray[i].id == selectedCompetency.shortId()) {
+							competencySelectionIndex = i;
+							break;
+						}
+					}
+				}
 			}
-			//On shift+down arrow
+			//On shift+down arrow to move down hierarchy
 			if (evt.shiftKey && evt.which === 40) {
 				competencySelectionIndex++;
 				moveDown();
 				evt.preventDefault();
 			}
-			//On shift+up arrow
+			//On shift+up arrow to move up hierarchy
 			else if (evt.shiftKey && evt.which === 38) {
 				competencySelectionIndex--;
 				moveUp();
@@ -1480,15 +1491,13 @@ $('html').keydown(function (evt) {
 				$('#tree').scrollTop($('#tree').scrollTop() + $('.selected').position().top - 100);
 				evt.preventDefault();
 			}
-			//On left and right arrows
-			else if (evt.which === 39) {
-				$(':focus').blur();
-				$(competencyElementArray[competencySelectionIndex]).find('.collapse').click();
-				$(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
-			} else if (evt.which === 37) {
-				$(':focus').blur();
-				$(competencyElementArray[competencySelectionIndex]).find('.collapse').click();
-				$(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
+			//On right or left arrow to collapse or expand
+			else if (evt.which === 39 || evt.which === 37) {
+				if ($(competencyElementArray[competencySelectionIndex]).hasClass("expandable")) {
+					$(':focus').blur();
+					$(competencyElementArray[competencySelectionIndex]).children(".collapse").click();
+					$(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
+				}
 			}
 			//On Backspace
 			else if (evt.which === 8) {
