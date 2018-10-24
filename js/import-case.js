@@ -1,4 +1,6 @@
 var caseImportTemplate = $("#caseImportList").html();
+var importCaseAjax;
+var isImportCaseCanceled = false;
 
 detectEndpoint1 = function () {
 	$("#caseImportSection #importButton").show();
@@ -22,6 +24,7 @@ detectEndpoint1 = function () {
 					t.attr("id", doc.uri);
 					t.find(".caseImportTitle").text(doc.title);
 				}
+				isImportCaseCanceled = false;
 				showPage("#caseImportSection");
 			}
 		},
@@ -39,32 +42,40 @@ $("#urlEndpointButton").click(detectEndpoint1);
 importCase = function () {
 	$("#caseImportSection #importButton").hide();
 	$("#caseImportSection input:not(:checked)").parent().remove();
-	var lis = $(".caseImportTemplate.unfinished");
-	if (lis.length == 0) {
-		$("#search").val("\"" + $("#urlEndpoint").val() + "\"");
-		searchFrameworks({
-			frameworksOnly: true
-		});
-	} else {
-		lis.find("input").hide();
-		var id = lis.first().attr("id");
-		var uuid = id.split("/")[id.split("/").length - 1];
+	if (!isImportCaseCanceled) {
+		let lis = $(".caseImportTemplate.unfinished");
+		if (lis.length == 0) {
+			$("#search").val("\"" + $("#urlEndpoint").val() + "\"");
+			searchFrameworks({
+				frameworksOnly: true
+			});
+		} else {
+			lis.find("input").hide();
+			var id = lis.first().attr("id");
+			var uuid = id.split("/")[id.split("/").length - 1];
 
-		$("#caseImportSection [id='" + id + "']").find(".loading").show();
-		$.ajax({
-			url: repo.selectedServer + "ims/case/harvest?caseEndpoint=" + $("#urlEndpoint").val() + "&dId=" + uuid,
-			success: function () {
-				$("#caseImportSection [id='" + id + "']").removeClass("unfinished").addClass("finished").find(".loading").hide().parent().find(".success").show();
-				importCase();
-			},
-			failure: function (failure) {
-				$("#caseImportSection [id='" + id + "']").removeClass("unfinished").addClass("finished").find(".loading").hide().parent().find(".error").show().attr("title", failure.statusText);
-				importCase();
-			},
-			error: function (failure) {
-				$("#caseImportSection [id='" + id + "']").removeClass("unfinished").addClass("finished").find(".loading").hide().parent().find(".error").show().attr("title", failure.statusText);
-				importCase();
-			}
-		});
-	}
+			$("#caseImportSection [id='" + id + "']").find(".loading").show();
+			importCaseAjax = $.ajax({
+				url: repo.selectedServer + "ims/case/harvest?caseEndpoint=" + $("#urlEndpoint").val() + "&dId=" + uuid,
+				success: function () {
+					$("#caseImportSection [id='" + id + "']").removeClass("unfinished").addClass("finished").find(".loading").hide().parent().find(".success").show();
+					importCase();
+				},
+				failure: function (failure) {
+					$("#caseImportSection [id='" + id + "']").removeClass("unfinished").addClass("finished").find(".loading").hide().parent().find(".error").show().attr("title", failure.statusText);
+					importCase();
+				},
+				error: function (failure) {
+					$("#caseImportSection [id='" + id + "']").removeClass("unfinished").addClass("finished").find(".loading").hide().parent().find(".error").show().attr("title", failure.statusText);
+					importCase();
+				}
+			});
+		}
+	}// if not import canceled
+}
+
+importCaseCancel = function () {
+	isImportCaseCanceled = true;
+	if (importCaseAjax != null)
+		importCaseAjax.abort();
 }
