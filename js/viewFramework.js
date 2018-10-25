@@ -154,6 +154,11 @@ populateFramework = function (subsearch) {
 		if (queryParams.link == "true")
 			$("#editFrameworkSection #frameworkLink").attr("href", framework.shortId()).show();
 
+	if ($("#collapseAllCompetencies").css("display") != 'none') {
+		$("#collapseAllCompetencies").css("display", "none");
+		$("#expandAllCompetencies").css("display", "none");
+	}
+
 	if (framework.competency == null)
 		framework.competency = [];
 	if (framework.relation == null)
@@ -269,8 +274,13 @@ function refreshCompetency(col, level, subsearch) {
 		level = true;
 		$(".competency[id=\"" + col.competency + "\"]").children().last().append($(".competency[id=\"" + col.shortId() + "\"]"));
 		treeNode.children().first().append(" <small>(Performance Level)</small>");
-		if (!$(".competency[id=\"" + col.competency + "\"]").hasClass("expandable"))
+		if (!$(".competency[id=\"" + col.competency + "\"]").hasClass("expandable")) {
 			$(".competency[id=\"" + col.competency + "\"]").addClass("expandable").children(".collapse").css("visibility", "visible");
+			if ($("#collapseAllCompetencies").css("display") === 'none') {
+				$("#collapseAllCompetencies").css("display", "");
+				$("#expandAllCompetencies").css("display", "");
+			}
+		}
 	}
 	if (queryParams.link == "true")
 		treeNode.prepend(" <a class='link' title='Click to navigate to link address. Right click to copy link address.' style='float:right;' target='_blank'><i class='fa fa-link' aria-hidden='true'></a>").children().first().attr("href", col.shortId());
@@ -305,8 +315,14 @@ function refreshCompetency(col, level, subsearch) {
 											$("#tree>.competency[id=\"" + source.shortId() + "\"]").remove();
 										}
 									}
-									if ($(".competency[id=\"" + source.shortId() + "\"]").length && !$(".competency[id=\"" + target.shortId() + "\"]").hasClass("expandable"))
+									if ($(".competency[id=\"" + source.shortId() + "\"]").length &&
+										!$(".competency[id=\"" + target.shortId() + "\"]").hasClass("expandable")) {
 										$(".competency[id=\"" + target.shortId() + "\"]").addClass("expandable").children(".collapse").css("visibility", "visible");
+										if ($("#collapseAllCompetencies").css("display") === 'none') {
+											$("#collapseAllCompetencies").css("display", "");
+											$("#expandAllCompetencies").css("display", "");
+										}
+									}
 								}
 						}
 					}
@@ -979,6 +995,7 @@ refreshSidebar = function () {
 		$("#sidebarRemove").hide();
 		if (queryParams.ceasnDataFields === 'true' || queryParams.tlaProfile == 'true') {
 			$(".absentForCeasn").hide();
+			$(".ceasnDataFields").show();
 		}
 	}
 
@@ -994,6 +1011,7 @@ refreshSidebar = function () {
 			}
 		if (queryParams.ceasnDataFields === 'true' || queryParams.tlaProfile == 'true') {
 			$(".absentForCeasn").hide();
+			$(".ceasnDataFields").show();
 		}
 	}
 
@@ -1143,6 +1161,9 @@ editSidebar = function () {
         attachCustomAutocomplete(this);
     });
     $(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
+    if (queryParams.ceasnDataFields === 'true' || queryParams.tlaProfile == 'true') {
+		$(".ceasnDataFields").show();
+	}
 }
 
 $("body").on("click", ".collapse", null, function (evt) {
@@ -1442,18 +1463,37 @@ $('html').keydown(function (evt) {
 		}
 		//If we're on the editFrameworks section
 		else if ($('#editFrameworkSection').css('display') === 'block') {
-			var competencyElementArray = $('#tree').find('.competency:visible');
-			if (competencySelectionIndex === null) {
-				competencySelectionIndex = -1;
-				return;
+			// asterisk key or Shift+8 = asterisk(*)
+			if (evt.which === 170 || (evt.shiftKey && evt.which === 56)) {
+				expandAllCompetencies();
 			}
-			//On shift+down arrow
+			// slash (forward)
+			else if (evt.which === 191) {
+				collapseAllCompetencies();
+			}
+			let competencyElementArray = $('#tree').find('.competency:visible');
+			if (competencySelectionIndex == null ||
+				competencySelectionIndex >= competencyElementArray.length)
+				competencySelectionIndex = -1;
+			// set selection index to selected competency if previous selection no longer selected competency
+			if (selectedCompetency != null){
+				if (competencySelectionIndex < 0 ||
+					competencyElementArray[competencySelectionIndex].id != selectedCompetency.shortId()) {
+					for (var i = 0; i < competencyElementArray.length; i++) {
+						if (competencyElementArray[i].id == selectedCompetency.shortId()) {
+							competencySelectionIndex = i;
+							break;
+						}
+					}
+				}
+			}
+			//On shift+down arrow to move down hierarchy
 			if (evt.shiftKey && evt.which === 40) {
 				competencySelectionIndex++;
 				moveDown();
 				evt.preventDefault();
 			}
-			//On shift+up arrow
+			//On shift+up arrow to move up hierarchy
 			else if (evt.shiftKey && evt.which === 38) {
 				competencySelectionIndex--;
 				moveUp();
@@ -1480,15 +1520,13 @@ $('html').keydown(function (evt) {
 				$('#tree').scrollTop($('#tree').scrollTop() + $('.selected').position().top - 100);
 				evt.preventDefault();
 			}
-			//On left and right arrows
-			else if (evt.which === 39) {
-				$(':focus').blur();
-				$(competencyElementArray[competencySelectionIndex]).find('.collapse').click();
-				$(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
-			} else if (evt.which === 37) {
-				$(':focus').blur();
-				$(competencyElementArray[competencySelectionIndex]).find('.collapse').click();
-				$(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
+			//On right or left arrow to collapse or expand
+			else if (evt.which === 39 || evt.which === 37) {
+				if ($(competencyElementArray[competencySelectionIndex]).hasClass("expandable")) {
+					$(':focus').blur();
+					$(competencyElementArray[competencySelectionIndex]).children(".collapse").click();
+					$(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
+				}
 			}
 			//On Backspace
 			else if (evt.which === 8) {
@@ -1591,6 +1629,25 @@ collapseCompetencyTracking = function(fId, cId, toggleState) {
 	}
 }
 
+collapseAllCompetencies = function() {
+	if (conceptMode)
+		return;
+	if (framework.competency == null || framework.competency.length == 0)
+		return;
+	for (var i = 0; i < framework.competency.length; i++) {
+		var competencyId = framework.competency[i];
+		var competency = $("#tree [id='" + competencyId + "']");
+		if (competency.length > 0) {
+			if (competency.hasClass('expandable')){
+				collapseCompetencyTracking(framework.shortId(), competencyId, 'collapsed');
+			}//end if competency expandable
+		}//end if
+	}//end for each competency
+	selectedCompetency = null; // so sidebar display of competency is cleared
+	refreshSidebar();
+	collapseCompetencies();
+}
+
 collapseCompetencies = function () {
 	var collapseDict = JSON.parse(localStorage.getItem('collapseDict'));
 	var fId = framework.shortId();
@@ -1600,9 +1657,31 @@ collapseCompetencies = function () {
 				var elem = $('[id="' + key + '"]');
 				elem.children('.collapse').addClass('collapsed');
 				elem.children('.collapse').children('i').removeClass('fa-minus-square').addClass('fa-plus-square');
+				elem.children('ul').slideToggle();
 				elem.children('ul').hide();
 			}
 		});
+}
+
+expandAllCompetencies = function() {
+	if (conceptMode)
+		return;
+	if (framework.competency == null || framework.competency.length == 0)
+		return;
+	for (var i = 0; i < framework.competency.length; i++) {
+		var competencyId = framework.competency[i];
+		var competency = $("#tree [id='" + competencyId + "']");
+		if (competency.length > 0) {
+			if (competency.hasClass('expandable')) {
+				if (competency.children('.collapse').hasClass('collapsed')){
+					competency.children('ul').slideToggle();
+					competency.children('.collapse').removeClass('collapsed');
+					competency.children('.collapse').children('i').removeClass('fa-plus-square').addClass('fa-minus-square');
+					collapseCompetencyTracking(framework.shortId(), competencyId, 'expanded');
+				}//end if competency collapsed
+			}//end if competency expandable
+		}//end if competency
+	}//end for each competencies
 }
 
 validateString = function (str) {
