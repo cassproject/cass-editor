@@ -125,6 +125,7 @@
 #tree {
     margin: 0px;
     padding-top: 0rem;
+    box-sizing:border-box;
     overflow: auto;
     padding-left: 2.5rem;
     padding-bottom: 1rem;
