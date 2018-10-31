@@ -288,13 +288,14 @@ function refreshCompetency(col, level, subsearch) {
 		treeNode.prepend("<input type='checkbox' tabIndex='-1'>");
 	if (subsearch != null)
 		treeNode.mark(subsearch);
-	if (me.fetches == 0) {
+	var relationsDone = false;
+	if (me.fetches == 0 && !relationsDone) {
 		if (framework.relation != undefined && framework.relation.length > 0) {
-			me.fetches += framework.relation.length;
+			var localFetches = framework.relation.length;
 			var targetSourceArray = {};
 			for (var i = 0; i < framework.relation.length; i++) {
 				EcAlignment.get(framework.relation[i], function (relation) {
-					me.fetches--;
+					localFetches--;
 					if (relation.source !== undefined && relation.target !== undefined && relation.source != null && relation.target != null && relation.source != relation.target) {
 						if (relation.relationType == "narrows") {
 							var source = EcCompetency.getBlocking(relation.source);
@@ -332,6 +333,7 @@ function refreshCompetency(col, level, subsearch) {
 						afterRefresh(level, subsearch);
 					}
 				}, fetchFailure);
+				relationsDone = true;
 			}
 		} else {
 			if ($("#tree").html() == "")
