@@ -160,7 +160,7 @@ function cappend(event) {
     if (event.data.message == "selected") {
         console.log("I got " + event.data.selected.length + " selected items from the iframe");
         console.log(event.data.selected);
-        if (conceptMode && event.data.type == 'Concept') {
+        if (conceptMode && event.data.type == 'Concept' && $("#selectConceptSection").attr("relation")) {
             addAlignments(event.data.selected, selectedCompetency, $("#selectConceptSection").attr("relation"));
             $("#selectConceptSection").hide();
             $("#editFrameworkSection").show();
