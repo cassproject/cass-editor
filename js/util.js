@@ -548,8 +548,10 @@ resolveNameFromUrlWithElem = function(url, elem, callback) {
         success: function(data) {
             var name = null;
             if (data) {
-                if (data['ceterms:name'])
-                    name = data['ceterms:name'];
+                if (data['ceterms:name']) {
+                    var langs = Object.keys(data['ceterms:name']);
+                    name = data['ceterms:name'][langs[0]];
+                }
                 else if (data['name'])
                     name = data['name'];
                 else if (data['schema:name'])
