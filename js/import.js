@@ -185,11 +185,23 @@ function importCtdlAsnCsv() {
             });
         }, function (allDone) {
             Task.asyncImmediate(function (callback) {
-                showPage("framework");
-                populateFramework();
-                selectedCompetency = null;
-                refreshSidebar();
-                callback();
+                if (failed > 0) {
+                    loading(failed + " objects failed to save. Check your import file for any errors.");
+                    setTimeout(function () {
+                        showPage("framework");
+                        populateFramework();
+                        selectedCompetency = null;
+                        refreshSidebar();
+                        callback();
+                    }, 5000);
+                }
+                else {
+                    showPage("framework");
+                    populateFramework();
+                    selectedCompetency = null;
+                    refreshSidebar();
+                    callback();
+                }
             });
         });
     }, function (failure) {
