@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Highlight Competencies via postMessage</title>
+</head>
+
+<body>
+    <header>
+    	<h3>Highlight Competencies via postMessage</h3>
+    	<button id="selectButton" class="greenButton" style="float: left;">Highlight</button>
+    </header>
+    <div id="iframe-wrapper">
+    	<iframe id="iframe" width="100%" height="800" frameborder="0"></iframe>
+		<script>
+    		document.getElementsByTagName("iframe")[0].setAttribute("src", "/index.html?select=&origin=" + window.location.origin);
+		</script>
+    </div>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script>
+        $("#selectButton").click(function() {
+            $("iframe")[0].contentWindow.postMessage({
+                "message":"select"
+            }, window.location.origin);
+        });
+
+        var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+		var eventer = window[eventMethod];
+		var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+
+		eventer(messageEvent,function(e) {
+			console.log('parent received message!:  ',e.data);
+            $("iframe")[0].contentWindow.postMessage({
+                "message":"highlightedCompetencies",
+                "competencies":e.data.selected
+            }, window.location.origin);
+		},false);
+
+    </script>
+</body>
+</html>
