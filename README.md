@@ -117,6 +117,14 @@ If you have a specific competency you are directing your users to edit or view, 
     ex:
     https://cassproject.github.io/cass-editor/index.html?frameworkId=https://dev.cassproject.org/api/custom/data/schema.cassproject.org.0.2.Framework/76ffff33-bd15-4bf3-a007-4ce247d2216d&competencyId=https://dev.cassproject.org/api/custom/data/schema.cassproject.org.0.2.Competency/onet:1.A.1.a.1
     
+## Highlighting one or more specific competencies
+If you wish to highlight one or more competencies, you can force the cass-editor to highlight that competency using a postMessage. It is suggested this be used in conjunction with `frameworkId=<url identifier of framework>`
+
+	document.getElementById("iframe").contentWindow.postMessage({
+		"message": "highlightedCompetencies",
+		"competencies": ["@id of competency", "@id of competency", "@id of competency"]
+	}, window.location.origin);
+			
 ## Expose URL links
 If your users need the URLs for each framework or resource they are editing, you can enable link-showing by using `link=true`
 
