@@ -245,7 +245,7 @@ function refreshCompetency(col, level, subsearch) {
 		draggable = 'false';
 
 	if ($("#tree>.competency[id=\"" + col.shortId() + "\"]").length > 0) {
-		console.log("WARNING: within tree hierarchy already exists "+col.shortId());
+		console.log("WARNING: within tree hierarchy already exists " + col.shortId());
 	}
 	treeNode = $("#tree").append("<li class = 'competency' draggable='" + draggable + "' ondragstart='dragCompetency(event);' ontouchstart='handleTouchStart(event)' ontouchmove='handleTouchMove(event);' ontouchend='handleTouchEnd(event);' ondrop='dropCompetency(event);' ondragover='allowCompetencyDrop(event);'><span></span><ul></ul></li>").children().last();
 	treeNode.attr("id", col.shortId());
@@ -1144,26 +1144,26 @@ editSidebar = function () {
 						$(".changedField").removeClass("changedField");
 						results.push(competency.shortId());
 
-                        //Delete the default created competency if selecting an existing one from dropdown
-                        framework.removeCompetency(selectedCompetency.shortId());
-                        framework.removeLevel(selectedCompetency.shortId());
-                        conditionalDelete(selectedCompetency.shortId());
-                        repo.saveTo(framework, function () {
-                            appendCompetencies(results, true);
-                        }, error);
-                        selectedCompetency = competency;
-                    }
-                }
-            });
-        }, fetchFailure, {});
-    } else {
-        $('#sidebarNameInput').autocomplete = null;
-    }
-    $('input[data-autocompleteCache="true"]').each(function() {
-        attachCustomAutocomplete(this);
-    });
-    $(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
-    if (queryParams.ceasnDataFields === 'true' || queryParams.tlaProfile == 'true') {
+						//Delete the default created competency if selecting an existing one from dropdown
+						framework.removeCompetency(selectedCompetency.shortId());
+						framework.removeLevel(selectedCompetency.shortId());
+						conditionalDelete(selectedCompetency.shortId());
+						repo.saveTo(framework, function () {
+							appendCompetencies(results, true);
+						}, error);
+						selectedCompetency = competency;
+					}
+				}
+			});
+		}, fetchFailure, {});
+	} else {
+		$('#sidebarNameInput').autocomplete = null;
+	}
+	$('input[data-autocompleteCache="true"]').each(function () {
+		attachCustomAutocomplete(this);
+	});
+	$(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
+	if (queryParams.ceasnDataFields === 'true' || queryParams.tlaProfile == 'true') {
 		$(".ceasnDataFields").show();
 	}
 }
@@ -1478,7 +1478,7 @@ $('html').keydown(function (evt) {
 				competencySelectionIndex >= competencyElementArray.length)
 				competencySelectionIndex = -1;
 			// set selection index to selected competency if previous selection no longer selected competency
-			if (selectedCompetency != null){
+			if (selectedCompetency != null) {
 				if (competencySelectionIndex < 0 ||
 					competencyElementArray[competencySelectionIndex].id != selectedCompetency.shortId()) {
 					for (var i = 0; i < competencyElementArray.length; i++) {
@@ -1602,16 +1602,16 @@ $("body").on("webkitAnimationEnd oanimationend msAnimationEnd animationend", ".s
 });
 
 //Store which competency user has collapsed in localstorage so it persists
-collapseCompetencyTracking = function(fId, cId, toggleState) {
+collapseCompetencyTracking = function (fId, cId, toggleState) {
 	var collapseDict = JSON.parse(localStorage.getItem('collapseDict'));
 	if (collapseDict == null)
 		collapseDict = {};
 
-	if (fId == null){
+	if (fId == null) {
 		console.log("collapseCompetencyTracking failed! Given undefined framework Id.");
 		return false;
 	}
-	if (cId == null){
+	if (cId == null) {
 		console.log("collapseCompetencyTracking failed! Given undefined competency Id.");
 		return false;
 	}
@@ -1631,7 +1631,7 @@ collapseCompetencyTracking = function(fId, cId, toggleState) {
 	}
 }
 
-collapseAllCompetencies = function() {
+collapseAllCompetencies = function () {
 	if (conceptMode)
 		return;
 	if (framework.competency == null || framework.competency.length == 0)
@@ -1640,11 +1640,11 @@ collapseAllCompetencies = function() {
 		var competencyId = framework.competency[i];
 		var competency = $("#tree [id='" + competencyId + "']");
 		if (competency.length > 0) {
-			if (competency.hasClass('expandable')){
+			if (competency.hasClass('expandable')) {
 				collapseCompetencyTracking(framework.shortId(), competencyId, 'collapsed');
-			}//end if competency expandable
-		}//end if
-	}//end for each competency
+			} //end if competency expandable
+		} //end if
+	} //end for each competency
 	selectedCompetency = null; // so sidebar display of competency is cleared
 	refreshSidebar();
 	collapseCompetencies();
@@ -1665,7 +1665,7 @@ collapseCompetencies = function () {
 		});
 }
 
-expandAllCompetencies = function() {
+expandAllCompetencies = function () {
 	if (conceptMode)
 		return;
 	if (framework.competency == null || framework.competency.length == 0)
@@ -1675,15 +1675,15 @@ expandAllCompetencies = function() {
 		var competency = $("#tree [id='" + competencyId + "']");
 		if (competency.length > 0) {
 			if (competency.hasClass('expandable')) {
-				if (competency.children('.collapse').hasClass('collapsed')){
+				if (competency.children('.collapse').hasClass('collapsed')) {
 					competency.children('ul').slideToggle();
 					competency.children('.collapse').removeClass('collapsed');
 					competency.children('.collapse').children('i').removeClass('fa-plus-square').addClass('fa-minus-square');
 					collapseCompetencyTracking(framework.shortId(), competencyId, 'expanded');
-				}//end if competency collapsed
-			}//end if competency expandable
-		}//end if competency
-	}//end for each competencies
+				} //end if competency collapsed
+			} //end if competency expandable
+		} //end if competency
+	} //end for each competencies
 }
 
 validateString = function (str) {
@@ -1890,9 +1890,11 @@ highlightCompetencies = function (competencies) {
 	var idArray;
 	if (competencies)
 		idArray = competencies
-	else if (queryParams.highlightCompetencies != null)
-		idArray = queryParams.highlightedCompetencies
+	else if (queryParams.highlightCompetency != null)
+		idArray = queryParams.highlightCompetency
 	if (idArray != null) {
+		if (!EcArray.isArray(idArray))
+			idArray = [idArray];
 		$('.highlightedCompetency').removeClass('highlightedCompetency');
 		for (id in idArray) {
 			$('[id="' + idArray[id] + '"]').addClass('highlightedCompetency');
