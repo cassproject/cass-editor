@@ -2,11 +2,12 @@ if (queryParams.select != null)
     if (parent != window)
         $("#frameworksBack").show();
 
+var paramSize;
 function searchFrameworks(paramObj) {
     if (conceptMode)
         return searchConceptSchemes(paramObj);
     if (paramObj.size == null)
-        paramObj.size = 20;
+        paramObj.size = paramSize ? paramSize : 20;
     loading("Loading frameworks...");
     var searchTerm = $("#search").val();
     if (searchTerm == null || searchTerm == "") {
@@ -25,6 +26,7 @@ function searchFrameworks(paramObj) {
             frameworkSearchByCompetency(servers[i], searchTerm);
         }
     }
+    paramSize = paramObj.size;
 }
 var frameworkLoading = 0;
 
@@ -221,12 +223,12 @@ function checkForChangesBeforeBack(event) {
             event.stopPropagation();
             return;
         } else {
-            searchFrameworks(createParamObj(20));
+            searchFrameworks(createParamObj());
             framework = null;
             selectedCompetency = null;
         }
     } else {
-        searchFrameworks(createParamObj(20));
+        searchFrameworks(createParamObj());
         framework = null;
         selectedCompetency = null;
     }

@@ -448,7 +448,7 @@ deleteCompetency = function () {
         if (isFirstEdit) {
             spitEvent("frameworkDeleted", framework.shortId());
             if (defaultPage == "#frameworksSection")
-                searchFrameworks(createParamObj(20));
+                searchFrameworks(createParamObj());
             else
                 showPage(defaultPage);
         }
@@ -458,7 +458,7 @@ deleteCompetency = function () {
                     repo.deleteRegistered(framework, function (success) {
                         spitEvent("frameworkDeleted", framework.shortId());
                         if (defaultPage == "#frameworksSection")
-                            searchFrameworks(createParamObj(20));
+                            searchFrameworks(createParamObj());
                         else
                             showPage(defaultPage);
                         //Delete the framework, delete all non-used stuff.
