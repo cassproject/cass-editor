@@ -211,7 +211,7 @@ initTooltips = function (type) {
 
 resetSearch = function () {
 	$('#search').val('');
-	searchFrameworks(createParamObj(5000));
+	searchFrameworks(createParamObj(20));
 }
 
 highlightSelected = function (element) {
