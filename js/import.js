@@ -23,6 +23,8 @@ function importFile() {
 
         }, function (errorMsg) {
             CSVImport.analyzeFile(file, function (data) {
+                $("#importCsvRelation").val(null);
+                $(".importCsvRelationOptions").hide();
                 $("#importCsvColumnName").html("<option>N/A</option>");
                 $("#importCsvColumnDescription").html("<option>N/A</option>");
                 $("#importCsvColumnScope").html("<option>N/A</option>");
