@@ -1,53 +1,66 @@
 /**
- *  Message used to retrieve credentials from a remote system.
- *  <p>
- *  TODO: Vulnerable to replay attacks.
+ *  Credential list along with one time pad and session-based token for use in
+ *  commit actions.
  * 
  *  @author fritz.ray@eduworks.com
- *  @class EbacCredentialRequest
+ *  @class EbacCredentials
  *  @module org.cassproject
  */
-var EbacCredentialRequest = function() {
-    EcLinkedData.call(this, Ebac.context, EbacCredentialRequest.TYPE_0_3);
+var EbacCredentials = function() {
+    EcLinkedData.call(this, Ebac.context, EbacCredentials.TYPE_0_3);
 };
-EbacCredentialRequest = stjs.extend(EbacCredentialRequest, EcLinkedData, [], function(constructor, prototype) {
-    constructor.TYPE_0_1 = "http://schema.eduworks.com/ebac/0.1/credentialRequest";
-    constructor.TYPE_0_2 = "http://schema.eduworks.com/ebac/0.2/credentialRequest";
-    constructor.TYPE_0_3 = "http://schema.cassproject.org/kbac/0.2/CredentialRequest";
+EbacCredentials = stjs.extend(EbacCredentials, EcLinkedData, [], function(constructor, prototype) {
+    constructor.TYPE_0_1 = "http://schema.eduworks.com/ebac/0.1/credentials";
+    constructor.TYPE_0_2 = "http://schema.eduworks.com/ebac/0.2/credentials";
+    constructor.TYPE_0_3 = "http://schema.cassproject.org/kbac/0.2/Credentials";
     /**
-     *  Hashed username.
+     *  One time pad that may be used in password recovery. Base64 encoded.
      * 
-     *  @property username
+     *  @property pad
      *  @type string
      */
-    prototype.username = null;
+    prototype.pad = null;
     /**
-     *  Hashed password to authorize request.
+     *  Token provided by server to use in commit actions.
      * 
-     *  @property password
+     *  @property token
      *  @type string
      */
-    prototype.password = null;
+    prototype.token = null;
+    /**
+     *  Credential array.
+     * 
+     *  @property credentials
+     *  @type EbacCredential[]
+     */
+    prototype.credentials = null;
+    /**
+     *  Contact array.
+     * 
+     *  @property contacts
+     *  @type EbacContact[]
+     */
+    prototype.contacts = null;
     prototype.upgrade = function() {
         EcLinkedData.prototype.upgrade.call(this);
-        if (EbacCredentialRequest.TYPE_0_1 == this.type) {
+        if (EbacCredentials.TYPE_0_1.equals(this.type)) {
             var me = (this);
             if (me["@context"] == null && me["@schema"] != null) 
                 me["@context"] = me["@schema"];
-            this.setContextAndType(Ebac.context_0_2, EbacCredentialRequest.TYPE_0_2);
+            this.setContextAndType(Ebac.context_0_2, EbacCredentials.TYPE_0_2);
         }
-        if (EbacCredentialRequest.TYPE_0_2 == this.getFullType()) {
-            this.setContextAndType(Ebac.context_0_3, EbacCredentialRequest.TYPE_0_3);
+        if (EbacCredentials.TYPE_0_2.equals(this.getFullType())) {
+            this.setContextAndType(Ebac.context_0_3, EbacCredentials.TYPE_0_3);
         }
     };
     prototype.getTypes = function() {
         var a = new Array();
-        a.push(EbacCredentialRequest.TYPE_0_3);
-        a.push(EbacCredentialRequest.TYPE_0_2);
-        a.push(EbacCredentialRequest.TYPE_0_1);
+        a.push(EbacCredentials.TYPE_0_3);
+        a.push(EbacCredentials.TYPE_0_2);
+        a.push(EbacCredentials.TYPE_0_1);
         return a;
     };
-}, {atProperties: {name: "Array", arguments: [null]}}, {});
+}, {credentials: {name: "Array", arguments: ["EbacCredential"]}, contacts: {name: "Array", arguments: ["EbacContact"]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  AES encrypted public key and display name. Contains Initialization Vectors,
  *  but not secrets. Used to encrypt public identities for storage on remote
@@ -127,73 +140,6 @@ EbacContact = stjs.extend(EbacContact, EcLinkedData, [], function(constructor, p
     };
 }, {atProperties: {name: "Array", arguments: [null]}}, {});
 /**
- *  Signature used to authorize movement of data on behalf of a private-key
- *  holding owner.
- * 
- *  @author fritz.ray@eduworks.com
- *  @class EbacSignature
- *  @module org.cassproject
- */
-var EbacSignature = function() {
-    EcLinkedData.call(this, Ebac.context, EbacSignature.TYPE_0_3);
-};
-EbacSignature = stjs.extend(EbacSignature, EcLinkedData, [], function(constructor, prototype) {
-    constructor.TYPE_0_1 = "http://schema.eduworks.com/ebac/0.1/timeLimitedSignature";
-    constructor.TYPE_0_2 = "http://schema.eduworks.com/ebac/0.2/timeLimitedSignature";
-    constructor.TYPE_0_3 = "http://schema.cassproject.org/kbac/0.2/TimeLimitedSignature";
-    /**
-     *  The public key of the authorizing party in PEM format.
-     * 
-     *  @property owner
-     *  @type string
-     */
-    prototype.owner = null;
-    /**
-     *  The time in number of milliseconds since midnight of January 1, 1970
-     *  00:00:00 UTC that this signature is authorized to move data.
-     * 
-     *  @property expiry
-     *  @type long
-     */
-    prototype.expiry = null;
-    /**
-     *  The signature of this object, having signed the object, having been
-     *  encoded in JSON with no space or tabs in ASCII sort order, having no
-     *  value for the signature at the time of signing.
-     * 
-     *  @property signature
-     *  @type string
-     */
-    prototype.signature = null;
-    /**
-     *  The server authorized to move data. If this is empty, the signature may
-     *  be used by a server to ask for data from other servers.
-     * 
-     *  @property server
-     *  @type string
-     */
-    prototype.server = null;
-    prototype.upgrade = function() {
-        EcLinkedData.prototype.upgrade.call(this);
-        if (EbacSignature.TYPE_0_1.equals(this.type)) {
-            var me = (this);
-            if (me["@context"] == null && me["@schema"] != null) 
-                me["@context"] = me["@schema"];
-            this.setContextAndType(Ebac.context_0_2, EbacSignature.TYPE_0_2);
-        }
-        if (EbacSignature.TYPE_0_2.equals(this.getFullType())) {
-            this.setContextAndType(Ebac.context_0_3, EbacSignature.TYPE_0_3);
-        }
-    };
-    prototype.getTypes = function() {
-        var a = new Array();
-        a.push(EbacSignature.TYPE_0_3);
-        a.push(EbacSignature.TYPE_0_2);
-        a.push(EbacSignature.TYPE_0_1);
-        return a;
-    };
-}, {atProperties: {name: "Array", arguments: [null]}}, {});
-/**
  *  AES encrypted private key and display name. Contains Initialization Vectors,
  *  but not secrets. Used to encrypt private identities for storage on remote
  *  systems.
@@ -258,68 +204,55 @@ EbacCredential = stjs.extend(EbacCredential, EcLinkedData, [], function(construc
     };
 }, {atProperties: {name: "Array", arguments: [null]}}, {});
 /**
- *  Credential list along with one time pad and session-based token for use in
- *  commit actions.
+ *  Message used to retrieve credentials from a remote system.
+ *  <p>
+ *  TODO: Vulnerable to replay attacks.
  * 
  *  @author fritz.ray@eduworks.com
- *  @class EbacCredentials
+ *  @class EbacCredentialRequest
  *  @module org.cassproject
  */
-var EbacCredentials = function() {
-    EcLinkedData.call(this, Ebac.context, EbacCredentials.TYPE_0_3);
+var EbacCredentialRequest = function() {
+    EcLinkedData.call(this, Ebac.context, EbacCredentialRequest.TYPE_0_3);
 };
-EbacCredentials = stjs.extend(EbacCredentials, EcLinkedData, [], function(constructor, prototype) {
-    constructor.TYPE_0_1 = "http://schema.eduworks.com/ebac/0.1/credentials";
-    constructor.TYPE_0_2 = "http://schema.eduworks.com/ebac/0.2/credentials";
-    constructor.TYPE_0_3 = "http://schema.cassproject.org/kbac/0.2/Credentials";
+EbacCredentialRequest = stjs.extend(EbacCredentialRequest, EcLinkedData, [], function(constructor, prototype) {
+    constructor.TYPE_0_1 = "http://schema.eduworks.com/ebac/0.1/credentialRequest";
+    constructor.TYPE_0_2 = "http://schema.eduworks.com/ebac/0.2/credentialRequest";
+    constructor.TYPE_0_3 = "http://schema.cassproject.org/kbac/0.2/CredentialRequest";
     /**
-     *  One time pad that may be used in password recovery. Base64 encoded.
+     *  Hashed username.
      * 
-     *  @property pad
+     *  @property username
      *  @type string
      */
-    prototype.pad = null;
+    prototype.username = null;
     /**
-     *  Token provided by server to use in commit actions.
+     *  Hashed password to authorize request.
      * 
-     *  @property token
+     *  @property password
      *  @type string
      */
-    prototype.token = null;
-    /**
-     *  Credential array.
-     * 
-     *  @property credentials
-     *  @type EbacCredential[]
-     */
-    prototype.credentials = null;
-    /**
-     *  Contact array.
-     * 
-     *  @property contacts
-     *  @type EbacContact[]
-     */
-    prototype.contacts = null;
+    prototype.password = null;
     prototype.upgrade = function() {
         EcLinkedData.prototype.upgrade.call(this);
-        if (EbacCredentials.TYPE_0_1.equals(this.type)) {
+        if (EbacCredentialRequest.TYPE_0_1 == this.type) {
             var me = (this);
             if (me["@context"] == null && me["@schema"] != null) 
                 me["@context"] = me["@schema"];
-            this.setContextAndType(Ebac.context_0_2, EbacCredentials.TYPE_0_2);
+            this.setContextAndType(Ebac.context_0_2, EbacCredentialRequest.TYPE_0_2);
         }
-        if (EbacCredentials.TYPE_0_2.equals(this.getFullType())) {
-            this.setContextAndType(Ebac.context_0_3, EbacCredentials.TYPE_0_3);
+        if (EbacCredentialRequest.TYPE_0_2 == this.getFullType()) {
+            this.setContextAndType(Ebac.context_0_3, EbacCredentialRequest.TYPE_0_3);
         }
     };
     prototype.getTypes = function() {
         var a = new Array();
-        a.push(EbacCredentials.TYPE_0_3);
-        a.push(EbacCredentials.TYPE_0_2);
-        a.push(EbacCredentials.TYPE_0_1);
+        a.push(EbacCredentialRequest.TYPE_0_3);
+        a.push(EbacCredentialRequest.TYPE_0_2);
+        a.push(EbacCredentialRequest.TYPE_0_1);
         return a;
     };
-}, {credentials: {name: "Array", arguments: ["EbacCredential"]}, contacts: {name: "Array", arguments: ["EbacContact"]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  Component of EbacEncryptedValue that contains data needed to decrypt
  *  encrypted payload. Is, itself, encrypted.
@@ -427,6 +360,146 @@ EbacEncryptedSecret = stjs.extend(EbacEncryptedSecret, EcLinkedData, [], functio
     };
 }, {atProperties: {name: "Array", arguments: [null]}}, {});
 /**
+ *  Signature used to authorize movement of data on behalf of a private-key
+ *  holding owner.
+ * 
+ *  @author fritz.ray@eduworks.com
+ *  @class EbacSignature
+ *  @module org.cassproject
+ */
+var EbacSignature = function() {
+    EcLinkedData.call(this, Ebac.context, EbacSignature.TYPE_0_3);
+};
+EbacSignature = stjs.extend(EbacSignature, EcLinkedData, [], function(constructor, prototype) {
+    constructor.TYPE_0_1 = "http://schema.eduworks.com/ebac/0.1/timeLimitedSignature";
+    constructor.TYPE_0_2 = "http://schema.eduworks.com/ebac/0.2/timeLimitedSignature";
+    constructor.TYPE_0_3 = "http://schema.cassproject.org/kbac/0.2/TimeLimitedSignature";
+    /**
+     *  The public key of the authorizing party in PEM format.
+     * 
+     *  @property owner
+     *  @type string
+     */
+    prototype.owner = null;
+    /**
+     *  The time in number of milliseconds since midnight of January 1, 1970
+     *  00:00:00 UTC that this signature is authorized to move data.
+     * 
+     *  @property expiry
+     *  @type long
+     */
+    prototype.expiry = null;
+    /**
+     *  The signature of this object, having signed the object, having been
+     *  encoded in JSON with no space or tabs in ASCII sort order, having no
+     *  value for the signature at the time of signing.
+     * 
+     *  @property signature
+     *  @type string
+     */
+    prototype.signature = null;
+    /**
+     *  The server authorized to move data. If this is empty, the signature may
+     *  be used by a server to ask for data from other servers.
+     * 
+     *  @property server
+     *  @type string
+     */
+    prototype.server = null;
+    prototype.upgrade = function() {
+        EcLinkedData.prototype.upgrade.call(this);
+        if (EbacSignature.TYPE_0_1.equals(this.type)) {
+            var me = (this);
+            if (me["@context"] == null && me["@schema"] != null) 
+                me["@context"] = me["@schema"];
+            this.setContextAndType(Ebac.context_0_2, EbacSignature.TYPE_0_2);
+        }
+        if (EbacSignature.TYPE_0_2.equals(this.getFullType())) {
+            this.setContextAndType(Ebac.context_0_3, EbacSignature.TYPE_0_3);
+        }
+    };
+    prototype.getTypes = function() {
+        var a = new Array();
+        a.push(EbacSignature.TYPE_0_3);
+        a.push(EbacSignature.TYPE_0_2);
+        a.push(EbacSignature.TYPE_0_1);
+        return a;
+    };
+}, {atProperties: {name: "Array", arguments: [null]}}, {});
+/**
+ *  AES encrypted public key and display name message.
+ *  Used to grant access to a contact.
+ *  Contains Initialization Vectors, but not secrets.
+ *  Used to encrypt public identities for storage on remote systems.
+ * 
+ *  @author fritz.ray@eduworks.com
+ *  @class EbacContactGrant
+ *  @module org.cassproject
+ */
+var EbacContactGrant = function() {
+    EcRemoteLinkedData.call(this, Ebac.context, EbacContactGrant.TYPE_0_3);
+};
+EbacContactGrant = stjs.extend(EbacContactGrant, EcRemoteLinkedData, [], function(constructor, prototype) {
+    constructor.TYPE_0_1 = "http://schema.eduworks.com/ebac/0.1/contactGrant";
+    constructor.TYPE_0_2 = "http://schema.eduworks.com/ebac/0.2/contactGrant";
+    constructor.TYPE_0_3 = "http://schema.cassproject.org/kbac/0.2/ContactGrant";
+    /**
+     *  Public key being granted to the owner of this message.
+     * 
+     *  @property pk
+     *  @type string(pem)
+     */
+    prototype.pk = null;
+    /**
+     *  Display name of the contact.
+     * 
+     *  @property displayName
+     *  @type string
+     */
+    prototype.displayName = null;
+    /**
+     *  Source server of the contact.
+     * 
+     *  @property source
+     *  @type string
+     */
+    prototype.source = null;
+    /**
+     *  Response token used to validate that this grant is in response to a contact request you sent.
+     * 
+     *  @property responseToken
+     *  @type string
+     */
+    prototype.responseToken = null;
+    /**
+     *  Signature (Base64 encoded) of the response token to verify against your own public key
+     *  to ensure that this grant is in response to a contact request you sent.
+     * 
+     *  @property responseSignature
+     *  @type string
+     */
+    prototype.responseSignature = null;
+    prototype.upgrade = function() {
+        EcLinkedData.prototype.upgrade.call(this);
+        if (EbacContactGrant.TYPE_0_1.equals(this.type)) {
+            var me = (this);
+            if (me["@context"] == null && me["@schema"] != null) 
+                me["@context"] = me["@schema"];
+            this.setContextAndType(Ebac.context_0_2, EbacContactGrant.TYPE_0_2);
+        }
+        if (EbacContactGrant.TYPE_0_2.equals(this.getFullType())) {
+            this.setContextAndType(Ebac.context_0_3, EbacContactGrant.TYPE_0_3);
+        }
+    };
+    prototype.getTypes = function() {
+        var a = new Array();
+        a.push(EbacContactGrant.TYPE_0_3);
+        a.push(EbacContactGrant.TYPE_0_2);
+        a.push(EbacContactGrant.TYPE_0_1);
+        return a;
+    };
+}, {owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+/**
  *  Encrypted JSON-LD object or string.
  * 
  *  @author fritz.ray@eduworks.com
@@ -505,79 +578,6 @@ EbacEncryptedValue = stjs.extend(EbacEncryptedValue, EcRemoteLinkedData, [], fun
         return a;
     };
 }, {secret: {name: "Array", arguments: [null]}, owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
-/**
- *  AES encrypted public key and display name message.
- *  Used to grant access to a contact.
- *  Contains Initialization Vectors, but not secrets.
- *  Used to encrypt public identities for storage on remote systems.
- * 
- *  @author fritz.ray@eduworks.com
- *  @class EbacContactGrant
- *  @module org.cassproject
- */
-var EbacContactGrant = function() {
-    EcRemoteLinkedData.call(this, Ebac.context, EbacContactGrant.TYPE_0_3);
-};
-EbacContactGrant = stjs.extend(EbacContactGrant, EcRemoteLinkedData, [], function(constructor, prototype) {
-    constructor.TYPE_0_1 = "http://schema.eduworks.com/ebac/0.1/contactGrant";
-    constructor.TYPE_0_2 = "http://schema.eduworks.com/ebac/0.2/contactGrant";
-    constructor.TYPE_0_3 = "http://schema.cassproject.org/kbac/0.2/ContactGrant";
-    /**
-     *  Public key being granted to the owner of this message.
-     * 
-     *  @property pk
-     *  @type string(pem)
-     */
-    prototype.pk = null;
-    /**
-     *  Display name of the contact.
-     * 
-     *  @property displayName
-     *  @type string
-     */
-    prototype.displayName = null;
-    /**
-     *  Source server of the contact.
-     * 
-     *  @property source
-     *  @type string
-     */
-    prototype.source = null;
-    /**
-     *  Response token used to validate that this grant is in response to a contact request you sent.
-     * 
-     *  @property responseToken
-     *  @type string
-     */
-    prototype.responseToken = null;
-    /**
-     *  Signature (Base64 encoded) of the response token to verify against your own public key
-     *  to ensure that this grant is in response to a contact request you sent.
-     * 
-     *  @property responseSignature
-     *  @type string
-     */
-    prototype.responseSignature = null;
-    prototype.upgrade = function() {
-        EcLinkedData.prototype.upgrade.call(this);
-        if (EbacContactGrant.TYPE_0_1.equals(this.type)) {
-            var me = (this);
-            if (me["@context"] == null && me["@schema"] != null) 
-                me["@context"] = me["@schema"];
-            this.setContextAndType(Ebac.context_0_2, EbacContactGrant.TYPE_0_2);
-        }
-        if (EbacContactGrant.TYPE_0_2.equals(this.getFullType())) {
-            this.setContextAndType(Ebac.context_0_3, EbacContactGrant.TYPE_0_3);
-        }
-    };
-    prototype.getTypes = function() {
-        var a = new Array();
-        a.push(EbacContactGrant.TYPE_0_3);
-        a.push(EbacContactGrant.TYPE_0_2);
-        a.push(EbacContactGrant.TYPE_0_1);
-        return a;
-    };
-}, {owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  Message used to commit credentials to a remote login server.
  *  <p>

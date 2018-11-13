@@ -18,9 +18,12 @@ queryParams = function () {
 		var parts = (paramString).split("&");
 		for (var i = 0; i < parts.length; i++)
 			if (o[parts[i].split("=")[0]] != null) {
+				var val = decodeURIComponent(parts[i].replace(parts[i].split("=")[0] + "=", ""));
+				if (val == o[parts[i].split("=")[0]])
+					continue;
 				if (EcArray.isArray(o[parts[i].split("=")[0]]) == false)
 					o[parts[i].split("=")[0]] = [o[parts[i].split("=")[0]]];
-				o[parts[i].split("=")[0]].push(decodeURIComponent(parts[i].replace(parts[i].split("=")[0] + "=", "")));
+				o[parts[i].split("=")[0]].push(val);
 			}
 		else
 			o[parts[i].split("=")[0]] = decodeURIComponent(parts[i].replace(parts[i].split("=")[0] + "=", ""));
