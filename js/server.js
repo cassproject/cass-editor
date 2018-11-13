@@ -241,6 +241,15 @@ initIframe = function (comp) {
         if (queryParams.view != "true")
             $("#selectCompetencyIframe").attr("src", iframeCompetencyPath);
     }
+    else if (comp == false) {
+        var iframeCompetencyPath = iframeRoot + "index.html?select=Align with...&view=true&back=true&iframeRoot=" + iframeRoot + "&origin=" + window.location.origin + (queryParams.server == null ? "" : "&server=" + queryParams.server + (queryParams.newObjectEndpoint == null ? "" : "&newObjectEndpoint=" + queryParams.newObjectEndpoint));
+        if (queryParams.webSocketOverride != null && queryParams.webSocketOverride !== undefined)
+            iframeCompetencyPath += "&webSocketOverride=" + queryParams.webSocketOverride;
+        if (queryParams.ceasnDataFields != null && queryParams.ceasnDataFields != undefined)
+            iframeCompetencyPath += "&ceasnDataFields=" + queryParams.ceasnDataFields;
+        if (queryParams.view != "true")
+            $("#selectCompetencyIframe").attr("src", iframeCompetencyPath);
+    }
 
     if (iframeInit == true) return;
     iframeInit = true;
