@@ -1,15 +1,3 @@
-var EcBrowserDetection = function() {};
-EcBrowserDetection = stjs.extend(EcBrowserDetection, null, [], function(constructor, prototype) {
-    constructor.isIeOrEdge = function() {
-        if (window == null) 
-            return false;
-        if (window.navigator == null) 
-            return false;
-        if (window.navigator.appName == null) 
-            return false;
-        return window.navigator.appName == "Microsoft Internet Explorer" || (window.navigator.appName == "Netscape" && window.navigator.appVersion.indexOf("Edge") > -1);
-    };
-}, {}, {});
 /**
  *  A hypergraph, consisting of a set of vertices of type <code>V</code> and a
  *  set of hyperedges of type <code>E</code> which connect the vertices. This is
@@ -471,6 +459,54 @@ Hypergraph = stjs.extend(Hypergraph, null, [], function(constructor, prototype) 
     prototype.getSuccessors = function(vertex) {};
 }, {}, {});
 /**
+ *  Object to hold a triple, used in graph.
+ * 
+ *  @author fritz.ray@eduworks.com
+ *  @class Triple
+ *  @module com.eduworks.ec
+ */
+var Triple = function() {};
+Triple = stjs.extend(Triple, null, [], function(constructor, prototype) {
+    /**
+     *  Source vertex.
+     * 
+     *  @property source
+     *  @type any
+     */
+    prototype.source = null;
+    /**
+     *  Destination vertex.
+     * 
+     *  @property destination
+     *  @type any
+     */
+    prototype.destination = null;
+    /**
+     *  Object to hold in the edge.
+     * 
+     *  @property edge
+     *  @type any
+     */
+    prototype.edge = null;
+    /**
+     *  Returns true IFF sources, destinations, and edges match.
+     * 
+     *  @param {Edge} obj
+     *  @return {boolean} true IFF <see method definition>
+     *  @method equals
+     */
+    prototype.equals = function(obj) {
+        if (Object.prototype.equals.call(this, obj)) 
+            return true;
+        if (stjs.isInstanceOf(obj.constructor, Triple)) {
+            var t = obj;
+            if (this.source == t.source && this.destination == t.destination && this.edge == t.edge) 
+                return true;
+        }
+        return false;
+    };
+}, {}, {});
+/**
  *  Wrapper to handle all remote web service invocations.
  * 
  *  @author fritz.ray@eduworks.com
@@ -727,59 +763,49 @@ EcRemote = stjs.extend(EcRemote, null, [], function(constructor, prototype) {
         };
     };
 }, {}, {});
-/**
- *  Object to hold a triple, used in graph.
- * 
- *  @author fritz.ray@eduworks.com
- *  @class Triple
- *  @module com.eduworks.ec
- */
-var Triple = function() {};
-Triple = stjs.extend(Triple, null, [], function(constructor, prototype) {
-    /**
-     *  Source vertex.
-     * 
-     *  @property source
-     *  @type any
-     */
-    prototype.source = null;
-    /**
-     *  Destination vertex.
-     * 
-     *  @property destination
-     *  @type any
-     */
-    prototype.destination = null;
-    /**
-     *  Object to hold in the edge.
-     * 
-     *  @property edge
-     *  @type any
-     */
-    prototype.edge = null;
-    /**
-     *  Returns true IFF sources, destinations, and edges match.
-     * 
-     *  @param {Edge} obj
-     *  @return {boolean} true IFF <see method definition>
-     *  @method equals
-     */
-    prototype.equals = function(obj) {
-        if (Object.prototype.equals.call(this, obj)) 
-            return true;
-        if (stjs.isInstanceOf(obj.constructor, Triple)) {
-            var t = obj;
-            if (this.source == t.source && this.destination == t.destination && this.edge == t.edge) 
-                return true;
-        }
-        return false;
+var EcLocalStorage = function() {};
+EcLocalStorage = stjs.extend(EcLocalStorage, null, [], function(constructor, prototype) {
+    constructor.removeItem = function(s, key) {
+        ((s)["removeItem"])(key);
     };
 }, {}, {});
-var EcDate = function() {};
-EcDate = stjs.extend(EcDate, null, [], function(constructor, prototype) {
-    constructor.toISOString = function(obj) {
-        return ((obj)["toISOString"])();
+/**
+ *  Object Helper Functions
+ * 
+ *  @author fritz.ray@eduworks.com
+ *  @class EcObject
+ *  @module com.eduworks.ec
+ */
+var EcObject = function() {};
+EcObject = stjs.extend(EcObject, null, [], function(constructor, prototype) {
+    /**
+     *  Returns true if the result is an object.
+     * 
+     *  @param {any} o Object to test.
+     *  @return true iff the object is an object.
+     *  @static
+     *  @method isArray
+     */
+    constructor.isObject = function(o) {
+        if (o == null) 
+            return false;
+        return (typeof o) == "object";
     };
+    /**
+     *  Returns keys on the object
+     * 
+     *  @param {any} o Object to test.
+     *  @return List of keys
+     *  @static
+     *  @method keys
+     */
+    constructor.keys = function(o) {
+        return ecKeys(o);
+    };
+}, {}, {});
+var Callback5 = function() {};
+Callback5 = stjs.extend(Callback5, null, [], function(constructor, prototype) {
+    prototype.$invoke = function(p1, p2, p3, p4, p5) {};
 }, {}, {});
 /**
  *  Array Helper Functions
@@ -866,49 +892,23 @@ EcArray = stjs.extend(EcArray, null, [], function(constructor, prototype) {
         return false;
     };
 }, {}, {});
-var EcLocalStorage = function() {};
-EcLocalStorage = stjs.extend(EcLocalStorage, null, [], function(constructor, prototype) {
-    constructor.removeItem = function(s, key) {
-        ((s)["removeItem"])(key);
-    };
-}, {}, {});
-/**
- *  Object Helper Functions
- * 
- *  @author fritz.ray@eduworks.com
- *  @class EcObject
- *  @module com.eduworks.ec
- */
-var EcObject = function() {};
-EcObject = stjs.extend(EcObject, null, [], function(constructor, prototype) {
-    /**
-     *  Returns true if the result is an object.
-     * 
-     *  @param {any} o Object to test.
-     *  @return true iff the object is an object.
-     *  @static
-     *  @method isArray
-     */
-    constructor.isObject = function(o) {
-        if (o == null) 
+var EcBrowserDetection = function() {};
+EcBrowserDetection = stjs.extend(EcBrowserDetection, null, [], function(constructor, prototype) {
+    constructor.isIeOrEdge = function() {
+        if (window == null) 
             return false;
-        return (typeof o) == "object";
-    };
-    /**
-     *  Returns keys on the object
-     * 
-     *  @param {any} o Object to test.
-     *  @return List of keys
-     *  @static
-     *  @method keys
-     */
-    constructor.keys = function(o) {
-        return ecKeys(o);
+        if (window.navigator == null) 
+            return false;
+        if (window.navigator.appName == null) 
+            return false;
+        return window.navigator.appName == "Microsoft Internet Explorer" || (window.navigator.appName == "Netscape" && window.navigator.appVersion.indexOf("Edge") > -1);
     };
 }, {}, {});
-var Callback5 = function() {};
-Callback5 = stjs.extend(Callback5, null, [], function(constructor, prototype) {
-    prototype.$invoke = function(p1, p2, p3, p4, p5) {};
+var EcDate = function() {};
+EcDate = stjs.extend(EcDate, null, [], function(constructor, prototype) {
+    constructor.toISOString = function(obj) {
+        return ((obj)["toISOString"])();
+    };
 }, {}, {});
 /**
  *  A graph consisting of a set of vertices of type <code>V</code>

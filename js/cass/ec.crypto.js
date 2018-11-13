@@ -1,957 +1,4 @@
 /**
- * Message Digest Algorithm 5 with 128-bit digest (MD5) implementation.
- *
- * @author Dave Longley
- *
- * Copyright (c) 2010-2014 Digital Bazaar, Inc.
- */
-(function() {
-/* ########## Begin module implementation ########## */
-function initModule(forge) {
-
-var md5 = forge.md5 = forge.md5 || {};
-forge.md = forge.md || {};
-forge.md.algorithms = forge.md.algorithms || {};
-forge.md.md5 = forge.md.algorithms.md5 = md5;
-
-/**
- * Creates an MD5 message digest object.
- *
- * @return a message digest object.
- */
-md5.create = function() {
-  // do initialization as necessary
-  if(!_initialized) {
-    _init();
-  }
-
-  // MD5 state contains four 32-bit integers
-  var _state = null;
-
-  // input buffer
-  var _input = forge.util.createBuffer();
-
-  // used for word storage
-  var _w = new Array(16);
-
-  // message digest object
-  var md = {
-    algorithm: 'md5',
-    blockLength: 64,
-    digestLength: 16,
-    // 56-bit length of message so far (does not including padding)
-    messageLength: 0,
-    // true 64-bit message length as two 32-bit ints
-    messageLength64: [0, 0]
-  };
-
-  /**
-   * Starts the digest.
-   *
-   * @return this digest object.
-   */
-  md.start = function() {
-    md.messageLength = 0;
-    md.messageLength64 = [0, 0];
-    _input = forge.util.createBuffer();
-    _state = {
-      h0: 0x67452301,
-      h1: 0xEFCDAB89,
-      h2: 0x98BADCFE,
-      h3: 0x10325476
-    };
-    return md;
-  };
-  // start digest automatically for first time
-  md.start();
-
-  /**
-   * Updates the digest with the given message input. The given input can
-   * treated as raw input (no encoding will be applied) or an encoding of
-   * 'utf8' maybe given to encode the input using UTF-8.
-   *
-   * @param msg the message input to update with.
-   * @param encoding the encoding to use (default: 'raw', other: 'utf8').
-   *
-   * @return this digest object.
-   */
-  md.update = function(msg, encoding) {
-    if(encoding === 'utf8') {
-      msg = forge.util.encodeUtf8(msg);
-    }
-
-    // update message length
-    md.messageLength += msg.length;
-    md.messageLength64[0] += (msg.length / 0x100000000) >>> 0;
-    md.messageLength64[1] += msg.length >>> 0;
-
-    // add bytes to input buffer
-    _input.putBytes(msg);
-
-    // process bytes
-    _update(_state, _w, _input);
-
-    // compact input buffer every 2K or if empty
-    if(_input.read > 2048 || _input.length() === 0) {
-      _input.compact();
-    }
-
-    return md;
-  };
-
-  /**
-   * Produces the digest.
-   *
-   * @return a byte buffer containing the digest value.
-   */
-  md.digest = function() {
-    /* Note: Here we copy the remaining bytes in the input buffer and
-    add the appropriate MD5 padding. Then we do the final update
-    on a copy of the state so that if the user wants to get
-    intermediate digests they can do so. */
-
-    /* Determine the number of bytes that must be added to the message
-    to ensure its length is congruent to 448 mod 512. In other words,
-    the data to be digested must be a multiple of 512 bits (or 128 bytes).
-    This data includes the message, some padding, and the length of the
-    message. Since the length of the message will be encoded as 8 bytes (64
-    bits), that means that the last segment of the data must have 56 bytes
-    (448 bits) of message and padding. Therefore, the length of the message
-    plus the padding must be congruent to 448 mod 512 because
-    512 - 128 = 448.
-
-    In order to fill up the message length it must be filled with
-    padding that begins with 1 bit followed by all 0 bits. Padding
-    must *always* be present, so if the message length is already
-    congruent to 448 mod 512, then 512 padding bits must be added. */
-
-    // 512 bits == 64 bytes, 448 bits == 56 bytes, 64 bits = 8 bytes
-    // _padding starts with 1 byte with first bit is set in it which
-    // is byte value 128, then there may be up to 63 other pad bytes
-    var padBytes = forge.util.createBuffer();
-    padBytes.putBytes(_input.bytes());
-    // 64 - (remaining msg + 8 bytes msg length) mod 64
-    padBytes.putBytes(
-      _padding.substr(0, 64 - ((md.messageLength64[1] + 8) & 0x3F)));
-
-    /* Now append length of the message. The length is appended in bits
-    as a 64-bit number in little-endian order. Since we store the length in
-    bytes, we must multiply the 64-bit length by 8 (or left shift by 3). */
-    padBytes.putInt32Le(md.messageLength64[1] << 3);
-    padBytes.putInt32Le(
-      (md.messageLength64[0] << 3) | (md.messageLength64[0] >>> 28));
-    var s2 = {
-      h0: _state.h0,
-      h1: _state.h1,
-      h2: _state.h2,
-      h3: _state.h3
-    };
-    _update(s2, _w, padBytes);
-    var rval = forge.util.createBuffer();
-    rval.putInt32Le(s2.h0);
-    rval.putInt32Le(s2.h1);
-    rval.putInt32Le(s2.h2);
-    rval.putInt32Le(s2.h3);
-    return rval;
-  };
-
-  return md;
-};
-
-// padding, constant tables for calculating md5
-var _padding = null;
-var _g = null;
-var _r = null;
-var _k = null;
-var _initialized = false;
-
-/**
- * Initializes the constant tables.
- */
-function _init() {
-  // create padding
-  _padding = String.fromCharCode(128);
-  _padding += forge.util.fillString(String.fromCharCode(0x00), 64);
-
-  // g values
-  _g = [
-    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-    1, 6, 11, 0, 5, 10, 15, 4, 9, 14, 3, 8, 13, 2, 7, 12,
-    5, 8, 11, 14, 1, 4, 7, 10, 13, 0, 3, 6, 9, 12, 15, 2,
-    0, 7, 14, 5, 12, 3, 10, 1, 8, 15, 6, 13, 4, 11, 2, 9];
-
-  // rounds table
-  _r = [
-    7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,
-    5,  9, 14, 20,  5,  9, 14, 20,  5,  9, 14, 20,  5,  9, 14, 20,
-    4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,
-    6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21];
-
-  // get the result of abs(sin(i + 1)) as a 32-bit integer
-  _k = new Array(64);
-  for(var i = 0; i < 64; ++i) {
-    _k[i] = Math.floor(Math.abs(Math.sin(i + 1)) * 0x100000000);
-  }
-
-  // now initialized
-  _initialized = true;
-}
-
-/**
- * Updates an MD5 state with the given byte buffer.
- *
- * @param s the MD5 state to update.
- * @param w the array to use to store words.
- * @param bytes the byte buffer to update with.
- */
-function _update(s, w, bytes) {
-  // consume 512 bit (64 byte) chunks
-  var t, a, b, c, d, f, r, i;
-  var len = bytes.length();
-  while(len >= 64) {
-    // initialize hash value for this chunk
-    a = s.h0;
-    b = s.h1;
-    c = s.h2;
-    d = s.h3;
-
-    // round 1
-    for(i = 0; i < 16; ++i) {
-      w[i] = bytes.getInt32Le();
-      f = d ^ (b & (c ^ d));
-      t = (a + f + _k[i] + w[i]);
-      r = _r[i];
-      a = d;
-      d = c;
-      c = b;
-      b += (t << r) | (t >>> (32 - r));
-    }
-    // round 2
-    for(; i < 32; ++i) {
-      f = c ^ (d & (b ^ c));
-      t = (a + f + _k[i] + w[_g[i]]);
-      r = _r[i];
-      a = d;
-      d = c;
-      c = b;
-      b += (t << r) | (t >>> (32 - r));
-    }
-    // round 3
-    for(; i < 48; ++i) {
-      f = b ^ c ^ d;
-      t = (a + f + _k[i] + w[_g[i]]);
-      r = _r[i];
-      a = d;
-      d = c;
-      c = b;
-      b += (t << r) | (t >>> (32 - r));
-    }
-    // round 4
-    for(; i < 64; ++i) {
-      f = c ^ (b | ~d);
-      t = (a + f + _k[i] + w[_g[i]]);
-      r = _r[i];
-      a = d;
-      d = c;
-      c = b;
-      b += (t << r) | (t >>> (32 - r));
-    }
-
-    // update hash state
-    s.h0 = (s.h0 + a) | 0;
-    s.h1 = (s.h1 + b) | 0;
-    s.h2 = (s.h2 + c) | 0;
-    s.h3 = (s.h3 + d) | 0;
-
-    len -= 64;
-  }
-}
-
-} // end module implementation
-
-/* ########## Begin module wrapper ########## */
-var name = 'md5';
-if(typeof define !== 'function') {
-  // NodeJS -> AMD
-  if(typeof module === 'object' && module.exports) {
-    var nodeJS = true;
-    define = function(ids, factory) {
-      factory(require, module);
-    };
-  } else {
-    // <script>
-    if(typeof forge === 'undefined') {
-      forge = {};
-    }
-    return initModule(forge);
-  }
-}
-// AMD
-var deps;
-var defineFunc = function(require, module) {
-  module.exports = function(forge) {
-    var mods = deps.map(function(dep) {
-      return require(dep);
-    }).concat(initModule);
-    // handle circular dependencies
-    forge = forge || {};
-    forge.defined = forge.defined || {};
-    if(forge.defined[name]) {
-      return forge[name];
-    }
-    forge.defined[name] = true;
-    for(var i = 0; i < mods.length; ++i) {
-      mods[i](forge);
-    }
-    return forge[name];
-  };
-};
-var tmpDefine = define;
-define = function(ids, factory) {
-  deps = (typeof ids === 'string') ? factory.slice(2) : ids.slice(2);
-  if(nodeJS) {
-    delete define;
-    return tmpDefine.apply(null, Array.prototype.slice.call(arguments, 0));
-  }
-  define = tmpDefine;
-  return define.apply(null, Array.prototype.slice.call(arguments, 0));
-};
-define(['require', 'module', './util'], function() {
-  defineFunc.apply(null, Array.prototype.slice.call(arguments, 0));
-});
-})();
-/**
- * Secure Hash Algorithm with 256-bit digest (SHA-256) implementation.
- *
- * See FIPS 180-2 for details.
- *
- * @author Dave Longley
- *
- * Copyright (c) 2010-2014 Digital Bazaar, Inc.
- */
-(function() {
-/* ########## Begin module implementation ########## */
-function initModule(forge) {
-
-var sha256 = forge.sha256 = forge.sha256 || {};
-forge.md = forge.md || {};
-forge.md.algorithms = forge.md.algorithms || {};
-forge.md.sha256 = forge.md.algorithms.sha256 = sha256;
-
-/**
- * Creates a SHA-256 message digest object.
- *
- * @return a message digest object.
- */
-sha256.create = function() {
-  // do initialization as necessary
-  if(!_initialized) {
-    _init();
-  }
-
-  // SHA-256 state contains eight 32-bit integers
-  var _state = null;
-
-  // input buffer
-  var _input = forge.util.createBuffer();
-
-  // used for word storage
-  var _w = new Array(64);
-
-  // message digest object
-  var md = {
-    algorithm: 'sha256',
-    blockLength: 64,
-    digestLength: 32,
-    // 56-bit length of message so far (does not including padding)
-    messageLength: 0,
-    // true 64-bit message length as two 32-bit ints
-    messageLength64: [0, 0]
-  };
-
-  /**
-   * Starts the digest.
-   *
-   * @return this digest object.
-   */
-  md.start = function() {
-    md.messageLength = 0;
-    md.messageLength64 = [0, 0];
-    _input = forge.util.createBuffer();
-    _state = {
-      h0: 0x6A09E667,
-      h1: 0xBB67AE85,
-      h2: 0x3C6EF372,
-      h3: 0xA54FF53A,
-      h4: 0x510E527F,
-      h5: 0x9B05688C,
-      h6: 0x1F83D9AB,
-      h7: 0x5BE0CD19
-    };
-    return md;
-  };
-  // start digest automatically for first time
-  md.start();
-
-  /**
-   * Updates the digest with the given message input. The given input can
-   * treated as raw input (no encoding will be applied) or an encoding of
-   * 'utf8' maybe given to encode the input using UTF-8.
-   *
-   * @param msg the message input to update with.
-   * @param encoding the encoding to use (default: 'raw', other: 'utf8').
-   *
-   * @return this digest object.
-   */
-  md.update = function(msg, encoding) {
-    if(encoding === 'utf8') {
-      msg = forge.util.encodeUtf8(msg);
-    }
-
-    // update message length
-    md.messageLength += msg.length;
-    md.messageLength64[0] += (msg.length / 0x100000000) >>> 0;
-    md.messageLength64[1] += msg.length >>> 0;
-
-    // add bytes to input buffer
-    _input.putBytes(msg);
-
-    // process bytes
-    _update(_state, _w, _input);
-
-    // compact input buffer every 2K or if empty
-    if(_input.read > 2048 || _input.length() === 0) {
-      _input.compact();
-    }
-
-    return md;
-  };
-
-  /**
-   * Produces the digest.
-   *
-   * @return a byte buffer containing the digest value.
-   */
-  md.digest = function() {
-    /* Note: Here we copy the remaining bytes in the input buffer and
-    add the appropriate SHA-256 padding. Then we do the final update
-    on a copy of the state so that if the user wants to get
-    intermediate digests they can do so. */
-
-    /* Determine the number of bytes that must be added to the message
-    to ensure its length is congruent to 448 mod 512. In other words,
-    the data to be digested must be a multiple of 512 bits (or 128 bytes).
-    This data includes the message, some padding, and the length of the
-    message. Since the length of the message will be encoded as 8 bytes (64
-    bits), that means that the last segment of the data must have 56 bytes
-    (448 bits) of message and padding. Therefore, the length of the message
-    plus the padding must be congruent to 448 mod 512 because
-    512 - 128 = 448.
-
-    In order to fill up the message length it must be filled with
-    padding that begins with 1 bit followed by all 0 bits. Padding
-    must *always* be present, so if the message length is already
-    congruent to 448 mod 512, then 512 padding bits must be added. */
-
-    // 512 bits == 64 bytes, 448 bits == 56 bytes, 64 bits = 8 bytes
-    // _padding starts with 1 byte with first bit is set in it which
-    // is byte value 128, then there may be up to 63 other pad bytes
-    var padBytes = forge.util.createBuffer();
-    padBytes.putBytes(_input.bytes());
-    // 64 - (remaining msg + 8 bytes msg length) mod 64
-    padBytes.putBytes(
-      _padding.substr(0, 64 - ((md.messageLength64[1] + 8) & 0x3F)));
-
-    /* Now append length of the message. The length is appended in bits
-    as a 64-bit number in big-endian order. Since we store the length in
-    bytes, we must multiply the 64-bit length by 8 (or left shift by 3). */
-    padBytes.putInt32(
-      (md.messageLength64[0] << 3) | (md.messageLength64[0] >>> 28));
-    padBytes.putInt32(md.messageLength64[1] << 3);
-    var s2 = {
-      h0: _state.h0,
-      h1: _state.h1,
-      h2: _state.h2,
-      h3: _state.h3,
-      h4: _state.h4,
-      h5: _state.h5,
-      h6: _state.h6,
-      h7: _state.h7
-    };
-    _update(s2, _w, padBytes);
-    var rval = forge.util.createBuffer();
-    rval.putInt32(s2.h0);
-    rval.putInt32(s2.h1);
-    rval.putInt32(s2.h2);
-    rval.putInt32(s2.h3);
-    rval.putInt32(s2.h4);
-    rval.putInt32(s2.h5);
-    rval.putInt32(s2.h6);
-    rval.putInt32(s2.h7);
-    return rval;
-  };
-
-  return md;
-};
-
-// sha-256 padding bytes not initialized yet
-var _padding = null;
-var _initialized = false;
-
-// table of constants
-var _k = null;
-
-/**
- * Initializes the constant tables.
- */
-function _init() {
-  // create padding
-  _padding = String.fromCharCode(128);
-  _padding += forge.util.fillString(String.fromCharCode(0x00), 64);
-
-  // create K table for SHA-256
-  _k = [
-    0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,
-    0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
-    0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
-    0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
-    0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc,
-    0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
-    0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7,
-    0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
-    0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13,
-    0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
-    0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3,
-    0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
-    0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5,
-    0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
-    0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
-    0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2];
-
-  // now initialized
-  _initialized = true;
-}
-
-/**
- * Updates a SHA-256 state with the given byte buffer.
- *
- * @param s the SHA-256 state to update.
- * @param w the array to use to store words.
- * @param bytes the byte buffer to update with.
- */
-function _update(s, w, bytes) {
-  // consume 512 bit (64 byte) chunks
-  var t1, t2, s0, s1, ch, maj, i, a, b, c, d, e, f, g, h;
-  var len = bytes.length();
-  while(len >= 64) {
-    // the w array will be populated with sixteen 32-bit big-endian words
-    // and then extended into 64 32-bit words according to SHA-256
-    for(i = 0; i < 16; ++i) {
-      w[i] = bytes.getInt32();
-    }
-    for(; i < 64; ++i) {
-      // XOR word 2 words ago rot right 17, rot right 19, shft right 10
-      t1 = w[i - 2];
-      t1 =
-        ((t1 >>> 17) | (t1 << 15)) ^
-        ((t1 >>> 19) | (t1 << 13)) ^
-        (t1 >>> 10);
-      // XOR word 15 words ago rot right 7, rot right 18, shft right 3
-      t2 = w[i - 15];
-      t2 =
-        ((t2 >>> 7) | (t2 << 25)) ^
-        ((t2 >>> 18) | (t2 << 14)) ^
-        (t2 >>> 3);
-      // sum(t1, word 7 ago, t2, word 16 ago) modulo 2^32
-      w[i] = (t1 + w[i - 7] + t2 + w[i - 16]) | 0;
-    }
-
-    // initialize hash value for this chunk
-    a = s.h0;
-    b = s.h1;
-    c = s.h2;
-    d = s.h3;
-    e = s.h4;
-    f = s.h5;
-    g = s.h6;
-    h = s.h7;
-
-    // round function
-    for(i = 0; i < 64; ++i) {
-      // Sum1(e)
-      s1 =
-        ((e >>> 6) | (e << 26)) ^
-        ((e >>> 11) | (e << 21)) ^
-        ((e >>> 25) | (e << 7));
-      // Ch(e, f, g) (optimized the same way as SHA-1)
-      ch = g ^ (e & (f ^ g));
-      // Sum0(a)
-      s0 =
-        ((a >>> 2) | (a << 30)) ^
-        ((a >>> 13) | (a << 19)) ^
-        ((a >>> 22) | (a << 10));
-      // Maj(a, b, c) (optimized the same way as SHA-1)
-      maj = (a & b) | (c & (a ^ b));
-
-      // main algorithm
-      t1 = h + s1 + ch + _k[i] + w[i];
-      t2 = s0 + maj;
-      h = g;
-      g = f;
-      f = e;
-      e = (d + t1) | 0;
-      d = c;
-      c = b;
-      b = a;
-      a = (t1 + t2) | 0;
-    }
-
-    // update hash state
-    s.h0 = (s.h0 + a) | 0;
-    s.h1 = (s.h1 + b) | 0;
-    s.h2 = (s.h2 + c) | 0;
-    s.h3 = (s.h3 + d) | 0;
-    s.h4 = (s.h4 + e) | 0;
-    s.h5 = (s.h5 + f) | 0;
-    s.h6 = (s.h6 + g) | 0;
-    s.h7 = (s.h7 + h) | 0;
-    len -= 64;
-  }
-}
-
-} // end module implementation
-
-/* ########## Begin module wrapper ########## */
-var name = 'sha256';
-if(typeof define !== 'function') {
-  // NodeJS -> AMD
-  if(typeof module === 'object' && module.exports) {
-    var nodeJS = true;
-    define = function(ids, factory) {
-      factory(require, module);
-    };
-  } else {
-    // <script>
-    if(typeof forge === 'undefined') {
-      forge = {};
-    }
-    return initModule(forge);
-  }
-}
-// AMD
-var deps;
-var defineFunc = function(require, module) {
-  module.exports = function(forge) {
-    var mods = deps.map(function(dep) {
-      return require(dep);
-    }).concat(initModule);
-    // handle circular dependencies
-    forge = forge || {};
-    forge.defined = forge.defined || {};
-    if(forge.defined[name]) {
-      return forge[name];
-    }
-    forge.defined[name] = true;
-    for(var i = 0; i < mods.length; ++i) {
-      mods[i](forge);
-    }
-    return forge[name];
-  };
-};
-var tmpDefine = define;
-define = function(ids, factory) {
-  deps = (typeof ids === 'string') ? factory.slice(2) : ids.slice(2);
-  if(nodeJS) {
-    delete define;
-    return tmpDefine.apply(null, Array.prototype.slice.call(arguments, 0));
-  }
-  define = tmpDefine;
-  return define.apply(null, Array.prototype.slice.call(arguments, 0));
-};
-define(['require', 'module', './util'], function() {
-  defineFunc.apply(null, Array.prototype.slice.call(arguments, 0));
-});
-})();
-/**
- * Javascript implementation of a basic Public Key Infrastructure, including
- * support for RSA public and private keys.
- *
- * @author Dave Longley
- *
- * Copyright (c) 2010-2013 Digital Bazaar, Inc.
- */
-(function() {
-/* ########## Begin module implementation ########## */
-function initModule(forge) {
-
-// shortcut for asn.1 API
-var asn1 = forge.asn1;
-
-/* Public Key Infrastructure (PKI) implementation. */
-var pki = forge.pki = forge.pki || {};
-
-/**
- * NOTE: THIS METHOD IS DEPRECATED. Use pem.decode() instead.
- *
- * Converts PEM-formatted data to DER.
- *
- * @param pem the PEM-formatted data.
- *
- * @return the DER-formatted data.
- */
-pki.pemToDer = function(pem) {
-  var msg = forge.pem.decode(pem)[0];
-  if(msg.procType && msg.procType.type === 'ENCRYPTED') {
-    throw new Error('Could not convert PEM to DER; PEM is encrypted.');
-  }
-  return forge.util.createBuffer(msg.body);
-};
-
-/**
- * Converts an RSA private key from PEM format.
- *
- * @param pem the PEM-formatted private key.
- *
- * @return the private key.
- */
-pki.privateKeyFromPem = function(pem) {
-  var msg = forge.pem.decode(pem)[0];
-
-  if(msg.type !== 'PRIVATE KEY' && msg.type !== 'RSA PRIVATE KEY') {
-    var error = new Error('Could not convert private key from PEM; PEM ' +
-      'header type is not "PRIVATE KEY" or "RSA PRIVATE KEY".');
-    error.headerType = msg.type;
-    throw error;
-  }
-  if(msg.procType && msg.procType.type === 'ENCRYPTED') {
-    throw new Error('Could not convert private key from PEM; PEM is encrypted.');
-  }
-
-  // convert DER to ASN.1 object
-  var obj = asn1.fromDer(msg.body);
-
-  return pki.privateKeyFromAsn1(obj);
-};
-
-/**
- * Converts an RSA private key to PEM format.
- *
- * @param key the private key.
- * @param maxline the maximum characters per line, defaults to 64.
- *
- * @return the PEM-formatted private key.
- */
-pki.privateKeyToPem = function(key, maxline) {
-  // convert to ASN.1, then DER, then PEM-encode
-  var msg = {
-    type: 'RSA PRIVATE KEY',
-    body: asn1.toDer(pki.privateKeyToAsn1(key)).getBytes()
-  };
-  return forge.pem.encode(msg, {maxline: maxline});
-};
-
-/**
- * Converts a PrivateKeyInfo to PEM format.
- *
- * @param pki the PrivateKeyInfo.
- * @param maxline the maximum characters per line, defaults to 64.
- *
- * @return the PEM-formatted private key.
- */
-pki.privateKeyInfoToPem = function(pki, maxline) {
-  // convert to DER, then PEM-encode
-  var msg = {
-    type: 'PRIVATE KEY',
-    body: asn1.toDer(pki).getBytes()
-  };
-  return forge.pem.encode(msg, {maxline: maxline});
-};
-
-} // end module implementation
-
-/* ########## Begin module wrapper ########## */
-var name = 'pki';
-if(typeof define !== 'function') {
-  // NodeJS -> AMD
-  if(typeof module === 'object' && module.exports) {
-    var nodeJS = true;
-    define = function(ids, factory) {
-      factory(require, module);
-    };
-  } else {
-    // <script>
-    if(typeof forge === 'undefined') {
-      forge = {};
-    }
-    return initModule(forge);
-  }
-}
-// AMD
-var deps;
-var defineFunc = function(require, module) {
-  module.exports = function(forge) {
-    var mods = deps.map(function(dep) {
-      return require(dep);
-    }).concat(initModule);
-    // handle circular dependencies
-    forge = forge || {};
-    forge.defined = forge.defined || {};
-    if(forge.defined[name]) {
-      return forge[name];
-    }
-    forge.defined[name] = true;
-    for(var i = 0; i < mods.length; ++i) {
-      mods[i](forge);
-    }
-    return forge[name];
-  };
-};
-var tmpDefine = define;
-define = function(ids, factory) {
-  deps = (typeof ids === 'string') ? factory.slice(2) : ids.slice(2);
-  if(nodeJS) {
-    delete define;
-    return tmpDefine.apply(null, Array.prototype.slice.call(arguments, 0));
-  }
-  define = tmpDefine;
-  return define.apply(null, Array.prototype.slice.call(arguments, 0));
-};
-define([
-  'require',
-  'module',
-  './asn1',
-  './oids',
-  './pbe',
-  './pem',
-  './pbkdf2',
-  './pkcs12',
-  './pss',
-  './rsa',
-  './util',
-  './x509'
-], function() {
-  defineFunc.apply(null, Array.prototype.slice.call(arguments, 0));
-});
-})();
-/**
- *  @author Fritz
- */
-var EcCrypto = function() {};
-EcCrypto = stjs.extend(EcCrypto, null, [], function(constructor, prototype) {
-    constructor.caching = false;
-    constructor.decryptionCache = new Object();
-    constructor.md5 = function(s) {
-        var m = forge.md.md5.create();
-        m.update(s);
-        return m.digest().toHex();
-    };
-}, {decryptionCache: "Object"}, {});
-/**
- *  Helper classes for dealing with RSA Public Keys.
- * 
- *  @author fritz.ray@eduworks.com
- *  @class EcPk
- *  @module com.eduworks.ec
- */
-var EcPk = function() {};
-EcPk = stjs.extend(EcPk, null, [], function(constructor, prototype) {
-    prototype.pk = null;
-    prototype.jwk = null;
-    prototype.key = null;
-    prototype.signKey = null;
-    /**
-     *  Decodes a PEM encoded SubjectPublicKeyInfo (PKCS#8) or RSAPublicKey (PKCS#1) formatted RSA Public Key.
-     *  (In case you were curious.)
-     * 
-     *  @param {string} pem PEM as a string.
-     *  @return {EcPk} Object used to perform public key operations.
-     *  @method fromPem
-     *  @static
-     */
-    constructor.fromPem = function(pem) {
-        var pk = new EcPk();
-        try {
-            pk.pk = forge.pki.publicKeyFromPem(pem);
-        }catch (ex) {
-            return null;
-        }
-        return pk;
-    };
-    /**
-     *  Compares two public keys, and returns true if their PEM forms match.
-     * 
-     *  @param {EcPk} obj Object to compare to.
-     *  @return {boolean} True if the keys match.
-     *  @method equals
-     */
-    prototype.equals = function(obj) {
-        if (stjs.isInstanceOf(obj.constructor, EcPk)) 
-            return this.toPem().equals((obj).toPem());
-        return Object.prototype.equals.call(this, obj);
-    };
-    /**
-     *  Encodes the public key into a PEM encoded SubjectPublicKeyInfo (PKCS#8) formatted RSA Public Key.
-     *  (In case you were curious.)
-     * 
-     *  @return {string} PEM encoded public key without whitespace.
-     *  @method toPem
-     */
-    prototype.toPem = function() {
-        return forge.pki.publicKeyToPem(this.pk).replaceAll("\r?\n", "");
-    };
-    /**
-     *  Encodes the public key into a PEM encoded RSAPublicKey (PKCS#1) formatted RSA Public Key.
-     *  (In case you were curious.)
-     * 
-     *  @return {string} PEM encoded public key without whitespace.
-     *  @method toPkcs1Pem
-     */
-    prototype.toPkcs1Pem = function() {
-        return forge.pki.publicKeyToRSAPublicKeyPem(this.pk).replaceAll("\r?\n", "");
-    };
-    /**
-     *  Encodes the public key into a PEM encoded SubjectPublicKeyInfo (PKCS#8) formatted RSA Public Key.
-     *  (In case you were curious.)
-     * 
-     *  @return {string} PEM encoded public key without whitespace.
-     *  @method toPkcs8Pem
-     */
-    prototype.toPkcs8Pem = function() {
-        return forge.pki.publicKeyToPem(this.pk).replaceAll("\r?\n", "");
-    };
-    prototype.toJwk = function() {
-        if (this.jwk == null) 
-            this.jwk = pemJwk.pem2jwk(forge.pki.publicKeyToPem(this.pk));
-        return this.jwk;
-    };
-    /**
-     *  Hashes the public key into an SSH compatible fingerprint.
-     * 
-     *  @return {string} Public key fingerprint.
-     *  @method fingerprint
-     */
-    prototype.fingerprint = function() {
-        var o = new Object();
-        (o)["encoding"] = "hex";
-        return forge.ssh.getPublicKeyFingerprint(this.pk, o);
-    };
-    prototype.verify = function(bytes, decode64) {
-        return this.pk.verify(bytes, decode64);
-    };
-}, {pk: "forge.pk", jwk: "Object", key: "CryptoKey", signKey: "CryptoKey"}, {});
-var CryptoKey = function() {};
-CryptoKey = stjs.extend(CryptoKey, null, [], null, {}, {});
-var AlgorithmIdentifier = function() {};
-AlgorithmIdentifier = stjs.extend(AlgorithmIdentifier, null, [], function(constructor, prototype) {
-    prototype.name = null;
-    prototype.modulusLength = 0;
-    prototype.length = 0;
-    prototype.publicExponent = null;
-    prototype.hash = null;
-    prototype.iv = null;
-    prototype.counter = null;
-}, {iv: "ArrayBuffer", counter: "ArrayBuffer"}, {});
-/**
  * Javascript implementation of basic RSA algorithms.
  *
  * @author Dave Longley
@@ -2663,267 +1710,115 @@ define([
   defineFunc.apply(null, Array.prototype.slice.call(arguments, 0));
 });
 })();
-var SubtleCrypto = function() {};
-SubtleCrypto = stjs.extend(SubtleCrypto, null, [], function(constructor, prototype) {
-    prototype.encrypt = function(algorithm, key, data) {
-        return null;
-    };
-    prototype.decrypt = function(algorithm, key, data) {
-        return null;
-    };
-    prototype.sign = function(algorithm, key, data) {
-        return null;
-    };
-    prototype.verify = function(algorithm, key, signature, data) {
-        return null;
-    };
-    prototype.generateKey = function(algorithm, extractable, keyUsages) {
-        return null;
-    };
-    prototype.deriveBits = function(algorithm, baseKey, length) {
-        return null;
-    };
-    prototype.importKey = function(format, keyData, algorithm, extractable, keyUsages) {
-        return null;
-    };
-}, {}, {});
+var AlgorithmIdentifier = function() {};
+AlgorithmIdentifier = stjs.extend(AlgorithmIdentifier, null, [], function(constructor, prototype) {
+    prototype.name = null;
+    prototype.modulusLength = 0;
+    prototype.length = 0;
+    prototype.publicExponent = null;
+    prototype.hash = null;
+    prototype.iv = null;
+    prototype.counter = null;
+}, {iv: "ArrayBuffer", counter: "ArrayBuffer"}, {});
 /**
- * Cipher base API.
+ * Javascript implementation of a basic Public Key Infrastructure, including
+ * support for RSA public and private keys.
  *
  * @author Dave Longley
  *
- * Copyright (c) 2010-2014 Digital Bazaar, Inc.
+ * Copyright (c) 2010-2013 Digital Bazaar, Inc.
  */
 (function() {
 /* ########## Begin module implementation ########## */
 function initModule(forge) {
 
-forge.cipher = forge.cipher || {};
+// shortcut for asn.1 API
+var asn1 = forge.asn1;
 
-// registered algorithms
-forge.cipher.algorithms = forge.cipher.algorithms || {};
+/* Public Key Infrastructure (PKI) implementation. */
+var pki = forge.pki = forge.pki || {};
 
 /**
- * Creates a cipher object that can be used to encrypt data using the given
- * algorithm and key. The algorithm may be provided as a string value for a
- * previously registered algorithm or it may be given as a cipher algorithm
- * API object.
+ * NOTE: THIS METHOD IS DEPRECATED. Use pem.decode() instead.
  *
- * @param algorithm the algorithm to use, either a string or an algorithm API
- *          object.
- * @param key the key to use, as a binary-encoded string of bytes or a
- *          byte buffer.
+ * Converts PEM-formatted data to DER.
  *
- * @return the cipher.
+ * @param pem the PEM-formatted data.
+ *
+ * @return the DER-formatted data.
  */
-forge.cipher.createCipher = function(algorithm, key) {
-  var api = algorithm;
-  if(typeof api === 'string') {
-    api = forge.cipher.getAlgorithm(api);
-    if(api) {
-      api = api();
-    }
+pki.pemToDer = function(pem) {
+  var msg = forge.pem.decode(pem)[0];
+  if(msg.procType && msg.procType.type === 'ENCRYPTED') {
+    throw new Error('Could not convert PEM to DER; PEM is encrypted.');
   }
-  if(!api) {
-    throw new Error('Unsupported algorithm: ' + algorithm);
-  }
-
-  // assume block cipher
-  return new forge.cipher.BlockCipher({
-    algorithm: api,
-    key: key,
-    decrypt: false
-  });
+  return forge.util.createBuffer(msg.body);
 };
 
 /**
- * Creates a decipher object that can be used to decrypt data using the given
- * algorithm and key. The algorithm may be provided as a string value for a
- * previously registered algorithm or it may be given as a cipher algorithm
- * API object.
+ * Converts an RSA private key from PEM format.
  *
- * @param algorithm the algorithm to use, either a string or an algorithm API
- *          object.
- * @param key the key to use, as a binary-encoded string of bytes or a
- *          byte buffer.
+ * @param pem the PEM-formatted private key.
  *
- * @return the cipher.
+ * @return the private key.
  */
-forge.cipher.createDecipher = function(algorithm, key) {
-  var api = algorithm;
-  if(typeof api === 'string') {
-    api = forge.cipher.getAlgorithm(api);
-    if(api) {
-      api = api();
-    }
+pki.privateKeyFromPem = function(pem) {
+  var msg = forge.pem.decode(pem)[0];
+
+  if(msg.type !== 'PRIVATE KEY' && msg.type !== 'RSA PRIVATE KEY') {
+    var error = new Error('Could not convert private key from PEM; PEM ' +
+      'header type is not "PRIVATE KEY" or "RSA PRIVATE KEY".');
+    error.headerType = msg.type;
+    throw error;
   }
-  if(!api) {
-    throw new Error('Unsupported algorithm: ' + algorithm);
+  if(msg.procType && msg.procType.type === 'ENCRYPTED') {
+    throw new Error('Could not convert private key from PEM; PEM is encrypted.');
   }
 
-  // assume block cipher
-  return new forge.cipher.BlockCipher({
-    algorithm: api,
-    key: key,
-    decrypt: true
-  });
+  // convert DER to ASN.1 object
+  var obj = asn1.fromDer(msg.body);
+
+  return pki.privateKeyFromAsn1(obj);
 };
 
 /**
- * Registers an algorithm by name. If the name was already registered, the
- * algorithm API object will be overwritten.
+ * Converts an RSA private key to PEM format.
  *
- * @param name the name of the algorithm.
- * @param algorithm the algorithm API object.
+ * @param key the private key.
+ * @param maxline the maximum characters per line, defaults to 64.
+ *
+ * @return the PEM-formatted private key.
  */
-forge.cipher.registerAlgorithm = function(name, algorithm) {
-  name = name.toUpperCase();
-  forge.cipher.algorithms[name] = algorithm;
+pki.privateKeyToPem = function(key, maxline) {
+  // convert to ASN.1, then DER, then PEM-encode
+  var msg = {
+    type: 'RSA PRIVATE KEY',
+    body: asn1.toDer(pki.privateKeyToAsn1(key)).getBytes()
+  };
+  return forge.pem.encode(msg, {maxline: maxline});
 };
 
 /**
- * Gets a registered algorithm by name.
+ * Converts a PrivateKeyInfo to PEM format.
  *
- * @param name the name of the algorithm.
+ * @param pki the PrivateKeyInfo.
+ * @param maxline the maximum characters per line, defaults to 64.
  *
- * @return the algorithm, if found, null if not.
+ * @return the PEM-formatted private key.
  */
-forge.cipher.getAlgorithm = function(name) {
-  name = name.toUpperCase();
-  if(name in forge.cipher.algorithms) {
-    return forge.cipher.algorithms[name];
-  }
-  return null;
+pki.privateKeyInfoToPem = function(pki, maxline) {
+  // convert to DER, then PEM-encode
+  var msg = {
+    type: 'PRIVATE KEY',
+    body: asn1.toDer(pki).getBytes()
+  };
+  return forge.pem.encode(msg, {maxline: maxline});
 };
-
-var BlockCipher = forge.cipher.BlockCipher = function(options) {
-  this.algorithm = options.algorithm;
-  this.mode = this.algorithm.mode;
-  this.blockSize = this.mode.blockSize;
-  this._finish = false;
-  this._input = null;
-  this.output = null;
-  this._op = options.decrypt ? this.mode.decrypt : this.mode.encrypt;
-  this._decrypt = options.decrypt;
-  this.algorithm.initialize(options);
-};
-
-/**
- * Starts or restarts the encryption or decryption process, whichever
- * was previously configured.
- *
- * For non-GCM mode, the IV may be a binary-encoded string of bytes, an array
- * of bytes, a byte buffer, or an array of 32-bit integers. If the IV is in
- * bytes, then it must be Nb (16) bytes in length. If the IV is given in as
- * 32-bit integers, then it must be 4 integers long.
- *
- * Note: an IV is not required or used in ECB mode.
- *
- * For GCM-mode, the IV must be given as a binary-encoded string of bytes or
- * a byte buffer. The number of bytes should be 12 (96 bits) as recommended
- * by NIST SP-800-38D but another length may be given.
- *
- * @param options the options to use:
- *          iv the initialization vector to use as a binary-encoded string of
- *            bytes, null to reuse the last ciphered block from a previous
- *            update() (this "residue" method is for legacy support only).
- *          additionalData additional authentication data as a binary-encoded
- *            string of bytes, for 'GCM' mode, (default: none).
- *          tagLength desired length of authentication tag, in bits, for
- *            'GCM' mode (0-128, default: 128).
- *          tag the authentication tag to check if decrypting, as a
- *             binary-encoded string of bytes.
- *          output the output the buffer to write to, null to create one.
- */
-BlockCipher.prototype.start = function(options) {
-  options = options || {};
-  var opts = {};
-  for(var key in options) {
-    opts[key] = options[key];
-  }
-  opts.decrypt = this._decrypt;
-  this._finish = false;
-  this._input = forge.util.createBuffer();
-  this.output = options.output || forge.util.createBuffer();
-  this.mode.start(opts);
-};
-
-/**
- * Updates the next block according to the cipher mode.
- *
- * @param input the buffer to read from.
- */
-BlockCipher.prototype.update = function(input) {
-  if(input) {
-    // input given, so empty it into the input buffer
-    this._input.putBuffer(input);
-  }
-
-  // do cipher operation until it needs more input and not finished
-  while(!this._op.call(this.mode, this._input, this.output, this._finish) &&
-    !this._finish) {}
-
-  // free consumed memory from input buffer
-  this._input.compact();
-};
-
-/**
- * Finishes encrypting or decrypting.
- *
- * @param pad a padding function to use in CBC mode, null for default,
- *          signature(blockSize, buffer, decrypt).
- *
- * @return true if successful, false on error.
- */
-BlockCipher.prototype.finish = function(pad) {
-  // backwards-compatibility w/deprecated padding API
-  // Note: will overwrite padding functions even after another start() call
-  if(pad && (this.mode.name === 'ECB' || this.mode.name === 'CBC')) {
-    this.mode.pad = function(input) {
-      return pad(this.blockSize, input, false);
-    };
-    this.mode.unpad = function(output) {
-      return pad(this.blockSize, output, true);
-    };
-  }
-
-  // build options for padding and afterFinish functions
-  var options = {};
-  options.decrypt = this._decrypt;
-
-  // get # of bytes that won't fill a block
-  options.overflow = this._input.length() % this.blockSize;
-
-  if(!this._decrypt && this.mode.pad) {
-    if(!this.mode.pad(this._input, options)) {
-      return false;
-    }
-  }
-
-  // do final update
-  this._finish = true;
-  this.update();
-
-  if(this._decrypt && this.mode.unpad) {
-    if(!this.mode.unpad(this.output, options)) {
-      return false;
-    }
-  }
-
-  if(this.mode.afterFinish) {
-    if(!this.mode.afterFinish(this.output, options)) {
-      return false;
-    }
-  }
-
-  return true;
-};
-
 
 } // end module implementation
 
 /* ########## Begin module wrapper ########## */
-var name = 'cipher';
+var name = 'pki';
 if(typeof define !== 'function') {
   // NodeJS -> AMD
   if(typeof module === 'object' && module.exports) {
@@ -2969,10 +1864,167 @@ define = function(ids, factory) {
   define = tmpDefine;
   return define.apply(null, Array.prototype.slice.call(arguments, 0));
 };
-define(['require', 'module', './util'], function() {
+define([
+  'require',
+  'module',
+  './asn1',
+  './oids',
+  './pbe',
+  './pem',
+  './pbkdf2',
+  './pkcs12',
+  './pss',
+  './rsa',
+  './util',
+  './x509'
+], function() {
   defineFunc.apply(null, Array.prototype.slice.call(arguments, 0));
 });
 })();
+/**
+ *  @author Fritz
+ */
+var EcCrypto = function() {};
+EcCrypto = stjs.extend(EcCrypto, null, [], function(constructor, prototype) {
+    constructor.caching = false;
+    constructor.decryptionCache = new Object();
+    constructor.md5 = function(s) {
+        var m = forge.md.md5.create();
+        m.update(s);
+        return m.digest().toHex();
+    };
+}, {decryptionCache: "Object"}, {});
+/**
+ *  Helper classes for dealing with RSA Public Keys.
+ * 
+ *  @author fritz.ray@eduworks.com
+ *  @class EcPk
+ *  @module com.eduworks.ec
+ */
+var EcPk = function() {};
+EcPk = stjs.extend(EcPk, null, [], function(constructor, prototype) {
+    prototype.pk = null;
+    prototype.jwk = null;
+    prototype.key = null;
+    prototype.signKey = null;
+    /**
+     *  Decodes a PEM encoded SubjectPublicKeyInfo (PKCS#8) or RSAPublicKey (PKCS#1) formatted RSA Public Key.
+     *  (In case you were curious.)
+     * 
+     *  @param {string} pem PEM as a string.
+     *  @return {EcPk} Object used to perform public key operations.
+     *  @method fromPem
+     *  @static
+     */
+    constructor.fromPem = function(pem) {
+        var pk = new EcPk();
+        try {
+            pk.pk = forge.pki.publicKeyFromPem(pem);
+        }catch (ex) {
+            return null;
+        }
+        return pk;
+    };
+    /**
+     *  Compares two public keys, and returns true if their PEM forms match.
+     * 
+     *  @param {EcPk} obj Object to compare to.
+     *  @return {boolean} True if the keys match.
+     *  @method equals
+     */
+    prototype.equals = function(obj) {
+        if (stjs.isInstanceOf(obj.constructor, EcPk)) 
+            return this.toPem().equals((obj).toPem());
+        return Object.prototype.equals.call(this, obj);
+    };
+    /**
+     *  Encodes the public key into a PEM encoded SubjectPublicKeyInfo (PKCS#8) formatted RSA Public Key.
+     *  (In case you were curious.)
+     * 
+     *  @return {string} PEM encoded public key without whitespace.
+     *  @method toPem
+     */
+    prototype.toPem = function() {
+        return forge.pki.publicKeyToPem(this.pk).replaceAll("\r?\n", "");
+    };
+    /**
+     *  Encodes the public key into a PEM encoded RSAPublicKey (PKCS#1) formatted RSA Public Key.
+     *  (In case you were curious.)
+     * 
+     *  @return {string} PEM encoded public key without whitespace.
+     *  @method toPkcs1Pem
+     */
+    prototype.toPkcs1Pem = function() {
+        return forge.pki.publicKeyToRSAPublicKeyPem(this.pk).replaceAll("\r?\n", "");
+    };
+    /**
+     *  Encodes the public key into a PEM encoded SubjectPublicKeyInfo (PKCS#8) formatted RSA Public Key.
+     *  (In case you were curious.)
+     * 
+     *  @return {string} PEM encoded public key without whitespace.
+     *  @method toPkcs8Pem
+     */
+    prototype.toPkcs8Pem = function() {
+        return forge.pki.publicKeyToPem(this.pk).replaceAll("\r?\n", "");
+    };
+    prototype.toJwk = function() {
+        if (this.jwk == null) 
+            this.jwk = pemJwk.pem2jwk(forge.pki.publicKeyToPem(this.pk));
+        return this.jwk;
+    };
+    /**
+     *  Hashes the public key into an SSH compatible fingerprint.
+     * 
+     *  @return {string} Public key fingerprint.
+     *  @method fingerprint
+     */
+    prototype.fingerprint = function() {
+        var o = new Object();
+        (o)["encoding"] = "hex";
+        return forge.ssh.getPublicKeyFingerprint(this.pk, o);
+    };
+    prototype.verify = function(bytes, decode64) {
+        return this.pk.verify(bytes, decode64);
+    };
+}, {pk: "forge.pk", jwk: "Object", key: "CryptoKey", signKey: "CryptoKey"}, {});
+var CryptoKey = function() {};
+CryptoKey = stjs.extend(CryptoKey, null, [], null, {}, {});
+var jwk = function() {};
+jwk = stjs.extend(jwk, null, [], function(constructor, prototype) {
+    prototype.kty = null;
+    prototype.k = null;
+    prototype.alg = null;
+    prototype.ext = null;
+}, {}, {});
+/**
+ *  AES encryption tasks common across all variants of AES.
+ *  @class EcAes
+ *  @module com.eduworks.ec
+ *  @author fritz.ray@eduworks.com
+ */
+var EcAes = function() {};
+EcAes = stjs.extend(EcAes, null, [], function(constructor, prototype) {
+    /**
+     *  Generates a random secret of length @i
+     *  @method newSecret
+     *  @static
+     *  @param {integer} i Length of secret
+     *  @return {string} String representing the new secret, encoded using Base64.
+     */
+    constructor.newSecret = function(i) {
+        return forge.util.encode64(forge.random.getBytesSync(i));
+    };
+    /**
+     *  Generates a random Initialization Vector of length @i
+     *  @method newIv
+     *  @static
+     *  @param {integer} i Length of initialization Vector
+     *  @return {string} String representing the new Initialization Vector, encoded using Base64.
+     */
+    constructor.newIv = function(i) {
+        return forge.util.encode64(forge.random.getBytesSync(i));
+    };
+}, {}, {});
 /**
  * Secure Hash Algorithm with 160-bit digest (SHA-1) implementation.
  *
@@ -3315,48 +2367,629 @@ define(['require', 'module', './util'], function() {
   defineFunc.apply(null, Array.prototype.slice.call(arguments, 0));
 });
 })();
-var jwk = function() {};
-jwk = stjs.extend(jwk, null, [], function(constructor, prototype) {
-    prototype.kty = null;
-    prototype.k = null;
-    prototype.alg = null;
-    prototype.ext = null;
-}, {}, {});
 /**
- *  AES encryption tasks common across all variants of AES.
- *  @class EcAes
- *  @module com.eduworks.ec
- *  @author fritz.ray@eduworks.com
+ * Functions to output keys in SSH-friendly formats.
+ *
+ * This is part of the Forge project which may be used under the terms of
+ * either the BSD License or the GNU General Public License (GPL) Version 2.
+ *
+ * See: https://github.com/digitalbazaar/forge/blob/cbebca3780658703d925b61b2caffb1d263a6c1d/LICENSE
+ *
+ * @author https://github.com/shellac
  */
-var EcAes = function() {};
-EcAes = stjs.extend(EcAes, null, [], function(constructor, prototype) {
-    /**
-     *  Generates a random secret of length @i
-     *  @method newSecret
-     *  @static
-     *  @param {integer} i Length of secret
-     *  @return {string} String representing the new secret, encoded using Base64.
-     */
-    constructor.newSecret = function(i) {
-        return forge.util.encode64(forge.random.getBytesSync(i));
+(function() {
+/* ########## Begin module implementation ########## */
+function initModule(forge) {
+
+var ssh = forge.ssh = forge.ssh || {};
+
+/**
+ * Encodes (and optionally encrypts) a private RSA key as a Putty PPK file.
+ *
+ * @param privateKey the key.
+ * @param passphrase a passphrase to protect the key (falsy for no encryption).
+ * @param comment a comment to include in the key file.
+ *
+ * @return the PPK file as a string.
+ */
+ssh.privateKeyToPutty = function(privateKey, passphrase, comment) {
+  comment = comment || '';
+  passphrase = passphrase || '';
+  var algorithm = 'ssh-rsa';
+  var encryptionAlgorithm = (passphrase === '') ? 'none' : 'aes256-cbc';
+
+  var ppk = 'PuTTY-User-Key-File-2: ' + algorithm + '\r\n';
+  ppk += 'Encryption: ' + encryptionAlgorithm + '\r\n';
+  ppk += 'Comment: ' + comment + '\r\n';
+
+  // public key into buffer for ppk
+  var pubbuffer = forge.util.createBuffer();
+  _addStringToBuffer(pubbuffer, algorithm);
+  _addBigIntegerToBuffer(pubbuffer, privateKey.e);
+  _addBigIntegerToBuffer(pubbuffer, privateKey.n);
+
+  // write public key
+  var pub = forge.util.encode64(pubbuffer.bytes(), 64);
+  var length = Math.floor(pub.length / 66) + 1; // 66 = 64 + \r\n
+  ppk += 'Public-Lines: ' + length + '\r\n';
+  ppk += pub;
+
+  // private key into a buffer
+  var privbuffer = forge.util.createBuffer();
+  _addBigIntegerToBuffer(privbuffer, privateKey.d);
+  _addBigIntegerToBuffer(privbuffer, privateKey.p);
+  _addBigIntegerToBuffer(privbuffer, privateKey.q);
+  _addBigIntegerToBuffer(privbuffer, privateKey.qInv);
+
+  // optionally encrypt the private key
+  var priv;
+  if(!passphrase) {
+    // use the unencrypted buffer
+    priv = forge.util.encode64(privbuffer.bytes(), 64);
+  } else {
+    // encrypt RSA key using passphrase
+    var encLen = privbuffer.length() + 16 - 1;
+    encLen -= encLen % 16;
+
+    // pad private key with sha1-d data -- needs to be a multiple of 16
+    var padding = _sha1(privbuffer.bytes());
+
+    padding.truncate(padding.length() - encLen + privbuffer.length());
+    privbuffer.putBuffer(padding);
+
+    var aeskey = forge.util.createBuffer();
+    aeskey.putBuffer(_sha1('\x00\x00\x00\x00', passphrase));
+    aeskey.putBuffer(_sha1('\x00\x00\x00\x01', passphrase));
+
+    // encrypt some bytes using CBC mode
+    // key is 40 bytes, so truncate *by* 8 bytes
+    var cipher = forge.aes.createEncryptionCipher(aeskey.truncate(8), 'CBC');
+    cipher.start(forge.util.createBuffer().fillWithByte(0, 16));
+    cipher.update(privbuffer.copy());
+    cipher.finish();
+    var encrypted = cipher.output;
+
+    // Note: this appears to differ from Putty -- is forge wrong, or putty?
+    // due to padding we finish as an exact multiple of 16
+    encrypted.truncate(16); // all padding
+
+    priv = forge.util.encode64(encrypted.bytes(), 64);
+  }
+
+  // output private key
+  length = Math.floor(priv.length / 66) + 1; // 64 + \r\n
+  ppk += '\r\nPrivate-Lines: ' + length + '\r\n';
+  ppk += priv;
+
+  // MAC
+  var mackey = _sha1('putty-private-key-file-mac-key', passphrase);
+
+  var macbuffer = forge.util.createBuffer();
+  _addStringToBuffer(macbuffer, algorithm);
+  _addStringToBuffer(macbuffer, encryptionAlgorithm);
+  _addStringToBuffer(macbuffer, comment);
+  macbuffer.putInt32(pubbuffer.length());
+  macbuffer.putBuffer(pubbuffer);
+  macbuffer.putInt32(privbuffer.length());
+  macbuffer.putBuffer(privbuffer);
+
+  var hmac = forge.hmac.create();
+  hmac.start('sha1', mackey);
+  hmac.update(macbuffer.bytes());
+
+  ppk += '\r\nPrivate-MAC: ' + hmac.digest().toHex() + '\r\n';
+
+  return ppk;
+};
+
+/**
+ * Encodes a public RSA key as an OpenSSH file.
+ *
+ * @param key the key.
+ * @param comment a comment.
+ *
+ * @return the public key in OpenSSH format.
+ */
+ssh.publicKeyToOpenSSH = function(key, comment) {
+  var type = 'ssh-rsa';
+  comment = comment || '';
+
+  var buffer = forge.util.createBuffer();
+  _addStringToBuffer(buffer, type);
+  _addBigIntegerToBuffer(buffer, key.e);
+  _addBigIntegerToBuffer(buffer, key.n);
+
+  return type + ' ' + forge.util.encode64(buffer.bytes()) + ' ' + comment;
+};
+
+/**
+ * Encodes a private RSA key as an OpenSSH file.
+ *
+ * @param key the key.
+ * @param passphrase a passphrase to protect the key (falsy for no encryption).
+ *
+ * @return the public key in OpenSSH format.
+ */
+ssh.privateKeyToOpenSSH = function(privateKey, passphrase) {
+  if(!passphrase) {
+    return forge.pki.privateKeyToPem(privateKey);
+  }
+  // OpenSSH private key is just a legacy format, it seems
+  return forge.pki.encryptRsaPrivateKey(privateKey, passphrase,
+    {legacy: true, algorithm: 'aes128'});
+};
+
+/**
+ * Gets the SSH fingerprint for the given public key.
+ *
+ * @param options the options to use.
+ *          [md] the message digest object to use (defaults to forge.md.md5).
+ *          [encoding] an alternative output encoding, such as 'hex'
+ *            (defaults to none, outputs a byte buffer).
+ *          [delimiter] the delimiter to use between bytes for 'hex' encoded
+ *            output, eg: ':' (defaults to none).
+ *
+ * @return the fingerprint as a byte buffer or other encoding based on options.
+ */
+ssh.getPublicKeyFingerprint = function(key, options) {
+  options = options || {};
+  var md = options.md || forge.md.md5.create();
+
+  var type = 'ssh-rsa';
+  var buffer = forge.util.createBuffer();
+  _addStringToBuffer(buffer, type);
+  _addBigIntegerToBuffer(buffer, key.e);
+  _addBigIntegerToBuffer(buffer, key.n);
+
+  // hash public key bytes
+  md.start();
+  md.update(buffer.getBytes());
+  var digest = md.digest();
+  if(options.encoding === 'hex') {
+    var hex = digest.toHex();
+    if(options.delimiter) {
+      return hex.match(/.{2}/g).join(options.delimiter);
+    }
+    return hex;
+  } else if(options.encoding === 'binary') {
+    return digest.getBytes();
+  } else if(options.encoding) {
+    throw new Error('Unknown encoding "' + options.encoding + '".');
+  }
+  return digest;
+};
+
+/**
+ * Adds len(val) then val to a buffer.
+ *
+ * @param buffer the buffer to add to.
+ * @param val a big integer.
+ */
+function _addBigIntegerToBuffer(buffer, val) {
+  var hexVal = val.toString(16);
+  // ensure 2s complement +ve
+  if(hexVal[0] >= '8') {
+    hexVal = '00' + hexVal;
+  }
+  var bytes = forge.util.hexToBytes(hexVal);
+  buffer.putInt32(bytes.length);
+  buffer.putBytes(bytes);
+}
+
+/**
+ * Adds len(val) then val to a buffer.
+ *
+ * @param buffer the buffer to add to.
+ * @param val a string.
+ */
+function _addStringToBuffer(buffer, val) {
+  buffer.putInt32(val.length);
+  buffer.putString(val);
+}
+
+/**
+ * Hashes the arguments into one value using SHA-1.
+ *
+ * @return the sha1 hash of the provided arguments.
+ */
+function _sha1() {
+  var sha = forge.md.sha1.create();
+  var num = arguments.length;
+  for (var i = 0; i < num; ++i) {
+    sha.update(arguments[i]);
+  }
+  return sha.digest();
+}
+
+} // end module implementation
+
+/* ########## Begin module wrapper ########## */
+var name = 'ssh';
+if(typeof define !== 'function') {
+  // NodeJS -> AMD
+  if(typeof module === 'object' && module.exports) {
+    var nodeJS = true;
+    define = function(ids, factory) {
+      factory(require, module);
     };
-    /**
-     *  Generates a random Initialization Vector of length @i
-     *  @method newIv
-     *  @static
-     *  @param {integer} i Length of initialization Vector
-     *  @return {string} String representing the new Initialization Vector, encoded using Base64.
-     */
-    constructor.newIv = function(i) {
-        return forge.util.encode64(forge.random.getBytesSync(i));
-    };
-}, {}, {});
+  } else {
+    // <script>
+    if(typeof forge === 'undefined') {
+      forge = {};
+    }
+    return initModule(forge);
+  }
+}
+// AMD
+var deps;
+var defineFunc = function(require, module) {
+  module.exports = function(forge) {
+    var mods = deps.map(function(dep) {
+      return require(dep);
+    }).concat(initModule);
+    // handle circular dependencies
+    forge = forge || {};
+    forge.defined = forge.defined || {};
+    if(forge.defined[name]) {
+      return forge[name];
+    }
+    forge.defined[name] = true;
+    for(var i = 0; i < mods.length; ++i) {
+      mods[i](forge);
+    }
+    return forge[name];
+  };
+};
+var tmpDefine = define;
+define = function(ids, factory) {
+  deps = (typeof ids === 'string') ? factory.slice(2) : ids.slice(2);
+  if(nodeJS) {
+    delete define;
+    return tmpDefine.apply(null, Array.prototype.slice.call(arguments, 0));
+  }
+  define = tmpDefine;
+  return define.apply(null, Array.prototype.slice.call(arguments, 0));
+};
+define([
+  'require',
+  'module',
+  './aes',
+  './hmac',
+  './md5',
+  './sha1',
+  './util'
+], function() {
+  defineFunc.apply(null, Array.prototype.slice.call(arguments, 0));
+});
+})();
 var EcAesParameters = function(iv) {
     this.iv = forge.util.decode64(iv);
 };
 EcAesParameters = stjs.extend(EcAesParameters, null, [], function(constructor, prototype) {
     prototype.iv = null;
 }, {iv: "forge.payload"}, {});
+/**
+ * Message Digest Algorithm 5 with 128-bit digest (MD5) implementation.
+ *
+ * @author Dave Longley
+ *
+ * Copyright (c) 2010-2014 Digital Bazaar, Inc.
+ */
+(function() {
+/* ########## Begin module implementation ########## */
+function initModule(forge) {
+
+var md5 = forge.md5 = forge.md5 || {};
+forge.md = forge.md || {};
+forge.md.algorithms = forge.md.algorithms || {};
+forge.md.md5 = forge.md.algorithms.md5 = md5;
+
+/**
+ * Creates an MD5 message digest object.
+ *
+ * @return a message digest object.
+ */
+md5.create = function() {
+  // do initialization as necessary
+  if(!_initialized) {
+    _init();
+  }
+
+  // MD5 state contains four 32-bit integers
+  var _state = null;
+
+  // input buffer
+  var _input = forge.util.createBuffer();
+
+  // used for word storage
+  var _w = new Array(16);
+
+  // message digest object
+  var md = {
+    algorithm: 'md5',
+    blockLength: 64,
+    digestLength: 16,
+    // 56-bit length of message so far (does not including padding)
+    messageLength: 0,
+    // true 64-bit message length as two 32-bit ints
+    messageLength64: [0, 0]
+  };
+
+  /**
+   * Starts the digest.
+   *
+   * @return this digest object.
+   */
+  md.start = function() {
+    md.messageLength = 0;
+    md.messageLength64 = [0, 0];
+    _input = forge.util.createBuffer();
+    _state = {
+      h0: 0x67452301,
+      h1: 0xEFCDAB89,
+      h2: 0x98BADCFE,
+      h3: 0x10325476
+    };
+    return md;
+  };
+  // start digest automatically for first time
+  md.start();
+
+  /**
+   * Updates the digest with the given message input. The given input can
+   * treated as raw input (no encoding will be applied) or an encoding of
+   * 'utf8' maybe given to encode the input using UTF-8.
+   *
+   * @param msg the message input to update with.
+   * @param encoding the encoding to use (default: 'raw', other: 'utf8').
+   *
+   * @return this digest object.
+   */
+  md.update = function(msg, encoding) {
+    if(encoding === 'utf8') {
+      msg = forge.util.encodeUtf8(msg);
+    }
+
+    // update message length
+    md.messageLength += msg.length;
+    md.messageLength64[0] += (msg.length / 0x100000000) >>> 0;
+    md.messageLength64[1] += msg.length >>> 0;
+
+    // add bytes to input buffer
+    _input.putBytes(msg);
+
+    // process bytes
+    _update(_state, _w, _input);
+
+    // compact input buffer every 2K or if empty
+    if(_input.read > 2048 || _input.length() === 0) {
+      _input.compact();
+    }
+
+    return md;
+  };
+
+  /**
+   * Produces the digest.
+   *
+   * @return a byte buffer containing the digest value.
+   */
+  md.digest = function() {
+    /* Note: Here we copy the remaining bytes in the input buffer and
+    add the appropriate MD5 padding. Then we do the final update
+    on a copy of the state so that if the user wants to get
+    intermediate digests they can do so. */
+
+    /* Determine the number of bytes that must be added to the message
+    to ensure its length is congruent to 448 mod 512. In other words,
+    the data to be digested must be a multiple of 512 bits (or 128 bytes).
+    This data includes the message, some padding, and the length of the
+    message. Since the length of the message will be encoded as 8 bytes (64
+    bits), that means that the last segment of the data must have 56 bytes
+    (448 bits) of message and padding. Therefore, the length of the message
+    plus the padding must be congruent to 448 mod 512 because
+    512 - 128 = 448.
+
+    In order to fill up the message length it must be filled with
+    padding that begins with 1 bit followed by all 0 bits. Padding
+    must *always* be present, so if the message length is already
+    congruent to 448 mod 512, then 512 padding bits must be added. */
+
+    // 512 bits == 64 bytes, 448 bits == 56 bytes, 64 bits = 8 bytes
+    // _padding starts with 1 byte with first bit is set in it which
+    // is byte value 128, then there may be up to 63 other pad bytes
+    var padBytes = forge.util.createBuffer();
+    padBytes.putBytes(_input.bytes());
+    // 64 - (remaining msg + 8 bytes msg length) mod 64
+    padBytes.putBytes(
+      _padding.substr(0, 64 - ((md.messageLength64[1] + 8) & 0x3F)));
+
+    /* Now append length of the message. The length is appended in bits
+    as a 64-bit number in little-endian order. Since we store the length in
+    bytes, we must multiply the 64-bit length by 8 (or left shift by 3). */
+    padBytes.putInt32Le(md.messageLength64[1] << 3);
+    padBytes.putInt32Le(
+      (md.messageLength64[0] << 3) | (md.messageLength64[0] >>> 28));
+    var s2 = {
+      h0: _state.h0,
+      h1: _state.h1,
+      h2: _state.h2,
+      h3: _state.h3
+    };
+    _update(s2, _w, padBytes);
+    var rval = forge.util.createBuffer();
+    rval.putInt32Le(s2.h0);
+    rval.putInt32Le(s2.h1);
+    rval.putInt32Le(s2.h2);
+    rval.putInt32Le(s2.h3);
+    return rval;
+  };
+
+  return md;
+};
+
+// padding, constant tables for calculating md5
+var _padding = null;
+var _g = null;
+var _r = null;
+var _k = null;
+var _initialized = false;
+
+/**
+ * Initializes the constant tables.
+ */
+function _init() {
+  // create padding
+  _padding = String.fromCharCode(128);
+  _padding += forge.util.fillString(String.fromCharCode(0x00), 64);
+
+  // g values
+  _g = [
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+    1, 6, 11, 0, 5, 10, 15, 4, 9, 14, 3, 8, 13, 2, 7, 12,
+    5, 8, 11, 14, 1, 4, 7, 10, 13, 0, 3, 6, 9, 12, 15, 2,
+    0, 7, 14, 5, 12, 3, 10, 1, 8, 15, 6, 13, 4, 11, 2, 9];
+
+  // rounds table
+  _r = [
+    7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,
+    5,  9, 14, 20,  5,  9, 14, 20,  5,  9, 14, 20,  5,  9, 14, 20,
+    4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,
+    6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21];
+
+  // get the result of abs(sin(i + 1)) as a 32-bit integer
+  _k = new Array(64);
+  for(var i = 0; i < 64; ++i) {
+    _k[i] = Math.floor(Math.abs(Math.sin(i + 1)) * 0x100000000);
+  }
+
+  // now initialized
+  _initialized = true;
+}
+
+/**
+ * Updates an MD5 state with the given byte buffer.
+ *
+ * @param s the MD5 state to update.
+ * @param w the array to use to store words.
+ * @param bytes the byte buffer to update with.
+ */
+function _update(s, w, bytes) {
+  // consume 512 bit (64 byte) chunks
+  var t, a, b, c, d, f, r, i;
+  var len = bytes.length();
+  while(len >= 64) {
+    // initialize hash value for this chunk
+    a = s.h0;
+    b = s.h1;
+    c = s.h2;
+    d = s.h3;
+
+    // round 1
+    for(i = 0; i < 16; ++i) {
+      w[i] = bytes.getInt32Le();
+      f = d ^ (b & (c ^ d));
+      t = (a + f + _k[i] + w[i]);
+      r = _r[i];
+      a = d;
+      d = c;
+      c = b;
+      b += (t << r) | (t >>> (32 - r));
+    }
+    // round 2
+    for(; i < 32; ++i) {
+      f = c ^ (d & (b ^ c));
+      t = (a + f + _k[i] + w[_g[i]]);
+      r = _r[i];
+      a = d;
+      d = c;
+      c = b;
+      b += (t << r) | (t >>> (32 - r));
+    }
+    // round 3
+    for(; i < 48; ++i) {
+      f = b ^ c ^ d;
+      t = (a + f + _k[i] + w[_g[i]]);
+      r = _r[i];
+      a = d;
+      d = c;
+      c = b;
+      b += (t << r) | (t >>> (32 - r));
+    }
+    // round 4
+    for(; i < 64; ++i) {
+      f = c ^ (b | ~d);
+      t = (a + f + _k[i] + w[_g[i]]);
+      r = _r[i];
+      a = d;
+      d = c;
+      c = b;
+      b += (t << r) | (t >>> (32 - r));
+    }
+
+    // update hash state
+    s.h0 = (s.h0 + a) | 0;
+    s.h1 = (s.h1 + b) | 0;
+    s.h2 = (s.h2 + c) | 0;
+    s.h3 = (s.h3 + d) | 0;
+
+    len -= 64;
+  }
+}
+
+} // end module implementation
+
+/* ########## Begin module wrapper ########## */
+var name = 'md5';
+if(typeof define !== 'function') {
+  // NodeJS -> AMD
+  if(typeof module === 'object' && module.exports) {
+    var nodeJS = true;
+    define = function(ids, factory) {
+      factory(require, module);
+    };
+  } else {
+    // <script>
+    if(typeof forge === 'undefined') {
+      forge = {};
+    }
+    return initModule(forge);
+  }
+}
+// AMD
+var deps;
+var defineFunc = function(require, module) {
+  module.exports = function(forge) {
+    var mods = deps.map(function(dep) {
+      return require(dep);
+    }).concat(initModule);
+    // handle circular dependencies
+    forge = forge || {};
+    forge.defined = forge.defined || {};
+    if(forge.defined[name]) {
+      return forge[name];
+    }
+    forge.defined[name] = true;
+    for(var i = 0; i < mods.length; ++i) {
+      mods[i](forge);
+    }
+    return forge[name];
+  };
+};
+var tmpDefine = define;
+define = function(ids, factory) {
+  deps = (typeof ids === 'string') ? factory.slice(2) : ids.slice(2);
+  if(nodeJS) {
+    delete define;
+    return tmpDefine.apply(null, Array.prototype.slice.call(arguments, 0));
+  }
+  define = tmpDefine;
+  return define.apply(null, Array.prototype.slice.call(arguments, 0));
+};
+define(['require', 'module', './util'], function() {
+  defineFunc.apply(null, Array.prototype.slice.call(arguments, 0));
+});
+})();
 /**
  * An API for getting cryptographically-secure random bytes. The bytes are
  * generated using the Fortuna algorithm devised by Bruce Schneier and
@@ -3591,6 +3224,292 @@ define = function(ids, factory) {
   return define.apply(null, Array.prototype.slice.call(arguments, 0));
 };
 define(['require', 'module', './aes', './md', './prng', './util'], function() {
+  defineFunc.apply(null, Array.prototype.slice.call(arguments, 0));
+});
+})();
+/**
+ * Cipher base API.
+ *
+ * @author Dave Longley
+ *
+ * Copyright (c) 2010-2014 Digital Bazaar, Inc.
+ */
+(function() {
+/* ########## Begin module implementation ########## */
+function initModule(forge) {
+
+forge.cipher = forge.cipher || {};
+
+// registered algorithms
+forge.cipher.algorithms = forge.cipher.algorithms || {};
+
+/**
+ * Creates a cipher object that can be used to encrypt data using the given
+ * algorithm and key. The algorithm may be provided as a string value for a
+ * previously registered algorithm or it may be given as a cipher algorithm
+ * API object.
+ *
+ * @param algorithm the algorithm to use, either a string or an algorithm API
+ *          object.
+ * @param key the key to use, as a binary-encoded string of bytes or a
+ *          byte buffer.
+ *
+ * @return the cipher.
+ */
+forge.cipher.createCipher = function(algorithm, key) {
+  var api = algorithm;
+  if(typeof api === 'string') {
+    api = forge.cipher.getAlgorithm(api);
+    if(api) {
+      api = api();
+    }
+  }
+  if(!api) {
+    throw new Error('Unsupported algorithm: ' + algorithm);
+  }
+
+  // assume block cipher
+  return new forge.cipher.BlockCipher({
+    algorithm: api,
+    key: key,
+    decrypt: false
+  });
+};
+
+/**
+ * Creates a decipher object that can be used to decrypt data using the given
+ * algorithm and key. The algorithm may be provided as a string value for a
+ * previously registered algorithm or it may be given as a cipher algorithm
+ * API object.
+ *
+ * @param algorithm the algorithm to use, either a string or an algorithm API
+ *          object.
+ * @param key the key to use, as a binary-encoded string of bytes or a
+ *          byte buffer.
+ *
+ * @return the cipher.
+ */
+forge.cipher.createDecipher = function(algorithm, key) {
+  var api = algorithm;
+  if(typeof api === 'string') {
+    api = forge.cipher.getAlgorithm(api);
+    if(api) {
+      api = api();
+    }
+  }
+  if(!api) {
+    throw new Error('Unsupported algorithm: ' + algorithm);
+  }
+
+  // assume block cipher
+  return new forge.cipher.BlockCipher({
+    algorithm: api,
+    key: key,
+    decrypt: true
+  });
+};
+
+/**
+ * Registers an algorithm by name. If the name was already registered, the
+ * algorithm API object will be overwritten.
+ *
+ * @param name the name of the algorithm.
+ * @param algorithm the algorithm API object.
+ */
+forge.cipher.registerAlgorithm = function(name, algorithm) {
+  name = name.toUpperCase();
+  forge.cipher.algorithms[name] = algorithm;
+};
+
+/**
+ * Gets a registered algorithm by name.
+ *
+ * @param name the name of the algorithm.
+ *
+ * @return the algorithm, if found, null if not.
+ */
+forge.cipher.getAlgorithm = function(name) {
+  name = name.toUpperCase();
+  if(name in forge.cipher.algorithms) {
+    return forge.cipher.algorithms[name];
+  }
+  return null;
+};
+
+var BlockCipher = forge.cipher.BlockCipher = function(options) {
+  this.algorithm = options.algorithm;
+  this.mode = this.algorithm.mode;
+  this.blockSize = this.mode.blockSize;
+  this._finish = false;
+  this._input = null;
+  this.output = null;
+  this._op = options.decrypt ? this.mode.decrypt : this.mode.encrypt;
+  this._decrypt = options.decrypt;
+  this.algorithm.initialize(options);
+};
+
+/**
+ * Starts or restarts the encryption or decryption process, whichever
+ * was previously configured.
+ *
+ * For non-GCM mode, the IV may be a binary-encoded string of bytes, an array
+ * of bytes, a byte buffer, or an array of 32-bit integers. If the IV is in
+ * bytes, then it must be Nb (16) bytes in length. If the IV is given in as
+ * 32-bit integers, then it must be 4 integers long.
+ *
+ * Note: an IV is not required or used in ECB mode.
+ *
+ * For GCM-mode, the IV must be given as a binary-encoded string of bytes or
+ * a byte buffer. The number of bytes should be 12 (96 bits) as recommended
+ * by NIST SP-800-38D but another length may be given.
+ *
+ * @param options the options to use:
+ *          iv the initialization vector to use as a binary-encoded string of
+ *            bytes, null to reuse the last ciphered block from a previous
+ *            update() (this "residue" method is for legacy support only).
+ *          additionalData additional authentication data as a binary-encoded
+ *            string of bytes, for 'GCM' mode, (default: none).
+ *          tagLength desired length of authentication tag, in bits, for
+ *            'GCM' mode (0-128, default: 128).
+ *          tag the authentication tag to check if decrypting, as a
+ *             binary-encoded string of bytes.
+ *          output the output the buffer to write to, null to create one.
+ */
+BlockCipher.prototype.start = function(options) {
+  options = options || {};
+  var opts = {};
+  for(var key in options) {
+    opts[key] = options[key];
+  }
+  opts.decrypt = this._decrypt;
+  this._finish = false;
+  this._input = forge.util.createBuffer();
+  this.output = options.output || forge.util.createBuffer();
+  this.mode.start(opts);
+};
+
+/**
+ * Updates the next block according to the cipher mode.
+ *
+ * @param input the buffer to read from.
+ */
+BlockCipher.prototype.update = function(input) {
+  if(input) {
+    // input given, so empty it into the input buffer
+    this._input.putBuffer(input);
+  }
+
+  // do cipher operation until it needs more input and not finished
+  while(!this._op.call(this.mode, this._input, this.output, this._finish) &&
+    !this._finish) {}
+
+  // free consumed memory from input buffer
+  this._input.compact();
+};
+
+/**
+ * Finishes encrypting or decrypting.
+ *
+ * @param pad a padding function to use in CBC mode, null for default,
+ *          signature(blockSize, buffer, decrypt).
+ *
+ * @return true if successful, false on error.
+ */
+BlockCipher.prototype.finish = function(pad) {
+  // backwards-compatibility w/deprecated padding API
+  // Note: will overwrite padding functions even after another start() call
+  if(pad && (this.mode.name === 'ECB' || this.mode.name === 'CBC')) {
+    this.mode.pad = function(input) {
+      return pad(this.blockSize, input, false);
+    };
+    this.mode.unpad = function(output) {
+      return pad(this.blockSize, output, true);
+    };
+  }
+
+  // build options for padding and afterFinish functions
+  var options = {};
+  options.decrypt = this._decrypt;
+
+  // get # of bytes that won't fill a block
+  options.overflow = this._input.length() % this.blockSize;
+
+  if(!this._decrypt && this.mode.pad) {
+    if(!this.mode.pad(this._input, options)) {
+      return false;
+    }
+  }
+
+  // do final update
+  this._finish = true;
+  this.update();
+
+  if(this._decrypt && this.mode.unpad) {
+    if(!this.mode.unpad(this.output, options)) {
+      return false;
+    }
+  }
+
+  if(this.mode.afterFinish) {
+    if(!this.mode.afterFinish(this.output, options)) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+
+} // end module implementation
+
+/* ########## Begin module wrapper ########## */
+var name = 'cipher';
+if(typeof define !== 'function') {
+  // NodeJS -> AMD
+  if(typeof module === 'object' && module.exports) {
+    var nodeJS = true;
+    define = function(ids, factory) {
+      factory(require, module);
+    };
+  } else {
+    // <script>
+    if(typeof forge === 'undefined') {
+      forge = {};
+    }
+    return initModule(forge);
+  }
+}
+// AMD
+var deps;
+var defineFunc = function(require, module) {
+  module.exports = function(forge) {
+    var mods = deps.map(function(dep) {
+      return require(dep);
+    }).concat(initModule);
+    // handle circular dependencies
+    forge = forge || {};
+    forge.defined = forge.defined || {};
+    if(forge.defined[name]) {
+      return forge[name];
+    }
+    forge.defined[name] = true;
+    for(var i = 0; i < mods.length; ++i) {
+      mods[i](forge);
+    }
+    return forge[name];
+  };
+};
+var tmpDefine = define;
+define = function(ids, factory) {
+  deps = (typeof ids === 'string') ? factory.slice(2) : ids.slice(2);
+  if(nodeJS) {
+    delete define;
+    return tmpDefine.apply(null, Array.prototype.slice.call(arguments, 0));
+  }
+  define = tmpDefine;
+  return define.apply(null, Array.prototype.slice.call(arguments, 0));
+};
+define(['require', 'module', './util'], function() {
   defineFunc.apply(null, Array.prototype.slice.call(arguments, 0));
 });
 })();
@@ -6583,243 +6502,308 @@ define(['require', 'module'], function() {
 });
 })();
 /**
- * Functions to output keys in SSH-friendly formats.
+ * Secure Hash Algorithm with 256-bit digest (SHA-256) implementation.
  *
- * This is part of the Forge project which may be used under the terms of
- * either the BSD License or the GNU General Public License (GPL) Version 2.
+ * See FIPS 180-2 for details.
  *
- * See: https://github.com/digitalbazaar/forge/blob/cbebca3780658703d925b61b2caffb1d263a6c1d/LICENSE
+ * @author Dave Longley
  *
- * @author https://github.com/shellac
+ * Copyright (c) 2010-2014 Digital Bazaar, Inc.
  */
 (function() {
 /* ########## Begin module implementation ########## */
 function initModule(forge) {
 
-var ssh = forge.ssh = forge.ssh || {};
+var sha256 = forge.sha256 = forge.sha256 || {};
+forge.md = forge.md || {};
+forge.md.algorithms = forge.md.algorithms || {};
+forge.md.sha256 = forge.md.algorithms.sha256 = sha256;
 
 /**
- * Encodes (and optionally encrypts) a private RSA key as a Putty PPK file.
+ * Creates a SHA-256 message digest object.
  *
- * @param privateKey the key.
- * @param passphrase a passphrase to protect the key (falsy for no encryption).
- * @param comment a comment to include in the key file.
- *
- * @return the PPK file as a string.
+ * @return a message digest object.
  */
-ssh.privateKeyToPutty = function(privateKey, passphrase, comment) {
-  comment = comment || '';
-  passphrase = passphrase || '';
-  var algorithm = 'ssh-rsa';
-  var encryptionAlgorithm = (passphrase === '') ? 'none' : 'aes256-cbc';
-
-  var ppk = 'PuTTY-User-Key-File-2: ' + algorithm + '\r\n';
-  ppk += 'Encryption: ' + encryptionAlgorithm + '\r\n';
-  ppk += 'Comment: ' + comment + '\r\n';
-
-  // public key into buffer for ppk
-  var pubbuffer = forge.util.createBuffer();
-  _addStringToBuffer(pubbuffer, algorithm);
-  _addBigIntegerToBuffer(pubbuffer, privateKey.e);
-  _addBigIntegerToBuffer(pubbuffer, privateKey.n);
-
-  // write public key
-  var pub = forge.util.encode64(pubbuffer.bytes(), 64);
-  var length = Math.floor(pub.length / 66) + 1; // 66 = 64 + \r\n
-  ppk += 'Public-Lines: ' + length + '\r\n';
-  ppk += pub;
-
-  // private key into a buffer
-  var privbuffer = forge.util.createBuffer();
-  _addBigIntegerToBuffer(privbuffer, privateKey.d);
-  _addBigIntegerToBuffer(privbuffer, privateKey.p);
-  _addBigIntegerToBuffer(privbuffer, privateKey.q);
-  _addBigIntegerToBuffer(privbuffer, privateKey.qInv);
-
-  // optionally encrypt the private key
-  var priv;
-  if(!passphrase) {
-    // use the unencrypted buffer
-    priv = forge.util.encode64(privbuffer.bytes(), 64);
-  } else {
-    // encrypt RSA key using passphrase
-    var encLen = privbuffer.length() + 16 - 1;
-    encLen -= encLen % 16;
-
-    // pad private key with sha1-d data -- needs to be a multiple of 16
-    var padding = _sha1(privbuffer.bytes());
-
-    padding.truncate(padding.length() - encLen + privbuffer.length());
-    privbuffer.putBuffer(padding);
-
-    var aeskey = forge.util.createBuffer();
-    aeskey.putBuffer(_sha1('\x00\x00\x00\x00', passphrase));
-    aeskey.putBuffer(_sha1('\x00\x00\x00\x01', passphrase));
-
-    // encrypt some bytes using CBC mode
-    // key is 40 bytes, so truncate *by* 8 bytes
-    var cipher = forge.aes.createEncryptionCipher(aeskey.truncate(8), 'CBC');
-    cipher.start(forge.util.createBuffer().fillWithByte(0, 16));
-    cipher.update(privbuffer.copy());
-    cipher.finish();
-    var encrypted = cipher.output;
-
-    // Note: this appears to differ from Putty -- is forge wrong, or putty?
-    // due to padding we finish as an exact multiple of 16
-    encrypted.truncate(16); // all padding
-
-    priv = forge.util.encode64(encrypted.bytes(), 64);
+sha256.create = function() {
+  // do initialization as necessary
+  if(!_initialized) {
+    _init();
   }
 
-  // output private key
-  length = Math.floor(priv.length / 66) + 1; // 64 + \r\n
-  ppk += '\r\nPrivate-Lines: ' + length + '\r\n';
-  ppk += priv;
+  // SHA-256 state contains eight 32-bit integers
+  var _state = null;
 
-  // MAC
-  var mackey = _sha1('putty-private-key-file-mac-key', passphrase);
+  // input buffer
+  var _input = forge.util.createBuffer();
 
-  var macbuffer = forge.util.createBuffer();
-  _addStringToBuffer(macbuffer, algorithm);
-  _addStringToBuffer(macbuffer, encryptionAlgorithm);
-  _addStringToBuffer(macbuffer, comment);
-  macbuffer.putInt32(pubbuffer.length());
-  macbuffer.putBuffer(pubbuffer);
-  macbuffer.putInt32(privbuffer.length());
-  macbuffer.putBuffer(privbuffer);
+  // used for word storage
+  var _w = new Array(64);
 
-  var hmac = forge.hmac.create();
-  hmac.start('sha1', mackey);
-  hmac.update(macbuffer.bytes());
+  // message digest object
+  var md = {
+    algorithm: 'sha256',
+    blockLength: 64,
+    digestLength: 32,
+    // 56-bit length of message so far (does not including padding)
+    messageLength: 0,
+    // true 64-bit message length as two 32-bit ints
+    messageLength64: [0, 0]
+  };
 
-  ppk += '\r\nPrivate-MAC: ' + hmac.digest().toHex() + '\r\n';
-
-  return ppk;
-};
-
-/**
- * Encodes a public RSA key as an OpenSSH file.
- *
- * @param key the key.
- * @param comment a comment.
- *
- * @return the public key in OpenSSH format.
- */
-ssh.publicKeyToOpenSSH = function(key, comment) {
-  var type = 'ssh-rsa';
-  comment = comment || '';
-
-  var buffer = forge.util.createBuffer();
-  _addStringToBuffer(buffer, type);
-  _addBigIntegerToBuffer(buffer, key.e);
-  _addBigIntegerToBuffer(buffer, key.n);
-
-  return type + ' ' + forge.util.encode64(buffer.bytes()) + ' ' + comment;
-};
-
-/**
- * Encodes a private RSA key as an OpenSSH file.
- *
- * @param key the key.
- * @param passphrase a passphrase to protect the key (falsy for no encryption).
- *
- * @return the public key in OpenSSH format.
- */
-ssh.privateKeyToOpenSSH = function(privateKey, passphrase) {
-  if(!passphrase) {
-    return forge.pki.privateKeyToPem(privateKey);
-  }
-  // OpenSSH private key is just a legacy format, it seems
-  return forge.pki.encryptRsaPrivateKey(privateKey, passphrase,
-    {legacy: true, algorithm: 'aes128'});
-};
-
-/**
- * Gets the SSH fingerprint for the given public key.
- *
- * @param options the options to use.
- *          [md] the message digest object to use (defaults to forge.md.md5).
- *          [encoding] an alternative output encoding, such as 'hex'
- *            (defaults to none, outputs a byte buffer).
- *          [delimiter] the delimiter to use between bytes for 'hex' encoded
- *            output, eg: ':' (defaults to none).
- *
- * @return the fingerprint as a byte buffer or other encoding based on options.
- */
-ssh.getPublicKeyFingerprint = function(key, options) {
-  options = options || {};
-  var md = options.md || forge.md.md5.create();
-
-  var type = 'ssh-rsa';
-  var buffer = forge.util.createBuffer();
-  _addStringToBuffer(buffer, type);
-  _addBigIntegerToBuffer(buffer, key.e);
-  _addBigIntegerToBuffer(buffer, key.n);
-
-  // hash public key bytes
+  /**
+   * Starts the digest.
+   *
+   * @return this digest object.
+   */
+  md.start = function() {
+    md.messageLength = 0;
+    md.messageLength64 = [0, 0];
+    _input = forge.util.createBuffer();
+    _state = {
+      h0: 0x6A09E667,
+      h1: 0xBB67AE85,
+      h2: 0x3C6EF372,
+      h3: 0xA54FF53A,
+      h4: 0x510E527F,
+      h5: 0x9B05688C,
+      h6: 0x1F83D9AB,
+      h7: 0x5BE0CD19
+    };
+    return md;
+  };
+  // start digest automatically for first time
   md.start();
-  md.update(buffer.getBytes());
-  var digest = md.digest();
-  if(options.encoding === 'hex') {
-    var hex = digest.toHex();
-    if(options.delimiter) {
-      return hex.match(/.{2}/g).join(options.delimiter);
+
+  /**
+   * Updates the digest with the given message input. The given input can
+   * treated as raw input (no encoding will be applied) or an encoding of
+   * 'utf8' maybe given to encode the input using UTF-8.
+   *
+   * @param msg the message input to update with.
+   * @param encoding the encoding to use (default: 'raw', other: 'utf8').
+   *
+   * @return this digest object.
+   */
+  md.update = function(msg, encoding) {
+    if(encoding === 'utf8') {
+      msg = forge.util.encodeUtf8(msg);
     }
-    return hex;
-  } else if(options.encoding === 'binary') {
-    return digest.getBytes();
-  } else if(options.encoding) {
-    throw new Error('Unknown encoding "' + options.encoding + '".');
-  }
-  return digest;
+
+    // update message length
+    md.messageLength += msg.length;
+    md.messageLength64[0] += (msg.length / 0x100000000) >>> 0;
+    md.messageLength64[1] += msg.length >>> 0;
+
+    // add bytes to input buffer
+    _input.putBytes(msg);
+
+    // process bytes
+    _update(_state, _w, _input);
+
+    // compact input buffer every 2K or if empty
+    if(_input.read > 2048 || _input.length() === 0) {
+      _input.compact();
+    }
+
+    return md;
+  };
+
+  /**
+   * Produces the digest.
+   *
+   * @return a byte buffer containing the digest value.
+   */
+  md.digest = function() {
+    /* Note: Here we copy the remaining bytes in the input buffer and
+    add the appropriate SHA-256 padding. Then we do the final update
+    on a copy of the state so that if the user wants to get
+    intermediate digests they can do so. */
+
+    /* Determine the number of bytes that must be added to the message
+    to ensure its length is congruent to 448 mod 512. In other words,
+    the data to be digested must be a multiple of 512 bits (or 128 bytes).
+    This data includes the message, some padding, and the length of the
+    message. Since the length of the message will be encoded as 8 bytes (64
+    bits), that means that the last segment of the data must have 56 bytes
+    (448 bits) of message and padding. Therefore, the length of the message
+    plus the padding must be congruent to 448 mod 512 because
+    512 - 128 = 448.
+
+    In order to fill up the message length it must be filled with
+    padding that begins with 1 bit followed by all 0 bits. Padding
+    must *always* be present, so if the message length is already
+    congruent to 448 mod 512, then 512 padding bits must be added. */
+
+    // 512 bits == 64 bytes, 448 bits == 56 bytes, 64 bits = 8 bytes
+    // _padding starts with 1 byte with first bit is set in it which
+    // is byte value 128, then there may be up to 63 other pad bytes
+    var padBytes = forge.util.createBuffer();
+    padBytes.putBytes(_input.bytes());
+    // 64 - (remaining msg + 8 bytes msg length) mod 64
+    padBytes.putBytes(
+      _padding.substr(0, 64 - ((md.messageLength64[1] + 8) & 0x3F)));
+
+    /* Now append length of the message. The length is appended in bits
+    as a 64-bit number in big-endian order. Since we store the length in
+    bytes, we must multiply the 64-bit length by 8 (or left shift by 3). */
+    padBytes.putInt32(
+      (md.messageLength64[0] << 3) | (md.messageLength64[0] >>> 28));
+    padBytes.putInt32(md.messageLength64[1] << 3);
+    var s2 = {
+      h0: _state.h0,
+      h1: _state.h1,
+      h2: _state.h2,
+      h3: _state.h3,
+      h4: _state.h4,
+      h5: _state.h5,
+      h6: _state.h6,
+      h7: _state.h7
+    };
+    _update(s2, _w, padBytes);
+    var rval = forge.util.createBuffer();
+    rval.putInt32(s2.h0);
+    rval.putInt32(s2.h1);
+    rval.putInt32(s2.h2);
+    rval.putInt32(s2.h3);
+    rval.putInt32(s2.h4);
+    rval.putInt32(s2.h5);
+    rval.putInt32(s2.h6);
+    rval.putInt32(s2.h7);
+    return rval;
+  };
+
+  return md;
 };
 
+// sha-256 padding bytes not initialized yet
+var _padding = null;
+var _initialized = false;
+
+// table of constants
+var _k = null;
+
 /**
- * Adds len(val) then val to a buffer.
- *
- * @param buffer the buffer to add to.
- * @param val a big integer.
+ * Initializes the constant tables.
  */
-function _addBigIntegerToBuffer(buffer, val) {
-  var hexVal = val.toString(16);
-  // ensure 2s complement +ve
-  if(hexVal[0] >= '8') {
-    hexVal = '00' + hexVal;
-  }
-  var bytes = forge.util.hexToBytes(hexVal);
-  buffer.putInt32(bytes.length);
-  buffer.putBytes(bytes);
+function _init() {
+  // create padding
+  _padding = String.fromCharCode(128);
+  _padding += forge.util.fillString(String.fromCharCode(0x00), 64);
+
+  // create K table for SHA-256
+  _k = [
+    0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,
+    0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+    0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
+    0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+    0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc,
+    0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+    0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7,
+    0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+    0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13,
+    0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+    0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3,
+    0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+    0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5,
+    0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+    0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
+    0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2];
+
+  // now initialized
+  _initialized = true;
 }
 
 /**
- * Adds len(val) then val to a buffer.
+ * Updates a SHA-256 state with the given byte buffer.
  *
- * @param buffer the buffer to add to.
- * @param val a string.
+ * @param s the SHA-256 state to update.
+ * @param w the array to use to store words.
+ * @param bytes the byte buffer to update with.
  */
-function _addStringToBuffer(buffer, val) {
-  buffer.putInt32(val.length);
-  buffer.putString(val);
-}
+function _update(s, w, bytes) {
+  // consume 512 bit (64 byte) chunks
+  var t1, t2, s0, s1, ch, maj, i, a, b, c, d, e, f, g, h;
+  var len = bytes.length();
+  while(len >= 64) {
+    // the w array will be populated with sixteen 32-bit big-endian words
+    // and then extended into 64 32-bit words according to SHA-256
+    for(i = 0; i < 16; ++i) {
+      w[i] = bytes.getInt32();
+    }
+    for(; i < 64; ++i) {
+      // XOR word 2 words ago rot right 17, rot right 19, shft right 10
+      t1 = w[i - 2];
+      t1 =
+        ((t1 >>> 17) | (t1 << 15)) ^
+        ((t1 >>> 19) | (t1 << 13)) ^
+        (t1 >>> 10);
+      // XOR word 15 words ago rot right 7, rot right 18, shft right 3
+      t2 = w[i - 15];
+      t2 =
+        ((t2 >>> 7) | (t2 << 25)) ^
+        ((t2 >>> 18) | (t2 << 14)) ^
+        (t2 >>> 3);
+      // sum(t1, word 7 ago, t2, word 16 ago) modulo 2^32
+      w[i] = (t1 + w[i - 7] + t2 + w[i - 16]) | 0;
+    }
 
-/**
- * Hashes the arguments into one value using SHA-1.
- *
- * @return the sha1 hash of the provided arguments.
- */
-function _sha1() {
-  var sha = forge.md.sha1.create();
-  var num = arguments.length;
-  for (var i = 0; i < num; ++i) {
-    sha.update(arguments[i]);
+    // initialize hash value for this chunk
+    a = s.h0;
+    b = s.h1;
+    c = s.h2;
+    d = s.h3;
+    e = s.h4;
+    f = s.h5;
+    g = s.h6;
+    h = s.h7;
+
+    // round function
+    for(i = 0; i < 64; ++i) {
+      // Sum1(e)
+      s1 =
+        ((e >>> 6) | (e << 26)) ^
+        ((e >>> 11) | (e << 21)) ^
+        ((e >>> 25) | (e << 7));
+      // Ch(e, f, g) (optimized the same way as SHA-1)
+      ch = g ^ (e & (f ^ g));
+      // Sum0(a)
+      s0 =
+        ((a >>> 2) | (a << 30)) ^
+        ((a >>> 13) | (a << 19)) ^
+        ((a >>> 22) | (a << 10));
+      // Maj(a, b, c) (optimized the same way as SHA-1)
+      maj = (a & b) | (c & (a ^ b));
+
+      // main algorithm
+      t1 = h + s1 + ch + _k[i] + w[i];
+      t2 = s0 + maj;
+      h = g;
+      g = f;
+      f = e;
+      e = (d + t1) | 0;
+      d = c;
+      c = b;
+      b = a;
+      a = (t1 + t2) | 0;
+    }
+
+    // update hash state
+    s.h0 = (s.h0 + a) | 0;
+    s.h1 = (s.h1 + b) | 0;
+    s.h2 = (s.h2 + c) | 0;
+    s.h3 = (s.h3 + d) | 0;
+    s.h4 = (s.h4 + e) | 0;
+    s.h5 = (s.h5 + f) | 0;
+    s.h6 = (s.h6 + g) | 0;
+    s.h7 = (s.h7 + h) | 0;
+    len -= 64;
   }
-  return sha.digest();
 }
 
 } // end module implementation
 
 /* ########## Begin module wrapper ########## */
-var name = 'ssh';
+var name = 'sha256';
 if(typeof define !== 'function') {
   // NodeJS -> AMD
   if(typeof module === 'object' && module.exports) {
@@ -6865,18 +6849,34 @@ define = function(ids, factory) {
   define = tmpDefine;
   return define.apply(null, Array.prototype.slice.call(arguments, 0));
 };
-define([
-  'require',
-  'module',
-  './aes',
-  './hmac',
-  './md5',
-  './sha1',
-  './util'
-], function() {
+define(['require', 'module', './util'], function() {
   defineFunc.apply(null, Array.prototype.slice.call(arguments, 0));
 });
 })();
+var SubtleCrypto = function() {};
+SubtleCrypto = stjs.extend(SubtleCrypto, null, [], function(constructor, prototype) {
+    prototype.encrypt = function(algorithm, key, data) {
+        return null;
+    };
+    prototype.decrypt = function(algorithm, key, data) {
+        return null;
+    };
+    prototype.sign = function(algorithm, key, data) {
+        return null;
+    };
+    prototype.verify = function(algorithm, key, signature, data) {
+        return null;
+    };
+    prototype.generateKey = function(algorithm, extractable, keyUsages) {
+        return null;
+    };
+    prototype.deriveBits = function(algorithm, baseKey, length) {
+        return null;
+    };
+    prototype.importKey = function(format, keyData, algorithm, extractable, keyUsages) {
+        return null;
+    };
+}, {}, {});
 /**
  *  Helper methods for performing RSA Encryption methods. Uses Optimal Asymmetric
  *  Encryption Padding (OAEP) encryption and decryption. Uses RSA SSA PKCS#1 v1.5
