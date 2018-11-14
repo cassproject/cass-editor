@@ -9,14 +9,15 @@
 
 <body>
     <header>
-    	<h3>Add button functionality from parent window</h3>
-    	<button id="selectButton" class="greenButton" style="float: left;">Add</button>
+        <h3>Add button functionality from parent window</h3>
+        <p>Select one or more competencies, click Add, and you will receive an alert with the urls of the competencies you have selected.</p>
+        <button id="selectButton" class="greenButton" style="float: left;">Add</button>
     </header>
     <div id="iframe-wrapper">
-    	<iframe id="iframe" width="100%" height="800" frameborder="0"></iframe>
-		<script>
-    		document.getElementsByTagName("iframe")[0].setAttribute("src", "../index.html?select=&origin=" + window.location.origin);
-		</script>
+        <iframe id="iframe" width="100%" height="800" frameborder="0"></iframe>
+        <script>
+            document.getElementsByTagName("iframe")[0].setAttribute("src", "../index.html?select=&origin=" + window.location.origin);
+        </script>
     </div>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script>
@@ -27,12 +28,15 @@
         });
 
         var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
-		var eventer = window[eventMethod];
-		var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+        var eventer = window[eventMethod];
+        var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
 
-		eventer(messageEvent,function(e) {
-			console.log('parent received message!:  ',e.data);
-		},false);
+        eventer(messageEvent,function(e) {
+            console.log('parent received message!:  ',e.data);
+            if(e.data.message == "selected") {
+                alert("Parent received message!: " + e.data.selected);
+            }
+        },false);
 
     </script>
 </body>
