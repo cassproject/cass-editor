@@ -159,6 +159,7 @@
 							<jsTargetDir>js/cass</jsTargetDir>
 							<jsFinalFile>cass-editor.js</jsFinalFile>
 							<jsEngine>CLOSURE</jsEngine>
+							<skipMinify>true</skipMinify>
 						</configuration>
 						<goals>
 							<goal>minify</goal>

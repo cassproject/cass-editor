@@ -40,19 +40,6 @@ var alignmentCache = {};
 //Sidebar Input autocomplete cache
 var sidebarAutocompleteCache = {};
 
-fetchFailure = function (failure) {
-	this.fetches--;
-	error(failure);
-	if (this.fetches == 0) {
-		if ($("#tree").html() == "")
-			if (conceptMode)
-				$("#tree").html("<br><br><center><h3>This scheme is empty.</h3></center>");
-			else
-				$("#tree").html("<br><br><center><h3>This framework is empty.</h3></center>");
-		afterRefresh(true);
-	}
-};
-
 function select() {
 	var ary = [];
 	if ($("input:checkbox").length == 0)
@@ -170,18 +157,19 @@ populateFramework = function (subsearch) {
 				$("#tree").html("<br><br><center><h3>This framework is empty.</h3></center>");
 			showPage("#editFrameworkSection", framework);
 		} else {
-			me.fetches += framework.competency.length;
-			for (var i = 0; i < framework.competency.length; i++) {
-				EcCompetency.get(framework.competency[i], function (c) {
-					refreshCompetency(c, null, subsearch);
-				}, fetchFailure);
-			}
-			me.fetches += framework.level.length;
-			for (var i = 0; i < framework.level.length; i++) {
-				EcLevel.get(framework.level[i], function (c) {
-					refreshCompetency(c, null, subsearch);
-				}, fetchFailure);
-			}
+			new EcAsyncHelper().each(framework.competency, function (competencyId, done) {
+				EcCompetency.get(competencyId, function (c) {
+					refreshCompetency(c, null, subsearch, done);
+				}, done);
+			}, function (competencyIds) {
+				new EcAsyncHelper().each(framework.level, function (levelId, done) {
+					EcLevel.get(levelId, function (c) {
+						refreshCompetency(c, null, subsearch, done);
+					}, done);
+				}, function (levelIds) {
+					refreshRelations(subsearch);
+				});
+			});
 		}
 	};
 	repo.precache(framework.competency.concat(framework.relation), fun, fun);
@@ -190,17 +178,7 @@ populateFramework = function (subsearch) {
 function afterRefresh(level, subsearch) {
 	if (conceptMode)
 		return afterConceptRefresh(level, subsearch);
-	if (level == null) {
-		this.fetches += framework.level.length;
-		for (var i = 0; i < framework.level.length; i++) {
-			EcLevel.get(framework.level[i], function (c) {
-				refreshCompetency(c, null, subsearch);
-			}, fetchFailure);
-		}
-		if (framework.level.length == 0)
-			showPage("#editFrameworkSection", framework);
-	} else
-		showPage("#editFrameworkSection", framework);
+	showPage("#editFrameworkSection", framework);
 	$("#tree").show().scrollTop(treeTop);
 	if (selectedCompetency != null && selectedCompetency !== undefined) {
 		highlightSelected($("[id=\"" + selectedCompetency.shortId() + "\"]"));
@@ -220,12 +198,12 @@ function afterRefresh(level, subsearch) {
 	resizeEditFrameworkSection();
 }
 
-function refreshCompetency(col, level, subsearch) {
-	if (conceptMode)
-		return refreshConcept(col, level, subsearch);
-	var me = this;
-	if (me.fetches > 0)
-		me.fetches--;
+function refreshCompetency(col, level, subsearch, done) {
+	if (conceptMode) {
+		var ret = refreshConcept(col, level, subsearch);
+		done();
+		return ret;
+	}
 	var treeNode = null;
 	if ($("#tree [id='" + col.shortId() + "']").length > 0) {
 		//console.log("refreshCompetency - remove existing in tree "+col.shortId());
@@ -287,58 +265,56 @@ function refreshCompetency(col, level, subsearch) {
 		treeNode.prepend("<input type='checkbox' tabIndex='-1'>");
 	if (subsearch != null)
 		treeNode.mark(subsearch);
-	var relationsDone = false;
-	if (me.fetches == 0 && !relationsDone) {
-		if (framework.relation != undefined && framework.relation.length > 0) {
-			var localFetches = framework.relation.length;
-			var targetSourceArray = {};
-			for (var i = 0; i < framework.relation.length; i++) {
-				EcAlignment.get(framework.relation[i], function (relation) {
-					localFetches--;
-					if (relation.source !== undefined && relation.target !== undefined && relation.source != null && relation.target != null && relation.source != relation.target) {
-						if (relation.relationType == "narrows") {
-							var source = EcCompetency.getBlocking(relation.source);
-							var target = EcCompetency.getBlocking(relation.target);
-							if (source != null && target != null)
-								if ($(".competency[relationid=\"" + relation.shortId() + "\"]").length == 0) {
-									$(".competency[id=\"" + target.shortId() + "\"]").children().last().append($(".competency[id=\"" + source.shortId() + "\"]").outerHTML()).children().last().attr("relationid", relation.shortId());
-									if ($(".competency[id=\"" + target.shortId() + "\"]").length > 0 &&
-										$("#tree>.competency[id=\"" + source.shortId() + "\"]").length > 0) {
-										let isRemoveSource = true;
-										if (targetSourceArray[source.shortId()] && target.shortId() === targetSourceArray[source.shortId()]) {
-											console.log("Removing " + source.name + " will be reverse of previous removal.");
-											isRemoveSource = false;
-										}
-										if (isRemoveSource) {
-											targetSourceArray[target.shortId()] = source.shortId();
-											//console.log("Target '" + target.name + "' exists, remove source '" + source.name + "'");
-											$("#tree>.competency[id=\"" + source.shortId() + "\"]").remove();
-										}
+	if (done != null && done !== undefined)
+		done();
+}
+refreshRelations = function (subsearch) {
+	if (framework.relation != undefined && framework.relation.length > 0) {
+		var targetSourceArray = {};
+		new EcAsyncHelper().each(framework.relation, function (relationId, done) {
+			EcAlignment.get(relationId, function (relation) {
+				if (relation.source !== undefined && relation.target !== undefined && relation.source != null && relation.target != null && relation.source != relation.target) {
+					if (relation.relationType == "narrows") {
+						var source = EcCompetency.getBlocking(relation.source);
+						var target = EcCompetency.getBlocking(relation.target);
+						if (source != null && target != null)
+							if ($(".competency[relationid=\"" + relation.shortId() + "\"]").length == 0) {
+								$(".competency[id=\"" + target.shortId() + "\"]").children().last().append($(".competency[id=\"" + source.shortId() + "\"]").outerHTML()).children().last().attr("relationid", relation.shortId());
+								if ($(".competency[id=\"" + target.shortId() + "\"]").length > 0 &&
+									$("#tree>.competency[id=\"" + source.shortId() + "\"]").length > 0) {
+									let isRemoveSource = true;
+									if (targetSourceArray[source.shortId()] && target.shortId() === targetSourceArray[source.shortId()]) {
+										console.log("Removing " + source.name + " will be reverse of previous removal.");
+										isRemoveSource = false;
 									}
-									if ($(".competency[id=\"" + source.shortId() + "\"]").length &&
-										!$(".competency[id=\"" + target.shortId() + "\"]").hasClass("expandable")) {
-										$(".competency[id=\"" + target.shortId() + "\"]").addClass("expandable").children(".collapse").css("visibility", "visible");
-										if ($("#collapseAllCompetencies").css("display") === 'none') {
-											$("#collapseAllCompetencies").css("display", "");
-											$("#expandAllCompetencies").css("display", "");
-										}
+									if (isRemoveSource) {
+										targetSourceArray[target.shortId()] = source.shortId();
+										//console.log("Target '" + target.name + "' exists, remove source '" + source.name + "'");
+										$("#tree>.competency[id=\"" + source.shortId() + "\"]").remove();
 									}
 								}
-						}
+								if ($(".competency[id=\"" + source.shortId() + "\"]").length &&
+									!$(".competency[id=\"" + target.shortId() + "\"]").hasClass("expandable")) {
+									$(".competency[id=\"" + target.shortId() + "\"]").addClass("expandable").children(".collapse").css("visibility", "visible");
+									if ($("#collapseAllCompetencies").css("display") === 'none') {
+										$("#collapseAllCompetencies").css("display", "");
+										$("#expandAllCompetencies").css("display", "");
+									}
+								}
+							}
 					}
-					if (me.fetches == 0) {
-						if ($("#tree").html() == "")
-							$("#tree").html("<br><br><center><h3>This framework is empty.</h3></center>");
-						afterRefresh(level, subsearch);
-					}
-				}, fetchFailure);
-				relationsDone = true;
-			}
-		} else {
+				}
+				done();
+			}, done);
+		}, function (relations) {
 			if ($("#tree").html() == "")
 				$("#tree").html("<br><br><center><h3>This framework is empty.</h3></center>");
-			afterRefresh(level, subsearch);
-		}
+			afterRefresh(false, subsearch);
+		});
+	} else {
+		if ($("#tree").html() == "")
+			$("#tree").html("<br><br><center><h3>This framework is empty.</h3></center>");
+		afterRefresh(false, subsearch);
 	}
 }
 
@@ -1125,7 +1101,6 @@ editSidebar = function () {
 		$('#sidebarNameInput').removeData('autocomplete');
 	} catch (e) {}
 	if (selectedCompetency != null && isFirstEdit === true) {
-
 		EcCompetency.search(repo, $(this).text(), function (results) {
 			var competencies = [];
 			var autocompleteDict = {};
@@ -1154,7 +1129,7 @@ editSidebar = function () {
 					}
 				}
 			});
-		}, fetchFailure, {});
+		}, error, {});
 	} else {
 		$('#sidebarNameInput').autocomplete = null;
 	}
