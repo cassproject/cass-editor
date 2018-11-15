@@ -169,11 +169,17 @@ function cappend(event) {
             $("#selectConceptSection").hide();
             $("#editFrameworkSection").show();
         } else if ($("#selectCompetencySection:visible").length > 0) {
-            var targets = event.data.selected;
-            var thing = selectedCompetency;
-            addAlignments(targets, thing);
-            $("#selectCompetencySection").hide();
-            $("#editFrameworkSection").show();
+            //Don't allow alignments within the same framework.
+            if (framework.id == event.data.selectedFramework.id) {
+                $("#selectCompetencySection").hide();
+                $("#editFrameworkSection").show();
+            } else {
+                var targets = event.data.selected;
+                var thing = selectedCompetency;
+                addAlignments(targets, thing);
+                $("#selectCompetencySection").hide();
+                $("#editFrameworkSection").show();
+            }
         } else if (event.data.selected.length > 0) {
             showCopyOrLinkDialog(function (copy) {
                 if (copy === true) {

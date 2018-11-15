@@ -80,10 +80,9 @@ function select() {
 	var message = {
 		message: "selected",
 		selected: ary,
-		type: conceptMode ? 'Concept' : 'Competency'
+		type: conceptMode ? 'Concept' : 'Competency',
+		selectedFramework: framework
 	};
-	if (queryParams.selectVerbose == "true")
-		message.selectedFramework = framework;
 	console.log(message);
 	parent.postMessage(message, queryParams.origin);
 }
