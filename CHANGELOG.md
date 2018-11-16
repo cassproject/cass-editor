@@ -1,13 +1,118 @@
 # Change Log
 
-## [Unreleased](https://github.com/cassproject/cass-editor/tree/HEAD)
+## [v1.3.2](https://github.com/cassproject/cass-editor/tree/v1.3.2) (2018-11-15)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/v1.3.1...v1.3.2)
 
-[Full Changelog](https://github.com/cassproject/cass-editor/compare/v1.2.0...HEAD)
+**Implemented enhancements:**
+
+- Competency hierarchy needs global expand/collapse icons [\#366](https://github.com/cassproject/cass-editor/issues/366)
+- Means to retain last page of search results  [\#237](https://github.com/cassproject/cass-editor/issues/237)
 
 **Fixed bugs:**
 
+- Adding concept terms to concept schemes does not work [\#420](https://github.com/cassproject/cass-editor/issues/420)
+- First competency of a new framework is invisible [\#402](https://github.com/cassproject/cass-editor/issues/402)
+- Importing a framework sends user to an empty browser screen [\#190](https://github.com/cassproject/cass-editor/issues/190)
+
+**Closed issues:**
+
+- CSV Import Relation file remains selected for multiple imports [\#429](https://github.com/cassproject/cass-editor/issues/429)
+- Listid for Competencies is under the incorrect heading  [\#421](https://github.com/cassproject/cass-editor/issues/421)
+- Concept Scheme terms showing up in CE-ASN competencies. [\#407](https://github.com/cassproject/cass-editor/issues/407)
+- Test v1.3.0 [\#393](https://github.com/cassproject/cass-editor/issues/393)
+- CSV upload doesn't prepopulate IDs with http data if none exists. [\#275](https://github.com/cassproject/cass-editor/issues/275)
+
+**Merged pull requests:**
+
+- Retain number of frameworks selected [\#433](https://github.com/cassproject/cass-editor/pull/433) ([woodkri](https://github.com/woodkri))
+- Add button demo should now work on github.io [\#432](https://github.com/cassproject/cass-editor/pull/432) ([woodkri](https://github.com/woodkri))
+- Demo for highlighting competencies by postMessage [\#431](https://github.com/cassproject/cass-editor/pull/431) ([woodkri](https://github.com/woodkri))
+- Relation file selection no longer carries over from one CSV import to the next [\#430](https://github.com/cassproject/cass-editor/pull/430) ([woodkri](https://github.com/woodkri))
+- Notification displayed for longer when some objects fail to save with… [\#426](https://github.com/cassproject/cass-editor/pull/426) ([woodkri](https://github.com/woodkri))
+- Alignment usability [\#425](https://github.com/cassproject/cass-editor/pull/425) ([woodkri](https://github.com/woodkri))
+- Add concept terms to a CTDL-ASN framework [\#424](https://github.com/cassproject/cass-editor/pull/424) ([woodkri](https://github.com/woodkri))
+- Creator name now appears instead of object Object [\#423](https://github.com/cassproject/cass-editor/pull/423) ([woodkri](https://github.com/woodkri))
+- Fix for autocompleted competencies not showing up in tree [\#422](https://github.com/cassproject/cass-editor/pull/422) ([woodkri](https://github.com/woodkri))
+
+## [v1.3.1](https://github.com/cassproject/cass-editor/tree/v1.3.1) (2018-10-30)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/v1.3.0...v1.3.1)
+
+**Implemented enhancements:**
+
+- Import tutorials usability [\#381](https://github.com/cassproject/cass-editor/issues/381)
+- Find user friendly IETF language mapping [\#213](https://github.com/cassproject/cass-editor/issues/213)
+
+**Fixed bugs:**
+
+- Languages no longer showing up when saved [\#396](https://github.com/cassproject/cass-editor/issues/396)
+- "None" Field [\#394](https://github.com/cassproject/cass-editor/issues/394)
+- Competency hierarchy messed up post collapse add new [\#390](https://github.com/cassproject/cass-editor/issues/390)
+- Firefox: possible to make competencies disappear and reappear [\#294](https://github.com/cassproject/cass-editor/issues/294)
+- Concept Scheme Fields Appear CE-ASN Competency Edit [\#415](https://github.com/cassproject/cass-editor/pull/415) ([chinhseah](https://github.com/chinhseah))
+- Competency Vertical Scrollbar Up Arrow [\#414](https://github.com/cassproject/cass-editor/pull/414) ([chinhseah](https://github.com/chinhseah))
+- Competency List Vertical Scrollbar [\#413](https://github.com/cassproject/cass-editor/pull/413) ([chinhseah](https://github.com/chinhseah))
+- Global Collapse Expand Buttons Fix [\#412](https://github.com/cassproject/cass-editor/pull/412) ([chinhseah](https://github.com/chinhseah))
+- Import from Opensalt URL Canceled [\#411](https://github.com/cassproject/cass-editor/pull/411) ([chinhseah](https://github.com/chinhseah))
+- Fix Typo [\#410](https://github.com/cassproject/cass-editor/pull/410) ([chinhseah](https://github.com/chinhseah))
+- Competency Hierarchy Global Collapse Expand 2 [\#409](https://github.com/cassproject/cass-editor/pull/409) ([chinhseah](https://github.com/chinhseah))
+- Keyboard Up or Down Competency Selection [\#403](https://github.com/cassproject/cass-editor/pull/403) ([chinhseah](https://github.com/chinhseah))
+
+**Closed issues:**
+
+- When should editor cluster headings in editor be present and open [\#361](https://github.com/cassproject/cass-editor/issues/361)
+
+**Merged pull requests:**
+
+- Concept fields appear for concepts but not competencies [\#417](https://github.com/cassproject/cass-editor/pull/417) ([woodkri](https://github.com/woodkri))
+- Added bottom margin to collapse/expand all buttons [\#416](https://github.com/cassproject/cass-editor/pull/416) ([woodkri](https://github.com/woodkri))
+- Competency Hierarchy Global Collapse Expand [\#408](https://github.com/cassproject/cass-editor/pull/408) ([chinhseah](https://github.com/chinhseah))
+- Populated Ceasn Data Fields are now visible after the competency is saved [\#397](https://github.com/cassproject/cass-editor/pull/397) ([woodkri](https://github.com/woodkri))
+- None field fix [\#395](https://github.com/cassproject/cass-editor/pull/395) ([woodkri](https://github.com/woodkri))
+
+## [v1.3.0](https://github.com/cassproject/cass-editor/tree/v1.3.0) (2018-10-15)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/v1.2.0...v1.3.0)
+
+**Implemented enhancements:**
+
+- Primary entity of an json-ld @graph should be at the top of the code, not the bottom [\#362](https://github.com/cassproject/cass-editor/issues/362)
+- Add category before listId as a tag in the framework list display. [\#272](https://github.com/cassproject/cass-editor/issues/272)
+- Enable approvals/publishing buttons from competency framework search results screen [\#251](https://github.com/cassproject/cass-editor/issues/251)
+- Need to get owning organization's identifier when a framework is selected [\#234](https://github.com/cassproject/cass-editor/issues/234)
+- Add alignment component. [\#159](https://github.com/cassproject/cass-editor/issues/159)
+
+**Fixed bugs:**
+
+- Autocomplete dropdowns don't scroll with the page [\#384](https://github.com/cassproject/cass-editor/issues/384)
+- Alignments for concepts do not work [\#348](https://github.com/cassproject/cass-editor/issues/348)
 - Add a "back" button to the "Import Framework" screen [\#319](https://github.com/cassproject/cass-editor/issues/319)
+- Export of publisher name and keywords is incorrect [\#310](https://github.com/cassproject/cass-editor/issues/310)
 - Firefox: search for concept levels is blank [\#295](https://github.com/cassproject/cass-editor/issues/295)
+- PublicationStatus shows up in the editor but not in the CTDLASN output [\#271](https://github.com/cassproject/cass-editor/issues/271)
+- In dev environment, the search returns no results, and shows an empty page [\#255](https://github.com/cassproject/cass-editor/issues/255)
+- Collapse Competency Hierarchy [\#392](https://github.com/cassproject/cass-editor/pull/392) ([chinhseah](https://github.com/chinhseah))
+- Check Alignment Cached Not Null [\#386](https://github.com/cassproject/cass-editor/pull/386) ([chinhseah](https://github.com/chinhseah))
+- Concept Drag and Drop issue fix [\#382](https://github.com/cassproject/cass-editor/pull/382) ([chinhseah](https://github.com/chinhseah))
+
+**Closed issues:**
+
+- Missing data in the JSON-LD competency framework export [\#363](https://github.com/cassproject/cass-editor/issues/363)
+- Improve guidance of allowed file formats, schemas, and endpoints on "Import Framework" screen [\#320](https://github.com/cassproject/cass-editor/issues/320)
+- Everything entered should be selected automatically while in select and edit mode [\#249](https://github.com/cassproject/cass-editor/issues/249)
+- Some exported frameworks have incorrect types [\#247](https://github.com/cassproject/cass-editor/issues/247)
+- ceasn:repositoryDate is exported as an array, where a string is expected [\#235](https://github.com/cassproject/cass-editor/issues/235)
+- CTID returned to publisher doesn't match CTID in competency framework [\#221](https://github.com/cassproject/cass-editor/issues/221)
+- Framework export requires framework node to be selected [\#188](https://github.com/cassproject/cass-editor/issues/188)
+- Export of Concept keywords as language map is incorrect [\#165](https://github.com/cassproject/cass-editor/issues/165)
+- Preload the user's understanding with more information about how to import in the import page. [\#160](https://github.com/cassproject/cass-editor/issues/160)
+
+**Merged pull requests:**
+
+- Demo for add button functionality in parent rather than iframe [\#391](https://github.com/cassproject/cass-editor/pull/391) ([woodkri](https://github.com/woodkri))
+- Autocomplete multiple languages [\#389](https://github.com/cassproject/cass-editor/pull/389) ([woodkri](https://github.com/woodkri))
+- Connections expand by default [\#388](https://github.com/cassproject/cass-editor/pull/388) ([woodkri](https://github.com/woodkri))
+- Autocomplete dropdowns move with page [\#385](https://github.com/cassproject/cass-editor/pull/385) ([woodkri](https://github.com/woodkri))
+- IETF mapping [\#383](https://github.com/cassproject/cass-editor/pull/383) ([woodkri](https://github.com/woodkri))
+- \#163 Adding competency via autocomplete sidebar fix [\#380](https://github.com/cassproject/cass-editor/pull/380) ([woodkri](https://github.com/woodkri))
 
 ## [v1.2.0](https://github.com/cassproject/cass-editor/tree/v1.2.0) (2018-09-26)
 [Full Changelog](https://github.com/cassproject/cass-editor/compare/v1.1.1...v1.2.0)
