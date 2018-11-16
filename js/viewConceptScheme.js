@@ -2,6 +2,16 @@
 var globalTouchDragDestinationConcept = null;
 var globalTouchDragDataConcept = null;
 
+fetchFailure = function(failure) {
+    this.fetches--;
+    error(failure);
+    if (this.fetches == 0) {
+        if ($("#tree").html() == "")
+            $("#tree").html("<br><br><center><h3>This scheme is empty.</h3></center>");
+            afterRefresh(true);
+    }
+}
+
 populateConceptScheme = function (subsearch) {
     var me = this;
     treeTop = $("#tree").scrollTop();

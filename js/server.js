@@ -100,10 +100,10 @@ openWebSocket = function (r) {
 							for (var i = 0; i < com["skos:broader"].length; i++) {
 
 								window.fetches++;
-								refreshCompetency(com).appendTo($("[id=\"" + com["skos:broader"][i] + "\"]>ul"));
+								refreshConcept(com).appendTo($("[id=\"" + com["skos:broader"][i] + "\"]>ul"));
 							}
 						if (com["skos:topConceptOf"] != null)
-							refreshCompetency(com);
+							refreshConcept(com);
 						if (selectedCompetency != null) {
 							if (selectedCompetency.shortId() == wut.shortId()) {
 								selectedCompetency = com;
