@@ -17,7 +17,35 @@ populateConceptScheme = function (subsearch) {
     treeTop = $("#tree").scrollTop();
     $("#tree").hide().html("");
     me.fetches = 0;
-    $("#editFrameworkSection #frameworkName").text(framework["dcterms:title"]);
+    var frameworkName = framework["dcterms:title"];
+    frameworkName = EcArray.isArray(frameworkName) ? frameworkName : [frameworkName];
+    $("#editFrameworkSection #frameworkAKA").children().remove();
+    $("#editFrameworkSection #frameworkName").text(frameworkName[0]);
+    for (var i = 1; i < frameworkName.length; i++) {
+        $("#editFrameworkSection #frameworkAKA").append($('<span>AKA: ' + frameworkName[i] + '</span>'));
+    }
+    var frameworkDescription = framework["dcterms:description"];
+    frameworkDescription = EcArray.isArray(frameworkDescription) ? frameworkDescription : [frameworkDescription];
+    $("#editFrameworkSection #frameworkDescription").children.remove();
+    for (var i in frameworkDescription) {
+        if (frameworkDescription[i] != null && frameworkDescription[i] != 'NULL' && frameworkDescription[i] != '')
+            $("#editFrameworkSection #frameworkDescription").append($('<span>' + frameworkDescription[i] + '</span>'));
+    }
+    try {
+        if (framework.getTimestamp() == null || isNaN(framework.getTimestamp()))
+            if (framework["schema:dateModified"] != null && framework["schema:dateModified"] !== undefined)
+                $("#editFrameworkSection #frameworkLastModified").text("Last modified " + moment(new Date(framework["schema:dateModified"])).fromNow() + ".").show();
+            else
+                $("#editFrameworkSection #frameworkLastModified").hide();
+        else
+            $("#editFrameworkSection #frameworkLastModified").text("Last modified " + moment(new Date(framework.getTimestamp())).fromNow() + ".").show();
+    } catch (e) {}
+    try {
+        if (framework["schema:dateCreated"] != null && framework["schema:dateCreated"] !== undefined)
+            $("#editFrameworkSection #frameworkCreated").text("Created " + moment(new Date(framework["schema:dateCreated"])).fromNow() + ".").show();
+        else
+            $("#editFrameworkSection #frameworkCreated").hide();
+    } catch (e) {}
     if (queryParams.link == "true")
         $("#editFrameworkSection #frameworkLink").attr("href", framework.shortId()).show();
 

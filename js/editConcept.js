@@ -68,6 +68,7 @@ createConceptScheme = function () {
     if (EcIdentityManager.ids.length > 0)
         framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
     framework["dcterms:title"] = csTitle;
+    framework["schema:dateCreated"] = new Date().toISOString();
     if ($("#description").val() != null && $("#description").val() != "")
         framework["dcterms:description"] = $("#description").val();
     loading("Creating concept scheme...");

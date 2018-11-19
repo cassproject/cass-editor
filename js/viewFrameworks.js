@@ -91,7 +91,11 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
                 var title = p.children().first();
                 var frameworkName = fx.getName();
                 frameworkName = EcArray.isArray(frameworkName) ? frameworkName : [frameworkName];
-                title.text(frameworkName[0]);
+                if (typeof frameworkName[0] === "object") {
+                    title.text(frameworkName[0]["@value"]);
+                } else {
+                    title.text(frameworkName[0]);
+                }
                 title.addClass("frameworkName");
                 if (subsearchTerm != null)
                     p.prepend("<span style='float:right'>*Matches inside. <span>");
@@ -107,7 +111,7 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
                 //Display additional data on frameworks in search results
                 if (queryParams.ceasnDataFields == 'true') {
                     for (var i = 1; i < frameworkName.length; i++) {
-                        p.append("<span class='properties'>AKA: " + frameworkName[i] + "</span>");
+                        p.append("<span class='properties'>AKA: " + frameworkName[i]["@value"] + "</span>");
                     }
                     if (fx['ceasn:publisherName'] != null) {
                         var publisherName = EcArray.isArray(fx['ceasn:publisherName']) ? fx['ceasn:publisherName'] : [fx['ceasn:publisherName']];

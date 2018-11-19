@@ -32,7 +32,7 @@ addCompetency = function () {
         if (EcIdentityManager.ids.length > 0)
             c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
         c["ceasn:inLanguage"] = framework["ceasn:inLanguage"];
-        c.name = "New Competency";
+        c.name = {"en": "New Competency"};
         framework["schema:dateModified"] = new Date().toISOString();
         repo.saveTo(c, function () {
             if (selectedCompetency != null) {
@@ -301,36 +301,40 @@ saveCompetency = function (addAnother) {
         }
     });
 
-    $("#detailSlider").find('.sidebarInputGroup').each(function() {
-        var vals = [];
-        var whichInputChoice = $(this).prev().attr(inputChoice);
+    $("#detailSlider").find('.sidebarInputGrouping').each(function() {
+        var objectVals = {};
+        var arrayVals = [];
+        var whichInputChoice = $(this).children().first().children('input,textarea').attr(inputChoice);
+        console.log("whichInputChoice = " + whichInputChoice);
 
-        //Get the base input field first
-        var val = getValueOrNull($(this).prev().val());
-        if (val != null) {
-            if ($(this).prev().hasClass("language") && langTags[val])
-                vals.push(langTags[val]);
-            else
-                vals.push(val);
-        }
-
-        $(this).find('input:visible,textarea:visible').each(function() {
-            var val = getValueOrNull($(this).val());
-            if (val != null) {
-                if ($(this).hasClass("language") && langTags[val])
-                    vals.push(langTags[val]);
-                else
-                    vals.push(val);
+        $(this).find('.sidebarInputRow > input:visible, .sidebarInputRow > textarea:visible').each(function() {
+            if ($(this).prev('select').length > 0) {
+                var selectVal = getValueOrNull($(this).prev('select').val());
+                var stringVal = getValueOrNull($(this).val());
+                if (selectVal != null && stringVal != null) {
+                    //objectVals[selectVal] = stringVal;
+                    objectVals["@language"] = selectVal;
+                    objectVals["@value"] = stringVal;
+                    arrayVals.push(objectVals);
+                }
+            } else {
+                var val = getValueOrNull($(this).val());
+                if (val != null) {
+                    if ($(this).hasClass("language") && langTags[val])
+                        arrayVals.push(langTags[val]);
+                    else
+                        arrayVals.push(val);
+                }
             }
         });
-        if (vals.length > 0) {
-            thing[whichInputChoice] = vals;
+        if (arrayVals.length > 0 || Object.keys(objectVals).length > 0) {
+            thing[whichInputChoice] = arrayVals;
         } else {
             delete thing[whichInputChoice];
         }
     });
 
-    $("#detailSlider").find("select:visible").each(function () {
+    $("#detailSlider").find("select:visible:not(.sidebarInputLanguageSelect)").each(function () {
         var val = $(this).find("option:selected").attr("value");
         if (val === undefined || val == null || val == "")
             delete thing[$(this).attr(inputChoice)];
@@ -340,6 +344,7 @@ saveCompetency = function (addAnother) {
     });
 
     thing["schema:dateModified"] = new Date().toISOString();
+    console.log(thing);
     if (selectedCompetency == null) {
         repo.saveTo(thing, afterSaveSidebar, error);
     } else {
@@ -371,7 +376,7 @@ createFramework = function () {
     framework["schema:dateCreated"] = new Date().toISOString();
     if (EcIdentityManager.ids.length > 0)
         framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-    framework.name = "New Framework";
+    framework.name = {"en": "New Framework"};
     refreshSidebar();
     editSidebar();
     populateFramework();

@@ -58,7 +58,7 @@
     white-space: normal !important;
 }
 
-.ceasnDataFields button:not(.addInputButton),
+.ceasnDataFields button:not(.addInputButton):not(.removeInputButton),
 #alignmentPanel button {
     font-size: normal;
     margin: 0px;
@@ -172,6 +172,31 @@
 p.sidebarViewList,
 h3.sidebarViewList {
     padding-left: 40px;
+}
+
+.sidebarInputRow {
+    display: flex;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.addInputButton {
+    visibility: hidden;
+    margin: 0;
+    margin-left: 0.5rem;
+}
+
+.removeInputButton {
+    visibility: hidden;
+    margin: 0;
+}
+
+.sidebarInputRow:last-child > .addInputButton {
+    visibility: visible;
+}
+
+.sidebarInputGrouping > .sidebarInputRow:not(:first-child) .removeInputButton {
+    visibility: visible;
 }
 
 .sidebarPropertyLink {
@@ -292,14 +317,22 @@ hr {
 
 #detailSlider input,
 #detailSlider textarea,
-#detailSlider .ceasnDataFields select {
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
+#detailSlider .ceasnDataFields select:not(.sidebarInputLanguageSelect) {
     width: calc(100% - 1rem);
 }
 
-#detailSlider .ceasnDataFields select {
+#detailSlider .ceasnDataFields select:not(.sidebarInputLanguageSelect) {
     margin-bottom: 1rem;
+}
+
+#detailSlider p + input,
+#detailSlider p + textarea {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.sidebarInputLanguageSelect {
+    width:auto;
 }
 
 #detailSlider label {

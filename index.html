@@ -327,31 +327,57 @@
 								<!-- Name -->
 								<label id="sidebarNameInputLabel" for="sidebarNameInput" title="" cassCompetency="Competency Name:" cassCompetencyTitle="The name of the competency." cassFramework="Framework Name:" cassFrameworkTitle="The name of the framework." ceasnCompetency="Competency Text:" ceasnCompetencyTitle="The text of the competency." ceasnFramework="Name:" ceasnFrameworkTitle="The name or title of this competency framework." skosCompetency="Preferred Label:" skosCompetencyTitle="Preferred display label for this concept." skosFramework="Title:" skosFrameworkTitle="Preferred display label for this scheme." class="editMode" style="margin: 0px;">Name:</label>
 								<h3 id="sidebarName" class="viewMode sidebarViewList">Framework Name Here</h3>
-								<textarea id="sidebarNameInput" cassCompetency="name" cassFramework="name" ceasnCompetency="ceasn:competencyText" ceasnFramework="ceasn:name" skosCompetency="skos:prefLabel" skosFramework="dcterms:title" class="editMode editControl sidebarNameInput" data-group="sidebarNameInput" value="Framework Name Here"></textarea>
+								<div class="sidebarInputGrouping editMode editControl">
+									<div class="sidebarInputRow">
+										<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
+										<select class="sidebarInputLanguageSelect"></select>
+										<textarea id="sidebarNameInput" cassCompetency="name" cassFramework="name" ceasnCompetency="ceasn:competencyText" ceasnFramework="ceasn:name" skosCompetency="skos:prefLabel" skosFramework="dcterms:title" class="sidebarNameInput" data-group="sidebarNameInput" plural="true" value="Framework Name Here"></textarea>
+										<button title="Add another value." id="addNameInput" class="addInputButton"><i class="fa fa-plus"></i></button>
+									</div>
+								</div>
 								<!-- Description (Concepts)-->
 								<label id="sidebarDescriptionInputLabel" for="sidebarDescriptionInput" title="" skosCompetency="Concept Definition:" skosCompetencyTitle="Definition of this concept." skosFramework="Description:" skosFrameworkTitle="Definition of this scheme." class="editMode absentForCompetencies" style="margin: 0px;">Description:</label>
 								<p id="sidebarDescription" class="viewMode sidebarViewList absentForCompetencies">This is a super long description, it describes the things worth describing.</p>
-								<textarea id="sidebarDescriptionInput" skosCompetency="skos:definition" skosFramework="dcterms:description" data-group="sidebarDescriptionInput" class="editMode editControl sidebarDescriptionInput absentForCompetencies" style="height:6rem;">This is a super long description, it describes the things worth describing.</textarea>
+								<div class="sidebarInputGrouping editMode editControl absentForCompetencies">
+									<div class="sidebarInputRow">
+										<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
+										<select class="sidebarInputLanguageSelect"></select>
+										<textarea id="sidebarDescriptionInput" skosCompetency="skos:definition" skosFramework="dcterms:description" plural="true" data-group="sidebarDescriptionInput" class="sidebarDescriptionInput" style="height:6rem;">This is a super long description, it describes the things worth describing.</textarea>
+										<button title="Add another value." id="addDescriptionInput" class="addInputButton"><i class="fa fa-plus"></i></button>
+									</div>
+								</div>
+								
 								<!-- Framework Description -->
 								<label id="sidebarFrameworkDescriptionInputLabel" for="sidebarFrameworkDescriptionInput" title="" cassFrameworkTitle="The description of the framework." ceasnFramework="Description:" ceasnFrameworkTitle="A short description of this competency or competency framework." class="editMode absentForConcepts frameworkOnly" style="margin: 0px;">Description:</label>
 								<p id="sidebarFrameworkDescription" class="viewMode sidebarViewList frameworkOnly absentForConcepts">This is a super long description, it describes the things worth describing.</p>
-								<textarea id="sidebarFrameworkDescriptionInput" cassFramework="description" ceasnFramework="ceasn:description" data-group="sidebarFrameworkDescriptionInput" class="editMode editControl sidebarFrameworkDescriptionInput absentForConcepts frameworkOnly" style="height:6rem;">This is a super long description, it describes the things worth describing.</textarea>
+								<div class="sidebarInputGrouping editMode editControl absentForConcepts frameworkOnly">
+									<div class="sidebarInputRow">
+										<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
+										<select class="sidebarInputLanguageSelect"></select>
+										<textarea id="sidebarFrameworkDescriptionInput" cassFramework="description" ceasnFramework="ceasn:description" data-group="sidebarFrameworkDescriptionInput" class="sidebarFrameworkDescriptionInput" style="height:6rem;">This is a super long description, it describes the things worth describing.</textarea>
+										<button title="Add another value." id="addFrameworkDescriptionInput" class="addInputButton"><i class="fa fa-plus"></i></button>
+									</div>
+								</div>
 								<!-- Competency Description (Repeat) -->
 								<label id="sidebarCompetencyDescriptionInputLabel" for="sidebarCompetencyDescriptionInput" title="" cassCompetency="Description:" cassCompetencyTitle="The description of the competency." ceasnCompetency="Comment:" ceasnCompetencyTitle="Supplemental text provided by the promulgating body that clarifies the nature, scope or use of this competency." class="editMode absentForConcepts competencyOnly" style="margin: 0px;">Description:</label>
 								<p id="sidebarCompetencyDescription" class="viewMode sidebarViewList absentForConcepts competencyOnly">This is a super long description, it describes the things worth describing.</p>
-								<textarea id="sidebarCompetencyDescriptionInput" cassCompetency="description" ceasnCompetency="ceasn:comment" skosCompetency="skos:definition" plural="true" data-group="sidebarCompetencyDescriptionInput" class="editMode editControl sidebarCompetencyDescriptionInput absentForConcepts competencyOnly" style="height:6rem;">This is a super long description, it describes the things worth describing.</textarea>
-								<div class="sidebarInputGroup">
-									<div class="addInputContainer">
-										<button title="Add another value." id="addCompetencyDescriptionInput" data-target="sidebarCompetencyDescriptionInput" class="editMode editControl addInputButton absentForConcepts competencyOnly"><i class="fa fa-plus"></i></button>
+								<div class="sidebarInputGrouping editMode editControl absentForConcepts competencyOnly">
+									<div class="sidebarInputRow">
+										<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
+										<select class="sidebarInputLanguageSelect"></select>
+										<textarea id="sidebarCompetencyDescriptionInput" cassCompetency="description" ceasnCompetency="ceasn:comment" skosCompetency="skos:definition" plural="true" data-group="sidebarCompetencyDescriptionInput" class="sidebarCompetencyDescriptionInput" style="height:6rem;">This is a super long description, it describes the things worth describing.</textarea>
+										<button title="Add another value." id="addCompetencyDescriptionInput" data-target="sidebarCompetencyDescriptionInput" class="addInputButton"><i class="fa fa-plus"></i></button>
 									</div>
 								</div>
 								<!-- Concept Scheme Creator -->
 								<label id="sidebarConceptCreatorInputLabel" for="sidebarConceptCreator" title="" skosFramework="Creator:" class="viewMode editMode absentForCompetencies frameworkOnly" skosFrameworkTitle="An entity primarily responsible for making the resource. For example, https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. One entity per line." style="margin:0px;">Creator:</label>
 								<p id="sidebarConceptCreator" class="viewMode absentForCompetencies frameworkOnly sidebarViewList" style="font-weight:bold;"></p>
-								<input id="sidebarConceptCreatorInput" type="url" skosFramework="dcterms:creator" data-group="sidebarConceptCreatorInput" plural="true" class="editMode editControl absentForCompetencies frameworkOnly sidebarConceptCreatorInput" />
-								<div class="sidebarInputGroup">
-									<div class="addInputContainer">
-										<button title="Add another value." id="addConceptCreatorInput" data-target="sidebarConceptCreatorInput" class="editMode editControl addInputButton frameworkOnly absentForCompetencies"><i class="fa fa-plus"></i></button>
+								<div class="sidebarInputGrouping editMode editControl absentForCompetencies frameworkOnly">
+									<div class="sidebarInputRow">
+										<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
+										<select class="sidebarInputLanguageSelect"></select>
+										<input id="sidebarConceptCreatorInput" type="url" skosFramework="dcterms:creator" data-group="sidebarConceptCreatorInput" plural="true" class="sidebarConceptCreatorInput" />
+										<button title="Add another value." id="addConceptCreatorInput" data-target="sidebarConceptCreatorInput" class="addInputButton"><i class="fa fa-plus"></i></button>
 									</div>
 								</div>
 								<span id="sidebarConceptCreatorInputSpan" class="orangeUri">Note: URI only. For example, https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.</span>
@@ -379,19 +405,23 @@
 									<!-- Alternative Name -->
 									<label id="sidebarAlternativeNameInputLabel" for="sidebarAlternativeName" title="" cassCompetency="Alternative Name:" cassCompetencyTitle="An alternative name for this competency. One name per line." skosCompetency="Alternative Label:" skosCompetencyTitle="An alternative name for this concept. One name per line." class="viewMode editMode competencyOnly" style="margin:0px;">Alternative Name:</label>
 									<p id="sidebarAlternativeName" class="viewMode competencyOnly sidebarViewList" style="font-weight:bold;"></p>
-									<input id="sidebarAlternativeNameInput" cassCompetency="schema:alternateName" skosCompetency="skos:altLabel" data-group="sidebarAlternativeNameInput" plural="true" class="editMode editControl competencyOnly sidebarAlternativeNameInput" />
-									<div class="sidebarInputGroup">
-										<div class="addInputContainer">
-											<button title="Add another value." id="addAlternativeNameInput" data-target="sidebarAlternativeNameInput" class="editMode editControl addInputButton competencyOnly"><i class="fa fa-plus"></i></button>
+									<div class="sidebarInputGrouping editMode editControl competencyOnly">
+										<div class="sidebarInputRow">
+											<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
+											<select class="sidebarInputLanguageSelect"></select>
+											<input id="sidebarAlternativeNameInput" cassCompetency="schema:alternateName" skosCompetency="skos:altLabel" data-group="sidebarAlternativeNameInput" plural="true" class="sidebarAlternativeNameInput" />
+											<button title="Add another value." id="addAlternativeNameInput" data-target="sidebarAlternativeNameInput" class="addInputButton"><i class="fa fa-plus"></i></button>
 										</div>
 									</div>
 									<!-- Hidden Label -->
 									<label id="sidebarHiddenLabelInputLabel" for="sidebarHiddenLabel" title="" cassCompetency="Hidden Label:" cassCompetencyTitle="Alternate hidden labels for this concept. One label per line." skosCompetency="Hidden Label:" skosCompetencyTitle="Alternate hidden labels for this concept. One label per line." class="viewMode editMode competencyOnly" style="margin:0px;">Hidden Label:</label>
 									<p id="sidebarHiddenLabel" class="viewMode competencyOnly sidebarViewList" style="font-weight:bold;"></p>
-									<input id="sidebarHiddenLabelInput" cassCompetency="skos:hiddenLabel" skosCompetency="skos:hiddenLabel" data-group="sidebarHiddenLabelInput" plural="true" class="editMode editControl competencyOnly sidebarHiddenLabelInput" />
-									<div class="sidebarInputGroup">
-										<div class="addInputContainer">
-											<button title="Add another value." id="addHiddenLabelInput" data-target="sidebarHiddenLabelInput" class="editMode editControl addInputButton competencyOnly"><i class="fa fa-plus"></i></button>
+									<div class="sidebarInputGrouping editMode editControl competencyOnly">
+										<div class="sidebarInputRow">
+											<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
+											<select class="sidebarInputLanguageSelect"></select>
+											<input id="sidebarHiddenLabelInput" cassCompetency="skos:hiddenLabel" skosCompetency="skos:hiddenLabel" data-group="sidebarHiddenLabelInput" plural="true" class="sidebarHiddenLabelInput" />
+											<button title="Add another value." id="addHiddenLabelInput" data-target="sidebarHiddenLabelInput" class="addInputButton"><i class="fa fa-plus"></i></button>
 										</div>
 									</div>
 								</div>
@@ -406,10 +436,12 @@
 									<!-- Change Note -->
 									<label id="sidebarChangeNoteInputLabel" for="sidebarChangeNote" title="" cassCompetency="Change Note:" cassCompetencyTitle="Documents fine-grained changes to a competency, for the purposes of administration and maintenance. One note per line." skosCompetency="Change Note:" skosCompetencyTitle="Documents fine-grained changes to a concept, for the purposes of administration and maintenance. One note per line." class="viewMode editMode competencyOnly" style="margin:0px;">Change Note:</label>
 									<p id="sidebarChangeNote" class="viewMode competencyOnly sidebarViewList" style="font-weight:bold;"></p>
-									<input id="sidebarChangeNoteInput" cassCompetency="skos:changeNote" skosCompetency="skos:changeNote" data-group="sidebarChangeNoteInput" plural="true" class="editMode editControl competencyOnly sidebarChangeNoteInput" />
-									<div class="sidebarInputGroup">
-										<div class="addInputContainer">
-											<button title="Add another value." id="addChangeNoteInput" data-target="sidebarChangeNoteInput" class="editMode editControl addInputButton competencyOnly"><i class="fa fa-plus"></i></button>
+									<div class="sidebarInputGrouping editMode editControl competencyOnly">
+										<div class="sidebarInputRow">
+											<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
+											<select class="sidebarInputLanguageSelect"></select>
+											<input id="sidebarChangeNoteInput" cassCompetency="skos:changeNote" skosCompetency="skos:changeNote" data-group="sidebarChangeNoteInput" plural="true" class="sidebarChangeNoteInput" />
+											<button title="Add another value." id="addChangeNoteInput" data-target="sidebarChangeNoteInput" class="addInputButton"><i class="fa fa-plus"></i></button>
 										</div>
 									</div>
 								</div>
@@ -437,10 +469,12 @@
 										<!-- In Language -->
 										<label id="sidebarInLanguageInputLabel" for="sidebarInLanguage" title="" cassCompetency="In Language:" cassCompetencyTitle="The primary language used in or by this competency framework or competency. One language per line." ceasnCompetency="In Language:" ceasnCompetencyTitle="The primary language used in or by this competency framework or competency. One language per line." skosCompetency="Language:" skosCompetencyTitle="Language of the concept. One language per line." class="viewMode editMode absentForConcepts" style="margin:0px;">In Language:</label>
 										<p id="sidebarInLanguage" class="viewMode absentForConcepts sidebarViewList" style="font-weight:bold;"></p>
-										<input id="sidebarInLanguageInput" cassCompetency="schema:inLanguage" ceasnCompetency="ceasn:inLanguage" data-group="sidebarInLanguageInput" plural="true" defaultToFramework="true" class="editMode editControl absentForConcepts sidebarInLanguageInput language" />
-										<div class="sidebarInputGroup">
-											<div class="addInputContainer">
-												<button title="Add another value." id="addInLanguageInput" data-target="sidebarInLanguageInput" data-autocomplete-field="true" class="editMode editControl addInputButton absentForConcepts"><i class="fa fa-plus"></i></button>
+										<div class="sidebarInputGrouping editMode editControl absentForConcepts">
+											<div class="sidebarInputRow">
+												<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
+												<select class="sidebarInputLanguageSelect"></select>
+												<input id="sidebarInLanguageInput" cassCompetency="schema:inLanguage" ceasnCompetency="ceasn:inLanguage" data-group="sidebarInLanguageInput" plural="true" defaultToFramework="true" class="sidebarInLanguageInput language" />
+												<button title="Add another value." id="addInLanguageInput" data-target="sidebarInLanguageInput" data-autocomplete-field="true" class="addInputButton"><i class="fa fa-plus"></i></button>
 											</div>
 										</div>
 										<!-- List ID -->
@@ -463,10 +497,12 @@
 											<!-- Identifier -->
 											<label id="sidebarIdentifierInputLabel" for="sidebarIdentifier" title="" cassCompetency="Identifier:" cassCompetencyTitle="An alternative URI by which this competency framework or competency is identified. For example, https://sandbox.credentialengineregistry.org/. One URI per line." ceasnCompetency="Identifier:" ceasnCompetencyTitle="An alternative URI by which this competency framework or competency is identified. For example, https://sandbox.credentialengineregistry.org/. One URI per line." skosCompetency="Identifier:" skosCompetencyTitle="An unambiguous reference to the resource within a given context. For example, https://sandbox.credentialengineregistry.org/. One refernece per line." class="viewMode editMode" style="margin:0px;">Identifier:</label>
 											<p id="sidebarIdentifier" class="viewMode sidebarViewList" style="font-weight:bold;"></p>
-											<input cassCompetency="schema:identifier" ceasnCompetency="ceasn:identifier" id="sidebarIdentifierInput" type="url" data-group="sidebarIdentifierInput" plural="true" class="editMode editControl sidebarIdentifierInput" />
-											<div class="sidebarInputGroup">
-												<div class="addInputContainer">
-													<button title="Add another value." id="addIdentifierInput" data-target="sidebarIdentifierInput" class="editMode editControl addInputButton"><i class="fa fa-plus"></i></button>
+											<div class="sidebarInputGrouping editMode editControl">
+												<div class="sidebarInputRow">
+													<button title="remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
+													<select class="sidebarInputLanguageSelect"></select>
+													<input cassCompetency="schema:identifier" ceasnCompetency="ceasn:identifier" id="sidebarIdentifierInput" type="url" data-group="sidebarIdentifierInput" plural="true" class="sidebarIdentifierInput" />
+													<button title="Add another value." id="addIdentifierInput" data-target="sidebarIdentifierInput" class="addInputButton"><i class="fa fa-plus"></i></button>
 												</div>
 											</div>
 											<span id="sidebarIdentifierInputSpan" class="orangeUri">Note: URI only. For example, https://sandbox.credentialengineregistry.org/.</span>
@@ -478,10 +514,12 @@
 											<!-- Concept Keyword -->
 											<label id="sidebarConceptKeywordInputLabel" for="sidebarConceptKeyword" title="" cassCompetency="Keywords:" cassCompetencyTitle="A word or phrase used by the promulgating agency to refine and differentiate individual competencies contextually. One concept per line." ceasnCompetency="Concept Keyword:" ceasnCompetencyTitle="A word or phrase used by the promulgating agency to refine and differentiate individual competencies contextually. One concept per line." skosCompetency="Concept Keyword:" skosCompetencyTitle="A word or phrase used by the promulgating agency to refine and differentiate individual concepts contextually. One concept per line." class="viewMode editMode" style="margin:0px;">Concept Keyword:</label>
 											<p id="sidebarConceptKeyword" class="viewMode sidebarViewList" style="font-weight:bold;"></p>
-											<input id="sidebarConceptKeywordInput" cassCompetency="schema:keywords" ceasnCompetency="ceasn:conceptKeyword" data-group="sidebarConceptKeywordInput" plural="true" class="editMode editControl sidebarConceptKeywordInput" />
-											<div class="sidebarInputGroup">
-												<div class="addInputContainer">
-													<button title="Add another value." id="addConceptKeywordInput" data-target="sidebarConceptKeywordInput" class="editMode editControl addInputButton"><i class="fa fa-plus"></i></button>
+											<div class="sidebarInputGrouping editMode editControl">
+												<div class="sidebarInputRow">
+													<button title="remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
+													<select class="sidebarInputLanguageSelect"></select>
+													<input id="sidebarConceptKeywordInput" cassCompetency="schema:keywords" ceasnCompetency="ceasn:conceptKeyword" data-group="sidebarConceptKeywordInput" plural="true" class="sidebarConceptKeywordInput" />
+													<button title="Add another value." id="addConceptKeywordInput" data-target="sidebarConceptKeywordInput" class="addInputButton"><i class="fa fa-plus"></i></button>
 												</div>
 											</div>
 											<!-- Concept Term -->
@@ -512,39 +550,47 @@
 										<!-- Creator -->
 										<label id="sidebarCreatorInputLabel" for="sidebarCreator" title="" cassFramework="Creator:" cassFrameworkTitle="A URI to an entity primarily responsible for making this competency framework or competency. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. One entity per line." ceasnFramework="Creator:" ceasnFrameworkTitle="The primary entity responsible for making this competency or competency framework. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. One entity per line." class="viewMode editMode absentForConcepts" style="margin:0px;">Creator:</label>
 										<p id="sidebarCreator" class="viewMode absentForConcepts sidebarViewList" style="font-weight:bold;"></p>
-										<input id="sidebarCreatorInput" cassFramework="schema:creator" ceasnFramework="ceasn:creator" data-group="sidebarCreatorInput" plural="true" type="url" class="editMode editControl absentForConcepts sidebarCreatorInput" />
-										<div class="sidebarInputGroup">
-											<div class="addInputContainer">
-												<button title="Add another value." id="addCreatorInput" data-target="sidebarCreatorInput" class="editMode editControl addInputButton absentForConcepts"><i class="fa fa-plus"></i></button>
+										<div class="sidebarInputGrouping editMode editControl absentForConcepts">
+											<div class="sidebarInputRow">
+												<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
+												<select class="sidebarInputLanguageSelect"></select>
+												<input id="sidebarCreatorInput" cassFramework="schema:creator" ceasnFramework="ceasn:creator" data-group="sidebarCreatorInput" plural="true" type="url" class="sidebarCreatorInput" />
+												<button title="Add another value." id="addCreatorInput" data-target="sidebarCreatorInput" class="addInputButton"><i class="fa fa-plus"></i></button>
 											</div>
 										</div>
 										<span id="sidebarCreatorInputSpan" class="orangeUri">Note: URI only. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.</span>
 										<!-- Publisher Name -->
 										<label id="sidebarPublisherNameInputLabel" for="sidebarPublisherName" title="" cassFramework="Publisher Name:" cassFrameworkTitle="Name of the agent responsible for making this entity available. One name per line." ceasnFramework="Publisher Name:" ceasnFrameworkTitle="Name of the agent responsible for making this entity available. One name per line." class="viewMode editMode absentForConcepts" style="margin:0px;">Publisher Name:</label>
 										<p id="sidebarPublisherName" class="viewMode absentForConcepts sidebarViewList" style="font-weight:bold;"></p>
-										<input id="sidebarPublisherNameInput" cassFramework="schema:publisher" ceasnFramework="ceasn:publisherName" data-group="sidebarPublisherNameInput" plural="true" class="sidebarPublisherNameInput editMode editControl absentForConcepts" />
-										<div class="sidebarInputGroup">
-											<div class="addInputContainer">
-												<button title="Add another value." id="addPublisherNameInput" data-target="sidebarPublisherNameInput" class="editMode editControl addInputButton absentForConcepts"><i class="fa fa-plus"></i></button>
+										<div class="sidebarInputGrouping editMode editControl absentForConcepts">
+											<div class="sidebarInputRow">
+												<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
+												<select class="sidebarInputLanguageSelect"></select>
+												<input id="sidebarPublisherNameInput" cassFramework="schema:publisher" ceasnFramework="ceasn:publisherName" data-group="sidebarPublisherNameInput" plural="true" class="sidebarPublisherNameInput language" />
+												<button title="Add another value." id="addPublisherNameInput" data-target="sidebarPublisherNameInput" class="addInputButton"><i class="fa fa-plus"></i></button>
 											</div>
 										</div>
 										<!-- Publisher -->
 										<label id="sidebarPublisherInputLabel" for="sidebarPublisher" title="" cassFramework="Publisher:" cassFrameworkTitle="A URI to an entity responsible for making this competency framework available. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. One entity per line." ceasnFramework="Publisher:" ceasnFrameworkTitle="The entity responsible for making this competency framework available. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. One entity per line." class="viewMode editMode absentForConcepts" style="margin:0px;">Publisher:</label>
 										<p id="sidebarPublisher" class="viewMode absentForConcepts sidebarViewList" style="font-weight:bold;"></p>
-										<input id="sidebarPublisherInput" cassFramework="ceasn:publisher" ceasnFramework="ceasn:publisher" data-group="sidebarPublisherInput" plural="true" type="url" class="editMode editControl absentForConcepts sidebarPublisherInput" />
-										<div class="sidebarInputGroup">
-											<div class="addInputContainer">
-												<button title="Add another value." id="addPublisherInput" data-target="sidebarPublisherInput" class="editMode editControl addInputButton absentForConcepts"><i class="fa fa-plus"></i></button>
+										<div class="sidebarInputGrouping editMode editControl absentForConcepts">
+											<div class=sidebarInputRow>
+												<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
+												<select class="sidebarInputLanguageSelect"></select>
+												<input id="sidebarPublisherInput" cassFramework="ceasn:publisher" ceasnFramework="ceasn:publisher" data-group="sidebarPublisherInput" plural="true" type="url" class="sidebarPublisherInput" />
+												<button title="Add another value." id="addPublisherInput" data-target="sidebarPublisherInput" class="addInputButton"><i class="fa fa-plus"></i></button>
 											</div>
 										</div>
 										<span id="sidebarPublisherInputSpan" class="orangeUri">Note: URI only. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.</span>
 										<!-- In Language -->
 										<label id="sidebarFrameworkInLanguageInputLabel" for="sidebarFrameworkInLanguage" title="" cassFramework="In Language:" cassFrameworkTitle="The primary language used in or by this competency framework or competency. One language per line." ceasnFramework="In Language:" ceasnFrameworkTitle="The primary language used in or by this competency framework or competency. One language per line." class="viewMode editMode absentForConcepts" style="margin:0px;">In Language:</label>
 										<p id="sidebarFrameworkInLanguage" class="viewMode absentForConcepts sidebarViewList" style="font-weight:bold;"></p>
-										<input id="sidebarFrameworkInLanguageInput" cassFramework="schema:inLanguage" ceasnFramework="ceasn:inLanguage" data-group="sidebarFrameworkInLanguageInput" plural="true" class="editMode editControl absentForConcepts sidebarFrameworkInLanguageInput language" />
-										<div class="sidebarInputGroup">
-											<div class="addInputContainer">
-												<button title="Add another value." id="addFrameworkInLanguageInput" data-target="sidebarFrameworkInLanguageInput" data-autocomplete-field="true" class="editMode editControl addInputButton absentForConcepts"><i class="fa fa-plus"></i></button>
+										<div class="sidebarInputGrouping editMode editControl absentForConcepts">
+											<div class="sidebarInputRow">
+												<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
+												<select class="sidebarInputLanguageSelect"></select>
+												<input id="sidebarFrameworkInLanguageInput" cassFramework="schema:inLanguage" ceasnFramework="ceasn:inLanguage" data-group="sidebarFrameworkInLanguageInput" plural="true" class="sidebarFrameworkInLanguageInput language" />
+												<button title="Add another value." id="addFrameworkInLanguageInput" data-target="sidebarFrameworkInLanguageInput" data-autocomplete-field="true" class="addInputButton"><i class="fa fa-plus"></i></button>
 											</div>
 										</div>
 										<!-- Framework Tagging Section -->
@@ -554,10 +600,12 @@
 											<!-- Concept Keyword -->
 											<label id="sidebarFrameworkConceptKeywordInputLabel" for="sidebarFrameworkConceptKeyword" title="" cassFramework="Keywords:" cassFrameworkTitle="A word or phrase used by the promulgating agency to refine and differentiate individual frameworks contextually. One code per line." ceasnFramework="Concept Keyword:" ceasnFrameworkTitle="A word or phrase used by the promulgating agency to refine and differentiate individual frameworks contextually. One concept per line." skosFramework="Concept Keyword:" skosFrameworkTitle="A word or phrase used by the promulgating agency to refine and differentiate schemes contextually. One concept per line." class="viewMode editMode" style="margin:0px;">Concept Keyword:</label>
 											<p id="sidebarFrameworkConceptKeyword" class="viewMode sidebarViewList" style="font-weight:bold;"></p>
-											<input id="sidebarFrameworkConceptKeywordInput" cassFramework="schema:keywords" ceasnFramework="ceasn:conceptKeyword" data-group="sidebarFrameworkConceptKeywordInput" plural="true" skosFramework="ceasn:conceptKeyword" class="editMode editControl sidebarFrameworkConceptKeywordInput" />
-											<div class="sidebarInputGroup">
-												<div class="addInputContainer">
-													<button title="Add another value." id="addFrameworkConceptKeywordInput" data-target="sidebarFrameworkConceptKeywordInput" class="editMode editControl addInputButton"><i class="fa fa-plus"></i></button>
+											<div class="sidebarInputGrouping editMode editControl">
+												<div class="sidebarInputRow">
+													<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
+													<select class="sidebarInputLanguageSelect"></select>
+													<input id="sidebarFrameworkConceptKeywordInput" cassFramework="schema:keywords" ceasnFramework="ceasn:conceptKeyword" data-group="sidebarFrameworkConceptKeywordInput" plural="true" skosFramework="ceasn:conceptKeyword" class="sidebarFrameworkConceptKeywordInput" />
+													<button title="Add another value." id="addFrameworkConceptKeywordInput" data-target="sidebarFrameworkConceptKeywordInput" class="addInputButton"><i class="fa fa-plus"></i></button>
 												</div>
 											</div>
 											<!-- Concept Term -->
@@ -582,10 +630,12 @@
 											<!-- Framework Source -->
 											<label id="sidebarSourceInputLabel" for="sidebarSource" title="" cassFramework="Source:" cassFrameworkTitle="A URI to the original competency framework which this competency framework is based on or derived from. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. One URI per line." ceasnFramework="Source Framework:" ceasnFrameworkTitle="The original competency framework which this competency framework is based on or derived from. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. One URI per line." class="viewMode editMode" style="margin:0px;">Source:</label>
 											<p id="sidebarSource" class="viewMode sidebarViewList" style="font-weight:bold;"></p>
-											<input id="sidebarSourceInput" cassFramework="dc:source" ceasnFramework="ceasn:source" type="url" data-group="sidebarSourceInput" plural="true" class="editMode editControl sidebarSourceInput" />
-											<div class="sidebarInputGroup">
-												<div class="addInputContainer">
-													<button title="Add another value." id="addSourceInput" data-target="sidebarSourceInput" class="editMode editControl addInputButton"><i class="fa fa-plus"></i></button>
+											<div class="sidebarInputGrouping editMode editControl">
+												<div class="sidebarInputRow">
+													<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
+													<select class="sidebarInputLanguageSelect"></select>
+													<input id="sidebarSourceInput" cassFramework="dc:source" ceasnFramework="ceasn:source" type="url" data-group="sidebarSourceInput" plural="true" class="sidebarSourceInput" />
+													<button title="Add another value." id="addSourceInput" data-target="sidebarSourceInput" class="addInputButton"><i class="fa fa-plus"></i></button>
 												</div>
 											</div>
 											<span id="sidebarSourceInputSpan" class="orangeUri">Note: URI only. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.</span>
@@ -609,19 +659,23 @@
 											<!-- Change Note -->
 											<label id="sidebarFrameworkChangeNoteInputLabel" for="sidebarFrameworkChangeNote" title="" cassFramework="Change Note:" cassFrameworkTitle="Documents fine-grained changes to a framwork, for the purposes of administration and maintenance. One note per line." skosFramework="Change Note:" skosFrameworkTitle="Documents fine-grained changes to a concept scheme, for the purposes of administration and maintenance. One note per line." class="viewMode editMode absentForCompetencies" style="margin:0px;">Change Note:</label>
 											<p id="sidebarFrameworkChangeNote" class="viewMode sidebarViewList absentForCompetencies" style="font-weight:bold;"></p>
-											<input id="sidebarFrameworkChangeNoteInput" cassFramework="skos:changeNote" skosFramework="skos:changeNote" data-group="sidebarFrameworkChangeNoteInput" plural="true" class="editMode editControl sidebarFrameworkChangeNoteInput absentForCompetencies" />
-											<div class="sidebarInputGroup absentForCompetencies">
-												<div class="addInputContainer">
-													<button title="Add another value." id="addSidebarFrameworkChangeNoteInput" data-target="sidebarFrameworkChangeNoteInput" class="editMode editControl addInputButton"><i class="fa fa-plus"></i></button>
+											<div class="sidebarInputGrouping editMode editControl absentForCompetencies">
+												<div class="sidebarInputRow">
+													<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
+													<select class="sidebarInputLanguageSelect"></select>
+													<input id="sidebarFrameworkChangeNoteInput" cassFramework="skos:changeNote" skosFramework="skos:changeNote" data-group="sidebarFrameworkChangeNoteInput" plural="true" class="sidebarFrameworkChangeNoteInput" />
+													<button title="Add another value." id="addSidebarFrameworkChangeNoteInput" data-target="sidebarFrameworkChangeNoteInput" class="addInputButton"><i class="fa fa-plus"></i></button>
 												</div>
 											</div>
 											<!-- History Note -->
 											<label id="sidebarHistoryNoteInputLabel" for="sidebarHistoryNote" title="" cassFramework="History Note:" cassFrameworkTitle="Describes significant changes to the meaning or the form of a framework. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. One note per line." skosFramework="History Note:" skosFrameworkTitle="Describes significant changes to the meaning or the form of a scheme. For example, https://credentialengineregistry.org/. One note per line." class="viewMode editMode absentForCompetencies" style="margin:0px;">History Note:</label>
 											<p id="sidebarHistoryNote" class="viewMode sidebarViewList absentForCompetencies" style="font-weight:bold;"></p>
-											<input id="sidebarHistoryNoteInput" cassFramework="skos:historyNote" skosFramework="skos:historyNote" data-group="sidebarHistoryNoteInput" plural="true" type="url" class="editMode editControl sidebarHistoryNoteInput absentForCompetencies" />
-											<div class="sidebarInputGroup absentForCompetencies">
-												<div class="addInputContainer">
-													<button title="Add another value." id="addHistoryNoteInput" data-target="sidebarHistoryNoteInput" class="editMode editControl addInputButton"><i class="fa fa-plus"></i></button>
+											<div class="sidebarInputGrouping editMode editControl absentForCompetencies">
+												<div class="sidebarInputRow">
+													<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
+													<select class="sidebarInputLanguageSelect"></select>
+													<input id="sidebarHistoryNoteInput" cassFramework="skos:historyNote" skosFramework="skos:historyNote" data-group="sidebarHistoryNoteInput" plural="true" type="url" class="sidebarHistoryNoteInput" />
+													<button title="Add another value." id="addHistoryNoteInput" data-target="sidebarHistoryNoteInput" class="addInputButton"><i class="fa fa-plus"></i></button>
 												</div>
 											</div>
 											<span id="sidebarHistoryNoteInputSpan" class="orangeUri">Note: URI only. For example, https://credentialengineregistry.org/.</span>
@@ -637,10 +691,12 @@
 											<!-- Identifier -->
 											<label id="sidebarFrameworkIdentifierInputLabel" for="sidebarFrameworkIdentifier" title="" cassFramework="Identifier:" cassFrameworkTitle="An alternative URI by which this competency framework or competency is identified. For example, https://sandbox.credentialengineregistry.org/. One URI per line." ceasnFramework="Identifier:" ceasnFrameworkTitle="An alternative URI by which this competency or competency framework is identified. For example, https://sandbox.credentialengineregistry.org/. One URI per line." class="viewMode editMode absentForConcepts" style="margin:0px;">Identifier:</label>
 											<p id="sidebarFrameworkIdentifier" class="viewMode absentForConcepts sidebarViewList" style="font-weight:bold;"></p>
-											<input cassFramework="schema:identifier" ceasnFramework="ceasn:identifier" plural="true" id="sidebarFrameworkIdentifierInput" type="url" data-group="sidebarFrameworkIdentifierInput" class="editMode editControl absentForConcepts sidebarFrameworkIdentifierInput" />
-											<div class="sidebarInputGroup">
-												<div class="addInputContainer">
-													<button title="Add another value." id="addFrameworkIdentifierInput" data-target="sidebarFrameworkIdentifierInput" class="editMode editControl addInputButton absentForConcepts"><i class="fa fa-plus"></i></button>
+											<div class="sidebarInputGrouping editMode editControl absentForConcepts">
+												<div class="sidebarInputRow">
+													<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
+													<select class="sidebarInputLanguageSelect"></select>
+													<input cassFramework="schema:identifier" ceasnFramework="ceasn:identifier" plural="true" id="sidebarFrameworkIdentifierInput" type="url" data-group="sidebarFrameworkIdentifierInput" class="sidebarFrameworkIdentifierInput" />
+													<button title="Add another value." id="addFrameworkIdentifierInput" data-target="sidebarFrameworkIdentifierInput" class="addInputButton"><i class="fa fa-plus"></i></button>
 												</div>
 											</div>
 											<span id="sidebarFrameworkIdentifierInputSpan" class="orangeUri">Note: URI only. Example, https://sandbox.credentialengineregistry.org/</span>
@@ -662,10 +718,12 @@
 											<!-- Rights -->
 											<label id="sidebarRightsInputLabel" for="sidebarRights" title="" cassFramework="Rights:" cassFrameworkTitle="Information about rights held in and over this competency framework. For example, http://example.com/?t=idforRights" ceasnFramework="Rights:" ceasnFrameworkTitle="Information about rights held in and over this competency framework. For example, https://sandbox.credentialengineregistry.org/" class="viewMode editMode absentForConcepts" style="margin:0px;">Rights:</label>
 											<p id="sidebarRights" class="viewMode sidebarViewList absentForConcepts" style="font-weight:bold;"></p>
-											<input id="sidebarRightsInput" cassFramework="dc:rights" ceasnFramework="ceasn:rights" plural="true" type="url" data-group="sidebarRightsInput" class="sidebarRightsInput editMode editControl absentForConcepts" />
-											<div class="sidebarInputGroup absentForConcepts">
-												<div class="addInputContainer">
-													<button title="Add another value." id="addRightsInput" data-target="sidebarRightsInput" class="editMode editControl addInputButton"><i class="fa fa-plus"></i></button>
+											<div class="sidebarInputGrouping editMode editControl absentForConcepts">
+												<div class="sidebarInputRow">
+													<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
+													<select class="sidebarInputLanguageSelect"></select>
+													<input id="sidebarRightsInput" cassFramework="dc:rights" ceasnFramework="ceasn:rights" plural="true" type="url" data-group="sidebarRightsInput" class="sidebarRightsInput" />
+													<button title="Add another value." id="addRightsInput" data-target="sidebarRightsInput" class="addInputButton"><i class="fa fa-plus"></i></button>
 												</div>
 											</div>
 											<span id="sidebarRightsInputSpan" class="orangeUri">Note: URI only. For example, https://sandbox.credentialengineregistry.org/</span>

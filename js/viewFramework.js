@@ -107,9 +107,10 @@ populateFramework = function (subsearch) {
 	var frameworkName = framework.getName();
 	frameworkName = EcArray.isArray(frameworkName) ? frameworkName : [frameworkName];
 	$("#editFrameworkSection #frameworkAKA").children().remove();
-	$("#editFrameworkSection #frameworkName").text(frameworkName[0]);
+	var nameObject = frameworkName[Object.keys(frameworkName)[0]];
+	$("#editFrameworkSection #frameworkName").text(frameworkName[0]["@value"]);
 	for (var i = 1; i < frameworkName.length; i++) {
-		$("#editFrameworkSection #frameworkAKA").append($('<span>AKA: ' + frameworkName[i] + '</span>'));
+		$("#editFrameworkSection #frameworkAKA").append($('<span>AKA: ' + frameworkName[i]["@value"] + '</span>'));
 	}
 	if (framework.competency != null)
 		$("#editFrameworkSection #frameworkCount").text(framework.competency.length + " items");
@@ -394,11 +395,18 @@ renderSidebar = function (justLists) {
 		});
 	if (justLists != true)
 		$("#detailSlider p,h3").each(function () {
-			if (!$(this).next().is("input,textarea"))
+			if (!$(this).next().is("div.sidebarInputGrouping") && !$(this).next().is('input,textarea'))
 				return;
+			var val;
+			if ($(this).next().is("div.sidebarInputGrouping")) {
+				val = thing[$(this).next().children().first().children('input,textarea').attr(fieldChoice)];
+			} else if ($(this).next().is("input,textarea")) {
+				val = thing[$(this).next('input,textarea').attr(fieldChoice)];
+			} else {
+				return;
+			}
 			$(this).html("");
 			$(this).prev("label").addClass("viewMode");
-			var val = thing[$(this).next().attr(fieldChoice)];
 			if (val === undefined || val == null || val == "") {
 				$(this).prev("label").removeClass("viewMode");
 				return;
@@ -408,19 +416,27 @@ renderSidebar = function (justLists) {
 			if (!EcArray.isArray(val))
 				val = [val];
 			for (var i = 0; i < val.length; i++) {
-				if (val[i].toLowerCase().indexOf("http") != -1) {
-					var linkText = val[i];
-					var elem = $(this);
-					elem.append("<div class='sidebarPropertyLink'><a target='_blank'/></div>").children().last().children().last().attr("href", val[i]).text(linkText);
-					var anchor = elem.children().last().children().last();
-					elem.children().last().prepend("<div><button title='Copy URL to the clipboard.' onclick='copyToClipboard(event);'><i class='fa fa-clipboard'></i></button></div>");
-					resolveNameFromUrlWithElem(val[i], anchor, function (result, elem) {
-						if (result != null) {
-							elem.text(result);
-						}
-					});
+				if (typeof val[i] === 'object') {
+					var temp = $(this);
+					console.log("Render function: " + Object.keys(val[i]));
+					console.log(val[i]);
+					temp.append("<span/>").children().last().text(val[i]["@language"] + ': ' + val[i]["@value"]);
 				} else {
-					$(this).append("<span/>").children().last().text(val[i]);
+					if (val[i].toLowerCase().indexOf("http") != -1) {
+						var linkText = val[i];
+						var elem = $(this);
+						elem.append("<div class='sidebarPropertyLink'><a target='_blank'/></div>").children().last().children().last().attr("href", val[i]).text(linkText);
+						var anchor = elem.children().last().children().last();
+						elem.children().last().prepend("<div><button title='Copy URL to the clipboard.' onclick='copyToClipboard(event);'><i class='fa fa-clipboard'></i></button></div>");
+						resolveNameFromUrlWithElem(val[i], anchor, function(result, elem) {
+							if (result != null) {
+								elem.text(result);
+							}
+						});
+					}
+					else {
+						$(this).append("<span/>").children().last().text(val[i]);
+					}
 				}
 			}
 		});
@@ -809,53 +825,54 @@ renderSidebar = function (justLists) {
 		});
 
 	if (justLists != true)
-		$("#detailSlider").find('.sidebarInputGroup').each(function () {
-			//Get the base input field first
-			var baseField = $(this).prev();
-			baseField.prev().prev().css("display", "");
-			baseField.prev().css("display", "");
-			baseField.css("display", "");
-			baseField.prev("label").addClass("viewMode");
+		$("#detailSlider").find('.sidebarInputGrouping').each(function () {
+			$(this).prev().prev().css("display", "");
+			$(this).prev().css("display", "");
+			$(this).css("display", "");
 
-			//Clear additional input fields if the property isn't present
-			if (thing[baseField.attr(inputChoice)] == null) {
-				baseField.next().find('input,textarea').remove();
-			}
+			//Clear additional input fields
+			$(this).find('.sidebarInputRow.inputCopy').each(function() {
+				$(this).remove();
+			});
 
-			var val = EcArray.isArray(thing[baseField.attr(inputChoice)]) ? thing[baseField.attr(inputChoice)][0] : thing[baseField.attr(inputChoice)];
-			if (val == null)
-				baseField.val('');
+			var baseField = $(this).children().first().children('input,textarea');
+
+			var obj = thing[baseField.attr(inputChoice)];
+			var isFirstValue = true;
+			var elem = $(this);
+			if (obj != null)
+				Object.keys(obj).forEach(function(key) {
+					var val = EcArray.isArray(obj[key]) ? obj[key] : [obj[key]];
+					for (var i in val) {
+						//The basefield
+						if (isFirstValue) {
+							isFirstValue = false;
+							setTimeout(function() {
+								baseField.prev('select').val(key);
+								baseField.val(val[i]);
+							}, 10);
+						} else {
+							var newElem = $(elem.children().first()[0].cloneNode(true));
+							var uuid = new UUID(4);
+							newElem.children('input,textarea').attr('id', uuid.format());
+							newElem.children('input,textarea').addClass('inputCopy');
+							newElem.addClass('inputCopy');
+							setTimeout(function() {
+								var temp = newElem;
+								temp.children('input,textarea').val(val[i]);
+								temp.children('select').val(key);
+							}, 10);
+							elem.append(newElem);
+							if (newElem.children('button').attr('data-autocomplete-field') === 'true')
+								setLanguageTagAutocomplete();
+						}
+					}
+				});
 			else
-				baseField.val(val);
-
-			if (EcArray.isArray(thing[baseField.attr(inputChoice)])) {
-				//Create the input fields if needed and they aren't there yet
-				if (thing[baseField.attr(inputChoice)].length > 1 && ($(this).find('input,textarea').length < thing[baseField.attr(inputChoice)].length - 1)) {
-					for (var i = 1; i < thing[baseField.attr(inputChoice)].length; i++) {
-						var newInput = $(baseField[0].cloneNode(false));
-						var uuid = new UUID(4);
-						newInput.attr('id', uuid.format());
-						newInput.addClass('inputCopy');
-						newInput.val('');
-						newInput.insertBefore($(this).find('.addInputContainer'));
-					}
-				}
-
-				$(this).find('input,textarea').each(function (i) {
-
-					var val = thing[$(this).attr(inputChoice)][i + 1];
-					if (val == null) {
-						$(this).remove();
-					} else {
-						$(this).val(val);
-					}
-				});
-			} else {
-				//There is only one value, remove all additional input fields.
-				$(this).find('input,textarea').each(function (i) {
-					$(this).remove();
-				});
-			}
+				setTimeout(function() {
+					baseField.prev('select').val('en');
+					baseField.val('');
+				}, 10);
 		});
 
 	if (justLists != true)
@@ -1048,6 +1065,7 @@ editSidebar = function () {
 
 	changedFields = {};
 	ulLengths = {};
+	setLanguageTagsDropdowns();
 
 	//Don't persist the invalidInput class between edits
 	$('.invalidInput').each(function () {
@@ -1250,15 +1268,21 @@ $('.sidebarEditSection').on("focusout", function (evt) {
 
 //Click handler for addInput buttons
 $('body').on('click', '.addInputButton', function (evt) {
-	var originalElem = $('#' + $(this).attr('data-target')).first();
-	var newElem = $(originalElem[0].cloneNode(false));
+	var originalElem = $(this).parent();;
+	var newElem = $(originalElem[0].cloneNode(true));
 	var uuid = new UUID(4);
-	newElem.attr('id', uuid.format());
+	newElem.children('input,textarea').attr('id', uuid.format());
+	newElem.children('input,textarea').addClass('inputCopy');
 	newElem.addClass('inputCopy');
-	newElem.val('');
-	newElem.insertBefore($(this).parent());
+	newElem.children('input,textarea').val('');
+	newElem.insertAfter($(this).parent());
 	if ($(this).attr('data-autocomplete-field') === 'true')
 		setLanguageTagAutocomplete();
+});
+
+//Click handler for removeInput buttons
+$('body').on('click', '.removeInputButton', function (evt) {
+	$(this).parent().remove();
 });
 
 //Detect UL length changes (For edit panel fields that don't use input fields)
@@ -1839,6 +1863,31 @@ viewJSON = function () {
 	}
 	var redirect = window.open(link, '_blank');
 	redirect.location;
+}
+
+setLanguageTagsDropdowns = function() {
+	$.ajax({
+		url: "js/ietf-language-tags_json.json",
+		async: false,
+		success: function (a) {
+			var tagList = a;
+			var tags = [];
+			for (var i = 0; i < tagList.length; i++) {
+				tags.push({
+					label: tagList[i].description,
+					value: tagList[i].subtag
+				});
+			}
+			$('.sidebarInputLanguageSelect').each(function() {
+				if ($(this).children().length < 1) {
+					var select = $(this)[0];
+					for (var i in tags) {
+						select.options[select.options.length] = new Option(tags[i].label, tags[i].value);
+					}
+				}
+			});
+		}
+	})
 }
 
 setLanguageTagAutocomplete = function () {
