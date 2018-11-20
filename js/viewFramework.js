@@ -107,8 +107,11 @@ populateFramework = function (subsearch) {
 	var frameworkName = framework.getName();
 	frameworkName = EcArray.isArray(frameworkName) ? frameworkName : [frameworkName];
 	$("#editFrameworkSection #frameworkAKA").children().remove();
-	var nameObject = frameworkName[Object.keys(frameworkName)[0]];
-	$("#editFrameworkSection #frameworkName").text(frameworkName[0]["@value"]);
+	if (frameworkName[0]["@value"]) {
+		$("#editFrameworkSection #frameworkName").text(frameworkName[0]["@value"]);
+	} else {
+		$("#editFrameworkSection #frameworkName").text(frameworkName[0]);
+	}
 	for (var i = 1; i < frameworkName.length; i++) {
 		$("#editFrameworkSection #frameworkAKA").append($('<span>AKA: ' + frameworkName[i]["@value"] + '</span>'));
 	}
@@ -418,8 +421,6 @@ renderSidebar = function (justLists) {
 			for (var i = 0; i < val.length; i++) {
 				if (typeof val[i] === 'object') {
 					var temp = $(this);
-					console.log("Render function: " + Object.keys(val[i]));
-					console.log(val[i]);
 					temp.append("<span/>").children().last().text(val[i]["@language"] + ': ' + val[i]["@value"]);
 				} else {
 					if (val[i].toLowerCase().indexOf("http") != -1) {
@@ -848,8 +849,8 @@ renderSidebar = function (justLists) {
 						if (isFirstValue) {
 							isFirstValue = false;
 							setTimeout(function() {
-								baseField.prev('select').val(key);
-								baseField.val(val[i]);
+								baseField.prev('select').val(val[i]["@language"]);
+								baseField.val(val[i]["@value"]);
 							}, 10);
 						} else {
 							var newElem = $(elem.children().first()[0].cloneNode(true));
@@ -859,8 +860,8 @@ renderSidebar = function (justLists) {
 							newElem.addClass('inputCopy');
 							setTimeout(function() {
 								var temp = newElem;
-								temp.children('input,textarea').val(val[i]);
-								temp.children('select').val(key);
+								temp.children('input,textarea').val(val[i]["@value"]);
+								temp.children('select').val(val[i]["@language"]);
 							}, 10);
 							elem.append(newElem);
 							if (newElem.children('button').attr('data-autocomplete-field') === 'true')
@@ -1233,13 +1234,19 @@ $('.sidebarEditSection').on('input', function (evt) {
 		$('#' + evt.target.getAttribute('data-group') + 'Span').addClass('active');
 	else
 		$('#' + evt.target.getAttribute('data-group') + 'Span').removeClass('active');
-	changedFields[evt.target.id] = 'input';
+	if (evt.target.id){
+		target = evt.target;
+	}
+	else {
+		target = $(evt.target).next()[0];
+	}
+	changedFields[target.id] = 'input';
 	addChangedFieldHighlight();
 	//Detect bad characters
-	if (!validateString($('#' + evt.target.id).val()))
-		setInvalidInput(evt.target.id);
+	if (!validateString($('#' + target.id).val()))
+		setInvalidInput(target.id);
 	else
-		setValidInput(evt.target.id);
+		setValidInput(target.id);
 });
 
 //Detect alignment input field changes
