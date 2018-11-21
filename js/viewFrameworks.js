@@ -104,7 +104,10 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
                 frameworkDescription = EcArray.isArray(frameworkDescription) ? frameworkDescription : [frameworkDescription];
                 for (var i in frameworkDescription) {
                     if (frameworkDescription[i] != null && frameworkDescription[i] != "")
-                        desc.append($('<span class="frameworkDescription">' + frameworkDescription[i] + '</span>'));
+                        if (typeof frameworkDescription[i] === "object")
+                            desc.append($('<span class="frameworkDescription">' + frameworkDescription[i]["@value"] + '</span>'));
+                        else
+                            desc.append($('<span class="frameworkDescription">' + frameworkDescription[i] + '</span>'));
                 }
                 if (fx.competency != null)
                 p.append("<span class='properties'>" + fx.competency.length + " items.</span>");

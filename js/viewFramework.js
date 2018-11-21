@@ -123,7 +123,7 @@ populateFramework = function (subsearch) {
 	$("#editFrameworkSection #frameworkDescription").children().remove();
 	for (var i in frameworkDescription) {
 		if (frameworkDescription[i] != null && frameworkDescription[i] != 'NULL' && frameworkDescription[i] != '')
-			$("#editFrameworkSection #frameworkDescription").append($('<span>' + frameworkDescription[i] + '</span>'));
+			$("#editFrameworkSection #frameworkDescription").append($('<span>' + frameworkDescription[i]["@value"] + '</span>'));
 	}
 	try {
 		if (framework.getTimestamp() == null || isNaN(framework.getTimestamp()))
@@ -590,8 +590,10 @@ renderSidebar = function (justLists) {
 					else
 						li.text(displayCompetency);
 				} else {
-					if (displayCompetency.getName)
-						li.text(displayCompetency.getName());
+					if (displayCompetency.getName){
+						var name = displayCompetency.getName();
+						li.text(name[0]["@value"]);
+					}
 					else
 						li.text(displayCompetency);
 				}
@@ -841,7 +843,8 @@ renderSidebar = function (justLists) {
 			var obj = thing[baseField.attr(inputChoice)];
 			var isFirstValue = true;
 			var elem = $(this);
-			if (obj != null)
+			if (obj != null){
+				obj = EcArray.isArray(obj) ? obj : [obj];
 				Object.keys(obj).forEach(function(key) {
 					var val = EcArray.isArray(obj[key]) ? obj[key] : [obj[key]];
 					for (var i in val) {
@@ -849,8 +852,13 @@ renderSidebar = function (justLists) {
 						if (isFirstValue) {
 							isFirstValue = false;
 							setTimeout(function() {
-								baseField.prev('select').val(val[i]["@language"]);
-								baseField.val(val[i]["@value"]);
+								if (val[i]["@language"]) {
+									baseField.prev('select').val(val[i]["@language"]);
+									baseField.val(val[i]["@value"]);
+								} else {
+									baseField.prev('select').val(key);
+									baseField.val(val[i]);
+								}
 							}, 10);
 						} else {
 							var newElem = $(elem.children().first()[0].cloneNode(true));
@@ -860,8 +868,13 @@ renderSidebar = function (justLists) {
 							newElem.addClass('inputCopy');
 							setTimeout(function() {
 								var temp = newElem;
-								temp.children('input,textarea').val(val[i]["@value"]);
-								temp.children('select').val(val[i]["@language"]);
+								if (val[i]["@language"]) {
+									temp.children('input,textarea').val(val[i]["@value"]);
+									temp.children('select').val(val[i]["@language"]);
+								} else {
+									temp.children('input,textarea').val(val[i]);
+									temp.children('select').val(key);
+								}
 							}, 10);
 							elem.append(newElem);
 							if (newElem.children('button').attr('data-autocomplete-field') === 'true')
@@ -869,6 +882,7 @@ renderSidebar = function (justLists) {
 						}
 					}
 				});
+			}
 			else
 				setTimeout(function() {
 					baseField.prev('select').val('en');
