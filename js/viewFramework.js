@@ -113,7 +113,10 @@ populateFramework = function (subsearch) {
 		$("#editFrameworkSection #frameworkName").text(frameworkName[0]);
 	}
 	for (var i = 1; i < frameworkName.length; i++) {
-		$("#editFrameworkSection #frameworkAKA").append($('<span>AKA: ' + frameworkName[i]["@value"] + '</span>'));
+		if (frameworkName[i]["@value"])
+			$("#editFrameworkSection #frameworkAKA").append($('<span>AKA: ' + frameworkName[i]["@value"] + '</span>'));
+		else
+			$("#editFrameworkSection #frameworkAKA").append($('<span>AKA: ' + frameworkName[i] + '</span>'));
 	}
 	if (framework.competency != null)
 		$("#editFrameworkSection #frameworkCount").text(framework.competency.length + " items");
@@ -122,8 +125,12 @@ populateFramework = function (subsearch) {
 	frameworkDescription = EcArray.isArray(frameworkDescription) ? frameworkDescription : [frameworkDescription];
 	$("#editFrameworkSection #frameworkDescription").children().remove();
 	for (var i in frameworkDescription) {
-		if (frameworkDescription[i] != null && frameworkDescription[i] != 'NULL' && frameworkDescription[i] != '')
-			$("#editFrameworkSection #frameworkDescription").append($('<span>' + frameworkDescription[i]["@value"] + '</span>'));
+		if (frameworkDescription[i] != null && frameworkDescription[i] != 'NULL' && frameworkDescription[i] != '') {
+			if (frameworkDescription[i]["@value"])
+				$("#editFrameworkSection #frameworkDescription").append($('<span>' + frameworkDescription[i]["@value"] + '</span>'));
+			else
+				$("#editFrameworkSection #frameworkDescription").append($('<span>' + frameworkDescription[i] + '</span>'));
+		}
 	}
 	try {
 		if (framework.getTimestamp() == null || isNaN(framework.getTimestamp()))

@@ -84,7 +84,10 @@ function conceptSchemeSearch(server, searchTerm, subsearchTerm, paramObj, retry)
                             desc.append($('<span class="frameworkDescription">' + frameworkDescription[i] + '</span>'));
                 }
                 for (var i = 1; i < frameworkName.length; i++) {
-                    p.append("<span class='properties'>AKA: " + frameworkName[i]["@value"] + "</span>");
+                    if (frameworkName[i]["@value"])
+                        p.append("<span class='properties'>AKA: " + frameworkName[i]["@value"] + "</span>");
+                    else
+                        p.append("<span class='properties'>AKA: " + frameworkName[i] + "</span>");
                 }
                 if (searchTerm != "*" && subsearchTerm == null)
                     p.mark(searchTerm);
