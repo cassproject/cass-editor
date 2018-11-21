@@ -500,7 +500,10 @@ renderSidebar = function (justLists) {
 				connectionsList.text(cId);
 			} else {
 				if (displayConcept["skos:prefLabel"] != null)
-					connectionsList.text(displayConcept["skos:prefLabel"]);
+					if(displayConcept["skos:prefLabel"][0]["@value"])
+						connectionsList.text(displayConcept["skos:prefLabel"][0]["@value"]);
+					else
+						connectionsList.text(displayConcept["skos:prefLabel"]);
 				else
 					connectionsList.text(displayConcept);
 			}
@@ -586,7 +589,7 @@ renderSidebar = function (justLists) {
 					li.text(a.target);
 				else if (conceptMode) {
 					if (displayCompetency["skos:prefLabel"] != null)
-						li.text(displayCompetency["skos:prefLabel"]);
+						li.text(displayCompetency["skos:prefLabel"][0]["@value"]);
 					else
 						li.text(displayCompetency);
 				} else {

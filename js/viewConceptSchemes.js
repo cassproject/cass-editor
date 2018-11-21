@@ -65,7 +65,11 @@ function conceptSchemeSearch(server, searchTerm, subsearchTerm, paramObj, retry)
                 var title = p.children().first();
                 var frameworkName = fx["dcterms:title"];
                 frameworkName = EcArray.isArray(frameworkName) ? frameworkName : [frameworkName];
-                title.text(frameworkName[0]);
+                if (frameworkName[0]["@value"]){
+                    title.text(frameworkName[0]["@value"]);
+                } else {
+                    title.text(frameworkName[0]);
+                }
                 title.addClass("frameworkName");
                 if (subsearchTerm != null)
                     p.prepend("<span style='float:right'>*Matches inside. <span>");
@@ -74,10 +78,13 @@ function conceptSchemeSearch(server, searchTerm, subsearchTerm, paramObj, retry)
                 frameworkDescription = EcArray.isArray(frameworkDescription) ? frameworkDescription : [frameworkDescription];
                 for (var i in frameworkDescription) {
                     if (frameworkDescription[i] != null && frameworkDescription[i] != "")
-                        desc.append($('<span class="frameworkDescription">' + frameworkDescription[i] + '</span>'));
+                        if (frameworkDescription[i]["@value"])
+                            desc.append($('<span class="frameworkDescription">' + frameworkDescription[i]["@value"] + '</span>'));
+                        else
+                            desc.append($('<span class="frameworkDescription">' + frameworkDescription[i] + '</span>'));
                 }
                 for (var i = 1; i < frameworkName.length; i++) {
-                    p.append("<span class='properties'>AKA: " + frameworkName[i] + "</span>");
+                    p.append("<span class='properties'>AKA: " + frameworkName[i]["@value"] + "</span>");
                 }
                 if (searchTerm != "*" && subsearchTerm == null)
                     p.mark(searchTerm);

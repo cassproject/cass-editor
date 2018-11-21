@@ -431,7 +431,14 @@
 									<!-- Preferred Label -->
 									<label id="sidebarPreferredLabelInputLabel" for="sidebarPreferredLabel" title="" cassCompetency="Note:" cassCompetencyTitle="Preferred display label for this concept. One label per line." skosCompetency="Note:" skosCompetencyTitle="Preferred display label for this concept. One label per line." class="viewMode editMode competencyOnly" style="margin:0px;">Note:</label>
 									<p id="sidebarPreferredLabel" class="viewMode competencyOnly sidebarViewList" style="font-weight:bold;"></p>
-									<input id="sidebarPreferredLabelInput" cassCompetency="skos:note" skosCompetency="skos:note" data-group="sidebarPreferredLabelInput" class="editMode editControl competencyOnly sidebarPreferredLabelInput" />
+									<div class="sidebarInputGrouping editMode editControl competencyOnly">
+										<div class="sidebarInputRow">
+											<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
+											<select class="sidebarInputLanguageSelect"></select>
+											<input id="sidebarPreferredLabelInput" cassCompetency="skos:note" skosCompetency="skos:note" data-group="sidebarPreferredLabelInput" class="sidebarPreferredLabelInput" />
+											<button title="Add another value." id="addChangeNoteInput" data-target="sidebarChangeNoteInput" class="addInputButton"><i class="fa fa-plus"></i></button>
+										</div>
+									</div>
 									<!-- Change Note -->
 									<label id="sidebarChangeNoteInputLabel" for="sidebarChangeNote" title="" cassCompetency="Change Note:" cassCompetencyTitle="Documents fine-grained changes to a competency, for the purposes of administration and maintenance. One note per line." skosCompetency="Change Note:" skosCompetencyTitle="Documents fine-grained changes to a concept, for the purposes of administration and maintenance. One note per line." class="viewMode editMode competencyOnly" style="margin:0px;">Change Note:</label>
 									<p id="sidebarChangeNote" class="viewMode competencyOnly sidebarViewList" style="font-weight:bold;"></p>
@@ -874,12 +881,12 @@
 				<span id="frameworkCreated"></span>
 				<span id="frameworkLastModified"></span>
 				<span id="frameworkCount"></span>
+				<span id="frameworkAKA"></span>
 				<span id="collapseExpandAll" style="float:right;">
 					<button id="expandAllCompetencies" class="viewMode absentForConcepts" style="color:black;display:none;margin-bottom:.1rem;" onclick="expandAllCompetencies()" title="Expand All."><i class="fa fa-plus-square"  aria-hidden='true'></i></button>
 					<button id="collapseAllCompetencies" class="viewMode absentForConcepts" style="color:black;display:none;margin-bottom:.1rem" onclick="collapseAllCompetencies()" title="Collapse All."><i class="fa fa-minus-square"  aria-hidden='true'></i></button>
 				</span>
 			</div>
-			<div id="frameworkAKA"></div>
 			<hr style="margin-bottom: -1px;">
 		</div>
 		<ul id="tree">

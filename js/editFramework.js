@@ -342,7 +342,6 @@ saveCompetency = function (addAnother) {
     });
 
     thing["schema:dateModified"] = new Date().toISOString();
-    console.log(thing);
     if (selectedCompetency == null) {
         repo.saveTo(thing, afterSaveSidebar, error);
     } else {
