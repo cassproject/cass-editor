@@ -241,13 +241,19 @@ function refreshCompetency(col, level, subsearch, done) {
 	competencyDescription = EcArray.isArray(competencyDescription) ? competencyDescription : [competencyDescription];
 	for (var i = competencyDescription.length - 1; i >= 0; i--) {
 		if (competencyDescription[i] != null && competencyDescription[i] != "NULL" && competencyDescription[i] != col.name)
-			treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").css('display', 'block').text(competencyDescription[i]);
+			if (competencyDescription[i]["@value"])
+				treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").css('display', 'block').text(competencyDescription[i]["@value"]);
+			else
+				treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").css('display', 'block').text(competencyDescription[i]);
 	}
 	var competencyName = col.getName();
 	competencyName = EcArray.isArray(competencyName) ? competencyName : [competencyName];
-	treeNode.children().first().prepend("<span/>").children().first().addClass("competencyName").text(competencyName[0]);
+	if (competencyName[0]["@value"])
+		treeNode.children().first().prepend("<span/>").children().first().addClass("competencyName").text(competencyName[0]["@value"]);
+	else
+		treeNode.children().first().prepend("<span/>").children().first().addClass("competencyName").text(competencyName[0]);
 	for (var i = competencyName.length - 1; i > 0; i--) {
-		treeNode.children().first().find('.competencyName').after($('<span class="competencyAKA">AKA: ' + competencyName[i] + '</span>'));
+		treeNode.children().first().find('.competencyName').after($('<span class="competencyAKA">AKA: ' + competencyName[i]["@value"] + '</span>'));
 	}
 	if (queryParams.ceasnDataFields == 'true' || queryParams.tlaProfile == 'true') {
 		if (col["ceasn:codedNotation"] != null)
@@ -610,7 +616,10 @@ renderSidebar = function (justLists) {
 				} else {
 					if (displayCompetency.getName){
 						var name = displayCompetency.getName();
-						li.text(name[0]["@value"]);
+						if (name[0]["@value"])
+							li.text(name[0]["@value"]);
+						else
+							li.text(name);
 					}
 					else
 						li.text(displayCompetency);
