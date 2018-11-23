@@ -156,7 +156,6 @@ editConceptSidebar = function () {
 
     changedFields = {};
     ulLengths = {};
-    setLanguageTagsDropdowns();
 
     //Don't persist the invalidInput class between edits
     $('.invalidInput').each(function () {

@@ -255,7 +255,15 @@ function refreshCompetency(col, level, subsearch, done) {
 		if (col["ceasn:listID"] != null)
 			treeNode.children().first().prepend("<span/>").children().first().addClass("competencyListID").text(col["ceasn:listID"]);
 		if (col["dcterms:type"] != null)
-			treeNode.children().first().prepend("<span/>").children().first().addClass("competencyType").text(col["dcterms:type"]);
+			if (typeof col["dcterms:type"] === "object"){
+				var type = col["dcterms:type"];
+				type = EcArray.isArray(type) ? type : [type];
+				for (var i in type){
+					treeNode.children().first().prepend("<span/>").children().first().addClass("competencyType").text(type[i]["@value"]);
+				}
+			}
+			else
+				treeNode.children().first().prepend("<span/>").children().first().addClass("competencyType").text(col["dcterms:type"]);
 	}
 	treeNode.prepend("<span/>").children().first().addClass("collapse").css("visibility", "hidden").html('<i class="fa fa-minus-square" aria-hidden="true"></i> ');
 	if (col.competency != null) {
@@ -405,13 +413,13 @@ renderSidebar = function (justLists) {
 		});
 	if (justLists != true)
 		$("#detailSlider p,h3").each(function () {
-			if (!$(this).next().is("div.sidebarInputGrouping") && !$(this).next().is('input,textarea'))
+			if (!$(this).next().is("div.sidebarInputGrouping") && !$(this).next().is('input:not(.sidebarInputLanguageSelect),textarea'))
 				return;
 			var val;
 			if ($(this).next().is("div.sidebarInputGrouping")) {
-				val = thing[$(this).next().children().first().children('input,textarea').attr(fieldChoice)];
-			} else if ($(this).next().is("input,textarea")) {
-				val = thing[$(this).next('input,textarea').attr(fieldChoice)];
+				val = thing[$(this).next().children().first().children('input:not(.sidebarInputLanguageSelect),textarea').attr(fieldChoice)];
+			} else if ($(this).next().is("input:not(.sidebarInputLanguageSelect),textarea")) {
+				val = thing[$(this).next('input:not(.sidebarInputLanguageSelect),textarea').attr(fieldChoice)];
 			} else {
 				return;
 			}
@@ -848,7 +856,7 @@ renderSidebar = function (justLists) {
 				$(this).remove();
 			});
 
-			var baseField = $(this).children().first().children('input,textarea');
+			var baseField = $(this).children().first().children('input:not(.sidebarInputLanguageSelect),textarea');
 
 			var obj = thing[baseField.attr(inputChoice)];
 			var isFirstValue = true;
@@ -863,27 +871,27 @@ renderSidebar = function (justLists) {
 							isFirstValue = false;
 							setTimeout(function() {
 								if (val[i]["@language"]) {
-									baseField.prev('select').val(val[i]["@language"]);
+									baseField.prev('input.sidebarInputLanguageSelect').val(val[i]["@language"]);
 									baseField.val(val[i]["@value"]);
 								} else {
-									baseField.prev('select').val(key);
+									baseField.prev('input.sidebarInputLanguageSelect').val(key);
 									baseField.val(val[i]);
 								}
 							}, 10);
 						} else {
 							var newElem = $(elem.children().first()[0].cloneNode(true));
 							var uuid = new UUID(4);
-							newElem.children('input,textarea').attr('id', uuid.format());
-							newElem.children('input,textarea').addClass('inputCopy');
+							newElem.children('input:not(.sidebarInputLanguageSelect),textarea').attr('id', uuid.format());
+							newElem.children('input:not(.sidebarInputLanguageSelect),textarea').addClass('inputCopy');
 							newElem.addClass('inputCopy');
 							setTimeout(function() {
 								var temp = newElem;
 								if (val[i]["@language"]) {
-									temp.children('input,textarea').val(val[i]["@value"]);
-									temp.children('select').val(val[i]["@language"]);
+									temp.children('input:not(.sidebarInputLanguageSelect),textarea').val(val[i]["@value"]);
+									temp.children('input.sidebarInputLanguageSelect').val(val[i]["@language"]);
 								} else {
-									temp.children('input,textarea').val(val[i]);
-									temp.children('select').val(key);
+									temp.children('input:not(.sidebarInputLanguageSelect),textarea').val(val[i]);
+									temp.children('input.sidebarInputLanguageSelect').val(key);
 								}
 							}, 10);
 							elem.append(newElem);
@@ -895,7 +903,7 @@ renderSidebar = function (justLists) {
 			}
 			else
 				setTimeout(function() {
-					baseField.prev('select').val('en');
+					baseField.prev('input.sidebarInputLanguageSelect').val('');
 					baseField.val('');
 				}, 10);
 		});
@@ -1090,7 +1098,6 @@ editSidebar = function () {
 
 	changedFields = {};
 	ulLengths = {};
-	setLanguageTagsDropdowns();
 
 	//Don't persist the invalidInput class between edits
 	$('.invalidInput').each(function () {
@@ -1896,31 +1903,6 @@ viewJSON = function () {
 	redirect.location;
 }
 
-setLanguageTagsDropdowns = function() {
-	$.ajax({
-		url: "js/ietf-language-tags_json.json",
-		async: false,
-		success: function (a) {
-			var tagList = a;
-			var tags = [];
-			for (var i = 0; i < tagList.length; i++) {
-				tags.push({
-					label: tagList[i].description,
-					value: tagList[i].subtag
-				});
-			}
-			$('.sidebarInputLanguageSelect').each(function() {
-				if ($(this).children().length < 1) {
-					var select = $(this)[0];
-					for (var i in tags) {
-						select.options[select.options.length] = new Option(tags[i].label, tags[i].value);
-					}
-				}
-			});
-		}
-	})
-}
-
 setLanguageTagAutocomplete = function () {
 	$('.sidebarInLanguageInput:last').autocomplete({
 		source: tags,
@@ -2006,6 +1988,10 @@ $.ajax({
 		$('#sidebarConceptInLanguageInput').autocomplete({
 			source: tags,
 			appendTo: '.ceasnDataFields',
+			minLength: 2
+		});
+		$('.sidebarInputLanguageSelect').autocomplete({
+			source: tags,
 			minLength: 2
 		});
 	}

@@ -303,12 +303,12 @@ saveCompetency = function (addAnother) {
 
     $("#detailSlider").find('.sidebarInputGrouping').each(function() {
         var arrayVals = [];
-        var whichInputChoice = $(this).children().first().children('input,textarea').attr(inputChoice);
+        var whichInputChoice = $(this).children().first().children('input:not(.sidebarInputLanguageSelect),textarea').attr(inputChoice);
 
-        $(this).find('.sidebarInputRow > input:visible, .sidebarInputRow > textarea:visible').each(function() {
-            if ($(this).prev('select').length > 0) {
+        $(this).find('.sidebarInputRow > input:visible:not(.sidebarInputLanguageSelect), .sidebarInputRow > textarea:visible').each(function() {
+            if ($(this).prev('input.sidebarInputLanguageSelect').length > 0) {
                 var objectVals = {};
-                var selectVal = getValueOrNull($(this).prev('select').val());
+                var selectVal = getValueOrNull($(this).prev('input.sidebarInputLanguageSelect').val());
                 var stringVal = getValueOrNull($(this).val());
                 if (selectVal != null && stringVal != null) {
                     objectVals["@language"] = selectVal;
