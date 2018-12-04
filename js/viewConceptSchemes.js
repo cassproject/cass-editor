@@ -1,10 +1,17 @@
 function searchConceptSchemes(paramObj) {
-    loading("Loading concept schemes...");
+    if (firstLoad) {
+        loading("Loading concept schemes...");
+    }
+    if (paramObj.size == null)
+        paramObj.size = paramSize ? paramSize : 20;
+    paramSize = paramObj.size;
     var searchTerm = $("#search").val();
     if (searchTerm == null || searchTerm == "")
         searchTerm = "*";
-    $("#frameworks").html("");
-    searchCompetencies = [];
+    if (firstLoad) {
+        $("#frameworks").html("");
+        searchCompetencies = [];
+    }
     for (var i = 0; i < servers.length; i++) {
         conceptSchemeSearch(servers[i], searchTerm, null, paramObj);
         if (viewMode)
@@ -24,7 +31,10 @@ function conceptSchemeSearch(server, searchTerm, subsearchTerm, paramObj, retry)
     else
         search = searchTerm;
     EcConceptScheme.search(server, search, function (frameworks) {
-        for (var v = 0; v < frameworks.length; v++) {
+        var start = paramSize - 20;
+        if (firstLoad)
+            start = 0;
+        for (var v = start; v < frameworks.length; v++) {
             var fx = frameworks[v];
             if (fx["dcterms:title"] === undefined || fx["dcterms:title"] == null || fx["dcterms:title"] == "")
                 continue;
@@ -68,6 +78,10 @@ function conceptSchemeSearch(server, searchTerm, subsearchTerm, paramObj, retry)
                 $("#frameworks").html("<center>No concept schemes found.</center>");
             showPage("#frameworksSection");
         }
+        if (firstLoad) {
+            firstLoad = false;
+        }
+        scrollTime = true;
     }, function (failure) {
         frameworkLoading--;
         if (retry == true) {

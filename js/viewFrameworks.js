@@ -3,12 +3,16 @@ if (queryParams.select != null)
         $("#frameworksBack").show();
 
 var paramSize;
+var firstLoad = true;
 function searchFrameworks(paramObj) {
     if (conceptMode)
         return searchConceptSchemes(paramObj);
     if (paramObj.size == null)
         paramObj.size = paramSize ? paramSize : 20;
-    loading("Loading frameworks...");
+    paramSize = paramObj.size;
+    if (firstLoad) {
+        loading("Loading frameworks...");
+    }
     var searchTerm = $("#search").val();
     if (searchTerm == null || searchTerm == "") {
         searchTerm = "*";
@@ -18,15 +22,16 @@ function searchFrameworks(paramObj) {
     }
     if (searchTerm != "*")
         delete paramObj.sort;
-    $("#frameworks").html("");
-    searchCompetencies = [];
+    if (firstLoad) {
+        $("#frameworks").html("");
+        searchCompetencies = [];
+    }
     for (var i = 0; i < servers.length; i++) {
         frameworkSearch(servers[i], searchTerm, null, paramObj);
-        if (searchTerm != "*" && paramObj.frameworksOnly != true) {
+        if (searchTerm != "*" && paramObj.frameworksOnly != true && firstLoad) {
             frameworkSearchByCompetency(servers[i], searchTerm);
         }
     }
-    paramSize = paramObj.size;
 }
 var frameworkLoading = 0;
 
@@ -51,7 +56,10 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
     } else
         search = searchTerm;
     EcFramework.search(server, search, function (frameworks) {
-        for (var v = 0; v < frameworks.length; v++) {
+        var start = paramSize - 20;
+        if (firstLoad)
+            start = 0;
+        for (var v = start; v < frameworks.length; v++) {
             var fx = frameworks[v];
             if (fx.name === undefined || fx.name == null || fx.name == "")
                 continue;
@@ -158,6 +166,10 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
                 $("#frameworks").html("<center>No frameworks found.</center>");
             showPage("#frameworksSection");
         }
+        if (firstLoad) {
+            firstLoad = false;
+        }
+        scrollTime = true;
     }, function (failure) {
         frameworkLoading--;
         if (retry == true) {
@@ -172,6 +184,15 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
         }
     }, paramObj);
 }
+
+var scrollTime = true;
+$("#frameworks").scroll(function() {
+    if ($("#frameworks").scrollTop() >= $("#frameworks")[0].scrollHeight - $("#frameworks").innerHeight() - 100 && scrollTime) {
+        paramSize += 20;
+        searchFrameworks(createParamObj(paramSize));
+        scrollTime = false;
+    }
+});
 
 function frameworkSearchByCompetency(server, searchTerm, retry) {
     frameworkLoading++;
@@ -236,6 +257,8 @@ function checkForChangesBeforeBack(event) {
 
 $("#search").keyup(function (event) {
     if (event.keyCode == '13') {
+        firstLoad = true;
+        $('#frameworks').scrollTop(0);
         searchFrameworks(createParamObj(20));
     }
     return false;

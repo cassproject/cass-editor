@@ -214,6 +214,8 @@ initTooltips = function (type) {
 
 resetSearch = function () {
 	$('#search').val('');
+	firstLoad = true;
+	$('#frameworks').scrollTop(0);
 	searchFrameworks(createParamObj(20));
 }
 
