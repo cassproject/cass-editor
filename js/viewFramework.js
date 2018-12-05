@@ -307,7 +307,7 @@ refreshRelations = function (subsearch) {
 				done();
 			}, done);
 		}, function (relations) {
-			if ($("#tree").html() == "")
+			if ($("#tree").html() == "" && framework.competency.length == 0)
 				$("#tree").html("<br><br><center><h3>This framework is empty.</h3></center>");
 			afterRefresh(false, subsearch);
 		});
