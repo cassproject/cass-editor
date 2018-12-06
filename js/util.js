@@ -463,7 +463,7 @@ $(window).resize(function (e) {
 });
 
 resizeWindow = function (pageX) {
-	if (queryParams.view == "true")
+	if (queryParams.view == "true" && queryParams.ceasnDataFields == null)
 		return;
 	var x = $(window).width() - pageX - 16;
 	if (x > min && x < (($(window).width() * 3) / 4) && pageX < ($(window).width() - mainmin)) {
