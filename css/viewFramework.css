@@ -1,7 +1,3 @@
-#editFrameworkSection select {
-    margin: 0.25em;
-}
-
 .detailSliderCeasn .absentForCeasn {
     display: none;
 }
@@ -317,11 +313,11 @@ hr {
 
 #detailSlider input,
 #detailSlider textarea,
-#detailSlider .ceasnDataFields select:not(.sidebarInputLanguageSelect) {
-    width: calc(100% - 1rem);
+#detailSlider .ceasnDataFields select {
+    width: calc(100% - 3.25rem);
 }
 
-#detailSlider .ceasnDataFields select:not(.sidebarInputLanguageSelect) {
+#detailSlider .ceasnDataFields select {
     margin-bottom: 1rem;
 }
 
@@ -416,4 +412,8 @@ hr {
 
 .highlightedCompetency > span > .competencyName {
     background-color: yellow;
+}
+
+.singular {
+    margin-left: 2.25rem;
 }
