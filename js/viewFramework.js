@@ -1103,17 +1103,18 @@ editSidebar = function () {
 	if (selectedCompetency != null && isFirstEdit === true) {
 		EcCompetency.search(repo, $(this).text(), function (results) {
 			var competencies = [];
-			var autocompleteDict = {};
 			for (var i = 0; i < results.length; i++) {
-				competencies.push(results[i].getName());
-				autocompleteDict[results[i].getName()] = results[i].shortId();
+				comp = EcRepository.getBlocking(results[i].shortId());
+				if (comp.isId(results[i].shortId()) && results[i].shortId().indexOf("http") != -1) {
+					competencies.push({label: results[i].getName(), id: results[i].shortId()});
+				}
 			}
 			$('#sidebarNameInput').autocomplete({
 				source: competencies,
 				appendTo: '.sidebarEditSection',
 				select: function (event, ui) {
 					if (confirm("Selecting this competency will delete the one you are currently creating and reuse an existing competency. You may not have permissions to edit this competency further. Would you like to continue?")) {
-						var competency = EcRepository.getBlocking(autocompleteDict[ui.item.value]);
+						var competency = EcRepository.getBlocking(ui.item.id);
 						var results = [];
 						$(".changedField").removeClass("changedField");
 						results.push(competency.shortId());
