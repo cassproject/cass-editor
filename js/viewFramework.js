@@ -1101,7 +1101,7 @@ editSidebar = function () {
 		$('#sidebarNameInput').removeData('autocomplete');
 	} catch (e) {}
 	if (selectedCompetency != null && isFirstEdit === true) {
-		EcCompetency.search(repo, $(this).text(), function (results) {
+		EcCompetency.search(repo, $('#sidebarNameInput').val(), function (results) {
 			var competencies = [];
 			for (var i = 0; i < results.length; i++) {
 				comp = EcRepository.getBlocking(results[i].shortId());
@@ -1142,6 +1142,21 @@ editSidebar = function () {
 		$(".ceasnDataFields").show();
 	}
 }
+
+$('#sidebarNameInput').on('keyup', function (evt) {
+	if (selectedCompetency != null && isFirstEdit === true) {
+		EcCompetency.search(repo, $(this).val(), function (results) {
+			var competencies = [];
+			for (var i = 0; i < results.length; i++) {
+				comp = EcRepository.getBlocking(results[i].shortId());
+				if (comp.isId(results[i].shortId()) && results[i].shortId().indexOf("http") != -1) {
+					competencies.push({label: results[i].getName(), id: results[i].shortId()});
+				}
+			}
+			$('#sidebarNameInput').autocomplete("option", "source", competencies);
+		}, error, {});
+	}
+});
 
 $("body").on("click", ".collapse", null, function (evt) {
 	$(this).parent().children("ul").slideToggle();
