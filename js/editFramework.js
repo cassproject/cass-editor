@@ -307,13 +307,21 @@ saveCompetency = function (addAnother) {
 
         //Get the base input field first
         var val = getValueOrNull($(this).prev().val());
-        if (val != null)
-            vals.push(val);
+        if (val != null) {
+            if ($(this).prev().hasClass("language") && langTags[val])
+                vals.push(langTags[val]);
+            else
+                vals.push(val);
+        }
 
         $(this).find('input:visible,textarea:visible').each(function() {
             var val = getValueOrNull($(this).val());
-            if (val != null)
-                vals.push(val);
+            if (val != null) {
+                if ($(this).hasClass("language") && langTags[val])
+                    vals.push(langTags[val]);
+                else
+                    vals.push(val);
+            }
         });
         if (vals.length > 0) {
             thing[whichInputChoice] = vals;

@@ -1843,36 +1843,20 @@ viewJSON = function () {
 }
 
 setLanguageTagAutocomplete = function () {
-	$.ajax({
-		url: "js/ietf-language-tags_json.json",
-		success: function (a) {
-			if (typeof a === 'string') {
-				a = JSON.parse(a);
-			}
-			var tagList = a;
-			var tags = [];
-			for (var i = 0; i < tagList.length; i++) {
-				tags.push({
-					label: tagList[i].description,
-					value: tagList[i].subtag
-				});
-			}
-			$('.sidebarInLanguageInput:last').autocomplete({
-				source: tags,
-				appendTo: '.ceasnDataFields',
-				minLength: 2
-			});
-			$('.sidebarFrameworkInLanguageInput:last').autocomplete({
-				source: tags,
-				appendTo: '.ceasnDataFields',
-				minLength: 2
-			});
-			$('.sidebarConceptInLanguageInput:last').autocomplete({
-				source: tags,
-				appendTo: '.ceasnDataFields',
-				minLength: 2
-			});
-		}
+	$('.sidebarInLanguageInput:last').autocomplete({
+		source: tags,
+		appendTo: '.ceasnDataFields',
+		minLength: 2
+	});
+	$('.sidebarFrameworkInLanguageInput:last').autocomplete({
+		source: tags,
+		appendTo: '.ceasnDataFields',
+		minLength: 2
+	});
+	$('.sidebarConceptInLanguageInput:last').autocomplete({
+		source: tags,
+		appendTo: '.ceasnDataFields',
+		minLength: 2
 	});
 }
 
@@ -1917,6 +1901,8 @@ handleAlignmentInput = function (event) {
 	}
 }
 
+var langTags = {};
+var tags = [];
 $.ajax({
 	url: "js/ietf-language-tags_json.json",
 	success: function (a) {
@@ -1924,17 +1910,14 @@ $.ajax({
 			a = JSON.parse(a);
 		}
 		var tagList = a;
-		var tags = [];
 		for (var i = 0; i < tagList.length; i++) {
-			tags.push({
-				label: tagList[i].description,
-				value: tagList[i].subtag
-			});
+			tags.push(tagList[i].description);
+			langTags[tagList[i].description] = tagList[i].subtag;
 		}
 		$('#sidebarInLanguageInput').autocomplete({
 			source: tags,
 			appendTo: '.ceasnDataFields',
-			minLength: 2
+			minLength: 2,
 		});
 		$('#sidebarFrameworkInLanguageInput').autocomplete({
 			source: tags,
