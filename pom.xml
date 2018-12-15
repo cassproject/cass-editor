@@ -22,6 +22,11 @@
 		</dependency>
 		<dependency>
 			<groupId>com.eduworks</groupId>
+			<artifactId>cass.rollup</artifactId>
+			<version>2.5.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.eduworks</groupId>
 			<artifactId>org.credentialengine</artifactId>
 			<version>2.5.4</version>
 		</dependency>
@@ -138,6 +143,7 @@
 								<jsSourceFile>js/cass/ebac.repository.js</jsSourceFile>
 								<jsSourceFile>js/cass/cass.competency.js</jsSourceFile>
 								<jsSourceFile>js/cass/cass.import.js</jsSourceFile>
+								<jsSourceFile>js/cass/cass.rollup.js</jsSourceFile>
 								<jsSourceFile>js/util.js</jsSourceFile>
 								<jsSourceFile>js/server.js</jsSourceFile>
 								<jsSourceFile>js/editFramework.js</jsSourceFile>
