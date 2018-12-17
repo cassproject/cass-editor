@@ -815,7 +815,7 @@ copyCompetencies = function (results) {
                 if (r.source != r.target) {
                     framework.addRelation(r.id);
                     framework["schema:dateModified"] = new Date().toISOString();
-                    EcArray.setRemove(results, r.source);
+                    EcArray.setRemove(results, thing.source);
                     itemsSaving++;
                     (function (r) {
                         Task.asyncImmediate(function (callback) {
