@@ -1381,21 +1381,21 @@ $('html').keydown(function (evt) {
 		}
 		return;
 	}
-	if ($('.introjsFloatingElement').is(':visible') || $(window.parent.document.getElementsByClassName('introjs-overlay')[0]).is(':visible')) {
+	if ($('.hopscotch-bubble').is(':visible')) {
 		//Custom tabbing for tour buttons
 		if (evt.which === 9) {
 			evt.preventDefault();
-			if ($('.introjs-nextbutton').is(':focus')) {
-				$('.introjs-skipbutton').focus();
+			if ($('.hopscotch-nav-button.next').is(':focus')) {
+				$('.hopscotch-bubble-close').focus();
 			} else {
-				$('.introjs-nextbutton').focus();
+				$('.hopscotch-nav-button.next').focus();
 			}
 		}
 		if (evt.which === 13) {
-			if ($('.introjs-skipbutton').is(':focus')) {
-				$('.introjs-skipbutton').click();
-			} else if ($('.introjs-nextbutton').is(':focus')) {
-				$('.introjs-nextbutton').click();
+			if ($('.hopscotch-bubble-close').is(':focus')) {
+				$('.hopscotch-bubble-close').click();
+			} else if ($('.hopscotch-nav-button.next').is(':focus')) {
+				$('.hopscotch-nav-button.next').click();
 			}
 		}
 		return;

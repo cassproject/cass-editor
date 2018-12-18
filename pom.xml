@@ -107,7 +107,7 @@
 								<cssSourceFile>css/jquery-ui.min.css</cssSourceFile>
 								<cssSourceFile>css/jquery-ui.structure.min.css</cssSourceFile>
 								<cssSourceFile>css/font-awesome.min.css</cssSourceFile>
-								<cssSourceFile>css/introjs.min.css</cssSourceFile>
+								<cssSourceFile>css/hopscotch.min.css</cssSourceFile>
 								<cssSourceFile>css/dashboard.css</cssSourceFile>
 								<cssSourceFile>css/viewFrameworks.css</cssSourceFile>
 								<cssSourceFile>css/viewFramework.css</cssSourceFile>
@@ -117,7 +117,7 @@
 							<jsSourceFiles>
 								<jsSourceFile>js/vendor/jquery-3.2.1.min.js</jsSourceFile>
 								<jsSourceFile>js/vendor/jquery-ui.min.js</jsSourceFile>
-								<jsSourceFile>js/vendor/intro.min.js</jsSourceFile>
+								<jsSourceFile>js/vendor/hopscotch.min.js</jsSourceFile>
 								<jsSourceFile>js/vendor/jquery.mark.min.js</jsSourceFile>
 								<jsSourceFile>js/vendor/uuid.js</jsSourceFile>
 								<jsSourceFile>forge/forge.min.js</jsSourceFile>

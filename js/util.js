@@ -224,110 +224,92 @@ highlightSelected = function (element) {
 	$(element).addClass('selected');
 }
 
-var tourSkipAhead = false;
 startTour = function (step) {
 	//Scroll to top of the frameworks list before starting the tour.
 	$('#frameworks').scrollTop(0);
 	localStorage.setItem('tourStatus', 'in progress');
-	var intro = introJs();
 	var frameworkTerm = conceptMode ? 'concept scheme' : 'framework';
 	var competencyTerm = conceptMode ? 'concept' : 'competency';
 	var frameworkTermPlural = conceptMode ? 'concept schemes' : 'frameworks';
 	var competencyTermPlural = conceptMode ? 'concepts' : 'competencies';
-	intro.setOptions({
+	var tour = {
+		id: "welcomeTour",
 		steps: [
 			{
-				element: $('#header')[0],
-				intro: 'You can search for a particular ' + frameworkTerm + ' here.'
-            },
-			{
-				element: $('#header > #importButton')[0],
-				intro: 'Clicking here will let you import a ' + frameworkTerm + '.'
-            },
-			{
-				element: $('#createNewButton')[0],
-				intro: 'Or you can click here to create a brand new ' + frameworkTerm + '.'
-            },
-			{
-				element: $('#frameworks').children(':first')[0],
-				intro: 'You can click on a ' + frameworkTerm + ' for more information.'
-            },
-			{
-				element: $('#frameworkNameContainer')[0],
-				intro: 'This displays the current ' + frameworkTerm + ', you can click here to view more details about the ' + frameworkTerm + ' itself.'
-            },
-			{
-				element: $('#tree').children(':first')[0],
-				intro: 'You can click a ' + competencyTerm + ' for more information. If you have permission to edit the ' + frameworkTerm + ', you can also drag and drop ' + competencyTermPlural + ' to rearrange them.'
-            },
-			{
-				element: $('#detailSlider')[0],
-				intro: 'This panel will list the properties of the selected ' + frameworkTerm + ' or ' + competencyTerm + '. Additionally, you can add new ' + competencyTermPlural + ' or edit these properties here.'
-            }
-        ],
-		showStepNumbers: false,
-		disableInteraction: true,
-		hideNext: true,
-		exitOnOverlayClick: false,
-		keyboardNavigation: false
-	});
-
-	intro.oncomplete(function () {
-		//This gets called on start for some reason, so don't let it do anything when that happens
-		if (this._currentStep === 0)
-			return;
-		cancelTour();
-		selectedCompetency = null;
-		$('#editFrameworkBack').click();
-	});
-
-	intro.onafterchange(function () {
-		$('.introjs-prevbutton').hide();
-		$('.introjs-bullets').hide();
-		$('.introjs-skipbutton').attr('tabindex', '2');
-		$('.introjs-nextbutton').attr('tabindex', '1');
-		if (tourSkipAhead === false && this._currentStep === 4) {
-			$('.introjs-skipbutton').click();
-			$('#frameworks').children(':first').click();
-			//Create a poll that waits for the framework to finish loading, then start the next step.
-			tourWaitForLoad = setInterval(function () {
-				if ($('#frameworkNameContainer').is(':visible')) {
-					clearInterval(tourWaitForLoad);
-					tourSkipAhead = true;
-					startTour(5);
+				target: $('#header')[0],
+				content: 'You can search for a particular ' + frameworkTerm + ' here.',
+				placement: "bottom",
+				onNext: function() {
+					//If concept mode, skip this step
+					if (conceptMode)
+						hopscotch.showStep(2);
 				}
-			}, 1000);
-		} else if (this._currentStep === 6) {
-			$('#tree').children(':first').click();
-		} else if (tourSkipAhead === false && this._currentStep === 3) {
-			//If there are no frameworks, start creating a new one to continue the tour
-			if ($('#frameworks').children(':first')[0].tagName === 'CENTER') {
-				$('.introjs-skipbutton').click();
-				$('#createNewButton').click();
-				//Polling again
-				tourWaitForLoad = setInterval(function () {
-					if ($('#frameworkNameContainer').is(':visible')) {
-						clearInterval(tourWaitForLoad);
-						tourSkipAhead = true;
-						startTour(5);
+			},
+			{
+				target: $('#header > #importButton')[0],
+				content: 'Clicking here will let you import a ' + frameworkTerm + '.',
+				placement: "left"
+            },
+			{
+				target: $('#createNewButton')[0],
+				content: 'Or you can click here to create a brand new ' + frameworkTerm + '.',
+				placement: "left",
+				onNext: function() {
+					//If there are no frameworks, start creating a new one to continue the tour
+					if ($('#frameworks').children(':first')[0].tagName === 'CENTER') {
+						$('#createNewButton').click();
+						hopscotch.showStep(4);
 					}
-				}, 1000);
-			}
-		} else if (this._currentStep === 5) {
-			//If no competencies, skip this step
-			if ($('#tree').children(':first')[0].tagName === 'BR')
-				intro.nextStep();
-		} else if (this._currentStep === 1) {
-			//If concept mode, skip this step
-			if (conceptMode)
-				intro.nextStep();
-		}
-	});
+				}
+            },
+			{
+				target: $('#frameworks').children(':first')[0],
+				content: 'You can click on a ' + frameworkTerm + ' for more information.',
+				placement: "bottom",
+				onNext: function() {
+					$('#frameworks').children(':first').click();
+				}
+            },
+			{
+				target: $('#frameworkNameContainer')[0],
+				content: 'This displays the current ' + frameworkTerm + ', you can click here to view more details about the ' + frameworkTerm + ' itself.',
+				placement: "bottom",
+				delay: 1500,
+				onNext: function() {
+					//If no competencies, skip next step
+					if ($('#tree').children(':first')[0].tagName === 'BR') {
+						hopscotch.showStep(6);
+					}
+				},
+            },
+			{
+				target: 'li.competency',
+				content: 'You can click a ' + competencyTerm + ' for more information. If you have permission to edit the ' + frameworkTerm + ', you can also drag and drop ' + competencyTermPlural + ' to rearrange them.',
+				placement: "bottom",
+            },
+			{
+				target: 'div.detailSliderView',
+				content: 'This panel will list the properties of the selected ' + frameworkTerm + ' or ' + competencyTerm + '. Additionally, you can add new ' + competencyTermPlural + ' or edit these properties here.',
+				placement: "left",
+				onShow: function() {
+					$('#tree').children(':first').click();
+				}
+            }
+		],
+		onEnd: function() {
+			cancelTour();
+			selectedCompetency = null;
+			$('#editFrameworkBack').click();
+		},
+		onClose: function() {
+			cancelTour();
+			selectedCompetency = null;
+			if ($('#editFrameworkBack'))
+				$('#editFrameworkBack').click();
+		},
+	};
 
-	if (step !== null)
-		intro.goToStepNumber(step).start();
-	else
-		intro.start();
+	hopscotch.startTour(tour);
 }
 
 cancelTour = function () {
