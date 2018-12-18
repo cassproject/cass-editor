@@ -1,34 +1,514 @@
-var PapCompetencyPrediction = function() {};
-PapCompetencyPrediction = stjs.extend(PapCompetencyPrediction, null, [], function(constructor, prototype) {
-    prototype.competencyId = null;
-    prototype.confidence = 0.0;
-    prototype.conflictLevel = 0.0;
-    prototype.conflictClass = null;
-    prototype.getCompetencyId = function() {
-        return this.competencyId;
+var NodePacket = function() {
+    this.nodeList = new Array();
+    this.nodeMap = {};
+};
+NodePacket = stjs.extend(NodePacket, null, [], function(constructor, prototype) {
+    prototype.nodeList = null;
+    prototype.nodeMap = null;
+    prototype.getNodeList = function() {
+        return this.nodeList;
     };
-    prototype.setCompetencyId = function(competencyId) {
-        this.competencyId = competencyId;
+    prototype.setNodeList = function(nodeList) {
+        this.nodeList = nodeList;
     };
-    prototype.getConfidence = function() {
-        return this.confidence;
+    prototype.getNodeCount = function() {
+        return this.nodeList.length;
     };
-    prototype.setConfidence = function(confidence) {
-        this.confidence = confidence;
+    prototype.addNode = function(n) {
+        if (this.nodeMap[n.getId()] == null) {
+            this.nodeList.push(n);
+            this.nodeMap[n.getId()] = n;
+        }
     };
-    prototype.getConflictLevel = function() {
-        return this.conflictLevel;
+    prototype.toString = function() {
+        var ret = "";
+        ret = ret + "NodePacket: (";
+        for (var i = 0; i < this.nodeList.length; i++) {
+            if ((i + 1) < this.nodeList.length) 
+                ret = ret + this.nodeList[i].toString() + ", ";
+             else 
+                ret = ret + this.nodeList[i].toString();
+        }
+        ret = ret + ")";
+        return ret;
     };
-    prototype.setConflictLevel = function(conflictLevel) {
-        this.conflictLevel = conflictLevel;
+}, {nodeList: {name: "Array", arguments: ["Node"]}, nodeMap: {name: "Map", arguments: [null, "Node"]}}, {});
+var Node = function(nameId) {
+    this.name = nameId;
+    this.id = nameId;
+};
+Node = stjs.extend(Node, null, [], function(constructor, prototype) {
+    prototype.name = null;
+    prototype.id = null;
+    prototype.description = null;
+    prototype.getName = function() {
+        return this.name;
     };
-    prototype.getConflictClass = function() {
-        return this.conflictClass;
+    prototype.setName = function(name) {
+        this.name = name;
     };
-    prototype.setConflictClass = function(conflictClass) {
-        this.conflictClass = conflictClass;
+    prototype.getId = function() {
+        return this.id;
+    };
+    prototype.setId = function(id) {
+        this.id = id;
+    };
+    prototype.getDescription = function() {
+        return this.description;
+    };
+    prototype.setDescription = function(description) {
+        this.description = description;
+    };
+    prototype.toString = function() {
+        return "Node: \"" + this.id + "\"";
     };
 }, {}, {});
+var RollupRuleInterface = function(input, processor) {
+    var chars = new antlr4.InputStream(input);
+    var lexer = new RollupLexer.RollupLexer(chars);
+    var tokens = new antlr4.CommonTokenStream(lexer);
+    this.parser = new RollupParser.RollupParser(tokens);
+    this.parser.buildParseTrees = true;
+    this.listener = new RollupListener.RollupListener();
+    this.processor = processor;
+    var me = this;
+    this.listener.enterS = function(ctx) {
+        me.processor.enterS(ctx);
+    };
+    this.listener.exitS = function(ctx) {
+        me.processor.exitS(ctx);
+        me.success(true);
+    };
+    this.listener.exitToken = function(ctx) {
+        me.processor.exitToken(ctx);
+    };
+    this.listener.enterQuery = function(ctx) {
+        me.processor.enterQuery(ctx);
+    };
+    this.listener.exitQuery = function(ctx) {
+        me.processor.exitQuery(ctx);
+    };
+    this.listener.exitInnerquery = function(ctx) {
+        me.processor.exitInnerquery(ctx);
+    };
+    this.listener.exitLogical_or_math_operator = function(ctx) {
+        me.processor.exitLogical_or_math_operator(ctx);
+    };
+    this.parser.addParseListener(this.listener);
+};
+RollupRuleInterface = stjs.extend(RollupRuleInterface, null, [], function(constructor, prototype) {
+    prototype.logFunction = null;
+    prototype.success = null;
+    prototype.failure = null;
+    prototype.listener = null;
+    prototype.parser = null;
+    prototype.processor = null;
+    prototype.go = function() {
+        this.processor.logFunction = this.logFunction;
+        this.processor.success = this.success;
+        this.processor.failure = this.failure;
+        this.parser.s();
+    };
+}, {logFunction: {name: "Callback1", arguments: ["Object"]}, success: {name: "Callback1", arguments: [null]}, failure: {name: "Callback1", arguments: [null]}, listener: "RollupListener.RollupListener", parser: "RollupParser.RollupParser", processor: "RollupRuleProcessor"}, {});
+/**
+ *  Created by fray on 5/30/17.
+ */
+var AssertionCoprocessor = function() {};
+AssertionCoprocessor = stjs.extend(AssertionCoprocessor, null, [], function(constructor, prototype) {
+    prototype.assertionProcessor = null;
+    prototype.collectAssertions = function(ip, listOfCompetencies, success) {
+        success(new Array());
+    };
+    prototype.mutateAssertions = function(ip, listOfCompetencies, success) {
+        success();
+    };
+}, {assertionProcessor: "AssertionProcessor"}, {});
+/**
+ *  Data structure used to hold data relevant to a request to determine the competence of an individual.
+ *  (hereafter, "Inquiry")
+ * 
+ *  @author fritz.ray@eduworks.com
+ *  @author tom.buskirk@eduworks.com
+ *  @class InquiryPacket
+ *  @module org.cassproject
+ */
+var InquiryPacket = /**
+ *  Create an InquiryPacket.
+ * 
+ *  @param {EcPk[]}                  subject Public keys of the individual to retreive assertions about.
+ *  @param {EcCompetency}            competency Competency that the inquiry is made about.
+ *  @param {EcLevel}                 level Level of the competency.
+ *  @param {EcFramework}             context Framework to provide boundaries for the inquiry within.
+ *  @param {function(InquiryPacket)} success Method to call when a result has been reached.
+ *  @param {function(string)}        failure Method to call if the inquiry fails.
+ *  @param {string}                  rule For rollup rules, this is a search used to populate this inquiry packet.
+ *  @param {IPType}                  type The type of this inquiry packet. May be competency, rollup rule, or relation.
+ *  @constructor
+ */
+function(subject, competency, level, context, success, failure, rule, type) {
+    this.positive = new Array();
+    this.negative = new Array();
+    this.equivalentPackets = new Array();
+    this.subPackets = new Array();
+    this.dateCreated = new Date().getTime();
+    this.subject = subject;
+    this.competency = new Array();
+    if (competency != null) 
+        this.competency.push(competency);
+    this.level = new Array();
+    if (level != null) 
+        this.level.push(level);
+    this.context = context;
+    this.success = success;
+    this.failure = failure;
+    this.rule = rule;
+    this.type = type;
+    this.result = null;
+    this.log = "";
+};
+InquiryPacket = stjs.extend(InquiryPacket, null, [], function(constructor, prototype) {
+    prototype.root = false;
+    /**
+     *  One or more identifiers that identify an individual.
+     * 
+     *  @property subject
+     *  @type EcPk[]
+     */
+    prototype.subject = null;
+    /**
+     *  Competency that this packet is inquiring about.
+     *  May be multiple competencies that are either collapsed due to an inference loop, or are equivalent to one another.
+     * 
+     *  @property competency
+     *  @type EcCompetency[]
+     */
+    prototype.competency = null;
+    /**
+     *  Framework that this inquiry is scoped to.
+     * 
+     *  @property context
+     *  @type EcFramework
+     */
+    prototype.context = null;
+    /**
+     *  Callback when this and all child inquiries have successfully reached a conclusion.
+     * 
+     *  @property success
+     *  @type function(InquiryPacket)
+     */
+    prototype.success = null;
+    /**
+     *  Callback if this inquiry requires additional information to proceed.
+     * 
+     *  @property ask
+     *  @type string function(string)
+     */
+    prototype.ask = null;
+    /**
+     *  Callback if this inquiry fails.
+     * 
+     *  @property failure
+     *  @type function(string)
+     */
+    prototype.failure = null;
+    /**
+     *  Level that the competency is being measured at.
+     *  May have multiple levels referring to multiple competencies due to cycles or equivalence.
+     * 
+     *  @property level
+     *  @type EcLevel[]
+     */
+    prototype.level = null;
+    /**
+     *  Packets that are equivalent to this packet. May be used when equivalence is best represented with additional packets.
+     * 
+     *  @property equivalentPackets
+     *  @type InquiryPacket[]
+     */
+    prototype.equivalentPackets = null;
+    /**
+     *  Packets that assist in determining the state of this packet.
+     * 
+     *  @property subPackets
+     *  @type InquiryPacket[]
+     */
+    prototype.subPackets = null;
+    /**
+     *  Datetime representing when this packet was created.
+     * 
+     *  @property dateCreated
+     *  @internal
+     *  @type number
+     */
+    prototype.dateCreated = 0.0;
+    /**
+     *  Mark true when assertions have been retrieved for this packet.
+     * 
+     *  @property hasCheckedAssertionsForCompetency
+     *  @type boolean
+     */
+    prototype.hasCheckedAssertionsForCompetency = false;
+    /**
+     *  Mark true when rollup rules have been processed for this packet.
+     * 
+     *  @property hasCheckedRollupRulesForCompetency
+     *  @type boolean
+     */
+    prototype.hasCheckedRollupRulesForCompetency = false;
+    /**
+     *  Mark true when relations have been processed for this packet.
+     * 
+     *  @property hasCheckedRelationshipsForCompetency
+     *  @type boolean
+     */
+    prototype.hasCheckedRelationshipsForCompetency = false;
+    /**
+     *  Async counter to keep track of number of unresolved processes.
+     * 
+     *  @property numberOfQueriesRunning
+     *  @type integer
+     */
+    prototype.numberOfQueriesRunning = 0;
+    /**
+     *  Local log for this inquiry packet.
+     * 
+     *  @property log
+     *  @type string
+     */
+    prototype.log = null;
+    /**
+     *  Assertions (direct or indirect) that contribute to a positive result.
+     * 
+     *  @property positive
+     *  @type EcAssertion[]
+     */
+    prototype.positive = null;
+    /**
+     *  Assertions (direct or indirect) that contribute to a negative result.
+     * 
+     *  @property negative
+     *  @type EcAssertion[]
+     */
+    prototype.negative = null;
+    /**
+     *  Set to true if this packet has completed processing.
+     * 
+     *  @property finished
+     *  @type boolean
+     */
+    prototype.finished = false;
+    /**
+     *  Set to true if this packet has finished stage one.
+     * 
+     *  @property stageOneFinished
+     *  @type boolean
+     */
+    prototype.stageOneComplete = false;
+    /**
+     *  Type of inquiry packet. Inquiry packets can represent relational logic, rollup logic or competencies.
+     * 
+     *  @property type
+     *  @type IPType
+     */
+    prototype.type = null;
+    /**
+     *  Rollup Rule search string. (if IPType == ROLLUPRULE)
+     * 
+     *  @property rule
+     *  @type string
+     */
+    prototype.rule = null;
+    /**
+     *  Result as a ResultType. ResultType is an autogenerated Enum object, and result._name may match "TRUE", "FALSE", "UNKNOWN", "INDETERMINANT"
+     * 
+     *  @property result
+     *  @type ResultType
+     */
+    prototype.result = null;
+    prototype.getContext = function() {
+        return this.context;
+    };
+    /**
+     *  Returns true if any child packets have an indeterminate result.
+     * 
+     *  @return {boolean}
+     *  @method anyIndeterminantChildPackets
+     */
+    prototype.anyIndeterminantChildPackets = function() {
+        for (var i = 0; i < this.equivalentPackets.length; i++) {
+            if (InquiryPacket.ResultType.INDETERMINANT.equals(this.equivalentPackets[i].result)) 
+                return true;
+        }
+        for (var i = 0; i < this.subPackets.length; i++) {
+            if (InquiryPacket.ResultType.INDETERMINANT.equals(this.subPackets[i].result)) 
+                return true;
+        }
+        return false;
+    };
+    /**
+     *  Returns true if all child packets have unknown results.
+     * 
+     *  @return {boolean}
+     *  @method allChildPacketsUnknown
+     */
+    prototype.allChildPacketsUnknown = function() {
+        for (var i = 0; i < this.equivalentPackets.length; i++) {
+            if (!InquiryPacket.ResultType.UNKNOWN.equals(this.equivalentPackets[i].result)) 
+                return false;
+        }
+        for (var i = 0; i < this.subPackets.length; i++) {
+            if (!InquiryPacket.ResultType.UNKNOWN.equals(this.subPackets[i].result)) 
+                return false;
+        }
+        return true;
+    };
+    /**
+     *  Returns true if all child packets have unknown results.
+     * 
+     *  @return {boolean}
+     *  @method allChildPacketsUnknown
+     */
+    prototype.allChildPacketsAreTrue = function() {
+        for (var i = 0; i < this.equivalentPackets.length; i++) {
+            if (!InquiryPacket.ResultType.TRUE.equals(this.equivalentPackets[i].result)) 
+                return false;
+        }
+        for (var i = 0; i < this.subPackets.length; i++) {
+            if (!InquiryPacket.ResultType.TRUE.equals(this.subPackets[i].result)) 
+                return false;
+        }
+        return true;
+    };
+    /**
+     *  Returns true if any child packets have false results.
+     * 
+     *  @return {boolean}
+     *  @method anyChildPacketsAreFalse
+     */
+    prototype.anyChildPacketsAreFalse = function() {
+        for (var i = 0; i < this.equivalentPackets.length; i++) {
+            if (InquiryPacket.ResultType.FALSE.equals(this.equivalentPackets[i].result)) 
+                return true;
+        }
+        for (var i = 0; i < this.subPackets.length; i++) {
+            if (InquiryPacket.ResultType.FALSE.equals(this.subPackets[i].result)) 
+                return true;
+        }
+        return false;
+    };
+    /**
+     *  Returns true if any child packets have unknown results.
+     * 
+     *  @return {boolean}
+     *  @method anyChildPacketsAreUnknown
+     */
+    prototype.anyChildPacketsAreUnknown = function() {
+        for (var i = 0; i < this.equivalentPackets.length; i++) {
+            if (InquiryPacket.ResultType.UNKNOWN.equals(this.equivalentPackets[i].result)) 
+                return true;
+        }
+        for (var i = 0; i < this.subPackets.length; i++) {
+            if (InquiryPacket.ResultType.UNKNOWN.equals(this.subPackets[i].result)) 
+                return true;
+        }
+        return false;
+    };
+    /**
+     *  Returns true if any child packets have true results.
+     * 
+     *  @return {boolean}
+     *  @method anyChildPacketsAreTrue
+     */
+    prototype.anyChildPacketsAreTrue = function() {
+        for (var i = 0; i < this.equivalentPackets.length; i++) {
+            if (InquiryPacket.ResultType.TRUE.equals(this.equivalentPackets[i].result)) 
+                return true;
+        }
+        for (var i = 0; i < this.subPackets.length; i++) {
+            if (InquiryPacket.ResultType.TRUE.equals(this.subPackets[i].result)) 
+                return true;
+        }
+        return false;
+    };
+    /**
+     *  Returns true if all equivalent packets have unknown results.
+     * 
+     *  @return {boolean}
+     *  @method allEquivalentPacketsUnknown
+     */
+    prototype.allEquivalentPacketsUnknown = function() {
+        for (var i = 0; i < this.equivalentPackets.length; i++) {
+            if (!InquiryPacket.ResultType.UNKNOWN.equals(this.equivalentPackets[i].result)) 
+                return false;
+        }
+        return true;
+    };
+    /**
+     *  Returns true if all equivalent packets have the true or unknown result.
+     * 
+     *  @return {boolean}
+     *  @method allEquivalentPacketsTrueOrUnknown
+     */
+    prototype.allEquivalentPacketsTrueOrUnknown = function() {
+        for (var i = 0; i < this.equivalentPackets.length; i++) {
+            if (InquiryPacket.ResultType.FALSE.equals(this.equivalentPackets[i].result) || InquiryPacket.ResultType.INDETERMINANT.equals(this.equivalentPackets[i].result)) 
+                return false;
+        }
+        return true;
+    };
+    /**
+     *  Returns true if all sub packets have the true or unknown result.
+     * 
+     *  @return {boolean}
+     *  @method allSubPacketsTrueOrUnknown
+     */
+    prototype.allSubPacketsTrueOrUnknown = function() {
+        for (var i = 0; i < this.subPackets.length; i++) {
+            if (InquiryPacket.ResultType.FALSE.equals(this.subPackets[i].result) || InquiryPacket.ResultType.INDETERMINANT.equals(this.subPackets[i].result)) 
+                return false;
+        }
+        return true;
+    };
+    /**
+     *  Returns true if all equivalent packets have the false or unknown result.
+     * 
+     *  @return {boolean}
+     *  @method allEquivalentPacketsFalseOrUnknown
+     */
+    prototype.allEquivalentPacketsFalseOrUnknown = function() {
+        for (var i = 0; i < this.equivalentPackets.length; i++) {
+            if (InquiryPacket.ResultType.TRUE.equals(this.equivalentPackets[i].result) || InquiryPacket.ResultType.INDETERMINANT.equals(this.equivalentPackets[i].result)) 
+                return false;
+        }
+        return true;
+    };
+    /**
+     *  Returns true if all sub packets have the false or unknown result.
+     * 
+     *  @return
+     */
+    prototype.allSubPacketsFalseOrUnknown = function() {
+        for (var i = 0; i < this.subPackets.length; i++) {
+            if (InquiryPacket.ResultType.TRUE.equals(this.subPackets[i].result) || InquiryPacket.ResultType.INDETERMINANT.equals(this.subPackets[i].result)) 
+                return false;
+        }
+        return true;
+    };
+    /**
+     *  Returns true if the provided ID represents a competency in this packet.
+     * 
+     *  @param competencyId
+     *  @return
+     */
+    prototype.hasId = function(competencyId) {
+        for (var i = 0; i < this.competency.length; i++) 
+            if (this.competency[i].isId(competencyId)) 
+                return true;
+        return false;
+    };
+    constructor.IPType = stjs.enumeration("COMPETENCY", "ROLLUPRULE", "RELATION_AND", "RELATION_OR", "RELATION_NARROWS", "RELATION_BROADENS", "RELATION_REQUIRES", "RELATION_ISREQUIREDBY");
+    constructor.ResultType = stjs.enumeration("TRUE", "FALSE", "UNKNOWN", "INDETERMINANT");
+}, {subject: {name: "Array", arguments: ["EcPk"]}, competency: {name: "Array", arguments: ["EcCompetency"]}, context: "EcFramework", success: {name: "Callback1", arguments: ["InquiryPacket"]}, ask: {name: "Function1", arguments: [null, null]}, failure: {name: "Callback1", arguments: [null]}, level: {name: "Array", arguments: ["EcLevel"]}, equivalentPackets: {name: "Array", arguments: ["InquiryPacket"]}, subPackets: {name: "Array", arguments: ["InquiryPacket"]}, positive: {name: "Array", arguments: ["EcAssertion"]}, negative: {name: "Array", arguments: ["EcAssertion"]}, type: {name: "Enum", arguments: ["InquiryPacket.IPType"]}, result: {name: "Enum", arguments: ["InquiryPacket.ResultType"]}}, {});
 var PapDependencyParms = function() {};
 PapDependencyParms = stjs.extend(PapDependencyParms, null, [], function(constructor, prototype) {
     prototype.parentIndex = null;
@@ -460,6 +940,25 @@ PapUpdate = stjs.extend(PapUpdate, null, [], function(constructor, prototype) {
         this.positive = positive;
     };
 }, {visited: {name: "Array", arguments: [null]}}, {});
+var RelationType = function() {};
+RelationType = stjs.extend(RelationType, null, [], function(constructor, prototype) {
+    constructor.RELATION_TYPE = stjs.enumeration("IS_EQUIVALENT_TO", "NARROWS", "BROADENS", "REQUIRES", "IS_REQUIRED_BY");
+}, {}, {});
+var ExceptionReturn = function(errorMessage) {
+    this.errorMessage = errorMessage;
+};
+ExceptionReturn = stjs.extend(ExceptionReturn, null, [], function(constructor, prototype) {
+    prototype.errorMessage = null;
+    prototype.getErrorMessage = function() {
+        return this.errorMessage;
+    };
+    prototype.setErrorMessage = function(errorMessage) {
+        this.errorMessage = errorMessage;
+    };
+    prototype.getJsonString = function() {
+        return JSON.stringify(this);
+    };
+}, {}, {});
 var PapDependencyDefinitionBase = function(depClass, reverse, weight, leak) {
     this.depClass = depClass;
     this.reverse = reverse;
@@ -496,640 +995,37 @@ PapDependencyDefinitionBase = stjs.extend(PapDependencyDefinitionBase, null, [],
         this.leak = leak;
     };
 }, {}, {});
-/**
- *  Data structure used to hold data relevant to a request to determine the competence of an individual.
- *  (hereafter, "Inquiry")
- * 
- *  @author fritz.ray@eduworks.com
- *  @author tom.buskirk@eduworks.com
- *  @class InquiryPacket
- *  @module org.cassproject
- */
-var InquiryPacket = /**
- *  Create an InquiryPacket.
- * 
- *  @param {EcPk[]}                  subject Public keys of the individual to retreive assertions about.
- *  @param {EcCompetency}            competency Competency that the inquiry is made about.
- *  @param {EcLevel}                 level Level of the competency.
- *  @param {EcFramework}             context Framework to provide boundaries for the inquiry within.
- *  @param {function(InquiryPacket)} success Method to call when a result has been reached.
- *  @param {function(string)}        failure Method to call if the inquiry fails.
- *  @param {string}                  rule For rollup rules, this is a search used to populate this inquiry packet.
- *  @param {IPType}                  type The type of this inquiry packet. May be competency, rollup rule, or relation.
- *  @constructor
- */
-function(subject, competency, level, context, success, failure, rule, type) {
-    this.positive = new Array();
-    this.negative = new Array();
-    this.equivalentPackets = new Array();
-    this.subPackets = new Array();
-    this.dateCreated = new Date().getTime();
-    this.subject = subject;
-    this.competency = new Array();
-    if (competency != null) 
-        this.competency.push(competency);
-    this.level = new Array();
-    if (level != null) 
-        this.level.push(level);
-    this.context = context;
-    this.success = success;
-    this.failure = failure;
-    this.rule = rule;
-    this.type = type;
-    this.result = null;
-    this.log = "";
-};
-InquiryPacket = stjs.extend(InquiryPacket, null, [], function(constructor, prototype) {
-    prototype.root = false;
-    /**
-     *  One or more identifiers that identify an individual.
-     * 
-     *  @property subject
-     *  @type EcPk[]
-     */
-    prototype.subject = null;
-    /**
-     *  Competency that this packet is inquiring about.
-     *  May be multiple competencies that are either collapsed due to an inference loop, or are equivalent to one another.
-     * 
-     *  @property competency
-     *  @type EcCompetency[]
-     */
-    prototype.competency = null;
-    /**
-     *  Framework that this inquiry is scoped to.
-     * 
-     *  @property context
-     *  @type EcFramework
-     */
-    prototype.context = null;
-    /**
-     *  Callback when this and all child inquiries have successfully reached a conclusion.
-     * 
-     *  @property success
-     *  @type function(InquiryPacket)
-     */
-    prototype.success = null;
-    /**
-     *  Callback if this inquiry requires additional information to proceed.
-     * 
-     *  @property ask
-     *  @type string function(string)
-     */
-    prototype.ask = null;
-    /**
-     *  Callback if this inquiry fails.
-     * 
-     *  @property failure
-     *  @type function(string)
-     */
-    prototype.failure = null;
-    /**
-     *  Level that the competency is being measured at.
-     *  May have multiple levels referring to multiple competencies due to cycles or equivalence.
-     * 
-     *  @property level
-     *  @type EcLevel[]
-     */
-    prototype.level = null;
-    /**
-     *  Packets that are equivalent to this packet. May be used when equivalence is best represented with additional packets.
-     * 
-     *  @property equivalentPackets
-     *  @type InquiryPacket[]
-     */
-    prototype.equivalentPackets = null;
-    /**
-     *  Packets that assist in determining the state of this packet.
-     * 
-     *  @property subPackets
-     *  @type InquiryPacket[]
-     */
-    prototype.subPackets = null;
-    /**
-     *  Datetime representing when this packet was created.
-     * 
-     *  @property dateCreated
-     *  @internal
-     *  @type number
-     */
-    prototype.dateCreated = 0.0;
-    /**
-     *  Mark true when assertions have been retrieved for this packet.
-     * 
-     *  @property hasCheckedAssertionsForCompetency
-     *  @type boolean
-     */
-    prototype.hasCheckedAssertionsForCompetency = false;
-    /**
-     *  Mark true when rollup rules have been processed for this packet.
-     * 
-     *  @property hasCheckedRollupRulesForCompetency
-     *  @type boolean
-     */
-    prototype.hasCheckedRollupRulesForCompetency = false;
-    /**
-     *  Mark true when relations have been processed for this packet.
-     * 
-     *  @property hasCheckedRelationshipsForCompetency
-     *  @type boolean
-     */
-    prototype.hasCheckedRelationshipsForCompetency = false;
-    /**
-     *  Async counter to keep track of number of unresolved processes.
-     * 
-     *  @property numberOfQueriesRunning
-     *  @type integer
-     */
-    prototype.numberOfQueriesRunning = 0;
-    /**
-     *  Local log for this inquiry packet.
-     * 
-     *  @property log
-     *  @type string
-     */
-    prototype.log = null;
-    /**
-     *  Assertions (direct or indirect) that contribute to a positive result.
-     * 
-     *  @property positive
-     *  @type EcAssertion[]
-     */
-    prototype.positive = null;
-    /**
-     *  Assertions (direct or indirect) that contribute to a negative result.
-     * 
-     *  @property negative
-     *  @type EcAssertion[]
-     */
-    prototype.negative = null;
-    /**
-     *  Set to true if this packet has completed processing.
-     * 
-     *  @property finished
-     *  @type boolean
-     */
-    prototype.finished = false;
-    /**
-     *  Set to true if this packet has finished stage one.
-     * 
-     *  @property stageOneFinished
-     *  @type boolean
-     */
-    prototype.stageOneComplete = false;
-    /**
-     *  Type of inquiry packet. Inquiry packets can represent relational logic, rollup logic or competencies.
-     * 
-     *  @property type
-     *  @type IPType
-     */
-    prototype.type = null;
-    /**
-     *  Rollup Rule search string. (if IPType == ROLLUPRULE)
-     * 
-     *  @property rule
-     *  @type string
-     */
-    prototype.rule = null;
-    /**
-     *  Result as a ResultType. ResultType is an autogenerated Enum object, and result._name may match "TRUE", "FALSE", "UNKNOWN", "INDETERMINANT"
-     * 
-     *  @property result
-     *  @type ResultType
-     */
-    prototype.result = null;
-    prototype.getContext = function() {
-        return this.context;
+var PapCompetencyPrediction = function() {};
+PapCompetencyPrediction = stjs.extend(PapCompetencyPrediction, null, [], function(constructor, prototype) {
+    prototype.competencyId = null;
+    prototype.confidence = 0.0;
+    prototype.conflictLevel = 0.0;
+    prototype.conflictClass = null;
+    prototype.getCompetencyId = function() {
+        return this.competencyId;
     };
-    /**
-     *  Returns true if any child packets have an indeterminate result.
-     * 
-     *  @return {boolean}
-     *  @method anyIndeterminantChildPackets
-     */
-    prototype.anyIndeterminantChildPackets = function() {
-        for (var i = 0; i < this.equivalentPackets.length; i++) {
-            if (InquiryPacket.ResultType.INDETERMINANT.equals(this.equivalentPackets[i].result)) 
-                return true;
-        }
-        for (var i = 0; i < this.subPackets.length; i++) {
-            if (InquiryPacket.ResultType.INDETERMINANT.equals(this.subPackets[i].result)) 
-                return true;
-        }
-        return false;
+    prototype.setCompetencyId = function(competencyId) {
+        this.competencyId = competencyId;
     };
-    /**
-     *  Returns true if all child packets have unknown results.
-     * 
-     *  @return {boolean}
-     *  @method allChildPacketsUnknown
-     */
-    prototype.allChildPacketsUnknown = function() {
-        for (var i = 0; i < this.equivalentPackets.length; i++) {
-            if (!InquiryPacket.ResultType.UNKNOWN.equals(this.equivalentPackets[i].result)) 
-                return false;
-        }
-        for (var i = 0; i < this.subPackets.length; i++) {
-            if (!InquiryPacket.ResultType.UNKNOWN.equals(this.subPackets[i].result)) 
-                return false;
-        }
-        return true;
+    prototype.getConfidence = function() {
+        return this.confidence;
     };
-    /**
-     *  Returns true if all child packets have unknown results.
-     * 
-     *  @return {boolean}
-     *  @method allChildPacketsUnknown
-     */
-    prototype.allChildPacketsAreTrue = function() {
-        for (var i = 0; i < this.equivalentPackets.length; i++) {
-            if (!InquiryPacket.ResultType.TRUE.equals(this.equivalentPackets[i].result)) 
-                return false;
-        }
-        for (var i = 0; i < this.subPackets.length; i++) {
-            if (!InquiryPacket.ResultType.TRUE.equals(this.subPackets[i].result)) 
-                return false;
-        }
-        return true;
+    prototype.setConfidence = function(confidence) {
+        this.confidence = confidence;
     };
-    /**
-     *  Returns true if any child packets have false results.
-     * 
-     *  @return {boolean}
-     *  @method anyChildPacketsAreFalse
-     */
-    prototype.anyChildPacketsAreFalse = function() {
-        for (var i = 0; i < this.equivalentPackets.length; i++) {
-            if (InquiryPacket.ResultType.FALSE.equals(this.equivalentPackets[i].result)) 
-                return true;
-        }
-        for (var i = 0; i < this.subPackets.length; i++) {
-            if (InquiryPacket.ResultType.FALSE.equals(this.subPackets[i].result)) 
-                return true;
-        }
-        return false;
+    prototype.getConflictLevel = function() {
+        return this.conflictLevel;
     };
-    /**
-     *  Returns true if any child packets have unknown results.
-     * 
-     *  @return {boolean}
-     *  @method anyChildPacketsAreUnknown
-     */
-    prototype.anyChildPacketsAreUnknown = function() {
-        for (var i = 0; i < this.equivalentPackets.length; i++) {
-            if (InquiryPacket.ResultType.UNKNOWN.equals(this.equivalentPackets[i].result)) 
-                return true;
-        }
-        for (var i = 0; i < this.subPackets.length; i++) {
-            if (InquiryPacket.ResultType.UNKNOWN.equals(this.subPackets[i].result)) 
-                return true;
-        }
-        return false;
+    prototype.setConflictLevel = function(conflictLevel) {
+        this.conflictLevel = conflictLevel;
     };
-    /**
-     *  Returns true if any child packets have true results.
-     * 
-     *  @return {boolean}
-     *  @method anyChildPacketsAreTrue
-     */
-    prototype.anyChildPacketsAreTrue = function() {
-        for (var i = 0; i < this.equivalentPackets.length; i++) {
-            if (InquiryPacket.ResultType.TRUE.equals(this.equivalentPackets[i].result)) 
-                return true;
-        }
-        for (var i = 0; i < this.subPackets.length; i++) {
-            if (InquiryPacket.ResultType.TRUE.equals(this.subPackets[i].result)) 
-                return true;
-        }
-        return false;
+    prototype.getConflictClass = function() {
+        return this.conflictClass;
     };
-    /**
-     *  Returns true if all equivalent packets have unknown results.
-     * 
-     *  @return {boolean}
-     *  @method allEquivalentPacketsUnknown
-     */
-    prototype.allEquivalentPacketsUnknown = function() {
-        for (var i = 0; i < this.equivalentPackets.length; i++) {
-            if (!InquiryPacket.ResultType.UNKNOWN.equals(this.equivalentPackets[i].result)) 
-                return false;
-        }
-        return true;
-    };
-    /**
-     *  Returns true if all equivalent packets have the true or unknown result.
-     * 
-     *  @return {boolean}
-     *  @method allEquivalentPacketsTrueOrUnknown
-     */
-    prototype.allEquivalentPacketsTrueOrUnknown = function() {
-        for (var i = 0; i < this.equivalentPackets.length; i++) {
-            if (InquiryPacket.ResultType.FALSE.equals(this.equivalentPackets[i].result) || InquiryPacket.ResultType.INDETERMINANT.equals(this.equivalentPackets[i].result)) 
-                return false;
-        }
-        return true;
-    };
-    /**
-     *  Returns true if all sub packets have the true or unknown result.
-     * 
-     *  @return {boolean}
-     *  @method allSubPacketsTrueOrUnknown
-     */
-    prototype.allSubPacketsTrueOrUnknown = function() {
-        for (var i = 0; i < this.subPackets.length; i++) {
-            if (InquiryPacket.ResultType.FALSE.equals(this.subPackets[i].result) || InquiryPacket.ResultType.INDETERMINANT.equals(this.subPackets[i].result)) 
-                return false;
-        }
-        return true;
-    };
-    /**
-     *  Returns true if all equivalent packets have the false or unknown result.
-     * 
-     *  @return {boolean}
-     *  @method allEquivalentPacketsFalseOrUnknown
-     */
-    prototype.allEquivalentPacketsFalseOrUnknown = function() {
-        for (var i = 0; i < this.equivalentPackets.length; i++) {
-            if (InquiryPacket.ResultType.TRUE.equals(this.equivalentPackets[i].result) || InquiryPacket.ResultType.INDETERMINANT.equals(this.equivalentPackets[i].result)) 
-                return false;
-        }
-        return true;
-    };
-    /**
-     *  Returns true if all sub packets have the false or unknown result.
-     * 
-     *  @return
-     */
-    prototype.allSubPacketsFalseOrUnknown = function() {
-        for (var i = 0; i < this.subPackets.length; i++) {
-            if (InquiryPacket.ResultType.TRUE.equals(this.subPackets[i].result) || InquiryPacket.ResultType.INDETERMINANT.equals(this.subPackets[i].result)) 
-                return false;
-        }
-        return true;
-    };
-    /**
-     *  Returns true if the provided ID represents a competency in this packet.
-     * 
-     *  @param competencyId
-     *  @return
-     */
-    prototype.hasId = function(competencyId) {
-        for (var i = 0; i < this.competency.length; i++) 
-            if (this.competency[i].isId(competencyId)) 
-                return true;
-        return false;
-    };
-    constructor.IPType = stjs.enumeration("COMPETENCY", "ROLLUPRULE", "RELATION_AND", "RELATION_OR", "RELATION_NARROWS", "RELATION_BROADENS", "RELATION_REQUIRES", "RELATION_ISREQUIREDBY");
-    constructor.ResultType = stjs.enumeration("TRUE", "FALSE", "UNKNOWN", "INDETERMINANT");
-}, {subject: {name: "Array", arguments: ["EcPk"]}, competency: {name: "Array", arguments: ["EcCompetency"]}, context: "EcFramework", success: {name: "Callback1", arguments: ["InquiryPacket"]}, ask: {name: "Function1", arguments: [null, null]}, failure: {name: "Callback1", arguments: [null]}, level: {name: "Array", arguments: ["EcLevel"]}, equivalentPackets: {name: "Array", arguments: ["InquiryPacket"]}, subPackets: {name: "Array", arguments: ["InquiryPacket"]}, positive: {name: "Array", arguments: ["EcAssertion"]}, negative: {name: "Array", arguments: ["EcAssertion"]}, type: {name: "Enum", arguments: ["InquiryPacket.IPType"]}, result: {name: "Enum", arguments: ["InquiryPacket.ResultType"]}}, {});
-var RollupRuleInterface = function(input, processor) {
-    var chars = new antlr4.InputStream(input);
-    var lexer = new RollupLexer.RollupLexer(chars);
-    var tokens = new antlr4.CommonTokenStream(lexer);
-    this.parser = new RollupParser.RollupParser(tokens);
-    this.parser.buildParseTrees = true;
-    this.listener = new RollupListener.RollupListener();
-    this.processor = processor;
-    var me = this;
-    this.listener.enterS = function(ctx) {
-        me.processor.enterS(ctx);
-    };
-    this.listener.exitS = function(ctx) {
-        me.processor.exitS(ctx);
-        me.success(true);
-    };
-    this.listener.exitToken = function(ctx) {
-        me.processor.exitToken(ctx);
-    };
-    this.listener.enterQuery = function(ctx) {
-        me.processor.enterQuery(ctx);
-    };
-    this.listener.exitQuery = function(ctx) {
-        me.processor.exitQuery(ctx);
-    };
-    this.listener.exitInnerquery = function(ctx) {
-        me.processor.exitInnerquery(ctx);
-    };
-    this.listener.exitLogical_or_math_operator = function(ctx) {
-        me.processor.exitLogical_or_math_operator(ctx);
-    };
-    this.parser.addParseListener(this.listener);
-};
-RollupRuleInterface = stjs.extend(RollupRuleInterface, null, [], function(constructor, prototype) {
-    prototype.logFunction = null;
-    prototype.success = null;
-    prototype.failure = null;
-    prototype.listener = null;
-    prototype.parser = null;
-    prototype.processor = null;
-    prototype.go = function() {
-        this.processor.logFunction = this.logFunction;
-        this.processor.success = this.success;
-        this.processor.failure = this.failure;
-        this.parser.s();
-    };
-}, {logFunction: {name: "Callback1", arguments: ["Object"]}, success: {name: "Callback1", arguments: [null]}, failure: {name: "Callback1", arguments: [null]}, listener: "RollupListener.RollupListener", parser: "RollupParser.RollupParser", processor: "RollupRuleProcessor"}, {});
-/**
- *  Created by fray on 5/30/17.
- */
-var AssertionCoprocessor = function() {};
-AssertionCoprocessor = stjs.extend(AssertionCoprocessor, null, [], function(constructor, prototype) {
-    prototype.assertionProcessor = null;
-    prototype.collectAssertions = function(ip, listOfCompetencies, success) {
-        success(new Array());
-    };
-    prototype.mutateAssertions = function(ip, listOfCompetencies, success) {
-        success();
-    };
-}, {assertionProcessor: "AssertionProcessor"}, {});
-var RelationType = function() {};
-RelationType = stjs.extend(RelationType, null, [], function(constructor, prototype) {
-    constructor.RELATION_TYPE = stjs.enumeration("IS_EQUIVALENT_TO", "NARROWS", "BROADENS", "REQUIRES", "IS_REQUIRED_BY");
-}, {}, {});
-var Node = function(nameId) {
-    this.name = nameId;
-    this.id = nameId;
-};
-Node = stjs.extend(Node, null, [], function(constructor, prototype) {
-    prototype.name = null;
-    prototype.id = null;
-    prototype.description = null;
-    prototype.getName = function() {
-        return this.name;
-    };
-    prototype.setName = function(name) {
-        this.name = name;
-    };
-    prototype.getId = function() {
-        return this.id;
-    };
-    prototype.setId = function(id) {
-        this.id = id;
-    };
-    prototype.getDescription = function() {
-        return this.description;
-    };
-    prototype.setDescription = function(description) {
-        this.description = description;
-    };
-    prototype.toString = function() {
-        return "Node: \"" + this.id + "\"";
+    prototype.setConflictClass = function(conflictClass) {
+        this.conflictClass = conflictClass;
     };
 }, {}, {});
-var ExceptionReturn = function(errorMessage) {
-    this.errorMessage = errorMessage;
-};
-ExceptionReturn = stjs.extend(ExceptionReturn, null, [], function(constructor, prototype) {
-    prototype.errorMessage = null;
-    prototype.getErrorMessage = function() {
-        return this.errorMessage;
-    };
-    prototype.setErrorMessage = function(errorMessage) {
-        this.errorMessage = errorMessage;
-    };
-    prototype.getJsonString = function() {
-        return JSON.stringify(this);
-    };
-}, {}, {});
-var ArrayUtil = function() {};
-ArrayUtil = stjs.extend(ArrayUtil, null, [], function(constructor, prototype) {
-    constructor.arrayContains = function(a, o) {
-        for (var i = 0; i < a.length; i++) {
-            if (a[i] == o) 
-                return true;
-        }
-        return false;
-    };
-    constructor.arrayRemove = function(a, o) {
-        var retArray = new Array();
-        for (var i = 0; i < a.length; i++) {
-            if (a[i] != o) 
-                retArray.push(a[i]);
-        }
-        return retArray;
-    };
-    constructor.arrayLastIndexOf = function(a, o) {
-        for (var i = (a.length - 1); i >= 0; i--) {
-            if (a[i] == o) 
-                return i;
-        }
-        return -1;
-    };
-    constructor.arrayToString = function(a) {
-        if (a == null || a.length == 0) 
-            return "<Emtpy>";
-        var ret = "";
-        for (var i = 0; i < a.length; i++) {
-            if ((i + 1) < a.length) 
-                ret = ret + a[i].toString() + ", ";
-             else 
-                ret = ret + a[i].toString();
-        }
-        return ret;
-    };
-}, {}, {});
-var RrToken = function() {};
-RrToken = stjs.extend(RrToken, null, [], function(constructor, prototype) {
-    prototype.number = null;
-    prototype.bool = null;
-}, {}, {});
-var NodePacket = function() {
-    this.nodeList = new Array();
-    this.nodeMap = {};
-};
-NodePacket = stjs.extend(NodePacket, null, [], function(constructor, prototype) {
-    prototype.nodeList = null;
-    prototype.nodeMap = null;
-    prototype.getNodeList = function() {
-        return this.nodeList;
-    };
-    prototype.setNodeList = function(nodeList) {
-        this.nodeList = nodeList;
-    };
-    prototype.getNodeCount = function() {
-        return this.nodeList.length;
-    };
-    prototype.addNode = function(n) {
-        if (this.nodeMap[n.getId()] == null) {
-            this.nodeList.push(n);
-            this.nodeMap[n.getId()] = n;
-        }
-    };
-    prototype.toString = function() {
-        var ret = "";
-        ret = ret + "NodePacket: (";
-        for (var i = 0; i < this.nodeList.length; i++) {
-            if ((i + 1) < this.nodeList.length) 
-                ret = ret + this.nodeList[i].toString() + ", ";
-             else 
-                ret = ret + this.nodeList[i].toString();
-        }
-        ret = ret + ")";
-        return ret;
-    };
-}, {nodeList: {name: "Array", arguments: ["Node"]}, nodeMap: {name: "Map", arguments: [null, "Node"]}}, {});
-var NodeRelation = function(source, target, type) {
-    this.source = source;
-    this.target = target;
-    this.type = type;
-};
-NodeRelation = stjs.extend(NodeRelation, null, [], function(constructor, prototype) {
-    prototype.type = null;
-    prototype.source = null;
-    prototype.target = null;
-    prototype.getSource = function() {
-        return this.source;
-    };
-    prototype.setSource = function(source) {
-        this.source = source;
-    };
-    prototype.getTarget = function() {
-        return this.target;
-    };
-    prototype.setTarget = function(target) {
-        this.target = target;
-    };
-    prototype.getType = function() {
-        return this.type;
-    };
-    prototype.setType = function(type) {
-        this.type = type;
-    };
-    prototype.toString = function() {
-        return this.getSource().toString() + " >>" + this.getType() + "<< " + this.getTarget().toString();
-    };
-}, {type: {name: "Enum", arguments: ["RelationType.RELATION_TYPE"]}, source: "Node", target: "Node"}, {});
-var PacketRelation = function(source, target, type) {
-    this.source = source;
-    this.target = target;
-    this.type = type;
-};
-PacketRelation = stjs.extend(PacketRelation, null, [], function(constructor, prototype) {
-    prototype.type = null;
-    prototype.source = null;
-    prototype.target = null;
-    prototype.getSource = function() {
-        return this.source;
-    };
-    prototype.setSource = function(source) {
-        this.source = source;
-    };
-    prototype.getTarget = function() {
-        return this.target;
-    };
-    prototype.setTarget = function(target) {
-        this.target = target;
-    };
-    prototype.getType = function() {
-        return this.type;
-    };
-    prototype.setType = function(type) {
-        this.type = type;
-    };
-    prototype.toString = function() {
-        return this.getSource().toString() + " >>" + this.getType() + "<< " + this.getTarget().toString();
-    };
-}, {type: {name: "Enum", arguments: ["RelationType.RELATION_TYPE"]}, source: "NodePacket", target: "NodePacket"}, {});
 var NodeRelationMap = function() {
     this.nodeList = new Array();
     this.relationMap = {};
@@ -1171,10 +1067,105 @@ NodeRelationMap = stjs.extend(NodeRelationMap, null, [], function(constructor, p
         return ret;
     };
 }, {nodeList: {name: "Array", arguments: ["Node"]}, relationMap: {name: "Map", arguments: [null, {name: "Array", arguments: ["NodeRelation"]}]}}, {});
-var RrQuery = function() {};
-RrQuery = stjs.extend(RrQuery, null, [], function(constructor, prototype) {
-    prototype.query = null;
+var NodeRelation = function(source, target, type) {
+    this.source = source;
+    this.target = target;
+    this.type = type;
+};
+NodeRelation = stjs.extend(NodeRelation, null, [], function(constructor, prototype) {
+    prototype.type = null;
+    prototype.source = null;
+    prototype.target = null;
+    prototype.getSource = function() {
+        return this.source;
+    };
+    prototype.setSource = function(source) {
+        this.source = source;
+    };
+    prototype.getTarget = function() {
+        return this.target;
+    };
+    prototype.setTarget = function(target) {
+        this.target = target;
+    };
+    prototype.getType = function() {
+        return this.type;
+    };
+    prototype.setType = function(type) {
+        this.type = type;
+    };
+    prototype.toString = function() {
+        return this.getSource().toString() + " >>" + this.getType() + "<< " + this.getTarget().toString();
+    };
+}, {type: {name: "Enum", arguments: ["RelationType.RELATION_TYPE"]}, source: "Node", target: "Node"}, {});
+var ArrayUtil = function() {};
+ArrayUtil = stjs.extend(ArrayUtil, null, [], function(constructor, prototype) {
+    constructor.arrayContains = function(a, o) {
+        for (var i = 0; i < a.length; i++) {
+            if (a[i] == o) 
+                return true;
+        }
+        return false;
+    };
+    constructor.arrayRemove = function(a, o) {
+        var retArray = new Array();
+        for (var i = 0; i < a.length; i++) {
+            if (a[i] != o) 
+                retArray.push(a[i]);
+        }
+        return retArray;
+    };
+    constructor.arrayLastIndexOf = function(a, o) {
+        for (var i = (a.length - 1); i >= 0; i--) {
+            if (a[i] == o) 
+                return i;
+        }
+        return -1;
+    };
+    constructor.arrayToString = function(a) {
+        if (a == null || a.length == 0) 
+            return "<Emtpy>";
+        var ret = "";
+        for (var i = 0; i < a.length; i++) {
+            if ((i + 1) < a.length) 
+                ret = ret + a[i].toString() + ", ";
+             else 
+                ret = ret + a[i].toString();
+        }
+        return ret;
+    };
 }, {}, {});
+var PacketRelation = function(source, target, type) {
+    this.source = source;
+    this.target = target;
+    this.type = type;
+};
+PacketRelation = stjs.extend(PacketRelation, null, [], function(constructor, prototype) {
+    prototype.type = null;
+    prototype.source = null;
+    prototype.target = null;
+    prototype.getSource = function() {
+        return this.source;
+    };
+    prototype.setSource = function(source) {
+        this.source = source;
+    };
+    prototype.getTarget = function() {
+        return this.target;
+    };
+    prototype.setTarget = function(target) {
+        this.target = target;
+    };
+    prototype.getType = function() {
+        return this.type;
+    };
+    prototype.setType = function(type) {
+        this.type = type;
+    };
+    prototype.toString = function() {
+        return this.getSource().toString() + " >>" + this.getType() + "<< " + this.getTarget().toString();
+    };
+}, {type: {name: "Enum", arguments: ["RelationType.RELATION_TYPE"]}, source: "NodePacket", target: "NodePacket"}, {});
 var RrS = function() {
     this.token = new Array();
     this.query = new Array();
@@ -1189,311 +1180,15 @@ RrS = stjs.extend(RrS, null, [], function(constructor, prototype) {
         this.query.push(rrQuery);
     };
 }, {token: {name: "Array", arguments: ["RrToken"]}, query: {name: "Array", arguments: ["RrQuery"]}}, {});
-var PapNetworkPrediction = function(predictionDate, subjectPem, competencyList, competencyNetwork) {
-    this.predictionDate = predictionDate;
-    this.subjectPem = subjectPem;
-    this.predictions = new Array();
-    var currentCompetency;
-    var pcp;
-    for (var i = 0; i < competencyList.length; i++) {
-        currentCompetency = competencyList[i];
-        pcp = new PapCompetencyPrediction();
-        pcp.setCompetencyId(currentCompetency);
-        pcp.setConfidence(competencyNetwork.getPrediction(i));
-        pcp.setConflictLevel(competencyNetwork.getConflictLevel(i));
-        pcp.setConflictClass(competencyNetwork.getConflictClass(i));
-        this.predictions.push(pcp);
-    }
-};
-PapNetworkPrediction = stjs.extend(PapNetworkPrediction, null, [], function(constructor, prototype) {
-    prototype.predictionDate = null;
-    prototype.subjectPem = null;
-    prototype.predictions = null;
-    prototype.getPredictionDate = function() {
-        return this.predictionDate;
-    };
-    prototype.setPredictionDate = function(predictionDate) {
-        this.predictionDate = predictionDate;
-    };
-    prototype.getSubjectPem = function() {
-        return this.subjectPem;
-    };
-    prototype.setSubjectPem = function(subjectPem) {
-        this.subjectPem = subjectPem;
-    };
-    prototype.getPredictions = function() {
-        return this.predictions;
-    };
-    prototype.setPredictions = function(predictions) {
-        this.predictions = predictions;
-    };
-    prototype.getJsonString = function() {
-        return JSON.stringify(this);
-    };
-}, {predictions: {name: "Array", arguments: ["PapCompetencyPrediction"]}}, {});
-var PapDependency = function(depParms) {
-    PapDependencyParms.call(this);
-    if (depParms.getDependencyFirst()) {
-        this.setParentIndex(depParms.getParentIndex());
-        this.setChildIndex(depParms.getChildIndex());
-    } else {
-        this.setChildIndex(depParms.getParentIndex());
-        this.setParentIndex(depParms.getChildIndex());
-    }
-    this.setType(depParms.getType());
-    this.setWeight(depParms.getWeight());
-    this.setLeak(depParms.getLeak());
-};
-PapDependency = stjs.extend(PapDependency, PapDependencyParms, [], function(constructor, prototype) {
-    constructor.NECESSARY_TYPE = "NECESSARY";
-    constructor.SUFFICIENT_TYPE = "SUFFICIENT";
-    constructor.EQUIVALENCE_TYPE = "EQUIVALENCE";
-    constructor.BROADENS_TYPE = "BROADENS";
-    constructor.NULL_TYPE = "NULL";
-    constructor.HASH_CODE_MULTIPLIER = 41;
-    constructor.HASH_CODE_PERCENTAGE_MULTIPLIER = 97;
-    constructor.getDependencyTypes = function() {
-        var dt = new Array();
-        dt.push(PapDependency.NECESSARY_TYPE);
-        dt.push(PapDependency.SUFFICIENT_TYPE);
-        dt.push(PapDependency.EQUIVALENCE_TYPE);
-        dt.push(PapDependency.BROADENS_TYPE);
-        dt.push(PapDependency.NULL_TYPE);
-        return dt;
-    };
-    prototype.toString = function() {
-        return "Dependency: [" + this.getType().toString() + "] " + this.getParentIndex() + " <-- " + this.getChildIndex();
-    };
-    prototype.equals = function(other) {
-        return (this.getParentIndex() == (other).getParentIndex()) && (this.getChildIndex() == (other).getChildIndex()) && (this.getType() == (other).getType());
-    };
-    prototype.hashCode = function() {
-        var temp = 0;
-        if (PapDependency.NECESSARY_TYPE.equalsIgnoreCase(this.getType())) 
-            temp = 1;
-         else if (PapDependency.EQUIVALENCE_TYPE.equalsIgnoreCase(this.getType())) 
-            temp = 2;
-         else if (PapDependency.SUFFICIENT_TYPE.equalsIgnoreCase(this.getType())) 
-            temp = 3;
-         else if (PapDependency.BROADENS_TYPE.equalsIgnoreCase(this.getType())) 
-            temp = 4;
-        temp *= PapDependency.HASH_CODE_MULTIPLIER;
-        temp += this.getParentIndex();
-        temp *= PapDependency.HASH_CODE_MULTIPLIER;
-        temp += this.getChildIndex();
-        return temp + (stjs.trunc((100 * this.getWeight())) % PapDependency.HASH_CODE_PERCENTAGE_MULTIPLIER);
-    };
+var RrToken = function() {};
+RrToken = stjs.extend(RrToken, null, [], function(constructor, prototype) {
+    prototype.number = null;
+    prototype.bool = null;
 }, {}, {});
-var CompetencyGraph = function(includeAssertions) {
-    this.nodes = new Array();
-    this.edges = new Array();
-    this.positiveAssertions = new Array();
-    this.negativeAssertions = new Array();
-    this.nodeMap = {};
-    this.edgeMap = {};
-    this.includeAssertions = includeAssertions;
-};
-CompetencyGraph = stjs.extend(CompetencyGraph, null, [], function(constructor, prototype) {
-    constructor.NARROWS_RELATION_TEXT = "narrows";
-    constructor.BROADENS_RELATION_TEXT = "broadens";
-    constructor.REQUIRES_RELATION_TEXT = "requires";
-    constructor.IS_REQUIRED_BY_RELATION_TEXT = "isRequiredBy";
-    constructor.IS_EQUIVALENT_TO_RELATION_TEXT = "isEquivalentTo";
-    constructor.EDGE_MAP_FIELD_DELIMETER = " -------||||||------- ";
-    constructor.CleanGraph = function(nodes, edges) {
-        this.nodes = nodes;
-        this.edges = edges;
-    };
-    constructor.CleanGraph = stjs.extend(constructor.CleanGraph, null, [], function(constructor, prototype) {
-        prototype.nodes = null;
-        prototype.edges = null;
-    }, {nodes: {name: "Array", arguments: [null]}, edges: {name: "Array", arguments: ["CgEdge"]}}, {});
-    constructor.CleanGraphWithAssertions = function(nodes, edges, positiveAssertions, negativeAssertions) {
-        this.nodes = nodes;
-        this.edges = edges;
-        this.positiveAssertions = positiveAssertions;
-        this.negativeAssertions = negativeAssertions;
-    };
-    constructor.CleanGraphWithAssertions = stjs.extend(constructor.CleanGraphWithAssertions, null, [], function(constructor, prototype) {
-        prototype.nodes = null;
-        prototype.edges = null;
-        prototype.positiveAssertions = null;
-        prototype.negativeAssertions = null;
-    }, {nodes: {name: "Array", arguments: [null]}, edges: {name: "Array", arguments: ["CgEdge"]}, positiveAssertions: {name: "Array", arguments: ["SimpleAssertion"]}, negativeAssertions: {name: "Array", arguments: ["SimpleAssertion"]}}, {});
-    prototype.nodes = null;
-    prototype.edges = null;
-    prototype.positiveAssertions = null;
-    prototype.negativeAssertions = null;
-    prototype.nodeMap = null;
-    prototype.edgeMap = null;
-    prototype.includeAssertions = false;
-    prototype.addNode = function(id) {
-        if (!this.graphContainsNode(id)) {
-            this.nodes.push(id);
-            this.nodeMap[id] = id;
-        }
-    };
-    prototype.getEdgeKey = function(source, target, relationType) {
-        return source + CompetencyGraph.EDGE_MAP_FIELD_DELIMETER + target + CompetencyGraph.EDGE_MAP_FIELD_DELIMETER + relationType;
-    };
-    prototype.addEdge = function(source, target, relationType) {
-        if (!this.graphContainsEdge(source, target, relationType)) {
-            this.edges.push(new CgEdge(source, target, relationType));
-            var edgeKey = this.getEdgeKey(source, target, relationType);
-            this.edgeMap[edgeKey] = edgeKey;
-        }
-    };
-    prototype.addPositiveAssertion = function(simpleAssertion) {
-        if (simpleAssertion != null) 
-            this.positiveAssertions.push(simpleAssertion);
-    };
-    prototype.addNegativeAssertion = function(simpleAssertion) {
-        if (simpleAssertion != null) 
-            this.negativeAssertions.push(simpleAssertion);
-    };
-    prototype.graphContainsNode = function(nodeId) {
-        if (this.nodeMap[nodeId] == null) 
-            return false;
-        return true;
-    };
-    prototype.graphContainsEdge = function(source, target, relationType) {
-        if (this.edgeMap[this.getEdgeKey(source, target, relationType)] == null) 
-            return false;
-        return true;
-    };
-    prototype.createImpliedRelationships = function() {
-        var edgesToAdd = new Array();
-        var e;
-        for (var i = 0; i < this.edges.length; i++) {
-            e = this.edges[i];
-            if (e.getRelation().equalsIgnoreCase(CompetencyGraph.NARROWS_RELATION_TEXT)) {
-                edgesToAdd.push(new CgEdge(e.getTarget(), e.getSource(), CompetencyGraph.BROADENS_RELATION_TEXT));
-            } else if (e.getRelation().equalsIgnoreCase(CompetencyGraph.REQUIRES_RELATION_TEXT)) {
-                edgesToAdd.push(new CgEdge(e.getTarget(), e.getSource(), CompetencyGraph.IS_REQUIRED_BY_RELATION_TEXT));
-            } else if (e.getRelation().equalsIgnoreCase(CompetencyGraph.IS_EQUIVALENT_TO_RELATION_TEXT)) {
-                edgesToAdd.push(new CgEdge(e.getTarget(), e.getSource(), CompetencyGraph.IS_EQUIVALENT_TO_RELATION_TEXT));
-            }
-        }
-        var ne;
-        for (var i = 0; i < edgesToAdd.length; i++) {
-            ne = edgesToAdd[i];
-            this.addEdge(ne.getSource(), ne.getTarget(), ne.getRelation());
-        }
-    };
-    prototype.getJsonString = function() {
-        if (this.includeAssertions) 
-            return JSON.stringify(new CompetencyGraph.CleanGraphWithAssertions(this.nodes, this.edges, this.positiveAssertions, this.negativeAssertions));
-         else 
-            return JSON.stringify(new CompetencyGraph.CleanGraph(this.nodes, this.edges));
-    };
-    prototype.getNodes = function() {
-        return this.nodes;
-    };
-    prototype.setNodes = function(nodes) {
-        this.nodes = nodes;
-    };
-    prototype.getEdges = function() {
-        return this.edges;
-    };
-    prototype.setEdges = function(edges) {
-        this.edges = edges;
-    };
-    prototype.getPositiveAssertions = function() {
-        return this.positiveAssertions;
-    };
-    prototype.setPositiveAssertions = function(positiveAssertions) {
-        this.positiveAssertions = positiveAssertions;
-    };
-    prototype.getNegativeAssertions = function() {
-        return this.negativeAssertions;
-    };
-    prototype.setNegativeAssertions = function(negativeAssertions) {
-        this.negativeAssertions = negativeAssertions;
-    };
-}, {nodes: {name: "Array", arguments: [null]}, edges: {name: "Array", arguments: ["CgEdge"]}, positiveAssertions: {name: "Array", arguments: ["SimpleAssertion"]}, negativeAssertions: {name: "Array", arguments: ["SimpleAssertion"]}, nodeMap: {name: "Map", arguments: [null, null]}, edgeMap: {name: "Map", arguments: [null, null]}}, {});
-var PapDependencyDefinitions = function() {
-    this.dependencyDefinitionMap = {};
-};
-PapDependencyDefinitions = stjs.extend(PapDependencyDefinitions, null, [], function(constructor, prototype) {
-    constructor.DEFAULT_WEIGHT = 1.0;
-    constructor.DEFAULT_LEAK = 0.0;
-    constructor.DEFAULT_REVERSE = false;
-    constructor.DEFAULT_NARROWS_BASE_CLASS = "broadens";
-    constructor.DEFAULT_NARROWS_REVERSE = true;
-    constructor.DEFAULT_NARROWS_WEIGHT = 0.9;
-    constructor.DEFAULT_NARROWS_LEAK = 0.0;
-    constructor.DEFAULT_NARROWS_KEY = "narrows";
-    constructor.DEFAULT_ENABLES_BASE_CLASS = "isSufficientFor";
-    constructor.DEFAULT_ENABLES_REVERSE = true;
-    constructor.DEFAULT_ENABLES_WEIGHT = 0.9;
-    constructor.DEFAULT_ENABLES_LEAK = 0.0;
-    constructor.DEFAULT_ENABLES_KEY = "enables";
-    constructor.DEFAULT_REQUIRES_BASE_CLASS = "isRequiredBy";
-    constructor.DEFAULT_REQUIRES_REVERSE = false;
-    constructor.DEFAULT_REQUIRES_WEIGHT = 0.9;
-    constructor.DEFAULT_REQUIRES_LEAK = 0.0;
-    constructor.DEFAULT_REQUIRES_KEY = "requires";
-    prototype.dependencyDefinitionMap = null;
-    /**
-     *  Pulled default values from CruncherAssertionProcessor
-     *      dependencyDefs = new JSONObject();
-     * 
-     *      JSONObject narrows = new JSONObject();
-     *      narrows.put("class","broadens");
-     *      narrows.put("reverse",true);
-     *      narrows.put("weight",0.9);
-     *      dependencyDefs.put("narrows",narrows);
-     * 
-     *      JSONObject enables = new JSONObject();
-     *      enables.put("class","isSufficientFor");
-     *      enables.put("weight",0.9);
-     *      enables.put("reverse",true);
-     *      dependencyDefs.put("enables",enables);
-     * 
-     *      JSONObject requires = new JSONObject();
-     *      requires.put("class","isRequiredBy");
-     *      requires.put("weight",0.9);
-     *      dependencyDefs.put("requires",requires);
-     */
-    prototype.initDefaultDefinitions = function() {
-        var narrowsDepDef = new PapDependencyDefinitionBase(PapDependencyDefinitions.DEFAULT_NARROWS_BASE_CLASS, PapDependencyDefinitions.DEFAULT_NARROWS_REVERSE, PapDependencyDefinitions.DEFAULT_NARROWS_WEIGHT, PapDependencyDefinitions.DEFAULT_NARROWS_LEAK);
-        var enablesDepDef = new PapDependencyDefinitionBase(PapDependencyDefinitions.DEFAULT_ENABLES_BASE_CLASS, PapDependencyDefinitions.DEFAULT_ENABLES_REVERSE, PapDependencyDefinitions.DEFAULT_ENABLES_WEIGHT, PapDependencyDefinitions.DEFAULT_ENABLES_LEAK);
-        var requiresDepDef = new PapDependencyDefinitionBase(PapDependencyDefinitions.DEFAULT_REQUIRES_BASE_CLASS, PapDependencyDefinitions.DEFAULT_REQUIRES_REVERSE, PapDependencyDefinitions.DEFAULT_REQUIRES_WEIGHT, PapDependencyDefinitions.DEFAULT_REQUIRES_LEAK);
-        this.addDependencyDefinition(PapDependencyDefinitions.DEFAULT_NARROWS_KEY, narrowsDepDef);
-        this.addDependencyDefinition(PapDependencyDefinitions.DEFAULT_ENABLES_KEY, enablesDepDef);
-        this.addDependencyDefinition(PapDependencyDefinitions.DEFAULT_REQUIRES_KEY, requiresDepDef);
-    };
-    prototype.getWeightForType = function(depType) {
-        var base = this.dependencyDefinitionMap[depType];
-        if (base == null) 
-            return PapDependencyDefinitions.DEFAULT_WEIGHT;
-         else 
-            return base.getWeight();
-    };
-    prototype.getLeakForType = function(depType) {
-        var base = this.dependencyDefinitionMap[depType];
-        if (base == null) 
-            return PapDependencyDefinitions.DEFAULT_LEAK;
-         else 
-            return base.getLeak();
-    };
-    prototype.getReverseForType = function(depType) {
-        var base = this.dependencyDefinitionMap[depType];
-        if (base == null) 
-            return PapDependencyDefinitions.DEFAULT_REVERSE;
-         else 
-            return base.getReverse();
-    };
-    prototype.addDependencyDefinition = function(relationshipName, definition) {
-        this.getDependencyDefinitionMap()[relationshipName] = definition;
-    };
-    prototype.getDependencyDefinitionMap = function() {
-        return this.dependencyDefinitionMap;
-    };
-    prototype.setDependencyDefinitionMap = function(dependencyDefinitionMap) {
-        this.dependencyDefinitionMap = dependencyDefinitionMap;
-    };
-}, {dependencyDefinitionMap: {name: "Map", arguments: [null, "PapDependencyDefinitionBase"]}}, {});
+var RrQuery = function() {};
+RrQuery = stjs.extend(RrQuery, null, [], function(constructor, prototype) {
+    prototype.query = null;
+}, {}, {});
 var RollupRuleGenerator = function(ip) {
     this.ip = ip;
     this.rule = "";
@@ -1917,79 +1612,186 @@ RollupRulePacketGenerator = stjs.extend(RollupRulePacketGenerator, null, [], fun
 }, {queries: {name: "Array", arguments: [null]}, queryOperations: {name: "Array", arguments: [{name: "Enum", arguments: ["RollupRulePacketGenerator.OperationType"]}]}, ip: "InquiryPacket", ep: "AssertionProcessor"}, {});
 if (!stjs.mainCallDisabled) 
     RollupRulePacketGenerator.main();
-var OpenBadgeCoprocessor = function() {
-    AssertionCoprocessor.call(this);
+var PapDependency = function(depParms) {
+    PapDependencyParms.call(this);
+    if (depParms.getDependencyFirst()) {
+        this.setParentIndex(depParms.getParentIndex());
+        this.setChildIndex(depParms.getChildIndex());
+    } else {
+        this.setChildIndex(depParms.getParentIndex());
+        this.setParentIndex(depParms.getChildIndex());
+    }
+    this.setType(depParms.getType());
+    this.setWeight(depParms.getWeight());
+    this.setLeak(depParms.getLeak());
 };
-OpenBadgeCoprocessor = stjs.extend(OpenBadgeCoprocessor, AssertionCoprocessor, [], function(constructor, prototype) {
-    prototype.email = null;
-    prototype.badgePluginIdentifier = null;
-    prototype.confidenceOfBadges = 1.0;
-    prototype.collectAssertions = function(ip, listOfCompetencies, success) {
-        if (listOfCompetencies.length == 0) {
-            AssertionCoprocessor.prototype.collectAssertions.call(this, ip, listOfCompetencies, success);
-            return;
-        }
-        var assertions = new Array();
-        var me = this;
-        var eah = new EcAsyncHelper();
-        eah.each(me.assertionProcessor.repositories, function(currentRepository, callback0) {
-            var searchQuery = "@type:\"BadgeClass\"";
-            for (var i = 0; i < listOfCompetencies.length; i++) {
-                if (i == 0) 
-                    searchQuery += " AND (";
-                if (i > 0) 
-                    searchQuery += " OR ";
-                searchQuery += "alignment.targetUrl:\"" + listOfCompetencies[i] + "\"";
-            }
-            if (listOfCompetencies.length > 0) 
-                searchQuery += ")";
-            me.assertionProcessor.log(ip, "Querying repositories for badges regarding " + listOfCompetencies.length + " query: " + searchQuery);
-            var params = new Object();
-            (params)["size"] = 5000;
-            currentRepository.searchWithParams(searchQuery, params, null, function(p1) {
-                me.assertionProcessor.log(ip, p1.length + " badgeClasses found.");
-                var badgeClassHelper = new EcAsyncHelper();
-                badgeClassHelper.each(p1, function(badgeClass, badgeClassDone) {
-                    currentRepository.search("@context:\"https://w3id.org/openbadges/v2\" AND @type:Assertion AND badge:\"" + badgeClass.id + "\"", null, function(badgeAssertions) {
-                        for (var j = 0; j < badgeAssertions.length; j++) {
-                            var hash = EcCrypto.sha256(me.email + ((badgeAssertions[j])["recipient"])["salt"]);
-                            if ("sha256$" + hash.toLowerCase() != ((badgeAssertions[j])["recipient"])["identity"]) {
-                                me.assertionProcessor.log(ip, me.email + " hashed with salt != " + ((badgeAssertions[j])["recipient"])["identity"]);
-                                badgeAssertions.splice(j--, 1);
-                            } else 
-                                me.assertionProcessor.log(ip, me.email + " hashed with salt == " + ((badgeAssertions[j])["recipient"])["identity"]);
-                        }
-                        for (var j = 0; j < badgeAssertions.length; j++) {
-                            var alignments = (badgeClass)["alignment"];
-                            if (alignments != null) 
-                                for (var k = 0; k < alignments.length; k++) {
-                                    var alignment = alignments[k];
-                                    var a = new Assertion();
-                                    a.addOwner(ip.subject[0]);
-                                    a.setSubject(ip.subject[0]);
-                                    a.setAgent(me.badgePluginIdentifier);
-                                    a.competency = (alignment)["targetUrl"];
-                                    me.assertionProcessor.log(ip, "Generating Assertion for competency: " + (alignment)["targetUrl"]);
-                                    a.framework = (alignment)["targetFramework"];
-                                    a.confidence = me.confidenceOfBadges;
-                                    var evidence = new Array();
-                                    evidence.push(badgeAssertions[j].id);
-                                    a.setEvidence(evidence);
-                                    a.setAssertionDate(new Date((badgeAssertions[j])["issuedOn"]).getTime());
-                                    assertions.push(a);
-                                }
-                        }
-                        badgeClassDone();
-                    }, ip.failure);
-                }, function(strings) {
-                    callback0();
-                });
-            }, ip.failure);
-        }, function(strings) {
-            success(assertions);
-        });
+PapDependency = stjs.extend(PapDependency, PapDependencyParms, [], function(constructor, prototype) {
+    constructor.NECESSARY_TYPE = "NECESSARY";
+    constructor.SUFFICIENT_TYPE = "SUFFICIENT";
+    constructor.EQUIVALENCE_TYPE = "EQUIVALENCE";
+    constructor.BROADENS_TYPE = "BROADENS";
+    constructor.NULL_TYPE = "NULL";
+    constructor.HASH_CODE_MULTIPLIER = 41;
+    constructor.HASH_CODE_PERCENTAGE_MULTIPLIER = 97;
+    constructor.getDependencyTypes = function() {
+        var dt = new Array();
+        dt.push(PapDependency.NECESSARY_TYPE);
+        dt.push(PapDependency.SUFFICIENT_TYPE);
+        dt.push(PapDependency.EQUIVALENCE_TYPE);
+        dt.push(PapDependency.BROADENS_TYPE);
+        dt.push(PapDependency.NULL_TYPE);
+        return dt;
     };
-}, {badgePluginIdentifier: "EcPk", assertionProcessor: "AssertionProcessor"}, {});
+    prototype.toString = function() {
+        return "Dependency: [" + this.getType().toString() + "] " + this.getParentIndex() + " <-- " + this.getChildIndex();
+    };
+    prototype.equals = function(other) {
+        return (this.getParentIndex() == (other).getParentIndex()) && (this.getChildIndex() == (other).getChildIndex()) && (this.getType() == (other).getType());
+    };
+    prototype.hashCode = function() {
+        var temp = 0;
+        if (PapDependency.NECESSARY_TYPE.equalsIgnoreCase(this.getType())) 
+            temp = 1;
+         else if (PapDependency.EQUIVALENCE_TYPE.equalsIgnoreCase(this.getType())) 
+            temp = 2;
+         else if (PapDependency.SUFFICIENT_TYPE.equalsIgnoreCase(this.getType())) 
+            temp = 3;
+         else if (PapDependency.BROADENS_TYPE.equalsIgnoreCase(this.getType())) 
+            temp = 4;
+        temp *= PapDependency.HASH_CODE_MULTIPLIER;
+        temp += this.getParentIndex();
+        temp *= PapDependency.HASH_CODE_MULTIPLIER;
+        temp += this.getChildIndex();
+        return temp + (stjs.trunc((100 * this.getWeight())) % PapDependency.HASH_CODE_PERCENTAGE_MULTIPLIER);
+    };
+}, {}, {});
+var CompetencyGraph = function(includeAssertions) {
+    this.nodes = new Array();
+    this.edges = new Array();
+    this.positiveAssertions = new Array();
+    this.negativeAssertions = new Array();
+    this.nodeMap = {};
+    this.edgeMap = {};
+    this.includeAssertions = includeAssertions;
+};
+CompetencyGraph = stjs.extend(CompetencyGraph, null, [], function(constructor, prototype) {
+    constructor.NARROWS_RELATION_TEXT = "narrows";
+    constructor.BROADENS_RELATION_TEXT = "broadens";
+    constructor.REQUIRES_RELATION_TEXT = "requires";
+    constructor.IS_REQUIRED_BY_RELATION_TEXT = "isRequiredBy";
+    constructor.IS_EQUIVALENT_TO_RELATION_TEXT = "isEquivalentTo";
+    constructor.EDGE_MAP_FIELD_DELIMETER = " -------||||||------- ";
+    constructor.CleanGraph = function(nodes, edges) {
+        this.nodes = nodes;
+        this.edges = edges;
+    };
+    constructor.CleanGraph = stjs.extend(constructor.CleanGraph, null, [], function(constructor, prototype) {
+        prototype.nodes = null;
+        prototype.edges = null;
+    }, {nodes: {name: "Array", arguments: [null]}, edges: {name: "Array", arguments: ["CgEdge"]}}, {});
+    constructor.CleanGraphWithAssertions = function(nodes, edges, positiveAssertions, negativeAssertions) {
+        this.nodes = nodes;
+        this.edges = edges;
+        this.positiveAssertions = positiveAssertions;
+        this.negativeAssertions = negativeAssertions;
+    };
+    constructor.CleanGraphWithAssertions = stjs.extend(constructor.CleanGraphWithAssertions, null, [], function(constructor, prototype) {
+        prototype.nodes = null;
+        prototype.edges = null;
+        prototype.positiveAssertions = null;
+        prototype.negativeAssertions = null;
+    }, {nodes: {name: "Array", arguments: [null]}, edges: {name: "Array", arguments: ["CgEdge"]}, positiveAssertions: {name: "Array", arguments: ["SimpleAssertion"]}, negativeAssertions: {name: "Array", arguments: ["SimpleAssertion"]}}, {});
+    prototype.nodes = null;
+    prototype.edges = null;
+    prototype.positiveAssertions = null;
+    prototype.negativeAssertions = null;
+    prototype.nodeMap = null;
+    prototype.edgeMap = null;
+    prototype.includeAssertions = false;
+    prototype.addNode = function(id) {
+        if (!this.graphContainsNode(id)) {
+            this.nodes.push(id);
+            this.nodeMap[id] = id;
+        }
+    };
+    prototype.getEdgeKey = function(source, target, relationType) {
+        return source + CompetencyGraph.EDGE_MAP_FIELD_DELIMETER + target + CompetencyGraph.EDGE_MAP_FIELD_DELIMETER + relationType;
+    };
+    prototype.addEdge = function(source, target, relationType) {
+        if (!this.graphContainsEdge(source, target, relationType)) {
+            this.edges.push(new CgEdge(source, target, relationType));
+            var edgeKey = this.getEdgeKey(source, target, relationType);
+            this.edgeMap[edgeKey] = edgeKey;
+        }
+    };
+    prototype.addPositiveAssertion = function(simpleAssertion) {
+        if (simpleAssertion != null) 
+            this.positiveAssertions.push(simpleAssertion);
+    };
+    prototype.addNegativeAssertion = function(simpleAssertion) {
+        if (simpleAssertion != null) 
+            this.negativeAssertions.push(simpleAssertion);
+    };
+    prototype.graphContainsNode = function(nodeId) {
+        if (this.nodeMap[nodeId] == null) 
+            return false;
+        return true;
+    };
+    prototype.graphContainsEdge = function(source, target, relationType) {
+        if (this.edgeMap[this.getEdgeKey(source, target, relationType)] == null) 
+            return false;
+        return true;
+    };
+    prototype.createImpliedRelationships = function() {
+        var edgesToAdd = new Array();
+        var e;
+        for (var i = 0; i < this.edges.length; i++) {
+            e = this.edges[i];
+            if (e.getRelation().equalsIgnoreCase(CompetencyGraph.NARROWS_RELATION_TEXT)) {
+                edgesToAdd.push(new CgEdge(e.getTarget(), e.getSource(), CompetencyGraph.BROADENS_RELATION_TEXT));
+            } else if (e.getRelation().equalsIgnoreCase(CompetencyGraph.REQUIRES_RELATION_TEXT)) {
+                edgesToAdd.push(new CgEdge(e.getTarget(), e.getSource(), CompetencyGraph.IS_REQUIRED_BY_RELATION_TEXT));
+            } else if (e.getRelation().equalsIgnoreCase(CompetencyGraph.IS_EQUIVALENT_TO_RELATION_TEXT)) {
+                edgesToAdd.push(new CgEdge(e.getTarget(), e.getSource(), CompetencyGraph.IS_EQUIVALENT_TO_RELATION_TEXT));
+            }
+        }
+        var ne;
+        for (var i = 0; i < edgesToAdd.length; i++) {
+            ne = edgesToAdd[i];
+            this.addEdge(ne.getSource(), ne.getTarget(), ne.getRelation());
+        }
+    };
+    prototype.getJsonString = function() {
+        if (this.includeAssertions) 
+            return JSON.stringify(new CompetencyGraph.CleanGraphWithAssertions(this.nodes, this.edges, this.positiveAssertions, this.negativeAssertions));
+         else 
+            return JSON.stringify(new CompetencyGraph.CleanGraph(this.nodes, this.edges));
+    };
+    prototype.getNodes = function() {
+        return this.nodes;
+    };
+    prototype.setNodes = function(nodes) {
+        this.nodes = nodes;
+    };
+    prototype.getEdges = function() {
+        return this.edges;
+    };
+    prototype.setEdges = function(edges) {
+        this.edges = edges;
+    };
+    prototype.getPositiveAssertions = function() {
+        return this.positiveAssertions;
+    };
+    prototype.setPositiveAssertions = function(positiveAssertions) {
+        this.positiveAssertions = positiveAssertions;
+    };
+    prototype.getNegativeAssertions = function() {
+        return this.negativeAssertions;
+    };
+    prototype.setNegativeAssertions = function(negativeAssertions) {
+        this.negativeAssertions = negativeAssertions;
+    };
+}, {nodes: {name: "Array", arguments: [null]}, edges: {name: "Array", arguments: ["CgEdge"]}, positiveAssertions: {name: "Array", arguments: ["SimpleAssertion"]}, negativeAssertions: {name: "Array", arguments: ["SimpleAssertion"]}, nodeMap: {name: "Map", arguments: [null, null]}, edgeMap: {name: "Map", arguments: [null, null]}}, {});
 var TrustCoprocessor = function() {
     AssertionCoprocessor.call(this);
 };
@@ -2013,6 +1815,131 @@ TrustCoprocessor = stjs.extend(TrustCoprocessor, AssertionCoprocessor, [], funct
         success();
     };
 }, {agent: "EcPk", assertionProcessor: "AssertionProcessor"}, {});
+var PapDependencyDefinitions = function() {
+    this.dependencyDefinitionMap = {};
+};
+PapDependencyDefinitions = stjs.extend(PapDependencyDefinitions, null, [], function(constructor, prototype) {
+    constructor.DEFAULT_WEIGHT = 1.0;
+    constructor.DEFAULT_LEAK = 0.0;
+    constructor.DEFAULT_REVERSE = false;
+    constructor.DEFAULT_NARROWS_BASE_CLASS = "broadens";
+    constructor.DEFAULT_NARROWS_REVERSE = true;
+    constructor.DEFAULT_NARROWS_WEIGHT = 0.9;
+    constructor.DEFAULT_NARROWS_LEAK = 0.0;
+    constructor.DEFAULT_NARROWS_KEY = "narrows";
+    constructor.DEFAULT_ENABLES_BASE_CLASS = "isSufficientFor";
+    constructor.DEFAULT_ENABLES_REVERSE = true;
+    constructor.DEFAULT_ENABLES_WEIGHT = 0.9;
+    constructor.DEFAULT_ENABLES_LEAK = 0.0;
+    constructor.DEFAULT_ENABLES_KEY = "enables";
+    constructor.DEFAULT_REQUIRES_BASE_CLASS = "isRequiredBy";
+    constructor.DEFAULT_REQUIRES_REVERSE = false;
+    constructor.DEFAULT_REQUIRES_WEIGHT = 0.9;
+    constructor.DEFAULT_REQUIRES_LEAK = 0.0;
+    constructor.DEFAULT_REQUIRES_KEY = "requires";
+    prototype.dependencyDefinitionMap = null;
+    /**
+     *  Pulled default values from CruncherAssertionProcessor
+     *      dependencyDefs = new JSONObject();
+     * 
+     *      JSONObject narrows = new JSONObject();
+     *      narrows.put("class","broadens");
+     *      narrows.put("reverse",true);
+     *      narrows.put("weight",0.9);
+     *      dependencyDefs.put("narrows",narrows);
+     * 
+     *      JSONObject enables = new JSONObject();
+     *      enables.put("class","isSufficientFor");
+     *      enables.put("weight",0.9);
+     *      enables.put("reverse",true);
+     *      dependencyDefs.put("enables",enables);
+     * 
+     *      JSONObject requires = new JSONObject();
+     *      requires.put("class","isRequiredBy");
+     *      requires.put("weight",0.9);
+     *      dependencyDefs.put("requires",requires);
+     */
+    prototype.initDefaultDefinitions = function() {
+        var narrowsDepDef = new PapDependencyDefinitionBase(PapDependencyDefinitions.DEFAULT_NARROWS_BASE_CLASS, PapDependencyDefinitions.DEFAULT_NARROWS_REVERSE, PapDependencyDefinitions.DEFAULT_NARROWS_WEIGHT, PapDependencyDefinitions.DEFAULT_NARROWS_LEAK);
+        var enablesDepDef = new PapDependencyDefinitionBase(PapDependencyDefinitions.DEFAULT_ENABLES_BASE_CLASS, PapDependencyDefinitions.DEFAULT_ENABLES_REVERSE, PapDependencyDefinitions.DEFAULT_ENABLES_WEIGHT, PapDependencyDefinitions.DEFAULT_ENABLES_LEAK);
+        var requiresDepDef = new PapDependencyDefinitionBase(PapDependencyDefinitions.DEFAULT_REQUIRES_BASE_CLASS, PapDependencyDefinitions.DEFAULT_REQUIRES_REVERSE, PapDependencyDefinitions.DEFAULT_REQUIRES_WEIGHT, PapDependencyDefinitions.DEFAULT_REQUIRES_LEAK);
+        this.addDependencyDefinition(PapDependencyDefinitions.DEFAULT_NARROWS_KEY, narrowsDepDef);
+        this.addDependencyDefinition(PapDependencyDefinitions.DEFAULT_ENABLES_KEY, enablesDepDef);
+        this.addDependencyDefinition(PapDependencyDefinitions.DEFAULT_REQUIRES_KEY, requiresDepDef);
+    };
+    prototype.getWeightForType = function(depType) {
+        var base = this.dependencyDefinitionMap[depType];
+        if (base == null) 
+            return PapDependencyDefinitions.DEFAULT_WEIGHT;
+         else 
+            return base.getWeight();
+    };
+    prototype.getLeakForType = function(depType) {
+        var base = this.dependencyDefinitionMap[depType];
+        if (base == null) 
+            return PapDependencyDefinitions.DEFAULT_LEAK;
+         else 
+            return base.getLeak();
+    };
+    prototype.getReverseForType = function(depType) {
+        var base = this.dependencyDefinitionMap[depType];
+        if (base == null) 
+            return PapDependencyDefinitions.DEFAULT_REVERSE;
+         else 
+            return base.getReverse();
+    };
+    prototype.addDependencyDefinition = function(relationshipName, definition) {
+        this.getDependencyDefinitionMap()[relationshipName] = definition;
+    };
+    prototype.getDependencyDefinitionMap = function() {
+        return this.dependencyDefinitionMap;
+    };
+    prototype.setDependencyDefinitionMap = function(dependencyDefinitionMap) {
+        this.dependencyDefinitionMap = dependencyDefinitionMap;
+    };
+}, {dependencyDefinitionMap: {name: "Map", arguments: [null, "PapDependencyDefinitionBase"]}}, {});
+var PapNetworkPrediction = function(predictionDate, subjectPem, competencyList, competencyNetwork) {
+    this.predictionDate = predictionDate;
+    this.subjectPem = subjectPem;
+    this.predictions = new Array();
+    var currentCompetency;
+    var pcp;
+    for (var i = 0; i < competencyList.length; i++) {
+        currentCompetency = competencyList[i];
+        pcp = new PapCompetencyPrediction();
+        pcp.setCompetencyId(currentCompetency);
+        pcp.setConfidence(competencyNetwork.getPrediction(i));
+        pcp.setConflictLevel(competencyNetwork.getConflictLevel(i));
+        pcp.setConflictClass(competencyNetwork.getConflictClass(i));
+        this.predictions.push(pcp);
+    }
+};
+PapNetworkPrediction = stjs.extend(PapNetworkPrediction, null, [], function(constructor, prototype) {
+    prototype.predictionDate = null;
+    prototype.subjectPem = null;
+    prototype.predictions = null;
+    prototype.getPredictionDate = function() {
+        return this.predictionDate;
+    };
+    prototype.setPredictionDate = function(predictionDate) {
+        this.predictionDate = predictionDate;
+    };
+    prototype.getSubjectPem = function() {
+        return this.subjectPem;
+    };
+    prototype.setSubjectPem = function(subjectPem) {
+        this.subjectPem = subjectPem;
+    };
+    prototype.getPredictions = function() {
+        return this.predictions;
+    };
+    prototype.setPredictions = function(predictions) {
+        this.predictions = predictions;
+    };
+    prototype.getJsonString = function() {
+        return JSON.stringify(this);
+    };
+}, {predictions: {name: "Array", arguments: ["PapCompetencyPrediction"]}}, {});
 var NodeGraph = function() {
     this.nodeList = new Array();
     this.relationList = new Array();
@@ -2602,6 +2529,144 @@ AssertionProcessor = stjs.extend(AssertionProcessor, null, [], function(construc
             this.collectCompetencies(ip.subPackets[i], listOfActivatedCompetencies, listOfVisitedPackets);
     };
 }, {repositories: {name: "Array", arguments: ["EcRepository"]}, logFunction: {name: "Callback1", arguments: ["Object"]}, assertions: "Object", coprocessors: {name: "Array", arguments: ["AssertionCoprocessor"]}, processedEquivalencies: {name: "Map", arguments: [null, null]}, context: "EcFramework"}, {});
+var OpenBadgeCoprocessor = function() {
+    AssertionCoprocessor.call(this);
+};
+OpenBadgeCoprocessor = stjs.extend(OpenBadgeCoprocessor, AssertionCoprocessor, [], function(constructor, prototype) {
+    prototype.email = null;
+    prototype.badgePluginIdentifier = null;
+    prototype.confidenceOfBadges = 1.0;
+    prototype.collectAssertions = function(ip, listOfCompetencies, success) {
+        if (listOfCompetencies.length == 0) {
+            AssertionCoprocessor.prototype.collectAssertions.call(this, ip, listOfCompetencies, success);
+            return;
+        }
+        var assertions = new Array();
+        var me = this;
+        var eah = new EcAsyncHelper();
+        eah.each(me.assertionProcessor.repositories, function(currentRepository, callback0) {
+            var searchQuery = "@type:\"BadgeClass\"";
+            for (var i = 0; i < listOfCompetencies.length; i++) {
+                if (i == 0) 
+                    searchQuery += " AND (";
+                if (i > 0) 
+                    searchQuery += " OR ";
+                searchQuery += "alignment.targetUrl:\"" + listOfCompetencies[i] + "\"";
+            }
+            if (listOfCompetencies.length > 0) 
+                searchQuery += ")";
+            me.assertionProcessor.log(ip, "Querying repositories for badges regarding " + listOfCompetencies.length + " query: " + searchQuery);
+            var params = new Object();
+            (params)["size"] = 5000;
+            currentRepository.searchWithParams(searchQuery, params, null, function(p1) {
+                me.assertionProcessor.log(ip, p1.length + " badgeClasses found.");
+                var badgeClassHelper = new EcAsyncHelper();
+                badgeClassHelper.each(p1, function(badgeClass, badgeClassDone) {
+                    currentRepository.search("@context:\"https://w3id.org/openbadges/v2\" AND @type:Assertion AND badge:\"" + badgeClass.id + "\"", null, function(badgeAssertions) {
+                        for (var j = 0; j < badgeAssertions.length; j++) {
+                            var hash = EcCrypto.sha256(me.email + ((badgeAssertions[j])["recipient"])["salt"]);
+                            if ("sha256$" + hash.toLowerCase() != ((badgeAssertions[j])["recipient"])["identity"]) {
+                                me.assertionProcessor.log(ip, me.email + " hashed with salt != " + ((badgeAssertions[j])["recipient"])["identity"]);
+                                badgeAssertions.splice(j--, 1);
+                            } else 
+                                me.assertionProcessor.log(ip, me.email + " hashed with salt == " + ((badgeAssertions[j])["recipient"])["identity"]);
+                        }
+                        for (var j = 0; j < badgeAssertions.length; j++) {
+                            var alignments = (badgeClass)["alignment"];
+                            if (alignments != null) 
+                                for (var k = 0; k < alignments.length; k++) {
+                                    var alignment = alignments[k];
+                                    var a = new Assertion();
+                                    a.addOwner(ip.subject[0]);
+                                    a.setSubject(ip.subject[0]);
+                                    a.setAgent(me.badgePluginIdentifier);
+                                    a.competency = (alignment)["targetUrl"];
+                                    me.assertionProcessor.log(ip, "Generating Assertion for competency: " + (alignment)["targetUrl"]);
+                                    a.framework = (alignment)["targetFramework"];
+                                    a.confidence = me.confidenceOfBadges;
+                                    var evidence = new Array();
+                                    evidence.push(badgeAssertions[j].id);
+                                    a.setEvidence(evidence);
+                                    a.setAssertionDate(new Date((badgeAssertions[j])["issuedOn"]).getTime());
+                                    assertions.push(a);
+                                }
+                        }
+                        badgeClassDone();
+                    }, ip.failure);
+                }, function(strings) {
+                    callback0();
+                });
+            }, ip.failure);
+        }, function(strings) {
+            success(assertions);
+        });
+    };
+}, {badgePluginIdentifier: "EcPk", assertionProcessor: "AssertionProcessor"}, {});
+var RollupRuleProcessor = function(ip, ep) {
+    this.ip = ip;
+    this.rollupRulePacketGenerator = new RollupRulePacketGenerator(ip, ep);
+};
+RollupRuleProcessor = stjs.extend(RollupRuleProcessor, null, [], function(constructor, prototype) {
+    prototype.success = null;
+    prototype.failure = null;
+    prototype.logFunction = null;
+    prototype.positive = null;
+    prototype.negative = null;
+    prototype.onQueryExitResult = null;
+    prototype.query = null;
+    prototype.rollupRulePacketGenerator = null;
+    prototype.s = null;
+    prototype.tok = null;
+    prototype.que = null;
+    prototype.ip = null;
+    prototype.log = function(string) {
+        if (this.logFunction != null) 
+            this.logFunction(string);
+    };
+    prototype.enterS = function(ctx) {
+        if (this.s != null) 
+             throw new RuntimeException("We found another S in our S.");
+        this.s = new RrS();
+    };
+    prototype.exitS = function(ctx) {
+        this.ip.subPackets.push(this.rollupRulePacketGenerator.generatePacket());
+    };
+    prototype.enterToken = function(ctx) {
+        this.s.addToken(this.tok = new RrToken());
+    };
+    prototype.exitToken = function(ctx) {};
+    prototype.enterQuery = function(ctx) {
+        this.s.addQuery(this.que = new RrQuery());
+        this.query = "";
+        this.onQueryExitResult = null;
+    };
+    prototype.exitQuery = function(ctx) {
+        this.que.query = this.query.trim();
+        this.log("ADDING QUERY: " + this.query.trim());
+        this.rollupRulePacketGenerator.addQuery(this.query.trim());
+    };
+    prototype.exitInnerquery = function(ctx) {
+        if (ctx.cLogic != null) 
+            this.query += " " + ctx.cLogic.text + " ";
+        if (ctx.cValue != null) {
+            this.query += ctx.cKey.text + "" + ctx.cOperator.text + "\"" + ctx.cValue.text + "\" ";
+        }
+        if (ctx.cNumber != null) {
+            this.query += ctx.cKey.text + "" + ctx.cOperator.text + "" + ctx.cNumber.text + " ";
+        }
+    };
+    prototype.exitLogical_or_math_operator = function(ctx) {
+        if (ctx.cLogic != null) {
+            if ("AND" == ctx.cLogic.text.toUpperCase()) {
+                this.log("ADDING OPERATION: " + RollupRulePacketGenerator.OperationType.AND);
+                this.rollupRulePacketGenerator.addQueryOperation(RollupRulePacketGenerator.OperationType.AND);
+            } else if ("OR" == ctx.cLogic.text.toUpperCase()) {
+                this.log("ADDING OPERATION: " + RollupRulePacketGenerator.OperationType.OR);
+                this.rollupRulePacketGenerator.addQueryOperation(RollupRulePacketGenerator.OperationType.OR);
+            }
+        }
+    };
+}, {success: {name: "Callback1", arguments: [null]}, failure: {name: "Callback1", arguments: [null]}, logFunction: {name: "Callback1", arguments: ["Object"]}, positive: {name: "Array", arguments: ["EcAssertion"]}, negative: {name: "Array", arguments: ["EcAssertion"]}, rollupRulePacketGenerator: "RollupRulePacketGenerator", s: "RrS", tok: "RrToken", que: "RrQuery", ip: "InquiryPacket"}, {});
 var CompetencyGraphBuilder = function() {
     this.repositories = new Array();
     this.subjects = new Array();
@@ -3243,71 +3308,6 @@ PredictiveAssertionProcessor = stjs.extend(PredictiveAssertionProcessor, null, [
         return this.competencePrediction;
     };
 }, {competencyIndex: {name: "Map", arguments: [null, null]}, values: {name: "Array", arguments: [null]}, dependencies: {name: "Map", arguments: [null, {name: "Map", arguments: [null, {name: "Array", arguments: ["PapDependency"]}]}]}, assertions: {name: "Map", arguments: [null, {name: "Array", arguments: ["PapAssertion"]}]}, dependencyDefs: "PapDependencyDefinitions", settings: "PapSettings", inputGraph: "CompetencyGraph", competencyNetwork: "PapCompetencyNetwork", competencePrediction: "PapNetworkPrediction"}, {});
-var RollupRuleProcessor = function(ip, ep) {
-    this.ip = ip;
-    this.rollupRulePacketGenerator = new RollupRulePacketGenerator(ip, ep);
-};
-RollupRuleProcessor = stjs.extend(RollupRuleProcessor, null, [], function(constructor, prototype) {
-    prototype.success = null;
-    prototype.failure = null;
-    prototype.logFunction = null;
-    prototype.positive = null;
-    prototype.negative = null;
-    prototype.onQueryExitResult = null;
-    prototype.query = null;
-    prototype.rollupRulePacketGenerator = null;
-    prototype.s = null;
-    prototype.tok = null;
-    prototype.que = null;
-    prototype.ip = null;
-    prototype.log = function(string) {
-        if (this.logFunction != null) 
-            this.logFunction(string);
-    };
-    prototype.enterS = function(ctx) {
-        if (this.s != null) 
-             throw new RuntimeException("We found another S in our S.");
-        this.s = new RrS();
-    };
-    prototype.exitS = function(ctx) {
-        this.ip.subPackets.push(this.rollupRulePacketGenerator.generatePacket());
-    };
-    prototype.enterToken = function(ctx) {
-        this.s.addToken(this.tok = new RrToken());
-    };
-    prototype.exitToken = function(ctx) {};
-    prototype.enterQuery = function(ctx) {
-        this.s.addQuery(this.que = new RrQuery());
-        this.query = "";
-        this.onQueryExitResult = null;
-    };
-    prototype.exitQuery = function(ctx) {
-        this.que.query = this.query.trim();
-        this.log("ADDING QUERY: " + this.query.trim());
-        this.rollupRulePacketGenerator.addQuery(this.query.trim());
-    };
-    prototype.exitInnerquery = function(ctx) {
-        if (ctx.cLogic != null) 
-            this.query += " " + ctx.cLogic.text + " ";
-        if (ctx.cValue != null) {
-            this.query += ctx.cKey.text + "" + ctx.cOperator.text + "\"" + ctx.cValue.text + "\" ";
-        }
-        if (ctx.cNumber != null) {
-            this.query += ctx.cKey.text + "" + ctx.cOperator.text + "" + ctx.cNumber.text + " ";
-        }
-    };
-    prototype.exitLogical_or_math_operator = function(ctx) {
-        if (ctx.cLogic != null) {
-            if ("AND" == ctx.cLogic.text.toUpperCase()) {
-                this.log("ADDING OPERATION: " + RollupRulePacketGenerator.OperationType.AND);
-                this.rollupRulePacketGenerator.addQueryOperation(RollupRulePacketGenerator.OperationType.AND);
-            } else if ("OR" == ctx.cLogic.text.toUpperCase()) {
-                this.log("ADDING OPERATION: " + RollupRulePacketGenerator.OperationType.OR);
-                this.rollupRulePacketGenerator.addQueryOperation(RollupRulePacketGenerator.OperationType.OR);
-            }
-        }
-    };
-}, {success: {name: "Callback1", arguments: [null]}, failure: {name: "Callback1", arguments: [null]}, logFunction: {name: "Callback1", arguments: ["Object"]}, positive: {name: "Array", arguments: ["EcAssertion"]}, negative: {name: "Array", arguments: ["EcAssertion"]}, rollupRulePacketGenerator: "RollupRulePacketGenerator", s: "RrS", tok: "RrToken", que: "RrQuery", ip: "InquiryPacket"}, {});
 var TestGraphBuilder = function() {};
 TestGraphBuilder = stjs.extend(TestGraphBuilder, null, [], function(constructor, prototype) {
     constructor.buildTest0 = function(graph) {
