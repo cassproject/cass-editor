@@ -1,5 +1,40 @@
 # Change Log
 
+## [v1.3.3](https://github.com/cassproject/cass-editor/tree/v1.3.3) (2018-12-20)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/ce...v1.3.3)
+
+**Implemented enhancements:**
+
+- Alignment usability for competencies  [\#399](https://github.com/cassproject/cass-editor/issues/399)
+- Scroll paging [\#371](https://github.com/cassproject/cass-editor/issues/371)
+- Enable the user to download a template CSV file for each of the allowed types on the "Import Framework" screen [\#321](https://github.com/cassproject/cass-editor/issues/321)
+- Conceive method of highlighting competencies via url parameters. [\#311](https://github.com/cassproject/cass-editor/issues/311)
+- Enable triggering the "add" button functionality from the parent window via postMessage [\#250](https://github.com/cassproject/cass-editor/issues/250)
+
+**Fixed bugs:**
+
+- Importing a competency tree creates multiple levels of relations. [\#450](https://github.com/cassproject/cass-editor/issues/450)
+- In Language entry box should show the human-readable value from the autofill/select box after selection [\#447](https://github.com/cassproject/cass-editor/issues/447)
+- CASE import with a lot of frameworks a\) doesn't retrieve them all, and b\) doesn't have a scroll bar. [\#445](https://github.com/cassproject/cass-editor/issues/445)
+- Creator and publisher show as \[object Object\] in production display [\#418](https://github.com/cassproject/cass-editor/issues/418)
+- Importing using opensalt url is getting stuck  [\#401](https://github.com/cassproject/cass-editor/issues/401)
+- Resizing the browser window while loading frameworks positions the loading image incorrectly [\#317](https://github.com/cassproject/cass-editor/issues/317)
+- Broadening competencies already broadened duplicates competencies [\#269](https://github.com/cassproject/cass-editor/issues/269)
+- Competencies: Selecting an existing skill from the suggested list results in kick out of edit. [\#163](https://github.com/cassproject/cass-editor/issues/163)
+
+**Closed issues:**
+
+- Remove intro.min.js, find alternative. [\#448](https://github.com/cassproject/cass-editor/issues/448)
+- Improve competency name autocomplete [\#446](https://github.com/cassproject/cass-editor/issues/446)
+- Split bar is not working in view mode [\#444](https://github.com/cassproject/cass-editor/issues/444)
+- Hide text regarding limited edit options when using the CaSS viewer [\#441](https://github.com/cassproject/cass-editor/issues/441)
+- Concept schemes not loading - fetchFailure is not defined [\#438](https://github.com/cassproject/cass-editor/issues/438)
+- Unknown properties in competency editor [\#435](https://github.com/cassproject/cass-editor/issues/435)
+- Add CTDL-ASN mapping fields to CSV import. [\#161](https://github.com/cassproject/cass-editor/issues/161)
+
+## [ce](https://github.com/cassproject/cass-editor/tree/ce) (2018-11-15)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/v1.3.2...ce)
+
 ## [v1.3.2](https://github.com/cassproject/cass-editor/tree/v1.3.2) (2018-11-15)
 [Full Changelog](https://github.com/cassproject/cass-editor/compare/v1.3.1...v1.3.2)
 
