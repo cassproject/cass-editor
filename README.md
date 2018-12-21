@@ -109,7 +109,7 @@ To jump directly to the import option of the above add menu, use `action=import`
 If you have a specific framework you are directing your users to edit or view, you can force the cass-editor to only show that framework by using `frameworkId=<url identifier of framework>`
 
     ex:
-    https://cassproject.github.io/cass-editor/index.html?frameworkId=https://dev.cassproject.org/api/custom/data/schema.cassproject.org.0.2.Framework/76ffff33-bd15-4bf3-a007-4ce247d2216d
+    https://cassproject.github.io/cass-editor/index.html?frameworkId=https://dev.cassproject.org/api/data/schema.cassproject.org.0.3.Framework/e17ad428-e27e-4265-b2ec-782fe7cd81e1
     
 ## Select a specific competency
 If you have a specific competency you are directing your users to edit or view, you can force the cass-editor to select that competency using `competencyId=<url identifier of competency>`. Must be used in conjunction with `frameworkId=<url identifier of framework>`
