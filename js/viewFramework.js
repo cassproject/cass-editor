@@ -1931,6 +1931,10 @@ setLanguageTagAutocomplete = function () {
 		appendTo: '.ceasnDataFields',
 		minLength: 2
 	});
+    $('.sidebarInputLanguageSelect').autocomplete({
+        source: tags,
+        minLength: 2
+    });
 }
 
 highlightCompetencies = function (competencies) {
@@ -1990,7 +1994,7 @@ $.ajax({
 		$('#sidebarInLanguageInput').autocomplete({
 			source: tags,
 			appendTo: '.ceasnDataFields',
-			minLength: 2,
+			minLength: 2
 		});
 		$('#sidebarFrameworkInLanguageInput').autocomplete({
 			source: tags,

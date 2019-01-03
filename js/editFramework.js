@@ -311,14 +311,17 @@ saveCompetency = function (addAnother) {
                 var selectVal = getValueOrNull($(this).prev('input.sidebarInputLanguageSelect').val());
                 var stringVal = getValueOrNull($(this).val());
                 if (selectVal != null && stringVal != null) {
-                    objectVals["@language"] = selectVal;
+                    if (langTags[selectVal])
+                        objectVals["@language"] = langTags[selectVal];
+                    else
+                        objectVals["@language"] = selectVal;
                     objectVals["@value"] = stringVal;
                     arrayVals.push(objectVals);
                 }
             } else {
                 var val = getValueOrNull($(this).val());
                 if (val != null) {
-                    if ($(this).hasClass("language") && langTags[val])
+                    if (($(this).hasClass("language") || $(this).hasClass("sidebarInputLanguageSelect")) && langTags[val])
                         arrayVals.push(langTags[val]);
                     else
                         arrayVals.push(val);
@@ -326,6 +329,7 @@ saveCompetency = function (addAnother) {
             }
         });
         if (arrayVals.length > 0) {
+            console.log(arrayVals);
             thing[whichInputChoice] = arrayVals;
         } else {
             delete thing[whichInputChoice];
