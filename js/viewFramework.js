@@ -408,19 +408,19 @@ renderSidebar = function (justLists) {
 			if (!EcArray.isArray(val))
 				val = [val];
 			for (var i = 0; i < val.length; i++) {
-				if (val[i].toLowerCase().indexOf("http") != -1) {
-					var linkText = val[i];
+				if (Thing.getDisplayStringFrom(val[i]).toLowerCase().indexOf("http") != -1) {
+					var linkText = Thing.getDisplayStringFrom(val[i]);
 					var elem = $(this);
-					elem.append("<div class='sidebarPropertyLink'><a target='_blank'/></div>").children().last().children().last().attr("href", val[i]).text(linkText);
+					elem.append("<div class='sidebarPropertyLink'><a target='_blank'/></div>").children().last().children().last().attr("href", Thing.getDisplayStringFrom(val[i])).text(linkText);
 					var anchor = elem.children().last().children().last();
 					elem.children().last().prepend("<div><button title='Copy URL to the clipboard.' onclick='copyToClipboard(event);'><i class='fa fa-clipboard'></i></button></div>");
-					resolveNameFromUrlWithElem(val[i], anchor, function (result, elem) {
+					resolveNameFromUrlWithElem(Thing.getDisplayStringFrom(val[i]), anchor, function (result, elem) {
 						if (result != null) {
 							elem.text(result);
 						}
 					});
 				} else {
-					$(this).append("<span/>").children().last().text(val[i]);
+					$(this).append("<span/>").children().last().text(Thing.getDisplayStringFrom(val[i]));
 				}
 			}
 		});
