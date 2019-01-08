@@ -226,7 +226,7 @@ function refreshCompetency(col, level, subsearch, done) {
 	}
 	treeNode = $("#tree").append("<li class = 'competency' draggable='" + draggable + "' ondragstart='dragCompetency(event);' ontouchstart='handleTouchStart(event)' ontouchmove='handleTouchMove(event);' ontouchend='handleTouchEnd(event);' ondrop='dropCompetency(event);' ondragover='allowCompetencyDrop(event);'><span></span><ul></ul></li>").children().last();
 	treeNode.attr("id", col.shortId());
-	var competencyDescription = col.description;
+	var competencyDescription = col.getDescription();
 	competencyDescription = EcArray.isArray(competencyDescription) ? competencyDescription : [competencyDescription];
 	for (var i = competencyDescription.length - 1; i >= 0; i--) {
 		if (competencyDescription[i] != null && competencyDescription[i] != "NULL" && competencyDescription[i] != col.name)
