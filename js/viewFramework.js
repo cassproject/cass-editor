@@ -419,6 +419,8 @@ renderSidebar = function (justLists) {
 							elem.text(result);
 						}
 					});
+				} else if ($(this).next().attr("type") == "datetime-local") {
+					$(this).append("<span/>").children().last().text(new Date(val).toDatetimeLocal().substring(0, 10));
 				} else {
 					$(this).append("<span/>").children().last().text(Thing.getDisplayStringFrom(val[i]));
 				}
