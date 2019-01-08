@@ -408,7 +408,12 @@ renderSidebar = function (justLists) {
 			if (!EcArray.isArray(val))
 				val = [val];
 			for (var i = 0; i < val.length; i++) {
-				if (Thing.getDisplayStringFrom(val[i]).toLowerCase().indexOf("http") != -1) {
+				var displayString = Thing.getDisplayStringFrom(val[i]);
+				if (EcObject.isObject(displayString)) {
+					var stringKeys = EcObject.keys(displayString);
+					displayString = displayString[stringKeys][0];
+				}
+				if (displayString.toLowerCase().indexOf("http") != -1) {
 					var linkText = Thing.getDisplayStringFrom(val[i]);
 					var elem = $(this);
 					elem.append("<div class='sidebarPropertyLink'><a target='_blank'/></div>").children().last().children().last().attr("href", Thing.getDisplayStringFrom(val[i])).text(linkText);
@@ -422,7 +427,7 @@ renderSidebar = function (justLists) {
 				} else if ($(this).next().attr("type") == "datetime-local") {
 					$(this).append("<span/>").children().last().text(new Date(val).toDatetimeLocal().substring(0, 10));
 				} else {
-					$(this).append("<span/>").children().last().text(Thing.getDisplayStringFrom(val[i]));
+					$(this).append("<span/>").children().last().text(displayString);
 				}
 			}
 		});
