@@ -77,6 +77,18 @@ function importFile() {
                 showPage("#importSection");
             }
         });
+    } else if (file.name.endsWith("jsonld")) {
+        analyzeJsonLdFramework(file, function (data) {
+            $("#importJsonLdFrameworks").text("1 Framework Detected.");
+            $("#importJsonLdCompetencies").text(EcObject.keys(data).length-1 + " Competencies Detected.");
+            asnCompetencyCount = EcObject.keys(data).length;
+            showPage("#jsonLdImportFrameworksSection");
+        }, function (error) {
+            {
+                alert(error);
+                showPage("#importSection");
+            }
+        });
     }
 }
 
@@ -323,3 +335,62 @@ $('#importFileForm').on('drag dragstart dragend dragover dragenter dragleave dro
 $('#file').on('change', function (e) {
     showFiles(e.target.files);
 });
+
+function analyzeJsonLdFramework(file, success, failure) {
+    if (file == null) {
+        failure("No file to analyze");
+        return;
+    }
+    if ((file)["name"] == null) {
+        failure("Invalid file");
+        return;
+    } else if (!((file)["name"]).endsWith(".jsonld")) {
+        failure("Invalid file type");
+        return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        var result = ((e)["target"])["result"];
+        var jsonObj = JSON.parse(result);
+        success(jsonObj["@graph"]);
+    };
+    reader.readAsText(file);
+}
+
+function importJsonLdFramework() {
+    var file = importFiles[0];
+    var formData = new FormData();
+    formData.append('file', file);
+    $.ajax({
+        url: repo.selectedServer + "ctdlasn",
+        method: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (data) {
+            var data1 = data.substring(0,data.indexOf("ctdlasn"));
+            var data2 = data.substring(data.indexOf("ctdlasn")+7);
+            data = data1 + "data" + data2;
+            framework = EcFramework.getBlocking(data);
+            showPage("framework");
+            populateFramework();
+            selectedCompetency = null;
+            refreshSidebar();
+        },
+        failure: function (failure) {
+            loading("Import failed. Check your import file for any errors.");
+            setTimeout(function () {
+                showPage("frameworks");
+            }, 5000);
+            console.log(failure.statusText);
+        },
+        error: function (failure) {
+            loading("Import error. Check your import file for any errors.");
+            setTimeout(function () {
+                showPage("frameworks");
+            }, 5000);
+            console.log(failure.statusText);
+        }
+    });
+    loading("Importing Framework");
+}
