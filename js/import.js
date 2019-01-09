@@ -368,9 +368,6 @@ function importJsonLdFramework() {
         processData: false,
         contentType: false,
         success: function (data) {
-            var data1 = data.substring(0,data.indexOf("ctdlasn"));
-            var data2 = data.substring(data.indexOf("ctdlasn")+7);
-            data = data1 + "data" + data2;
             framework = EcFramework.getBlocking(data);
             showPage("framework");
             populateFramework();
