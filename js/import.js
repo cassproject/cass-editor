@@ -352,7 +352,13 @@ function analyzeJsonLdFramework(file, success, failure) {
     reader.onload = function(e) {
         var result = ((e)["target"])["result"];
         var jsonObj = JSON.parse(result);
-        success(jsonObj["@graph"]);
+        if (jsonObj["@graph"]) {
+            success(jsonObj["@graph"]);
+        }
+        else {
+            failure("Invalid file");
+            return;
+        }
     };
     reader.readAsText(file);
 }
