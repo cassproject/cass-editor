@@ -50,9 +50,17 @@
 					<center>
 						<h4>Achievement Standards Network RDF+JSON</h4>
 					</center>
-					<p style="text-align:justify">The Achievement Standards Network set of standards, or ASN standard for short, is a legacy standard used primarily by <a href="http://www.achievementstandards.org/">achievementstandards.org</a> to transmit state standards and other national and organizational standards</p>
+					<p style="text-align:justify">The Achievement Standards Network set of standards, or ASN standard for short, is a legacy standard used primarily by <a href="http://www.achievementstandards.org/">achievementstandards.org</a> to transmit state standards and other national and organizational standards.</p>
 					<p style="text-align:justify">Using this format, you can import competencies exported from achievementstandards.org and other systems in an RDF JSON format.</p>
 					<button style="font-size:x-small" onclick='$.ajax({url: "files/D2695955.json",success: function (data) {download("D2695955.json", JSON.stringify(data,null,2));}});'>Download JSON Sample</button>
+				</div>
+				<div class="panel">
+					<center>
+						<h4>CTDL-ASN formatted JSON-LD</h4>
+					</center>
+					<p style="text-align:justify">For this import, you use one JSON-LD file that includes a graph of the framework and all of its competencies.</p>
+					<p style="text-align:justify">Using this format, you can import a framework and competencies from a system that exports CTDL-ASN formatted JSON-LD.</p>
+					<button style="font-size:x-small" onclick='$.ajax({url: "files/DQP.jsonld",success: function (data) {download("DQP.jsonld", data);}});'>Download JSON-LD Sample</button>
 				</div>
 			</div>
 		</div>
