@@ -169,6 +169,9 @@ function importAsn() {
 }
 
 function importCtdlAsnCsv() {
+    var ceo = null;
+    if (EcIdentityManager.ids.length > 0)
+        ceo = EcIdentityManager.ids[0];
     CTDLASNCSVImport.importFrameworksAndCompetencies(repo, importFiles[0], function (frameworks, competencies, relations) {
         var all = frameworks.concat(competencies).concat(relations);
         var ah = new EcAsyncHelper();
@@ -184,6 +187,7 @@ function importCtdlAsnCsv() {
                     }, queryParams.origin);
             }
             Task.asyncImmediate(function (callback2) {
+                f.addOwner(ceo.ppk.toPk());
                 repo.saveTo(f, function (success) {
                     counter++;
                     loading(ah.counter + " objects remaining to save. " + (failed > 0 ? (failed + " failed to save.") : ""));
@@ -221,7 +225,7 @@ function importCtdlAsnCsv() {
     }, function (failure) {
         error(failure);
         backPage();
-    });
+    },ceo);
 }
 
 function importCsv() {
@@ -367,6 +371,9 @@ function importJsonLdFramework() {
     var file = importFiles[0];
     var formData = new FormData();
     formData.append('file', file);
+    var identity = EcIdentityManager.ids[0];
+    if (identity != null)
+        formData.append('owner',identity.ppk.toPk().toPem());
     $.ajax({
         url: repo.selectedServer + "ctdlasn",
         method: "POST",
