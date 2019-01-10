@@ -1,5 +1,16 @@
 # Change Log
 
+## [v1.3.4](https://github.com/cassproject/cass-editor/tree/v1.3.4) (2019-01-04)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/v1.3.3...v1.3.4)
+
+**Implemented enhancements:**
+
+- Position "+" at end of entry template and not below it [\#352](https://github.com/cassproject/cass-editor/issues/352)
+
+**Fixed bugs:**
+
+- Desires has no option to search for a relation [\#451](https://github.com/cassproject/cass-editor/issues/451)
+
 ## [v1.3.3](https://github.com/cassproject/cass-editor/tree/v1.3.3) (2018-12-20)
 [Full Changelog](https://github.com/cassproject/cass-editor/compare/ce...v1.3.3)
 

@@ -11,6 +11,7 @@
 	<url>http://github.com/cassproject/cass-editor</url>
 
 	<properties>
+		<ec-version>2.6.2</ec-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -18,22 +19,22 @@
 		<dependency>
 			<groupId>com.eduworks</groupId>
 			<artifactId>cass.import</artifactId>
-			<version>2.6.0</version>
+			<version>${ec-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.eduworks</groupId>
 			<artifactId>cass.rollup</artifactId>
-			<version>2.6.0</version>
+			<version>${ec-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.eduworks</groupId>
 			<artifactId>org.credentialengine</artifactId>
-			<version>2.6.0</version>
+			<version>${ec-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.eduworks</groupId>
 			<artifactId>org.w3.skos</artifactId>
-			<version>2.6.0</version>
+			<version>${ec-version}</version>
 		</dependency>
 	</dependencies>
 

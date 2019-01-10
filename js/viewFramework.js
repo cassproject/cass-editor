@@ -135,7 +135,7 @@ populateFramework = function (subsearch) {
 	try {
 		if (framework.getTimestamp() == null || isNaN(framework.getTimestamp()))
 			if (framework["schema:dateModified"] != null && framework["schema:dateModified"] !== undefined)
-				$("#editFrameworkSection #frameworkLastModified").text("Last modified " + moment(new Date(framework["schema:dateModified"])).fromNow() + ".").show();
+				$("#editFrameworkSection #frameworkLastModified").text("Last modified " + moment(new Date(Thing.getDisplayStringFrom(framework["schema:dateModified"]))).fromNow() + ".").show();
 			else
 				$("#editFrameworkSection #frameworkLastModified").hide();
 		else
@@ -143,7 +143,7 @@ populateFramework = function (subsearch) {
 	} catch (e) {}
 	try {
 		if (framework["schema:dateCreated"] != null && framework["schema:dateCreated"] !== undefined)
-			$("#editFrameworkSection #frameworkCreated").text("Created " + moment(new Date(framework["schema:dateCreated"])).fromNow() + ".").show();
+			$("#editFrameworkSection #frameworkCreated").text("Created " + moment(new Date(Thing.getDisplayStringFrom(framework["schema:dateCreated"]))).fromNow() + ".").show();
 		else
 			$("#editFrameworkSection #frameworkCreated").hide();
 	} catch (e) {}
@@ -237,7 +237,7 @@ function refreshCompetency(col, level, subsearch, done) {
 	}
 	treeNode = $("#tree").append("<li class = 'competency' draggable='" + draggable + "' ondragstart='dragCompetency(event);' ontouchstart='handleTouchStart(event)' ontouchmove='handleTouchMove(event);' ontouchend='handleTouchEnd(event);' ondrop='dropCompetency(event);' ondragover='allowCompetencyDrop(event);'><span></span><ul></ul></li>").children().last();
 	treeNode.attr("id", col.shortId());
-	var competencyDescription = col.description;
+	var competencyDescription = col.getDescription();
 	competencyDescription = EcArray.isArray(competencyDescription) ? competencyDescription : [competencyDescription];
 	for (var i = competencyDescription.length - 1; i >= 0; i--) {
 		if (competencyDescription[i] != null && competencyDescription[i] != "NULL" && competencyDescription[i] != col.name)
@@ -440,25 +440,29 @@ renderSidebar = function (justLists) {
 			if (!EcArray.isArray(val))
 				val = [val];
 			for (var i = 0; i < val.length; i++) {
-				if (typeof val[i] === 'object') {
-					var temp = $(this);
-					temp.append("<span/>").children().last().text(val[i]["@language"] + ': ' + val[i]["@value"]);
+				var displayString = Thing.getDisplayStringFrom(val[i]);
+				if (val[i]["@language"]) {
+				    displayString = val[i]["@language"] + ': ' + displayString;
+				}
+				if (EcObject.isObject(displayString)) {
+					var stringKeys = EcObject.keys(displayString);
+					displayString = displayString[stringKeys][0];
+				}
+				if (displayString.toLowerCase().indexOf("http") != -1) {
+					var linkText = Thing.getDisplayStringFrom(val[i]);
+					var elem = $(this);
+					elem.append("<div class='sidebarPropertyLink'><a target='_blank'/></div>").children().last().children().last().attr("href", Thing.getDisplayStringFrom(val[i])).text(linkText);
+					var anchor = elem.children().last().children().last();
+					elem.children().last().prepend("<div><button title='Copy URL to the clipboard.' onclick='copyToClipboard(event);'><i class='fa fa-clipboard'></i></button></div>");
+					resolveNameFromUrlWithElem(Thing.getDisplayStringFrom(val[i]), anchor, function (result, elem) {
+						if (result != null) {
+							elem.text(result);
+						}
+					});
+				} else if ($(this).next().attr("type") == "datetime-local") {
+					$(this).append("<span/>").children().last().text(new Date(val).toDatetimeLocal().substring(0, 10));
 				} else {
-					if (val[i].toLowerCase().indexOf("http") != -1) {
-						var linkText = val[i];
-						var elem = $(this);
-						elem.append("<div class='sidebarPropertyLink'><a target='_blank'/></div>").children().last().children().last().attr("href", val[i]).text(linkText);
-						var anchor = elem.children().last().children().last();
-						elem.children().last().prepend("<div><button title='Copy URL to the clipboard.' onclick='copyToClipboard(event);'><i class='fa fa-clipboard'></i></button></div>");
-						resolveNameFromUrlWithElem(val[i], anchor, function(result, elem) {
-							if (result != null) {
-								elem.text(result);
-							}
-						});
-					}
-					else {
-						$(this).append("<span/>").children().last().text(val[i]);
-					}
+					$(this).append("<span/>").children().last().text(displayString);
 				}
 			}
 		});

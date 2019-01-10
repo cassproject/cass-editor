@@ -1398,18 +1398,19 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
         }, null);
     };
     /**
-     *  Gets a JSON-LD object from the place designated by the URI.
+     *  Returns an array of JSON-LD objects from the places designated by the given URIs.
      *  <p>
      *  Uses a signature sheet gathered from {@link EcIdentityManager}.
      * 
-     *  @param {String}                               url URL of the remote object.
-     *  @param {Callback1<EcRemoteLinkedData>}success Event to call upon
+     *  @param {Array<String>}                        urls URLs of the remote objects.
+     *  @param {Callback1<Array<EcRemoteLinkedData>>} success Event to call upon
      *                                                successful retrieval.
      *  @param {Callback1<String>}                    failure Event to call upon spectacular
      *                                                failure.
+     *  @param {Callback1<Array<EcRemoteLinkedData>>} cachedValues Event to call upon
+     *                                                successful retrieval from cache.
      *  @memberOf EcRepository
-     *  @method get
-     *  @static
+     *  @method multiget
      */
     prototype.multiget = function(urls, success, failure, cachedValues) {
         if (urls == null || urls.length == 0) {
