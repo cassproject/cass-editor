@@ -1,3 +1,5 @@
+var defaultLanguage = "";
+
 afterSave = function (stuff) {
     if (webSocketConnection == false)
         populateFramework();
@@ -10,6 +12,19 @@ afterSaveSidebar = function (stuff) {
     refreshSidebar();
     if (webSocketConnection == false)
         populateFramework();
+}
+
+setDefaultLanguage = function() {
+    if (framework) {
+        if (framework["ceasn:inLanguage"])
+            defaultLanguage = framework["ceasn:inLanguage"][0];
+        else if (framework["schema:inLanguage"])
+            defaultLanguage = framework["schema:inLanguage"][0];
+    }
+    else if (navigator.language || navigator.userLanguage)
+        defaultLanguage = navigator.language || navigator.userLanguage;
+    else
+        defaultLanguage = "en";
 }
 
 addCompetency = function () {
@@ -32,7 +47,16 @@ addCompetency = function () {
         if (EcIdentityManager.ids.length > 0)
             c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
         c["ceasn:inLanguage"] = framework["ceasn:inLanguage"];
-        c.name = {"@language": "en", "@value": "New Competency"};
+        c["schema:inLanguage"] = framework["schema:inLanguage"];
+        setDefaultLanguage();
+        c.name = {"@language": defaultLanguage, "@value": "New Competency"};
+        if (!c["ceasn:inLanguage"] && !c["schema:inLanguage"]) {
+            if (ceasnDataFields)
+                c["ceasn:inLanguage"] = defaultLanguage;
+            else
+                c["schema:inLanguage"] = defaultLanguage;
+        }
+
         framework["schema:dateModified"] = new Date().toISOString();
         repo.saveTo(c, function () {
             if (selectedCompetency != null) {
@@ -329,7 +353,6 @@ saveCompetency = function (addAnother) {
             }
         });
         if (arrayVals.length > 0) {
-            console.log(arrayVals);
             thing[whichInputChoice] = arrayVals;
         } else {
             delete thing[whichInputChoice];
@@ -377,7 +400,8 @@ createFramework = function () {
     framework["schema:dateCreated"] = new Date().toISOString();
     if (EcIdentityManager.ids.length > 0)
         framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-    framework.name = {"@language": "en", "@value": "New Framework"};
+    setDefaultLanguage();
+    framework.name = {"@language": defaultLanguage, "@value": "New Framework"};
     refreshSidebar();
     editSidebar();
     populateFramework();

@@ -520,6 +520,10 @@ renderSidebar = function (justLists) {
 			}
 		}
 	});
+	$("#detailSlider").find(".sidebarInputLanguageSelect").each(function () {
+        if (!$(this).next().val())
+        	$(this).val(defaultLanguage);
+    });
 	// Display Concept's broader or narrower connections
 	if (conceptMode && selectedCompetency != null) {
 		var renderConceptConnection = function (cId, displayConcept, relationType) {
@@ -919,7 +923,6 @@ renderSidebar = function (justLists) {
 			}
 			else
 				setTimeout(function() {
-					baseField.prev('input.sidebarInputLanguageSelect').val('');
 					baseField.val('');
 				}, 10);
 		});
@@ -1202,10 +1205,20 @@ editSidebar = function () {
 	$('input[data-autocompleteCache="true"]').each(function () {
 		attachCustomAutocomplete(this);
 	});
+	$("#detailSlider").find(".sidebarInputLanguageSelect").each(function () {
+        if (!$(this).next())
+        	$(this).val(defaultLanguage);
+    });
 	$(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
 	if (queryParams.ceasnDataFields === 'true' || queryParams.tlaProfile == 'true') {
 		$(".ceasnDataFields").show();
 	}
+	setDefaultLanguage();
+	$("#detailSlider").find(".sidebarInputLanguageSelect").each(function () {
+        if (!$(this).next().val()) {
+        	$(this).val(defaultLanguage);
+        }
+    });
 }
 
 $('#sidebarNameInput').on('keyup', function (evt) {
