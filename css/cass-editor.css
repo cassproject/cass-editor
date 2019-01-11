@@ -917,7 +917,7 @@ hr {
     margin-bottom: 0.5rem;
 }
 
-.sidebarInputLanguageSelect {
+#detailSlider .sidebarInputLanguageSelect {
     width:auto;
 }
 
