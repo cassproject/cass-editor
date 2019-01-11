@@ -15,12 +15,10 @@ afterSaveSidebar = function (stuff) {
 }
 
 setDefaultLanguage = function() {
-    if (framework) {
-        if (framework["ceasn:inLanguage"])
-            defaultLanguage = framework["ceasn:inLanguage"][0];
-        else if (framework["schema:inLanguage"])
-            defaultLanguage = framework["schema:inLanguage"][0];
-    }
+    if (framework && framework["ceasn:inLanguage"])
+        defaultLanguage = framework["ceasn:inLanguage"][0];
+    else if (framework && framework["schema:inLanguage"])
+        defaultLanguage = framework["schema:inLanguage"][0];
     else if (navigator.language || navigator.userLanguage)
         defaultLanguage = navigator.language || navigator.userLanguage;
     else
@@ -407,6 +405,7 @@ createFramework = function () {
     populateFramework();
     highlightSelected($('#frameworkNameContainer'));
     createFrameworkDelay = setInterval(function() {
+        $("#sidebarFrameworkInLanguageInput").val(defaultLanguage);
         if ($('#sidebarNameInput').is(':visible')) {
             $('#sidebarNameInput').focus();
             $('#sidebarNameInput').select();
