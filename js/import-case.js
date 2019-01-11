@@ -55,8 +55,16 @@ importCase = function () {
 			var uuid = id.split("/")[id.split("/").length - 1];
 
 			$("#caseImportSection [id='" + id + "']").find(".loading").show();
+            var identity = EcIdentityManager.ids[0];
+            var formData = new FormData();
+            if (identity != null)
+                formData.append('owner',identity.ppk.toPk().toPem());
 			importCaseAjax = $.ajax({
 				url: repo.selectedServer + "ims/case/harvest?caseEndpoint=" + $("#urlEndpoint").val() + "&dId=" + uuid,
+                method: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
 				success: function () {
 					$("#caseImportSection [id='" + id + "']").removeClass("unfinished").addClass("finished").find(".loading").hide().parent().find(".success").show();
 					importCase();
