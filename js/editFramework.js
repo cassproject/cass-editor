@@ -19,6 +19,8 @@ setDefaultLanguage = function() {
         defaultLanguage = framework["ceasn:inLanguage"][0];
     else if (framework && framework["schema:inLanguage"])
         defaultLanguage = framework["schema:inLanguage"][0];
+    else if (framework && framework["dcterms:language"])
+        defaultLanguage = framework["dcterms:language"];
     else if (navigator.language || navigator.userLanguage)
         defaultLanguage = navigator.language || navigator.userLanguage;
     else
@@ -356,6 +358,19 @@ saveCompetency = function (addAnother) {
             delete thing[whichInputChoice];
         }
     });
+
+    //Save concept scheme language as code
+    if (conceptMode && $("#sidebarConceptInLanguageInput").val()) {
+        var conceptLanguage = $("#sidebarConceptInLanguageInput").val();
+        var whichInputChoice = $("#sidebarConceptInLanguageInput").attr(inputChoice);
+        if (conceptLanguage != null) {
+            if (langTags[conceptLanguage]) {
+                conceptLanguage = langTags[conceptLanguage];
+            }
+        }
+        thing[whichInputChoice] = conceptLanguage;
+    }
+
 
     $("#detailSlider").find("select:visible:not(.sidebarInputLanguageSelect)").each(function () {
         var val = $(this).find("option:selected").attr("value");

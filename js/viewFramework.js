@@ -1205,10 +1205,6 @@ editSidebar = function () {
 	$('input[data-autocompleteCache="true"]').each(function () {
 		attachCustomAutocomplete(this);
 	});
-	$("#detailSlider").find(".sidebarInputLanguageSelect").each(function () {
-        if (!$(this).next())
-        	$(this).val(defaultLanguage);
-    });
 	$(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
 	if (queryParams.ceasnDataFields === 'true' || queryParams.tlaProfile == 'true') {
 		$(".ceasnDataFields").show();

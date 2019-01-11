@@ -14,7 +14,8 @@ addConcept = function () {
             c.generateId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
         if (EcIdentityManager.ids.length > 0)
             c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-        c["skos:prefLabel"] = {"@language": "en", "@value": "New Concept"};
+        setDefaultLanguage();
+        c["skos:prefLabel"] = {"@language": defaultLanguage, "@value": "New Concept"};
         c["skos:inScheme"] = framework.shortId();
         if (selectedCompetency != null) {
             collapseCompetencyTracking(framework.shortId(),selectedCompetency.shortId(),"expanded");
@@ -56,8 +57,9 @@ addConcept = function () {
 createConceptScheme = function () {
     if (viewMode) return;
     var csTitle;
+    setDefaultLanguage();
     if ($("#name").val() == null || $("#name").val().trim() == "")
-        csTitle = {"@language": "en", "@value": "New Concept Scheme"};
+        csTitle = {"@language": defaultLanguage, "@value": "New Concept Scheme"};
     else
         csTitle = $("#name").val().trim();
     framework = new EcConceptScheme();
@@ -70,7 +72,7 @@ createConceptScheme = function () {
     framework["dcterms:title"] = csTitle;
     framework["schema:dateCreated"] = new Date().toISOString();
     if ($("#description").val() != null && $("#description").val() != "")
-        framework["dcterms:description"] = {"@language": "en", "@value": $("#description").val()};
+        framework["dcterms:description"] = {"@language": defaultLanguage, "@value": $("#description").val()};
     loading("Creating concept scheme...");
     repo.saveTo(framework, function () {
         refreshSidebar();
@@ -78,6 +80,7 @@ createConceptScheme = function () {
         populateFramework();
         highlightSelected($('#frameworkNameContainer'));
         createFrameworkDelay = setInterval(function() {
+            $("#sidebarConceptInLanguageInput").val(defaultLanguage);
             if ($('#sidebarNameInput').is(':visible')) {
                 $('#sidebarNameInput').focus();
                 $('#sidebarNameInput').select();

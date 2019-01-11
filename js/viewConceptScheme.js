@@ -206,5 +206,10 @@ editConceptSidebar = function () {
     } else {
         $('.ceasnCompetency').hide();
     }
-
+    setDefaultLanguage();
+    $("#detailSlider").find(".sidebarInputLanguageSelect").each(function () {
+        if (!$(this).next().attr("value")) {
+            $(this).val(defaultLanguage);
+        }
+    });
 }
