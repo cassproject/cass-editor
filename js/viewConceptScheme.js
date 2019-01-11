@@ -31,6 +31,7 @@ populateConceptScheme = function (subsearch) {
         else
             $("#editFrameworkSection #frameworkAKA").append($('<span>AKA: ' + frameworkName[i] + '</span>'));
     }
+    $("#editFrameworkSection #frameworkCount").hide();
     var frameworkDescription = framework["dcterms:description"];
     frameworkDescription = EcArray.isArray(frameworkDescription) ? frameworkDescription : [frameworkDescription];
     $("#editFrameworkSection #frameworkDescription").children().remove();
