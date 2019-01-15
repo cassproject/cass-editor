@@ -582,6 +582,16 @@ renderSidebar = function (justLists) {
 				} else {
 					if (displayCompetency.getName)
 						li.text(displayCompetency.getName());
+					else if (displayCompetency.indexOf("http") != -1) {
+						resolveNameFromUrl(displayCompetency, function(result) {
+                            if (result != null) {
+                                li.text(result);;
+                            }
+                            else {
+                            	li.text(displayCompetency);
+                            }
+                        });
+					}
 					else
 						li.text(displayCompetency);
 				}
