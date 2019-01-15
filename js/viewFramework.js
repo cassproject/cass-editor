@@ -585,7 +585,7 @@ renderSidebar = function (justLists) {
 					else if (displayCompetency.indexOf("http") != -1) {
 						resolveNameFromUrl(displayCompetency, function(result) {
                             if (result != null) {
-                                li.text(result);;
+                                li.text(result);
                             }
                             else {
                             	li.text(displayCompetency);
