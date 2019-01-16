@@ -990,6 +990,80 @@ EcAssertion = stjs.extend(EcAssertion, Assertion, [], function(constructor, prot
         }
         EcRemoteLinkedData.prototype.removeReader.call(this, newReader);
     };
+    prototype.addReaderAsync = function(newReader, success, failure) {
+        var ary = new Array();
+        if (this.agent != null) {
+            ary.push(this.agent);
+        }
+        if (this.assertionDate != null) {
+            ary.push(this.assertionDate);
+        }
+        if (this.decayFunction != null) {
+            ary.push(this.decayFunction);
+        }
+        if (this.evidence != null) 
+            for (var i = 0; i < this.evidence.length; i++) {
+                ary.push(this.evidence[i]);
+            }
+        if (this.expirationDate != null) {
+            ary.push(this.expirationDate);
+        }
+        if (this.negative != null) {
+            ary.push(this.negative);
+        }
+        if (this.subject != null) {
+            ary.push(this.subject);
+        }
+        EcRemoteLinkedData.prototype.addReader.call(this, newReader);
+        var eah = new EcAsyncHelper();
+        eah.each(ary, function(ecEncryptedValue, callback0) {
+            ecEncryptedValue.addReaderAsync(newReader, callback0, function(s) {
+                if (!eah.isStopped()) {
+                    eah.stop();
+                    failure("Failed to add reader to an assertion.");
+                }
+            });
+        }, function(strings) {
+            success();
+        });
+    };
+    prototype.removeReaderAsync = function(oldReader, success, failure) {
+        var ary = new Array();
+        if (this.agent != null) {
+            ary.push(this.agent);
+        }
+        if (this.assertionDate != null) {
+            ary.push(this.assertionDate);
+        }
+        if (this.decayFunction != null) {
+            ary.push(this.decayFunction);
+        }
+        if (this.evidence != null) 
+            for (var i = 0; i < this.evidence.length; i++) {
+                ary.push(this.evidence[i]);
+            }
+        if (this.expirationDate != null) {
+            ary.push(this.expirationDate);
+        }
+        if (this.negative != null) {
+            ary.push(this.negative);
+        }
+        if (this.subject != null) {
+            ary.push(this.subject);
+        }
+        EcRemoteLinkedData.prototype.removeReader.call(this, oldReader);
+        var eah = new EcAsyncHelper();
+        eah.each(ary, function(ecEncryptedValue, callback0) {
+            ecEncryptedValue.removeReaderAsync(oldReader, callback0, function(s) {
+                if (!eah.isStopped()) {
+                    eah.stop();
+                    failure("Failed to remove reader to an assertion.");
+                }
+            });
+        }, function(strings) {
+            success();
+        });
+    };
     prototype.getSearchStringByTypeAndCompetency = function(competency) {
         return "(" + this.getSearchStringByType() + " AND competency:\"" + competency.shortId() + "\")";
     };
