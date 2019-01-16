@@ -308,7 +308,7 @@
 						<option class="" value="cassrdfjson">CASS (RDF+JSON)</option>
 						<option class="" value="cassrdfxml">CASS (RDF+XML)</option>
 						<option class="" value="cassturtle">CASS (Turtle)</option>
-						<option class="absentForConcepts frameworkOnly" value="ceasn">Credential Engine ASN (JSON-LD)</option>
+						<option class="absentForConcepts" value="ceasn">Credential Engine ASN (JSON-LD)</option>
 						<option class="absentForConcepts frameworkOnly" value="csv">Table (CSV)</option>
 						<option class="absentForConcepts" value="case">IMS Global CASE (JSON)</option>
 					</select>
@@ -600,7 +600,7 @@
 											<div class="sidebarInputRow">
 												<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
 												<input class="sidebarInputLanguageSelect" placeholder="Language"></input>
-												<input id="sidebarPublisherNameInput" cassFramework="schema:publisher" ceasnFramework="ceasn:publisherName" data-group="sidebarPublisherNameInput" plural="true" class="sidebarPublisherNameInput language" />
+												<input id="sidebarPublisherNameInput" cassFramework="ceasn:publisherName" ceasnFramework="ceasn:publisherName" data-group="sidebarPublisherNameInput" plural="true" class="sidebarPublisherNameInput language" />
 												<button title="Add another value." id="addPublisherNameInput" data-target="sidebarPublisherNameInput" data-autocomplete-field="true" class="addInputButton"><i class="fa fa-plus"></i></button>
 											</div>
 										</div>
@@ -610,7 +610,7 @@
 										<div class="sidebarInputGrouping editMode editControl absentForConcepts">
 											<div class=sidebarInputRow>
 												<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
-												<input id="sidebarPublisherInput" cassFramework="ceasn:publisher" ceasnFramework="ceasn:publisher" data-group="sidebarPublisherInput" plural="true" type="url" class="sidebarPublisherInput" />
+												<input id="sidebarPublisherInput" cassFramework="schema:publisher" ceasnFramework="ceasn:publisher" data-group="sidebarPublisherInput" plural="true" type="url" class="sidebarPublisherInput" />
 												<button title="Add another value." id="addPublisherInput" data-target="sidebarPublisherInput" class="addInputButton"><i class="fa fa-plus"></i></button>
 											</div>
 										</div>

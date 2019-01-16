@@ -625,12 +625,22 @@ renderSidebar = function (justLists) {
 					else
 						li.text(displayCompetency);
 				} else {
-					if (displayCompetency.getName){
+					if (displayCompetency.getName) {
 						var name = displayCompetency.getName();
 						if (name[0]["@value"])
-							li.text(name[0]["@value"]);
+						    li.text(name[0]["@value"]);
 						else
-							li.text(name);
+						    li.text(name);
+					}
+					else if (displayCompetency.indexOf("http") != -1) {
+						resolveNameFromUrl(displayCompetency, function(result) {
+                            if (result != null) {
+                                li.text(result);
+                            }
+                            else {
+                            	li.text(displayCompetency);
+                            }
+                        });
 					}
 					else
 						li.text(displayCompetency);
