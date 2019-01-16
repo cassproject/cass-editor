@@ -563,6 +563,9 @@ resolveNameFromUrl = function (url, callback) {
 				}
 			}
 			callback(name);
+		},
+		error: function() {
+			callback(null);
 		}
 	});
 }
