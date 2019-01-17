@@ -1,5 +1,24 @@
 # Change Log
 
+## [Unreleased](https://github.com/cassproject/cass-editor/tree/HEAD)
+
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/ce...HEAD)
+
+**Closed issues:**
+
+- Export of a  [\#454](https://github.com/cassproject/cass-editor/issues/454)
+- CSV Import with language tags [\#453](https://github.com/cassproject/cass-editor/issues/453)
+
+**Merged pull requests:**
+
+- Multiple language fields [\#440](https://github.com/cassproject/cass-editor/pull/440) ([woodkri](https://github.com/woodkri))
+
+## [ce](https://github.com/cassproject/cass-editor/tree/ce) (2019-01-10)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/v1.3.5...ce)
+
+## [v1.3.5](https://github.com/cassproject/cass-editor/tree/v1.3.5) (2019-01-10)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/v1.3.4...v1.3.5)
+
 ## [v1.3.4](https://github.com/cassproject/cass-editor/tree/v1.3.4) (2019-01-04)
 [Full Changelog](https://github.com/cassproject/cass-editor/compare/v1.3.3...v1.3.4)
 
@@ -12,7 +31,7 @@
 - Desires has no option to search for a relation [\#451](https://github.com/cassproject/cass-editor/issues/451)
 
 ## [v1.3.3](https://github.com/cassproject/cass-editor/tree/v1.3.3) (2018-12-20)
-[Full Changelog](https://github.com/cassproject/cass-editor/compare/ce...v1.3.3)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/v1.3.2...v1.3.3)
 
 **Implemented enhancements:**
 
@@ -42,9 +61,6 @@
 - Concept schemes not loading - fetchFailure is not defined [\#438](https://github.com/cassproject/cass-editor/issues/438)
 - Unknown properties in competency editor [\#435](https://github.com/cassproject/cass-editor/issues/435)
 - Add CTDL-ASN mapping fields to CSV import. [\#161](https://github.com/cassproject/cass-editor/issues/161)
-
-## [ce](https://github.com/cassproject/cass-editor/tree/ce) (2018-11-15)
-[Full Changelog](https://github.com/cassproject/cass-editor/compare/v1.3.2...ce)
 
 ## [v1.3.2](https://github.com/cassproject/cass-editor/tree/v1.3.2) (2018-11-15)
 [Full Changelog](https://github.com/cassproject/cass-editor/compare/v1.3.1...v1.3.2)
