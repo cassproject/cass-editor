@@ -107,9 +107,16 @@ populateFramework = function (subsearch) {
 	var frameworkName = framework.getName();
 	frameworkName = EcArray.isArray(frameworkName) ? frameworkName : [frameworkName];
 	$("#editFrameworkSection #frameworkAKA").children().remove();
-	$("#editFrameworkSection #frameworkName").text(frameworkName[0]);
+	if (frameworkName[0]["@value"]) {
+		$("#editFrameworkSection #frameworkName").text(frameworkName[0]["@value"]);
+	} else {
+		$("#editFrameworkSection #frameworkName").text(frameworkName[0]);
+	}
 	for (var i = 1; i < frameworkName.length; i++) {
-		$("#editFrameworkSection #frameworkAKA").append($('<span>AKA: ' + frameworkName[i] + '</span>'));
+		if (frameworkName[i]["@value"])
+			$("#editFrameworkSection #frameworkAKA").append($('<span>AKA: ' + frameworkName[i]["@value"] + '</span>'));
+		else
+			$("#editFrameworkSection #frameworkAKA").append($('<span>AKA: ' + frameworkName[i] + '</span>'));
 	}
 	if (framework.competency != null)
 		$("#editFrameworkSection #frameworkCount").text(framework.competency.length + " items");
@@ -118,8 +125,12 @@ populateFramework = function (subsearch) {
 	frameworkDescription = EcArray.isArray(frameworkDescription) ? frameworkDescription : [frameworkDescription];
 	$("#editFrameworkSection #frameworkDescription").children().remove();
 	for (var i in frameworkDescription) {
-		if (frameworkDescription[i] != null && frameworkDescription[i] != 'NULL' && frameworkDescription[i] != '')
-			$("#editFrameworkSection #frameworkDescription").append($('<span>' + frameworkDescription[i] + '</span>'));
+		if (frameworkDescription[i] != null && frameworkDescription[i] != 'NULL' && frameworkDescription[i] != '') {
+			if (frameworkDescription[i]["@value"])
+				$("#editFrameworkSection #frameworkDescription").append($('<span>' + frameworkDescription[i]["@value"] + '</span>'));
+			else
+				$("#editFrameworkSection #frameworkDescription").append($('<span>' + frameworkDescription[i] + '</span>'));
+		}
 	}
 	try {
 		if (framework.getTimestamp() == null || isNaN(framework.getTimestamp()))
@@ -230,13 +241,19 @@ function refreshCompetency(col, level, subsearch, done) {
 	competencyDescription = EcArray.isArray(competencyDescription) ? competencyDescription : [competencyDescription];
 	for (var i = competencyDescription.length - 1; i >= 0; i--) {
 		if (competencyDescription[i] != null && competencyDescription[i] != "NULL" && competencyDescription[i] != col.name)
-			treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").css('display', 'block').text(competencyDescription[i]);
+			if (competencyDescription[i]["@value"])
+				treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").css('display', 'block').text(competencyDescription[i]["@value"]);
+			else
+				treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").css('display', 'block').text(competencyDescription[i]);
 	}
 	var competencyName = col.getName();
 	competencyName = EcArray.isArray(competencyName) ? competencyName : [competencyName];
-	treeNode.children().first().prepend("<span/>").children().first().addClass("competencyName").text(competencyName[0]);
+	if (competencyName[0]["@value"])
+		treeNode.children().first().prepend("<span/>").children().first().addClass("competencyName").text(competencyName[0]["@value"]);
+	else
+		treeNode.children().first().prepend("<span/>").children().first().addClass("competencyName").text(competencyName[0]);
 	for (var i = competencyName.length - 1; i > 0; i--) {
-		treeNode.children().first().find('.competencyName').after($('<span class="competencyAKA">AKA: ' + competencyName[i] + '</span>'));
+		treeNode.children().first().find('.competencyName').after($('<span class="competencyAKA">AKA: ' + competencyName[i]["@value"] + '</span>'));
 	}
 	if (queryParams.ceasnDataFields == 'true' || queryParams.tlaProfile == 'true') {
 		if (col["ceasn:codedNotation"] != null)
@@ -244,7 +261,15 @@ function refreshCompetency(col, level, subsearch, done) {
 		if (col["ceasn:listID"] != null)
 			treeNode.children().first().prepend("<span/>").children().first().addClass("competencyListID").text(col["ceasn:listID"]);
 		if (col["dcterms:type"] != null)
-			treeNode.children().first().prepend("<span/>").children().first().addClass("competencyType").text(col["dcterms:type"]);
+			if (typeof col["dcterms:type"] === "object"){
+				var type = col["dcterms:type"];
+				type = EcArray.isArray(type) ? type : [type];
+				for (var i in type){
+					treeNode.children().first().prepend("<span/>").children().first().addClass("competencyType").text(type[i]["@value"]);
+				}
+			}
+			else
+				treeNode.children().first().prepend("<span/>").children().first().addClass("competencyType").text(col["dcterms:type"]);
 	}
 	treeNode.prepend("<span/>").children().first().addClass("collapse").css("visibility", "hidden").html('<i class="fa fa-minus-square" aria-hidden="true"></i> ');
 	if (col.competency != null) {
@@ -394,11 +419,18 @@ renderSidebar = function (justLists) {
 		});
 	if (justLists != true)
 		$("#detailSlider p,h3").each(function () {
-			if (!$(this).next().is("input,textarea"))
+			if (!$(this).next().is("div.sidebarInputGrouping") && !$(this).next().is('input:not(.sidebarInputLanguageSelect),textarea'))
 				return;
+			var val;
+			if ($(this).next().is("div.sidebarInputGrouping")) {
+				val = thing[$(this).next().children().first().children('input:not(.sidebarInputLanguageSelect),textarea').attr(fieldChoice)];
+			} else if ($(this).next().is("input:not(.sidebarInputLanguageSelect),textarea")) {
+				val = thing[$(this).next('input:not(.sidebarInputLanguageSelect),textarea').attr(fieldChoice)];
+			} else {
+				return;
+			}
 			$(this).html("");
 			$(this).prev("label").addClass("viewMode");
-			var val = thing[$(this).next().attr(fieldChoice)];
 			if (val === undefined || val == null || val == "") {
 				$(this).prev("label").removeClass("viewMode");
 				return;
@@ -409,6 +441,9 @@ renderSidebar = function (justLists) {
 				val = [val];
 			for (var i = 0; i < val.length; i++) {
 				var displayString = Thing.getDisplayStringFrom(val[i]);
+				if (val[i]["@language"]) {
+				    displayString = val[i]["@language"] + ': ' + displayString;
+				}
 				if (EcObject.isObject(displayString)) {
 					var stringKeys = EcObject.keys(displayString);
 					displayString = displayString[stringKeys][0];
@@ -467,7 +502,10 @@ renderSidebar = function (justLists) {
 					name = it["ceasn:competencyText"];
 				else if (it["skos:prefLabel"] != null)
 					name = it["skos:prefLabel"];
-				li.attr("id", val[i]).attr("title", val[i]).text(name);
+				if (EcArray.isArray(name) && typeof name[0] === "object")
+					li.attr("id", val[i]).attr("title", val[i]).text(name[0]["@value"]);
+				else
+					li.attr("id", val[i]).attr("title", val[i]).text(name);
 				if (!viewMode) {
 					var x = li.prepend("<a class='editMode' tabindex='0' style='float:right; cursor:pointer;'><i class='fa fa-times'></i></a>").children().first();
 					(function (thing, u, id, li) {
@@ -482,6 +520,10 @@ renderSidebar = function (justLists) {
 			}
 		}
 	});
+	$("#detailSlider").find(".sidebarInputLanguageSelect").each(function () {
+        if (!$(this).next().val())
+        	$(this).val(defaultLanguage);
+    });
 	// Display Concept's broader or narrower connections
 	if (conceptMode && selectedCompetency != null) {
 		var renderConceptConnection = function (cId, displayConcept, relationType) {
@@ -490,7 +532,10 @@ renderSidebar = function (justLists) {
 				connectionsList.text(cId);
 			} else {
 				if (displayConcept["skos:prefLabel"] != null)
-					connectionsList.text(displayConcept["skos:prefLabel"]);
+					if(displayConcept["skos:prefLabel"][0]["@value"])
+						connectionsList.text(displayConcept["skos:prefLabel"][0]["@value"]);
+					else
+						connectionsList.text(displayConcept["skos:prefLabel"]);
 				else
 					connectionsList.text(displayConcept);
 			}
@@ -576,12 +621,17 @@ renderSidebar = function (justLists) {
 					li.text(a.target);
 				else if (conceptMode) {
 					if (displayCompetency["skos:prefLabel"] != null)
-						li.text(displayCompetency["skos:prefLabel"]);
+						li.text(displayCompetency["skos:prefLabel"][0]["@value"]);
 					else
 						li.text(displayCompetency);
 				} else {
-					if (displayCompetency.getName)
-						li.text(displayCompetency.getName());
+					if (displayCompetency.getName) {
+						var name = displayCompetency.getName();
+						if (name[0]["@value"])
+						    li.text(name[0]["@value"]);
+						else
+						    li.text(name);
+					}
 					else if (displayCompetency.indexOf("http") != -1) {
 						resolveNameFromUrl(displayCompetency, function(result) {
                             if (result != null) {
@@ -826,53 +876,65 @@ renderSidebar = function (justLists) {
 		});
 
 	if (justLists != true)
-		$("#detailSlider").find('.sidebarInputGroup').each(function () {
-			//Get the base input field first
-			var baseField = $(this).prev();
-			baseField.prev().prev().css("display", "");
-			baseField.prev().css("display", "");
-			baseField.css("display", "");
-			baseField.prev("label").addClass("viewMode");
+		$("#detailSlider").find('.sidebarInputGrouping').each(function () {
+			$(this).prev().prev().css("display", "");
+			$(this).prev().css("display", "");
+			$(this).css("display", "");
 
-			//Clear additional input fields if the property isn't present
-			if (thing[baseField.attr(inputChoice)] == null) {
-				baseField.next().find('input,textarea').remove();
+			//Clear additional input fields
+			$(this).find('.sidebarInputRow.inputCopy').each(function() {
+				$(this).remove();
+			});
+
+			var baseField = $(this).children().first().children('input:not(.sidebarInputLanguageSelect),textarea');
+
+			var obj = thing[baseField.attr(inputChoice)];
+			var isFirstValue = true;
+			var elem = $(this);
+			if (obj != null){
+				obj = EcArray.isArray(obj) ? obj : [obj];
+				Object.keys(obj).forEach(function(key) {
+					var val = EcArray.isArray(obj[key]) ? obj[key] : [obj[key]];
+					for (var i in val) {
+						//The basefield
+						if (isFirstValue) {
+							isFirstValue = false;
+							setTimeout(function() {
+								if (val[i]["@language"]) {
+									baseField.prev('input.sidebarInputLanguageSelect').val(val[i]["@language"]);
+									baseField.val(val[i]["@value"]);
+								} else {
+									baseField.prev('input.sidebarInputLanguageSelect').val(key);
+									baseField.val(val[i]);
+								}
+							}, 10);
+						} else {
+							var newElem = $(elem.children().first()[0].cloneNode(true));
+							var uuid = new UUID(4);
+							newElem.children('input:not(.sidebarInputLanguageSelect),textarea').attr('id', uuid.format());
+							newElem.children('input:not(.sidebarInputLanguageSelect),textarea').addClass('inputCopy');
+							newElem.addClass('inputCopy');
+							setTimeout(function() {
+								var temp = newElem;
+								if (val[i]["@language"]) {
+									temp.children('input:not(.sidebarInputLanguageSelect),textarea').val(val[i]["@value"]);
+									temp.children('input.sidebarInputLanguageSelect').val(val[i]["@language"]);
+								} else {
+									temp.children('input:not(.sidebarInputLanguageSelect),textarea').val(val[i]);
+									temp.children('input.sidebarInputLanguageSelect').val(key);
+								}
+							}, 10);
+							elem.append(newElem);
+							if (newElem.children('button').attr('data-autocomplete-field') === 'true')
+								setLanguageTagAutocomplete();
+						}
+					}
+				});
 			}
-
-			var val = EcArray.isArray(thing[baseField.attr(inputChoice)]) ? thing[baseField.attr(inputChoice)][0] : thing[baseField.attr(inputChoice)];
-			if (val == null)
-				baseField.val('');
 			else
-				baseField.val(val);
-
-			if (EcArray.isArray(thing[baseField.attr(inputChoice)])) {
-				//Create the input fields if needed and they aren't there yet
-				if (thing[baseField.attr(inputChoice)].length > 1 && ($(this).find('input,textarea').length < thing[baseField.attr(inputChoice)].length - 1)) {
-					for (var i = 1; i < thing[baseField.attr(inputChoice)].length; i++) {
-						var newInput = $(baseField[0].cloneNode(false));
-						var uuid = new UUID(4);
-						newInput.attr('id', uuid.format());
-						newInput.addClass('inputCopy');
-						newInput.val('');
-						newInput.insertBefore($(this).find('.addInputContainer'));
-					}
-				}
-
-				$(this).find('input,textarea').each(function (i) {
-
-					var val = thing[$(this).attr(inputChoice)][i + 1];
-					if (val == null) {
-						$(this).remove();
-					} else {
-						$(this).val(val);
-					}
-				});
-			} else {
-				//There is only one value, remove all additional input fields.
-				$(this).find('input,textarea').each(function (i) {
-					$(this).remove();
-				});
-			}
+				setTimeout(function() {
+					baseField.val('');
+				}, 10);
 		});
 
 	if (justLists != true)
@@ -1157,6 +1219,12 @@ editSidebar = function () {
 	if (queryParams.ceasnDataFields === 'true' || queryParams.tlaProfile == 'true') {
 		$(".ceasnDataFields").show();
 	}
+	setDefaultLanguage();
+	$("#detailSlider").find(".sidebarInputLanguageSelect").each(function () {
+        if (!$(this).next().val()) {
+        	$(this).val(defaultLanguage);
+        }
+    });
 }
 
 $('#sidebarNameInput').on('keyup', function (evt) {
@@ -1232,13 +1300,19 @@ $('.sidebarEditSection').on('input', function (evt) {
 		$('#' + evt.target.getAttribute('data-group') + 'Span').addClass('active');
 	else
 		$('#' + evt.target.getAttribute('data-group') + 'Span').removeClass('active');
-	changedFields[evt.target.id] = 'input';
+	if (evt.target.id){
+		target = evt.target;
+	}
+	else {
+		target = $(evt.target).next()[0];
+	}
+	changedFields[target.id] = 'input';
 	addChangedFieldHighlight();
 	//Detect bad characters
-	if (!validateString($('#' + evt.target.id).val()))
-		setInvalidInput(evt.target.id);
+	if (!validateString($('#' + target.id).val()))
+		setInvalidInput(target.id);
 	else
-		setValidInput(evt.target.id);
+		setValidInput(target.id);
 });
 
 //Detect alignment input field changes
@@ -1267,15 +1341,21 @@ $('.sidebarEditSection').on("focusout", function (evt) {
 
 //Click handler for addInput buttons
 $('body').on('click', '.addInputButton', function (evt) {
-	var originalElem = $('#' + $(this).attr('data-target')).first();
-	var newElem = $(originalElem[0].cloneNode(false));
+	var originalElem = $(this).parent();;
+	var newElem = $(originalElem[0].cloneNode(true));
 	var uuid = new UUID(4);
-	newElem.attr('id', uuid.format());
+	newElem.children('input,textarea').attr('id', uuid.format());
+	newElem.children('input,textarea').addClass('inputCopy');
 	newElem.addClass('inputCopy');
-	newElem.val('');
-	newElem.insertBefore($(this).parent());
+	newElem.children('input,textarea').val('');
+	newElem.insertAfter($(this).parent());
 	if ($(this).attr('data-autocomplete-field') === 'true')
 		setLanguageTagAutocomplete();
+});
+
+//Click handler for removeInput buttons
+$('body').on('click', '.removeInputButton', function (evt) {
+	$(this).parent().remove();
 });
 
 //Detect UL length changes (For edit panel fields that don't use input fields)
@@ -1874,6 +1954,10 @@ setLanguageTagAutocomplete = function () {
 		appendTo: '.ceasnDataFields',
 		minLength: 2
 	});
+    $('.sidebarInputLanguageSelect').autocomplete({
+        source: tags,
+        minLength: 2
+    });
 }
 
 highlightCompetencies = function (competencies) {
@@ -1933,7 +2017,7 @@ $.ajax({
 		$('#sidebarInLanguageInput').autocomplete({
 			source: tags,
 			appendTo: '.ceasnDataFields',
-			minLength: 2,
+			minLength: 2
 		});
 		$('#sidebarFrameworkInLanguageInput').autocomplete({
 			source: tags,
@@ -1943,6 +2027,10 @@ $.ajax({
 		$('#sidebarConceptInLanguageInput').autocomplete({
 			source: tags,
 			appendTo: '.ceasnDataFields',
+			minLength: 2
+		});
+		$('.sidebarInputLanguageSelect').autocomplete({
+			source: tags,
 			minLength: 2
 		});
 	}

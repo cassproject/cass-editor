@@ -17,7 +17,47 @@ populateConceptScheme = function (subsearch) {
     treeTop = $("#tree").scrollTop();
     $("#tree").hide().html("");
     me.fetches = 0;
-    $("#editFrameworkSection #frameworkName").text(framework["dcterms:title"]);
+    var frameworkName = framework["dcterms:title"];
+    frameworkName = EcArray.isArray(frameworkName) ? frameworkName : [frameworkName];
+    $("#editFrameworkSection #frameworkAKA").children().remove();
+    if (frameworkName[0]["@value"]) {
+        $("#editFrameworkSection #frameworkName").text(frameworkName[0]["@value"]);
+    } else{
+        $("#editFrameworkSection #frameworkName").text(frameworkName[0]);
+    }
+    for (var i = 1; i < frameworkName.length; i++) {
+        if (frameworkName[i]["@value"])
+            $("#editFrameworkSection #frameworkAKA").append($('<span>AKA: ' + frameworkName[i]["@value"] + '</span>'));
+        else
+            $("#editFrameworkSection #frameworkAKA").append($('<span>AKA: ' + frameworkName[i] + '</span>'));
+    }
+    $("#editFrameworkSection #frameworkCount").hide();
+    var frameworkDescription = framework["dcterms:description"];
+    frameworkDescription = EcArray.isArray(frameworkDescription) ? frameworkDescription : [frameworkDescription];
+    $("#editFrameworkSection #frameworkDescription").children().remove();
+    for (var i in frameworkDescription) {
+        if (frameworkDescription[i] != null && frameworkDescription[i] != 'NULL' && frameworkDescription[i] != ''){
+            if (frameworkDescription[i]["@value"])
+                $("#editFrameworkSection #frameworkDescription").append($('<span>' + frameworkDescription[i]["@value"] + '</span>'));
+            else
+                $("#editFrameworkSection #frameworkDescription").append($('<span>' + frameworkDescription[i] + '</span>'));
+        }
+    }
+    try {
+        if (framework.getTimestamp() == null || isNaN(framework.getTimestamp()))
+            if (framework["schema:dateModified"] != null && framework["schema:dateModified"] !== undefined)
+                $("#editFrameworkSection #frameworkLastModified").text("Last modified " + moment(new Date(framework["schema:dateModified"])).fromNow() + ".").show();
+            else
+                $("#editFrameworkSection #frameworkLastModified").hide();
+        else
+            $("#editFrameworkSection #frameworkLastModified").text("Last modified " + moment(new Date(framework.getTimestamp())).fromNow() + ".").show();
+    } catch (e) {}
+    try {
+        if (framework["schema:dateCreated"] != null && framework["schema:dateCreated"] !== undefined)
+            $("#editFrameworkSection #frameworkCreated").text("Created " + moment(new Date(framework["schema:dateCreated"])).fromNow() + ".").show();
+        else
+            $("#editFrameworkSection #frameworkCreated").hide();
+    } catch (e) {}
     if (queryParams.link == "true")
         $("#editFrameworkSection #frameworkLink").attr("href", framework.shortId()).show();
 
@@ -66,9 +106,20 @@ function refreshConcept(col, level, subsearch, recurse) {
     var treeNode = null;
     treeNode = $("#tree").append("<li class = 'competency' draggable='true' ondragstart='dragConcept(event);' ontouchstart='handleTouchStartConcept(event)' ontouchmove='handleTouchMoveConcept(event);' ontouchend='handleTouchEndConcept(event);' ondrop='dropConcept(event);' ondragover='allowConceptDrop(event);'><span></span><ul></ul></li>").children().last();
     treeNode.attr("id", col.shortId());
-    if (col["skos:prefLabel"] != null && col["skos:prefLabel"] != "NULL" && col["skos:prefLabel"] != col["skos:definition"])
-        treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").css('display', 'block').text(col["skos:definition"]);
-    treeNode.children().first().prepend("<span/>").children().first().addClass("competencyName").text(col["skos:prefLabel"]);
+    if (col["skos:prefLabel"] != null && col["skos:prefLabel"] != "NULL" && col["skos:prefLabel"] != col["skos:definition"] && col["skos:definition"]) {
+        var definition = col["skos:definition"];
+        definition = EcArray.isArray(definition) ? definition : [definition];
+        if (definition[0]["@value"])
+            treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").css('display', 'block').text(definition[0]["@value"]);
+        else
+            treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").css('display', 'block').text(definition);
+    }
+    var prefLabel = col["skos:prefLabel"];
+    prefLabel = EcArray.isArray(prefLabel) ? prefLabel : [prefLabel];
+    if (prefLabel[0]["@value"])
+        treeNode.children().first().prepend("<span/>").children().first().addClass("competencyName").text(prefLabel[0]["@value"]);
+    else
+        treeNode.children().first().prepend("<span/>").children().first().addClass("competencyName").text(prefLabel);
     if (queryParams.link == "true")
         treeNode.prepend(" <a style='float:right;' target='_blank'><i class='fa fa-link' aria-hidden='true'></a>").children().first().attr("href", col.shortId());
     if (queryParams.select != null)
@@ -112,6 +163,9 @@ editConceptSidebar = function () {
         $(this).removeClass('invalidInput');
     });
 
+    initULLengths();
+    renderSidebar();
+
     $('.sidebarAccordion').removeClass('forceShow');
 
     var thing = framework;
@@ -153,5 +207,10 @@ editConceptSidebar = function () {
     } else {
         $('.ceasnCompetency').hide();
     }
-
+    setDefaultLanguage();
+    $("#detailSlider").find(".sidebarInputLanguageSelect").each(function () {
+        if (!$(this).next().attr("value")) {
+            $(this).val(defaultLanguage);
+        }
+    });
 }

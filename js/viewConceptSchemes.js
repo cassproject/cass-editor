@@ -63,11 +63,32 @@ function conceptSchemeSearch(server, searchTerm, subsearchTerm, paramObj, retry)
                     }, error);
                 });
                 var title = p.children().first();
-                title.text(fx["dcterms:title"]);
+                var frameworkName = fx["dcterms:title"];
+                frameworkName = EcArray.isArray(frameworkName) ? frameworkName : [frameworkName];
+                if (frameworkName[0]["@value"]){
+                    title.text(frameworkName[0]["@value"]);
+                } else {
+                    title.text(frameworkName[0]);
+                }
+                title.addClass("frameworkName");
                 if (subsearchTerm != null)
                     p.prepend("<span style='float:right'>*Matches inside. <span>");
                 var desc = p.children().last();
-                desc.text(fx["dcterms:description"]);
+                var frameworkDescription = fx["dcterms:description"];
+                frameworkDescription = EcArray.isArray(frameworkDescription) ? frameworkDescription : [frameworkDescription];
+                for (var i in frameworkDescription) {
+                    if (frameworkDescription[i] != null && frameworkDescription[i] != "")
+                        if (frameworkDescription[i]["@value"])
+                            desc.append($('<span class="frameworkDescription">' + frameworkDescription[i]["@value"] + '</span>'));
+                        else
+                            desc.append($('<span class="frameworkDescription">' + frameworkDescription[i] + '</span>'));
+                }
+                for (var i = 1; i < frameworkName.length; i++) {
+                    if (frameworkName[i]["@value"])
+                        p.append("<span class='properties'>AKA: " + frameworkName[i]["@value"] + "</span>");
+                    else
+                        p.append("<span class='properties'>AKA: " + frameworkName[i] + "</span>");
+                }
                 if (searchTerm != "*" && subsearchTerm == null)
                     p.mark(searchTerm);
             }
