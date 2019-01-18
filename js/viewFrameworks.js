@@ -4,6 +4,7 @@ if (queryParams.select != null)
 
 var paramSize;
 var firstLoad = true;
+var loadNumber = false;
 function searchFrameworks(paramObj) {
     if (conceptMode)
         return searchConceptSchemes(paramObj);
@@ -57,7 +58,7 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
         search = searchTerm;
     EcFramework.search(server, search, function (frameworks) {
         var start = paramSize - 20;
-        if (firstLoad)
+        if (firstLoad || loadNumber)
             start = 0;
         for (var v = start; v < frameworks.length; v++) {
             var fx = frameworks[v];
@@ -178,6 +179,9 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
         }
         if (firstLoad) {
             firstLoad = false;
+        }
+        if (loadNumber) {
+            loadNumber = false;
         }
         scrollTime = true;
     }, function (failure) {
