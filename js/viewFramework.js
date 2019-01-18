@@ -904,7 +904,7 @@ renderSidebar = function (justLists) {
 									baseField.prev('input.sidebarInputLanguageSelect').val(val[i]["@language"]);
 									baseField.val(val[i]["@value"]);
 								} else {
-									baseField.prev('input.sidebarInputLanguageSelect').val(key);
+									baseField.prev('input.sidebarInputLanguageSelect').val(defaultLanguage);
 									baseField.val(val[i]);
 								}
 							}, 10);
