@@ -445,16 +445,20 @@ renderSidebar = function (justLists) {
 				    displayString = val[i]["@language"] + ': ' + displayString;
 				}
 				if (EcObject.isObject(displayString)) {
-					var stringKeys = EcObject.keys(displayString);
-					displayString = displayString[stringKeys][0];
+					if (displayString["@id"]) {
+						displayString = displayString["@id"];
+					}
+					else {
+						var stringKeys = EcObject.keys(displayString);
+						displayString = displayString[stringKeys][0];
+					}
 				}
 				if (displayString.toLowerCase().indexOf("http") != -1) {
-					var linkText = Thing.getDisplayStringFrom(val[i]);
 					var elem = $(this);
-					elem.append("<div class='sidebarPropertyLink'><a target='_blank'/></div>").children().last().children().last().attr("href", Thing.getDisplayStringFrom(val[i])).text(linkText);
+					elem.append("<div class='sidebarPropertyLink'><a target='_blank'/></div>").children().last().children().last().attr("href", displayString).text(displayString);
 					var anchor = elem.children().last().children().last();
 					elem.children().last().prepend("<div><button title='Copy URL to the clipboard.' onclick='copyToClipboard(event);'><i class='fa fa-clipboard'></i></button></div>");
-					resolveNameFromUrlWithElem(Thing.getDisplayStringFrom(val[i]), anchor, function (result, elem) {
+					resolveNameFromUrlWithElem(displayString, anchor, function (result, elem) {
 						if (result != null) {
 							elem.text(result);
 						}
