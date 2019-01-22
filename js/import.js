@@ -53,16 +53,33 @@ function importFile() {
                 }
             });
         });
-    } else if (file.name.endsWith(".json")) {
-        ASNImport.analyzeFile(file, function (data) {
-            $("#importAsnFrameworks").text("1 Framework Detected.");
-            $("#importAsnCompetencies").text(EcObject.keys(data).length + " Competencies Detected.");
+    } else if (file.name.endsWith(".json") || file.name.endsWith(".jsonld")) {
+        //Try JSON-LD first, checks for @graph
+        analyzeJsonLdFramework(file, function (data, ctdlasn) {
+            $("#importJsonLdFrameworks").text("1 Framework Detected.");
+            $("#importJsonLdCompetencies").text(EcObject.keys(data).length-1 + " Competencies Detected.");
             asnCompetencyCount = EcObject.keys(data).length;
-            showPage("#asnImportSection");
+            if (ctdlasn == "ctdlasn") {
+                showPage("#jsonLdImportFrameworksSection");
+            }
+            else {
+                alert("Context is not CTDL-ASN");
+                showPage("#importSection");
+            }
         }, function (error) {
             {
-                alert(error);
-                showPage("#importSection");
+                //If JSON-LD doesn't work, try JSON
+                ASNImport.analyzeFile(file, function (data) {
+                    $("#importAsnFrameworks").text("1 Framework Detected.");
+                    $("#importAsnCompetencies").text(EcObject.keys(data).length + " Competencies Detected.");
+                    asnCompetencyCount = EcObject.keys(data).length;
+                    showPage("#asnImportSection");
+                }, function (error) {
+                    {
+                        alert(error);
+                        showPage("#importSection");
+                    }
+                });
             }
         });
     } else if (file.name.endsWith(".xml")) {
@@ -71,18 +88,6 @@ function importFile() {
             $("#importMedbiqCompetencies").text(EcObject.keys(data).length + " Competencies Detected.");
             asnCompetencyCount = EcObject.keys(data).length;
             showPage("#medbiqImportSection");
-        }, function (error) {
-            {
-                alert(error);
-                showPage("#importSection");
-            }
-        });
-    } else if (file.name.endsWith("jsonld")) {
-        analyzeJsonLdFramework(file, function (data) {
-            $("#importJsonLdFrameworks").text("1 Framework Detected.");
-            $("#importJsonLdCompetencies").text(EcObject.keys(data).length-1 + " Competencies Detected.");
-            asnCompetencyCount = EcObject.keys(data).length;
-            showPage("#jsonLdImportFrameworksSection");
         }, function (error) {
             {
                 alert(error);
@@ -348,16 +353,21 @@ function analyzeJsonLdFramework(file, success, failure) {
     if ((file)["name"] == null) {
         failure("Invalid file");
         return;
-    } else if (!((file)["name"]).endsWith(".jsonld")) {
-        failure("Invalid file type");
-        return;
     }
     var reader = new FileReader();
     reader.onload = function(e) {
         var result = ((e)["target"])["result"];
         var jsonObj = JSON.parse(result);
         if (jsonObj["@graph"]) {
-            success(jsonObj["@graph"]);
+            if (jsonObj["@graph"][0]["@type"] == "skos:ConceptScheme") {
+                failure("Concept schemes cannot yet be imported.");
+            }
+            if (jsonObj["@context"] == "http://credreg.net/ctdlasn/schema/context/json") {
+                success(jsonObj["@graph"], "ctdlasn");
+            }
+            else {
+                success(jsonObj["@graph"], null);
+            }
         }
         else {
             failure("Invalid file");
