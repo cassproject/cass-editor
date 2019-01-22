@@ -1871,9 +1871,11 @@ exportSelected = function () {
 			},
 			success: function (data) {
 				if (conceptMode)
-					download(framework.title + ".n4", data);
-				else
-					download(framework.name + ".n4", data);
+					fileName = Thing.getDisplayStringFrom(framework["dcterms:title"]);
+				else {
+					fileName = Thing.getDisplayStringFrom(framework.name);
+				}
+				download(fileName + ".n4", data);
 			}
 		});
 	} else if (v == "cassrdfjson") {
@@ -1883,10 +1885,13 @@ exportSelected = function () {
 				"Accept": "application/rdf+json"
 			},
 			success: function (data) {
-				if (conceptMode)
-					download(framework.title + ".rdf.json", JSON.stringify(data, null, 2));
-				else
-					download(framework.name + ".rdf.json", JSON.stringify(data, null, 2));
+				if (conceptMode) {
+					fileName = Thing.getDisplayStringFrom(framework["dcterms:title"]);
+				}
+				else {
+					fileName = Thing.getDisplayStringFrom(framework.name);
+				}
+				download(fileName + ".rdf.json", JSON.stringify(data, null, 2));
 			}
 		});
 	} else if (v == "cassrdfxml") {
@@ -1896,10 +1901,13 @@ exportSelected = function () {
 				"Accept": "application/rdf+xml"
 			},
 			success: function (data) {
-				if (conceptMode)
-					download(framework.title + ".rdf.xml", data);
-				else
-					download(framework.name + ".rdf.xml", data);
+				if (conceptMode) {
+					fileName = Thing.getDisplayStringFrom(framework["dcterms:title"]);
+				}
+				else {
+					fileName = Thing.getDisplayStringFrom(framework.name);
+				}
+				download(fileName + ".rdf.xml", data);
 			}
 		});
 	} else if (v == "cassturtle") {
@@ -1909,10 +1917,13 @@ exportSelected = function () {
 				"Accept": "text/turtle"
 			},
 			success: function (data) {
-				if (conceptMode)
-					download(framework.title + ".turtle", data);
-				else
-					download(framework.name + ".turtle", data);
+				if (conceptMode) {
+					fileName = Thing.getDisplayStringFrom(framework["dcterms:title"]);
+				}
+				else {
+					fileName = Thing.getDisplayStringFrom(framework.name);
+				}
+				download(fileName + ".turtle", data);
 			}
 		});
 	} else if (v == "ceasn")
