@@ -506,10 +506,15 @@ renderSidebar = function (justLists) {
 					name = it["ceasn:competencyText"];
 				else if (it["skos:prefLabel"] != null)
 					name = it["skos:prefLabel"];
-				if (EcArray.isArray(name) && typeof name[0] === "object")
+				if (EcArray.isArray(name) && typeof name[0] === "object") {
 					li.attr("id", val[i]).attr("title", val[i]).text(name[0]["@value"]);
-				else
+				}
+				else if (typeof name === "object") {
+					li.attr("id", val[i]).attr("title", val[i]).text(name["@value"]);
+				}
+				else {
 					li.attr("id", val[i]).attr("title", val[i]).text(name);
+				}
 				if (!viewMode) {
 					var x = li.prepend("<a class='editMode' tabindex='0' style='float:right; cursor:pointer;'><i class='fa fa-times'></i></a>").children().first();
 					(function (thing, u, id, li) {
