@@ -1007,6 +1007,10 @@ hr {
 .singular {
     margin-left: 2.25rem;
 }
+
+#detailSlider textarea {
+    resize: vertical;
+}
 .flow {
 	display: flex;
 	flex-direction: row;

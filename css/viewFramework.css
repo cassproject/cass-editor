@@ -417,3 +417,7 @@ hr {
 .singular {
     margin-left: 2.25rem;
 }
+
+#detailSlider textarea {
+    resize: vertical;
+}
