@@ -51,7 +51,7 @@ addCompetency = function () {
         setDefaultLanguage();
         c.name = {"@language": defaultLanguage, "@value": "New Competency"};
         if (!c["ceasn:inLanguage"] && !c["schema:inLanguage"]) {
-            if (ceasnDataFields)
+            if (queryParams.ceasnDataFields == "true")
                 c["ceasn:inLanguage"] = defaultLanguage;
             else
                 c["schema:inLanguage"] = defaultLanguage;
