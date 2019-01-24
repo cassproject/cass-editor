@@ -1690,8 +1690,21 @@ $('html').keydown(function (evt) {
 		}
 		//On enter
 		else if (evt.which === 13) {
-			evt.preventDefault();
-			return false;
+			//If in keyword field, enter will add another row.
+			if ($('.sidebarConceptKeywordInput').is(':focus')) {
+				$('.sidebarConceptKeywordInput:focus').next().click();
+				$('.sidebarConceptKeywordInput:focus').parent().next().children('.sidebarConceptKeywordInput').focus();
+				return;
+			}
+			else if ($('.sidebarFrameworkConceptKeywordInput').is(':focus')) {
+				$('.sidebarFrameworkConceptKeywordInput:focus').next().click();
+				$('.sidebarFrameworkConceptKeywordInput:focus').parent().next().children('.sidebarFrameworkConceptKeywordInput').focus();
+				return;
+			}
+			else {
+				evt.preventDefault();
+				return false;
+			}
 		}
 	}
 });
