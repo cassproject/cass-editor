@@ -168,6 +168,9 @@ function cappend(event) {
 			attachUrlProperties(event.data.selected);
 			$("#selectConceptSection").hide();
 			$("#editFrameworkSection").show();
+			if (queryParams.ceasnDataFields == "true") {
+				$(".ceasnDataFields").show();
+			}
 		} else if ($("#selectCompetencySection:visible").length > 0) {
 			//Don't allow alignments within the same framework.
 			if (framework.id == event.data.selectedFramework.id) {
