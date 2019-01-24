@@ -247,6 +247,10 @@ initIframe = function (comp) {
 			iframeCompetencyPath += "&webSocketOverride=" + queryParams.webSocketOverride;
 		if (queryParams.ceasnDataFields != null && queryParams.ceasnDataFields != undefined)
 			iframeCompetencyPath += "&ceasnDataFields=" + queryParams.ceasnDataFields;
+		if (queryParams.inherit != null && queryParams.inherit != undefined)
+			iframeCompetencyPath += "&inherit=" + queryParams.inherit;
+		if (queryParams.css != null && queryParams.css != undefined)
+			iframeCompetencyPath += "&css=" + queryParams.css;
 		if (queryParams.view != "true")
 			$("#selectCompetencyIframe").attr("src", iframeCompetencyPath);
 	} else if (comp == false) {
@@ -255,6 +259,10 @@ initIframe = function (comp) {
 			iframeCompetencyPath += "&webSocketOverride=" + queryParams.webSocketOverride;
 		if (queryParams.ceasnDataFields != null && queryParams.ceasnDataFields != undefined)
 			iframeCompetencyPath += "&ceasnDataFields=" + queryParams.ceasnDataFields;
+		if (queryParams.inherit != null && queryParams.inherit != undefined)
+			iframeCompetencyPath += "&inherit=" + queryParams.inherit;
+		if (queryParams.css != null && queryParams.css != undefined)
+			iframeCompetencyPath += "&css=" + queryParams.css;
 		if (queryParams.view != "true")
 			$("#selectCompetencyIframe").attr("src", iframeCompetencyPath);
 	}
