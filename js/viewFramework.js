@@ -1358,8 +1358,12 @@ $('body').on('click', '.addInputButton', function (evt) {
 	newElem.addClass('inputCopy');
 	newElem.children('input,textarea').val('');
 	newElem.insertAfter($(this).parent());
-	if ($(this).attr('data-autocomplete-field') === 'true')
+	if ($(this).attr('data-autocomplete-field') === 'true') {
 		setLanguageTagAutocomplete();
+	}
+	if (newElem.children('.sidebarConceptKeywordInput')) {
+		newElem.children('.sidebarInputLanguageSelect').val(defaultLanguage);
+	}
 });
 
 //Click handler for removeInput buttons
