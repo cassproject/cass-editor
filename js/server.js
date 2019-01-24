@@ -269,6 +269,8 @@ initIframe = function (comp) {
 		iframePath += "&ceasnDataFields=" + queryParams.ceasnDataFields;
 	if (queryParams.inherit != null && queryParams.inherit != undefined)
 		iframePath += "&inherit=" + queryParams.inherit;
+	if (queryParams.css != null && queryParams.css != undefined)
+		iframePath += "&css=" + queryParams.css;
 	if (queryParams.view != "true")
 		$("#findCompetencyIframe").attr("src", iframePath);
 
@@ -279,6 +281,8 @@ initIframe = function (comp) {
 		iframeConceptPath += "&ceasnDataFields=" + queryParams.ceasnDataFields;
 	if (queryParams.inherit != null && queryParams.inherit != undefined)
 		iframeConceptPath += "&inherit=" + queryParams.inherit;
+	if (queryParams.css != null && queryParams.css != undefined)
+		iframeConceptPath += "&css=" + queryParams.css;
 	if (queryParams.view != "true")
 		$("#selectConceptIframe").attr("src", iframeConceptPath);
 }
