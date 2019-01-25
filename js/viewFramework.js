@@ -506,11 +506,18 @@ renderSidebar = function (justLists) {
 					name = it["ceasn:competencyText"];
 				else if (it["skos:prefLabel"] != null)
 					name = it["skos:prefLabel"];
-				if (EcArray.isArray(name) && typeof name[0] === "object") {
-					li.attr("id", val[i]).attr("title", val[i]).text(name[0]["@value"]);
-				}
-				else if (typeof name === "object") {
-					li.attr("id", val[i]).attr("title", val[i]).text(name["@value"]);
+				name = Thing.getDisplayStringFrom(name);
+				if (val[i].indexOf("http") != -1) {
+					var title = val[i];
+					//If available, show concept definition upon hover
+					if (it["skos:definition"]) {
+						title = Thing.getDisplayStringFrom(it["skos:definition"]);
+					}
+					else {
+						title = val[i];
+					}
+					li.attr("id", val[i]).attr("title", title);
+					li.append("<a target='_blank'/>").children().last().attr("href", val[i]).text(name);
 				}
 				else {
 					li.attr("id", val[i]).attr("title", val[i]).text(name);
