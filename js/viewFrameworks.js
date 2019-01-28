@@ -90,7 +90,7 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
                     }, error);
                 });
                 var title = p.children().first();
-                var frameworkName = fx.getName();
+                var frameworkName = fx.name;
                 frameworkName = EcArray.isArray(frameworkName) ? frameworkName : [frameworkName];
                 if (typeof frameworkName[0] === "object") {
                     title.text(frameworkName[0]["@value"]);
@@ -101,7 +101,7 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
                 if (subsearchTerm != null)
                     p.prepend("<span style='float:right'>*Matches inside. <span>");
                 var desc = p.children().last();
-                var frameworkDescription = fx.getDescription();
+                var frameworkDescription = fx.description;
                 frameworkDescription = EcArray.isArray(frameworkDescription) ? frameworkDescription : [frameworkDescription];
                 for (var i in frameworkDescription) {
                     if (frameworkDescription[i] != null && frameworkDescription[i] != "")

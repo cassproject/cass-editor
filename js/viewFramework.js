@@ -104,7 +104,7 @@ populateFramework = function (subsearch) {
 	treeTop = $("#tree").scrollTop();
 	$("#tree").hide().html("");
 	me.fetches = 0;
-	var frameworkName = framework.getName();
+	var frameworkName = framework.name;
 	frameworkName = EcArray.isArray(frameworkName) ? frameworkName : [frameworkName];
 	$("#editFrameworkSection #frameworkAKA").children().remove();
 	if (frameworkName[0]["@value"]) {
@@ -121,7 +121,7 @@ populateFramework = function (subsearch) {
 	if (framework.competency != null)
 		$("#editFrameworkSection #frameworkCount").text(framework.competency.length + " items");
 
-	var frameworkDescription = framework.getDescription();
+	var frameworkDescription = framework.description;
 	frameworkDescription = EcArray.isArray(frameworkDescription) ? frameworkDescription : [frameworkDescription];
 	$("#editFrameworkSection #frameworkDescription").children().remove();
 	for (var i in frameworkDescription) {
@@ -237,7 +237,7 @@ function refreshCompetency(col, level, subsearch, done) {
 	}
 	treeNode = $("#tree").append("<li class = 'competency' draggable='" + draggable + "' ondragstart='dragCompetency(event);' ontouchstart='handleTouchStart(event)' ontouchmove='handleTouchMove(event);' ontouchend='handleTouchEnd(event);' ondrop='dropCompetency(event);' ondragover='allowCompetencyDrop(event);'><span></span><ul></ul></li>").children().last();
 	treeNode.attr("id", col.shortId());
-	var competencyDescription = col.getDescription();
+	var competencyDescription = col.description;
 	competencyDescription = EcArray.isArray(competencyDescription) ? competencyDescription : [competencyDescription];
 	for (var i = competencyDescription.length - 1; i >= 0; i--) {
 		if (competencyDescription[i] != null && competencyDescription[i] != "NULL" && competencyDescription[i] != col.name)
@@ -246,7 +246,7 @@ function refreshCompetency(col, level, subsearch, done) {
 			else
 				treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").css('display', 'block').text(competencyDescription[i]);
 	}
-	var competencyName = col.getName();
+	var competencyName = col.name;
 	competencyName = EcArray.isArray(competencyName) ? competencyName : [competencyName];
 	if (competencyName[0]["@value"])
 		treeNode.children().first().prepend("<span/>").children().first().addClass("competencyName").text(competencyName[0]["@value"]);
