@@ -197,6 +197,9 @@ function cappend(event) {
 		} else if (event.data.selected.length <= 0) {
 			alert("No items have been selected.");
 		}
+		if ($('#editFrameworkSection').is(':visible')) {
+			resizeEditFrameworkSection();
+		}
 	} else if (event.data.message == "back") {
 		gotoPage('#editFrameworkSection');
 	} else if (event.data.message == "highlighted") {
