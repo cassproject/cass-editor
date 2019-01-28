@@ -88,6 +88,7 @@ function gotoPage(pageId, state) {
                 $(pageId).show();
                 $("#tree").height("calc(" + $(window).outerHeight() + "px - " + $("#tree").position().top + "px)");
                 $(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
+                resizeWindow($(window).width() / 2);
             });
         });
 }
