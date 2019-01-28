@@ -510,7 +510,7 @@ renderSidebar = function (justLists) {
 				if (val[i].indexOf("http") != -1) {
 					var title = val[i];
 					//If available, show concept definition upon hover
-					if (it["skos:definition"]) {
+					if (it && it["skos:definition"]) {
 						title = Thing.getDisplayStringFrom(it["skos:definition"]);
 					}
 					else {
