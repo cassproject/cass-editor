@@ -116,8 +116,7 @@ select {
     padding-top: 1rem;
     padding-left: 1rem;
     padding-right: 1rem;
-    height: calc(100% - 5.6rem);
-    border-bottom: 1px solid #000;
+    height: calc(100% - 4.5rem);
 }
 
 #frameworks > hr {
