@@ -16,9 +16,9 @@ afterSaveSidebar = function (stuff) {
 
 setDefaultLanguage = function() {
     if (framework && framework["ceasn:inLanguage"])
-        defaultLanguage = framework["ceasn:inLanguage"][0];
+        defaultLanguage = EcArray.isArray(framework["ceasn:inLanguage"]) ? framework["ceasn:inLanguage"][0] : framework["ceasn:inLanguage"];
     else if (framework && framework["schema:inLanguage"])
-        defaultLanguage = framework["schema:inLanguage"][0];
+        defaultLanguage = EcArray.isArray(framework["schema:inLanguage"]) ? framework["schema:inLanguage"][0] : framework["schema:inLanguage"];
     else if (framework && framework["dcterms:language"])
         defaultLanguage = framework["dcterms:language"];
     else if (navigator.language || navigator.userLanguage)
