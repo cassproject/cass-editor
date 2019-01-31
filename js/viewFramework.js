@@ -194,7 +194,7 @@ function afterRefresh(level, subsearch) {
 	if (selectedCompetency != null && selectedCompetency !== undefined) {
 		highlightSelected($("[id=\"" + selectedCompetency.shortId() + "\"]"));
 		if ($(".selected").length > 0)
-			$(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 100);
+			$(".selected").get(0).scrollIntoView(false);
 	}
 	var sort = function () {
 		$(this).children().sort(function (a, b) {

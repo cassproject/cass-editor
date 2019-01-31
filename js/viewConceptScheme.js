@@ -83,7 +83,7 @@ function afterConceptRefresh(level, subsearch) {
     if (selectedCompetency !== null) {
         highlightSelected($("[id=\"" + selectedCompetency.shortId() + "\"]"));
         if ($(".selected").length > 0)
-            $(".selected").parent().scrollTop($(".selected").parent().scrollTop() + $(".selected").position().top - 50);
+            $(".selected").get(0).scrollIntoView(false);
     }
     collapseCompetencies();
 }
