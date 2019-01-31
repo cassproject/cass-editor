@@ -1010,6 +1010,11 @@ hr {
 #detailSlider textarea {
     resize: vertical;
 }
+
+.required::after {
+    content: "*";
+    color: red;
+}
 .flow {
 	display: flex;
 	flex-direction: row;

@@ -154,6 +154,7 @@ function refreshConcept(col, level, subsearch, recurse) {
 editConceptSidebar = function () {
     $("#detailSlider").addClass("detailSliderEdit").removeClass("detailSliderView");
     $("#editFrameworkSection label").css("display", "");
+    $("#sidebarNameInputLabel").addClass("required");
 
     changedFields = {};
     ulLengths = {};

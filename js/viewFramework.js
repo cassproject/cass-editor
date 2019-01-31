@@ -1023,6 +1023,7 @@ renderSidebar = function (justLists) {
 refreshSidebar = function () {
 	if ($("#detailSlider").length == 0) return;
 	$("#detailSlider").addClass("detailSliderView").removeClass("detailSliderEdit");
+	$("#sidebarNameInputLabel").removeClass("required");
 
 	removeChangedFieldHighlight();
 
@@ -1140,6 +1141,7 @@ editSidebar = function () {
 	$("#detailSlider").addClass("detailSliderEdit").removeClass("detailSliderView");
 	$("#editFrameworkSection label").css("display", "");
 	$('.orangeUri').removeClass('active');
+	$("#sidebarNameInputLabel").addClass("required");
 
 	changedFields = {};
 	ulLengths = {};

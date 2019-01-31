@@ -421,3 +421,8 @@ hr {
 #detailSlider textarea {
     resize: vertical;
 }
+
+.required::after {
+    content: "*";
+    color: red;
+}
