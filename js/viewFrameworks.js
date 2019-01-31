@@ -174,7 +174,7 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
         frameworkLoading--;
         if (frameworkLoading == 0) {
             if ($("#frameworks").html() == "")
-                $("#frameworks").html("<center>No frameworks found.</center>");
+                $("#frameworks").html("<center>No frameworks found. Create a new framework by clicking the plus sign in the upper right corner.</center>");
             showPage("#frameworksSection");
         }
         if (firstLoad) {
@@ -232,7 +232,7 @@ function frameworkSearchByCompetency(server, searchTerm, retry) {
         frameworkLoading--;
         if (frameworkLoading == 0) {
             if ($("#frameworks").html() == "")
-                $("#frameworks").html("<center>No frameworks found.</center>");
+                $("#frameworks").html("<center>No frameworks found. Create a new framework by clicking the plus sign in the upper right corner.</center>");
             showPage("#frameworksSection");
         }
     }, function (failure) {
