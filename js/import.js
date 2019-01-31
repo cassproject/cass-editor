@@ -403,18 +403,14 @@ function importJsonLdFramework() {
             refreshSidebar();
         },
         failure: function (failure) {
-            loading("Import failed. Check your import file for any errors.");
-            setTimeout(function () {
-                showPage("frameworks");
-            }, 5000);
+            alert("Import failed. Check your import file for any errors.");
             console.log(failure.statusText);
+            showPage("#importSection");
         },
         error: function (failure) {
-            loading("Import error. Check your import file for any errors.");
-            setTimeout(function () {
-                showPage("frameworks");
-            }, 5000);
+            alert("Import error. Check your import file for any errors.");
             console.log(failure.statusText);
+            showPage("#importSection");
         }
     });
     loading("Importing Framework");
