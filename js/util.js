@@ -72,6 +72,7 @@ if (queryParams.concepts == "true") {
 		$(this).text(this.text.replace("CASS", "SKOS"));
 	});
 	$("#confirmDialog #confirmText").text("Are you sure you want to delete this concept?");
+	$("#createNewButton").attr("title", "Create a new concept scheme.");
 } else {
 	$(".absentForCompetencies").remove();
 }
