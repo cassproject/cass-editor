@@ -96,7 +96,7 @@ function conceptSchemeSearch(server, searchTerm, subsearchTerm, paramObj, retry)
         frameworkLoading--;
         if (frameworkLoading == 0) {
             if ($("#frameworks").html() == "")
-                $("#frameworks").html("<center>No concept schemes found.</center>");
+                $("#frameworks").html("<center>No concept schemes found. Create a new concept scheme by clicking the plus sign in the upper right corner.</center>");
             showPage("#frameworksSection");
         }
         if (firstLoad) {
@@ -136,7 +136,7 @@ function conceptSchemeSearchByConcept(server, searchTerm, retry) {
         frameworkLoading--;
         if (frameworkLoading == 0) {
             if ($("#frameworks").html() == "")
-                $("#frameworks").html("<center>No concept schemes found.</center>");
+                $("#frameworks").html("<center>No concept schemes found. Create a new concept scheme by clicking the plus sign in the upper right corner.</center>");
             showPage("#frameworksSection");
         }
     }, function (failure) {
