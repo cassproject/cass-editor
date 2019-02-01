@@ -294,6 +294,10 @@ initIframe = function (comp) {
 		iframeConceptPath += "&inherit=" + queryParams.inherit;
 	if (queryParams.css != null && queryParams.css != undefined)
 		iframeConceptPath += "&css=" + queryParams.css;
+	if (queryParams.user != null && queryParams.user != undefined)
+		iframeConceptPath += "&user=" + queryParams.user;
+	if (queryParams.conceptShow != null && queryParams.conceptShow != undefined)
+		iframeConceptPath += "&conceptShow=" + queryParams.conceptShow;
 	if (queryParams.view != "true")
 		$("#selectConceptIframe").attr("src", iframeConceptPath);
 }
@@ -557,3 +561,20 @@ if (window.addEventListener) {
 } else {
 	window.attachEvent("onmessage", messageListener);
 }
+
+//Forward the logged in identity to the concept frame
+sendIdentityInitializeMessage = function() {
+	var loggedInPpkPem = EcIdentityManager.ids[0].ppk.toPem();
+	$("#selectConceptIframe")[0].contentWindow.postMessage(JSON.stringify({
+		action: "identity",
+		identity: loggedInPpkPem
+	}), window.location.origin);
+}
+
+$("#selectConceptIframe").ready(function () {
+	$(window).on("message", function (event) {
+		if (event.originalEvent.data.message == "waiting") {
+			sendIdentityInitializeMessage();
+		}
+	});
+});

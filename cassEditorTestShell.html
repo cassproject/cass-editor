@@ -27,12 +27,18 @@
 <div>
     <!-- MAIN MENU -->
     <div style="background: #999;padding: .5rem;">
-        <input type="text" id="edTestUn" placeholder="username">
-        <input type="password" id="edTestPw" placeholder="password">
+        <input type="text" id="edTestUn" placeholder="username" value="tom.ceasn">
+        <input type="password" id="edTestPw" placeholder="password" value="tom.ceasn_dev">
         <input type="text" id="edTestServer" placeholder="server" value="https://dev.cassproject.org/api/" style="width: 25rem">
-        <button onclick="doEditorTestShellLogin()"> Load Editor </button>
+        <span style="font-style: italic;margin-left:1rem">CEASN: </span>
+        <input type="checkbox" id="edTestIncCeasn" checked>
+        <span style="font-style: italic;margin-left:1rem">Framework Mine: </span>
+        <input type="checkbox" id="edTestFwkMine" title="Framework Mine">
+        <span style="font-style: italic;margin-left:1rem">Concept Mine: </span>
+        <input type="checkbox" id="edTestCptMine" title="Concept Mine">
+        <button onclick="doEditorTestShellLogin()" style="margin-left:1rem"> Load Editor </button>
         <img id="testLoginSpinner" src="images/CASS-loading-64px.gif" style="height: 20px; display: none">
-        <span id="testLoggedInName" style="font-weight: bold; padding-left: 5rem;">Not logged in yet</span>
+        <span id="testLoggedInName" style="font-weight: bold; margin-left: 3rem;">Not logged in yet</span>
     </div>
     <!--END MAIN MENU -->
 

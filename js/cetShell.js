@@ -1,5 +1,6 @@
-const ADD_CEASN_DATA_FIELDS = true;
 const CEASN_FIELD_TOGGLE = "ceasnDataFields=true";
+const FWK_MINE_TOGGLE = "show=mine";
+const CONCEPT_MINE_TOGGLE = "conceptShow=mine";
 
 const EDITR_IFRAME = "#cassEditorIFrame";
 const EDITR_IFRAME_SOURCE = "index.html?user=wait";
@@ -33,9 +34,15 @@ $(EDITR_IFRAME).ready(function () {
     });
 });
 
+function isChecked(elem) {
+    return elem.is(':checked');
+}
+
 function getEditorIframeSourceLink() {
     var ifs = EDITR_IFRAME_SOURCE;
-    if (ADD_CEASN_DATA_FIELDS) ifs += "&" + CEASN_FIELD_TOGGLE;
+    if (isChecked($("#edTestIncCeasn"))) ifs += "&" + CEASN_FIELD_TOGGLE;
+    if (isChecked($("#edTestFwkMine"))) ifs += "&" + FWK_MINE_TOGGLE;
+    if (isChecked($("#edTestCptMine"))) ifs += "&" + CONCEPT_MINE_TOGGLE;
     ifs += "&origin="+ window.location.origin + "&server=" + testSelectedServer;
     console.log("Opening cass editor iFrame with: " + ifs);
     return ifs;
