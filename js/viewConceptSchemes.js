@@ -26,8 +26,22 @@ function conceptSchemeSearch(server, searchTerm, subsearchTerm, paramObj, retry)
     frameworkLoading++;
     paramObj.sort = '[ { "dcterms:title.keyword": {"order" : "asc" , "unmapped_type" : "long",  "missing" : "_last"}} ]';
     var search = "";
-    if (queryParams.filter != null)
-        search = "(" + searchTerm + ") AND (" + queryParams.filter + ")";
+    if (queryParams.filter != null || queryParams.conceptShow != null) {
+        search = "(" + searchTerm + ")";
+        if (queryParams.filter != null)
+            search += " AND (" + queryParams.filter + ")";
+        if (queryParams.conceptShow != null && queryParams.conceptShow == "mine") {
+            search += " AND (";
+            for (var i = 0; i < EcIdentityManager.ids.length; i++) {
+                if (i != 0) {
+                    search += " OR ";
+                }
+                var id = EcIdentityManager.ids[i];
+                search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
+            }
+            search += ")";
+        }
+    }
     else
         search = searchTerm;
     EcConceptScheme.search(server, search, function (frameworks) {
