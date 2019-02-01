@@ -104,7 +104,8 @@ populateFramework = function (subsearch) {
 	treeTop = $("#tree").scrollTop();
 	$("#tree").hide().html("");
 	me.fetches = 0;
-	var frameworkName = framework.name;
+	var frameworkName = framework.getName();
+	if (frameworkName == null) frameworkName = "Unknown Framework.";
 	frameworkName = EcArray.isArray(frameworkName) ? frameworkName : [frameworkName];
 	$("#editFrameworkSection #frameworkAKA").children().remove();
 	if (frameworkName[0]["@value"]) {
@@ -248,6 +249,7 @@ function refreshCompetency(col, level, subsearch, done) {
 	}
 	var competencyName = col.name;
 	competencyName = EcArray.isArray(competencyName) ? competencyName : [competencyName];
+	if (competencyName == null) competencyName = "Unknown Competency.";
 	if (competencyName[0]["@value"])
 		treeNode.children().first().prepend("<span/>").children().first().addClass("competencyName").text(competencyName[0]["@value"]);
 	else
