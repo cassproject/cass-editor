@@ -258,11 +258,13 @@ function checkForChangesBeforeBack(event) {
             event.stopPropagation();
             return;
         } else {
+            loading("Loading frameworks...");
             searchFrameworks(createParamObj());
             framework = null;
             selectedCompetency = null;
         }
     } else {
+        loading("Loading frameworks...");
         searchFrameworks(createParamObj());
         framework = null;
         selectedCompetency = null;
