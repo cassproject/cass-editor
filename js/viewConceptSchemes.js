@@ -26,11 +26,11 @@ function conceptSchemeSearch(server, searchTerm, subsearchTerm, paramObj, retry)
     frameworkLoading++;
     paramObj.sort = '[ { "dcterms:title.keyword": {"order" : "asc" , "unmapped_type" : "long",  "missing" : "_last"}} ]';
     var search = "";
-    if (queryParams.filter != null || queryParams.conceptShow != null) {
+    if (queryParams.filter != null || (queryParams.conceptShow != null && EcIdentityManager != null && EcIdentityManager.ids.length > 0)) {
         search = "(" + searchTerm + ")";
         if (queryParams.filter != null)
             search += " AND (" + queryParams.filter + ")";
-        if (queryParams.conceptShow != null && queryParams.conceptShow == "mine") {
+        if (queryParams.conceptShow != null && queryParams.conceptShow == "mine" && EcIdentityManager != null && EcIdentityManager.ids.length > 0) {
             search += " AND (";
             for (var i = 0; i < EcIdentityManager.ids.length; i++) {
                 if (i != 0) {
