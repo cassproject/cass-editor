@@ -2,12 +2,85 @@
 
 ## [Unreleased](https://github.com/cassproject/cass-editor/tree/HEAD)
 
-[Full Changelog](https://github.com/cassproject/cass-editor/compare/ce...HEAD)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/1.0.4...HEAD)
+
+**Implemented enhancements:**
+
+- From a postMessage, be able to set a field on the selected framework or selected competency and save it. [\#379](https://github.com/cassproject/cass-editor/issues/379)
+- Enable the "Import Framework" screen to support multiple frameworks in a single upload [\#322](https://github.com/cassproject/cass-editor/issues/322)
+- Create method that moves things to CER urls as soon as they touch the cass-editor. [\#313](https://github.com/cassproject/cass-editor/issues/313)
+- Import from CASE \(with select/checking of frameworks\) [\#220](https://github.com/cassproject/cass-editor/issues/220)
+- Allow alignment with URLs outside of the system. [\#195](https://github.com/cassproject/cass-editor/issues/195)
+
+**Fixed bugs:**
+
+- Back key causes search, which takes kinda a long time, looks unresponsive.  [\#487](https://github.com/cassproject/cass-editor/issues/487)
+- Langstring encoded ceasn:competencyCategory is not displayed correctly. [\#474](https://github.com/cassproject/cass-editor/issues/474)
+- Keyboard Up Down Arrows Selects Wrong Competency After Collapsed [\#400](https://github.com/cassproject/cass-editor/issues/400)
+
+**Closed issues:**
+
+- Add option for concept schemes to be filtered to only my schemes \(in concept selector\) [\#477](https://github.com/cassproject/cass-editor/issues/477)
+- Add tooltips to Import Framework and Create Framework buttons [\#475](https://github.com/cassproject/cass-editor/issues/475)
+- Test v1.3.2 [\#419](https://github.com/cassproject/cass-editor/issues/419)
+- Investigate dangling relation. [\#292](https://github.com/cassproject/cass-editor/issues/292)
+- Conceive landing page for cass-editor. [\#245](https://github.com/cassproject/cass-editor/issues/245)
+- Consider "button" like tags \(with info\) and if there is a way to make those informative and not confusing.. [\#243](https://github.com/cassproject/cass-editor/issues/243)
+- Toolbar/Sidebar for framework modifications vs data editing. [\#241](https://github.com/cassproject/cass-editor/issues/241)
+
+## [1.0.4](https://github.com/cassproject/cass-editor/tree/1.0.4) (2019-02-01)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/1.0.3...1.0.4)
+
+**Closed issues:**
+
+- Create and add another in a nested competency does not scroll to the competency on the left. [\#482](https://github.com/cassproject/cass-editor/issues/482)
+
+## [1.0.3](https://github.com/cassproject/cass-editor/tree/1.0.3) (2019-01-31)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/0.4.26...1.0.3)
+
+**Implemented enhancements:**
+
+- Moving existing during editing of nodes in competency and concept editors [\#473](https://github.com/cassproject/cass-editor/issues/473)
+- Ensure CTDL-ASN Import \(via post\) is operating as expected. [\#184](https://github.com/cassproject/cass-editor/issues/184)
+- Search and Discovery of and by data not in CASS. [\#141](https://github.com/cassproject/cass-editor/issues/141)
+
+**Fixed bugs:**
+
+- Overlap issue when adding a connection [\#472](https://github.com/cassproject/cass-editor/issues/472)
+- Keys header can get cutoff [\#471](https://github.com/cassproject/cass-editor/issues/471)
+- Load no. links intermittently do not function [\#460](https://github.com/cassproject/cass-editor/issues/460)
+- Publisher Name default language is "0" on ctitest [\#457](https://github.com/cassproject/cass-editor/issues/457)
+- The Credential Engine ASN Export of a competency framework is missing coded notation and Competency Category [\#455](https://github.com/cassproject/cass-editor/issues/455)
+- Assigning a graph-level URI to competency frameworks [\#436](https://github.com/cassproject/cass-editor/issues/436)
+
+**Closed issues:**
+
+- Hide Load number links on search page [\#476](https://github.com/cassproject/cass-editor/issues/476)
+- Concepts linked under competencies only show concept name [\#469](https://github.com/cassproject/cass-editor/issues/469)
+- CSS Inheritance from parent page [\#467](https://github.com/cassproject/cass-editor/issues/467)
+- Keyboard controls for keywords [\#466](https://github.com/cassproject/cass-editor/issues/466)
+- Keywords should prepopulate default language [\#465](https://github.com/cassproject/cass-editor/issues/465)
+- Ceasn fields disappearing when adding a concept term [\#464](https://github.com/cassproject/cass-editor/issues/464)
+- Text should break between words rather than mid-word [\#463](https://github.com/cassproject/cass-editor/issues/463)
+- Resizing the description text box [\#462](https://github.com/cassproject/cass-editor/issues/462)
+- Load number filters occasionally do not work [\#456](https://github.com/cassproject/cass-editor/issues/456)
+- DateValidFrom and DateValidUntil in CTDL+ASN are date, not datetime. [\#217](https://github.com/cassproject/cass-editor/issues/217)
+- Retrieve credential frameworks & concept schemes owned by a particular organization [\#115](https://github.com/cassproject/cass-editor/issues/115)
+- Editor listing of frameworks lack a principle of order [\#57](https://github.com/cassproject/cass-editor/issues/57)
+
+## [0.4.26](https://github.com/cassproject/cass-editor/tree/0.4.26) (2019-01-18)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/ce...0.4.26)
+
+**Implemented enhancements:**
+
+- Implement AKA commit to concept schemes and concepts  [\#349](https://github.com/cassproject/cass-editor/issues/349)
+- I18N string editor. [\#56](https://github.com/cassproject/cass-editor/issues/56)
 
 **Closed issues:**
 
 - Export of a  [\#454](https://github.com/cassproject/cass-editor/issues/454)
 - CSV Import with language tags [\#453](https://github.com/cassproject/cass-editor/issues/453)
+- Editor should have option to delete items in a list of multiples [\#350](https://github.com/cassproject/cass-editor/issues/350)
 
 **Merged pull requests:**
 
@@ -388,7 +461,6 @@
 
 - Members of the credential engine team need to be able to see \(search for\) all frameworks [\#238](https://github.com/cassproject/cass-editor/issues/238)
 - Using keyboard only does not allow choosing of concept terms or adding existing competencies [\#228](https://github.com/cassproject/cass-editor/issues/228)
-- ceasn:rights is defined as a single absolute url but is being exported as a list of strings [\#227](https://github.com/cassproject/cass-editor/issues/227)
 - ceasn:author is defined as list of strings but being export as list of language strings [\#226](https://github.com/cassproject/cass-editor/issues/226)
 - Guided Tour text should read "close" instead of "skip" [\#224](https://github.com/cassproject/cass-editor/issues/224)
 - Template URI properties don't appear to work [\#223](https://github.com/cassproject/cass-editor/issues/223)
