@@ -119,8 +119,12 @@ populateFramework = function (subsearch) {
 		else
 			$("#editFrameworkSection #frameworkAKA").append($('<span>AKA: ' + frameworkName[i] + '</span>'));
 	}
-	if (framework.competency != null)
+	if (framework.competency != null) {
 		$("#editFrameworkSection #frameworkCount").text(framework.competency.length + " items");
+	}
+	else {
+		$("#editFrameworkSection #frameworkCount").text("0 items");
+	}
 
 	var frameworkDescription = framework.description;
 	frameworkDescription = EcArray.isArray(frameworkDescription) ? frameworkDescription : [frameworkDescription];
