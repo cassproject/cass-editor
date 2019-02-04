@@ -374,7 +374,7 @@ function analyzeJsonLdFramework(file, success, failure) {
             return;
         }
     };
-    reader.readAsText(file);
+    reader.readAsText(file, "UTF-8");
 }
 
 function importJsonLdFramework() {
