@@ -943,7 +943,7 @@ renderSidebar = function (justLists) {
 									temp.children('input.sidebarInputLanguageSelect').val(val[i]["@language"]);
 								} else {
 									temp.children('input:not(.sidebarInputLanguageSelect),textarea').val(val[i]);
-									temp.children('input.sidebarInputLanguageSelect').val(key);
+									temp.children('input.sidebarInputLanguageSelect').val(defaultLanguage);
 								}
 							}, 10);
 							elem.append(newElem);
