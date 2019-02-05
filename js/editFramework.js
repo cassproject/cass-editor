@@ -342,6 +342,9 @@ saveCompetency = function (addAnother) {
                     objectVals["@value"] = stringVal;
                     arrayVals.push(objectVals);
                 }
+                else if (stringVal != null) {
+                    arrayVals.push(stringVal);
+                }
             } else {
                 var val = getValueOrNull($(this).val());
                 if (val != null) {
