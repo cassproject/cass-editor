@@ -426,3 +426,7 @@ hr {
     content: "*";
     color: red;
 }
+
+#sidebarExport {
+    margin-top: 5px;
+}

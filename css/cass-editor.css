@@ -1015,6 +1015,10 @@ hr {
     content: "*";
     color: red;
 }
+
+#sidebarExport {
+    margin-top: 5px;
+}
 .flow {
 	display: flex;
 	flex-direction: row;
