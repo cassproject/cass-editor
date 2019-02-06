@@ -35,6 +35,7 @@ addCompetency = function () {
         initIframe();
         showPage("#findCompetencySection", framework);
     } else if (addOrSearch == "new") {
+        $("#sidebarAddCompetencies").prop('disabled', true);
         isFirstEdit = true;
         previousSelectedCompetency = selectedCompetency;
         var c = new EcCompetency();
@@ -81,6 +82,7 @@ addCompetency = function () {
                         $("#sidebarNameInput").focus();
                         $("#sidebarNameInput").select();
                         afterSave();
+                        $("#sidebarAddCompetencies").prop('disabled', false);
                     }, error);
                 }, error);
             } else {
@@ -91,6 +93,7 @@ addCompetency = function () {
                     $("#sidebarNameInput").focus();
                     $("#sidebarNameInput").select();
                     afterSave();
+                    $("#sidebarAddCompetencies").prop('disabled', false);
                 }, error);
             }
         }, error);
