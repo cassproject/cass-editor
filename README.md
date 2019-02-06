@@ -172,6 +172,9 @@ The cass-editor can be populated with templates that set initial properties of n
 ## Only show frameworks that individual owns.
 Along with user credentials, the cass-editor can be configured to not show others' frameworks. This functionality can be enabled by the URL parameter `show=mine`.
 
+## Only show concept schemes that individual owns.
+When linking a concept to a competency, the cass-editor can be configured to not show others' concept schemes. This functionality can be enabled by the URL parameter `conceptShow=mine`.
+
 ## Use canonical identifiers.
 CASS supports the storage of objects where the @id parameter does not refer to the object in CASS.
 
