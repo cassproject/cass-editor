@@ -447,9 +447,6 @@ renderSidebar = function (justLists) {
 				val = [val];
 			for (var i = 0; i < val.length; i++) {
 				var displayString = Thing.getDisplayStringFrom(val[i]);
-				if (val[i]["@language"]) {
-				    displayString = val[i]["@language"] + ': ' + displayString;
-				}
 				if (EcObject.isObject(displayString)) {
 					if (displayString["@id"]) {
 						displayString = displayString["@id"];
@@ -461,7 +458,7 @@ renderSidebar = function (justLists) {
 				}
 				if (displayString.toLowerCase().indexOf("http") != -1) {
 					var elem = $(this);
-					elem.append("<div class='sidebarPropertyLink'><a target='_blank'/></div>").children().last().children().last().attr("href", Thing.getDisplayStringFrom(val[i])).text(displayString);
+					elem.append("<div class='sidebarPropertyLink'><a target='_blank'/></div>").children().last().children().last().attr("href", displayString).text(displayString);
 					var anchor = elem.children().last().children().last();
 					elem.children().last().prepend("<div><button title='Copy URL to the clipboard.' onclick='copyToClipboard(event);'><i class='fa fa-clipboard'></i></button></div>");
 					resolveNameFromUrlWithElem(displayString, anchor, function (result, elem) {
@@ -470,9 +467,20 @@ renderSidebar = function (justLists) {
 						}
 					});
 				} else if ($(this).next().attr("type") == "datetime-local") {
-					$(this).append("<span/>").children().last().text(new Date(val).toDatetimeLocal().substring(0, 10));
+					$(this).append("<div></div>");
+					$(this).children().last().append("<span/>").children().last().text(new Date(val).toDatetimeLocal().substring(0, 10));
 				} else {
-					$(this).append("<span/>").children().last().text(displayString);
+					$(this).append("<div></div>");
+					$(this).children().last().append("<span/>").children().last().text(displayString);
+				}
+				if (val[i]["@language"]) {
+					var language = val[i]["@language"];
+					console.log(displayString);
+					console.dir($(this).children().last());
+				    $(this).children().last().append($('<span class="languageTag">' + val[i]["@language"] + '</span>'));
+				    if ($(this).children().last().hasClass('sidebarPropertyLink')) {
+				    	$(this).children().last().children().last().css('margin-left', 'auto');
+				    }
 				}
 			}
 		});

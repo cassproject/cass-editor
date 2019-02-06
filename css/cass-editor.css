@@ -750,10 +750,6 @@ input.redButton {
     height:calc(100vh - 1rem);
 }
 
-.sidebarViewList span {
-    display: table;
-}
-
 p.sidebarViewList,
 h3.sidebarViewList {
     padding-left: 40px;
@@ -1018,6 +1014,18 @@ hr {
 
 #sidebarExport {
     margin-top: 5px;
+}
+
+.languageTag {
+    background-color: rgba(84, 84, 84, 0.25);
+    border-radius: 4px;
+    border: 1px solid #CAD9DB;
+    font-size: .85rem;
+    margin-right: 0.25rem;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+    float: right;
+    font-weight: bold;
 }
 .flow {
 	display: flex;
