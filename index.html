@@ -349,7 +349,7 @@
 								<!-- Name -->
 								<label id="sidebarNameInputLabel" for="sidebarNameInput" title="" cassCompetency="Competency Name:" cassCompetencyTitle="The name of the competency." cassFramework="Framework Name:" cassFrameworkTitle="The name of the framework." ceasnCompetency="Competency Text:" ceasnCompetencyTitle="The text of the competency." ceasnFramework="Name:" ceasnFrameworkTitle="The name or title of this competency framework." skosCompetency="Preferred Label:" skosCompetencyTitle="Preferred display label for this concept." skosFramework="Title:" skosFrameworkTitle="Preferred display label for this scheme." class="editMode" style="margin: 0px;">Name:</label>
 								<h3 id="sidebarName" class="viewMode sidebarViewList">Framework Name Here</h3>
-								<div class="sidebarInputGrouping editMode editControl">
+								<div class="sidebarInputGrouping editMode editControl onePerLanguage">
 									<div class="sidebarInputRow">
 										<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
 										<input class="sidebarInputLanguageSelect" placeholder="Language"></input>
@@ -360,7 +360,7 @@
 								<!-- Description (Concepts)-->
 								<label id="sidebarDescriptionInputLabel" for="sidebarDescriptionInput" title="" skosCompetency="Concept Definition:" skosCompetencyTitle="Definition of this concept." skosFramework="Description:" skosFrameworkTitle="Definition of this scheme." class="editMode absentForCompetencies" style="margin: 0px;">Description:</label>
 								<p id="sidebarDescription" class="viewMode sidebarViewList absentForCompetencies">This is a super long description, it describes the things worth describing.</p>
-								<div class="sidebarInputGrouping editMode editControl absentForCompetencies">
+								<div class="sidebarInputGrouping editMode editControl absentForCompetencies onePerLanguage">
 									<div class="sidebarInputRow">
 										<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
 										<input class="sidebarInputLanguageSelect" placeholder="Language"></input>
@@ -372,7 +372,7 @@
 								<!-- Framework Description -->
 								<label id="sidebarFrameworkDescriptionInputLabel" for="sidebarFrameworkDescriptionInput" title="" cassFrameworkTitle="The description of the framework." ceasnFramework="Description:" ceasnFrameworkTitle="A short description of this competency or competency framework." class="editMode absentForConcepts frameworkOnly" style="margin: 0px;">Description:</label>
 								<p id="sidebarFrameworkDescription" class="viewMode sidebarViewList frameworkOnly absentForConcepts">This is a super long description, it describes the things worth describing.</p>
-								<div class="sidebarInputGrouping editMode editControl absentForConcepts frameworkOnly">
+								<div class="sidebarInputGrouping editMode editControl absentForConcepts frameworkOnly onePerLanguage">
 									<div class="sidebarInputRow">
 										<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
 										<input class="sidebarInputLanguageSelect" placeholder="Language"></input>
@@ -489,7 +489,7 @@
 										<!-- Competency Category -->
 										<label id="sidebarCompetencyCategoryInputLabel" for="sidebarCompetencyCategory" title="" cassCompetency="Type:" cassCompetencyTitle="The textual label identifying the category of the competency as designated by the promulgating body. One label per line." ceasnCompetency="Competency Category:" ceasnCompetencyTitle="The textual label identifying the category of the competency as designated by the promulgating body. One label per line." skosCompetency="Type:" skosCompetencyTitle="The textual label identifying the category of the competency as designated by the promulgating body. One label per line." class="viewMode editMode absentForConcepts" style="margin:0px;">Competency Category:</label>
 										<p id="sidebarCompetencyCategory" class="viewMode absentForConcepts sidebarViewList" style="font-weight:bold;"></p>
-										<div class="sidebarInputGrouping editMode editControl absentForConcepts">
+										<div class="sidebarInputGrouping editMode editControl absentForConcepts onePerLanguage">
 											<div class="sidebarInputRow">
 												<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
 												<input class="sidebarInputLanguageSelect" placeholder="Language"></input>

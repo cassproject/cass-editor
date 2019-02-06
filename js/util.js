@@ -201,6 +201,32 @@ alertBadCharacters = function () {
 	return true;
 }
 
+alertDuplicateLanguages = function () {
+	var duplicates = false;
+	$("#detailSlider").find('.onePerLanguage').each(function() {
+		var languagesUsed = [];
+		$(this).find('.sidebarInputLanguageSelect').each(function() {
+			if (languagesUsed.includes($(this).val())) {
+				duplicates = true;
+				$(this).addClass('invalidLanguage');
+				$(this).autocomplete({
+					source: tags,
+					appendTo: '.ceasnDataFields',
+					minLength: 2
+				});
+			}
+			else {
+				languagesUsed.push($(this).val());
+			}
+		});
+	});
+	if (duplicates === true) {
+		alert('Some fields can only be one entry per language.');
+		return false;
+	}
+	return true;
+}
+
 initTooltips = function (type) {
 	$('label').each(function () {
 		var title = $(this).attr(type + "Title");

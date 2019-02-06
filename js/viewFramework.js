@@ -475,8 +475,6 @@ renderSidebar = function (justLists) {
 				}
 				if (val[i]["@language"]) {
 					var language = val[i]["@language"];
-					console.log(displayString);
-					console.dir($(this).children().last());
 				    $(this).children().last().append($('<span class="languageTag">' + val[i]["@language"] + '</span>'));
 				    if ($(this).children().last().hasClass('sidebarPropertyLink')) {
 				    	$(this).children().last().children().last().css('margin-left', 'auto');

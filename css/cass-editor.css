@@ -808,7 +808,8 @@ h3.sidebarViewList {
     background-color: rgba(69, 160, 133, .25);
 }
 
-.invalidInput {
+.invalidInput,
+.invalidLanguage {
     background-color: red !important;
 }
 

@@ -252,8 +252,8 @@ addLevel = function () {
 saveCompetency = function (addAnother) {
     if (viewMode) return;
     isFirstEdit = false;
-    //Alert for bad characters in input
-    if (alertBadCharacters() === false) {
+    //Alert for bad characters in input, multiples of the same language in one-per-language fields
+    if (alertBadCharacters() === false || alertDuplicateLanguages() === false) {
         return false;
     }
     $(".changedField").removeClass("changedField");
