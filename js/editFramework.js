@@ -251,11 +251,15 @@ addLevel = function () {
 
 saveCompetency = function (addAnother) {
     if (viewMode) return;
+    //Prevent double click
+    $("#sidebarSave").prop('disabled', true);
     isFirstEdit = false;
     //Alert for bad characters in input, multiples of the same language in one-per-language fields
     if (alertBadCharacters() === false || alertDuplicateLanguages() === false) {
+        $("#sidebarAddCompetencies").prop('disabled', false);
         return false;
     }
+    $("#sidebarAddCompetencies").prop('disabled', false);
     $(".changedField").removeClass("changedField");
     
     var labelChoice = null;
