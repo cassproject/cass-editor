@@ -103,6 +103,9 @@ function conceptSchemeSearch(server, searchTerm, subsearchTerm, paramObj, retry)
                     else
                         p.append("<span class='properties'>AKA: " + frameworkName[i] + "</span>");
                 }
+                if (fx.canEditAny(EcIdentityManager.getMyPks())) {
+                    p.append("<span class='properties'>Editable</span>");
+                }
                 if (searchTerm != "*" && subsearchTerm == null)
                     p.mark(searchTerm);
             }

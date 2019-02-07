@@ -165,6 +165,9 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
                         }
                     }
                 }
+                if (fx.canEditAny(EcIdentityManager.getMyPks())) {
+                    p.append("<span class='properties'>Editable</span>");
+                }
                 if (searchTerm != "*" && subsearchTerm == null) {
                     title.mark(searchTerm);
                     desc.mark(searchTerm);
