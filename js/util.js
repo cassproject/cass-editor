@@ -259,11 +259,15 @@ startTour = function (step) {
 	var competencyTerm = conceptMode ? 'concept' : 'competency';
 	var frameworkTermPlural = conceptMode ? 'concept schemes' : 'frameworks';
 	var competencyTermPlural = conceptMode ? 'concepts' : 'competencies';
+	//Prevent user from clicking other things
+	$('#frameworks').css('pointer-events', 'none');
+	$('#header').css('pointer-events', 'none');
+	$('#editFrameworkSection').css('pointer-events', 'none');
 	var tour = {
 		id: "welcomeTour",
 		steps: [
 			{
-				target: $('#header')[0],
+				target: $('#search')[0],
 				content: 'You can search for a particular ' + frameworkTerm + ' here.',
 				placement: "bottom",
 				onNext: function() {
@@ -341,6 +345,9 @@ startTour = function (step) {
 
 cancelTour = function () {
 	localStorage.setItem('tourStatus', 'complete');
+	$('#frameworks').css('pointer-events', 'auto');
+	$('#header').css('pointer-events', 'auto');
+	$('#editFrameworkSection').css('pointer-events', 'auto');
 }
 
 showTourDialog = function (callback) {
