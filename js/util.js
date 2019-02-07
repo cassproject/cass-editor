@@ -260,9 +260,11 @@ startTour = function (step) {
 	var frameworkTermPlural = conceptMode ? 'concept schemes' : 'frameworks';
 	var competencyTermPlural = conceptMode ? 'concepts' : 'competencies';
 	//Prevent user from clicking other things
-	$('#frameworks').css('pointer-events', 'none');
+	$('#frameworks').children().css('pointer-events', 'none');
 	$('#header').css('pointer-events', 'none');
-	$('#editFrameworkSection').css('pointer-events', 'none');
+	$('#frameworkNameContainer').css('pointer-events', 'none');
+	$('#tree').children().css('pointer-events', 'none');
+	$('.sidebarInner').children().css('pointer-events', 'none');
 	var tour = {
 		id: "welcomeTour",
 		steps: [
@@ -291,6 +293,8 @@ startTour = function (step) {
 						$('#createNewButton').click();
 						hopscotch.showStep(4);
 					}
+					//In case user has scrolled down
+					$('#frameworks').scrollTop(0);
 				}
             },
 			{
@@ -345,9 +349,11 @@ startTour = function (step) {
 
 cancelTour = function () {
 	localStorage.setItem('tourStatus', 'complete');
-	$('#frameworks').css('pointer-events', 'auto');
+	$('#frameworks').children().css('pointer-events', 'auto');
 	$('#header').css('pointer-events', 'auto');
-	$('#editFrameworkSection').css('pointer-events', 'auto');
+	$('#frameworkNameContainer').css('pointer-events', 'auto');
+	$('#tree').children().css('pointer-events', 'auto');
+	$('.sidebarInner').children().css('pointer-events', 'auto');
 }
 
 showTourDialog = function (callback) {
