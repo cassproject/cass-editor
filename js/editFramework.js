@@ -256,10 +256,10 @@ saveCompetency = function (addAnother) {
     isFirstEdit = false;
     //Alert for bad characters in input, multiples of the same language in one-per-language fields
     if (alertBadCharacters() === false || alertDuplicateLanguages() === false) {
-        $("#sidebarAddCompetencies").prop('disabled', false);
+        $("#sidebarSave").prop('disabled', false);
         return false;
     }
-    $("#sidebarAddCompetencies").prop('disabled', false);
+    $("#sidebarSave").prop('disabled', false);
     $(".changedField").removeClass("changedField");
     
     var labelChoice = null;

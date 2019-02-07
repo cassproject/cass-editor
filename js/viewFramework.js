@@ -1141,6 +1141,10 @@ editSidebar = function () {
 		$(this).removeClass('invalidInput');
 	});
 
+	$('.invalidLanguage').each(function() {
+		$(this).removeClass('invalidLanguage');
+	});
+
 	initULLengths();
 	renderSidebar();
 

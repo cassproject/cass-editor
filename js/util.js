@@ -224,6 +224,9 @@ alertDuplicateLanguages = function () {
 		alert('Some fields can only be one entry per language.');
 		return false;
 	}
+	$('.invalidLanguage').each(function() {
+		$(this).removeClass('invalidLanguage');
+	});
 	return true;
 }
 
