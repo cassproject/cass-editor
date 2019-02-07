@@ -20,16 +20,9 @@ populateConceptScheme = function (subsearch) {
     var frameworkName = framework["dcterms:title"];
     frameworkName = EcArray.isArray(frameworkName) ? frameworkName : [frameworkName];
     $("#editFrameworkSection #frameworkAKA").children().remove();
-    if (frameworkName[0]["@value"]) {
-        $("#editFrameworkSection #frameworkName").text(frameworkName[0]["@value"]);
-    } else{
-        $("#editFrameworkSection #frameworkName").text(frameworkName[0]);
-    }
+    $("#editFrameworkSection #frameworkName").text(Thing.getDisplayStringFrom(frameworkName));
     for (var i = 1; i < frameworkName.length; i++) {
-        if (frameworkName[i]["@value"])
-            $("#editFrameworkSection #frameworkAKA").append($('<span>AKA: ' + frameworkName[i]["@value"] + '</span>'));
-        else
-            $("#editFrameworkSection #frameworkAKA").append($('<span>AKA: ' + frameworkName[i] + '</span>'));
+        $("#editFrameworkSection #frameworkAKA").append($('<span>AKA: ' + Thing.getDisplayStringFrom(frameworkName[i]) + '</span>'));
     }
     $("#editFrameworkSection #frameworkCount").hide();
     var frameworkDescription = framework["dcterms:description"];
@@ -37,10 +30,7 @@ populateConceptScheme = function (subsearch) {
     $("#editFrameworkSection #frameworkDescription").children().remove();
     for (var i in frameworkDescription) {
         if (frameworkDescription[i] != null && frameworkDescription[i] != 'NULL' && frameworkDescription[i] != ''){
-            if (frameworkDescription[i]["@value"])
-                $("#editFrameworkSection #frameworkDescription").append($('<span>' + frameworkDescription[i]["@value"] + '</span>'));
-            else
-                $("#editFrameworkSection #frameworkDescription").append($('<span>' + frameworkDescription[i] + '</span>'));
+            $("#editFrameworkSection #frameworkDescription").append($('<span>' + Thing.getDisplayStringFrom(frameworkDescription[i]) + '</span>'));
         }
     }
     try {
@@ -109,17 +99,11 @@ function refreshConcept(col, level, subsearch, recurse) {
     if (col["skos:prefLabel"] != null && col["skos:prefLabel"] != "NULL" && col["skos:prefLabel"] != col["skos:definition"] && col["skos:definition"]) {
         var definition = col["skos:definition"];
         definition = EcArray.isArray(definition) ? definition : [definition];
-        if (definition[0]["@value"])
-            treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").css('display', 'block').text(definition[0]["@value"]);
-        else
-            treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").css('display', 'block').text(definition);
+        treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").css('display', 'block').text(Thing.getDisplayStringFrom(definition));
     }
     var prefLabel = col["skos:prefLabel"];
     prefLabel = EcArray.isArray(prefLabel) ? prefLabel : [prefLabel];
-    if (prefLabel[0]["@value"])
-        treeNode.children().first().prepend("<span/>").children().first().addClass("competencyName").text(prefLabel[0]["@value"]);
-    else
-        treeNode.children().first().prepend("<span/>").children().first().addClass("competencyName").text(prefLabel);
+    treeNode.children().first().prepend("<span/>").children().first().addClass("competencyName").text(Thing.getDisplayStringFrom(prefLabel));
     if (queryParams.link == "true")
         treeNode.prepend(" <a style='float:right;' target='_blank'><i class='fa fa-link' aria-hidden='true'></a>").children().first().attr("href", col.shortId());
     if (queryParams.select != null)

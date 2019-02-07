@@ -92,11 +92,7 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
                 var title = p.children().first();
                 var frameworkName = fx.name;
                 frameworkName = EcArray.isArray(frameworkName) ? frameworkName : [frameworkName];
-                if (typeof frameworkName[0] === "object") {
-                    title.text(frameworkName[0]["@value"]);
-                } else {
-                    title.text(frameworkName[0]);
-                }
+                title.text(Thing.getDisplayStringFrom(frameworkName));;
                 title.addClass("frameworkName");
                 if (subsearchTerm != null)
                     p.prepend("<span style='float:right'>*Matches inside. <span>");
@@ -105,20 +101,14 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
                 frameworkDescription = EcArray.isArray(frameworkDescription) ? frameworkDescription : [frameworkDescription];
                 for (var i in frameworkDescription) {
                     if (frameworkDescription[i] != null && frameworkDescription[i] != "")
-                        if (typeof frameworkDescription[i] === "object")
-                            desc.append($('<span class="frameworkDescription">' + frameworkDescription[i]["@value"] + '</span>'));
-                        else
-                            desc.append($('<span class="frameworkDescription">' + frameworkDescription[i] + '</span>'));
+                        desc.append($('<span class="frameworkDescription">' + Thing.getDisplayStringFrom(frameworkDescription[i]) + '</span>'));
                 }
                 if (fx.competency != null)
                 p.append("<span class='properties'>" + fx.competency.length + " items.</span>");
                 //Display additional data on frameworks in search results
                 if (queryParams.ceasnDataFields == 'true') {
                     for (var i = 1; i < frameworkName.length; i++) {
-                        if (frameworkName[i]["@value"])
-                            p.append("<span class='properties'>AKA: " + frameworkName[i]["@value"] + "</span>");
-                        else
-                            p.append("<span class='properties'>AKA: " + frameworkName[i] + "</span>");
+                        p.append("<span class='properties'>AKA: " + Thing.getDisplayStringFrom(frameworkName[i]) + "</span>");
                     }
                     if (fx['ceasn:publisherName'] != null) {
                         var publisherName = EcArray.isArray(fx['ceasn:publisherName']) ? fx['ceasn:publisherName'] : [fx['ceasn:publisherName']];

@@ -104,20 +104,13 @@ populateFramework = function (subsearch) {
 	treeTop = $("#tree").scrollTop();
 	$("#tree").hide().html("");
 	me.fetches = 0;
-	var frameworkName = framework.getName();
+	var frameworkName = framework.name;
 	if (frameworkName == null) frameworkName = "Unknown Framework.";
 	frameworkName = EcArray.isArray(frameworkName) ? frameworkName : [frameworkName];
 	$("#editFrameworkSection #frameworkAKA").children().remove();
-	if (frameworkName[0]["@value"]) {
-		$("#editFrameworkSection #frameworkName").text(frameworkName[0]["@value"]);
-	} else {
-		$("#editFrameworkSection #frameworkName").text(frameworkName[0]);
-	}
+	$("#editFrameworkSection #frameworkName").text(Thing.getDisplayStringFrom(frameworkName));
 	for (var i = 1; i < frameworkName.length; i++) {
-		if (frameworkName[i]["@value"])
-			$("#editFrameworkSection #frameworkAKA").append($('<span>AKA: ' + frameworkName[i]["@value"] + '</span>'));
-		else
-			$("#editFrameworkSection #frameworkAKA").append($('<span>AKA: ' + frameworkName[i] + '</span>'));
+		$("#editFrameworkSection #frameworkAKA").append($('<span>AKA: ' + Thing.getDisplayStringFrom(frameworkName[i]) + '</span>'));
 	}
 	if (framework.competency != null) {
 		$("#editFrameworkSection #frameworkCount").text(framework.competency.length + " items");
@@ -131,10 +124,7 @@ populateFramework = function (subsearch) {
 	$("#editFrameworkSection #frameworkDescription").children().remove();
 	for (var i in frameworkDescription) {
 		if (frameworkDescription[i] != null && frameworkDescription[i] != 'NULL' && frameworkDescription[i] != '') {
-			if (frameworkDescription[i]["@value"])
-				$("#editFrameworkSection #frameworkDescription").append($('<span>' + frameworkDescription[i]["@value"] + '</span>'));
-			else
-				$("#editFrameworkSection #frameworkDescription").append($('<span>' + frameworkDescription[i] + '</span>'));
+			$("#editFrameworkSection #frameworkDescription").append($('<span>' + Thing.getDisplayStringFrom(frameworkDescription[i]) + '</span>'));
 		}
 	}
 	try {
@@ -246,20 +236,14 @@ function refreshCompetency(col, level, subsearch, done) {
 	competencyDescription = EcArray.isArray(competencyDescription) ? competencyDescription : [competencyDescription];
 	for (var i = competencyDescription.length - 1; i >= 0; i--) {
 		if (competencyDescription[i] != null && competencyDescription[i] != "NULL" && competencyDescription[i] != col.name)
-			if (competencyDescription[i]["@value"])
-				treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").css('display', 'block').text(competencyDescription[i]["@value"]);
-			else
-				treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").css('display', 'block').text(competencyDescription[i]);
+			treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").css('display', 'block').text(Thing.getDisplayStringFrom(competencyDescription[i]));
 	}
 	var competencyName = col.name;
 	competencyName = EcArray.isArray(competencyName) ? competencyName : [competencyName];
 	if (competencyName == null) competencyName = "Unknown Competency.";
-	if (competencyName[0]["@value"])
-		treeNode.children().first().prepend("<span/>").children().first().addClass("competencyName").text(competencyName[0]["@value"]);
-	else
-		treeNode.children().first().prepend("<span/>").children().first().addClass("competencyName").text(competencyName[0]);
+	treeNode.children().first().prepend("<span/>").children().first().addClass("competencyName").text(Thing.getDisplayStringFrom(competencyName));
 	for (var i = competencyName.length - 1; i > 0; i--) {
-		treeNode.children().first().find('.competencyName').after($('<span class="competencyAKA">AKA: ' + competencyName[i]["@value"] + '</span>'));
+		treeNode.children().first().find('.competencyName').after($('<span class="competencyAKA">AKA: ' + Thing.getDisplayStringFrom(competencyName[i]) + '</span>'));
 	}
 	if (queryParams.ceasnDataFields == 'true' || queryParams.tlaProfile == 'true') {
 		if (col["ceasn:codedNotation"] != null)
@@ -271,7 +255,7 @@ function refreshCompetency(col, level, subsearch, done) {
 				var type = col["dcterms:type"];
 				type = EcArray.isArray(type) ? type : [type];
 				for (var i in type){
-					treeNode.children().first().prepend("<span/>").children().first().addClass("competencyType").text(type[i]["@value"]);
+					treeNode.children().first().prepend("<span/>").children().first().addClass("competencyType").text(Thing.getDisplayStringFrom(type[i]));
 				}
 			}
 			else
@@ -560,10 +544,7 @@ renderSidebar = function (justLists) {
 				connectionsList.text(cId);
 			} else {
 				if (displayConcept["skos:prefLabel"] != null)
-					if(displayConcept["skos:prefLabel"][0]["@value"])
-						connectionsList.text(displayConcept["skos:prefLabel"][0]["@value"]);
-					else
-						connectionsList.text(displayConcept["skos:prefLabel"]);
+					connectionsList.text(Thing.getDisplayStringFrom(displayConcept["skos:prefLabel"]));
 				else
 					connectionsList.text(displayConcept);
 			}
@@ -649,16 +630,13 @@ renderSidebar = function (justLists) {
 					li.text(a.target);
 				else if (conceptMode) {
 					if (displayCompetency["skos:prefLabel"] != null)
-						li.text(displayCompetency["skos:prefLabel"][0]["@value"]);
+						li.text(Thing.getDisplayStringFrom(displayCompetency["skos:prefLabel"]));
 					else
 						li.text(displayCompetency);
 				} else {
 					if (displayCompetency.getName) {
 						var name = displayCompetency.getName();
-						if (name[0]["@value"])
-						    li.text(name[0]["@value"]);
-						else
-						    li.text(name);
+						li.text(Thing.getDisplayStringFrom(name));
 					}
 					else if (displayCompetency.indexOf("http") != -1) {
 						resolveNameFromUrl(displayCompetency, function(result) {

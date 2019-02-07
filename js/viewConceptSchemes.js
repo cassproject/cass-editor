@@ -79,11 +79,7 @@ function conceptSchemeSearch(server, searchTerm, subsearchTerm, paramObj, retry)
                 var title = p.children().first();
                 var frameworkName = fx["dcterms:title"];
                 frameworkName = EcArray.isArray(frameworkName) ? frameworkName : [frameworkName];
-                if (frameworkName[0]["@value"]){
-                    title.text(frameworkName[0]["@value"]);
-                } else {
-                    title.text(frameworkName[0]);
-                }
+                title.text(Thing.getDisplayStringFrom(frameworkName));;
                 title.addClass("frameworkName");
                 if (subsearchTerm != null)
                     p.prepend("<span style='float:right'>*Matches inside. <span>");
@@ -92,16 +88,10 @@ function conceptSchemeSearch(server, searchTerm, subsearchTerm, paramObj, retry)
                 frameworkDescription = EcArray.isArray(frameworkDescription) ? frameworkDescription : [frameworkDescription];
                 for (var i in frameworkDescription) {
                     if (frameworkDescription[i] != null && frameworkDescription[i] != "")
-                        if (frameworkDescription[i]["@value"])
-                            desc.append($('<span class="frameworkDescription">' + frameworkDescription[i]["@value"] + '</span>'));
-                        else
-                            desc.append($('<span class="frameworkDescription">' + frameworkDescription[i] + '</span>'));
+                        desc.append($('<span class="frameworkDescription">' + Thing.getDisplayStringFrom(frameworkDescription[i]) + '</span>'));
                 }
                 for (var i = 1; i < frameworkName.length; i++) {
-                    if (frameworkName[i]["@value"])
-                        p.append("<span class='properties'>AKA: " + frameworkName[i]["@value"] + "</span>");
-                    else
-                        p.append("<span class='properties'>AKA: " + frameworkName[i] + "</span>");
+                    p.append("<span class='properties'>AKA: " + Thing.getDisplayStringFrom(frameworkName[i]) + "</span>");
                 }
                 if (fx.canEditAny(EcIdentityManager.getMyPks())) {
                     p.append("<span class='properties'>Editable</span>");
