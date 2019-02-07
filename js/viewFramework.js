@@ -1522,6 +1522,7 @@ $('html').keydown(function (evt) {
 			}
 		}
 		if (evt.which === 13) {
+			evt.preventDefault();
 			if ($('.hopscotch-bubble-close').is(':focus')) {
 				$('.hopscotch-bubble-close').click();
 			} else if ($('.hopscotch-nav-button.next').is(':focus')) {
