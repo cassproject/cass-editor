@@ -3827,7 +3827,7 @@ FrameworkCollapser = stjs.extend(FrameworkCollapser, null, [], function(construc
         this.competencyArray = new Array();
         var c;
         for (var i = 0; i < rlda.length; i++) {
-            if ("competency".equalsIgnoreCase(rlda[i].type)) {
+            if (rlda[i].isAny(new EcCompetency().getTypes())) {
                 c = new EcCompetency();
                 c.copyFrom(rlda[i]);
                 this.competencyArray.push(c);
@@ -3838,7 +3838,7 @@ FrameworkCollapser = stjs.extend(FrameworkCollapser, null, [], function(construc
         this.relationArray = new Array();
         var r;
         for (var i = 0; i < rlda.length; i++) {
-            if ("relation".equalsIgnoreCase(rlda[i].type)) {
+            if (rlda[i].isAny(new EcAlignment().getTypes())) {
                 r = new EcAlignment();
                 r.copyFrom(rlda[i]);
                 this.relationArray.push(r);
