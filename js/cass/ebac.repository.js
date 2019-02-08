@@ -715,19 +715,21 @@ EcEncryptedValue = stjs.extend(EcEncryptedValue, EbacEncryptedValue, [], functio
      *  @method addReaderAsync
      */
     prototype.addReaderAsync = function(newReader, success, failure) {
+        var me = this;
         this.decryptSecretAsync(function(payloadSecret) {
             EcRsaOaepAsync.encrypt(newReader, payloadSecret.toEncryptableJson(), function(s) {
                 var pem = newReader.toPem();
-                if (this.reader == null) {
-                    this.reader = new Array();
+                if (me.reader == null) {
+                    me.reader = new Array();
                 }
-                for (var i = 0; i < this.reader.length; i++) {
-                    if (this.reader[i] == pem) {
+                for (var i = 0; i < me.reader.length; i++) {
+                    if (me.reader[i] == pem) {
+                        success();
                         return;
                     }
                 }
-                EcArray.setAdd(this.reader, pem);
-                EcArray.setAdd(this.secret, s);
+                EcArray.setAdd(me.reader, pem);
+                EcArray.setAdd(me.secret, s);
                 success();
             }, failure);
         }, failure);
@@ -749,12 +751,12 @@ EcEncryptedValue = stjs.extend(EcEncryptedValue, EbacEncryptedValue, [], functio
                 EcArray.setRemove(me.reader, pem);
             }
             var ary = new Array();
-            if (this.owner != null) 
-                for (var i = 0; i < this.owner.length; i++) 
-                    EcArray.setAdd(ary, EcPk.fromPem(this.owner[i]));
-            if (this.reader != null) 
-                for (var i = 0; i < this.reader.length; i++) 
-                    EcArray.setAdd(ary, EcPk.fromPem(this.reader[i]));
+            if (me.owner != null) 
+                for (var i = 0; i < me.owner.length; i++) 
+                    EcArray.setAdd(ary, EcPk.fromPem(me.owner[i]));
+            if (me.reader != null) 
+                for (var i = 0; i < me.reader.length; i++) 
+                    EcArray.setAdd(ary, EcPk.fromPem(me.reader[i]));
             me.secret = new Array();
             var eah = new EcAsyncHelper();
             eah.each(ary, function(ecPk, callback0) {
@@ -861,6 +863,7 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
     prototype.adminKeys = null;
     prototype.selectedServer = null;
     prototype.autoDetectFound = false;
+    prototype.timeOffset = 0;
     /**
      *  Gets a JSON-LD object from the place designated by the URI.
      *  <p>
@@ -921,19 +924,7 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
         var finalUrl = url;
         if (EcRepository.unsigned) {
             EcRemote.getExpectingObject(finalUrl, null, function(p1) {
-                delete (EcRepository.fetching)[originalUrl];
-                var d = new EcRemoteLinkedData("", "");
-                d.copyFrom(p1);
-                if (d.getFullType() == null) {
-                    EcRepository.find(originalUrl, JSON.stringify(p1), new Object(), 0, success, failure);
-                    return;
-                }
-                if (EcRepository.caching) {
-                    (EcRepository.cache)[finalUrl] = d;
-                    (EcRepository.cache)[d.id] = d;
-                    (EcRepository.cache)[d.shortId()] = d;
-                }
-                success(d);
+                EcRepository.getHandleData(p1, originalUrl, success, failure, finalUrl);
             }, function(p1) {
                 EcRepository.find(originalUrl, p1, new Object(), 0, success, failure);
             });
@@ -946,23 +937,26 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
                 }
                 fd.append("signatureSheet", p1);
                 EcRemote.postExpectingObject(finalUrl, null, fd, function(p1) {
-                    delete (EcRepository.fetching)[originalUrl];
-                    var d = new EcRemoteLinkedData("", "");
-                    d.copyFrom(p1);
-                    if (d.getFullType() == null) {
-                        EcRepository.find(originalUrl, JSON.stringify(p1), new Object(), 0, success, failure);
-                        return;
-                    }
-                    if (EcRepository.caching) {
-                        (EcRepository.cache)[finalUrl] = d;
-                        (EcRepository.cache)[d.id] = d;
-                        (EcRepository.cache)[d.shortId()] = d;
-                    }
-                    success(d);
+                    EcRepository.getHandleData(p1, originalUrl, success, failure, finalUrl);
                 }, function(p1) {
                     EcRepository.find(originalUrl, p1, new Object(), 0, success, failure);
                 });
             }, failure);
+    };
+    constructor.getHandleData = function(p1, originalUrl, success, failure, finalUrl) {
+        delete (EcRepository.fetching)[originalUrl];
+        var d = new EcRemoteLinkedData("", "");
+        d.copyFrom(p1);
+        if (d.getFullType() == null) {
+            EcRepository.find(originalUrl, JSON.stringify(p1), new Object(), 0, success, failure);
+            return;
+        }
+        if (EcRepository.caching) {
+            (EcRepository.cache)[finalUrl] = d;
+            if (d.id != null) 
+                (EcRepository.cache)[d.id] = d;
+        }
+        success(d);
     };
     constructor.shouldTryUrl = function(url) {
         if (url == null) 
@@ -1013,6 +1007,8 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
                         delete (EcRepository.fetching)[url];
                         if (EcRepository.caching) {
                             (EcRepository.cache)[url] = strings[i];
+                            if (strings[i].id != null) 
+                                (EcRepository.cache)[url] = strings[i].id;
                         }
                         success(strings[i]);
                     }
@@ -1043,6 +1039,8 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
                     delete (EcRepository.fetching)[url];
                     if (EcRepository.caching) {
                         (EcRepository.cache)[url] = strings[j];
+                        if (strings[j].id != null) 
+                            (EcRepository.cache)[url] = strings[j].id;
                     }
                     return strings[j];
                 }
@@ -1093,8 +1091,13 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
                 return;
             }
             (EcRepository.cache)[originalUrl] = d;
+            if (d.id != null) 
+                (EcRepository.cache)[d.id] = d;
         }, function(s) {
-            (EcRepository.cache)[originalUrl] = EcRepository.findBlocking(originalUrl, s, new Object(), 0);
+            var d = EcRepository.findBlocking(originalUrl, s, new Object(), 0);
+            (EcRepository.cache)[originalUrl] = d;
+            if (d.id != null) 
+                (EcRepository.cache)[d.id] = d;
         });
         EcRemote.async = oldAsync;
         var result = (EcRepository.cache)[originalUrl];
@@ -1252,15 +1255,15 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
         if (EcRemote.async == false) {
             var signatureSheet;
             if (data.owner != null && data.owner.length > 0) {
-                signatureSheet = EcIdentityManager.signatureSheetFor(data.owner, 60000, data.id);
+                signatureSheet = EcIdentityManager.signatureSheetFor(data.owner, 60000 + (repo == null ? 0 : repo.timeOffset), data.id);
             } else {
-                signatureSheet = EcIdentityManager.signatureSheet(60000, data.id);
+                signatureSheet = EcIdentityManager.signatureSheet(60000 + (repo == null ? 0 : repo.timeOffset), data.id);
             }
             afterSignatureSheet(signatureSheet);
         } else if (data.owner != null && data.owner.length > 0) {
-            EcIdentityManager.signatureSheetForAsync(data.owner, 60000, data.id, afterSignatureSheet, failure);
+            EcIdentityManager.signatureSheetForAsync(data.owner, 60000 + (repo == null ? 0 : repo.timeOffset), data.id, afterSignatureSheet, failure);
         } else {
-            EcIdentityManager.signatureSheetAsync(60000, data.id, afterSignatureSheet, failure);
+            EcIdentityManager.signatureSheetAsync(60000 + (repo == null ? 0 : repo.timeOffset), data.id, afterSignatureSheet, failure);
         }
     };
     /**
@@ -1363,18 +1366,18 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
         var me = this;
         if (data.owner != null && data.owner.length > 0) {
             if (EcRemote.async) {
-                EcIdentityManager.signatureSheetForAsync(data.owner, 60000, data.id, function(signatureSheet) {
+                EcIdentityManager.signatureSheetForAsync(data.owner, 60000 + this.timeOffset, data.id, function(signatureSheet) {
                     if (signatureSheet.length == 2 && me.adminKeys != null) {
-                        EcIdentityManager.signatureSheetForAsync(me.adminKeys, 60000, data.id, function(signatureSheet) {
+                        EcIdentityManager.signatureSheetForAsync(me.adminKeys, 60000 + me.timeOffset, data.id, function(signatureSheet) {
                             EcRemote._delete(targetUrl, signatureSheet, success, failure);
                         }, failure);
                     } else 
                         EcRemote._delete(targetUrl, signatureSheet, success, failure);
                 }, failure);
             } else {
-                var signatureSheet = EcIdentityManager.signatureSheetFor(data.owner, 60000, data.id);
+                var signatureSheet = EcIdentityManager.signatureSheetFor(data.owner, 60000 + me.timeOffset, data.id);
                 if (signatureSheet.length == 2 && me.adminKeys != null) {
-                    signatureSheet = EcIdentityManager.signatureSheetFor(me.adminKeys, 60000, data.id);
+                    signatureSheet = EcIdentityManager.signatureSheetFor(me.adminKeys, 60000 + me.timeOffset, data.id);
                     EcRemote._delete(targetUrl, signatureSheet, success, failure);
                 } else 
                     EcRemote._delete(targetUrl, signatureSheet, success, failure);
@@ -1422,7 +1425,7 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
         if (EcRepository.unsigned) {
             this.precachePost(success, cacheUrls, fd, me);
         } else {
-            EcIdentityManager.signatureSheetAsync(60000, this.selectedServer, function(p1) {
+            EcIdentityManager.signatureSheetAsync(60000 + this.timeOffset, this.selectedServer, function(p1) {
                 fd.append("signatureSheet", p1);
                 me.precachePost(success, cacheUrls, fd, me);
             }, null);
@@ -1489,33 +1492,28 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
             return;
         }
         var results = new Array();
+        var me = this;
         if (EcRepository.caching) 
             this.precache(urls, function() {
                 var eah = new EcAsyncHelper();
-                eah.each(urls, function(url, done) {
-                    EcRepository.get(url, function(result) {
-                        results.push(result);
-                        done();
-                    }, function(s) {
-                        done();
-                    });
-                }, function(urls) {
-                    success(results);
-                });
+                me.multigetInner(urls, success, results, eah);
             });
          else {
             var eah = new EcAsyncHelper();
-            eah.each(urls, function(url, done) {
-                EcRepository.get(url, function(result) {
-                    results.push(result);
-                    done();
-                }, function(s) {
-                    done();
-                });
-            }, function(urls) {
-                success(results);
-            });
+            this.multigetInner(urls, success, results, eah);
         }
+    };
+    prototype.multigetInner = function(urls, success, results, eah) {
+        eah.each(urls, function(url, done) {
+            EcRepository.get(url, function(result) {
+                results.push(result);
+                done();
+            }, function(s) {
+                done();
+            });
+        }, function(urls) {
+            success(results);
+        });
     };
     /**
      *  Search a repository for JSON-LD compatible data.
@@ -1639,7 +1637,7 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
                 }
             });
         } else 
-            EcIdentityManager.signatureSheetAsync(60000, this.selectedServer, function(signatureSheet) {
+            EcIdentityManager.signatureSheetAsync(60000 + this.timeOffset, this.selectedServer, function(signatureSheet) {
                 fd.append("signatureSheet", signatureSheet);
                 EcRemote.postExpectingObject(me.selectedServer, "sky/repo/search", fd, function(p1) {
                     if (EcRepository.cachingSearch) {
@@ -1714,7 +1712,7 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
             });
         } else {
             var signatureSheet;
-            signatureSheet = EcIdentityManager.signatureSheet(60000, this.selectedServer);
+            signatureSheet = EcIdentityManager.signatureSheet(60000 + this.timeOffset, this.selectedServer);
             fd.append("signatureSheet", signatureSheet);
             EcRemote.postExpectingObject(me.selectedServer, "sky/repo/search", fd, function(p1) {
                 (EcRepository.cache)[cacheKey] = p1;
@@ -1933,6 +1931,8 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
         var successCheck = function(p1) {
             if (p1 != null) {
                 if ((p1)["ping"] == "pong") {
+                    if ((p1)["time"] != null) 
+                        me.timeOffset = (new Date().getTime()) - ((p1)["time"]);
                     if (me.autoDetectFound == false) {
                         me.selectedServer = guess;
                         me.autoDetectFound = true;
@@ -1979,6 +1979,8 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
         var successCheck = function(p1) {
             if (p1 != null) {
                 if ((p1)["ping"] == "pong") {
+                    if ((p1)["time"] != null) 
+                        me.timeOffset = (new Date().getTime()) - ((p1)["time"]);
                     me.selectedServer = guess;
                     me.autoDetectFound = true;
                 }
@@ -2016,7 +2018,7 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
      */
     prototype.listTypes = function(success, failure) {
         var fd = new FormData();
-        fd.append("signatureSheet", EcIdentityManager.signatureSheet(60000, this.selectedServer));
+        fd.append("signatureSheet", EcIdentityManager.signatureSheet(60000 + this.timeOffset, this.selectedServer));
         EcRemote.postExpectingObject(this.selectedServer, "sky/repo/types", fd, function(p1) {
             var results = p1;
             if (success != null) {
