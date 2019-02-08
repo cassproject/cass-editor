@@ -986,3 +986,18 @@ moveDown = function () {
         }
     }
 }
+
+//Remove seconds from iOS datetime-local fields
+$(document).on("change", '#sidebarDateValidUntilInput', function() {
+    if ($(this).val().length > 16) {
+        var noSeconds = $(this).val().substr(0, 16)
+        $(this).val(noSeconds);
+    }
+});
+
+$(document).on("change", '#sidebarDateValidFromInput', function() {
+    if ($(this).val().length > 16) {
+        var noSeconds = $(this).val().substr(0, 16)
+        $(this).val(noSeconds);
+    }
+});
