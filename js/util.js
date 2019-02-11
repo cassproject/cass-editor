@@ -321,7 +321,7 @@ startTour = function (step) {
 			{
 				target: 'li.competency',
 				content: 'You can click a ' + competencyTerm + ' for more information. If you have permission to edit the ' + frameworkTerm + ', you can also drag and drop ' + competencyTermPlural + ' to rearrange them.',
-				placement: "bottom",
+				placement: "right",
             },
 			{
 				target: 'div.detailSliderView',
