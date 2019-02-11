@@ -440,7 +440,7 @@ renderSidebar = function (justLists) {
 						displayString = displayString[stringKeys][0];
 					}
 				}
-				if (displayString.toLowerCase().indexOf("http") != -1) {
+				if (displayString.toLowerCase().startsWith("http")) {
 					var elem = $(this);
 					elem.append("<div class='sidebarPropertyLink'><a target='_blank'/></div>").children().last().children().last().attr("href", displayString).text(displayString);
 					var anchor = elem.children().last().children().last();
