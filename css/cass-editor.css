@@ -624,7 +624,7 @@ input.redButton {
 }
 
 .sidebarToolbar {
-    position: fixed;
+    position: absolute;
     width: inherit;
     background: white;
     z-index: 1;
@@ -734,7 +734,7 @@ input.redButton {
 }
 
 .sidebar {
-    position: fixed;
+    position: absolute;
     right: 0;
     float: right;
     padding: 0rem .5rem 0rem 0rem;
