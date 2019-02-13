@@ -299,6 +299,11 @@ saveCompetency = function (addAnother) {
             fieldChoice = "skosFramework";
             inputChoice = "skosFramework";
         }
+        if (queryParams.ceasnDataFields == 'true') {
+            if (thing != selectedCompetency) {
+                labelChoice = "ceasnConceptScheme";
+            }
+        }
     }
 
     var nameString = $('#sidebarNameInput').val();

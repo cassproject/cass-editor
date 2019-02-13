@@ -383,6 +383,11 @@ renderSidebar = function (justLists) {
 			inputChoice = "skosFramework";
 			initTooltips('skosFramework');
 		}
+		if (queryParams.ceasnDataFields == 'true') {
+			if (thing != selectedCompetency) {
+				labelChoice = "ceasnConceptScheme";
+			}
+		}
 	}
 
 	//Display cassCompetency only fields
