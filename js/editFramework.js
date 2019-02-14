@@ -33,7 +33,7 @@ addCompetency = function () {
     var addOrSearch = $("#sidebarAddCompetencies").attr('value');
     if (addOrSearch == "search") {
         initIframe();
-        showPage("#findCompetencySection", framework);
+        overlayPage("#findCompetencySection", framework);
     } else if (addOrSearch == "new") {
         $("#sidebarAddCompetencies").prop('disabled', true);
         isFirstEdit = true;
