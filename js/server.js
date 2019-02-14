@@ -163,11 +163,13 @@ function cappend(event) {
 		if (conceptMode && event.data.type == 'Concept' && $("#selectConceptSection").attr("relation")) {
 			addAlignments(event.data.selected, selectedCompetency, $("#selectConceptSection").attr("relation"));
 			$("#selectConceptSection").hide();
-			$("#editFrameworkSection").show();
+			$("#editFrameworkSection").removeClass("transparent");
+			$(".sidebarToolbar:visible").removeClass("transparent");
 		} else if (event.data.type == 'Concept') {
 			attachUrlProperties(event.data.selected);
 			$("#selectConceptSection").hide();
-			$("#editFrameworkSection").show();
+			$("#editFrameworkSection").removeClass("transparent");
+			$(".sidebarToolbar:visible").removeClass("transparent");
 			if (queryParams.ceasnDataFields == "true") {
 				$(".ceasnDataFields").show();
 			}
@@ -175,13 +177,15 @@ function cappend(event) {
 			//Don't allow alignments within the same framework.
 			if (framework.id == event.data.selectedFramework.id) {
 				$("#selectCompetencySection").hide();
-				$("#editFrameworkSection").show();
+				$("#editFrameworkSection").removeClass("transparent");
+				$(".sidebarToolbar:visible").removeClass("transparent");
 			} else {
 				var targets = event.data.selected;
 				var thing = selectedCompetency;
 				addAlignments(targets, thing);
 				$("#selectCompetencySection").hide();
-				$("#editFrameworkSection").show();
+				$("#editFrameworkSection").removeClass("transparent");
+				$(".sidebarToolbar:visible").removeClass("transparent");
 			}
 		} else if (event.data.selected.length > 0) {
 			showCopyOrLinkDialog(function (copy) {
@@ -192,7 +196,8 @@ function cappend(event) {
 				}
 				hideCopyOrLinkDialog();
 				$("#selectConceptSection,#findCompetencySection").hide();
-				$("#editFrameworkSection").show();
+				$("#editFrameworkSection").removeClass("transparent");
+				$(".sidebarToolbar:visible").removeClass("transparent");
 			});
 		} else if (event.data.selected.length <= 0) {
 			alert("No items have been selected.");

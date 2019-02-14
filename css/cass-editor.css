@@ -1029,6 +1029,19 @@ hr {
     font-weight: bold;
     line-height: 1rem;
 }
+
+#selectConceptSection, #selectCompetencySection {
+    position: fixed;
+    z-index: 2;
+}
+
+#selectConceptSection iframe, #selectCompetencySection iframe {
+    background: white;
+}
+
+.transparent {
+    display: none;
+}
 .flow {
 	display: flex;
 	flex-direction: row;

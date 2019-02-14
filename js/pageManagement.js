@@ -101,6 +101,21 @@ function showPage(pageId, state) {
     gotoPage(pageId, state);
 }
 
+function overlayPage(pageId, state) {
+    window.history.pushState({
+        pageId: pageId,
+        state: state
+    }, pageId);
+    $("#editFrameworkSection:visible").addClass("transparent");
+    $(".sidebarToolbar:visible").addClass("transparent");
+    $(pageId).slideDown(400, function () {
+        $(pageId).show();
+        $("#tree").height("calc(" + $(window).outerHeight() + "px - " + $("#tree").position().top + "px)");
+        $(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
+        resizeWindow($(window).width() / 2);
+    });
+}
+
 function loading(message) {
     var p = $(".page:visible");
     if (p.length == 0 || (p.length == 1 && p[0] == $("#loading")[0])) {
