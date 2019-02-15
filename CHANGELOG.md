@@ -1,11 +1,37 @@
 # Change Log
 
-## [Unreleased](https://github.com/cassproject/cass-editor/tree/HEAD)
-
-[Full Changelog](https://github.com/cassproject/cass-editor/compare/1.0.4...HEAD)
+## [1.0.6](https://github.com/cassproject/cass-editor/tree/1.0.6) (2019-02-15)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/1.0.5...1.0.6)
 
 **Implemented enhancements:**
 
+- Attempt to resolve URIs in properties and fetch labels/turn things into href.  [\#452](https://github.com/cassproject/cass-editor/issues/452)
+- Enable CTDL-ASN export for a single competency. [\#449](https://github.com/cassproject/cass-editor/issues/449)
+
+**Fixed bugs:**
+
+- Tutorial Related Issues [\#491](https://github.com/cassproject/cass-editor/issues/491)
+- Imported competencies appear out of order in the editor [\#479](https://github.com/cassproject/cass-editor/issues/479)
+- Handling of special characters may be breaking the search [\#470](https://github.com/cassproject/cass-editor/issues/470)
+- Upload of DQP and test of URI swapping [\#333](https://github.com/cassproject/cass-editor/issues/333)
+- iOS: export/view function is not responsive [\#206](https://github.com/cassproject/cass-editor/issues/206)
+- iOS: Date valid from and until always appears invalid [\#202](https://github.com/cassproject/cass-editor/issues/202)
+
+**Closed issues:**
+
+- ASN import needs to import using canonical URLs. [\#496](https://github.com/cassproject/cass-editor/issues/496)
+- One per language fields [\#495](https://github.com/cassproject/cass-editor/issues/495)
+- Should use getDisplayString\(\) over direct array/"@value" [\#488](https://github.com/cassproject/cass-editor/issues/488)
+- Increase transparency of concept scheme overlay to show context \(the framework that is being edited\). [\#478](https://github.com/cassproject/cass-editor/issues/478)
+- iOS: Edit panel and list of competencies have separate scroll bars, but move simultaneously [\#210](https://github.com/cassproject/cass-editor/issues/210)
+
+## [1.0.5](https://github.com/cassproject/cass-editor/tree/1.0.5) (2019-02-08)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/1.0.4...1.0.5)
+
+**Implemented enhancements:**
+
+- Yellow highlight over export drop down overlaps the buttons above it [\#492](https://github.com/cassproject/cass-editor/issues/492)
+- Display error message for attempting to save additional entities with no language tag [\#458](https://github.com/cassproject/cass-editor/issues/458)
 - From a postMessage, be able to set a field on the selected framework or selected competency and save it. [\#379](https://github.com/cassproject/cass-editor/issues/379)
 - Enable the "Import Framework" screen to support multiple frameworks in a single upload [\#322](https://github.com/cassproject/cass-editor/issues/322)
 - Create method that moves things to CER urls as soon as they touch the cass-editor. [\#313](https://github.com/cassproject/cass-editor/issues/313)
@@ -14,14 +40,21 @@
 
 **Fixed bugs:**
 
+- Competency count for new framework [\#490](https://github.com/cassproject/cass-editor/issues/490)
 - Back key causes search, which takes kinda a long time, looks unresponsive.  [\#487](https://github.com/cassproject/cass-editor/issues/487)
 - Langstring encoded ceasn:competencyCategory is not displayed correctly. [\#474](https://github.com/cassproject/cass-editor/issues/474)
+- The guided tour prompt should be disabled for the CaSS viewer [\#442](https://github.com/cassproject/cass-editor/issues/442)
+- Occasionally will receive 404 when using the CaSS viewer [\#434](https://github.com/cassproject/cass-editor/issues/434)
 - Keyboard Up Down Arrows Selects Wrong Competency After Collapsed [\#400](https://github.com/cassproject/cass-editor/issues/400)
 
 **Closed issues:**
 
+- Change language display to tags rather than language: value [\#494](https://github.com/cassproject/cass-editor/issues/494)
+- CTDL-ASN JSON-LD import error/failure [\#485](https://github.com/cassproject/cass-editor/issues/485)
+- Possible to create a competency where only general, keys, and connections are visible in edit. [\#480](https://github.com/cassproject/cass-editor/issues/480)
 - Add option for concept schemes to be filtered to only my schemes \(in concept selector\) [\#477](https://github.com/cassproject/cass-editor/issues/477)
 - Add tooltips to Import Framework and Create Framework buttons [\#475](https://github.com/cassproject/cass-editor/issues/475)
+- Exporting with language tags [\#443](https://github.com/cassproject/cass-editor/issues/443)
 - Test v1.3.2 [\#419](https://github.com/cassproject/cass-editor/issues/419)
 - Investigate dangling relation. [\#292](https://github.com/cassproject/cass-editor/issues/292)
 - Conceive landing page for cass-editor. [\#245](https://github.com/cassproject/cass-editor/issues/245)
