@@ -33,7 +33,7 @@ CredentialingAction = stjs.extend(CredentialingAction, Action, [], function(cons
     prototype.actionStatusType = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -82,7 +82,7 @@ CredentialingAction = stjs.extend(CredentialingAction, Action, [], function(cons
      *  @type date
      */
     prototype.startDate = null;
-}, {actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", target: "EntryPoint", participant: "Object", instrument: "Thing", agent: "Object", object: "Thing", actionStatus: "ActionStatusType", result: "Thing", location: "Object", error: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", result: "Thing", actionStatus: "ActionStatusType", target: "EntryPoint", agent: "Person", participant: "Person", instrument: "Thing", object: "Thing", error: "Thing", location: "PostalAddress", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/CredentialAlignmentObject
  *  Entity describing an affiliation or association between an entity such as a credential, learning opportunity or assessment and another entity in a structured framework such as a concept scheme, enumerated list, or competency framework.
@@ -142,6 +142,7 @@ CredentialAlignmentObject = stjs.extend(CredentialAlignmentObject, AlignmentObje
     /**
      *  http://purl.org/ctdl/terms/targetNode
      *  Individual entry in a formally defined framework such as a competency or an industry, instructional program, or occupation code.
+     *  The target node returned must be the exact competency or concept being described and no other competency or concept. References to data or a document that returns all of the competencies or concepts in the framework to which the target node belongs should use the ceterms:framework property.
      *  @property targetNode
      *  @type anyURI
      */
@@ -244,7 +245,7 @@ EarningsProfile = stjs.extend(EarningsProfile, CreativeWork, [], function(constr
      *  @type anyURI
      */
     prototype.source = null;
-}, {jurisdiction: "JurisdictionProfile", region: "Place", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {jurisdiction: "JurisdictionProfile", region: "Place", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/AssessmentProfile
  *  Entity that describes the key characteristics of an assessment for a credential.
@@ -349,6 +350,13 @@ AssessmentProfile = stjs.extend(AssessmentProfile, CreativeWork, [], function(co
      *  @type CredentialAlignmentObject
      */
     prototype.assessmentUseType = null;
+    /**
+     *  http://purl.org/ctdl/terms/audienceType
+     *  The type of credential seeker for whom the entity is applicable; select from an existing enumeration of such types.
+     *  @property audienceType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.audienceType = null;
     /**
      *  http://purl.org/ctdl/terms/availabilityListing
      *  Listing of online and/or physical locations where a credential can be pursued.
@@ -466,7 +474,7 @@ AssessmentProfile = stjs.extend(AssessmentProfile, CreativeWork, [], function(co
     prototype.deliveryTypeDescription = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -511,7 +519,7 @@ AssessmentProfile = stjs.extend(AssessmentProfile, CreativeWork, [], function(co
      *  Entity that describes financial assistance for which this credential, assessment, or learning opportunity qualifies.
      *  Whether the financial aid in question is associated with a credential, an assessment, or a learning opportunity is dependent on context.
      *  @property financialAssistance
-     *  @type FinancialAlignmentObject
+     *  @type FinancialAssistanceProfile
      */
     prototype.financialAssistance = null;
     /**
@@ -530,8 +538,7 @@ AssessmentProfile = stjs.extend(AssessmentProfile, CreativeWork, [], function(co
     prototype.hasGroupParticipation = false;
     /**
      *  http://purl.org/ctdl/terms/inLanguage
-     *  Primary language of the credential, learning opportunity or assessment.
-     *  This is the primary language the entity, even if the it makes use of other languages. For example, a course that teaches Spanish to English-speaking students may primarily be in English, because that is the language used to convey the material.
+     *  The primary language or languages of the entity, even if it makes use of other languages; e.g., a course offered in English to teach Spanish would have an inLanguage of English, while a credential in Quebec could have an inLanguage of both French and English.
      *  @property inLanguage
      *  @type language
      */
@@ -751,6 +758,14 @@ AssessmentProfile = stjs.extend(AssessmentProfile, CreativeWork, [], function(co
      */
     prototype.targetAssessment = null;
     /**
+     *  http://purl.org/ctdl/terms/targetLearningResource
+     *  Learning object or resource that is used as part of an learning activity.
+     *  Examples include a textbook or lesson plan that describes or records the educational activity (e.g. an audio- or video-recording of a lesson).
+     *  @property targetLearningResource
+     *  @type LearningResource
+     */
+    prototype.targetLearningResource = null;
+    /**
      *  http://purl.org/ctdl/terms/verificationMethodDescription
      *  Textual description of the methods used to evaluate an assessment, learning opportunity, process or verificaiton service for validity or reliability.
      *  @property verificationMethodDescription
@@ -765,7 +780,7 @@ AssessmentProfile = stjs.extend(AssessmentProfile, CreativeWork, [], function(co
      *  @type IdentifierValue
      */
     prototype.versionIdentifier = null;
-}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", approvedBy: "Object", approvedIn: "JurisdictionProfile", assesses: "Object", assessmentMethodType: "CredentialAlignmentObject", assessmentUseType: "CredentialAlignmentObject", availableAt: "Place", commonConditions: "ConditionManifest", commonCosts: "CostManifest", corequisite: "ConditionProfile", creditUnitType: "CredentialAlignmentObject", deliveryType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", entryCondition: "ConditionProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", financialAssistance: "FinancialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", maintenanceProcess: "ProcessProfile", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", requires: "Object", scoringMethodType: "CredentialAlignmentObject", subject: "CredentialAlignmentObject", targetAssessment: "Object", versionIdentifier: "IdentifierValue", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", approvedBy: "Object", approvedIn: "JurisdictionProfile", assesses: "Object", assessmentMethodType: "CredentialAlignmentObject", assessmentUseType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", commonConditions: "ConditionManifest", commonCosts: "CostManifest", corequisite: "ConditionProfile", creditUnitType: "CredentialAlignmentObject", deliveryType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", entryCondition: "ConditionProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", financialAssistance: "FinancialAssistanceProfile", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", maintenanceProcess: "ProcessProfile", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", requires: "Object", scoringMethodType: "CredentialAlignmentObject", subject: "CredentialAlignmentObject", targetAssessment: "Object", targetLearningResource: "LearningResource", versionIdentifier: "IdentifierValue", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/ProcessProfile
  *  Entity describing the type, nature, and other relevant information about a process related to a credential.
@@ -793,7 +808,7 @@ ProcessProfile = stjs.extend(ProcessProfile, CreativeWork, [], function(construc
     prototype.dateEffective = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -925,7 +940,7 @@ ProcessProfile = stjs.extend(ProcessProfile, CreativeWork, [], function(construc
      *  @type langString
      */
     prototype.verificationMethodDescription = null;
-}, {externalInputType: "CredentialAlignmentObject", jurisdiction: "JurisdictionProfile", processingAgent: "Object", region: "Place", targetAssessment: "Object", targetCompetencyFramework: "Object", targetCredential: "Object", targetLearningOpportunity: "Object", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {externalInputType: "CredentialAlignmentObject", jurisdiction: "JurisdictionProfile", processingAgent: "Object", region: "Place", targetAssessment: "Object", targetCompetencyFramework: "Object", targetCredential: "Object", targetLearningOpportunity: "Object", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/LearningResource
  *  Entity that is used as part of an learning activity (e.g. a textbook) or that describes (e.g. a lesson plan) or records the educational activity (e.g. an audio- or video-recording of a lesson).
@@ -943,7 +958,7 @@ function() {
     this.context = "http://schema.eduworks.com/simpleCtdl";
     this.type = "LearningResource";
 };
-LearningResource = stjs.extend(LearningResource, CreativeWork, [], null, {contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+LearningResource = stjs.extend(LearningResource, CreativeWork, [], null, {about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/JurisdictionProfile
  *  Geo-political information about applicable geographic areas and their exceptions.
@@ -971,7 +986,7 @@ JurisdictionProfile = stjs.extend(JurisdictionProfile, CreativeWork, [], functio
     prototype.assertedBy = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -999,7 +1014,7 @@ JurisdictionProfile = stjs.extend(JurisdictionProfile, CreativeWork, [], functio
      *  @type Place
      */
     prototype.mainJurisdiction = null;
-}, {assertedBy: "Object", jurisdictionException: "Place", mainJurisdiction: "Place", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {assertedBy: "Object", jurisdictionException: "Place", mainJurisdiction: "Place", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/RevocationProfile
  *  Entity describing conditions and methods by which a credential can be removed from a holder.
@@ -1027,7 +1042,7 @@ RevocationProfile = stjs.extend(RevocationProfile, CreativeWork, [], function(co
     prototype.dateEffective = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -1060,7 +1075,7 @@ RevocationProfile = stjs.extend(RevocationProfile, CreativeWork, [], function(co
      *  @type langString
      */
     prototype.revocationCriteriaDescription = null;
-}, {jurisdiction: "JurisdictionProfile", region: "Place", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {jurisdiction: "JurisdictionProfile", region: "Place", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/Credential
  *  Qualification, achievement, personal or organizational quality, or aspect of an identity typically used to indicate suitability.
@@ -1111,7 +1126,7 @@ Credential = stjs.extend(Credential, CreativeWork, [], function(constructor, pro
     prototype.advancedStandingFrom = null;
     /**
      *  http://purl.org/ctdl/terms/alternateName
-     *  Alias for a credential including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
+     *  Alias for the entity including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
      *  @property alternateName
      *  @type langString
      */
@@ -1138,12 +1153,27 @@ Credential = stjs.extend(Credential, CreativeWork, [], function(constructor, pro
      */
     prototype.approvedIn = null;
     /**
+     *  http://purl.org/ctdl/terms/assessmentDeliveryType
+     *  Delivery type for the assessment for the credential.
+     *  Indicates the delivery type for the assessment for the credential.
+     *  @property assessmentDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.assessmentDeliveryType = null;
+    /**
      *  http://purl.org/ctdl/terms/audienceLevelType
      *  Type of level indicating a point in a progression through an educational or training context, for which the credential is intended; select from an existing enumeration of such types.
      *  @property audienceLevelType
      *  @type CredentialAlignmentObject
      */
     prototype.audienceLevelType = null;
+    /**
+     *  http://purl.org/ctdl/terms/audienceType
+     *  The type of credential seeker for whom the entity is applicable; select from an existing enumeration of such types.
+     *  @property audienceType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.audienceType = null;
     /**
      *  http://purl.org/ctdl/terms/availabilityListing
      *  Listing of online and/or physical locations where a credential can be pursued.
@@ -1248,7 +1278,7 @@ Credential = stjs.extend(Credential, CreativeWork, [], function(constructor, pro
     prototype.dateEffective = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -1300,7 +1330,7 @@ Credential = stjs.extend(Credential, CreativeWork, [], function(constructor, pro
      *  Entity that describes financial assistance for which this credential, assessment, or learning opportunity qualifies.
      *  Whether the financial aid in question is associated with a credential, an assessment, or a learning opportunity is dependent on context.
      *  @property financialAssistance
-     *  @type FinancialAlignmentObject
+     *  @type FinancialAssistanceProfile
      */
     prototype.financialAssistance = null;
     /**
@@ -1334,12 +1364,18 @@ Credential = stjs.extend(Credential, CreativeWork, [], function(constructor, pro
     prototype.industryType = null;
     /**
      *  http://purl.org/ctdl/terms/inLanguage
-     *  Primary language of the credential, learning opportunity or assessment.
-     *  This is the primary language the entity, even if the it makes use of other languages. For example, a course that teaches Spanish to English-speaking students may primarily be in English, because that is the language used to convey the material.
+     *  The primary language or languages of the entity, even if it makes use of other languages; e.g., a course offered in English to teach Spanish would have an inLanguage of English, while a credential in Quebec could have an inLanguage of both French and English.
      *  @property inLanguage
      *  @type language
      */
     prototype.inLanguage = null;
+    /**
+     *  http://purl.org/ctdl/terms/instructionalProgramType
+     *  Type of instructional program; select from an existing enumeration of such types.
+     *  @property instructionalProgramType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.instructionalProgramType = null;
     /**
      *  http://purl.org/ctdl/terms/isAdvancedStandingFor
      *  This credential, assessment, or learning opportunity reduces the time or cost required to earn or complete the referenced credential, assessment, or learning opportunity.
@@ -1397,6 +1433,14 @@ Credential = stjs.extend(Credential, CreativeWork, [], function(constructor, pro
      *  @type ApprenticeshipCertificate | AssociateDegree | BachelorDegree | Badge | Certificate | Certification | Credential | Degree | DigitalBadge | Diploma | DoctoralDegree | GeneralEducationDevelopment | JourneymanCertificate | License | MasterCertificate | MasterDegree | MicroCredential | OpenBadge | ProfessionalDoctorate | QualityAssuranceCredential | ResearchDoctorate | SecondarySchoolDiploma
      */
     prototype.latestVersion = null;
+    /**
+     *  http://purl.org/ctdl/terms/learningDeliveryType
+     *  Delivery type for the learning opportunity for the credential.
+     *  Indicates the delivery type for the learning opportunity for the credential.
+     *  @property learningDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.learningDeliveryType = null;
     /**
      *  http://purl.org/ctdl/terms/maintenanceProcess
      *  Entity describing the process by which the credential is maintained including review and updating.
@@ -1648,7 +1692,7 @@ Credential = stjs.extend(Credential, CreativeWork, [], function(constructor, pro
      *  @type IdentifierValue
      */
     prototype.versionIdentifier = null;
-}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/TaskProfile
  *  Entity describing the required or recommended tasks to be performed by a holder of, or applicant for, a credential.
@@ -1704,7 +1748,7 @@ TaskProfile = stjs.extend(TaskProfile, CreativeWork, [], function(constructor, p
     prototype.dateEffective = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -1744,7 +1788,7 @@ TaskProfile = stjs.extend(TaskProfile, CreativeWork, [], function(constructor, p
      *  @type anyURI
      */
     prototype.taskDetails = null;
-}, {affiliatedAgent: "Object", availableAt: "Place", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", jurisdiction: "JurisdictionProfile", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {affiliatedAgent: "Object", availableAt: "Place", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", jurisdiction: "JurisdictionProfile", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/CostProfile
  *  Entity that describes direct costs one would incur if one were to pursue a credential, assessment, learning opportunity, or aspects thereof.
@@ -1765,7 +1809,7 @@ function() {
 CostProfile = stjs.extend(CostProfile, CreativeWork, [], function(constructor, prototype) {
     /**
      *  http://purl.org/ctdl/terms/audienceType
-     *  Type of credential seeker for whom the particular condition or cost is applicable; select from an existing enumeration of such types.
+     *  The type of credential seeker for whom the entity is applicable; select from an existing enumeration of such types.
      *  @property audienceType
      *  @type CredentialAlignmentObject
      */
@@ -1793,7 +1837,7 @@ CostProfile = stjs.extend(CostProfile, CreativeWork, [], function(constructor, p
     prototype.currency = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -1862,11 +1906,11 @@ CostProfile = stjs.extend(CostProfile, CreativeWork, [], function(constructor, p
      *  @type date
      */
     prototype.startDate = null;
-}, {audienceType: "CredentialAlignmentObject", directCostType: "CredentialAlignmentObject", jurisdiction: "JurisdictionProfile", region: "Place", residencyType: "CredentialAlignmentObject", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {audienceType: "CredentialAlignmentObject", directCostType: "CredentialAlignmentObject", jurisdiction: "JurisdictionProfile", region: "Place", residencyType: "CredentialAlignmentObject", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/LearningOpportunityProfile
- *  Entity describing a learning opportunity.
- *  Educational opportunities include required and optional programs, courses of study, and other structured experiences intended to serve as educational or training events.
+ *  Entity describing an educational or training opportunity.
+ *  Opportunities include formal and informal educational training programs and classes, apprenticeship or work experience programs, or other structured or unstructured experiences that serve as educational or training activities.
  *  @author credentialengine.org
  *  @class LearningOpportunityProfile
  *  @module org.credentialengine
@@ -1917,6 +1961,13 @@ LearningOpportunityProfile = stjs.extend(LearningOpportunityProfile, CreativeWor
      *  @type JurisdictionProfile
      */
     prototype.approvedIn = null;
+    /**
+     *  http://purl.org/ctdl/terms/audienceType
+     *  The type of credential seeker for whom the entity is applicable; select from an existing enumeration of such types.
+     *  @property audienceType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.audienceType = null;
     /**
      *  http://purl.org/ctdl/terms/availabilityListing
      *  Listing of online and/or physical locations where a credential can be pursued.
@@ -2034,7 +2085,7 @@ LearningOpportunityProfile = stjs.extend(LearningOpportunityProfile, CreativeWor
     prototype.deliveryTypeDescription = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -2065,7 +2116,7 @@ LearningOpportunityProfile = stjs.extend(LearningOpportunityProfile, CreativeWor
      *  Entity that describes financial assistance for which this credential, assessment, or learning opportunity qualifies.
      *  Whether the financial aid in question is associated with a credential, an assessment, or a learning opportunity is dependent on context.
      *  @property financialAssistance
-     *  @type FinancialAlignmentObject
+     *  @type FinancialAssistanceProfile
      */
     prototype.financialAssistance = null;
     /**
@@ -2078,8 +2129,7 @@ LearningOpportunityProfile = stjs.extend(LearningOpportunityProfile, CreativeWor
     prototype.hasPart = null;
     /**
      *  http://purl.org/ctdl/terms/inLanguage
-     *  Primary language of the credential, learning opportunity or assessment.
-     *  This is the primary language the entity, even if the it makes use of other languages. For example, a course that teaches Spanish to English-speaking students may primarily be in English, because that is the language used to convey the material.
+     *  The primary language or languages of the entity, even if it makes use of other languages; e.g., a course offered in English to teach Spanish would have an inLanguage of English, while a credential in Quebec could have an inLanguage of both French and English.
      *  @property inLanguage
      *  @type language
      */
@@ -2292,7 +2342,7 @@ LearningOpportunityProfile = stjs.extend(LearningOpportunityProfile, CreativeWor
      *  @type IdentifierValue
      */
     prototype.versionIdentifier = null;
-}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", advancedStandingFrom: "Object", approvedBy: "Object", approvedIn: "JurisdictionProfile", availableAt: "Place", commonConditions: "ConditionManifest", commonCosts: "CostManifest", corequisite: "ConditionProfile", creditUnitType: "CredentialAlignmentObject", deliveryType: "CredentialAlignmentObject", entryCondition: "ConditionProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", learningMethodType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", requires: "Object", subject: "CredentialAlignmentObject", targetAssessment: "Object", targetLearningOpportunity: "Object", targetLearningResource: "LearningResource", teaches: "Object", versionIdentifier: "IdentifierValue", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", advancedStandingFrom: "Object", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceType: "CredentialAlignmentObject", availableAt: "Place", commonConditions: "ConditionManifest", commonCosts: "CostManifest", corequisite: "ConditionProfile", creditUnitType: "CredentialAlignmentObject", deliveryType: "CredentialAlignmentObject", entryCondition: "ConditionProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", learningMethodType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", requires: "Object", subject: "CredentialAlignmentObject", targetAssessment: "Object", targetLearningOpportunity: "Object", targetLearningResource: "LearningResource", teaches: "Object", versionIdentifier: "IdentifierValue", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/ConditionProfile
  *  Entity describing a constraint, prerequisite, entry condition, or requirement.
@@ -2312,13 +2362,6 @@ function() {
     this.type = "ConditionProfile";
 };
 ConditionProfile = stjs.extend(ConditionProfile, CreativeWork, [], function(constructor, prototype) {
-    /**
-     *  http://purl.org/ctdl/terms/additionalCondition
-     *  Additional state of affairs that must exist or be brought about before something else is permitted.
-     *  @property additionalCondition
-     *  @type ConditionProfile
-     */
-    prototype.additionalCondition = null;
     /**
      *  http://purl.org/ctdl/terms/alternativeCondition
      *  Constraints, prerequisites, entry conditions, or requirementst in a context where more than one alternative condition or path has been defined and from which any one path fulfills the parent condition.
@@ -2343,7 +2386,7 @@ ConditionProfile = stjs.extend(ConditionProfile, CreativeWork, [], function(cons
     prototype.audienceLevelType = null;
     /**
      *  http://purl.org/ctdl/terms/audienceType
-     *  Type of credential seeker for whom the particular condition or cost is applicable; select from an existing enumeration of such types.
+     *  The type of credential seeker for whom the entity is applicable; select from an existing enumeration of such types.
      *  @property audienceType
      *  @type CredentialAlignmentObject
      */
@@ -2406,7 +2449,7 @@ ConditionProfile = stjs.extend(ConditionProfile, CreativeWork, [], function(cons
     prototype.dateEffective = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -2525,7 +2568,7 @@ ConditionProfile = stjs.extend(ConditionProfile, CreativeWork, [], function(cons
      *  @type float
      */
     prototype.yearsOfExperience = null;
-}, {additionalCondition: "ConditionProfile", alternativeCondition: "ConditionProfile", assertedBy: "Object", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", commonCosts: "CostManifest", creditUnitType: "CredentialAlignmentObject", estimatedCost: "CostProfile", jurisdiction: "JurisdictionProfile", residentOf: "JurisdictionProfile", targetAssessment: "Object", targetCompetency: "Object", targetCredential: "Object", targetLearningOpportunity: "Object", targetPathway: "CareerPathway", targetTask: "TaskProfile", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {alternativeCondition: "ConditionProfile", assertedBy: "Object", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", commonCosts: "CostManifest", creditUnitType: "CredentialAlignmentObject", estimatedCost: "CostProfile", jurisdiction: "JurisdictionProfile", residentOf: "JurisdictionProfile", targetAssessment: "Object", targetCompetency: "Object", targetCredential: "Object", targetLearningOpportunity: "Object", targetPathway: "CareerPathway", targetTask: "TaskProfile", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/HoldersProfile
  *  Entity describing the count and related statistical information of holders of a given credential.
@@ -2560,7 +2603,7 @@ HoldersProfile = stjs.extend(HoldersProfile, CreativeWork, [], function(construc
     prototype.demographicInformation = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -2594,7 +2637,7 @@ HoldersProfile = stjs.extend(HoldersProfile, CreativeWork, [], function(construc
      *  @type anyURI
      */
     prototype.source = null;
-}, {jurisdiction: "JurisdictionProfile", region: "Place", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {jurisdiction: "JurisdictionProfile", region: "Place", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/IdentifierValueSet
  *  Related set of identifier values.
@@ -2612,7 +2655,7 @@ function() {
     this.context = "http://schema.eduworks.com/simpleCtdl";
     this.type = "IdentifierValueSet";
 };
-IdentifierValueSet = stjs.extend(IdentifierValueSet, CreativeWork, [], null, {contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+IdentifierValueSet = stjs.extend(IdentifierValueSet, CreativeWork, [], null, {about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/EmploymentOutcomeProfile
  *  Entity that describes employment outcomes and related statistical information for a given credential.
@@ -2640,7 +2683,7 @@ EmploymentOutcomeProfile = stjs.extend(EmploymentOutcomeProfile, CreativeWork, [
     prototype.dateEffective = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -2667,7 +2710,7 @@ EmploymentOutcomeProfile = stjs.extend(EmploymentOutcomeProfile, CreativeWork, [
      *  @type anyURI
      */
     prototype.source = null;
-}, {jurisdiction: "JurisdictionProfile", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {jurisdiction: "JurisdictionProfile", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/CredentialFramework
  *  Class of all structured sets of conceptual entities intentionally designed for use as value vocabulary terms for description and classification in the credentialing context.
@@ -2725,7 +2768,7 @@ ConditionManifest = stjs.extend(ConditionManifest, EcRemoteLinkedData, [], funct
     prototype.ctid = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -2776,7 +2819,7 @@ ConditionManifest = stjs.extend(ConditionManifest, EcRemoteLinkedData, [], funct
     prototype.subjectWebpage = null;
 }, {conditionManifestOf: "Object", corequisite: "ConditionProfile", entryCondition: "ConditionProfile", recommends: "Object", renewal: "ConditionProfile", requires: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
- *  ceasn:ProficiencyScale
+ *  credentialengine.org/ProficiencyScale
  *  The class of structured profiles describing discrete levels of expertise and performance mastery.
  *  Proficiency scales define levels of performance (what a person does) as distinct from knowledge of specific information (what a person knows) and outline tasks a person can manage and the skills necessary to progressively accomplish explicit competencies at increasing levels of complexity. Proficiency scales: (1) assist in making judgments about the kinds of tasks related to a competency that a person is able to perform; and (2) to compare the abilities of different persons with regard to achievement of those competencies at different levels.
  *  @author credentialengine.org
@@ -2792,6 +2835,30 @@ function() {
     EcRemoteLinkedData.call(this, "http://schema.eduworks.com/simpleCtdl", "ProficiencyScale");
 };
 ProficiencyScale = stjs.extend(ProficiencyScale, EcRemoteLinkedData, [], null, {owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+/**
+ *  credentialengine.org/AlignmentMap
+ *  An entity comprised of a set of alignment or mapping assertions between two existing entities such as mapping a certificate providing advanced standing to a degree.
+ *  Alignment maps provide the means for parties to assert sets of alignments between already existing entities created by themselves or other parties--e.g., a 3rd party mapping of a learning resource owned by one party to a credential owned by another; or, mapping a military occupational experience or Military Occupational Specialty (MOS code) as advanced standing to a course or credential.
+ *  @author credentialengine.org
+ *  @class AlignmentMap
+ *  @module org.credentialengine
+ */
+var AlignmentMap = /**
+ *  Constructor, automatically sets @context and @type.
+ *  @constructor
+ */
+function() {
+    EcRemoteLinkedData.call(this, "http://schema.eduworks.com/simpleCtdl", "AlignmentMap");
+};
+AlignmentMap = stjs.extend(AlignmentMap, EcRemoteLinkedData, [], function(constructor, prototype) {
+    /**
+     *  http://purl.org/ctdl/terms/hasStatement
+     *  Alignment assertion belonging to the alignment map.
+     *  @property hasStatement
+     *  @type Statement
+     */
+    prototype.hasStatement = null;
+}, {hasStatement: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/IdentifierValue
  *  Alphanumeric Identifier value.
@@ -2810,7 +2877,7 @@ function() {
 IdentifierValue = stjs.extend(IdentifierValue, EcRemoteLinkedData, [], function(constructor, prototype) {
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -2839,7 +2906,7 @@ IdentifierValue = stjs.extend(IdentifierValue, EcRemoteLinkedData, [], function(
     prototype.name = null;
 }, {owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
- *  ceasn:CompetencyFramework
+ *  credentialengine.org/CompetencyFramework
  *  A description of a competency framework as a whole.
  *  @author credentialengine.org
  *  @class CompetencyFramework
@@ -2850,11 +2917,11 @@ var CompetencyFramework = /**
  *  @constructor
  */
 function() {
-    EcRemoteLinkedData.call(this, "http://credreg.net/ctdlasn/schema/context/json?releaseID=20170929", "CompetencyFramework");
+    EcRemoteLinkedData.call(this, "http://schema.eduworks.com/simpleCtdl", "CompetencyFramework");
 };
 CompetencyFramework = stjs.extend(CompetencyFramework, EcRemoteLinkedData, [], function(constructor, prototype) {
     /**
-     *  ceasn:alignFrom
+     *  http://purl.org/ctdlasn/terms/alignFrom
      *  A competency framework or competency from which this competency framework or competency is aligned.
      *  An alignment is an assertion of some degree of equivalency between the subject and the object of the assertion.
      *  @property alignFrom
@@ -2862,7 +2929,7 @@ CompetencyFramework = stjs.extend(CompetencyFramework, EcRemoteLinkedData, [], f
      */
     prototype.alignFrom = null;
     /**
-     *  ceasn:alignTo
+     *  http://purl.org/ctdlasn/terms/alignTo
      *  A competency framework or competency to which this competency framework or competency is aligned.
      *  An alignment is an assertion of some degree of equivalency between the subject and the object of the assertion.
      *  @property alignTo
@@ -2870,14 +2937,14 @@ CompetencyFramework = stjs.extend(CompetencyFramework, EcRemoteLinkedData, [], f
      */
     prototype.alignTo = null;
     /**
-     *  ceasn:author
+     *  http://purl.org/ctdlasn/terms/author
      *  A person or organization chiefly responsible for the intellectual or artistic content of this competency framework or competency.
      *  @property author
      *  @type string
      */
     prototype.author = null;
     /**
-     *  ceasn:conceptKeyword
+     *  http://purl.org/ctdlasn/terms/conceptKeyword
      *  A word or phrase used by the promulgating agency to refine and differentiate individual competencies contextually.
      *  The conceptKeyword property is used in ASN-conforming data solely to denote the significant topicality of the competency using free-text keywords and phrases derived and assigned by the indexer, e.g., "George Washington", "Ayers Rock", etc.
      *  @property conceptKeyword
@@ -2885,15 +2952,15 @@ CompetencyFramework = stjs.extend(CompetencyFramework, EcRemoteLinkedData, [], f
      */
     prototype.conceptKeyword = null;
     /**
-     *  ceasn:conceptTerm
+     *  http://purl.org/ctdlasn/terms/conceptTerm
      *  A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual competencies contextually.
      *  The conceptTerm property is used in ASN-conforming data solely to denote the topicality of the competency - e.g., "Pythagorean Theorem", "Trigonometric functions", "Forces and energy", "Scientific method", "Oral history" etc. The value of the conceptTerm property must be drawn from a controlled vocabulary where concepts have all been assigned URI - e.g., terms drawn from the Australia Schools Online Thesaurus (ScOT).
      *  @property conceptTerm
-     *  @type ConceptScheme
+     *  @type Concept
      */
     prototype.conceptTerm = null;
     /**
-     *  ceasn:creator
+     *  http://purl.org/ctdlasn/terms/creator
      *  An entity primarily responsible for making this competency framework or competency.
      *  The creator property is used with non-canonical statements created by a third party.
      *  @property creator
@@ -2901,14 +2968,14 @@ CompetencyFramework = stjs.extend(CompetencyFramework, EcRemoteLinkedData, [], f
      */
     prototype.creator = null;
     /**
-     *  ceasn:dateCopyrighted
+     *  http://purl.org/ctdlasn/terms/dateCopyrighted
      *  Date of a statement of copyright for this competency framework, such as ©2017.
      *  @property dateCopyrighted
      *  @type string
      */
     prototype.dateCopyrighted = null;
     /**
-     *  ceasn:dateCreated
+     *  http://purl.org/ctdlasn/terms/dateCreated
      *  Date of creation of this competency framework or competency.
      *  The dateCreated property is used for non-canonical statements created by a third party.
      *  @property dateCreated
@@ -2916,36 +2983,42 @@ CompetencyFramework = stjs.extend(CompetencyFramework, EcRemoteLinkedData, [], f
      */
     prototype.dateCreated = null;
     /**
-     *  ceasn:dateValidFrom
+     *  http://purl.org/ctdlasn/terms/dateModified
+     *  The date on which this framework or competency was most recently modified in some way.
+     *  @property dateModified
+     *  @type dateTime
+     */
+    prototype.dateModified = null;
+    /**
+     *  http://purl.org/ctdlasn/terms/dateValidFrom
      *  Beginning date of validity of this competency framework.
      *  @property dateValidFrom
-     *  @type date
+     *  @type dateTime
      */
     prototype.dateValidFrom = null;
     /**
-     *  ceasn:dateValidUntil
+     *  http://purl.org/ctdlasn/terms/dateValidUntil
      *  End date of validity of this competency framework.
      *  @property dateValidUntil
-     *  @type date
+     *  @type dateTime
      */
     prototype.dateValidUntil = null;
     /**
-     *  ceasn:derivedFrom
-     *  The URI of a competency from which this competency has been derived.
-     *  The derivedFrom property is used by 3rd parties only in derived competencies.
+     *  http://purl.org/ctdlasn/terms/derivedFrom
+     *  A third party version of the entity being reference that has been modified in meaning through editing, extension or refinement.
      *  @property derivedFrom
      *  @type Competency | CompetencyFramework
      */
     prototype.derivedFrom = null;
     /**
-     *  ceasn:description
-     *  A short description of this competency framework or competency.
+     *  http://purl.org/ctdlasn/terms/description
+     *  A short description of this competency framework.
      *  @property description
      *  @type langString
      */
     prototype.description = null;
     /**
-     *  ceasn:educationLevelType
+     *  http://purl.org/ctdlasn/terms/educationLevelType
      *  A general statement describing the education or training context. Alternatively, a more specific statement of the location of the audience in terms of its progression through an education or training context.
      *  Best practice is to use terms from the http://purl.org/ctdl/terms/AudienceLevel concept scheme.
      *  @property educationLevelType
@@ -2953,28 +3026,28 @@ CompetencyFramework = stjs.extend(CompetencyFramework, EcRemoteLinkedData, [], f
      */
     prototype.educationLevelType = null;
     /**
-     *  ceasn:hasTopChild
+     *  http://purl.org/ctdlasn/terms/hasTopChild
      *  Top-level child competency of a competency framework.
      *  @property hasTopChild
      *  @type Competency
      */
     prototype.hasTopChild = null;
     /**
-     *  ceasn:identifier
+     *  http://purl.org/ctdlasn/terms/identifier
      *  An alternative URI by which this competency framework or competency is identified.
      *  @property identifier
      *  @type anyURI
      */
     prototype.identifier = null;
     /**
-     *  ceasn:inLanguage
+     *  http://purl.org/ctdlasn/terms/inLanguage
      *  The primary language used in or by this competency framework or competency.
      *  @property inLanguage
      *  @type language
      */
     prototype.inLanguage = null;
     /**
-     *  ceasn:license
+     *  http://purl.org/ctdlasn/terms/license
      *  A legal document giving official permission to do something with this competency framework.
      *  Value must be the URI to a license document (e.g., Creative Commons license or bespoke license).
      *  @property license
@@ -2982,79 +3055,79 @@ CompetencyFramework = stjs.extend(CompetencyFramework, EcRemoteLinkedData, [], f
      */
     prototype.license = null;
     /**
-     *  ceasn:localSubject
+     *  http://purl.org/ctdlasn/terms/localSubject
      *  The text string denoting the subject of the competency framework or competency as designated by the promulgating agency.
      *  @property localSubject
      *  @type langString
      */
     prototype.localSubject = null;
     /**
-     *  ceasn:name
+     *  http://purl.org/ctdlasn/terms/name
      *  The name or title of this competency framework.
      *  @property name
      *  @type langString
      */
     prototype.name = null;
     /**
-     *  ceasn:publicationStatusType
+     *  http://purl.org/ctdlasn/terms/publicationStatusType
      *  The publication status of the of this competency framework.
      *  @property publicationStatusType
      *  @type Concept
      */
     prototype.publicationStatusType = null;
     /**
-     *  ceasn:publisher
-     *  An entity responsible for making this competency framework available.
-     *  Also referred to as the promulgating agency of the competency framework.
+     *  http://purl.org/ctdlasn/terms/publisher
+     *  An agent responsible for making this entity available.
+     *  Also referred to as the promulgating agency of the entity.
      *  @property publisher
      *  @type CredentialOrganization | QACredentialOrganization
      */
     prototype.publisher = null;
     /**
-     *  ceasn:repositoryDate
+     *  http://purl.org/ctdlasn/terms/publisherName
+     *  Name of an agent responsible for making this entity available.
+     *  Also referred to as the promulgating agency of the entity.
+     *  @property publisherName
+     *  @type langString
+     */
+    prototype.publisherName = null;
+    /**
+     *  http://purl.org/ctdlasn/terms/repositoryDate
      *  The date this competency framework was added to the repository.
      *  @property repositoryDate
      *  @type date
      */
     prototype.repositoryDate = null;
     /**
-     *  ceasn:rights
+     *  http://purl.org/ctdlasn/terms/rights
      *  Information about rights held in and over this competency framework.
      *  @property rights
      *  @type anyURI
      */
     prototype.rights = null;
     /**
-     *  ceasn:rightsHolder
+     *  http://purl.org/ctdlasn/terms/rightsHolder
      *  An agent owning or managing rights over this competency framework.
      *  @property rightsHolder
      *  @type CredentialOrganization | QACredentialOrganization
      */
     prototype.rightsHolder = null;
     /**
-     *  ceasn:source
+     *  http://purl.org/ctdlasn/terms/source
      *  The original competency framework which this competency framework is based on or derived from.
      *  @property source
      *  @type anyURI
      */
     prototype.source = null;
     /**
-     *  ceasn:tableOfContents
+     *  http://purl.org/ctdlasn/terms/tableOfContents
      *  A list of sub-units of this competency framework.
      *  The table of contents is a "manifest", or a hierarchic, ordered, syntactic representation of the competencies that are part of this competency framework.
      *  @property tableOfContents
      *  @type langString
      */
     prototype.tableOfContents = null;
-    /**
-     *  http://purl.org/ctdl/terms/ctid
-     *  Globally unique Credential Transparency Identifier (CTID) by which the creator, owner or provider of a credential, learning opportunity competency, or assessment recognizes the entity in transactions with the external environment (e.g., in verifiable claims involving a credential).
-     *  The CTID is the equivalent of a version identifier for the resource. Different versions of a resource are considered distinct expressions and each must be assigned its own CTID. Each version of a resource can have only one CTID assigned. However, a single version of a resource may have distinct identifier values for both the ctid property and the credentialId property. In such a case both identifiers will be recognized by the resource creator/owner/provider in transactions with the external environment.
-     *  @property ctid
-     *  @type string
-     */
-    prototype.ctid = null;
-}, {alignFrom: "Object", alignTo: "Object", conceptTerm: "Object", creator: "Object", derivedFrom: "Object", educationLevelType: "Object", hasTopChild: "Competency", publicationStatusType: "Object", publisher: "Object", rightsHolder: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {alignFrom: "Object", alignTo: "Object", conceptTerm: "Concept", creator: "Object", derivedFrom: "Object", educationLevelType: "Concept", hasTopChild: "Competency", publicationStatusType: "Concept", publisher: "Object", rightsHolder: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/CareerPathway
  *  Integrated, sequentially ordered collection of credentials, programs, experiences, and services intended to develop technical, academic, and employability skills in a cluster of occupations that share common skills, knowledge, and interests.
@@ -3088,7 +3161,7 @@ function() {
 DurationProfile = stjs.extend(DurationProfile, EcRemoteLinkedData, [], function(constructor, prototype) {
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -3133,13 +3206,6 @@ function() {
     EcRemoteLinkedData.call(this, "http://schema.eduworks.com/simpleCtdl", "ContactPoint");
 };
 ContactPoint = stjs.extend(ContactPoint, EcRemoteLinkedData, [], function(constructor, prototype) {
-    /**
-     *  http://purl.org/ctdl/terms/contactOption
-     *  Option for a toll-free number or support for hearing-impaired callers.
-     *  @property contactOption
-     *  @type langString
-     */
-    prototype.contactOption = null;
     /**
      *  http://purl.org/ctdl/terms/contactType
      *  Text identifying the type of service provided by an organizational contact.
@@ -3216,6 +3282,44 @@ function() {
 };
 Assessment = stjs.extend(Assessment, EcRemoteLinkedData, [], null, {owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
+ *  credentialengine.org/FinancialAssistanceProfile
+ *  Entity that describes financial assistance that is offered or available.
+ *  @author credentialengine.org
+ *  @class FinancialAssistanceProfile
+ *  @module org.credentialengine
+ */
+var FinancialAssistanceProfile = /**
+ *  Constructor, automatically sets @context and @type.
+ *  @constructor
+ */
+function() {
+    EcRemoteLinkedData.call(this, "http://schema.eduworks.com/simpleCtdl", "FinancialAssistanceProfile");
+};
+FinancialAssistanceProfile = stjs.extend(FinancialAssistanceProfile, EcRemoteLinkedData, [], function(constructor, prototype) {
+    /**
+     *  http://purl.org/ctdl/terms/description
+     *  Statement, characterization or account of the entity.
+     *  @property description
+     *  @type langString
+     */
+    prototype.description = null;
+    /**
+     *  http://purl.org/ctdl/terms/name
+     *  Name or title of the entity.
+     *  @property name
+     *  @type langString
+     */
+    prototype.name = null;
+    /**
+     *  http://purl.org/ctdl/terms/subjectWebpage
+     *  The webpage that describes this entity.
+     *  The web page being referenced describes the entity. The value of subjectWebpage is an authoritative location for information about the subject but should not assumed to be a persistent identifier of the subject.
+     *  @property subjectWebpage
+     *  @type anyURI
+     */
+    prototype.subjectWebpage = null;
+}, {owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+/**
  *  credentialengine.org/Agent
  *  Organization or person that acts or has the power to act.
  *  Broad type that includes both organizations and people who play roles in the lifecycle of a credential.
@@ -3230,9 +3334,17 @@ var Agent = /**
 function() {
     EcRemoteLinkedData.call(this, "http://schema.eduworks.com/simpleCtdl", "Agent");
 };
-Agent = stjs.extend(Agent, EcRemoteLinkedData, [], null, {owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+Agent = stjs.extend(Agent, EcRemoteLinkedData, [], function(constructor, prototype) {
+    /**
+     *  http://purl.org/ctdl/terms/hasAlignmentMap
+     *  Alignment map owned by the agent.
+     *  @property hasAlignmentMap
+     *  @type AlignmentMap
+     */
+    prototype.hasAlignmentMap = null;
+}, {hasAlignmentMap: "AlignmentMap", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
- *  ceasn:Competency
+ *  credentialengine.org/Competency
  *  Description of knowledge, skills, and/or abilities.
  *  @author credentialengine.org
  *  @class Competency
@@ -3243,11 +3355,11 @@ var Competency = /**
  *  @constructor
  */
 function() {
-    EcRemoteLinkedData.call(this, "http://credreg.net/ctdlasn/schema/context/json?releaseID=20170929", "Competency");
+    EcRemoteLinkedData.call(this, "http://schema.eduworks.com/simpleCtdl", "Competency");
 };
 Competency = stjs.extend(Competency, EcRemoteLinkedData, [], function(constructor, prototype) {
     /**
-     *  ceasn:alignFrom
+     *  http://purl.org/ctdlasn/terms/alignFrom
      *  A competency framework or competency from which this competency framework or competency is aligned.
      *  An alignment is an assertion of some degree of equivalency between the subject and the object of the assertion.
      *  @property alignFrom
@@ -3255,7 +3367,7 @@ Competency = stjs.extend(Competency, EcRemoteLinkedData, [], function(constructo
      */
     prototype.alignFrom = null;
     /**
-     *  ceasn:alignTo
+     *  http://purl.org/ctdlasn/terms/alignTo
      *  A competency framework or competency to which this competency framework or competency is aligned.
      *  An alignment is an assertion of some degree of equivalency between the subject and the object of the assertion.
      *  @property alignTo
@@ -3263,7 +3375,7 @@ Competency = stjs.extend(Competency, EcRemoteLinkedData, [], function(constructo
      */
     prototype.alignTo = null;
     /**
-     *  ceasn:altCodedNotation
+     *  http://purl.org/ctdlasn/terms/altCodedNotation
      *  An alphanumeric notation or ID code identifying this competency in common use among end-users.
      *  Unlike the codedNotation property, the value for the altCodedNotation property need not be an official identifier created by the promulgating agency. It must be an identifier in common use among end-users of the competency. This property should be seldom used and only with a clear demonstration of need (i.e., in common use). For example, in the Common Core State Standards (Math) in the U.S., the official codedNotation of "CCSS.Math.Content.1.NBT.C.4" is abbreviated in common use by end-users to the unofficial altCodedNotation of "1.NBT.4".
      *  @property altCodedNotation
@@ -3271,21 +3383,21 @@ Competency = stjs.extend(Competency, EcRemoteLinkedData, [], function(constructo
      */
     prototype.altCodedNotation = null;
     /**
-     *  ceasn:author
+     *  http://purl.org/ctdlasn/terms/author
      *  A person or organization chiefly responsible for the intellectual or artistic content of this competency framework or competency.
      *  @property author
      *  @type string
      */
     prototype.author = null;
     /**
-     *  ceasn:broadAlignment
+     *  http://purl.org/ctdlasn/terms/broadAlignment
      *  The referenced competency covers all of the relevant concepts in this competency as well as relevant concepts not found in this competency.
      *  @property broadAlignment
      *  @type Competency
      */
     prototype.broadAlignment = null;
     /**
-     *  ceasn:codedNotation
+     *  http://purl.org/ctdlasn/terms/codedNotation
      *  An alphanumeric notation or ID code as defined by the promulgating body to identify this competency.
      *  This property should be used only for codes created by the promulgating body. For alternative competency notations in common use in the community of practice, but not endorsed by the promulgating body, the altCodedNotation property can be used (sparingly on clear evidence of common use and need).
      *  @property codedNotation
@@ -3293,7 +3405,7 @@ Competency = stjs.extend(Competency, EcRemoteLinkedData, [], function(constructo
      */
     prototype.codedNotation = null;
     /**
-     *  ceasn:comment
+     *  http://purl.org/ctdlasn/terms/comment
      *  Supplemental text provided by the promulgating body that clarifies the nature, scope or use of this competency.
      *  Use this property when the text provides useful context for this competency.
      *  @property comment
@@ -3301,7 +3413,7 @@ Competency = stjs.extend(Competency, EcRemoteLinkedData, [], function(constructo
      */
     prototype.comment = null;
     /**
-     *  ceasn:competencyCategory
+     *  http://purl.org/ctdlasn/terms/competencyCategory
      *  The textual label identifying the category of the competency as designated by the promulgating body.
      *  This property points to a class, not to instances of that class. For example, where two competencies in a competency framework have been identified respectively by the promulgating agency as "Strand: Rennaisance" and "Strand: Social history", the statementLabel for both these competencies is "Strand".
      *  @property competencyCategory
@@ -3309,28 +3421,28 @@ Competency = stjs.extend(Competency, EcRemoteLinkedData, [], function(constructo
      */
     prototype.competencyCategory = null;
     /**
-     *  ceasn:competencyText
+     *  http://purl.org/ctdlasn/terms/competencyText
      *  The text of the competency.
      *  @property competencyText
      *  @type langString
      */
     prototype.competencyText = null;
     /**
-     *  ceasn:complexityLevel
+     *  http://purl.org/ctdlasn/terms/complexityLevel
      *  The expected performance level of a learner or professional as defined by a competency.
      *  @property complexityLevel
      *  @type ProficiencyScale
      */
     prototype.complexityLevel = null;
     /**
-     *  ceasn:comprisedOf
+     *  http://purl.org/ctdlasn/terms/comprisedOf
      *  This competency includes, comprehends or encompasses, in whole or in part, the meaning, nature or importance of the referenced competency.
      *  @property comprisedOf
      *  @type Competency
      */
     prototype.comprisedOf = null;
     /**
-     *  ceasn:conceptKeyword
+     *  http://purl.org/ctdlasn/terms/conceptKeyword
      *  A word or phrase used by the promulgating agency to refine and differentiate individual competencies contextually.
      *  The conceptKeyword property is used in ASN-conforming data solely to denote the significant topicality of the competency using free-text keywords and phrases derived and assigned by the indexer, e.g., "George Washington", "Ayers Rock", etc.
      *  @property conceptKeyword
@@ -3338,15 +3450,15 @@ Competency = stjs.extend(Competency, EcRemoteLinkedData, [], function(constructo
      */
     prototype.conceptKeyword = null;
     /**
-     *  ceasn:conceptTerm
+     *  http://purl.org/ctdlasn/terms/conceptTerm
      *  A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual competencies contextually.
      *  The conceptTerm property is used in ASN-conforming data solely to denote the topicality of the competency - e.g., "Pythagorean Theorem", "Trigonometric functions", "Forces and energy", "Scientific method", "Oral history" etc. The value of the conceptTerm property must be drawn from a controlled vocabulary where concepts have all been assigned URI - e.g., terms drawn from the Australia Schools Online Thesaurus (ScOT).
      *  @property conceptTerm
-     *  @type ConceptScheme
+     *  @type Concept
      */
     prototype.conceptTerm = null;
     /**
-     *  ceasn:creator
+     *  http://purl.org/ctdlasn/terms/creator
      *  An entity primarily responsible for making this competency framework or competency.
      *  The creator property is used with non-canonical statements created by a third party.
      *  @property creator
@@ -3354,7 +3466,7 @@ Competency = stjs.extend(Competency, EcRemoteLinkedData, [], function(constructo
      */
     prototype.creator = null;
     /**
-     *  ceasn:crossSubjectReference
+     *  http://purl.org/ctdlasn/terms/crossSubjectReference
      *  A relationship between this competency and a competency in a separate competency framework.
      *  An interdisciplinary statement reference.
      *  @property crossSubjectReference
@@ -3362,7 +3474,7 @@ Competency = stjs.extend(Competency, EcRemoteLinkedData, [], function(constructo
      */
     prototype.crossSubjectReference = null;
     /**
-     *  ceasn:dateCreated
+     *  http://purl.org/ctdlasn/terms/dateCreated
      *  Date of creation of this competency framework or competency.
      *  The dateCreated property is used for non-canonical statements created by a third party.
      *  @property dateCreated
@@ -3370,22 +3482,21 @@ Competency = stjs.extend(Competency, EcRemoteLinkedData, [], function(constructo
      */
     prototype.dateCreated = null;
     /**
-     *  ceasn:derivedFrom
-     *  The URI of a competency from which this competency has been derived.
-     *  The derivedFrom property is used by 3rd parties only in derived competencies.
+     *  http://purl.org/ctdlasn/terms/dateModified
+     *  The date on which this framework or competency was most recently modified in some way.
+     *  @property dateModified
+     *  @type dateTime
+     */
+    prototype.dateModified = null;
+    /**
+     *  http://purl.org/ctdlasn/terms/derivedFrom
+     *  A third party version of the entity being reference that has been modified in meaning through editing, extension or refinement.
      *  @property derivedFrom
      *  @type Competency | CompetencyFramework
      */
     prototype.derivedFrom = null;
     /**
-     *  ceasn:description
-     *  A short description of this competency framework or competency.
-     *  @property description
-     *  @type langString
-     */
-    prototype.description = null;
-    /**
-     *  ceasn:educationLevelType
+     *  http://purl.org/ctdlasn/terms/educationLevelType
      *  A general statement describing the education or training context. Alternatively, a more specific statement of the location of the audience in terms of its progression through an education or training context.
      *  Best practice is to use terms from the http://purl.org/ctdl/terms/AudienceLevel concept scheme.
      *  @property educationLevelType
@@ -3393,49 +3504,56 @@ Competency = stjs.extend(Competency, EcRemoteLinkedData, [], function(constructo
      */
     prototype.educationLevelType = null;
     /**
-     *  ceasn:exactAlignment
+     *  http://purl.org/ctdlasn/terms/exactAlignment
      *  The relevant concepts in this competency and the referenced competency are coextensive.
      *  @property exactAlignment
      *  @type Competency
      */
     prototype.exactAlignment = null;
     /**
-     *  ceasn:hasChild
+     *  http://purl.org/ctdlasn/terms/hasChild
      *  The referenced competency is lower in some arbitrary hierarchy than this competency.
      *  @property hasChild
      *  @type Competency
      */
     prototype.hasChild = null;
     /**
-     *  ceasn:identifier
+     *  http://purl.org/ctdlasn/terms/identifier
      *  An alternative URI by which this competency framework or competency is identified.
      *  @property identifier
      *  @type anyURI
      */
     prototype.identifier = null;
     /**
-     *  ceasn:inLanguage
+     *  http://purl.org/ctdlasn/terms/inLanguage
      *  The primary language used in or by this competency framework or competency.
      *  @property inLanguage
      *  @type language
      */
     prototype.inLanguage = null;
     /**
-     *  ceasn:isChildOf
+     *  http://purl.org/ctdlasn/terms/isChildOf
      *  The referenced competency is higher in some arbitrary hierarchy than this competency.
      *  @property isChildOf
      *  @type Competency
      */
     prototype.isChildOf = null;
     /**
-     *  ceasn:isPartOf
+     *  http://purl.org/ctdlasn/terms/isPartOf
      *  Competency framework that this competency is a part of.
      *  @property isPartOf
      *  @type CompetencyFramework
      */
     prototype.isPartOf = null;
     /**
-     *  ceasn:isVersionOf
+     *  http://purl.org/ctdlasn/terms/isTopChildOf
+     *  Indicates that this competency is at the top of some arbitrary hierarchy.
+     *  @property isTopChildOf
+     *  @type CompetencyFramework
+     */
+    prototype.isTopChildOf = null;
+    /**
+     *  http://purl.org/ctdlasn/terms/isVersionOf
      *  A related competency of which this competency is a version, edition, or adaptation.
      *  Changes in version imply substantive changes in content rather than differences in format.
      *  @property isVersionOf
@@ -3443,79 +3561,70 @@ Competency = stjs.extend(Competency, EcRemoteLinkedData, [], function(constructo
      */
     prototype.isVersionOf = null;
     /**
-     *  ceasn:listID
-     *  An alphanumeric string indicating this competency's position in a list of competencies at the same level in some arbitrary hierarchy.
-     *  Competencies with lower alphanumeric values for this property come before competencies with higher values.
+     *  http://purl.org/ctdlasn/terms/listID
+     *  An alphanumeric string found in the source framework indicating the relative position of a competency in an ordered list of competencies such as "A", "B", or "a", "b", or "I", "II", or "1", "2".
      *  @property listID
      *  @type string
      */
     prototype.listID = null;
     /**
-     *  ceasn:localSubject
+     *  http://purl.org/ctdlasn/terms/localSubject
      *  The text string denoting the subject of the competency framework or competency as designated by the promulgating agency.
      *  @property localSubject
      *  @type langString
      */
     prototype.localSubject = null;
     /**
-     *  ceasn:majorAlignment
+     *  http://purl.org/ctdlasn/terms/majorAlignment
      *  Major overlap of relevant concepts between the this competency and the referenced competency.
      *  @property majorAlignment
      *  @type Competency
      */
     prototype.majorAlignment = null;
     /**
-     *  ceasn:minorAlignment
+     *  http://purl.org/ctdlasn/terms/minorAlignment
      *  Minor overlap of relevant concepts between this competency and the referenced competency.
      *  @property minorAlignment
      *  @type Competency
      */
     prototype.minorAlignment = null;
     /**
-     *  ceasn:narrowAlignment
+     *  http://purl.org/ctdlasn/terms/narrowAlignment
      *  This competency covers all of the relevant concepts in the referenced competency as well as relevant concepts not found in the referenced competency.
      *  @property narrowAlignment
      *  @type Competency
      */
     prototype.narrowAlignment = null;
     /**
-     *  ceasn:prerequisiteAlignment
+     *  http://purl.org/ctdlasn/terms/prerequisiteAlignment
      *  This competency is a prerequisite to the referenced competency.
      *  @property prerequisiteAlignment
      *  @type Competency
      */
     prototype.prerequisiteAlignment = null;
     /**
-     *  ceasn:shouldIndex
+     *  http://purl.org/ctdlasn/terms/shouldIndex
      *  Indicates whether correlators should or should not assign the competency during correlation.
      *  @property shouldIndex
      *  @type boolean
      */
     prototype.shouldIndex = false;
     /**
-     *  ceasn:skillEmbodied
+     *  http://purl.org/ctdlasn/terms/skillEmbodied
      *  Cognitive, affective, and psychomotor skills directly or indirectly embodied in this competency.
      *  @property skillEmbodied
      *  @type anyURI
      */
     prototype.skillEmbodied = null;
     /**
-     *  ceasn:weight
+     *  http://purl.org/ctdlasn/terms/weight
      *  An asserted measurement of the weight, degree, percent, or strength of a recommendation, requirement, or comparison.
      *  Best practice is to assigned a decimal value weight between 0 and 1 that indicates the strength of the assertion, with 0 being weakest and 1 being strongest.
      *  @property weight
      *  @type float
      */
     prototype.weight = null;
-    /**
-     *  http://purl.org/ctdl/terms/ctid
-     *  Globally unique Credential Transparency Identifier (CTID) by which the creator, owner or provider of a credential, learning opportunity competency, or assessment recognizes the entity in transactions with the external environment (e.g., in verifiable claims involving a credential).
-     *  The CTID is the equivalent of a version identifier for the resource. Different versions of a resource are considered distinct expressions and each must be assigned its own CTID. Each version of a resource can have only one CTID assigned. However, a single version of a resource may have distinct identifier values for both the ctid property and the credentialId property. In such a case both identifiers will be recognized by the resource creator/owner/provider in transactions with the external environment.
-     *  @property ctid
-     *  @type string
-     */
-    prototype.ctid = null;
-}, {alignFrom: "Object", alignTo: "Object", broadAlignment: "Competency", complexityLevel: "ProficiencyScale", comprisedOf: "Competency", conceptTerm: "Object", creator: "Object", crossSubjectReference: "Competency", derivedFrom: "Object", educationLevelType: "Object", exactAlignment: "Competency", hasChild: "Competency", isChildOf: "Competency", isPartOf: "CompetencyFramework", isVersionOf: "Competency", majorAlignment: "Competency", minorAlignment: "Competency", narrowAlignment: "Competency", prerequisiteAlignment: "Competency", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {alignFrom: "Object", alignTo: "Object", broadAlignment: "Competency", complexityLevel: "ProficiencyScale", comprisedOf: "Competency", conceptTerm: "Concept", creator: "Object", crossSubjectReference: "Competency", derivedFrom: "Object", educationLevelType: "Concept", exactAlignment: "Competency", hasChild: "Competency", isChildOf: "Competency", isPartOf: "CompetencyFramework", isTopChildOf: "CompetencyFramework", isVersionOf: "Competency", majorAlignment: "Competency", minorAlignment: "Competency", narrowAlignment: "Competency", prerequisiteAlignment: "Competency", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/Place
  *  Entity describing a physical location or geospatial area.
@@ -3554,7 +3663,7 @@ Place = stjs.extend(Place, EcRemoteLinkedData, [], function(constructor, prototy
     prototype.addressRegion = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -3659,7 +3768,7 @@ CostManifest = stjs.extend(CostManifest, EcRemoteLinkedData, [], function(constr
     prototype.ctid = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -3736,7 +3845,7 @@ VerificationServiceProfile = stjs.extend(VerificationServiceProfile, Intangible,
     prototype.dateEffective = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -3913,7 +4022,7 @@ RegulateAction = stjs.extend(RegulateAction, CredentialingAction, [], function(c
     prototype.actionStatusType = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -3962,7 +4071,7 @@ RegulateAction = stjs.extend(RegulateAction, CredentialingAction, [], function(c
      *  @type date
      */
     prototype.startDate = null;
-}, {actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", target: "EntryPoint", participant: "Object", instrument: "Thing", agent: "Object", object: "Thing", actionStatus: "ActionStatusType", result: "Thing", location: "Object", error: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", result: "Thing", actionStatus: "ActionStatusType", target: "EntryPoint", agent: "Person", participant: "Person", instrument: "Thing", object: "Thing", error: "Thing", location: "PostalAddress", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/ApproveAction
  *  Action by an independent, neutral, and authoritative agent that pronounces a favorable judgment of a credential.
@@ -3998,7 +4107,7 @@ ApproveAction = stjs.extend(ApproveAction, CredentialingAction, [], function(con
     prototype.actionStatusType = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -4047,7 +4156,7 @@ ApproveAction = stjs.extend(ApproveAction, CredentialingAction, [], function(con
      *  @type date
      */
     prototype.startDate = null;
-}, {actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", target: "EntryPoint", participant: "Object", instrument: "Thing", agent: "Object", object: "Thing", actionStatus: "ActionStatusType", result: "Thing", location: "Object", error: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", result: "Thing", actionStatus: "ActionStatusType", target: "EntryPoint", agent: "Person", participant: "Person", instrument: "Thing", object: "Thing", error: "Thing", location: "PostalAddress", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/RenewAction
  *  Action by an agent renewing an existing credential assertion.
@@ -4083,7 +4192,7 @@ RenewAction = stjs.extend(RenewAction, CredentialingAction, [], function(constru
     prototype.actionStatusType = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -4140,7 +4249,7 @@ RenewAction = stjs.extend(RenewAction, CredentialingAction, [], function(constru
      *  @type date
      */
     prototype.startDate = null;
-}, {actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", resultingAward: "CredentialAssertion", actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", target: "EntryPoint", participant: "Object", instrument: "Thing", agent: "Object", object: "Thing", actionStatus: "ActionStatusType", result: "Thing", location: "Object", error: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", resultingAward: "CredentialAssertion", actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", result: "Thing", actionStatus: "ActionStatusType", target: "EntryPoint", agent: "Person", participant: "Person", instrument: "Thing", object: "Thing", error: "Thing", location: "PostalAddress", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/RecognizeAction
  *  Action by an independent, neutral, and authoritative agent acknowledging the validity of a resource.
@@ -4176,7 +4285,7 @@ RecognizeAction = stjs.extend(RecognizeAction, CredentialingAction, [], function
     prototype.actionStatusType = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -4225,7 +4334,7 @@ RecognizeAction = stjs.extend(RecognizeAction, CredentialingAction, [], function
      *  @type date
      */
     prototype.startDate = null;
-}, {actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", target: "EntryPoint", participant: "Object", instrument: "Thing", agent: "Object", object: "Thing", actionStatus: "ActionStatusType", result: "Thing", location: "Object", error: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", result: "Thing", actionStatus: "ActionStatusType", target: "EntryPoint", agent: "Person", participant: "Person", instrument: "Thing", object: "Thing", error: "Thing", location: "PostalAddress", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/RightsAction
  *  Action asserting legal rights by an agent to possess, defend, transfer, license, and grant conditional access to a credential, learning opportunity, or assessment.
@@ -4261,7 +4370,7 @@ RightsAction = stjs.extend(RightsAction, CredentialingAction, [], function(const
     prototype.actionStatusType = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -4310,7 +4419,7 @@ RightsAction = stjs.extend(RightsAction, CredentialingAction, [], function(const
      *  @type date
      */
     prototype.startDate = null;
-}, {actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", target: "EntryPoint", participant: "Object", instrument: "Thing", agent: "Object", object: "Thing", actionStatus: "ActionStatusType", result: "Thing", location: "Object", error: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", result: "Thing", actionStatus: "ActionStatusType", target: "EntryPoint", agent: "Person", participant: "Person", instrument: "Thing", object: "Thing", error: "Thing", location: "PostalAddress", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/AccreditAction
  *  Action by an independent, neutral, and authoritative agent that certifies an entity as meeting a prescribed set of standards.
@@ -4346,7 +4455,7 @@ AccreditAction = stjs.extend(AccreditAction, CredentialingAction, [], function(c
     prototype.actionStatusType = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -4403,7 +4512,7 @@ AccreditAction = stjs.extend(AccreditAction, CredentialingAction, [], function(c
      *  @type date
      */
     prototype.startDate = null;
-}, {actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", resultingAward: "CredentialAssertion", actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", target: "EntryPoint", participant: "Object", instrument: "Thing", agent: "Object", object: "Thing", actionStatus: "ActionStatusType", result: "Thing", location: "Object", error: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", resultingAward: "CredentialAssertion", actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", result: "Thing", actionStatus: "ActionStatusType", target: "EntryPoint", agent: "Person", participant: "Person", instrument: "Thing", object: "Thing", error: "Thing", location: "PostalAddress", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/RevokeAction
  *  Action by an agent removing an awarded credential (credential assertion) from the credential holder based on violations or failure of the holder to renew.
@@ -4439,7 +4548,7 @@ RevokeAction = stjs.extend(RevokeAction, CredentialingAction, [], function(const
     prototype.actionStatusType = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -4488,7 +4597,7 @@ RevokeAction = stjs.extend(RevokeAction, CredentialingAction, [], function(const
      *  @type date
      */
     prototype.startDate = null;
-}, {actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", target: "EntryPoint", participant: "Object", instrument: "Thing", agent: "Object", object: "Thing", actionStatus: "ActionStatusType", result: "Thing", location: "Object", error: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", result: "Thing", actionStatus: "ActionStatusType", target: "EntryPoint", agent: "Person", participant: "Person", instrument: "Thing", object: "Thing", error: "Thing", location: "PostalAddress", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/AdvancedStandingAction
  *  Claim by an agent asserting that the object credential of the action provides advanced standing for a credential under the asserting agent's authority.
@@ -4524,7 +4633,7 @@ AdvancedStandingAction = stjs.extend(AdvancedStandingAction, CredentialingAction
     prototype.actionStatusType = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -4573,7 +4682,7 @@ AdvancedStandingAction = stjs.extend(AdvancedStandingAction, CredentialingAction
      *  @type date
      */
     prototype.startDate = null;
-}, {actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", target: "EntryPoint", participant: "Object", instrument: "Thing", agent: "Object", object: "Thing", actionStatus: "ActionStatusType", result: "Thing", location: "Object", error: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", result: "Thing", actionStatus: "ActionStatusType", target: "EntryPoint", agent: "Person", participant: "Person", instrument: "Thing", object: "Thing", error: "Thing", location: "PostalAddress", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/OfferAction
  *  Action by an authoritative agent offering access to a entity such as a credential, learning opportunity or assessment.
@@ -4609,7 +4718,7 @@ OfferAction = stjs.extend(OfferAction, CredentialingAction, [], function(constru
     prototype.actionStatusType = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -4658,7 +4767,7 @@ OfferAction = stjs.extend(OfferAction, CredentialingAction, [], function(constru
      *  @type date
      */
     prototype.startDate = null;
-}, {actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", target: "EntryPoint", participant: "Object", instrument: "Thing", agent: "Object", object: "Thing", actionStatus: "ActionStatusType", result: "Thing", location: "Object", error: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", actingAgent: "Object", actionStatusType: "CredentialAlignmentObject", instrument: "Object", object: "Object", participant: "Object", result: "Thing", actionStatus: "ActionStatusType", target: "EntryPoint", agent: "Person", participant: "Person", instrument: "Thing", object: "Thing", error: "Thing", location: "PostalAddress", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/FinancialAlignmentObject
  *  An alignment to a financial framework.
@@ -4719,6 +4828,7 @@ FinancialAlignmentObject = stjs.extend(FinancialAlignmentObject, CredentialAlign
     /**
      *  http://purl.org/ctdl/terms/targetNode
      *  Individual entry in a formally defined framework such as a competency or an industry, instructional program, or occupation code.
+     *  The target node returned must be the exact competency or concept being described and no other competency or concept. References to data or a document that returns all of the competencies or concepts in the framework to which the target node belongs should use the ceterms:framework property.
      *  @property targetNode
      *  @type anyURI
      */
@@ -4794,7 +4904,7 @@ Degree = stjs.extend(Degree, Credential, [], function(constructor, prototype) {
     prototype.advancedStandingFrom = null;
     /**
      *  http://purl.org/ctdl/terms/alternateName
-     *  Alias for a credential including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
+     *  Alias for the entity including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
      *  @property alternateName
      *  @type langString
      */
@@ -4821,12 +4931,27 @@ Degree = stjs.extend(Degree, Credential, [], function(constructor, prototype) {
      */
     prototype.approvedIn = null;
     /**
+     *  http://purl.org/ctdl/terms/assessmentDeliveryType
+     *  Delivery type for the assessment for the credential.
+     *  Indicates the delivery type for the assessment for the credential.
+     *  @property assessmentDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.assessmentDeliveryType = null;
+    /**
      *  http://purl.org/ctdl/terms/audienceLevelType
      *  Type of level indicating a point in a progression through an educational or training context, for which the credential is intended; select from an existing enumeration of such types.
      *  @property audienceLevelType
      *  @type CredentialAlignmentObject
      */
     prototype.audienceLevelType = null;
+    /**
+     *  http://purl.org/ctdl/terms/audienceType
+     *  The type of credential seeker for whom the entity is applicable; select from an existing enumeration of such types.
+     *  @property audienceType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.audienceType = null;
     /**
      *  http://purl.org/ctdl/terms/availabilityListing
      *  Listing of online and/or physical locations where a credential can be pursued.
@@ -4952,7 +5077,7 @@ Degree = stjs.extend(Degree, Credential, [], function(constructor, prototype) {
     prototype.degreeMinor = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -5004,7 +5129,7 @@ Degree = stjs.extend(Degree, Credential, [], function(constructor, prototype) {
      *  Entity that describes financial assistance for which this credential, assessment, or learning opportunity qualifies.
      *  Whether the financial aid in question is associated with a credential, an assessment, or a learning opportunity is dependent on context.
      *  @property financialAssistance
-     *  @type FinancialAlignmentObject
+     *  @type FinancialAssistanceProfile
      */
     prototype.financialAssistance = null;
     /**
@@ -5038,12 +5163,18 @@ Degree = stjs.extend(Degree, Credential, [], function(constructor, prototype) {
     prototype.industryType = null;
     /**
      *  http://purl.org/ctdl/terms/inLanguage
-     *  Primary language of the credential, learning opportunity or assessment.
-     *  This is the primary language the entity, even if the it makes use of other languages. For example, a course that teaches Spanish to English-speaking students may primarily be in English, because that is the language used to convey the material.
+     *  The primary language or languages of the entity, even if it makes use of other languages; e.g., a course offered in English to teach Spanish would have an inLanguage of English, while a credential in Quebec could have an inLanguage of both French and English.
      *  @property inLanguage
      *  @type language
      */
     prototype.inLanguage = null;
+    /**
+     *  http://purl.org/ctdl/terms/instructionalProgramType
+     *  Type of instructional program; select from an existing enumeration of such types.
+     *  @property instructionalProgramType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.instructionalProgramType = null;
     /**
      *  http://purl.org/ctdl/terms/isAdvancedStandingFor
      *  This credential, assessment, or learning opportunity reduces the time or cost required to earn or complete the referenced credential, assessment, or learning opportunity.
@@ -5101,6 +5232,14 @@ Degree = stjs.extend(Degree, Credential, [], function(constructor, prototype) {
      *  @type ApprenticeshipCertificate | AssociateDegree | BachelorDegree | Badge | Certificate | Certification | Credential | Degree | DigitalBadge | Diploma | DoctoralDegree | GeneralEducationDevelopment | JourneymanCertificate | License | MasterCertificate | MasterDegree | MicroCredential | OpenBadge | ProfessionalDoctorate | QualityAssuranceCredential | ResearchDoctorate | SecondarySchoolDiploma
      */
     prototype.latestVersion = null;
+    /**
+     *  http://purl.org/ctdl/terms/learningDeliveryType
+     *  Delivery type for the learning opportunity for the credential.
+     *  Indicates the delivery type for the learning opportunity for the credential.
+     *  @property learningDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.learningDeliveryType = null;
     /**
      *  http://purl.org/ctdl/terms/maintenanceProcess
      *  Entity describing the process by which the credential is maintained including review and updating.
@@ -5352,7 +5491,7 @@ Degree = stjs.extend(Degree, Credential, [], function(constructor, prototype) {
      *  @type IdentifierValue
      */
     prototype.versionIdentifier = null;
-}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", degreeConcentration: "CredentialAlignmentObject", degreeMajor: "CredentialAlignmentObject", degreeMinor: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", degreeConcentration: "CredentialAlignmentObject", degreeMajor: "CredentialAlignmentObject", degreeMinor: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/Diploma
  *  Credential awarded by educational institutions for successful completion of a course of study or its equivalent.
@@ -5402,7 +5541,7 @@ Diploma = stjs.extend(Diploma, Credential, [], function(constructor, prototype) 
     prototype.advancedStandingFrom = null;
     /**
      *  http://purl.org/ctdl/terms/alternateName
-     *  Alias for a credential including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
+     *  Alias for the entity including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
      *  @property alternateName
      *  @type langString
      */
@@ -5429,12 +5568,27 @@ Diploma = stjs.extend(Diploma, Credential, [], function(constructor, prototype) 
      */
     prototype.approvedIn = null;
     /**
+     *  http://purl.org/ctdl/terms/assessmentDeliveryType
+     *  Delivery type for the assessment for the credential.
+     *  Indicates the delivery type for the assessment for the credential.
+     *  @property assessmentDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.assessmentDeliveryType = null;
+    /**
      *  http://purl.org/ctdl/terms/audienceLevelType
      *  Type of level indicating a point in a progression through an educational or training context, for which the credential is intended; select from an existing enumeration of such types.
      *  @property audienceLevelType
      *  @type CredentialAlignmentObject
      */
     prototype.audienceLevelType = null;
+    /**
+     *  http://purl.org/ctdl/terms/audienceType
+     *  The type of credential seeker for whom the entity is applicable; select from an existing enumeration of such types.
+     *  @property audienceType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.audienceType = null;
     /**
      *  http://purl.org/ctdl/terms/availabilityListing
      *  Listing of online and/or physical locations where a credential can be pursued.
@@ -5539,7 +5693,7 @@ Diploma = stjs.extend(Diploma, Credential, [], function(constructor, prototype) 
     prototype.dateEffective = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -5591,7 +5745,7 @@ Diploma = stjs.extend(Diploma, Credential, [], function(constructor, prototype) 
      *  Entity that describes financial assistance for which this credential, assessment, or learning opportunity qualifies.
      *  Whether the financial aid in question is associated with a credential, an assessment, or a learning opportunity is dependent on context.
      *  @property financialAssistance
-     *  @type FinancialAlignmentObject
+     *  @type FinancialAssistanceProfile
      */
     prototype.financialAssistance = null;
     /**
@@ -5625,12 +5779,18 @@ Diploma = stjs.extend(Diploma, Credential, [], function(constructor, prototype) 
     prototype.industryType = null;
     /**
      *  http://purl.org/ctdl/terms/inLanguage
-     *  Primary language of the credential, learning opportunity or assessment.
-     *  This is the primary language the entity, even if the it makes use of other languages. For example, a course that teaches Spanish to English-speaking students may primarily be in English, because that is the language used to convey the material.
+     *  The primary language or languages of the entity, even if it makes use of other languages; e.g., a course offered in English to teach Spanish would have an inLanguage of English, while a credential in Quebec could have an inLanguage of both French and English.
      *  @property inLanguage
      *  @type language
      */
     prototype.inLanguage = null;
+    /**
+     *  http://purl.org/ctdl/terms/instructionalProgramType
+     *  Type of instructional program; select from an existing enumeration of such types.
+     *  @property instructionalProgramType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.instructionalProgramType = null;
     /**
      *  http://purl.org/ctdl/terms/isAdvancedStandingFor
      *  This credential, assessment, or learning opportunity reduces the time or cost required to earn or complete the referenced credential, assessment, or learning opportunity.
@@ -5688,6 +5848,14 @@ Diploma = stjs.extend(Diploma, Credential, [], function(constructor, prototype) 
      *  @type ApprenticeshipCertificate | AssociateDegree | BachelorDegree | Badge | Certificate | Certification | Credential | Degree | DigitalBadge | Diploma | DoctoralDegree | GeneralEducationDevelopment | JourneymanCertificate | License | MasterCertificate | MasterDegree | MicroCredential | OpenBadge | ProfessionalDoctorate | QualityAssuranceCredential | ResearchDoctorate | SecondarySchoolDiploma
      */
     prototype.latestVersion = null;
+    /**
+     *  http://purl.org/ctdl/terms/learningDeliveryType
+     *  Delivery type for the learning opportunity for the credential.
+     *  Indicates the delivery type for the learning opportunity for the credential.
+     *  @property learningDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.learningDeliveryType = null;
     /**
      *  http://purl.org/ctdl/terms/maintenanceProcess
      *  Entity describing the process by which the credential is maintained including review and updating.
@@ -5939,7 +6107,7 @@ Diploma = stjs.extend(Diploma, Credential, [], function(constructor, prototype) 
      *  @type IdentifierValue
      */
     prototype.versionIdentifier = null;
-}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/Certificate
  *  Credential that designates requisite knowledge and skills of an occupation, profession, or academic program.
@@ -5989,7 +6157,7 @@ Certificate = stjs.extend(Certificate, Credential, [], function(constructor, pro
     prototype.advancedStandingFrom = null;
     /**
      *  http://purl.org/ctdl/terms/alternateName
-     *  Alias for a credential including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
+     *  Alias for the entity including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
      *  @property alternateName
      *  @type langString
      */
@@ -6016,12 +6184,27 @@ Certificate = stjs.extend(Certificate, Credential, [], function(constructor, pro
      */
     prototype.approvedIn = null;
     /**
+     *  http://purl.org/ctdl/terms/assessmentDeliveryType
+     *  Delivery type for the assessment for the credential.
+     *  Indicates the delivery type for the assessment for the credential.
+     *  @property assessmentDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.assessmentDeliveryType = null;
+    /**
      *  http://purl.org/ctdl/terms/audienceLevelType
      *  Type of level indicating a point in a progression through an educational or training context, for which the credential is intended; select from an existing enumeration of such types.
      *  @property audienceLevelType
      *  @type CredentialAlignmentObject
      */
     prototype.audienceLevelType = null;
+    /**
+     *  http://purl.org/ctdl/terms/audienceType
+     *  The type of credential seeker for whom the entity is applicable; select from an existing enumeration of such types.
+     *  @property audienceType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.audienceType = null;
     /**
      *  http://purl.org/ctdl/terms/availabilityListing
      *  Listing of online and/or physical locations where a credential can be pursued.
@@ -6126,7 +6309,7 @@ Certificate = stjs.extend(Certificate, Credential, [], function(constructor, pro
     prototype.dateEffective = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -6178,7 +6361,7 @@ Certificate = stjs.extend(Certificate, Credential, [], function(constructor, pro
      *  Entity that describes financial assistance for which this credential, assessment, or learning opportunity qualifies.
      *  Whether the financial aid in question is associated with a credential, an assessment, or a learning opportunity is dependent on context.
      *  @property financialAssistance
-     *  @type FinancialAlignmentObject
+     *  @type FinancialAssistanceProfile
      */
     prototype.financialAssistance = null;
     /**
@@ -6212,12 +6395,18 @@ Certificate = stjs.extend(Certificate, Credential, [], function(constructor, pro
     prototype.industryType = null;
     /**
      *  http://purl.org/ctdl/terms/inLanguage
-     *  Primary language of the credential, learning opportunity or assessment.
-     *  This is the primary language the entity, even if the it makes use of other languages. For example, a course that teaches Spanish to English-speaking students may primarily be in English, because that is the language used to convey the material.
+     *  The primary language or languages of the entity, even if it makes use of other languages; e.g., a course offered in English to teach Spanish would have an inLanguage of English, while a credential in Quebec could have an inLanguage of both French and English.
      *  @property inLanguage
      *  @type language
      */
     prototype.inLanguage = null;
+    /**
+     *  http://purl.org/ctdl/terms/instructionalProgramType
+     *  Type of instructional program; select from an existing enumeration of such types.
+     *  @property instructionalProgramType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.instructionalProgramType = null;
     /**
      *  http://purl.org/ctdl/terms/isAdvancedStandingFor
      *  This credential, assessment, or learning opportunity reduces the time or cost required to earn or complete the referenced credential, assessment, or learning opportunity.
@@ -6275,6 +6464,14 @@ Certificate = stjs.extend(Certificate, Credential, [], function(constructor, pro
      *  @type ApprenticeshipCertificate | AssociateDegree | BachelorDegree | Badge | Certificate | Certification | Credential | Degree | DigitalBadge | Diploma | DoctoralDegree | GeneralEducationDevelopment | JourneymanCertificate | License | MasterCertificate | MasterDegree | MicroCredential | OpenBadge | ProfessionalDoctorate | QualityAssuranceCredential | ResearchDoctorate | SecondarySchoolDiploma
      */
     prototype.latestVersion = null;
+    /**
+     *  http://purl.org/ctdl/terms/learningDeliveryType
+     *  Delivery type for the learning opportunity for the credential.
+     *  Indicates the delivery type for the learning opportunity for the credential.
+     *  @property learningDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.learningDeliveryType = null;
     /**
      *  http://purl.org/ctdl/terms/maintenanceProcess
      *  Entity describing the process by which the credential is maintained including review and updating.
@@ -6526,7 +6723,7 @@ Certificate = stjs.extend(Certificate, Credential, [], function(constructor, pro
      *  @type IdentifierValue
      */
     prototype.versionIdentifier = null;
-}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/QualityAssuranceCredential
  *  Credential assuring that an organization, program, or awarded credential meets prescribed requirements and may include development and administration of qualifying examinations.
@@ -6576,7 +6773,7 @@ QualityAssuranceCredential = stjs.extend(QualityAssuranceCredential, Credential,
     prototype.advancedStandingFrom = null;
     /**
      *  http://purl.org/ctdl/terms/alternateName
-     *  Alias for a credential including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
+     *  Alias for the entity including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
      *  @property alternateName
      *  @type langString
      */
@@ -6603,12 +6800,27 @@ QualityAssuranceCredential = stjs.extend(QualityAssuranceCredential, Credential,
      */
     prototype.approvedIn = null;
     /**
+     *  http://purl.org/ctdl/terms/assessmentDeliveryType
+     *  Delivery type for the assessment for the credential.
+     *  Indicates the delivery type for the assessment for the credential.
+     *  @property assessmentDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.assessmentDeliveryType = null;
+    /**
      *  http://purl.org/ctdl/terms/audienceLevelType
      *  Type of level indicating a point in a progression through an educational or training context, for which the credential is intended; select from an existing enumeration of such types.
      *  @property audienceLevelType
      *  @type CredentialAlignmentObject
      */
     prototype.audienceLevelType = null;
+    /**
+     *  http://purl.org/ctdl/terms/audienceType
+     *  The type of credential seeker for whom the entity is applicable; select from an existing enumeration of such types.
+     *  @property audienceType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.audienceType = null;
     /**
      *  http://purl.org/ctdl/terms/availabilityListing
      *  Listing of online and/or physical locations where a credential can be pursued.
@@ -6713,7 +6925,7 @@ QualityAssuranceCredential = stjs.extend(QualityAssuranceCredential, Credential,
     prototype.dateEffective = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -6765,7 +6977,7 @@ QualityAssuranceCredential = stjs.extend(QualityAssuranceCredential, Credential,
      *  Entity that describes financial assistance for which this credential, assessment, or learning opportunity qualifies.
      *  Whether the financial aid in question is associated with a credential, an assessment, or a learning opportunity is dependent on context.
      *  @property financialAssistance
-     *  @type FinancialAlignmentObject
+     *  @type FinancialAssistanceProfile
      */
     prototype.financialAssistance = null;
     /**
@@ -6799,12 +7011,18 @@ QualityAssuranceCredential = stjs.extend(QualityAssuranceCredential, Credential,
     prototype.industryType = null;
     /**
      *  http://purl.org/ctdl/terms/inLanguage
-     *  Primary language of the credential, learning opportunity or assessment.
-     *  This is the primary language the entity, even if the it makes use of other languages. For example, a course that teaches Spanish to English-speaking students may primarily be in English, because that is the language used to convey the material.
+     *  The primary language or languages of the entity, even if it makes use of other languages; e.g., a course offered in English to teach Spanish would have an inLanguage of English, while a credential in Quebec could have an inLanguage of both French and English.
      *  @property inLanguage
      *  @type language
      */
     prototype.inLanguage = null;
+    /**
+     *  http://purl.org/ctdl/terms/instructionalProgramType
+     *  Type of instructional program; select from an existing enumeration of such types.
+     *  @property instructionalProgramType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.instructionalProgramType = null;
     /**
      *  http://purl.org/ctdl/terms/isAdvancedStandingFor
      *  This credential, assessment, or learning opportunity reduces the time or cost required to earn or complete the referenced credential, assessment, or learning opportunity.
@@ -6862,6 +7080,14 @@ QualityAssuranceCredential = stjs.extend(QualityAssuranceCredential, Credential,
      *  @type ApprenticeshipCertificate | AssociateDegree | BachelorDegree | Badge | Certificate | Certification | Credential | Degree | DigitalBadge | Diploma | DoctoralDegree | GeneralEducationDevelopment | JourneymanCertificate | License | MasterCertificate | MasterDegree | MicroCredential | OpenBadge | ProfessionalDoctorate | QualityAssuranceCredential | ResearchDoctorate | SecondarySchoolDiploma
      */
     prototype.latestVersion = null;
+    /**
+     *  http://purl.org/ctdl/terms/learningDeliveryType
+     *  Delivery type for the learning opportunity for the credential.
+     *  Indicates the delivery type for the learning opportunity for the credential.
+     *  @property learningDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.learningDeliveryType = null;
     /**
      *  http://purl.org/ctdl/terms/maintenanceProcess
      *  Entity describing the process by which the credential is maintained including review and updating.
@@ -7113,7 +7339,7 @@ QualityAssuranceCredential = stjs.extend(QualityAssuranceCredential, Credential,
      *  @type IdentifierValue
      */
     prototype.versionIdentifier = null;
-}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/License
  *  Credential awarded by a government agency that constitutes legal authority to do a specific job and/or utilize a specific item, system or infrastructure and are typically earned through some combination of degree or certificate attainment, certifications, assessments, work experience, and/or fees, and are time-limited and must be renewed periodically.
@@ -7163,7 +7389,7 @@ License = stjs.extend(License, Credential, [], function(constructor, prototype) 
     prototype.advancedStandingFrom = null;
     /**
      *  http://purl.org/ctdl/terms/alternateName
-     *  Alias for a credential including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
+     *  Alias for the entity including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
      *  @property alternateName
      *  @type langString
      */
@@ -7190,12 +7416,27 @@ License = stjs.extend(License, Credential, [], function(constructor, prototype) 
      */
     prototype.approvedIn = null;
     /**
+     *  http://purl.org/ctdl/terms/assessmentDeliveryType
+     *  Delivery type for the assessment for the credential.
+     *  Indicates the delivery type for the assessment for the credential.
+     *  @property assessmentDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.assessmentDeliveryType = null;
+    /**
      *  http://purl.org/ctdl/terms/audienceLevelType
      *  Type of level indicating a point in a progression through an educational or training context, for which the credential is intended; select from an existing enumeration of such types.
      *  @property audienceLevelType
      *  @type CredentialAlignmentObject
      */
     prototype.audienceLevelType = null;
+    /**
+     *  http://purl.org/ctdl/terms/audienceType
+     *  The type of credential seeker for whom the entity is applicable; select from an existing enumeration of such types.
+     *  @property audienceType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.audienceType = null;
     /**
      *  http://purl.org/ctdl/terms/availabilityListing
      *  Listing of online and/or physical locations where a credential can be pursued.
@@ -7300,7 +7541,7 @@ License = stjs.extend(License, Credential, [], function(constructor, prototype) 
     prototype.dateEffective = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -7352,7 +7593,7 @@ License = stjs.extend(License, Credential, [], function(constructor, prototype) 
      *  Entity that describes financial assistance for which this credential, assessment, or learning opportunity qualifies.
      *  Whether the financial aid in question is associated with a credential, an assessment, or a learning opportunity is dependent on context.
      *  @property financialAssistance
-     *  @type FinancialAlignmentObject
+     *  @type FinancialAssistanceProfile
      */
     prototype.financialAssistance = null;
     /**
@@ -7386,12 +7627,18 @@ License = stjs.extend(License, Credential, [], function(constructor, prototype) 
     prototype.industryType = null;
     /**
      *  http://purl.org/ctdl/terms/inLanguage
-     *  Primary language of the credential, learning opportunity or assessment.
-     *  This is the primary language the entity, even if the it makes use of other languages. For example, a course that teaches Spanish to English-speaking students may primarily be in English, because that is the language used to convey the material.
+     *  The primary language or languages of the entity, even if it makes use of other languages; e.g., a course offered in English to teach Spanish would have an inLanguage of English, while a credential in Quebec could have an inLanguage of both French and English.
      *  @property inLanguage
      *  @type language
      */
     prototype.inLanguage = null;
+    /**
+     *  http://purl.org/ctdl/terms/instructionalProgramType
+     *  Type of instructional program; select from an existing enumeration of such types.
+     *  @property instructionalProgramType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.instructionalProgramType = null;
     /**
      *  http://purl.org/ctdl/terms/isAdvancedStandingFor
      *  This credential, assessment, or learning opportunity reduces the time or cost required to earn or complete the referenced credential, assessment, or learning opportunity.
@@ -7449,6 +7696,14 @@ License = stjs.extend(License, Credential, [], function(constructor, prototype) 
      *  @type ApprenticeshipCertificate | AssociateDegree | BachelorDegree | Badge | Certificate | Certification | Credential | Degree | DigitalBadge | Diploma | DoctoralDegree | GeneralEducationDevelopment | JourneymanCertificate | License | MasterCertificate | MasterDegree | MicroCredential | OpenBadge | ProfessionalDoctorate | QualityAssuranceCredential | ResearchDoctorate | SecondarySchoolDiploma
      */
     prototype.latestVersion = null;
+    /**
+     *  http://purl.org/ctdl/terms/learningDeliveryType
+     *  Delivery type for the learning opportunity for the credential.
+     *  Indicates the delivery type for the learning opportunity for the credential.
+     *  @property learningDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.learningDeliveryType = null;
     /**
      *  http://purl.org/ctdl/terms/maintenanceProcess
      *  Entity describing the process by which the credential is maintained including review and updating.
@@ -7700,7 +7955,7 @@ License = stjs.extend(License, Credential, [], function(constructor, prototype) 
      *  @type IdentifierValue
      */
     prototype.versionIdentifier = null;
-}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/Certification
  *  Time-limited, renewable credential awarded by an authoritative body to an individual or organization for demonstrating the designated knowledge, skills, and abilities to perform a specific occupation.
@@ -7750,7 +8005,7 @@ Certification = stjs.extend(Certification, Credential, [], function(constructor,
     prototype.advancedStandingFrom = null;
     /**
      *  http://purl.org/ctdl/terms/alternateName
-     *  Alias for a credential including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
+     *  Alias for the entity including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
      *  @property alternateName
      *  @type langString
      */
@@ -7777,12 +8032,27 @@ Certification = stjs.extend(Certification, Credential, [], function(constructor,
      */
     prototype.approvedIn = null;
     /**
+     *  http://purl.org/ctdl/terms/assessmentDeliveryType
+     *  Delivery type for the assessment for the credential.
+     *  Indicates the delivery type for the assessment for the credential.
+     *  @property assessmentDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.assessmentDeliveryType = null;
+    /**
      *  http://purl.org/ctdl/terms/audienceLevelType
      *  Type of level indicating a point in a progression through an educational or training context, for which the credential is intended; select from an existing enumeration of such types.
      *  @property audienceLevelType
      *  @type CredentialAlignmentObject
      */
     prototype.audienceLevelType = null;
+    /**
+     *  http://purl.org/ctdl/terms/audienceType
+     *  The type of credential seeker for whom the entity is applicable; select from an existing enumeration of such types.
+     *  @property audienceType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.audienceType = null;
     /**
      *  http://purl.org/ctdl/terms/availabilityListing
      *  Listing of online and/or physical locations where a credential can be pursued.
@@ -7887,7 +8157,7 @@ Certification = stjs.extend(Certification, Credential, [], function(constructor,
     prototype.dateEffective = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -7939,7 +8209,7 @@ Certification = stjs.extend(Certification, Credential, [], function(constructor,
      *  Entity that describes financial assistance for which this credential, assessment, or learning opportunity qualifies.
      *  Whether the financial aid in question is associated with a credential, an assessment, or a learning opportunity is dependent on context.
      *  @property financialAssistance
-     *  @type FinancialAlignmentObject
+     *  @type FinancialAssistanceProfile
      */
     prototype.financialAssistance = null;
     /**
@@ -7973,12 +8243,18 @@ Certification = stjs.extend(Certification, Credential, [], function(constructor,
     prototype.industryType = null;
     /**
      *  http://purl.org/ctdl/terms/inLanguage
-     *  Primary language of the credential, learning opportunity or assessment.
-     *  This is the primary language the entity, even if the it makes use of other languages. For example, a course that teaches Spanish to English-speaking students may primarily be in English, because that is the language used to convey the material.
+     *  The primary language or languages of the entity, even if it makes use of other languages; e.g., a course offered in English to teach Spanish would have an inLanguage of English, while a credential in Quebec could have an inLanguage of both French and English.
      *  @property inLanguage
      *  @type language
      */
     prototype.inLanguage = null;
+    /**
+     *  http://purl.org/ctdl/terms/instructionalProgramType
+     *  Type of instructional program; select from an existing enumeration of such types.
+     *  @property instructionalProgramType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.instructionalProgramType = null;
     /**
      *  http://purl.org/ctdl/terms/isAdvancedStandingFor
      *  This credential, assessment, or learning opportunity reduces the time or cost required to earn or complete the referenced credential, assessment, or learning opportunity.
@@ -8036,6 +8312,14 @@ Certification = stjs.extend(Certification, Credential, [], function(constructor,
      *  @type ApprenticeshipCertificate | AssociateDegree | BachelorDegree | Badge | Certificate | Certification | Credential | Degree | DigitalBadge | Diploma | DoctoralDegree | GeneralEducationDevelopment | JourneymanCertificate | License | MasterCertificate | MasterDegree | MicroCredential | OpenBadge | ProfessionalDoctorate | QualityAssuranceCredential | ResearchDoctorate | SecondarySchoolDiploma
      */
     prototype.latestVersion = null;
+    /**
+     *  http://purl.org/ctdl/terms/learningDeliveryType
+     *  Delivery type for the learning opportunity for the credential.
+     *  Indicates the delivery type for the learning opportunity for the credential.
+     *  @property learningDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.learningDeliveryType = null;
     /**
      *  http://purl.org/ctdl/terms/maintenanceProcess
      *  Entity describing the process by which the credential is maintained including review and updating.
@@ -8287,7 +8571,7 @@ Certification = stjs.extend(Certification, Credential, [], function(constructor,
      *  @type IdentifierValue
      */
     prototype.versionIdentifier = null;
-}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/Badge
  *  Recognition designed to be displayed as a marker of accomplishment, activity, achievement, skill, interest, association, or identity.
@@ -8337,7 +8621,7 @@ Badge = stjs.extend(Badge, Credential, [], function(constructor, prototype) {
     prototype.advancedStandingFrom = null;
     /**
      *  http://purl.org/ctdl/terms/alternateName
-     *  Alias for a credential including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
+     *  Alias for the entity including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
      *  @property alternateName
      *  @type langString
      */
@@ -8364,12 +8648,27 @@ Badge = stjs.extend(Badge, Credential, [], function(constructor, prototype) {
      */
     prototype.approvedIn = null;
     /**
+     *  http://purl.org/ctdl/terms/assessmentDeliveryType
+     *  Delivery type for the assessment for the credential.
+     *  Indicates the delivery type for the assessment for the credential.
+     *  @property assessmentDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.assessmentDeliveryType = null;
+    /**
      *  http://purl.org/ctdl/terms/audienceLevelType
      *  Type of level indicating a point in a progression through an educational or training context, for which the credential is intended; select from an existing enumeration of such types.
      *  @property audienceLevelType
      *  @type CredentialAlignmentObject
      */
     prototype.audienceLevelType = null;
+    /**
+     *  http://purl.org/ctdl/terms/audienceType
+     *  The type of credential seeker for whom the entity is applicable; select from an existing enumeration of such types.
+     *  @property audienceType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.audienceType = null;
     /**
      *  http://purl.org/ctdl/terms/availabilityListing
      *  Listing of online and/or physical locations where a credential can be pursued.
@@ -8474,7 +8773,7 @@ Badge = stjs.extend(Badge, Credential, [], function(constructor, prototype) {
     prototype.dateEffective = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -8526,7 +8825,7 @@ Badge = stjs.extend(Badge, Credential, [], function(constructor, prototype) {
      *  Entity that describes financial assistance for which this credential, assessment, or learning opportunity qualifies.
      *  Whether the financial aid in question is associated with a credential, an assessment, or a learning opportunity is dependent on context.
      *  @property financialAssistance
-     *  @type FinancialAlignmentObject
+     *  @type FinancialAssistanceProfile
      */
     prototype.financialAssistance = null;
     /**
@@ -8560,12 +8859,18 @@ Badge = stjs.extend(Badge, Credential, [], function(constructor, prototype) {
     prototype.industryType = null;
     /**
      *  http://purl.org/ctdl/terms/inLanguage
-     *  Primary language of the credential, learning opportunity or assessment.
-     *  This is the primary language the entity, even if the it makes use of other languages. For example, a course that teaches Spanish to English-speaking students may primarily be in English, because that is the language used to convey the material.
+     *  The primary language or languages of the entity, even if it makes use of other languages; e.g., a course offered in English to teach Spanish would have an inLanguage of English, while a credential in Quebec could have an inLanguage of both French and English.
      *  @property inLanguage
      *  @type language
      */
     prototype.inLanguage = null;
+    /**
+     *  http://purl.org/ctdl/terms/instructionalProgramType
+     *  Type of instructional program; select from an existing enumeration of such types.
+     *  @property instructionalProgramType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.instructionalProgramType = null;
     /**
      *  http://purl.org/ctdl/terms/isAdvancedStandingFor
      *  This credential, assessment, or learning opportunity reduces the time or cost required to earn or complete the referenced credential, assessment, or learning opportunity.
@@ -8623,6 +8928,14 @@ Badge = stjs.extend(Badge, Credential, [], function(constructor, prototype) {
      *  @type ApprenticeshipCertificate | AssociateDegree | BachelorDegree | Badge | Certificate | Certification | Credential | Degree | DigitalBadge | Diploma | DoctoralDegree | GeneralEducationDevelopment | JourneymanCertificate | License | MasterCertificate | MasterDegree | MicroCredential | OpenBadge | ProfessionalDoctorate | QualityAssuranceCredential | ResearchDoctorate | SecondarySchoolDiploma
      */
     prototype.latestVersion = null;
+    /**
+     *  http://purl.org/ctdl/terms/learningDeliveryType
+     *  Delivery type for the learning opportunity for the credential.
+     *  Indicates the delivery type for the learning opportunity for the credential.
+     *  @property learningDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.learningDeliveryType = null;
     /**
      *  http://purl.org/ctdl/terms/maintenanceProcess
      *  Entity describing the process by which the credential is maintained including review and updating.
@@ -8874,7 +9187,7 @@ Badge = stjs.extend(Badge, Credential, [], function(constructor, prototype) {
      *  @type IdentifierValue
      */
     prototype.versionIdentifier = null;
-}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/MicroCredential
  *  Credential that addresses a subset of field-specific knowledge, skills, or competencies; often developmental with relationships to other micro-credentials and field credentials.
@@ -8924,7 +9237,7 @@ MicroCredential = stjs.extend(MicroCredential, Credential, [], function(construc
     prototype.advancedStandingFrom = null;
     /**
      *  http://purl.org/ctdl/terms/alternateName
-     *  Alias for a credential including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
+     *  Alias for the entity including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
      *  @property alternateName
      *  @type langString
      */
@@ -8951,12 +9264,27 @@ MicroCredential = stjs.extend(MicroCredential, Credential, [], function(construc
      */
     prototype.approvedIn = null;
     /**
+     *  http://purl.org/ctdl/terms/assessmentDeliveryType
+     *  Delivery type for the assessment for the credential.
+     *  Indicates the delivery type for the assessment for the credential.
+     *  @property assessmentDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.assessmentDeliveryType = null;
+    /**
      *  http://purl.org/ctdl/terms/audienceLevelType
      *  Type of level indicating a point in a progression through an educational or training context, for which the credential is intended; select from an existing enumeration of such types.
      *  @property audienceLevelType
      *  @type CredentialAlignmentObject
      */
     prototype.audienceLevelType = null;
+    /**
+     *  http://purl.org/ctdl/terms/audienceType
+     *  The type of credential seeker for whom the entity is applicable; select from an existing enumeration of such types.
+     *  @property audienceType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.audienceType = null;
     /**
      *  http://purl.org/ctdl/terms/availabilityListing
      *  Listing of online and/or physical locations where a credential can be pursued.
@@ -9061,7 +9389,7 @@ MicroCredential = stjs.extend(MicroCredential, Credential, [], function(construc
     prototype.dateEffective = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -9113,7 +9441,7 @@ MicroCredential = stjs.extend(MicroCredential, Credential, [], function(construc
      *  Entity that describes financial assistance for which this credential, assessment, or learning opportunity qualifies.
      *  Whether the financial aid in question is associated with a credential, an assessment, or a learning opportunity is dependent on context.
      *  @property financialAssistance
-     *  @type FinancialAlignmentObject
+     *  @type FinancialAssistanceProfile
      */
     prototype.financialAssistance = null;
     /**
@@ -9147,12 +9475,18 @@ MicroCredential = stjs.extend(MicroCredential, Credential, [], function(construc
     prototype.industryType = null;
     /**
      *  http://purl.org/ctdl/terms/inLanguage
-     *  Primary language of the credential, learning opportunity or assessment.
-     *  This is the primary language the entity, even if the it makes use of other languages. For example, a course that teaches Spanish to English-speaking students may primarily be in English, because that is the language used to convey the material.
+     *  The primary language or languages of the entity, even if it makes use of other languages; e.g., a course offered in English to teach Spanish would have an inLanguage of English, while a credential in Quebec could have an inLanguage of both French and English.
      *  @property inLanguage
      *  @type language
      */
     prototype.inLanguage = null;
+    /**
+     *  http://purl.org/ctdl/terms/instructionalProgramType
+     *  Type of instructional program; select from an existing enumeration of such types.
+     *  @property instructionalProgramType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.instructionalProgramType = null;
     /**
      *  http://purl.org/ctdl/terms/isAdvancedStandingFor
      *  This credential, assessment, or learning opportunity reduces the time or cost required to earn or complete the referenced credential, assessment, or learning opportunity.
@@ -9210,6 +9544,14 @@ MicroCredential = stjs.extend(MicroCredential, Credential, [], function(construc
      *  @type ApprenticeshipCertificate | AssociateDegree | BachelorDegree | Badge | Certificate | Certification | Credential | Degree | DigitalBadge | Diploma | DoctoralDegree | GeneralEducationDevelopment | JourneymanCertificate | License | MasterCertificate | MasterDegree | MicroCredential | OpenBadge | ProfessionalDoctorate | QualityAssuranceCredential | ResearchDoctorate | SecondarySchoolDiploma
      */
     prototype.latestVersion = null;
+    /**
+     *  http://purl.org/ctdl/terms/learningDeliveryType
+     *  Delivery type for the learning opportunity for the credential.
+     *  Indicates the delivery type for the learning opportunity for the credential.
+     *  @property learningDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.learningDeliveryType = null;
     /**
      *  http://purl.org/ctdl/terms/maintenanceProcess
      *  Entity describing the process by which the credential is maintained including review and updating.
@@ -9461,7 +9803,7 @@ MicroCredential = stjs.extend(MicroCredential, Credential, [], function(construc
      *  @type IdentifierValue
      */
     prototype.versionIdentifier = null;
-}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/IndustryClassification
  *  Class of of concept schemes defining industries such as NAICS in the U.S. and ESCO in the European Union.
@@ -9679,7 +10021,7 @@ CredentialOrganization = stjs.extend(CredentialOrganization, Agent, [], function
     prototype.agentType = null;
     /**
      *  http://purl.org/ctdl/terms/alternateName
-     *  Alias for a credential including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
+     *  Alias for the entity including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
      *  @property alternateName
      *  @type langString
      */
@@ -9758,7 +10100,7 @@ CredentialOrganization = stjs.extend(CredentialOrganization, Agent, [], function
     prototype.department = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -9863,6 +10205,13 @@ CredentialOrganization = stjs.extend(CredentialOrganization, Agent, [], function
      */
     prototype.keyword = null;
     /**
+     *  http://purl.org/ctdl/terms/leiCode
+     *  A 20-digit, alpha-numeric code, based on the ISO 17442 standard, for identifying legal entities participating in financial transactions.
+     *  @property leiCode
+     *  @type string
+     */
+    prototype.leiCode = null;
+    /**
      *  http://purl.org/ctdl/terms/maintenanceProcess
      *  Entity describing the process by which the credential is maintained including review and updating.
      *  Such maintenance does not include renewal of a credential by an individual holder.
@@ -9915,7 +10264,7 @@ CredentialOrganization = stjs.extend(CredentialOrganization, Agent, [], function
     prototype.opeID = null;
     /**
      *  http://purl.org/ctdl/terms/owns
-     *  Credential, learning opportunity or assesment over which the organization or person claims legal title.
+     *  Credential, learning opportunity or assessment over which the organization or person claims legal title.
      *  Generally, the value of the property should be one of the subclasses of ceterms:Credential.
      *  @property owns
      *  @type ApprenticeshipCertificate | AssessmentProfile | AssociateDegree | BachelorDegree | Badge | Certificate | Certification | Credential | Degree | DigitalBadge | Diploma | DoctoralDegree | GeneralEducationDevelopment | JourneymanCertificate | LearningOpportunityProfile | License | MasterCertificate | MasterDegree | MicroCredential | OpenBadge | ProfessionalDoctorate | QualityAssuranceCredential | ResearchDoctorate | SecondarySchoolDiploma
@@ -10030,7 +10379,7 @@ CredentialOrganization = stjs.extend(CredentialOrganization, Agent, [], function
      *  @type CredentialOrganization | QACredentialOrganization
      */
     prototype.subOrganization = null;
-}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", address: "Place", administrationProcess: "ProcessProfile", agentSectorType: "CredentialAlignmentObject", agentType: "CredentialAlignmentObject", alternativeIdentifier: "IdentifierValue", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", approves: "Object", complaintProcess: "ProcessProfile", credentialingAction: "Object", department: "Object", developmentProcess: "ProcessProfile", employee: "CredentialPerson", hasConditionManifest: "ConditionManifest", hasCostManifest: "CostManifest", hasVerificationService: "VerificationServiceProfile", industryType: "CredentialAlignmentObject", jurisdiction: "JurisdictionProfile", maintenanceProcess: "ProcessProfile", offers: "Object", owns: "Object", parentOrganization: "Object", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recognizes: "Object", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", renews: "Object", reviewProcess: "ProcessProfile", revocationProcess: "ProcessProfile", revokes: "Object", serviceType: "CredentialAlignmentObject", subOrganization: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", address: "Place", administrationProcess: "ProcessProfile", agentSectorType: "CredentialAlignmentObject", agentType: "CredentialAlignmentObject", alternativeIdentifier: "IdentifierValue", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", approves: "Object", complaintProcess: "ProcessProfile", credentialingAction: "Object", department: "Object", developmentProcess: "ProcessProfile", employee: "CredentialPerson", hasConditionManifest: "ConditionManifest", hasCostManifest: "CostManifest", hasVerificationService: "VerificationServiceProfile", industryType: "CredentialAlignmentObject", jurisdiction: "JurisdictionProfile", maintenanceProcess: "ProcessProfile", offers: "Object", owns: "Object", parentOrganization: "Object", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recognizes: "Object", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", renews: "Object", reviewProcess: "ProcessProfile", revocationProcess: "ProcessProfile", revokes: "Object", serviceType: "CredentialAlignmentObject", subOrganization: "Object", hasAlignmentMap: "AlignmentMap", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/CredentialPerson
  *  Person who plays a role as primary agent in a credentialing action.
@@ -10080,7 +10429,7 @@ CredentialPerson = stjs.extend(CredentialPerson, Agent, [], function(constructor
     prototype.approves = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -10137,7 +10486,7 @@ CredentialPerson = stjs.extend(CredentialPerson, Agent, [], function(constructor
     prototype.offers = null;
     /**
      *  http://purl.org/ctdl/terms/owns
-     *  Credential, learning opportunity or assesment over which the organization or person claims legal title.
+     *  Credential, learning opportunity or assessment over which the organization or person claims legal title.
      *  Generally, the value of the property should be one of the subclasses of ceterms:Credential.
      *  @property owns
      *  @type ApprenticeshipCertificate | AssessmentProfile | AssociateDegree | BachelorDegree | Badge | Certificate | Certification | Credential | Degree | DigitalBadge | Diploma | DoctoralDegree | GeneralEducationDevelopment | JourneymanCertificate | LearningOpportunityProfile | License | MasterCertificate | MasterDegree | MicroCredential | OpenBadge | ProfessionalDoctorate | QualityAssuranceCredential | ResearchDoctorate | SecondarySchoolDiploma
@@ -10224,7 +10573,7 @@ CredentialPerson = stjs.extend(CredentialPerson, Agent, [], function(constructor
      *  @type CredentialOrganization | QACredentialOrganization
      */
     prototype.worksFor = null;
-}, {affiliation: "Object", approvedBy: "Object", approvedIn: "JurisdictionProfile", approves: "Object", offers: "Object", owns: "Object", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recognizes: "Object", renews: "Object", revokes: "Object", serviceType: "CredentialAlignmentObject", targetContactPoint: "ContactPoint", worksFor: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {affiliation: "Object", approvedBy: "Object", approvedIn: "JurisdictionProfile", approves: "Object", offers: "Object", owns: "Object", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recognizes: "Object", renews: "Object", revokes: "Object", serviceType: "CredentialAlignmentObject", targetContactPoint: "ContactPoint", worksFor: "Object", hasAlignmentMap: "AlignmentMap", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/QACredentialOrganization
  *  Quality assurance organization that plays one or more key roles in the lifecycle of a credential, learning program, or assessment.
@@ -10309,7 +10658,7 @@ QACredentialOrganization = stjs.extend(QACredentialOrganization, Agent, [], func
     prototype.agentType = null;
     /**
      *  http://purl.org/ctdl/terms/alternateName
-     *  Alias for a credential including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
+     *  Alias for the entity including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
      *  @property alternateName
      *  @type langString
      */
@@ -10388,7 +10737,7 @@ QACredentialOrganization = stjs.extend(QACredentialOrganization, Agent, [], func
     prototype.department = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -10493,6 +10842,13 @@ QACredentialOrganization = stjs.extend(QACredentialOrganization, Agent, [], func
      */
     prototype.keyword = null;
     /**
+     *  http://purl.org/ctdl/terms/leiCode
+     *  A 20-digit, alpha-numeric code, based on the ISO 17442 standard, for identifying legal entities participating in financial transactions.
+     *  @property leiCode
+     *  @type string
+     */
+    prototype.leiCode = null;
+    /**
      *  http://purl.org/ctdl/terms/maintenanceProcess
      *  Entity describing the process by which the credential is maintained including review and updating.
      *  Such maintenance does not include renewal of a credential by an individual holder.
@@ -10545,7 +10901,7 @@ QACredentialOrganization = stjs.extend(QACredentialOrganization, Agent, [], func
     prototype.opeID = null;
     /**
      *  http://purl.org/ctdl/terms/owns
-     *  Credential, learning opportunity or assesment over which the organization or person claims legal title.
+     *  Credential, learning opportunity or assessment over which the organization or person claims legal title.
      *  Generally, the value of the property should be one of the subclasses of ceterms:Credential.
      *  @property owns
      *  @type ApprenticeshipCertificate | AssessmentProfile | AssociateDegree | BachelorDegree | Badge | Certificate | Certification | Credential | Degree | DigitalBadge | Diploma | DoctoralDegree | GeneralEducationDevelopment | JourneymanCertificate | LearningOpportunityProfile | License | MasterCertificate | MasterDegree | MicroCredential | OpenBadge | ProfessionalDoctorate | QualityAssuranceCredential | ResearchDoctorate | SecondarySchoolDiploma
@@ -10675,7 +11031,7 @@ QACredentialOrganization = stjs.extend(QACredentialOrganization, Agent, [], func
      *  @type CredentialOrganization | QACredentialOrganization
      */
     prototype.subOrganization = null;
-}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", accredits: "Object", address: "Place", administrationProcess: "ProcessProfile", agentSectorType: "CredentialAlignmentObject", agentType: "CredentialAlignmentObject", alternativeIdentifier: "IdentifierValue", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", approves: "Object", complaintProcess: "ProcessProfile", credentialingAction: "Object", department: "Object", developmentProcess: "ProcessProfile", employee: "CredentialPerson", hasConditionManifest: "ConditionManifest", hasCostManifest: "CostManifest", hasVerificationService: "VerificationServiceProfile", industryType: "CredentialAlignmentObject", jurisdiction: "JurisdictionProfile", maintenanceProcess: "ProcessProfile", offers: "Object", owns: "Object", parentOrganization: "Object", qualityAssuranceTargetType: "Object", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recognizes: "Object", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", regulates: "Object", renews: "Object", reviewProcess: "ProcessProfile", revocationProcess: "ProcessProfile", revokes: "Object", serviceType: "CredentialAlignmentObject", subOrganization: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", accredits: "Object", address: "Place", administrationProcess: "ProcessProfile", agentSectorType: "CredentialAlignmentObject", agentType: "CredentialAlignmentObject", alternativeIdentifier: "IdentifierValue", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", approves: "Object", complaintProcess: "ProcessProfile", credentialingAction: "Object", department: "Object", developmentProcess: "ProcessProfile", employee: "CredentialPerson", hasConditionManifest: "ConditionManifest", hasCostManifest: "CostManifest", hasVerificationService: "VerificationServiceProfile", industryType: "CredentialAlignmentObject", jurisdiction: "JurisdictionProfile", maintenanceProcess: "ProcessProfile", offers: "Object", owns: "Object", parentOrganization: "Object", qualityAssuranceTargetType: "Object", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recognizes: "Object", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", regulates: "Object", renews: "Object", reviewProcess: "ProcessProfile", revocationProcess: "ProcessProfile", revokes: "Object", serviceType: "CredentialAlignmentObject", subOrganization: "Object", hasAlignmentMap: "AlignmentMap", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/MasterDegree
  *  Credential awarded for a graduate level course of study where course work and activities advance skills beyond those of the bachelor's degree or its equivalent.
@@ -10726,7 +11082,7 @@ MasterDegree = stjs.extend(MasterDegree, Degree, [], function(constructor, proto
     prototype.advancedStandingFrom = null;
     /**
      *  http://purl.org/ctdl/terms/alternateName
-     *  Alias for a credential including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
+     *  Alias for the entity including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
      *  @property alternateName
      *  @type langString
      */
@@ -10753,12 +11109,27 @@ MasterDegree = stjs.extend(MasterDegree, Degree, [], function(constructor, proto
      */
     prototype.approvedIn = null;
     /**
+     *  http://purl.org/ctdl/terms/assessmentDeliveryType
+     *  Delivery type for the assessment for the credential.
+     *  Indicates the delivery type for the assessment for the credential.
+     *  @property assessmentDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.assessmentDeliveryType = null;
+    /**
      *  http://purl.org/ctdl/terms/audienceLevelType
      *  Type of level indicating a point in a progression through an educational or training context, for which the credential is intended; select from an existing enumeration of such types.
      *  @property audienceLevelType
      *  @type CredentialAlignmentObject
      */
     prototype.audienceLevelType = null;
+    /**
+     *  http://purl.org/ctdl/terms/audienceType
+     *  The type of credential seeker for whom the entity is applicable; select from an existing enumeration of such types.
+     *  @property audienceType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.audienceType = null;
     /**
      *  http://purl.org/ctdl/terms/availabilityListing
      *  Listing of online and/or physical locations where a credential can be pursued.
@@ -10884,7 +11255,7 @@ MasterDegree = stjs.extend(MasterDegree, Degree, [], function(constructor, proto
     prototype.degreeMinor = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -10936,7 +11307,7 @@ MasterDegree = stjs.extend(MasterDegree, Degree, [], function(constructor, proto
      *  Entity that describes financial assistance for which this credential, assessment, or learning opportunity qualifies.
      *  Whether the financial aid in question is associated with a credential, an assessment, or a learning opportunity is dependent on context.
      *  @property financialAssistance
-     *  @type FinancialAlignmentObject
+     *  @type FinancialAssistanceProfile
      */
     prototype.financialAssistance = null;
     /**
@@ -10970,12 +11341,18 @@ MasterDegree = stjs.extend(MasterDegree, Degree, [], function(constructor, proto
     prototype.industryType = null;
     /**
      *  http://purl.org/ctdl/terms/inLanguage
-     *  Primary language of the credential, learning opportunity or assessment.
-     *  This is the primary language the entity, even if the it makes use of other languages. For example, a course that teaches Spanish to English-speaking students may primarily be in English, because that is the language used to convey the material.
+     *  The primary language or languages of the entity, even if it makes use of other languages; e.g., a course offered in English to teach Spanish would have an inLanguage of English, while a credential in Quebec could have an inLanguage of both French and English.
      *  @property inLanguage
      *  @type language
      */
     prototype.inLanguage = null;
+    /**
+     *  http://purl.org/ctdl/terms/instructionalProgramType
+     *  Type of instructional program; select from an existing enumeration of such types.
+     *  @property instructionalProgramType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.instructionalProgramType = null;
     /**
      *  http://purl.org/ctdl/terms/isAdvancedStandingFor
      *  This credential, assessment, or learning opportunity reduces the time or cost required to earn or complete the referenced credential, assessment, or learning opportunity.
@@ -11033,6 +11410,14 @@ MasterDegree = stjs.extend(MasterDegree, Degree, [], function(constructor, proto
      *  @type ApprenticeshipCertificate | AssociateDegree | BachelorDegree | Badge | Certificate | Certification | Credential | Degree | DigitalBadge | Diploma | DoctoralDegree | GeneralEducationDevelopment | JourneymanCertificate | License | MasterCertificate | MasterDegree | MicroCredential | OpenBadge | ProfessionalDoctorate | QualityAssuranceCredential | ResearchDoctorate | SecondarySchoolDiploma
      */
     prototype.latestVersion = null;
+    /**
+     *  http://purl.org/ctdl/terms/learningDeliveryType
+     *  Delivery type for the learning opportunity for the credential.
+     *  Indicates the delivery type for the learning opportunity for the credential.
+     *  @property learningDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.learningDeliveryType = null;
     /**
      *  http://purl.org/ctdl/terms/maintenanceProcess
      *  Entity describing the process by which the credential is maintained including review and updating.
@@ -11284,7 +11669,7 @@ MasterDegree = stjs.extend(MasterDegree, Degree, [], function(constructor, proto
      *  @type IdentifierValue
      */
     prototype.versionIdentifier = null;
-}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", degreeConcentration: "CredentialAlignmentObject", degreeMajor: "CredentialAlignmentObject", degreeMinor: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", degreeConcentration: "CredentialAlignmentObject", degreeMajor: "CredentialAlignmentObject", degreeMinor: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", degreeConcentration: "CredentialAlignmentObject", degreeMajor: "CredentialAlignmentObject", degreeMinor: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", degreeConcentration: "CredentialAlignmentObject", degreeMajor: "CredentialAlignmentObject", degreeMinor: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/BachelorDegree
  *  College/university award for students typically completing three to five years of education where course work and activities advance skills beyond those of the first one to two years of college/university study.
@@ -11335,7 +11720,7 @@ BachelorDegree = stjs.extend(BachelorDegree, Degree, [], function(constructor, p
     prototype.advancedStandingFrom = null;
     /**
      *  http://purl.org/ctdl/terms/alternateName
-     *  Alias for a credential including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
+     *  Alias for the entity including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
      *  @property alternateName
      *  @type langString
      */
@@ -11362,12 +11747,27 @@ BachelorDegree = stjs.extend(BachelorDegree, Degree, [], function(constructor, p
      */
     prototype.approvedIn = null;
     /**
+     *  http://purl.org/ctdl/terms/assessmentDeliveryType
+     *  Delivery type for the assessment for the credential.
+     *  Indicates the delivery type for the assessment for the credential.
+     *  @property assessmentDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.assessmentDeliveryType = null;
+    /**
      *  http://purl.org/ctdl/terms/audienceLevelType
      *  Type of level indicating a point in a progression through an educational or training context, for which the credential is intended; select from an existing enumeration of such types.
      *  @property audienceLevelType
      *  @type CredentialAlignmentObject
      */
     prototype.audienceLevelType = null;
+    /**
+     *  http://purl.org/ctdl/terms/audienceType
+     *  The type of credential seeker for whom the entity is applicable; select from an existing enumeration of such types.
+     *  @property audienceType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.audienceType = null;
     /**
      *  http://purl.org/ctdl/terms/availabilityListing
      *  Listing of online and/or physical locations where a credential can be pursued.
@@ -11493,7 +11893,7 @@ BachelorDegree = stjs.extend(BachelorDegree, Degree, [], function(constructor, p
     prototype.degreeMinor = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -11545,7 +11945,7 @@ BachelorDegree = stjs.extend(BachelorDegree, Degree, [], function(constructor, p
      *  Entity that describes financial assistance for which this credential, assessment, or learning opportunity qualifies.
      *  Whether the financial aid in question is associated with a credential, an assessment, or a learning opportunity is dependent on context.
      *  @property financialAssistance
-     *  @type FinancialAlignmentObject
+     *  @type FinancialAssistanceProfile
      */
     prototype.financialAssistance = null;
     /**
@@ -11579,12 +11979,18 @@ BachelorDegree = stjs.extend(BachelorDegree, Degree, [], function(constructor, p
     prototype.industryType = null;
     /**
      *  http://purl.org/ctdl/terms/inLanguage
-     *  Primary language of the credential, learning opportunity or assessment.
-     *  This is the primary language the entity, even if the it makes use of other languages. For example, a course that teaches Spanish to English-speaking students may primarily be in English, because that is the language used to convey the material.
+     *  The primary language or languages of the entity, even if it makes use of other languages; e.g., a course offered in English to teach Spanish would have an inLanguage of English, while a credential in Quebec could have an inLanguage of both French and English.
      *  @property inLanguage
      *  @type language
      */
     prototype.inLanguage = null;
+    /**
+     *  http://purl.org/ctdl/terms/instructionalProgramType
+     *  Type of instructional program; select from an existing enumeration of such types.
+     *  @property instructionalProgramType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.instructionalProgramType = null;
     /**
      *  http://purl.org/ctdl/terms/isAdvancedStandingFor
      *  This credential, assessment, or learning opportunity reduces the time or cost required to earn or complete the referenced credential, assessment, or learning opportunity.
@@ -11642,6 +12048,14 @@ BachelorDegree = stjs.extend(BachelorDegree, Degree, [], function(constructor, p
      *  @type ApprenticeshipCertificate | AssociateDegree | BachelorDegree | Badge | Certificate | Certification | Credential | Degree | DigitalBadge | Diploma | DoctoralDegree | GeneralEducationDevelopment | JourneymanCertificate | License | MasterCertificate | MasterDegree | MicroCredential | OpenBadge | ProfessionalDoctorate | QualityAssuranceCredential | ResearchDoctorate | SecondarySchoolDiploma
      */
     prototype.latestVersion = null;
+    /**
+     *  http://purl.org/ctdl/terms/learningDeliveryType
+     *  Delivery type for the learning opportunity for the credential.
+     *  Indicates the delivery type for the learning opportunity for the credential.
+     *  @property learningDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.learningDeliveryType = null;
     /**
      *  http://purl.org/ctdl/terms/maintenanceProcess
      *  Entity describing the process by which the credential is maintained including review and updating.
@@ -11893,7 +12307,7 @@ BachelorDegree = stjs.extend(BachelorDegree, Degree, [], function(constructor, p
      *  @type IdentifierValue
      */
     prototype.versionIdentifier = null;
-}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", degreeConcentration: "CredentialAlignmentObject", degreeMajor: "CredentialAlignmentObject", degreeMinor: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", degreeConcentration: "CredentialAlignmentObject", degreeMajor: "CredentialAlignmentObject", degreeMinor: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", degreeConcentration: "CredentialAlignmentObject", degreeMajor: "CredentialAlignmentObject", degreeMinor: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", degreeConcentration: "CredentialAlignmentObject", degreeMajor: "CredentialAlignmentObject", degreeMinor: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/AssociateDegree
  *  College/university award for students typically completing the first one to two years of post secondary school education.
@@ -11944,7 +12358,7 @@ AssociateDegree = stjs.extend(AssociateDegree, Degree, [], function(constructor,
     prototype.advancedStandingFrom = null;
     /**
      *  http://purl.org/ctdl/terms/alternateName
-     *  Alias for a credential including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
+     *  Alias for the entity including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
      *  @property alternateName
      *  @type langString
      */
@@ -11971,12 +12385,27 @@ AssociateDegree = stjs.extend(AssociateDegree, Degree, [], function(constructor,
      */
     prototype.approvedIn = null;
     /**
+     *  http://purl.org/ctdl/terms/assessmentDeliveryType
+     *  Delivery type for the assessment for the credential.
+     *  Indicates the delivery type for the assessment for the credential.
+     *  @property assessmentDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.assessmentDeliveryType = null;
+    /**
      *  http://purl.org/ctdl/terms/audienceLevelType
      *  Type of level indicating a point in a progression through an educational or training context, for which the credential is intended; select from an existing enumeration of such types.
      *  @property audienceLevelType
      *  @type CredentialAlignmentObject
      */
     prototype.audienceLevelType = null;
+    /**
+     *  http://purl.org/ctdl/terms/audienceType
+     *  The type of credential seeker for whom the entity is applicable; select from an existing enumeration of such types.
+     *  @property audienceType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.audienceType = null;
     /**
      *  http://purl.org/ctdl/terms/availabilityListing
      *  Listing of online and/or physical locations where a credential can be pursued.
@@ -12102,7 +12531,7 @@ AssociateDegree = stjs.extend(AssociateDegree, Degree, [], function(constructor,
     prototype.degreeMinor = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -12154,7 +12583,7 @@ AssociateDegree = stjs.extend(AssociateDegree, Degree, [], function(constructor,
      *  Entity that describes financial assistance for which this credential, assessment, or learning opportunity qualifies.
      *  Whether the financial aid in question is associated with a credential, an assessment, or a learning opportunity is dependent on context.
      *  @property financialAssistance
-     *  @type FinancialAlignmentObject
+     *  @type FinancialAssistanceProfile
      */
     prototype.financialAssistance = null;
     /**
@@ -12188,12 +12617,18 @@ AssociateDegree = stjs.extend(AssociateDegree, Degree, [], function(constructor,
     prototype.industryType = null;
     /**
      *  http://purl.org/ctdl/terms/inLanguage
-     *  Primary language of the credential, learning opportunity or assessment.
-     *  This is the primary language the entity, even if the it makes use of other languages. For example, a course that teaches Spanish to English-speaking students may primarily be in English, because that is the language used to convey the material.
+     *  The primary language or languages of the entity, even if it makes use of other languages; e.g., a course offered in English to teach Spanish would have an inLanguage of English, while a credential in Quebec could have an inLanguage of both French and English.
      *  @property inLanguage
      *  @type language
      */
     prototype.inLanguage = null;
+    /**
+     *  http://purl.org/ctdl/terms/instructionalProgramType
+     *  Type of instructional program; select from an existing enumeration of such types.
+     *  @property instructionalProgramType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.instructionalProgramType = null;
     /**
      *  http://purl.org/ctdl/terms/isAdvancedStandingFor
      *  This credential, assessment, or learning opportunity reduces the time or cost required to earn or complete the referenced credential, assessment, or learning opportunity.
@@ -12251,6 +12686,14 @@ AssociateDegree = stjs.extend(AssociateDegree, Degree, [], function(constructor,
      *  @type ApprenticeshipCertificate | AssociateDegree | BachelorDegree | Badge | Certificate | Certification | Credential | Degree | DigitalBadge | Diploma | DoctoralDegree | GeneralEducationDevelopment | JourneymanCertificate | License | MasterCertificate | MasterDegree | MicroCredential | OpenBadge | ProfessionalDoctorate | QualityAssuranceCredential | ResearchDoctorate | SecondarySchoolDiploma
      */
     prototype.latestVersion = null;
+    /**
+     *  http://purl.org/ctdl/terms/learningDeliveryType
+     *  Delivery type for the learning opportunity for the credential.
+     *  Indicates the delivery type for the learning opportunity for the credential.
+     *  @property learningDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.learningDeliveryType = null;
     /**
      *  http://purl.org/ctdl/terms/maintenanceProcess
      *  Entity describing the process by which the credential is maintained including review and updating.
@@ -12502,7 +12945,7 @@ AssociateDegree = stjs.extend(AssociateDegree, Degree, [], function(constructor,
      *  @type IdentifierValue
      */
     prototype.versionIdentifier = null;
-}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", degreeConcentration: "CredentialAlignmentObject", degreeMajor: "CredentialAlignmentObject", degreeMinor: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", degreeConcentration: "CredentialAlignmentObject", degreeMajor: "CredentialAlignmentObject", degreeMinor: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", degreeConcentration: "CredentialAlignmentObject", degreeMajor: "CredentialAlignmentObject", degreeMinor: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", degreeConcentration: "CredentialAlignmentObject", degreeMajor: "CredentialAlignmentObject", degreeMinor: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/DoctoralDegree
  *  Highest credential award for students who have completed both a bachelor's degree and a master's degree or their equivalent as well as independent research and/or a significant project or paper.
@@ -12553,7 +12996,7 @@ DoctoralDegree = stjs.extend(DoctoralDegree, Degree, [], function(constructor, p
     prototype.advancedStandingFrom = null;
     /**
      *  http://purl.org/ctdl/terms/alternateName
-     *  Alias for a credential including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
+     *  Alias for the entity including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
      *  @property alternateName
      *  @type langString
      */
@@ -12580,12 +13023,27 @@ DoctoralDegree = stjs.extend(DoctoralDegree, Degree, [], function(constructor, p
      */
     prototype.approvedIn = null;
     /**
+     *  http://purl.org/ctdl/terms/assessmentDeliveryType
+     *  Delivery type for the assessment for the credential.
+     *  Indicates the delivery type for the assessment for the credential.
+     *  @property assessmentDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.assessmentDeliveryType = null;
+    /**
      *  http://purl.org/ctdl/terms/audienceLevelType
      *  Type of level indicating a point in a progression through an educational or training context, for which the credential is intended; select from an existing enumeration of such types.
      *  @property audienceLevelType
      *  @type CredentialAlignmentObject
      */
     prototype.audienceLevelType = null;
+    /**
+     *  http://purl.org/ctdl/terms/audienceType
+     *  The type of credential seeker for whom the entity is applicable; select from an existing enumeration of such types.
+     *  @property audienceType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.audienceType = null;
     /**
      *  http://purl.org/ctdl/terms/availabilityListing
      *  Listing of online and/or physical locations where a credential can be pursued.
@@ -12711,7 +13169,7 @@ DoctoralDegree = stjs.extend(DoctoralDegree, Degree, [], function(constructor, p
     prototype.degreeMinor = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -12763,7 +13221,7 @@ DoctoralDegree = stjs.extend(DoctoralDegree, Degree, [], function(constructor, p
      *  Entity that describes financial assistance for which this credential, assessment, or learning opportunity qualifies.
      *  Whether the financial aid in question is associated with a credential, an assessment, or a learning opportunity is dependent on context.
      *  @property financialAssistance
-     *  @type FinancialAlignmentObject
+     *  @type FinancialAssistanceProfile
      */
     prototype.financialAssistance = null;
     /**
@@ -12797,12 +13255,18 @@ DoctoralDegree = stjs.extend(DoctoralDegree, Degree, [], function(constructor, p
     prototype.industryType = null;
     /**
      *  http://purl.org/ctdl/terms/inLanguage
-     *  Primary language of the credential, learning opportunity or assessment.
-     *  This is the primary language the entity, even if the it makes use of other languages. For example, a course that teaches Spanish to English-speaking students may primarily be in English, because that is the language used to convey the material.
+     *  The primary language or languages of the entity, even if it makes use of other languages; e.g., a course offered in English to teach Spanish would have an inLanguage of English, while a credential in Quebec could have an inLanguage of both French and English.
      *  @property inLanguage
      *  @type language
      */
     prototype.inLanguage = null;
+    /**
+     *  http://purl.org/ctdl/terms/instructionalProgramType
+     *  Type of instructional program; select from an existing enumeration of such types.
+     *  @property instructionalProgramType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.instructionalProgramType = null;
     /**
      *  http://purl.org/ctdl/terms/isAdvancedStandingFor
      *  This credential, assessment, or learning opportunity reduces the time or cost required to earn or complete the referenced credential, assessment, or learning opportunity.
@@ -12860,6 +13324,14 @@ DoctoralDegree = stjs.extend(DoctoralDegree, Degree, [], function(constructor, p
      *  @type ApprenticeshipCertificate | AssociateDegree | BachelorDegree | Badge | Certificate | Certification | Credential | Degree | DigitalBadge | Diploma | DoctoralDegree | GeneralEducationDevelopment | JourneymanCertificate | License | MasterCertificate | MasterDegree | MicroCredential | OpenBadge | ProfessionalDoctorate | QualityAssuranceCredential | ResearchDoctorate | SecondarySchoolDiploma
      */
     prototype.latestVersion = null;
+    /**
+     *  http://purl.org/ctdl/terms/learningDeliveryType
+     *  Delivery type for the learning opportunity for the credential.
+     *  Indicates the delivery type for the learning opportunity for the credential.
+     *  @property learningDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.learningDeliveryType = null;
     /**
      *  http://purl.org/ctdl/terms/maintenanceProcess
      *  Entity describing the process by which the credential is maintained including review and updating.
@@ -13111,7 +13583,7 @@ DoctoralDegree = stjs.extend(DoctoralDegree, Degree, [], function(constructor, p
      *  @type IdentifierValue
      */
     prototype.versionIdentifier = null;
-}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", degreeConcentration: "CredentialAlignmentObject", degreeMajor: "CredentialAlignmentObject", degreeMinor: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", degreeConcentration: "CredentialAlignmentObject", degreeMajor: "CredentialAlignmentObject", degreeMinor: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", degreeConcentration: "CredentialAlignmentObject", degreeMajor: "CredentialAlignmentObject", degreeMinor: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", degreeConcentration: "CredentialAlignmentObject", degreeMajor: "CredentialAlignmentObject", degreeMinor: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/SecondarySchoolDiploma
  *  Diploma awarded by secondary education institutions for successful completion of a secondary school program of study.
@@ -13162,7 +13634,7 @@ SecondarySchoolDiploma = stjs.extend(SecondarySchoolDiploma, Diploma, [], functi
     prototype.advancedStandingFrom = null;
     /**
      *  http://purl.org/ctdl/terms/alternateName
-     *  Alias for a credential including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
+     *  Alias for the entity including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
      *  @property alternateName
      *  @type langString
      */
@@ -13189,12 +13661,27 @@ SecondarySchoolDiploma = stjs.extend(SecondarySchoolDiploma, Diploma, [], functi
      */
     prototype.approvedIn = null;
     /**
+     *  http://purl.org/ctdl/terms/assessmentDeliveryType
+     *  Delivery type for the assessment for the credential.
+     *  Indicates the delivery type for the assessment for the credential.
+     *  @property assessmentDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.assessmentDeliveryType = null;
+    /**
      *  http://purl.org/ctdl/terms/audienceLevelType
      *  Type of level indicating a point in a progression through an educational or training context, for which the credential is intended; select from an existing enumeration of such types.
      *  @property audienceLevelType
      *  @type CredentialAlignmentObject
      */
     prototype.audienceLevelType = null;
+    /**
+     *  http://purl.org/ctdl/terms/audienceType
+     *  The type of credential seeker for whom the entity is applicable; select from an existing enumeration of such types.
+     *  @property audienceType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.audienceType = null;
     /**
      *  http://purl.org/ctdl/terms/availabilityListing
      *  Listing of online and/or physical locations where a credential can be pursued.
@@ -13299,7 +13786,7 @@ SecondarySchoolDiploma = stjs.extend(SecondarySchoolDiploma, Diploma, [], functi
     prototype.dateEffective = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -13351,7 +13838,7 @@ SecondarySchoolDiploma = stjs.extend(SecondarySchoolDiploma, Diploma, [], functi
      *  Entity that describes financial assistance for which this credential, assessment, or learning opportunity qualifies.
      *  Whether the financial aid in question is associated with a credential, an assessment, or a learning opportunity is dependent on context.
      *  @property financialAssistance
-     *  @type FinancialAlignmentObject
+     *  @type FinancialAssistanceProfile
      */
     prototype.financialAssistance = null;
     /**
@@ -13385,12 +13872,18 @@ SecondarySchoolDiploma = stjs.extend(SecondarySchoolDiploma, Diploma, [], functi
     prototype.industryType = null;
     /**
      *  http://purl.org/ctdl/terms/inLanguage
-     *  Primary language of the credential, learning opportunity or assessment.
-     *  This is the primary language the entity, even if the it makes use of other languages. For example, a course that teaches Spanish to English-speaking students may primarily be in English, because that is the language used to convey the material.
+     *  The primary language or languages of the entity, even if it makes use of other languages; e.g., a course offered in English to teach Spanish would have an inLanguage of English, while a credential in Quebec could have an inLanguage of both French and English.
      *  @property inLanguage
      *  @type language
      */
     prototype.inLanguage = null;
+    /**
+     *  http://purl.org/ctdl/terms/instructionalProgramType
+     *  Type of instructional program; select from an existing enumeration of such types.
+     *  @property instructionalProgramType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.instructionalProgramType = null;
     /**
      *  http://purl.org/ctdl/terms/isAdvancedStandingFor
      *  This credential, assessment, or learning opportunity reduces the time or cost required to earn or complete the referenced credential, assessment, or learning opportunity.
@@ -13448,6 +13941,14 @@ SecondarySchoolDiploma = stjs.extend(SecondarySchoolDiploma, Diploma, [], functi
      *  @type ApprenticeshipCertificate | AssociateDegree | BachelorDegree | Badge | Certificate | Certification | Credential | Degree | DigitalBadge | Diploma | DoctoralDegree | GeneralEducationDevelopment | JourneymanCertificate | License | MasterCertificate | MasterDegree | MicroCredential | OpenBadge | ProfessionalDoctorate | QualityAssuranceCredential | ResearchDoctorate | SecondarySchoolDiploma
      */
     prototype.latestVersion = null;
+    /**
+     *  http://purl.org/ctdl/terms/learningDeliveryType
+     *  Delivery type for the learning opportunity for the credential.
+     *  Indicates the delivery type for the learning opportunity for the credential.
+     *  @property learningDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.learningDeliveryType = null;
     /**
      *  http://purl.org/ctdl/terms/maintenanceProcess
      *  Entity describing the process by which the credential is maintained including review and updating.
@@ -13699,7 +14200,7 @@ SecondarySchoolDiploma = stjs.extend(SecondarySchoolDiploma, Diploma, [], functi
      *  @type IdentifierValue
      */
     prototype.versionIdentifier = null;
-}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/GeneralEducationDevelopment
  *  Credential awarded by examination that demonstrates that an individual has acquired secondary school-level academic skills.
@@ -13749,7 +14250,7 @@ GeneralEducationDevelopment = stjs.extend(GeneralEducationDevelopment, Diploma, 
     prototype.advancedStandingFrom = null;
     /**
      *  http://purl.org/ctdl/terms/alternateName
-     *  Alias for a credential including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
+     *  Alias for the entity including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
      *  @property alternateName
      *  @type langString
      */
@@ -13776,12 +14277,27 @@ GeneralEducationDevelopment = stjs.extend(GeneralEducationDevelopment, Diploma, 
      */
     prototype.approvedIn = null;
     /**
+     *  http://purl.org/ctdl/terms/assessmentDeliveryType
+     *  Delivery type for the assessment for the credential.
+     *  Indicates the delivery type for the assessment for the credential.
+     *  @property assessmentDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.assessmentDeliveryType = null;
+    /**
      *  http://purl.org/ctdl/terms/audienceLevelType
      *  Type of level indicating a point in a progression through an educational or training context, for which the credential is intended; select from an existing enumeration of such types.
      *  @property audienceLevelType
      *  @type CredentialAlignmentObject
      */
     prototype.audienceLevelType = null;
+    /**
+     *  http://purl.org/ctdl/terms/audienceType
+     *  The type of credential seeker for whom the entity is applicable; select from an existing enumeration of such types.
+     *  @property audienceType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.audienceType = null;
     /**
      *  http://purl.org/ctdl/terms/availabilityListing
      *  Listing of online and/or physical locations where a credential can be pursued.
@@ -13886,7 +14402,7 @@ GeneralEducationDevelopment = stjs.extend(GeneralEducationDevelopment, Diploma, 
     prototype.dateEffective = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -13938,7 +14454,7 @@ GeneralEducationDevelopment = stjs.extend(GeneralEducationDevelopment, Diploma, 
      *  Entity that describes financial assistance for which this credential, assessment, or learning opportunity qualifies.
      *  Whether the financial aid in question is associated with a credential, an assessment, or a learning opportunity is dependent on context.
      *  @property financialAssistance
-     *  @type FinancialAlignmentObject
+     *  @type FinancialAssistanceProfile
      */
     prototype.financialAssistance = null;
     /**
@@ -13972,12 +14488,18 @@ GeneralEducationDevelopment = stjs.extend(GeneralEducationDevelopment, Diploma, 
     prototype.industryType = null;
     /**
      *  http://purl.org/ctdl/terms/inLanguage
-     *  Primary language of the credential, learning opportunity or assessment.
-     *  This is the primary language the entity, even if the it makes use of other languages. For example, a course that teaches Spanish to English-speaking students may primarily be in English, because that is the language used to convey the material.
+     *  The primary language or languages of the entity, even if it makes use of other languages; e.g., a course offered in English to teach Spanish would have an inLanguage of English, while a credential in Quebec could have an inLanguage of both French and English.
      *  @property inLanguage
      *  @type language
      */
     prototype.inLanguage = null;
+    /**
+     *  http://purl.org/ctdl/terms/instructionalProgramType
+     *  Type of instructional program; select from an existing enumeration of such types.
+     *  @property instructionalProgramType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.instructionalProgramType = null;
     /**
      *  http://purl.org/ctdl/terms/isAdvancedStandingFor
      *  This credential, assessment, or learning opportunity reduces the time or cost required to earn or complete the referenced credential, assessment, or learning opportunity.
@@ -14035,6 +14557,14 @@ GeneralEducationDevelopment = stjs.extend(GeneralEducationDevelopment, Diploma, 
      *  @type ApprenticeshipCertificate | AssociateDegree | BachelorDegree | Badge | Certificate | Certification | Credential | Degree | DigitalBadge | Diploma | DoctoralDegree | GeneralEducationDevelopment | JourneymanCertificate | License | MasterCertificate | MasterDegree | MicroCredential | OpenBadge | ProfessionalDoctorate | QualityAssuranceCredential | ResearchDoctorate | SecondarySchoolDiploma
      */
     prototype.latestVersion = null;
+    /**
+     *  http://purl.org/ctdl/terms/learningDeliveryType
+     *  Delivery type for the learning opportunity for the credential.
+     *  Indicates the delivery type for the learning opportunity for the credential.
+     *  @property learningDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.learningDeliveryType = null;
     /**
      *  http://purl.org/ctdl/terms/maintenanceProcess
      *  Entity describing the process by which the credential is maintained including review and updating.
@@ -14286,7 +14816,7 @@ GeneralEducationDevelopment = stjs.extend(GeneralEducationDevelopment, Diploma, 
      *  @type IdentifierValue
      */
     prototype.versionIdentifier = null;
-}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/ApprenticeshipCertificate
  *  Credential earned through work-based learning and earn-and-learn models that meet standards and are applicable to industry trades and professions.
@@ -14336,7 +14866,7 @@ ApprenticeshipCertificate = stjs.extend(ApprenticeshipCertificate, Certificate, 
     prototype.advancedStandingFrom = null;
     /**
      *  http://purl.org/ctdl/terms/alternateName
-     *  Alias for a credential including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
+     *  Alias for the entity including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
      *  @property alternateName
      *  @type langString
      */
@@ -14363,12 +14893,27 @@ ApprenticeshipCertificate = stjs.extend(ApprenticeshipCertificate, Certificate, 
      */
     prototype.approvedIn = null;
     /**
+     *  http://purl.org/ctdl/terms/assessmentDeliveryType
+     *  Delivery type for the assessment for the credential.
+     *  Indicates the delivery type for the assessment for the credential.
+     *  @property assessmentDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.assessmentDeliveryType = null;
+    /**
      *  http://purl.org/ctdl/terms/audienceLevelType
      *  Type of level indicating a point in a progression through an educational or training context, for which the credential is intended; select from an existing enumeration of such types.
      *  @property audienceLevelType
      *  @type CredentialAlignmentObject
      */
     prototype.audienceLevelType = null;
+    /**
+     *  http://purl.org/ctdl/terms/audienceType
+     *  The type of credential seeker for whom the entity is applicable; select from an existing enumeration of such types.
+     *  @property audienceType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.audienceType = null;
     /**
      *  http://purl.org/ctdl/terms/availabilityListing
      *  Listing of online and/or physical locations where a credential can be pursued.
@@ -14473,7 +15018,7 @@ ApprenticeshipCertificate = stjs.extend(ApprenticeshipCertificate, Certificate, 
     prototype.dateEffective = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -14525,7 +15070,7 @@ ApprenticeshipCertificate = stjs.extend(ApprenticeshipCertificate, Certificate, 
      *  Entity that describes financial assistance for which this credential, assessment, or learning opportunity qualifies.
      *  Whether the financial aid in question is associated with a credential, an assessment, or a learning opportunity is dependent on context.
      *  @property financialAssistance
-     *  @type FinancialAlignmentObject
+     *  @type FinancialAssistanceProfile
      */
     prototype.financialAssistance = null;
     /**
@@ -14559,12 +15104,18 @@ ApprenticeshipCertificate = stjs.extend(ApprenticeshipCertificate, Certificate, 
     prototype.industryType = null;
     /**
      *  http://purl.org/ctdl/terms/inLanguage
-     *  Primary language of the credential, learning opportunity or assessment.
-     *  This is the primary language the entity, even if the it makes use of other languages. For example, a course that teaches Spanish to English-speaking students may primarily be in English, because that is the language used to convey the material.
+     *  The primary language or languages of the entity, even if it makes use of other languages; e.g., a course offered in English to teach Spanish would have an inLanguage of English, while a credential in Quebec could have an inLanguage of both French and English.
      *  @property inLanguage
      *  @type language
      */
     prototype.inLanguage = null;
+    /**
+     *  http://purl.org/ctdl/terms/instructionalProgramType
+     *  Type of instructional program; select from an existing enumeration of such types.
+     *  @property instructionalProgramType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.instructionalProgramType = null;
     /**
      *  http://purl.org/ctdl/terms/isAdvancedStandingFor
      *  This credential, assessment, or learning opportunity reduces the time or cost required to earn or complete the referenced credential, assessment, or learning opportunity.
@@ -14622,6 +15173,14 @@ ApprenticeshipCertificate = stjs.extend(ApprenticeshipCertificate, Certificate, 
      *  @type ApprenticeshipCertificate | AssociateDegree | BachelorDegree | Badge | Certificate | Certification | Credential | Degree | DigitalBadge | Diploma | DoctoralDegree | GeneralEducationDevelopment | JourneymanCertificate | License | MasterCertificate | MasterDegree | MicroCredential | OpenBadge | ProfessionalDoctorate | QualityAssuranceCredential | ResearchDoctorate | SecondarySchoolDiploma
      */
     prototype.latestVersion = null;
+    /**
+     *  http://purl.org/ctdl/terms/learningDeliveryType
+     *  Delivery type for the learning opportunity for the credential.
+     *  Indicates the delivery type for the learning opportunity for the credential.
+     *  @property learningDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.learningDeliveryType = null;
     /**
      *  http://purl.org/ctdl/terms/maintenanceProcess
      *  Entity describing the process by which the credential is maintained including review and updating.
@@ -14873,7 +15432,7 @@ ApprenticeshipCertificate = stjs.extend(ApprenticeshipCertificate, Certificate, 
      *  @type IdentifierValue
      */
     prototype.versionIdentifier = null;
-}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/DigitalBadge
  *  Badge offered in digital form.
@@ -14923,7 +15482,7 @@ DigitalBadge = stjs.extend(DigitalBadge, Badge, [], function(constructor, protot
     prototype.advancedStandingFrom = null;
     /**
      *  http://purl.org/ctdl/terms/alternateName
-     *  Alias for a credential including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
+     *  Alias for the entity including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
      *  @property alternateName
      *  @type langString
      */
@@ -14950,12 +15509,27 @@ DigitalBadge = stjs.extend(DigitalBadge, Badge, [], function(constructor, protot
      */
     prototype.approvedIn = null;
     /**
+     *  http://purl.org/ctdl/terms/assessmentDeliveryType
+     *  Delivery type for the assessment for the credential.
+     *  Indicates the delivery type for the assessment for the credential.
+     *  @property assessmentDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.assessmentDeliveryType = null;
+    /**
      *  http://purl.org/ctdl/terms/audienceLevelType
      *  Type of level indicating a point in a progression through an educational or training context, for which the credential is intended; select from an existing enumeration of such types.
      *  @property audienceLevelType
      *  @type CredentialAlignmentObject
      */
     prototype.audienceLevelType = null;
+    /**
+     *  http://purl.org/ctdl/terms/audienceType
+     *  The type of credential seeker for whom the entity is applicable; select from an existing enumeration of such types.
+     *  @property audienceType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.audienceType = null;
     /**
      *  http://purl.org/ctdl/terms/availabilityListing
      *  Listing of online and/or physical locations where a credential can be pursued.
@@ -15060,7 +15634,7 @@ DigitalBadge = stjs.extend(DigitalBadge, Badge, [], function(constructor, protot
     prototype.dateEffective = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -15112,7 +15686,7 @@ DigitalBadge = stjs.extend(DigitalBadge, Badge, [], function(constructor, protot
      *  Entity that describes financial assistance for which this credential, assessment, or learning opportunity qualifies.
      *  Whether the financial aid in question is associated with a credential, an assessment, or a learning opportunity is dependent on context.
      *  @property financialAssistance
-     *  @type FinancialAlignmentObject
+     *  @type FinancialAssistanceProfile
      */
     prototype.financialAssistance = null;
     /**
@@ -15146,12 +15720,18 @@ DigitalBadge = stjs.extend(DigitalBadge, Badge, [], function(constructor, protot
     prototype.industryType = null;
     /**
      *  http://purl.org/ctdl/terms/inLanguage
-     *  Primary language of the credential, learning opportunity or assessment.
-     *  This is the primary language the entity, even if the it makes use of other languages. For example, a course that teaches Spanish to English-speaking students may primarily be in English, because that is the language used to convey the material.
+     *  The primary language or languages of the entity, even if it makes use of other languages; e.g., a course offered in English to teach Spanish would have an inLanguage of English, while a credential in Quebec could have an inLanguage of both French and English.
      *  @property inLanguage
      *  @type language
      */
     prototype.inLanguage = null;
+    /**
+     *  http://purl.org/ctdl/terms/instructionalProgramType
+     *  Type of instructional program; select from an existing enumeration of such types.
+     *  @property instructionalProgramType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.instructionalProgramType = null;
     /**
      *  http://purl.org/ctdl/terms/isAdvancedStandingFor
      *  This credential, assessment, or learning opportunity reduces the time or cost required to earn or complete the referenced credential, assessment, or learning opportunity.
@@ -15209,6 +15789,14 @@ DigitalBadge = stjs.extend(DigitalBadge, Badge, [], function(constructor, protot
      *  @type ApprenticeshipCertificate | AssociateDegree | BachelorDegree | Badge | Certificate | Certification | Credential | Degree | DigitalBadge | Diploma | DoctoralDegree | GeneralEducationDevelopment | JourneymanCertificate | License | MasterCertificate | MasterDegree | MicroCredential | OpenBadge | ProfessionalDoctorate | QualityAssuranceCredential | ResearchDoctorate | SecondarySchoolDiploma
      */
     prototype.latestVersion = null;
+    /**
+     *  http://purl.org/ctdl/terms/learningDeliveryType
+     *  Delivery type for the learning opportunity for the credential.
+     *  Indicates the delivery type for the learning opportunity for the credential.
+     *  @property learningDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.learningDeliveryType = null;
     /**
      *  http://purl.org/ctdl/terms/maintenanceProcess
      *  Entity describing the process by which the credential is maintained including review and updating.
@@ -15460,7 +16048,7 @@ DigitalBadge = stjs.extend(DigitalBadge, Badge, [], function(constructor, protot
      *  @type IdentifierValue
      */
     prototype.versionIdentifier = null;
-}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/OpenBadge
  *  Visual symbol containing verifiable claims in accordance with the Open Badges specification and delivered digitally.
@@ -15510,7 +16098,7 @@ OpenBadge = stjs.extend(OpenBadge, Badge, [], function(constructor, prototype) {
     prototype.advancedStandingFrom = null;
     /**
      *  http://purl.org/ctdl/terms/alternateName
-     *  Alias for a credential including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
+     *  Alias for the entity including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
      *  @property alternateName
      *  @type langString
      */
@@ -15537,12 +16125,27 @@ OpenBadge = stjs.extend(OpenBadge, Badge, [], function(constructor, prototype) {
      */
     prototype.approvedIn = null;
     /**
+     *  http://purl.org/ctdl/terms/assessmentDeliveryType
+     *  Delivery type for the assessment for the credential.
+     *  Indicates the delivery type for the assessment for the credential.
+     *  @property assessmentDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.assessmentDeliveryType = null;
+    /**
      *  http://purl.org/ctdl/terms/audienceLevelType
      *  Type of level indicating a point in a progression through an educational or training context, for which the credential is intended; select from an existing enumeration of such types.
      *  @property audienceLevelType
      *  @type CredentialAlignmentObject
      */
     prototype.audienceLevelType = null;
+    /**
+     *  http://purl.org/ctdl/terms/audienceType
+     *  The type of credential seeker for whom the entity is applicable; select from an existing enumeration of such types.
+     *  @property audienceType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.audienceType = null;
     /**
      *  http://purl.org/ctdl/terms/availabilityListing
      *  Listing of online and/or physical locations where a credential can be pursued.
@@ -15647,7 +16250,7 @@ OpenBadge = stjs.extend(OpenBadge, Badge, [], function(constructor, prototype) {
     prototype.dateEffective = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -15699,7 +16302,7 @@ OpenBadge = stjs.extend(OpenBadge, Badge, [], function(constructor, prototype) {
      *  Entity that describes financial assistance for which this credential, assessment, or learning opportunity qualifies.
      *  Whether the financial aid in question is associated with a credential, an assessment, or a learning opportunity is dependent on context.
      *  @property financialAssistance
-     *  @type FinancialAlignmentObject
+     *  @type FinancialAssistanceProfile
      */
     prototype.financialAssistance = null;
     /**
@@ -15733,12 +16336,18 @@ OpenBadge = stjs.extend(OpenBadge, Badge, [], function(constructor, prototype) {
     prototype.industryType = null;
     /**
      *  http://purl.org/ctdl/terms/inLanguage
-     *  Primary language of the credential, learning opportunity or assessment.
-     *  This is the primary language the entity, even if the it makes use of other languages. For example, a course that teaches Spanish to English-speaking students may primarily be in English, because that is the language used to convey the material.
+     *  The primary language or languages of the entity, even if it makes use of other languages; e.g., a course offered in English to teach Spanish would have an inLanguage of English, while a credential in Quebec could have an inLanguage of both French and English.
      *  @property inLanguage
      *  @type language
      */
     prototype.inLanguage = null;
+    /**
+     *  http://purl.org/ctdl/terms/instructionalProgramType
+     *  Type of instructional program; select from an existing enumeration of such types.
+     *  @property instructionalProgramType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.instructionalProgramType = null;
     /**
      *  http://purl.org/ctdl/terms/isAdvancedStandingFor
      *  This credential, assessment, or learning opportunity reduces the time or cost required to earn or complete the referenced credential, assessment, or learning opportunity.
@@ -15796,6 +16405,14 @@ OpenBadge = stjs.extend(OpenBadge, Badge, [], function(constructor, prototype) {
      *  @type ApprenticeshipCertificate | AssociateDegree | BachelorDegree | Badge | Certificate | Certification | Credential | Degree | DigitalBadge | Diploma | DoctoralDegree | GeneralEducationDevelopment | JourneymanCertificate | License | MasterCertificate | MasterDegree | MicroCredential | OpenBadge | ProfessionalDoctorate | QualityAssuranceCredential | ResearchDoctorate | SecondarySchoolDiploma
      */
     prototype.latestVersion = null;
+    /**
+     *  http://purl.org/ctdl/terms/learningDeliveryType
+     *  Delivery type for the learning opportunity for the credential.
+     *  Indicates the delivery type for the learning opportunity for the credential.
+     *  @property learningDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.learningDeliveryType = null;
     /**
      *  http://purl.org/ctdl/terms/maintenanceProcess
      *  Entity describing the process by which the credential is maintained including review and updating.
@@ -16047,7 +16664,7 @@ OpenBadge = stjs.extend(OpenBadge, Badge, [], function(constructor, prototype) {
      *  @type IdentifierValue
      */
     prototype.versionIdentifier = null;
-}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/ProfessionalDoctorate
  *  Doctoral degree conferred upon completion of a program providing the knowledge and skills for the recognition, credential, or license required for professional practice.
@@ -16098,7 +16715,7 @@ ProfessionalDoctorate = stjs.extend(ProfessionalDoctorate, DoctoralDegree, [], f
     prototype.advancedStandingFrom = null;
     /**
      *  http://purl.org/ctdl/terms/alternateName
-     *  Alias for a credential including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
+     *  Alias for the entity including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
      *  @property alternateName
      *  @type langString
      */
@@ -16125,12 +16742,27 @@ ProfessionalDoctorate = stjs.extend(ProfessionalDoctorate, DoctoralDegree, [], f
      */
     prototype.approvedIn = null;
     /**
+     *  http://purl.org/ctdl/terms/assessmentDeliveryType
+     *  Delivery type for the assessment for the credential.
+     *  Indicates the delivery type for the assessment for the credential.
+     *  @property assessmentDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.assessmentDeliveryType = null;
+    /**
      *  http://purl.org/ctdl/terms/audienceLevelType
      *  Type of level indicating a point in a progression through an educational or training context, for which the credential is intended; select from an existing enumeration of such types.
      *  @property audienceLevelType
      *  @type CredentialAlignmentObject
      */
     prototype.audienceLevelType = null;
+    /**
+     *  http://purl.org/ctdl/terms/audienceType
+     *  The type of credential seeker for whom the entity is applicable; select from an existing enumeration of such types.
+     *  @property audienceType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.audienceType = null;
     /**
      *  http://purl.org/ctdl/terms/availabilityListing
      *  Listing of online and/or physical locations where a credential can be pursued.
@@ -16235,7 +16867,7 @@ ProfessionalDoctorate = stjs.extend(ProfessionalDoctorate, DoctoralDegree, [], f
     prototype.dateEffective = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -16287,7 +16919,7 @@ ProfessionalDoctorate = stjs.extend(ProfessionalDoctorate, DoctoralDegree, [], f
      *  Entity that describes financial assistance for which this credential, assessment, or learning opportunity qualifies.
      *  Whether the financial aid in question is associated with a credential, an assessment, or a learning opportunity is dependent on context.
      *  @property financialAssistance
-     *  @type FinancialAlignmentObject
+     *  @type FinancialAssistanceProfile
      */
     prototype.financialAssistance = null;
     /**
@@ -16321,12 +16953,18 @@ ProfessionalDoctorate = stjs.extend(ProfessionalDoctorate, DoctoralDegree, [], f
     prototype.industryType = null;
     /**
      *  http://purl.org/ctdl/terms/inLanguage
-     *  Primary language of the credential, learning opportunity or assessment.
-     *  This is the primary language the entity, even if the it makes use of other languages. For example, a course that teaches Spanish to English-speaking students may primarily be in English, because that is the language used to convey the material.
+     *  The primary language or languages of the entity, even if it makes use of other languages; e.g., a course offered in English to teach Spanish would have an inLanguage of English, while a credential in Quebec could have an inLanguage of both French and English.
      *  @property inLanguage
      *  @type language
      */
     prototype.inLanguage = null;
+    /**
+     *  http://purl.org/ctdl/terms/instructionalProgramType
+     *  Type of instructional program; select from an existing enumeration of such types.
+     *  @property instructionalProgramType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.instructionalProgramType = null;
     /**
      *  http://purl.org/ctdl/terms/isAdvancedStandingFor
      *  This credential, assessment, or learning opportunity reduces the time or cost required to earn or complete the referenced credential, assessment, or learning opportunity.
@@ -16384,6 +17022,14 @@ ProfessionalDoctorate = stjs.extend(ProfessionalDoctorate, DoctoralDegree, [], f
      *  @type ApprenticeshipCertificate | AssociateDegree | BachelorDegree | Badge | Certificate | Certification | Credential | Degree | DigitalBadge | Diploma | DoctoralDegree | GeneralEducationDevelopment | JourneymanCertificate | License | MasterCertificate | MasterDegree | MicroCredential | OpenBadge | ProfessionalDoctorate | QualityAssuranceCredential | ResearchDoctorate | SecondarySchoolDiploma
      */
     prototype.latestVersion = null;
+    /**
+     *  http://purl.org/ctdl/terms/learningDeliveryType
+     *  Delivery type for the learning opportunity for the credential.
+     *  Indicates the delivery type for the learning opportunity for the credential.
+     *  @property learningDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.learningDeliveryType = null;
     /**
      *  http://purl.org/ctdl/terms/maintenanceProcess
      *  Entity describing the process by which the credential is maintained including review and updating.
@@ -16635,7 +17281,7 @@ ProfessionalDoctorate = stjs.extend(ProfessionalDoctorate, DoctoralDegree, [], f
      *  @type IdentifierValue
      */
     prototype.versionIdentifier = null;
-}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", degreeConcentration: "CredentialAlignmentObject", degreeMajor: "CredentialAlignmentObject", degreeMinor: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", degreeConcentration: "CredentialAlignmentObject", degreeMajor: "CredentialAlignmentObject", degreeMinor: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", degreeConcentration: "CredentialAlignmentObject", degreeMajor: "CredentialAlignmentObject", degreeMinor: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", degreeConcentration: "CredentialAlignmentObject", degreeMajor: "CredentialAlignmentObject", degreeMinor: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/ResearchDoctorate
  *  Doctoral degree conferred for advanced work beyond the master level, including the preparation and defense of a thesis or dissertation based on original research, or the planning and execution of an original project demonstrating substantial artistic or scholarly achievement.
@@ -16686,7 +17332,7 @@ ResearchDoctorate = stjs.extend(ResearchDoctorate, DoctoralDegree, [], function(
     prototype.advancedStandingFrom = null;
     /**
      *  http://purl.org/ctdl/terms/alternateName
-     *  Alias for a credential including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
+     *  Alias for the entity including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
      *  @property alternateName
      *  @type langString
      */
@@ -16713,12 +17359,27 @@ ResearchDoctorate = stjs.extend(ResearchDoctorate, DoctoralDegree, [], function(
      */
     prototype.approvedIn = null;
     /**
+     *  http://purl.org/ctdl/terms/assessmentDeliveryType
+     *  Delivery type for the assessment for the credential.
+     *  Indicates the delivery type for the assessment for the credential.
+     *  @property assessmentDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.assessmentDeliveryType = null;
+    /**
      *  http://purl.org/ctdl/terms/audienceLevelType
      *  Type of level indicating a point in a progression through an educational or training context, for which the credential is intended; select from an existing enumeration of such types.
      *  @property audienceLevelType
      *  @type CredentialAlignmentObject
      */
     prototype.audienceLevelType = null;
+    /**
+     *  http://purl.org/ctdl/terms/audienceType
+     *  The type of credential seeker for whom the entity is applicable; select from an existing enumeration of such types.
+     *  @property audienceType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.audienceType = null;
     /**
      *  http://purl.org/ctdl/terms/availabilityListing
      *  Listing of online and/or physical locations where a credential can be pursued.
@@ -16823,7 +17484,7 @@ ResearchDoctorate = stjs.extend(ResearchDoctorate, DoctoralDegree, [], function(
     prototype.dateEffective = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -16875,7 +17536,7 @@ ResearchDoctorate = stjs.extend(ResearchDoctorate, DoctoralDegree, [], function(
      *  Entity that describes financial assistance for which this credential, assessment, or learning opportunity qualifies.
      *  Whether the financial aid in question is associated with a credential, an assessment, or a learning opportunity is dependent on context.
      *  @property financialAssistance
-     *  @type FinancialAlignmentObject
+     *  @type FinancialAssistanceProfile
      */
     prototype.financialAssistance = null;
     /**
@@ -16909,12 +17570,18 @@ ResearchDoctorate = stjs.extend(ResearchDoctorate, DoctoralDegree, [], function(
     prototype.industryType = null;
     /**
      *  http://purl.org/ctdl/terms/inLanguage
-     *  Primary language of the credential, learning opportunity or assessment.
-     *  This is the primary language the entity, even if the it makes use of other languages. For example, a course that teaches Spanish to English-speaking students may primarily be in English, because that is the language used to convey the material.
+     *  The primary language or languages of the entity, even if it makes use of other languages; e.g., a course offered in English to teach Spanish would have an inLanguage of English, while a credential in Quebec could have an inLanguage of both French and English.
      *  @property inLanguage
      *  @type language
      */
     prototype.inLanguage = null;
+    /**
+     *  http://purl.org/ctdl/terms/instructionalProgramType
+     *  Type of instructional program; select from an existing enumeration of such types.
+     *  @property instructionalProgramType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.instructionalProgramType = null;
     /**
      *  http://purl.org/ctdl/terms/isAdvancedStandingFor
      *  This credential, assessment, or learning opportunity reduces the time or cost required to earn or complete the referenced credential, assessment, or learning opportunity.
@@ -16972,6 +17639,14 @@ ResearchDoctorate = stjs.extend(ResearchDoctorate, DoctoralDegree, [], function(
      *  @type ApprenticeshipCertificate | AssociateDegree | BachelorDegree | Badge | Certificate | Certification | Credential | Degree | DigitalBadge | Diploma | DoctoralDegree | GeneralEducationDevelopment | JourneymanCertificate | License | MasterCertificate | MasterDegree | MicroCredential | OpenBadge | ProfessionalDoctorate | QualityAssuranceCredential | ResearchDoctorate | SecondarySchoolDiploma
      */
     prototype.latestVersion = null;
+    /**
+     *  http://purl.org/ctdl/terms/learningDeliveryType
+     *  Delivery type for the learning opportunity for the credential.
+     *  Indicates the delivery type for the learning opportunity for the credential.
+     *  @property learningDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.learningDeliveryType = null;
     /**
      *  http://purl.org/ctdl/terms/maintenanceProcess
      *  Entity describing the process by which the credential is maintained including review and updating.
@@ -17223,7 +17898,7 @@ ResearchDoctorate = stjs.extend(ResearchDoctorate, DoctoralDegree, [], function(
      *  @type IdentifierValue
      */
     prototype.versionIdentifier = null;
-}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", degreeConcentration: "CredentialAlignmentObject", degreeMajor: "CredentialAlignmentObject", degreeMinor: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", degreeConcentration: "CredentialAlignmentObject", degreeMajor: "CredentialAlignmentObject", degreeMinor: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", degreeConcentration: "CredentialAlignmentObject", degreeMajor: "CredentialAlignmentObject", degreeMinor: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", degreeConcentration: "CredentialAlignmentObject", degreeMajor: "CredentialAlignmentObject", degreeMinor: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/JourneymanCertificate
  *  Credential awarded to skilled workers on successful completion of an apprenticeship in industry trades and professions.
@@ -17273,7 +17948,7 @@ JourneymanCertificate = stjs.extend(JourneymanCertificate, ApprenticeshipCertifi
     prototype.advancedStandingFrom = null;
     /**
      *  http://purl.org/ctdl/terms/alternateName
-     *  Alias for a credential including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
+     *  Alias for the entity including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
      *  @property alternateName
      *  @type langString
      */
@@ -17300,12 +17975,27 @@ JourneymanCertificate = stjs.extend(JourneymanCertificate, ApprenticeshipCertifi
      */
     prototype.approvedIn = null;
     /**
+     *  http://purl.org/ctdl/terms/assessmentDeliveryType
+     *  Delivery type for the assessment for the credential.
+     *  Indicates the delivery type for the assessment for the credential.
+     *  @property assessmentDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.assessmentDeliveryType = null;
+    /**
      *  http://purl.org/ctdl/terms/audienceLevelType
      *  Type of level indicating a point in a progression through an educational or training context, for which the credential is intended; select from an existing enumeration of such types.
      *  @property audienceLevelType
      *  @type CredentialAlignmentObject
      */
     prototype.audienceLevelType = null;
+    /**
+     *  http://purl.org/ctdl/terms/audienceType
+     *  The type of credential seeker for whom the entity is applicable; select from an existing enumeration of such types.
+     *  @property audienceType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.audienceType = null;
     /**
      *  http://purl.org/ctdl/terms/availabilityListing
      *  Listing of online and/or physical locations where a credential can be pursued.
@@ -17410,7 +18100,7 @@ JourneymanCertificate = stjs.extend(JourneymanCertificate, ApprenticeshipCertifi
     prototype.dateEffective = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -17462,7 +18152,7 @@ JourneymanCertificate = stjs.extend(JourneymanCertificate, ApprenticeshipCertifi
      *  Entity that describes financial assistance for which this credential, assessment, or learning opportunity qualifies.
      *  Whether the financial aid in question is associated with a credential, an assessment, or a learning opportunity is dependent on context.
      *  @property financialAssistance
-     *  @type FinancialAlignmentObject
+     *  @type FinancialAssistanceProfile
      */
     prototype.financialAssistance = null;
     /**
@@ -17496,12 +18186,18 @@ JourneymanCertificate = stjs.extend(JourneymanCertificate, ApprenticeshipCertifi
     prototype.industryType = null;
     /**
      *  http://purl.org/ctdl/terms/inLanguage
-     *  Primary language of the credential, learning opportunity or assessment.
-     *  This is the primary language the entity, even if the it makes use of other languages. For example, a course that teaches Spanish to English-speaking students may primarily be in English, because that is the language used to convey the material.
+     *  The primary language or languages of the entity, even if it makes use of other languages; e.g., a course offered in English to teach Spanish would have an inLanguage of English, while a credential in Quebec could have an inLanguage of both French and English.
      *  @property inLanguage
      *  @type language
      */
     prototype.inLanguage = null;
+    /**
+     *  http://purl.org/ctdl/terms/instructionalProgramType
+     *  Type of instructional program; select from an existing enumeration of such types.
+     *  @property instructionalProgramType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.instructionalProgramType = null;
     /**
      *  http://purl.org/ctdl/terms/isAdvancedStandingFor
      *  This credential, assessment, or learning opportunity reduces the time or cost required to earn or complete the referenced credential, assessment, or learning opportunity.
@@ -17559,6 +18255,14 @@ JourneymanCertificate = stjs.extend(JourneymanCertificate, ApprenticeshipCertifi
      *  @type ApprenticeshipCertificate | AssociateDegree | BachelorDegree | Badge | Certificate | Certification | Credential | Degree | DigitalBadge | Diploma | DoctoralDegree | GeneralEducationDevelopment | JourneymanCertificate | License | MasterCertificate | MasterDegree | MicroCredential | OpenBadge | ProfessionalDoctorate | QualityAssuranceCredential | ResearchDoctorate | SecondarySchoolDiploma
      */
     prototype.latestVersion = null;
+    /**
+     *  http://purl.org/ctdl/terms/learningDeliveryType
+     *  Delivery type for the learning opportunity for the credential.
+     *  Indicates the delivery type for the learning opportunity for the credential.
+     *  @property learningDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.learningDeliveryType = null;
     /**
      *  http://purl.org/ctdl/terms/maintenanceProcess
      *  Entity describing the process by which the credential is maintained including review and updating.
@@ -17810,7 +18514,7 @@ JourneymanCertificate = stjs.extend(JourneymanCertificate, ApprenticeshipCertifi
      *  @type IdentifierValue
      */
     prototype.versionIdentifier = null;
-}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  credentialengine.org/MasterCertificate
  *  Credential awarded upon demonstration through apprenticeship of the highest level of skills and performance in industry trades and professions.
@@ -17860,7 +18564,7 @@ MasterCertificate = stjs.extend(MasterCertificate, ApprenticeshipCertificate, []
     prototype.advancedStandingFrom = null;
     /**
      *  http://purl.org/ctdl/terms/alternateName
-     *  Alias for a credential including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
+     *  Alias for the entity including acronyms, alpha-numeric notations, and other forms of name abbreviations in common use such as PhD, MA, and BA.
      *  @property alternateName
      *  @type langString
      */
@@ -17887,12 +18591,27 @@ MasterCertificate = stjs.extend(MasterCertificate, ApprenticeshipCertificate, []
      */
     prototype.approvedIn = null;
     /**
+     *  http://purl.org/ctdl/terms/assessmentDeliveryType
+     *  Delivery type for the assessment for the credential.
+     *  Indicates the delivery type for the assessment for the credential.
+     *  @property assessmentDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.assessmentDeliveryType = null;
+    /**
      *  http://purl.org/ctdl/terms/audienceLevelType
      *  Type of level indicating a point in a progression through an educational or training context, for which the credential is intended; select from an existing enumeration of such types.
      *  @property audienceLevelType
      *  @type CredentialAlignmentObject
      */
     prototype.audienceLevelType = null;
+    /**
+     *  http://purl.org/ctdl/terms/audienceType
+     *  The type of credential seeker for whom the entity is applicable; select from an existing enumeration of such types.
+     *  @property audienceType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.audienceType = null;
     /**
      *  http://purl.org/ctdl/terms/availabilityListing
      *  Listing of online and/or physical locations where a credential can be pursued.
@@ -17997,7 +18716,7 @@ MasterCertificate = stjs.extend(MasterCertificate, ApprenticeshipCertificate, []
     prototype.dateEffective = null;
     /**
      *  http://purl.org/ctdl/terms/description
-     *  Statememnt, characterization or account of the entity.
+     *  Statement, characterization or account of the entity.
      *  @property description
      *  @type langString
      */
@@ -18049,7 +18768,7 @@ MasterCertificate = stjs.extend(MasterCertificate, ApprenticeshipCertificate, []
      *  Entity that describes financial assistance for which this credential, assessment, or learning opportunity qualifies.
      *  Whether the financial aid in question is associated with a credential, an assessment, or a learning opportunity is dependent on context.
      *  @property financialAssistance
-     *  @type FinancialAlignmentObject
+     *  @type FinancialAssistanceProfile
      */
     prototype.financialAssistance = null;
     /**
@@ -18083,12 +18802,18 @@ MasterCertificate = stjs.extend(MasterCertificate, ApprenticeshipCertificate, []
     prototype.industryType = null;
     /**
      *  http://purl.org/ctdl/terms/inLanguage
-     *  Primary language of the credential, learning opportunity or assessment.
-     *  This is the primary language the entity, even if the it makes use of other languages. For example, a course that teaches Spanish to English-speaking students may primarily be in English, because that is the language used to convey the material.
+     *  The primary language or languages of the entity, even if it makes use of other languages; e.g., a course offered in English to teach Spanish would have an inLanguage of English, while a credential in Quebec could have an inLanguage of both French and English.
      *  @property inLanguage
      *  @type language
      */
     prototype.inLanguage = null;
+    /**
+     *  http://purl.org/ctdl/terms/instructionalProgramType
+     *  Type of instructional program; select from an existing enumeration of such types.
+     *  @property instructionalProgramType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.instructionalProgramType = null;
     /**
      *  http://purl.org/ctdl/terms/isAdvancedStandingFor
      *  This credential, assessment, or learning opportunity reduces the time or cost required to earn or complete the referenced credential, assessment, or learning opportunity.
@@ -18146,6 +18871,14 @@ MasterCertificate = stjs.extend(MasterCertificate, ApprenticeshipCertificate, []
      *  @type ApprenticeshipCertificate | AssociateDegree | BachelorDegree | Badge | Certificate | Certification | Credential | Degree | DigitalBadge | Diploma | DoctoralDegree | GeneralEducationDevelopment | JourneymanCertificate | License | MasterCertificate | MasterDegree | MicroCredential | OpenBadge | ProfessionalDoctorate | QualityAssuranceCredential | ResearchDoctorate | SecondarySchoolDiploma
      */
     prototype.latestVersion = null;
+    /**
+     *  http://purl.org/ctdl/terms/learningDeliveryType
+     *  Delivery type for the learning opportunity for the credential.
+     *  Indicates the delivery type for the learning opportunity for the credential.
+     *  @property learningDeliveryType
+     *  @type CredentialAlignmentObject
+     */
+    prototype.learningDeliveryType = null;
     /**
      *  http://purl.org/ctdl/terms/maintenanceProcess
      *  Entity describing the process by which the credential is maintained including review and updating.
@@ -18397,4 +19130,4 @@ MasterCertificate = stjs.extend(MasterCertificate, ApprenticeshipCertificate, []
      *  @type IdentifierValue
      */
     prototype.versionIdentifier = null;
-}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", audienceLevelType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAlignmentObject", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", contributor: "Object", reviews: "Review", audience: "Audience", timeRequired: "Duration", publication: "PublicationEvent", contentLocation: "Place", temporalCoverage: "Object", isBasedOn: "Object", fileFormat: "Object", interactionStatistic: "InteractionCounter", recordedAt: "Event", isPartOf: "CreativeWork", exampleOfWork: "CreativeWork", dateCreated: "Object", releasedEvent: "PublicationEvent", publisher: "Object", encoding: "MediaObject", creator: "Object", hasPart: "CreativeWork", license: "Object", translator: "Object", offers: "Offer", schemaVersion: "Object", review: "Review", position: "Object", genre: "Object", character: "Person", producer: "Object", editor: "Person", locationCreated: "Place", about: "Thing", audio: "AudioObject", encodings: "MediaObject", funder: "Object", accountablePerson: "Person", material: "Object", author: "Object", sourceOrganization: "Organization", sponsor: "Object", provider: "Object", copyrightHolder: "Object", comment: "Comment", spatialCoverage: "Place", aggregateRating: "AggregateRating", educationalAlignment: "AlignmentObject", video: "VideoObject", version: "Object", mainEntity: "Thing", associatedMedia: "MediaObject", workExample: "CreativeWork", mentions: "Thing", citation: "Object", dateModified: "Object", inLanguage: "Object", isBasedOnUrl: "Object", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", accreditedBy: "QACredentialOrganization", accreditedIn: "JurisdictionProfile", administrationProcess: "ProcessProfile", advancedStandingFrom: "Object", appealProcess: "ProcessProfile", approvedBy: "Object", approvedIn: "JurisdictionProfile", assessmentDeliveryType: "CredentialAlignmentObject", audienceLevelType: "CredentialAlignmentObject", audienceType: "CredentialAlignmentObject", availableAt: "Place", broadAlignment: "Object", commonConditions: "ConditionManifest", commonCosts: "CostManifest", complaintProcess: "ProcessProfile", copyrightHolder: "Object", corequisite: "ConditionProfile", credentialStatusType: "CredentialAlignmentObject", developmentProcess: "ProcessProfile", earnings: "EarningsProfile", employmentOutcome: "EmploymentOutcomeProfile", estimatedCost: "CostProfile", estimatedDuration: "DurationProfile", exactAlignment: "Object", financialAssistance: "FinancialAssistanceProfile", hasPart: "Object", holders: "HoldersProfile", industryType: "CredentialAlignmentObject", instructionalProgramType: "CredentialAlignmentObject", isAdvancedStandingFor: "Object", isPartOf: "Object", isPreparationFor: "Object", isRecommendedFor: "Object", isRequiredFor: "Object", jurisdiction: "JurisdictionProfile", latestVersion: "Object", learningDeliveryType: "CredentialAlignmentObject", maintenanceProcess: "ProcessProfile", majorAlignment: "Object", minorAlignment: "Object", narrowAlignment: "Object", occupationType: "CredentialAlignmentObject", offeredBy: "Object", offeredIn: "JurisdictionProfile", ownedBy: "Object", preparationFrom: "Object", previousVersion: "Object", purposeType: "CredentialAlignmentObject", recognizedBy: "Object", recognizedIn: "JurisdictionProfile", recommends: "Object", region: "Place", regulatedBy: "QACredentialOrganization", regulatedIn: "JurisdictionProfile", relatedAction: "Object", renewal: "ConditionProfile", renewedBy: "Object", renewedIn: "JurisdictionProfile", requires: "Object", reviewProcess: "ProcessProfile", revocation: "RevocationProfile", revocationProcess: "ProcessProfile", revokedBy: "Object", revokedIn: "JurisdictionProfile", subject: "CredentialAlignmentObject", versionIdentifier: "IdentifierValue", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
