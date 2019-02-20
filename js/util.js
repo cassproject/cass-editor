@@ -73,6 +73,7 @@ if (queryParams.concepts == "true") {
 	});
 	$("#confirmDialog #confirmText").text("Are you sure you want to delete this concept?");
 	$("#createNewButton").attr("title", "Create a new concept scheme.");
+	$("#frameworksSection").find(("#importButton")).attr("title", "Import a concept scheme.");
 } else {
 	$(".absentForCompetencies").remove();
 }
