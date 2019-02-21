@@ -46,11 +46,36 @@ function select() {
 		if (selectedCompetency != null)
 			ary.push(selectedCompetency.shortId());
 
-
 	$("input:checked").parent().each(function (f) {
-		if (queryParams.selectVerbose == "true") {
-			ary.push(JSON.parse(EcCompetency.getBlocking($(this).attr("id")).toJson()));
-		} else {
+		if (queryParams.selectVerbose == "true" && queryParams.concepts != "true") {
+			if (queryParams.selectExport == "ctdlasn") {
+				var link;
+				if (EcRepository.shouldTryUrl($(this).attr("id")) == false) {
+					link = repo.selectedServer + "ceasn/" + EcCrypto.md5($(this).attr("id"));
+				} else {
+					link = $(this).attr("id").replace("/data/", "/ceasn/");
+				}
+				$.ajax({
+					async: false,
+					method: "GET",
+					url: link,
+					success: function(data) {
+						ary.push(data);
+					},
+					error: function(xhr, status, error) {
+						console.log(status);
+						console.log(error);
+					}
+				});
+			}
+			else {
+				ary.push(JSON.parse(EcCompetency.getBlocking($(this).attr("id")).toJson()));
+			}
+		}
+		else if (queryParams.selectVerbose == "true") {
+			ary.push(JSON.parse(EcConcept.getBlocking($(this).attr("id")).toJson()));
+		}
+		else {
 			ary.push($(this).attr("id"));
 		}
 		var rId = $(this).attr("relationId");
@@ -63,12 +88,37 @@ function select() {
 				}
 			}
 	});
+	var currentFramework = framework;
+	if (queryParams.selectExport == "ctdlasn" && queryParams.concepts != "true") {
+		if (framework != null) {
+			var link;
+			if (EcRepository.shouldTryUrl(framework.id) == false) {
+				link = repo.selectedServer + "ceasn/" + EcCrypto.md5(framework.id);
+			} else {
+				link = framework.id.replace("/data/", "/ceasn/");
+			}
+			$.ajax({
+				async: false,
+				method: "GET",
+				url: link,
+				success: function(data) {
+					if (data["@graph"]) {
+						currentFramework = data["@graph"][0];
+					}
+				},
+				error: function(xhr, status, error) {
+					console.log(status);
+					console.log(error);
+				}
+			});
+		}
+	}
 
 	var message = {
 		message: "selected",
 		selected: ary,
 		type: conceptMode ? 'Concept' : 'Competency',
-		selectedFramework: framework
+		selectedFramework: currentFramework
 	};
 	console.log(message);
 	parent.postMessage(message, queryParams.origin);

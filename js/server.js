@@ -158,15 +158,31 @@ openWebSocket = function (r) {
 
 function cappend(event) {
 	if (event.data.message == "selected") {
+		var selectedFrameworkId = event.data.selectedFramework.id;
+		var selectedIds = [];
+		if (event.data.selectedFramework["ceasn:exactAlignment"]) {
+			selectedFrameworkId = event.data.selectedFramework["ceasn:exactAlignment"];
+		}
+		for (var i = 0; i < event.data.selected.length; i++) {
+			if (event.data.selected[i]["ceasn:exactAlignment"]) {
+				selectedIds.push(event.data.selected[i]["ceasn:exactAlignment"]);
+			}
+			else if (event.data.selected[i]["@id"]) {
+				selectedIds.push(event.data.selected[i]["@id"]);
+			}
+			else {
+				selectedIds.push(event.data.selected[i]);
+			}
+		}
 		console.log("I got " + event.data.selected.length + " selected items from the iframe");
 		console.log(event.data.selected);
 		if (conceptMode && event.data.type == 'Concept' && $("#selectConceptSection").attr("relation")) {
-			addAlignments(event.data.selected, selectedCompetency, $("#selectConceptSection").attr("relation"));
+			addAlignments(selectedIds, selectedCompetency, $("#selectConceptSection").attr("relation"));
 			$("#selectConceptSection").hide();
 			$("#editFrameworkSection").removeClass("transparent");
 			$(".sidebarToolbar:visible").removeClass("transparent");
 		} else if (event.data.type == 'Concept') {
-			attachUrlProperties(event.data.selected);
+			attachUrlProperties(selectedIds);
 			$("#selectConceptSection").hide();
 			$("#editFrameworkSection").removeClass("transparent");
 			$(".sidebarToolbar:visible").removeClass("transparent");
@@ -175,24 +191,24 @@ function cappend(event) {
 			}
 		} else if ($("#selectCompetencySection:visible").length > 0) {
 			//Don't allow alignments within the same framework.
-			if (framework.id == event.data.selectedFramework.id) {
+			if (framework.id == selectedFrameworkId) {
 				$("#selectCompetencySection").hide();
 				$("#editFrameworkSection").removeClass("transparent");
 				$(".sidebarToolbar:visible").removeClass("transparent");
 			} else {
-				var targets = event.data.selected;
+				var targets = selectedIds;
 				var thing = selectedCompetency;
 				addAlignments(targets, thing);
 				$("#selectCompetencySection").hide();
 				$("#editFrameworkSection").removeClass("transparent");
 				$(".sidebarToolbar:visible").removeClass("transparent");
 			}
-		} else if (event.data.selected.length > 0) {
+		} else if (selectedIds.length > 0) {
 			showCopyOrLinkDialog(function (copy) {
 				if (copy === true) {
-					copyCompetencies(event.data.selected);
+					copyCompetencies(selectedIds);
 				} else {
-					appendCompetencies(event.data.selected, true);
+					appendCompetencies(selectedIds, true);
 				}
 				hideCopyOrLinkDialog();
 				$("#selectConceptSection,#findCompetencySection").hide();
@@ -259,6 +275,10 @@ initIframe = function (comp) {
 			iframeCompetencyPath += "&inherit=" + queryParams.inherit;
 		if (queryParams.css != null && queryParams.css != undefined)
 			iframeCompetencyPath += "&css=" + queryParams.css;
+		if (queryParams.selectVerbose != null && queryParams.selectVerbose != undefined)
+			iframeCompetencyPath += "&selectVerbose=" + queryParams.selectVerbose;
+		if (queryParams.selectExport != null && queryParams.selectExport != undefined)
+			iframeCompetencyPath += "&selectExport=" + queryParams.selectExport;
 		if (queryParams.view != "true")
 			$("#selectCompetencyIframe").attr("src", iframeCompetencyPath);
 	} else if (comp == false) {
@@ -271,6 +291,10 @@ initIframe = function (comp) {
 			iframeCompetencyPath += "&inherit=" + queryParams.inherit;
 		if (queryParams.css != null && queryParams.css != undefined)
 			iframeCompetencyPath += "&css=" + queryParams.css;
+		if (queryParams.selectVerbose != null && queryParams.selectVerbose != undefined)
+			iframeCompetencyPath += "&selectVerbose=" + queryParams.selectVerbose;
+		if (queryParams.selectExport != null && queryParams.selectExport != undefined)
+			iframeCompetencyPath += "&selectExport=" + queryParams.selectExport;
 		if (queryParams.view != "true")
 			$("#selectCompetencyIframe").attr("src", iframeCompetencyPath);
 	}
@@ -287,6 +311,10 @@ initIframe = function (comp) {
 		iframePath += "&inherit=" + queryParams.inherit;
 	if (queryParams.css != null && queryParams.css != undefined)
 		iframePath += "&css=" + queryParams.css;
+	if (queryParams.selectVerbose != null && queryParams.selectVerbose != undefined)
+		iframePath += "&selectVerbose=" + queryParams.selectVerbose;
+	if (queryParams.selectExport != null && queryParams.selectExport != undefined)
+		iframePath += "&selectExport=" + queryParams.selectExport;
 	if (queryParams.view != "true")
 		$("#findCompetencyIframe").attr("src", iframePath);
 
@@ -303,6 +331,10 @@ initIframe = function (comp) {
 		iframeConceptPath += "&user=" + queryParams.user;
 	if (queryParams.conceptShow != null && queryParams.conceptShow != undefined)
 		iframeConceptPath += "&conceptShow=" + queryParams.conceptShow;
+	if (queryParams.selectVerbose != null && queryParams.selectVerbose != undefined)
+		iframeConceptPath += "&selectVerbose=" + queryParams.selectVerbose;
+	if (queryParams.selectExport != null && queryParams.selectExport != undefined)
+		iframeConceptPath += "&selectExport=" + queryParams.selectExport;
 	if (queryParams.view != "true")
 		$("#selectConceptIframe").attr("src", iframeConceptPath);
 }
