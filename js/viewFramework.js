@@ -169,6 +169,13 @@ populateFramework = function (subsearch) {
 		$("#editFrameworkSection #frameworkCount").text("0 items");
 	}
 
+	if (EcRepository.getBlocking(framework.id).type == "EncryptedValue") {
+		$("#private").prop("checked", true);
+	}
+	else {
+		$("#private").prop("checked", false);
+	}
+
 	var frameworkDescription = framework.description;
 	frameworkDescription = EcArray.isArray(frameworkDescription) ? frameworkDescription : [frameworkDescription];
 	$("#editFrameworkSection #frameworkDescription").children().remove();
@@ -721,7 +728,15 @@ renderSidebar = function (justLists) {
 							framework.removeRelation($(this).parent().attr("id"));
 						}
 						conditionalDelete($(this).parent().attr("id"));
-						repo.saveTo(framework, afterSaveRender, error);
+						var f = new EcFramework();
+			            f.copyFrom(framework);
+			            if ($("#private")[0].checked) {
+			                framework = EcEncryptedValue.toEncryptedValue(framework);
+			            }
+			            repo.saveTo(framework, function() {
+			                framework = f;
+			                afterSaveRender();
+			            }, error);
 					});
 				}
 			};
@@ -1149,9 +1164,16 @@ refreshSidebar = function () {
 		$("#sidebarFeedback").append("<li>You do not own this framework.</li> ");
 		$("#tree .competency").removeClass("grabbable");
 		$(".ownerRequired").hide();
+		$(".private").hide();
 	} else {
 		$("#tree .competency").addClass("grabbable");
 		$(".ownerRequired").show();
+		if (EcIdentityManager.ids[0]) {
+			$(".private").show();
+		}
+		else {
+			$(".private").hide();
+		}
 	}
 
 	if (!thing.canEditAny(EcIdentityManager.getMyPks())) {
@@ -1268,7 +1290,13 @@ editSidebar = function () {
 						framework.removeCompetency(selectedCompetency.shortId());
 						framework.removeLevel(selectedCompetency.shortId());
 						conditionalDelete(selectedCompetency.shortId());
+						var f = new EcFramework();
+			            f.copyFrom(framework);
+			            if ($("#private")[0].checked) {
+			                framework = EcEncryptedValue.toEncryptedValue(framework);
+			            }
 						repo.saveTo(framework, function () {
+							framework = f;
 							appendCompetencies(results, true);
 						}, error);
 						selectedCompetency = competency;

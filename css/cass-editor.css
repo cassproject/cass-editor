@@ -1042,6 +1042,12 @@ hr {
 .transparent {
     display: none;
 }
+
+.private {
+    margin-top: .5rem;
+    margin-right: 1rem;
+    float: right;
+}
 .flow {
 	display: flex;
 	flex-direction: row;
