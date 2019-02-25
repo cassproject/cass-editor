@@ -172,6 +172,9 @@ populateFramework = function (subsearch) {
 	if (!isFirstEdit && EcRepository.getBlocking(framework.id).type == "EncryptedValue") {
 		$("#private").prop("checked", true);
 	}
+	else if (framework.competency && EcRepository.getBlocking(framework.id).type == "EncryptedValue") {
+		$("#private").prop("checked", true);
+	}
 	else {
 		$("#private").prop("checked", false);
 	}
