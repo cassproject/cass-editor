@@ -78,7 +78,7 @@ addCompetency = function () {
                 if (EcIdentityManager.ids.length > 0)
                     r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                 framework.addRelation(r.id);
-                if ($("#private"[0].checked)) {
+                if ($("#private")[0].checked) {
                     r = EcEncryptedValue.toEncryptedValue(r);
                     framework = EcEncryptedValue.toEncryptedValue(framework);
                 }
@@ -90,7 +90,7 @@ addCompetency = function () {
                         editSidebar();
                         $("#sidebarNameInput").focus();
                         $("#sidebarNameInput").select();
-                        populateFramework();
+                        afterSave();
                         $("#sidebarAddCompetencies").prop('disabled', false);
                     }, error);
                 }, error);
@@ -105,7 +105,7 @@ addCompetency = function () {
                     editSidebar();
                     $("#sidebarNameInput").focus();
                     $("#sidebarNameInput").select();
-                    populateFramework();
+                    afterSave();
                     $("#sidebarAddCompetencies").prop('disabled', false);
                 }, error);
             }
@@ -433,25 +433,26 @@ saveCompetency = function (addAnother) {
             f = new EcConceptScheme();
         }
         f.copyFrom(thing);
-        f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+        if (EcIdentityManager.ids.length > 0) {
+            f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+        }
         if ($("#private")[0].checked) {
             f = EcEncryptedValue.toEncryptedValue(f);
         }
-        repo.saveTo(f, function() {
-            afterSaveSidebar();
-            populateFramework();
-        }, error);
+        repo.saveTo(f, afterSaveSidebar, error);
     } else {
         var c = new EcCompetency();
         if (conceptMode) {
             c = new EcConcept();
         }
         c.copyFrom(thing);
-        c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+        if (EcIdentityManager.ids.length > 0) {
+            c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+        }
         if ($("#private")[0].checked) {
             c = EcEncryptedValue.toEncryptedValue(c);
         }
-        repo.saveTo(c, populateFramework, error);
+        repo.saveTo(c, afterSave, error);
     }
     refreshSidebar();
     //Reselect the parent of the selected competency, or the framework if there is no parent competency and add another

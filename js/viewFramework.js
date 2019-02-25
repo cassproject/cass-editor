@@ -169,7 +169,7 @@ populateFramework = function (subsearch) {
 		$("#editFrameworkSection #frameworkCount").text("0 items");
 	}
 
-	if (EcRepository.getBlocking(framework.id).type == "EncryptedValue") {
+	if (!isFirstEdit && EcRepository.getBlocking(framework.id).type == "EncryptedValue") {
 		$("#private").prop("checked", true);
 	}
 	else {
