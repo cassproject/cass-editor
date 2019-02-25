@@ -88,12 +88,12 @@ addCompetency = function () {
                 repo.saveTo(r, function () {
                     repo.saveTo(framework, function () {
                         framework = f;
-                        selectedCompetency = c;
+                        selectedCompetency = EcCompetency.getBlocking(c.id);
                         refreshSidebar();
                         editSidebar();
                         $("#sidebarNameInput").focus();
                         $("#sidebarNameInput").select();
-                        afterSave();
+                        populateFramework();
                         $("#sidebarAddCompetencies").prop('disabled', false);
                     }, error);
                 }, error);
@@ -105,12 +105,12 @@ addCompetency = function () {
                 }
                 repo.saveTo(framework, function () {
                     framework = f;
-                    selectedCompetency = c;
+                    selectedCompetency = EcCompetency.getBlocking(c.id);
                     refreshSidebar();
                     editSidebar();
                     $("#sidebarNameInput").focus();
                     $("#sidebarNameInput").select();
-                    afterSave();
+                    populateFramework();
                     $("#sidebarAddCompetencies").prop('disabled', false);
                 }, error);
             }
@@ -445,8 +445,13 @@ saveCompetency = function (addAnother) {
         }
         f.copyFrom(thing);
         f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-        f = EcEncryptedValue.toEncryptedValue(f);
-        repo.saveTo(f, afterSaveSidebar, error);
+        if ($("#private")[0].checked) {
+            f = EcEncryptedValue.toEncryptedValue(f);
+        }
+        repo.saveTo(f, function() {
+            afterSaveSidebar();
+            populateFramework();
+        }, error);
     } else {
         var c = new EcCompetency();
         if (conceptMode) {
@@ -454,8 +459,10 @@ saveCompetency = function (addAnother) {
         }
         c.copyFrom(thing);
         c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-        c = EcEncryptedValue.toEncryptedValue(c);
-        repo.saveTo(c, afterSave, error);
+        if ($("#private")[0].checked) {
+            c = EcEncryptedValue.toEncryptedValue(c);
+        }
+        repo.saveTo(c, populateFramework, error);
     }
     refreshSidebar();
     //Reselect the parent of the selected competency, or the framework if there is no parent competency and add another
@@ -1169,7 +1176,7 @@ $("#private").change(function() {
                 var c = EcRepository.getBlocking(framework.competency[i]);
                 c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                 c = EcEncryptedValue.toEncryptedValue(c);
-                EcRepository.save(c, console.log, console.log);
+                EcRepository.save(c, function() {}, console.log);
             }
         }
         if (framework.relation) {
@@ -1177,20 +1184,20 @@ $("#private").change(function() {
                 var r = EcRepository.getBlocking(framework.relation[i]);
                 r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                 r = EcEncryptedValue.toEncryptedValue(r);
-                EcRepository.save(r, console.log, console.log);
+                EcRepository.save(r, function() {}, console.log);
             }
         }
         var f = new EcFramework();
         f.copyFrom(framework);
         f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
         f = EcEncryptedValue.toEncryptedValue(f);
-        EcRepository.save(f, console.log, console.log);
+        EcRepository.save(f, function() {}, console.log);
     }
     else {
         framework = EcEncryptedValue.toEncryptedValue(framework);
         var f = new EcFramework();
         f.copyFrom(framework.decryptIntoObject());
-        EcRepository.save(f, console.log, console.log);
+        EcRepository.save(f, function() {}, console.log);
         framework = f;
         if (framework.competency) {
             for (var i = 0; i < framework.competency.length; i++) {
@@ -1198,7 +1205,7 @@ $("#private").change(function() {
                 v.copyFrom(EcRepository.getBlocking(framework.competency[i]));
                 var c = new EcCompetency();
                 c.copyFrom(v.decryptIntoObject());
-                EcRepository.save(c, console.log, console.log);
+                EcRepository.save(c, function() {}, console.log);
             }
         }
         if (framework.relation) {
@@ -1207,7 +1214,7 @@ $("#private").change(function() {
                 v.copyFrom(EcRepository.getBlocking(framework.relation[i]));
                 var r = new EcAlignment();
                 r.copyFrom(v.decryptIntoObject());
-                EcRepository.save(r, console.log, console.log);
+                EcRepository.save(r, function() {}, console.log);
             }
         }
     }
