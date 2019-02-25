@@ -72,22 +72,19 @@ addCompetency = function () {
                     r.generateId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
                 r["schema:dateCreated"] = new Date().toISOString();
                 r.target = selectedCompetency.shortId();
-                r.source = c.shortId();
+                var source = EcRepository.getBlocking(c.id);
+                r.source = source.shortId();
                 r.relationType = Relation.NARROWS;
                 if (EcIdentityManager.ids.length > 0)
                     r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                 framework.addRelation(r.id);
                 if ($("#private"[0].checked)) {
                     r = EcEncryptedValue.toEncryptedValue(r);
-                }
-                var f = new EcFramework();
-                f.copyFrom(framework);
-                if ($("#private")[0].checked) {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
                 }
                 repo.saveTo(r, function () {
                     repo.saveTo(framework, function () {
-                        framework = f;
+                        framework = EcFramework.getBlocking(framework.id);
                         selectedCompetency = EcCompetency.getBlocking(c.id);
                         refreshSidebar();
                         editSidebar();
@@ -98,13 +95,11 @@ addCompetency = function () {
                     }, error);
                 }, error);
             } else {
-                var f = new EcFramework();
-                f.copyFrom(framework);
                 if ($("#private")[0].checked) {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
                 }
                 repo.saveTo(framework, function () {
-                    framework = f;
+                    framework = EcFramework.getBlocking(framework.id);
                     selectedCompetency = EcCompetency.getBlocking(c.id);
                     refreshSidebar();
                     editSidebar();
@@ -159,13 +154,11 @@ addAlignments = function(targets, thing, relationType) {
         }
         repo.saveTo(r, function () {}, error);
     }
-    var f = new EcFramework();
-    f.copyFrom(framework);
     if ($("#private")[0].checked) {
         framework = EcEncryptedValue.toEncryptedValue(framework);
     }
     repo.saveTo(framework, function() {
-        framework = f;
+        framework = EcFramework.getBlocking(framework.id);
         afterSaveRender();
     }, error);
 }
@@ -237,13 +230,11 @@ appendCompetencies = function (results, newLink) {
                 }
             }
     }
-    var f = new EcFramework();
-    f.copyFrom(framework);
     if ($("#private")[0].checked) {
         framework = EcEncryptedValue.toEncryptedValue(framework);
     }
     repo.saveTo(framework, function () {
-        framework = f;
+        framework = EcFramework.getBlocking(framework.id);
         refreshSidebar();
         $("#sidebarNameInput").focus();
         $("#sidebarNameInput").select();
@@ -270,15 +261,13 @@ addLevel = function () {
         c.name = "New Level";
         c.competency = selectedCompetency.shortId();
         framework["schema:dateModified"] = new Date().toISOString();
-        var f = new EcFramework();
-        f.copyFrom(framework);
         if ($("#private")[0].checked) {
             c = EcEncryptedValue.toEncryptedValue(c);
             framework = EcEncryptedValue.toEncryptedValue(framework);
         }
         repo.saveTo(c, function () {
             repo.saveTo(framework, function () {
-                framework = f;
+                framework = EcFramework.getBlocking(framework.id);
                 selectedCompetency = c;
                 refreshSidebar();
                 editSidebar();
@@ -514,13 +503,11 @@ setCompetencyConfigurationManagement = function () {
         for (var i = 0; i < framework.competency.length; i++) {
             if (framework.competency[i] == selectedCompetency.shortId()) {
                 framework.competency[i] = selectedCompetency.id;
-                var f = new EcFramework();
-                f.copyFrom(framework);
                 if ($("#private")[0].checked) {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
                 }
                 repo.saveTo(framework, function() {
-                    framework = f;
+                    framework = EcFramework.getBlocking(framework.id);
                     refreshSidebar();
                 }, error);
             }
@@ -528,13 +515,11 @@ setCompetencyConfigurationManagement = function () {
         for (var i = 0; i < framework.level.length; i++) {
             if (framework.level[i] == selectedCompetency.shortId()) {
                 framework.level[i] = selectedCompetency.id;
-                var f = new EcFramework();
-                f.copyFrom(framework);
                 if ($("#private")[0].checked) {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
                 }
                 repo.saveTo(framework, function() {
-                    framework = f;
+                    framework = EcFramework.getBlocking(framework.id);
                     refreshSidebar();
                 }, error);
             }
@@ -544,13 +529,11 @@ setCompetencyConfigurationManagement = function () {
         for (var i = 0; i < framework.competency.length; i++) {
             if (framework.competency[i] == selectedCompetency.id) {
                 framework.competency[i] = selectedCompetency.shortId();
-                var f = new EcFramework();
-                f.copyFrom(framework);
                 if ($("#private")[0].checked) {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
                 }
                 repo.saveTo(framework, function() {
-                    framework = f;
+                    framework = EcFramework.getBlocking(framework.id);
                     refreshSidebar();
                 }, error);
             }
@@ -558,13 +541,11 @@ setCompetencyConfigurationManagement = function () {
         for (var i = 0; i < framework.level.length; i++) {
             if (framework.level[i] == selectedCompetency.id) {
                 framework.level[i] = selectedCompetency.shortId();
-                var f = new EcFramework();
-                f.copyFrom(framework);
                 if ($("#private")[0].checked) {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
                 }
                 repo.saveTo(framework, function() {
-                    framework = f;
+                    framework = EcFramework.getBlocking(framework.id);
                     refreshSidebar();
                 }, error);
             }
@@ -581,13 +562,11 @@ unlinkCompetency = function (ev) {
     conditionalDelete(selectedRelation.shortId());
     selectedRelation = null;
     framework["schema:dateModified"] = new Date().toISOString();
-    var f = new EcFramework();
-    f.copyFrom(framework);
     if ($("#private")[0].checked) {
         framework = EcEncryptedValue.toEncryptedValue(framework);
     }
     repo.saveTo(framework, function() {
-        framework = f;
+        framework = EcFramework.getBlocking(framework.id);
         afterSave();
     }, error);
     refreshSidebar();
@@ -602,13 +581,11 @@ removeCompetency = function () {
             framework.removeCompetency(selectedCompetency.shortId(), function () {
                 selectedRelation = null;
                 selectedCompetency = null;
-                var f = new EcFramework();
-                f.copyFrom(framework);
                 if ($("#private")[0].checked) {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
                 }
                 repo.saveTo(framework, function() {
-                    framework = f;
+                    framework = EcFramework.getBlocking(framework.id);
                     populateFramework();
                 }, error);
                 refreshSidebar();
@@ -663,13 +640,11 @@ deleteCompetency = function () {
                     selectedRelation = null;
                     conditionalDelete(selectedCompetency.shortId());
                     selectedCompetency = null;
-                    var f = new EcFramework();
-                    f.copyFrom(framework);
                     if ($("#private")[0].checked) {
                         framework = EcEncryptedValue.toEncryptedValue(framework);
                     }
                     repo.saveTo(framework, function() {
-                        framework = f;
+                        framework = EcFramework.getBlocking(framework.id);
                         afterSave();
                     }, error);
                     refreshSidebar();
@@ -758,15 +733,13 @@ dropAny = function (data, targetData) {
         if (EcIdentityManager.ids.length > 0)
             r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
         framework.addRelation(r.id);
-        var f = new EcFramework();
-        f.copyFrom(framework);
         if ($("#private")[0].checked) {
             r = EcEncryptedValue.toEncryptedValue(r);
             framework = EcEncryptedValue.toEncryptedValue(framework);
         }
         repo.saveTo(r, function () {}, error);
         repo.saveTo(framework, function () {
-            framework = f;
+            framework = EcFramework.getBlocking(framework.id);
             if (data.relationId != null && data.relationId !== undefined)
                 conditionalDelete(data.relationId);
             if (webSocketConnection == false)
@@ -935,15 +908,11 @@ afterCopy = function () {
     itemsSaving--;
     loading(itemsSaving + " objects left to copy.");
     if (itemsSaving == 0) {
-        var f = new EcFramework();
-        f.copyFrom(framework);
         if ($("#private")[0].checked) {
             framework = EcEncryptedValue.toEncryptedValue(framework);
         }
         repo.saveTo(framework, function (stuff) {
-            if (framework.type == "EncryptedValue") {
-                framework = f;
-            }
+            framework = EcFramework.getBlocking(framework.id);
             refreshSidebar();
             populateFramework();
             afterSave(stuff);
@@ -1105,13 +1074,11 @@ moveUp = function () {
                     var currentNode = framework.competency.splice(i, 1);
             }
             framework.competency.splice(j, 0, currentNode[0]);
-            var f = new EcFramework();
-            f.copyFrom(framework);
             if ($("#private")[0].checked) {
                 framework = EcEncryptedValue.toEncryptedValue(framework);
             }
             repo.saveTo(framework, function() {
-                framework = f;
+                framework = EcFramework.getBlocking(framework.id);
                 afterSave();
             }, error);
         }
@@ -1141,13 +1108,11 @@ moveDown = function () {
                     var currentNode = framework.competency.splice(i, 1);
             }
             framework.competency.splice(j, 0, currentNode[0]);
-            var f = new EcFramework();
-            f.copyFrom(framework);
             if ($("#private")[0].checked) {
                 framework = EcEncryptedValue.toEncryptedValue(framework);
             }
             repo.saveTo(framework, function() {
-                framework = f;
+                framework = EcFramework.getBlocking(framework.id);
                 afterSave();
             }, error);
         }
@@ -1201,18 +1166,32 @@ $("#private").change(function() {
         framework = f;
         if (framework.competency) {
             for (var i = 0; i < framework.competency.length; i++) {
-                var v = new EcEncryptedValue();
-                v.copyFrom(EcRepository.getBlocking(framework.competency[i]));
-                var c = new EcCompetency();
+                var c = EcRepository.getBlocking(framework.competency[i]);
+                var v;
+                if (c.isAny(new EcEncryptedValue().getTypes())) {
+                    v = new EcEncryptedValue();
+                    v.copyFrom(c);
+                }
+                else {
+                    v = EcEncryptedValue.toEncryptedValue(c);
+                }
+                c = new EcCompetency();
                 c.copyFrom(v.decryptIntoObject());
                 EcRepository.save(c, function() {}, console.log);
             }
         }
         if (framework.relation) {
             for (var i = 0; i < framework.relation.length; i++) {
-                var v = new EcEncryptedValue();
-                v.copyFrom(EcRepository.getBlocking(framework.relation[i]));
-                var r = new EcAlignment();
+                var r = EcRepository.getBlocking(framework.relation[i]);
+                var v;
+                if (r.isAny(new EcEncryptedValue().getTypes())) {
+                    v = new EcEncryptedValue();
+                    v.copyFrom(r);
+                }
+                else {
+                    v = EcEncryptedValue.toEncryptedValue(r);
+                }
+                r = new EcAlignment();
                 r.copyFrom(v.decryptIntoObject());
                 EcRepository.save(r, function() {}, console.log);
             }

@@ -728,13 +728,11 @@ renderSidebar = function (justLists) {
 							framework.removeRelation($(this).parent().attr("id"));
 						}
 						conditionalDelete($(this).parent().attr("id"));
-						var f = new EcFramework();
-			            f.copyFrom(framework);
 			            if ($("#private")[0].checked) {
 			                framework = EcEncryptedValue.toEncryptedValue(framework);
 			            }
 			            repo.saveTo(framework, function() {
-			                framework = f;
+			                framework = EcFramework.getBlocking(framework.id);
 			                afterSaveRender();
 			            }, error);
 					});
@@ -1290,13 +1288,11 @@ editSidebar = function () {
 						framework.removeCompetency(selectedCompetency.shortId());
 						framework.removeLevel(selectedCompetency.shortId());
 						conditionalDelete(selectedCompetency.shortId());
-						var f = new EcFramework();
-			            f.copyFrom(framework);
 			            if ($("#private")[0].checked) {
 			                framework = EcEncryptedValue.toEncryptedValue(framework);
 			            }
 						repo.saveTo(framework, function () {
-							framework = f;
+							framework = EcFramework.getBlocking(framework.id);
 							appendCompetencies(results, true);
 						}, error);
 						selectedCompetency = competency;
