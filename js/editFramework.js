@@ -1137,65 +1137,131 @@ $(document).on("change", '#sidebarDateValidFromInput', function() {
 
 $("#private").change(function() {
     if ($(this)[0].checked) {
-        if (framework.competency) {
-            for (var i = 0; i < framework.competency.length; i++) {
-                var c = EcRepository.getBlocking(framework.competency[i]);
-                c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-                c = EcEncryptedValue.toEncryptedValue(c);
-                EcRepository.save(c, function() {}, console.log);
+        if (framework.isAny(new EcFramework().getTypes())) {
+            if (framework.competency) {
+                for (var i = 0; i < framework.competency.length; i++) {
+                    var c = EcRepository.getBlocking(framework.competency[i]);
+                    c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    c = EcEncryptedValue.toEncryptedValue(c);
+                    EcRepository.save(c, function() {}, console.log);
+                }
             }
-        }
-        if (framework.relation) {
-            for (var i = 0; i < framework.relation.length; i++) {
-                var r = EcRepository.getBlocking(framework.relation[i]);
-                r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-                r = EcEncryptedValue.toEncryptedValue(r);
-                EcRepository.save(r, function() {}, console.log);
+            if (framework.relation) {
+                for (var i = 0; i < framework.relation.length; i++) {
+                    var r = EcRepository.getBlocking(framework.relation[i]);
+                    r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    r = EcEncryptedValue.toEncryptedValue(r);
+                    EcRepository.save(r, function() {}, console.log);
+                }
             }
+            var f = new EcFramework();
+            f.copyFrom(framework);
+            f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            f = EcEncryptedValue.toEncryptedValue(f);
+            EcRepository.save(f, function() {}, console.log);
         }
-        var f = new EcFramework();
-        f.copyFrom(framework);
-        f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-        f = EcEncryptedValue.toEncryptedValue(f);
-        EcRepository.save(f, function() {}, console.log);
+        else {
+            var cs = new EcConceptScheme();
+            cs.copyFrom(framework);
+            cs.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            cs = EcEncryptedValue.toEncryptedValue(cs);
+            EcRepository.save(cs, function() {
+                if (framework["skos:hasTopConcept"]) {
+                    encryptConcepts(framework);
+                }
+            }, console.log);
+        }
     }
     else {
-        framework = EcEncryptedValue.toEncryptedValue(framework);
-        var f = new EcFramework();
-        f.copyFrom(framework.decryptIntoObject());
-        EcRepository.save(f, function() {}, console.log);
-        framework = f;
-        if (framework.competency) {
-            for (var i = 0; i < framework.competency.length; i++) {
-                var c = EcRepository.getBlocking(framework.competency[i]);
-                var v;
-                if (c.isAny(new EcEncryptedValue().getTypes())) {
-                    v = new EcEncryptedValue();
-                    v.copyFrom(c);
+        if (framework.isAny(new EcFramework().getTypes())) {
+            framework = EcEncryptedValue.toEncryptedValue(framework);
+            var f = new EcFramework();
+            f.copyFrom(framework.decryptIntoObject());
+            EcRepository.save(f, function() {}, console.log);
+            framework = f;
+            if (framework.competency) {
+                for (var i = 0; i < framework.competency.length; i++) {
+                    var c = EcRepository.getBlocking(framework.competency[i]);
+                    var v;
+                    if (c.isAny(new EcEncryptedValue().getTypes())) {
+                        v = new EcEncryptedValue();
+                        v.copyFrom(c);
+                    }
+                    else {
+                        v = EcEncryptedValue.toEncryptedValue(c);
+                    }
+                    c = new EcCompetency();
+                    c.copyFrom(v.decryptIntoObject());
+                    EcRepository.save(c, function() {}, console.log);
                 }
-                else {
-                    v = EcEncryptedValue.toEncryptedValue(c);
+            }
+            if (framework.relation) {
+                for (var i = 0; i < framework.relation.length; i++) {
+                    var r = EcRepository.getBlocking(framework.relation[i]);
+                    var v;
+                    if (r.isAny(new EcEncryptedValue().getTypes())) {
+                        v = new EcEncryptedValue();
+                        v.copyFrom(r);
+                    }
+                    else {
+                        v = EcEncryptedValue.toEncryptedValue(r);
+                    }
+                    r = new EcAlignment();
+                    r.copyFrom(v.decryptIntoObject());
+                    EcRepository.save(r, function() {}, console.log);
                 }
-                c = new EcCompetency();
-                c.copyFrom(v.decryptIntoObject());
-                EcRepository.save(c, function() {}, console.log);
             }
         }
-        if (framework.relation) {
-            for (var i = 0; i < framework.relation.length; i++) {
-                var r = EcRepository.getBlocking(framework.relation[i]);
-                var v;
-                if (r.isAny(new EcEncryptedValue().getTypes())) {
-                    v = new EcEncryptedValue();
-                    v.copyFrom(r);
+        else {
+            framework = EcEncryptedValue.toEncryptedValue(framework);
+            var cs = new EcConceptScheme();
+            cs.copyFrom(framework.decryptIntoObject());
+            framework = cs;
+            EcRepository.save(cs, function() {
+                if (cs["skos:hasTopConcept"]) {
+                    decryptConcepts(cs);
                 }
-                else {
-                    v = EcEncryptedValue.toEncryptedValue(r);
-                }
-                r = new EcAlignment();
-                r.copyFrom(v.decryptIntoObject());
-                EcRepository.save(r, function() {}, console.log);
-            }
+                afterSave();
+            }, console.log);
         }
     }
 });
+
+function encryptConcepts(c) {
+    var length = c["skos:hasTopConcept"] ? c["skos:hasTopConcept"].length : c["skos:narrower"].length;
+    var cons = [];
+    for (var i = 0; i < length; i++) {
+        var concept = c["skos:hasTopConcept"] ? EcRepository.getBlocking(c["skos:hasTopConcept"][i]) : EcRepository.getBlocking(c["skos:narrower"][i]);
+        concept.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+        if (concept["skos:narrower"]) {
+            cons.push(concept);
+        }
+        concept = EcEncryptedValue.toEncryptedValue(concept);
+        EcRepository.save(concept, function() {
+            for (var i = 0; i < cons.length; i++) {
+                encryptConcepts(cons[i]);
+            }
+        }, console.log);
+    }
+}
+
+function decryptConcepts(c) {
+    var length = c["skos:hasTopConcept"] ? c["skos:hasTopConcept"].length : c["skos:narrower"].length;
+    for (var i = 0; i < length; i++) {
+        var concept = c["skos:hasTopConcept"] ? EcRepository.getBlocking(c["skos:hasTopConcept"][i]) : EcRepository.getBlocking(c["skos:narrower"][i]);
+        var v;
+        if (concept.isAny(new EcEncryptedValue().getTypes())) {
+            v = new EcEncryptedValue();
+            v.copyFrom(concept);
+        }
+        else {
+            v = EcEncryptedValue.toEncryptedValue(concept);
+        }
+        concept = new EcConcept();
+        concept.copyFrom(v.decryptIntoObject());
+        if (concept["skos:narrower"]) {
+            decryptConcepts(concept);
+        }
+        EcRepository.save(concept, function() {}, console.log);
+    }
+}

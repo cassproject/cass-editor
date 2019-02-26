@@ -17,6 +17,15 @@ populateConceptScheme = function (subsearch) {
     treeTop = $("#tree").scrollTop();
     $("#tree").hide().html("");
     me.fetches = 0;
+    if (!isFirstEdit && EcRepository.getBlocking(framework.id).type == "EncryptedValue") {
+        $("#private").prop("checked", true);
+    }
+    else if (framework["skos:hasTopConcept"] && EcRepository.getBlocking(framework.id).type == "EncryptedValue") {
+        $("#private").prop("checked", true);
+    }
+    else {
+        $("#private").prop("checked", false);
+    }
     var frameworkName = framework["dcterms:title"];
     frameworkName = EcArray.isArray(frameworkName) ? frameworkName : [frameworkName];
     $("#editFrameworkSection #frameworkAKA").children().remove();

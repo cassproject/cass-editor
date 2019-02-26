@@ -25,9 +25,12 @@ addConcept = function () {
             if (c["skos:broader"] == null)
                 c["skos:broader"] = [];
             EcArray.setAdd(c["skos:broader"], selectedCompetency.shortId());
+            if ($("#private")[0].checked) {
+                c = EcEncryptedValue.toEncryptedValue(c);
+            }
             repo.saveTo(c, function () {
                 repo.saveTo(selectedCompetency, function () {
-                    selectedCompetency = c;
+                    selectedCompetency = EcConcept.getBlocking(c.id);
                     refreshSidebar();
                     editSidebar();
                     $("#sidebarNameInput").focus();
@@ -40,9 +43,14 @@ addConcept = function () {
                 framework["skos:hasTopConcept"] = [];
             EcArray.setAdd(framework["skos:hasTopConcept"], c.shortId());
             c["skos:topConceptOf"] = framework.shortId();
+            if ($("#private")[0].checked) {
+                c = EcEncryptedValue.toEncryptedValue(c);
+                framework = EcEncryptedValue.toEncryptedValue(framework);
+            }
             repo.saveTo(c, function () {
                 repo.saveTo(framework, function () {
-                    selectedCompetency = c;
+                    selectedCompetency = EcConcept.getBlocking(c.id);
+                    framework = EcConceptScheme.getBlocking(framework.id);
                     refreshSidebar();
                     editSidebar();
                     $("#sidebarNameInput").focus();
@@ -73,8 +81,12 @@ createConceptScheme = function () {
     framework["schema:dateCreated"] = new Date().toISOString();
     if ($("#description").val() != null && $("#description").val() != "")
         framework["dcterms:description"] = {"@language": defaultLanguage, "@value": $("#description").val()};
+    if ($("#private")[0].checked) {
+        framework = EcEncryptedValue.toEncryptedValue(framework);
+    }
     loading("Creating concept scheme...");
     repo.saveTo(framework, function () {
+        framework = EcConceptScheme.getBlocking(framework.id);
         refreshSidebar();
         editSidebar();
         populateFramework();
@@ -98,15 +110,27 @@ unlinkConcept = function (c) {
         for (var i = 0; i < c["skos:broader"].length; i++)
             EcConcept.get(c["skos:broader"][i], function (concept) {
                 EcArray.setRemove(concept["skos:narrower"], c.shortId());
-                repo.saveTo(concept, afterSave, console.error);
+                if ($("#private")[0].checked) {
+                    concept = EcEncryptedValue.toEncryptedValue(concept);
+                }
+                repo.saveTo(concept, function() {
+                    afterSave();
+                }, console.error);
             }, console.error);
     delete c["skos:broader"];
     if (framework["skos:hasTopConcept"] == null)
         framework["skos:hasTopConcept"] = [];
     EcArray.setAdd(framework["skos:hasTopConcept"], c.shortId());
     c["skos:topConceptOf"] = framework.shortId();
+    if ($("#private")[0].checked) {
+        framework = EcEncryptedValue.toEncryptedValue(framework);
+        c = EcEncryptedValue.toEncryptedValue(c);
+    }
     repo.saveTo(c, function () {
-        repo.saveTo(framework, afterSave, console.log);
+        repo.saveTo(framework, function() {
+            framework = EcConceptScheme.getBlocking(framework.id);
+            afterSave();
+        }, console.log);
     }, console.log);
     refreshSidebar();
 }
@@ -151,6 +175,9 @@ deleteConceptInner = function (c) {
         for (var i = 0; i < c["skos:broader"].length; i++)
             EcConcept.get(c["skos:broader"][i], function (concept) {
                 EcArray.setRemove(concept["skos:narrower"], c.shortId());
+                if ($("#private")[0].checked) {
+                    concept = EcEncryptedValue.toEncryptedValue(concept);
+                }
                 repo.saveTo(concept, afterSave, console.error);
             }, console.error);
     if (c["skos:narrower"] != null)
@@ -160,7 +187,13 @@ deleteConceptInner = function (c) {
             }, console.error);
     if (c["skos:topConceptOf"] != null) {
         EcArray.setRemove(framework["skos:hasTopConcept"], c.shortId());
-        repo.saveTo(framework, afterSave, console.error);
+        if ($("#private")[0].checked) {
+            framework = EcEncryptedValue.toEncryptedValue(framework);
+        }
+        repo.saveTo(framework, function() {
+            framework = EcConceptScheme.getBlocking(framework.id);
+            afterSave();
+        }, console.error);
     }
     repo.deleteRegistered(c, afterSave, console.error);
 }
@@ -191,6 +224,9 @@ dropConceptShortcut = function (element) {
                     for (var i = 0; i < c["skos:broader"].length; i++)
                         EcConcept.get(c["skos:broader"][i], function (concept) {
                             EcArray.setRemove(concept["skos:narrower"], c.shortId());
+                            if ($("#private")[0].checked) {
+                                concept = EcEncryptedValue.toEncryptedValue(concept);
+                            }
                             repo.saveTo(concept, afterSave, console.error);
                         }, console.error);
                     delete c["skos:broader"];
@@ -198,7 +234,13 @@ dropConceptShortcut = function (element) {
                 delete c["skos:topConceptOf"];
                 if (EcArray.has(framework["skos:hasTopConcept"], c.shortId())) {
                     EcArray.setRemove(framework["skos:hasTopConcept"], c.shortId());
-                    repo.saveTo(framework, afterSave, console.error);
+                    if ($("#private")[0].checked) {
+                        framework = EcEncryptedValue.toEncryptedValue(framework);
+                    }
+                    repo.saveTo(framework, function() {
+                        framework = EcFramework.getBlocking(framework);
+                        afterSave();
+                    }, console.error);
                 }
             }
             dropAnyConcept(dragShortcutData, targetData);
@@ -253,6 +295,10 @@ dropAnyConcept = function (data, targetData) {
     // replaced selected concept with changed concept
     selectedCompetency = thing;
     refreshSidebar();
+    if ($("#private")[0].checked) {
+        thing = EcEncryptedValue.toEncryptedValue(thing);
+        targetThing = EcEncryptedValue.toEncryptedValue(targetThing);
+    }
     repo.saveTo(thing, function () {
         repo.saveTo(targetThing, afterSave, console.error);
     }, console.error);
@@ -262,6 +308,9 @@ dropAnyConcept = function (data, targetData) {
 detangleConcepts = function (me, data, targetData) {
 
     var part3 = function () {
+        if ($("#private")[0].checked) {
+            c = EcEncryptedValue.toEncryptedValue(c);
+        }
         repo.saveTo(c, function () {
             dropAnyConcept(data, targetData);
         }, console.error); //Saving main competency.
@@ -273,8 +322,16 @@ detangleConcepts = function (me, data, targetData) {
         if (c["skos:broader"] == null || c["skos:broader"].length == 0) {
             EcArray.setAdd(framework["skos:hasTopConcept"], c.shortId());
             c["skos:topConceptOf"] = framework.shortId();
+            if ($("#private")[0].checked) {
+                c = EcEncryptedValue.toEncryptedValue(c);
+                framework = EcEncryptedValue.toEncryptedValue(framework);
+            }
             repo.saveTo(c, function () {
-                repo.saveTo(framework, part3, console.error); //Saving framework again.
+                repo.saveTo(framework, function() {
+                    c = EcConcept.getBlocking(c);
+                    framework = EcConceptScheme.getBlocking(framework);
+                    part3();
+                }, console.error); //Saving framework again.
             }, console.error);
             foundAgain = true;
         }
@@ -289,6 +346,9 @@ detangleConcepts = function (me, data, targetData) {
             if (c["skos:broader"][i] == me.parent().parent().attr("id")) {
                 var concept = EcConcept.getBlocking(c["skos:broader"][i]);
                 EcArray.setRemove(concept["skos:narrower"], c.shortId());
+                if ($("#private")[0].checked) {
+                    concept = EcEncryptedValue.toEncryptedValue(concept);
+                }
                 repo.saveTo(concept, part2, console.error); //Saving parent concept again.
                 found = true;
             }
@@ -323,7 +383,11 @@ dropConcept = function (ev) {
                 data.competency = c;
                 if (EcArray.has(framework["skos:hasTopConcept"], c.shortId())) {
                     EcArray.setRemove(framework["skos:hasTopConcept"], c.shortId());
+                    if ($("#private")[0].checked) {
+                        framework = EcEncryptedValue.toEncryptedValue(framework);
+                    }
                     repo.saveTo(framework, function () {
+                        framework = EcConceptScheme.getBlocking(framework.id);
                         dropAnyConcept(data, targetData);
                     }, console.error); //Saving framework.
                     found = true;
@@ -338,6 +402,9 @@ dropConcept = function (ev) {
                 for (var i = 0; i < narrows.length; i++)
                     EcConcept.get(narrows[i], function (concept) {
                         EcArray.setRemove(concept["skos:narrower"], c.shortId());
+                        if ($("#private")[0].checked) {
+                            concept = EcEncryptedValue.toEncryptedValue(concept);
+                        }
                         repo.saveTo(concept, stage2, console.error); //Saving previous parent.
                         found = true;
                     }, console.error);
@@ -399,7 +466,11 @@ handleTouchEndConcept = function (event) {
                             globalTouchDragDataConcept.competency = c;
                             if (EcArray.has(framework["skos:hasTopConcept"], c.shortId())) {
                                 EcArray.setRemove(framework["skos:hasTopConcept"], c.shortId());
+                                if ($("#private")[0].checked) {
+                                    framework = EcEncryptedValue.toEncryptedValue(framework);
+                                }
                                 repo.saveTo(framework, function () {
+                                    framework = EcConceptScheme.getBlocking(framework);
                                     dropAnyConcept(globalTouchDragDataConcept, targetData);
                                 }, console.error); //Saving framework.
                                 found = true;
@@ -414,6 +485,9 @@ handleTouchEndConcept = function (event) {
                             for (var i = 0; i < narrows.length; i++)
                                 EcConcept.get(narrows[i], function (concept) {
                                     EcArray.setRemove(concept["skos:narrower"], c.shortId());
+                                    if ($("#private")[0].checked) {
+                                        concept = EcEncryptedValue.toEncryptedValue(concept);
+                                    }
                                     repo.saveTo(concept, stage2, console.error); //Saving previous parent.
                                     found = true;
                                 }, console.error);
