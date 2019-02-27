@@ -158,7 +158,12 @@ addAlignments = function(targets, thing, relationType) {
         framework = EcEncryptedValue.toEncryptedValue(framework);
     }
     repo.saveTo(framework, function() {
-        framework = EcFramework.getBlocking(framework.id);
+        if (queryParams.concepts == "true") {
+            framework = EcConceptScheme.getBlocking(framework.id);
+        }
+        else {
+            framework = EcFramework.getBlocking(framework.id);
+        }
         afterSaveRender();
     }, error);
 }
@@ -1143,7 +1148,7 @@ $("#private").change(function() {
                     var c = EcRepository.getBlocking(framework.competency[i]);
                     c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                     c = EcEncryptedValue.toEncryptedValue(c);
-                    EcRepository.save(c, function() {}, console.log);
+                    repo.saveTo(c, function() {}, error);
                 }
             }
             if (framework.relation) {
@@ -1151,25 +1156,25 @@ $("#private").change(function() {
                     var r = EcRepository.getBlocking(framework.relation[i]);
                     r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                     r = EcEncryptedValue.toEncryptedValue(r);
-                    EcRepository.save(r, function() {}, console.log);
+                    repo.saveTo(r, function() {}, error);
                 }
             }
             var f = new EcFramework();
             f.copyFrom(framework);
             f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
             f = EcEncryptedValue.toEncryptedValue(f);
-            EcRepository.save(f, function() {}, console.log);
+            repo.saveTo(f, function() {}, error);
         }
         else {
             var cs = new EcConceptScheme();
             cs.copyFrom(framework);
             cs.addOwner(EcIdentityManager.ids[0].ppk.toPk());
             cs = EcEncryptedValue.toEncryptedValue(cs);
-            EcRepository.save(cs, function() {
+            repo.saveTo(cs, function() {
                 if (framework["skos:hasTopConcept"]) {
                     encryptConcepts(framework);
                 }
-            }, console.log);
+            }, error);
         }
     }
     else {
@@ -1177,7 +1182,7 @@ $("#private").change(function() {
             framework = EcEncryptedValue.toEncryptedValue(framework);
             var f = new EcFramework();
             f.copyFrom(framework.decryptIntoObject());
-            EcRepository.save(f, function() {}, console.log);
+            repo.saveTo(f, function() {}, error);
             framework = f;
             if (framework.competency) {
                 for (var i = 0; i < framework.competency.length; i++) {
@@ -1192,7 +1197,7 @@ $("#private").change(function() {
                     }
                     c = new EcCompetency();
                     c.copyFrom(v.decryptIntoObject());
-                    EcRepository.save(c, function() {}, console.log);
+                    repo.saveTo(c, function() {}, error);
                 }
             }
             if (framework.relation) {
@@ -1208,7 +1213,7 @@ $("#private").change(function() {
                     }
                     r = new EcAlignment();
                     r.copyFrom(v.decryptIntoObject());
-                    EcRepository.save(r, function() {}, console.log);
+                    repo.saveTo(r, function() {}, error);
                 }
             }
         }
@@ -1217,12 +1222,12 @@ $("#private").change(function() {
             var cs = new EcConceptScheme();
             cs.copyFrom(framework.decryptIntoObject());
             framework = cs;
-            EcRepository.save(cs, function() {
+            repo.saveTo(cs, function() {
                 if (cs["skos:hasTopConcept"]) {
                     decryptConcepts(cs);
                 }
                 afterSave();
-            }, console.log);
+            }, error);
         }
     }
 });
@@ -1240,7 +1245,7 @@ function encryptConcepts(c) {
         toSave.push(concept);
     }
     for (var i = 0; i < toSave.length; i++) {
-        EcRepository.save(toSave[i], function() {}, console.log);
+        repo.saveTo(toSave[i], function() {}, error);
     }
 }
 
@@ -1262,6 +1267,6 @@ function decryptConcepts(c) {
         if (concept["skos:narrower"]) {
             decryptConcepts(concept);
         }
-        EcRepository.save(concept, function() {}, console.log);
+        repo.saveTo(concept, function() {}, error);
     }
 }
