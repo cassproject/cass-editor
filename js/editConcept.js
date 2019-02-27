@@ -27,6 +27,7 @@ addConcept = function () {
             EcArray.setAdd(c["skos:broader"], selectedCompetency.shortId());
             if ($("#private")[0].checked) {
                 c = EcEncryptedValue.toEncryptedValue(c);
+                selectedCompetency = EcEncryptedValue.toEncryptedValue(selectedCompetency);
             }
             repo.saveTo(c, function () {
                 repo.saveTo(selectedCompetency, function () {

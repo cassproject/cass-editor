@@ -1228,22 +1228,22 @@ $("#private").change(function() {
 });
 
 function encryptConcepts(c) {
+    var toSave = [];
     var length = c["skos:hasTopConcept"] ? c["skos:hasTopConcept"].length : c["skos:narrower"].length;
-    var cons = [];
     for (var i = 0; i < length; i++) {
         var concept = c["skos:hasTopConcept"] ? EcRepository.getBlocking(c["skos:hasTopConcept"][i]) : EcRepository.getBlocking(c["skos:narrower"][i]);
         concept.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-        if (concept["skos:narrower"]) {
-            cons.push(concept);
+        if (concept["skos:narrower"] && concept["skos:narrower"].length > 0) {
+            encryptConcepts(concept);
         }
         concept = EcEncryptedValue.toEncryptedValue(concept);
-        EcRepository.save(concept, function() {
-            for (var i = 0; i < cons.length; i++) {
-                encryptConcepts(cons[i]);
-            }
-        }, console.log);
+        toSave.push(concept);
+    }
+    for (var i = 0; i < toSave.length; i++) {
+        EcRepository.save(toSave[i], function() {}, console.log);
     }
 }
+
 
 function decryptConcepts(c) {
     var length = c["skos:hasTopConcept"] ? c["skos:hasTopConcept"].length : c["skos:narrower"].length;
