@@ -459,3 +459,9 @@ hr {
     margin-right: 1rem;
     float: right;
 }
+
+#selectCompetencySection .private,
+#selectConceptSection .private,
+#findCompetencySection .private {
+    display: none;
+}
