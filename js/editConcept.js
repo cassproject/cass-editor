@@ -65,6 +65,7 @@ addConcept = function () {
 
 createConceptScheme = function () {
     if (viewMode) return;
+    isFirstEdit = true;
     var csTitle;
     setDefaultLanguage();
     if ($("#name").val() == null || $("#name").val().trim() == "")

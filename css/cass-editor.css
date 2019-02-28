@@ -1048,6 +1048,12 @@ hr {
     margin-right: 1rem;
     float: right;
 }
+
+#selectCompetencySection .private,
+#selectConceptSection .private,
+#findCompetencySection .private {
+    display: none;
+}
 .flow {
 	display: flex;
 	flex-direction: row;
@@ -1059,10 +1065,4 @@ hr {
 	margin: .7rem;
 	padding: .3rem;
 	border: 1px gray solid;
-}
-
-#selectCompetencySection .private,
-#selectConceptSection .private,
-#findCompetencySection .private {
-	display: none;
 }

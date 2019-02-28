@@ -2,6 +2,7 @@ const CEASN_FIELD_TOGGLE = "ceasnDataFields=true";
 const FWK_MINE_TOGGLE = "show=mine";
 const CONCEPT_MINE_TOGGLE = "conceptShow=mine";
 const CONCEPTS_TOGGLE = "concepts=true";
+const PRIVATE_TOGGLE = "private=true";
 
 const EDITR_IFRAME = "#cassEditorIFrame";
 const EDITR_IFRAME_SOURCE = "index.html?user=wait";
@@ -45,6 +46,7 @@ function getEditorIframeSourceLink() {
     if (isChecked($("#edTestFwkMine"))) ifs += "&" + FWK_MINE_TOGGLE;
     if (isChecked($("#edTestCptMine"))) ifs += "&" + CONCEPT_MINE_TOGGLE;
     if (isChecked($("#edTestConcepts"))) ifs += "&" + CONCEPTS_TOGGLE;
+    if (isChecked($("#edTestPrivate"))) ifs += "&" + PRIVATE_TOGGLE;
     ifs += "&origin="+ window.location.origin + "&server=" + testSelectedServer;
     console.log("Opening cass editor iFrame with: " + ifs);
     return ifs;
