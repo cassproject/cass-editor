@@ -1146,9 +1146,13 @@ $("#private").change(function() {
             if (framework.competency) {
                 for (var i = 0; i < framework.competency.length; i++) {
                     var c = EcRepository.getBlocking(framework.competency[i]);
-                    c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-                    c = EcEncryptedValue.toEncryptedValue(c);
-                    repo.saveTo(c, function() {}, error);
+                    if (c.canEditAny(EcIdentityManager.getMyPks())) {
+                        c = EcEncryptedValue.toEncryptedValue(c);
+                        repo.saveTo(c, function() {}, error);
+                    }
+                    else {
+                        refreshCompetency(c);
+                    }
                 }
             }
             if (framework.relation) {
@@ -1188,16 +1192,21 @@ $("#private").change(function() {
                 for (var i = 0; i < framework.competency.length; i++) {
                     var c = EcRepository.getBlocking(framework.competency[i]);
                     var v;
-                    if (c.isAny(new EcEncryptedValue().getTypes())) {
-                        v = new EcEncryptedValue();
-                        v.copyFrom(c);
+                    if (c.canEditAny(EcIdentityManager.getMyPks())) {
+                        if (c.isAny(new EcEncryptedValue().getTypes())) {
+                            v = new EcEncryptedValue();
+                            v.copyFrom(c);
+                        }
+                        else {
+                            v = EcEncryptedValue.toEncryptedValue(c);
+                        }
+                        c = new EcCompetency();
+                        c.copyFrom(v.decryptIntoObject());
+                        repo.saveTo(c, function() {}, error);
                     }
                     else {
-                        v = EcEncryptedValue.toEncryptedValue(c);
+                        refreshCompetency(c);
                     }
-                    c = new EcCompetency();
-                    c.copyFrom(v.decryptIntoObject());
-                    repo.saveTo(c, function() {}, error);
                 }
             }
             if (framework.relation) {
