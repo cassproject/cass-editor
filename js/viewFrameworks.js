@@ -158,6 +158,10 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
                 if (fx.canEditAny(EcIdentityManager.getMyPks())) {
                     p.append("<span class='properties'>Editable</span>");
                 }
+                var object = EcRepository.getBlocking(fx.id);
+                if (object.isAny(new EcEncryptedValue().getTypes())) {
+                    p.append("<span class='properties'>Private</span>");
+                }
                 if (searchTerm != "*" && subsearchTerm == null) {
                     title.mark(searchTerm);
                     desc.mark(searchTerm);
