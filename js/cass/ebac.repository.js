@@ -1255,7 +1255,6 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
         if (EcRemote.async == false) {
             var signatureSheet;
             if (data.owner != null && data.owner.length > 0) {
-<<<<<<< Updated upstream
                 signatureSheet = EcIdentityManager.signatureSheetFor(data.owner, 60000 + (repo == null ? 0 : repo.timeOffset), data.id);
             } else {
                 signatureSheet = EcIdentityManager.signatureSheet(60000 + (repo == null ? 0 : repo.timeOffset), data.id);
@@ -1265,17 +1264,6 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
             EcIdentityManager.signatureSheetForAsync(data.owner, 60000 + (repo == null ? 0 : repo.timeOffset), data.id, afterSignatureSheet, failure);
         } else {
             EcIdentityManager.signatureSheetAsync(60000 + (repo == null ? 0 : repo.timeOffset), data.id, afterSignatureSheet, failure);
-=======
-                signatureSheet = EcIdentityManager.signatureSheetFor(data.owner, 60000 + repo.timeOffset, data.id);
-            } else {
-                signatureSheet = EcIdentityManager.signatureSheet(60000 + repo.timeOffset, data.id);
-            }
-            afterSignatureSheet(signatureSheet);
-        } else if (data.owner != null && data.owner.length > 0) {
-            EcIdentityManager.signatureSheetForAsync(data.owner, 60000 + repo.timeOffset, data.id, afterSignatureSheet, failure);
-        } else {
-            EcIdentityManager.signatureSheetAsync(60000 + repo.timeOffset, data.id, afterSignatureSheet, failure);
->>>>>>> Stashed changes
         }
     };
     /**

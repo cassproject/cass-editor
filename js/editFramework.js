@@ -450,6 +450,8 @@ saveCompetency = function (addAnother) {
         if (conceptMode) {
             c = new EcConcept();
         }
+        if (thing.type == "Level")
+            c = new EcLevel();
         c.copyFrom(thing);
         if (EcIdentityManager.ids.length > 0) {
             c.addOwner(EcIdentityManager.ids[0].ppk.toPk());

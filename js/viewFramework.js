@@ -1107,7 +1107,7 @@ refreshSidebar = function () {
 		$('.export').show();
 	}
 
-	if (queryParams.ceasnDataFields == 'true' || queryParams.tlaProfile == 'true') {
+	if (queryParams.ceasnDataFields == 'true') {
 		$("#detailSlider").addClass("detailSliderCeasn");
 		$('.ceasnDataFields').show();
 	} else {
@@ -1129,12 +1129,15 @@ refreshSidebar = function () {
 		$("#sidebarMoveUp").hide();
 		$("#sidebarMoveDown").hide();
 		$("#sidebarRemove").hide();
-        if (queryParams.ceasnDataFields === 'true' || queryParams.tlaProfile == 'true') {
+        if (queryParams.ceasnDataFields === 'true') {
             $(".absentForCeasn").hide();
             $(".ceasnDataFields").show();
         }
         if (queryParams.tlaProfile == 'true') {
+            $(".ceasnDataFields").show();
             $(".tlaDataFields").show();
+            $(".ceasnOnly").hide();
+            $(".tlaDataFields.competencyOnly").hide();
         }
 	}
 
@@ -1148,12 +1151,14 @@ refreshSidebar = function () {
 				else
 					console.log("Error. Version not certain.");
 			}
-		if (queryParams.ceasnDataFields === 'true' || queryParams.tlaProfile == 'true') {
+		if (queryParams.ceasnDataFields === 'true') {
 			$(".absentForCeasn").hide();
 			$(".ceasnDataFields").show();
 		}
         if (queryParams.tlaProfile == 'true') {
+            $(".ceasnDataFields").show();
             $(".tlaDataFields").show();
+            $(".ceasnOnly").hide();
         }
 	}
 
@@ -1319,9 +1324,14 @@ editSidebar = function () {
 		attachCustomAutocomplete(this);
 	});
 	$(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
-	if (queryParams.ceasnDataFields === 'true' || queryParams.tlaProfile == 'true') {
-		$(".ceasnDataFields").show();
-	}
+    if (queryParams.ceasnDataFields === 'true') {
+        $(".ceasnDataFields").show();
+    }
+    if (queryParams.tlaProfile == 'true') {
+        $(".ceasnDataFields").show();
+        $(".ceasnOnly").hide();
+        $(".tlaDataFields").show();
+    }
 	setDefaultLanguage();
 	$("#detailSlider").find(".sidebarInputLanguageSelect").each(function () {
         if (!$(this).next().val()) {
