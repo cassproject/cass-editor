@@ -1129,10 +1129,13 @@ refreshSidebar = function () {
 		$("#sidebarMoveUp").hide();
 		$("#sidebarMoveDown").hide();
 		$("#sidebarRemove").hide();
-		if (queryParams.ceasnDataFields === 'true' || queryParams.tlaProfile == 'true') {
-			$(".absentForCeasn").hide();
-			$(".ceasnDataFields").show();
-		}
+        if (queryParams.ceasnDataFields === 'true' || queryParams.tlaProfile == 'true') {
+            $(".absentForCeasn").hide();
+            $(".ceasnDataFields").show();
+        }
+        if (queryParams.tlaProfile == 'true') {
+            $(".tlaDataFields").show();
+        }
 	}
 
 	if (thing == selectedCompetency) {
@@ -1149,6 +1152,9 @@ refreshSidebar = function () {
 			$(".absentForCeasn").hide();
 			$(".ceasnDataFields").show();
 		}
+        if (queryParams.tlaProfile == 'true') {
+            $(".tlaDataFields").show();
+        }
 	}
 
 	if (new EcLevel().isA(thing.getFullType())) {
