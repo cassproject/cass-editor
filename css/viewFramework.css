@@ -453,3 +453,15 @@ hr {
 .transparent {
     display: none;
 }
+
+.private {
+    margin-top: .5rem;
+    margin-right: 1rem;
+    float: right;
+}
+
+#selectCompetencySection .private,
+#selectConceptSection .private,
+#findCompetencySection .private {
+    display: none;
+}

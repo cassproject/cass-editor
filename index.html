@@ -17,8 +17,8 @@
 			<h2 id="title">
 				<span onclick='backPage();' style="float:left;margin-right: 0.5rem;"><i class="fa fa-arrow-circle-left" > </i></span> Import a file.
 			</h2>
-			<p class="absentForConcepts">Importing a framework creates a copy of the framework you provided. You will be in control of the new framework.</p>
-			<p class="absentForCompetencies">Importing a concept scheme creates a copy of the concept scheme you provided. You will be in control of the new concept scheme.</p>
+			<p class="absentForConcepts">Importing a framework creates a copy of the framework you provided. You will be in control of the new framework. Imported frameworks are public.</p>
+			<p class="absentForCompetencies">Importing a concept scheme creates a copy of the concept scheme you provided. You will be in control of the new concept scheme. Imported concept schemes are public.</p>
 			<h3>Types of files allowed:</h3>
 			<div class="flow">
 				<div class="panel absentForConcepts">
@@ -753,7 +753,7 @@
 											<input id="sidebarLicenseInput" cassFramework="schema:license" ceasnFramework="ceasn:license" skosFramework="dcterms:license" ceasnConceptScheme="ceasn:license" type="url" data-group="sidebarLicenseInput" class="sidebarLicenseInput editMode editControl singular" />
 											<span id="sidebarLicenseInputSpan" class="orangeUri">Note: URI only. For example, https://sandbox.credentialengineregistry.org/</span>
 											<!-- Rights -->
-											<label id="sidebarRightsInputLabel" for="sidebarRights" title="" cassFramework="Rights:" cassFrameworkTitle="Information about rights held in and over this competency framework. For example, http://example.com/?t=idforRights" ceasnFramework="Rights:" ceasnFrameworkTitle="Information about rights held in and over this competency framework. For example, https://sandbox.credentialengineregistry.org/" class="viewMode editMode absentForConcepts" style="margin:0px;">Rights:</label>
+											<label id="sidebarRightsInputLabel" for="sidebarRights" title="" cassFramework="Rights:" cassFrameworkTitle="Information about rights held in and over this competency framework." ceasnFramework="Rights:" ceasnFrameworkTitle="Information about rights held in and over this competency framework." class="viewMode editMode absentForConcepts" style="margin:0px;">Rights:</label>
 											<p id="sidebarRights" class="viewMode sidebarViewList absentForConcepts" style="font-weight:bold;"></p>
 											<div class="sidebarInputGrouping editMode editControl absentForConcepts">
 												<div class="sidebarInputRow">
@@ -763,9 +763,15 @@
 												</div>
 											</div>
 											<!-- Concept Scheme Rights -->
-											<label id="sidebarConceptRightsInputLabel" for="sidebarConceptRights" title="" cassFramework="Rights:" cassFrameworkTitle="Information about rights held in and over this competency framework. For example, http://example.com/?t=idforRights" skosFramework="Rights:" ceasnConceptScheme="Rights:" skosFrameworkTitle="Information about rights held in and over this concept scheme. For example, https://sandbox.credentialengineregistry.org/" class="viewMode editMode absentForCompetencies" style="margin:0px;">Rights:</label>
+											<label id="sidebarConceptRightsInputLabel" for="sidebarConceptRights" title="" cassFramework="Rights:" cassFrameworkTitle="Information about rights held in and over this competency framework." skosFramework="Rights:" ceasnConceptScheme="Rights:" skosFrameworkTitle="Information about rights held in and over this concept scheme." class="viewMode editMode absentForCompetencies" style="margin:0px;">Rights:</label>
 											<p id="sidebarConceptRights" class="viewMode sidebarViewList absentForCompetencies" style="font-weight:bold;"></p>
-											<input id="sidebarConceptRightsInput" cassFramework="dc:rights" skosFramework="dcterms:rights" ceasnConceptScheme="ceasn:rights" data-group="sidebarConceptRightsInput" class="sidebarConceptRightsInput editMode editControl absentForCompetencies singular" />
+											<div class="sidebarInputGrouping editMode editControl absentForCompetencies">
+												<div class="sidebarInputRow">
+													<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
+													<input class="sidebarInputLanguageSelect" placeholder="Language"></input>
+													<input id="sidebarConceptRightsInput" cassFramework="dc:rights" skosFramework="dcterms:rights" ceasnConceptScheme="ceasn:rights" data-group="sidebarConceptRightsInput" class="sidebarConceptRightsInput" />
+												</div>
+											</div>
 											<!-- Rights Holder -->
 											<label id="sidebarRightsHolderInputLabel" for="sidebarRightsHolder" title="" cassFramework="Rights Holder:" cassFrameworkTitle="A URI to an agent owning or managing rights over this competency framework. For example, https://credentialengineregistry.org/" ceasnFramework="Rights Holder:" ceasnFrameworkTitle="The agent owning or managing rights over this competency framework. For example, https://credentialengineregistry.org/" skosFramework="Rights Holder:" ceasnConceptScheme="Rights Holder:" skosFrameworkTitle="A URI to an agent owning or managing rights over this scheme. For example, https://credentialengineregistry.org/." class="viewMode editMode" style="margin:0px;">Rights Holder:</label>
 											<p id="sidebarRightsHolder" class="viewMode sidebarViewList" style="font-weight:bold;"></p>
@@ -898,6 +904,10 @@
 			</div>
 		</div>
 		<div id="frameworkNameContainer" ondrop="unlinkCompetency(event);" ontouchend="handleTouchEnd(event);">
+			<div class="private">
+				<label for="private" style="display:inline-block;vertical-align:middle;">Private</label>
+				<input id="private" type="checkbox" style="display:inline-block;vertical-align:middle;" />
+			</div>
 			<button id="selectButton" class="greenButton" style="float:right;display:none;" onclick='select();'>&gt;</button>
 			<button id="selectAllButton" style="float: right;display: none;" status="select" onclick='handleSelectAll($("#selectAllButton").attr("status"));'>Select All</button>
 			<span id="editFrameworkBack" onclick='checkForChangesBeforeBack(event);' style="float:left;"><i class="fa fa-arrow-circle-left" style="font-size:32px;color:black" > </i></span>&nbsp;

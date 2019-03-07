@@ -74,6 +74,12 @@ If your app needs to have the entire competency or relation returned as part of 
 
     ex:
     https://cassproject.github.io/cass-editor/index.html?select=Add&selectVerbose=true
+    
+## Change schema for selected postMessage
+If your app needs to receive CTDL-ASN fields in the postMessage when selecting competencies to add or link to, use `selectExport=ctdlasn`.
+
+    ex:
+    https://cassproject.github.io/cass-editor/index.html?selectExport=ctdlasn
 
 ## Select single competencies in frameworks
 If your app needs the ability to select a single competency from a framework, use `singleSelect=label` where 'label' is the tag you want the select button to have. ex: Add, Select, Import. Best used with `view=true`.

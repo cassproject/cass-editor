@@ -46,11 +46,36 @@ function select() {
 		if (selectedCompetency != null)
 			ary.push(selectedCompetency.shortId());
 
-
 	$("input:checked").parent().each(function (f) {
-		if (queryParams.selectVerbose == "true") {
-			ary.push(JSON.parse(EcCompetency.getBlocking($(this).attr("id")).toJson()));
-		} else {
+		if (queryParams.selectVerbose == "true" && queryParams.concepts != "true") {
+			if (queryParams.selectExport == "ctdlasn") {
+				var link;
+				if (EcRepository.shouldTryUrl($(this).attr("id")) == false) {
+					link = repo.selectedServer + "ceasn/" + EcCrypto.md5($(this).attr("id"));
+				} else {
+					link = $(this).attr("id").replace("/data/", "/ceasn/");
+				}
+				$.ajax({
+					async: false,
+					method: "GET",
+					url: link,
+					success: function(data) {
+						ary.push(data);
+					},
+					error: function(xhr, status, error) {
+						console.log(status);
+						console.log(error);
+					}
+				});
+			}
+			else {
+				ary.push(JSON.parse(EcCompetency.getBlocking($(this).attr("id")).toJson()));
+			}
+		}
+		else if (queryParams.selectVerbose == "true") {
+			ary.push(JSON.parse(EcConcept.getBlocking($(this).attr("id")).toJson()));
+		}
+		else {
 			ary.push($(this).attr("id"));
 		}
 		var rId = $(this).attr("relationId");
@@ -63,12 +88,37 @@ function select() {
 				}
 			}
 	});
+	var currentFramework = framework;
+	if (queryParams.selectExport == "ctdlasn" && queryParams.concepts != "true") {
+		if (framework != null) {
+			var link;
+			if (EcRepository.shouldTryUrl(framework.id) == false) {
+				link = repo.selectedServer + "ceasn/" + EcCrypto.md5(framework.id);
+			} else {
+				link = framework.id.replace("/data/", "/ceasn/");
+			}
+			$.ajax({
+				async: false,
+				method: "GET",
+				url: link,
+				success: function(data) {
+					if (data["@graph"]) {
+						currentFramework = data["@graph"][0];
+					}
+				},
+				error: function(xhr, status, error) {
+					console.log(status);
+					console.log(error);
+				}
+			});
+		}
+	}
 
 	var message = {
 		message: "selected",
 		selected: ary,
 		type: conceptMode ? 'Concept' : 'Competency',
-		selectedFramework: framework
+		selectedFramework: currentFramework
 	};
 	console.log(message);
 	parent.postMessage(message, queryParams.origin);
@@ -117,6 +167,19 @@ populateFramework = function (subsearch) {
 	}
 	else {
 		$("#editFrameworkSection #frameworkCount").text("0 items");
+	}
+
+	if (!isFirstEdit && EcRepository.getBlocking(framework.id).type == "EncryptedValue") {
+		$("#private").prop("checked", true);
+	}
+	else if (framework.competency && EcRepository.getBlocking(framework.id).type == "EncryptedValue") {
+		$("#private").prop("checked", true);
+	}
+	else if (isFirstEdit && selectedCompetency == null && queryParams.private == "true") {
+		$("#private").prop("checked", true);
+	}
+	else {
+		$("#private").prop("checked", false);
 	}
 
 	var frameworkDescription = framework.description;
@@ -671,7 +734,13 @@ renderSidebar = function (justLists) {
 							framework.removeRelation($(this).parent().attr("id"));
 						}
 						conditionalDelete($(this).parent().attr("id"));
-						repo.saveTo(framework, afterSaveRender, error);
+			            if ($("#private")[0].checked) {
+			                framework = EcEncryptedValue.toEncryptedValue(framework);
+			            }
+			            repo.saveTo(framework, function() {
+			                framework = EcFramework.getBlocking(framework.id);
+			                afterSaveRender();
+			            }, error);
 					});
 				}
 			};
@@ -1099,9 +1168,16 @@ refreshSidebar = function () {
 		$("#sidebarFeedback").append("<li>You do not own this framework.</li> ");
 		$("#tree .competency").removeClass("grabbable");
 		$(".ownerRequired").hide();
+		$(".private").hide();
 	} else {
 		$("#tree .competency").addClass("grabbable");
 		$(".ownerRequired").show();
+		if (EcIdentityManager.ids[0]) {
+			$(".private").show();
+		}
+		else {
+			$(".private").hide();
+		}
 	}
 
 	if (!thing.canEditAny(EcIdentityManager.getMyPks())) {
@@ -1218,7 +1294,11 @@ editSidebar = function () {
 						framework.removeCompetency(selectedCompetency.shortId());
 						framework.removeLevel(selectedCompetency.shortId());
 						conditionalDelete(selectedCompetency.shortId());
+			            if ($("#private")[0].checked) {
+			                framework = EcEncryptedValue.toEncryptedValue(framework);
+			            }
 						repo.saveTo(framework, function () {
+							framework = EcFramework.getBlocking(framework.id);
 							appendCompetencies(results, true);
 						}, error);
 						selectedCompetency = competency;

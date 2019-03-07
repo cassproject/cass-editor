@@ -69,32 +69,53 @@ openWebSocket = function (r) {
 			if (!$("#editFrameworkSection").is(":visible"))
 				return;
 
-			if (new ConceptScheme().isA(wut.getFullType()))
+			if (new ConceptScheme().isA(wut.getFullType()) || wut["encryptedType"] == "ConceptScheme")
 				if (framework != null)
 					if (framework.shortId() == wut.shortId()) {
 						framework = new ConceptScheme();
-						framework.copyFrom(wut);
+						if (wut["encryptedType"] == "ConceptScheme") {
+							var v = new EcEncryptedValue();
+							v.copyFrom(wut);
+							framework.copyFrom(v.decryptIntoObject());
+						}
+						else {
+							framework.copyFrom(wut);
+						}
 						populateFramework();
 						playSavedAnimation('frameworkNameContainer');
 						spitEvent("frameworkChanged", framework.shortId());
 					}
 
-			if (new EcFramework().isA(wut.getFullType()))
+			if (new EcFramework().isA(wut.getFullType()) || wut["encryptedType"] == "Framework")
 				if (framework != null)
 					if (framework.shortId() == wut.shortId()) {
 						framework = new EcFramework();
-						framework.copyFrom(wut);
+						if (wut["encryptedType"] == "Framework") {
+							var v = new EcEncryptedValue();
+							v.copyFrom(wut);
+							framework.copyFrom(v.decryptIntoObject());
+						}
+						else {
+							framework.copyFrom(wut);
+						}
 						renderSidebar(true);
 						playSavedAnimation('frameworkNameContainer');
 						populateFramework();
 						spitEvent("frameworkChanged", framework.shortId());
 					}
 
-			if (new Concept().isA(wut.getFullType())) {
+			if (new Concept().isA(wut.getFullType())  || wut["encryptedType"] == "Concept") {
 				if (framework != null)
 					if ($("[id=\"" + wut.shortId() + "\"]").length > 0) {
 						var com = new EcConcept();
-						com.copyFrom(wut);
+						if (wut["encryptedType"] == "Concept") {
+							var v = new EcEncryptedValue();
+							v.copyFrom(wut);
+							com.copyFrom(v.decryptIntoObject());
+						}
+						else {
+							com.copyFrom(wut);
+						}
 						$("#tree [id='" + com.shortId() + "']").remove();
 						if (com["skos:broader"] != null)
 							for (var i = 0; i < com["skos:broader"].length; i++) {
@@ -114,12 +135,19 @@ openWebSocket = function (r) {
 						playSavedAnimation(wut.shortId());
 					}
 			}
-			if (new EcCompetency().isA(wut.getFullType())) {
+			if (new EcCompetency().isA(wut.getFullType()) || wut["encryptedType"] == "Competency") {
 				if (framework != null)
 					if (framework.competency != null)
 						if (EcArray.has(framework.competency, wut.shortId()) || EcArray.has(framework.competency, wut.shortId()) || JSON.stringify(framework.competency).indexOf(EcCrypto.md5(wut.id)) != -1) {
 							var com = new EcCompetency();
-							com.copyFrom(wut);
+							if (wut["encryptedType"] == "Competency") {
+								var v = new EcEncryptedValue();
+								v.copyFrom(wut);
+								com.copyFrom(v.decryptIntoObject());
+							}
+							else {
+								com.copyFrom(wut);
+							}
 							populateFramework();
 							if (selectedCompetency != null) {
 								if (selectedCompetency.shortId() == wut.shortId()) {
@@ -133,12 +161,19 @@ openWebSocket = function (r) {
 						}
 			}
 
-			if (new EcLevel().isA(wut.getFullType())) {
+			if (new EcLevel().isA(wut.getFullType()) || wut["encryptedType"] == "Level") {
 				if (framework != null)
 					if (framework.level != null)
 						if (EcArray.has(framework.level, wut.shortId()) || EcArray.has(framework.level, wut.shortId())) {
 							var com = new EcLevel();
-							com.copyFrom(wut);
+							if (wut["encryptedType"] == "Level") {
+								var v = new EcEncryptedValue();
+								v.copyFrom(wut);
+								com.copyFrom(v.decryptIntoObject());
+							}
+							else {
+								com.copyFrom(wut);
+							}
 							window.fetches++;
 							refreshCompetency(com);
 							if (selectedCompetency != null) {
@@ -158,15 +193,31 @@ openWebSocket = function (r) {
 
 function cappend(event) {
 	if (event.data.message == "selected") {
+		var selectedFrameworkId = event.data.selectedFramework.id;
+		var selectedIds = [];
+		if (event.data.selectedFramework["ceasn:exactAlignment"]) {
+			selectedFrameworkId = event.data.selectedFramework["ceasn:exactAlignment"];
+		}
+		for (var i = 0; i < event.data.selected.length; i++) {
+			if (event.data.selected[i]["ceasn:exactAlignment"]) {
+				selectedIds.push(event.data.selected[i]["ceasn:exactAlignment"]);
+			}
+			else if (event.data.selected[i]["@id"]) {
+				selectedIds.push(event.data.selected[i]["@id"]);
+			}
+			else {
+				selectedIds.push(event.data.selected[i]);
+			}
+		}
 		console.log("I got " + event.data.selected.length + " selected items from the iframe");
 		console.log(event.data.selected);
 		if (conceptMode && event.data.type == 'Concept' && $("#selectConceptSection").attr("relation")) {
-			addAlignments(event.data.selected, selectedCompetency, $("#selectConceptSection").attr("relation"));
+			addAlignments(selectedIds, selectedCompetency, $("#selectConceptSection").attr("relation"));
 			$("#selectConceptSection").hide();
 			$("#editFrameworkSection").removeClass("transparent");
 			$(".sidebarToolbar:visible").removeClass("transparent");
 		} else if (event.data.type == 'Concept') {
-			attachUrlProperties(event.data.selected);
+			attachUrlProperties(selectedIds);
 			$("#selectConceptSection").hide();
 			$("#editFrameworkSection").removeClass("transparent");
 			$(".sidebarToolbar:visible").removeClass("transparent");
@@ -175,24 +226,24 @@ function cappend(event) {
 			}
 		} else if ($("#selectCompetencySection:visible").length > 0) {
 			//Don't allow alignments within the same framework.
-			if (framework.id == event.data.selectedFramework.id) {
+			if (framework.id == selectedFrameworkId) {
 				$("#selectCompetencySection").hide();
 				$("#editFrameworkSection").removeClass("transparent");
 				$(".sidebarToolbar:visible").removeClass("transparent");
 			} else {
-				var targets = event.data.selected;
+				var targets = selectedIds;
 				var thing = selectedCompetency;
 				addAlignments(targets, thing);
 				$("#selectCompetencySection").hide();
 				$("#editFrameworkSection").removeClass("transparent");
 				$(".sidebarToolbar:visible").removeClass("transparent");
 			}
-		} else if (event.data.selected.length > 0) {
+		} else if (selectedIds.length > 0) {
 			showCopyOrLinkDialog(function (copy) {
 				if (copy === true) {
-					copyCompetencies(event.data.selected);
+					copyCompetencies(selectedIds);
 				} else {
-					appendCompetencies(event.data.selected, true);
+					appendCompetencies(selectedIds, true);
 				}
 				hideCopyOrLinkDialog();
 				$("#selectConceptSection,#findCompetencySection").hide();
@@ -259,6 +310,10 @@ initIframe = function (comp) {
 			iframeCompetencyPath += "&inherit=" + queryParams.inherit;
 		if (queryParams.css != null && queryParams.css != undefined)
 			iframeCompetencyPath += "&css=" + queryParams.css;
+		if (queryParams.selectVerbose != null && queryParams.selectVerbose != undefined)
+			iframeCompetencyPath += "&selectVerbose=" + queryParams.selectVerbose;
+		if (queryParams.selectExport != null && queryParams.selectExport != undefined)
+			iframeCompetencyPath += "&selectExport=" + queryParams.selectExport;
 		if (queryParams.view != "true")
 			$("#selectCompetencyIframe").attr("src", iframeCompetencyPath);
 	} else if (comp == false) {
@@ -271,6 +326,10 @@ initIframe = function (comp) {
 			iframeCompetencyPath += "&inherit=" + queryParams.inherit;
 		if (queryParams.css != null && queryParams.css != undefined)
 			iframeCompetencyPath += "&css=" + queryParams.css;
+		if (queryParams.selectVerbose != null && queryParams.selectVerbose != undefined)
+			iframeCompetencyPath += "&selectVerbose=" + queryParams.selectVerbose;
+		if (queryParams.selectExport != null && queryParams.selectExport != undefined)
+			iframeCompetencyPath += "&selectExport=" + queryParams.selectExport;
 		if (queryParams.view != "true")
 			$("#selectCompetencyIframe").attr("src", iframeCompetencyPath);
 	}
@@ -287,6 +346,10 @@ initIframe = function (comp) {
 		iframePath += "&inherit=" + queryParams.inherit;
 	if (queryParams.css != null && queryParams.css != undefined)
 		iframePath += "&css=" + queryParams.css;
+	if (queryParams.selectVerbose != null && queryParams.selectVerbose != undefined)
+		iframePath += "&selectVerbose=" + queryParams.selectVerbose;
+	if (queryParams.selectExport != null && queryParams.selectExport != undefined)
+		iframePath += "&selectExport=" + queryParams.selectExport;
 	if (queryParams.view != "true")
 		$("#findCompetencyIframe").attr("src", iframePath);
 
@@ -303,6 +366,10 @@ initIframe = function (comp) {
 		iframeConceptPath += "&user=" + queryParams.user;
 	if (queryParams.conceptShow != null && queryParams.conceptShow != undefined)
 		iframeConceptPath += "&conceptShow=" + queryParams.conceptShow;
+	if (queryParams.selectVerbose != null && queryParams.selectVerbose != undefined)
+		iframeConceptPath += "&selectVerbose=" + queryParams.selectVerbose;
+	if (queryParams.selectExport != null && queryParams.selectExport != undefined)
+		iframeConceptPath += "&selectExport=" + queryParams.selectExport;
 	if (queryParams.view != "true")
 		$("#selectConceptIframe").attr("src", iframeConceptPath);
 }
