@@ -293,7 +293,7 @@
 				<button id="sidebarAddAnother" class="editMode turquoiseButton editControl competencyOnly" onclick="saveCompetency('true');" title="Save and Add Another."><i class="fa fa-check" style="position: relative;"><i class="fa fa-plus" style="font-size: 0.5em;position: absolute;bottom: 10%;left: 1.5em;"></i></i></button>
 				<button id="sidebarSearchCompetencies" class="viewMode ownerRequired blueButton editControl absentForConcepts" onclick="$('#sidebarAddCompetencies').attr('value', 'search');addCompetency();" title="Attach subitems from other sources to the selected item."><i class="fa fa-search-plus"></i></button>
 				<button id="sidebarAddCompetencies" class="viewMode ownerRequired blueButton editControl" onclick="$('#sidebarAddCompetencies').attr('value', 'new');addCompetency();" title="Add a new subitem to the selected item."><i class="fa fa-plus"></i></button>
-				<select id="sidebarAddLevels" class="absentForConcepts viewMode editControl absentForCeasn frameworkEditControl" onclick="addLevel();$(this).children().first().prop('selected', true);">
+				<select id="sidebarAddLevels" class="absentForConcepts viewMode editControl competencyOnly tlaDataFields absentForCeasn frameworkEditControl" onclick="addLevel();$(this).children().first().prop('selected', true);">
 						<option style="display:none;" disabled selected>Add Levels</option>
 						<option class="" value="search">Search...</option>
 						<option value="new">New</option>
@@ -331,15 +331,15 @@
 							<div id="recordKeys" class="recordKeys sidebarAccordion exempt">
 								<!-- URL -->
 								<div>
-									<label id="sidebarURLLabel" for="sidebarURL" title="" cassCompetency="Competency URL:" cassCompetencyTitle="The URL of the competency." cassFrameworkTitle="The URL of the framework." ceasnCompetencyTitle="The URL of the competency." ceasnFrameworkTitle="The URL of the framework." skosCompetencyTitle="The URL of the concept." skosFrameworkTitle="The URL of the concept scheme." cassFramework="Framework URL:" ceasnCompetency="Competency URL:" ceasnFramework="Framework URL:" skosCompetency="Concept URL:" skosFramework="Concept Scheme URL:" ceasnConceptScheme="Concept Scheme URL:" class="viewMode editMode">URL:</label>
+									<label id="sidebarURLLabel" for="sidebarURL" title="" cassCompetency="URL:" cassCompetencyTitle="The URL of the competency." cassFrameworkTitle="The URL of the framework." ceasnCompetencyTitle="The URL of the competency." ceasnFrameworkTitle="The URL of the framework." skosCompetencyTitle="The URL of the concept." skosFrameworkTitle="The URL of the concept scheme." cassFramework="Framework URL:" ceasnCompetency="Competency URL:" ceasnFramework="Framework URL:" skosCompetency="Concept URL:" skosFramework="Concept Scheme URL:" ceasnConceptScheme="Concept Scheme URL:" class="viewMode editMode">URL:</label>
 									<div class="viewMode editMode">
 										<div style="margin-top: 0;" class="sidebarPropertyLink">
 											<div><button title='Copy URL to the clipboard.' onclick='copyToClipboard(event);'><i class='fa fa-clipboard'></i></button></div><a target="_blank" href="#" id="sidebarURL" class="viewMode editMode">URL</a></div>
 									</div>
 								</div>
 								<div>
-									<label id="sidebarCTIDLabel" for="sidebarCTID" title="" cassCompetency="CTID:" cassCompetencyTitle="The CTID of the competency." cassFramework="CTID:" cassFrameworkTitle="The CTID of the framework." ceasnCompetency="CTID:" ceasnCompetencyTitle="The CTID of the competency." ceasnFramework="CTID:" ceasnFrameworkTitle="The CTID of the framework." skosCompetency="CTID:" skosCompetencyTitle="The CTID of the concept." skosFramework="CTID:" skosFrameworkTitle="The CTID of the concept scheme." ceasnConceptScheme="CTID:" class="viewMode editMode">CTID:</label>
-									<div style="word-break: break-all;" class="viewMode editMode">
+									<label id="sidebarCTIDLabel" for="sidebarCTID" title="" cassCompetency="CTID:" cassCompetencyTitle="The CTID of the competency." cassFramework="CTID:" cassFrameworkTitle="The CTID of the framework." ceasnCompetency="CTID:" ceasnCompetencyTitle="The CTID of the competency." ceasnFramework="CTID:" ceasnFrameworkTitle="The CTID of the framework." skosCompetency="CTID:" skosCompetencyTitle="The CTID of the concept." skosFramework="CTID:" skosFrameworkTitle="The CTID of the concept scheme." ceasnConceptScheme="CTID:" class="viewMode editMode ceasnOnly">CTID:</label>
+									<div style="word-break: break-all;" class="viewMode editMode ceasnOnly">
 										<div style="margin-top: 0;" class="sidebarPropertyLink">
 											<div>
 												<button title='Copy URL to the clipboard.' onclick='copyToClipboard(event);'>
@@ -356,7 +356,7 @@
 							<div class="sidebarEditSection">
 								<!-- General Properties -->
 								<!-- Name -->
-								<label id="sidebarNameInputLabel" for="sidebarNameInput" title="" cassCompetency="Competency Name:" cassCompetencyTitle="The name of the competency. One name per language." cassFramework="Framework Name:" cassFrameworkTitle="The name of the framework. One name per language." ceasnCompetency="Competency Text:" ceasnCompetencyTitle="The text of the competency. One per language." ceasnFramework="Name:" ceasnFrameworkTitle="The name or title of this competency framework. One name or title per language." skosCompetency="Preferred Label:" skosCompetencyTitle="Preferred display label for this concept. One label per language." skosFramework="Title:" skosFrameworkTitle="Preferred display label for this scheme. One label per language." ceasnConceptScheme="Title:" class="editMode" style="margin: 0px;">Name:</label>
+								<label id="sidebarNameInputLabel" for="sidebarNameInput" title="" cassCompetency="Name:" cassCompetencyTitle="The name of the competency. One name per language." cassFramework="Framework Name:" cassFrameworkTitle="The name of the framework. One name per language." ceasnCompetency="Competency Text:" ceasnCompetencyTitle="The text of the competency. One per language." ceasnFramework="Name:" ceasnFrameworkTitle="The name or title of this competency framework. One name or title per language." skosCompetency="Preferred Label:" skosCompetencyTitle="Preferred display label for this concept. One label per language." skosFramework="Title:" skosFrameworkTitle="Preferred display label for this scheme. One label per language." ceasnConceptScheme="Title:" class="editMode" style="margin: 0px;">Name:</label>
 								<h3 id="sidebarName" class="viewMode sidebarViewList">Framework Name Here</h3>
 								<div class="sidebarInputGrouping editMode editControl onePerLanguage">
 									<div class="sidebarInputRow">
@@ -791,7 +791,7 @@
 							<hr class="viewMode editMode competencyOnly" style="margin-top:0px;">
 							<div id="alignmentsOptional">
 								<!-- hasChild and isChildOf -->
-								<div class="ceasnDataFields exempt">
+								<div class="ceasnDataFields exempt ceasnOnly">
 									<!-- Has Child -->
 									<label for="sidebarHasChild" title="" style="margin:0px;" ceasnCompetency="Has Child:" skosCompetency="Broader:" ceasnCompetencyTitle="The referenced competency is lower in some arbitrary hierarchy than this competency." skosCompetencyTitle="The referenced concept is lower in some arbitrary hierarchy than this concept." class="viewMode editMode competencyOnly">hasChild:</label>
 									<ul id="sidebarHasChild" ceasnCompetency="hasChild" skosCompetency="hasChild" class="viewMode editMode relationList exempt competencyOnly"></ul>
