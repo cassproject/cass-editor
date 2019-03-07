@@ -56,10 +56,16 @@ function importFile() {
     } else if (file.name.endsWith(".json") || file.name.endsWith(".jsonld")) {
         //Try JSON-LD first, checks for @graph
         analyzeJsonLdFramework(file, function (data, ctdlasn) {
-            $("#importJsonLdFrameworks").text("1 Framework Detected.");
-            $("#importJsonLdCompetencies").text(EcObject.keys(data).length-1 + " Competencies Detected.");
+            if (ctdlasn == "ctdlasnConcept") {
+                $("#importJsonLdFrameworks").text("1 Concept Scheme Detected.");
+                $("#importJsonLdCompetencies").text(EcObject.keys(data).length-1 + " Concepts Detected.");
+            }
+            else {
+                $("#importJsonLdFrameworks").text("1 Framework Detected.");
+                $("#importJsonLdCompetencies").text(EcObject.keys(data).length-1 + " Competencies Detected.");
+            }
             asnCompetencyCount = EcObject.keys(data).length;
-            if (ctdlasn == "ctdlasn") {
+            if (ctdlasn == "ctdlasn" || ctdlasn == "ctdlasnConcept") {
                 showPage("#jsonLdImportFrameworksSection");
             }
             else {
@@ -359,11 +365,13 @@ function analyzeJsonLdFramework(file, success, failure) {
         var result = ((e)["target"])["result"];
         var jsonObj = JSON.parse(result);
         if (jsonObj["@graph"]) {
-            if (jsonObj["@graph"][0]["@type"] == "skos:ConceptScheme") {
-                failure("Concept schemes cannot yet be imported.");
-            }
             if (jsonObj["@context"] == "http://credreg.net/ctdlasn/schema/context/json") {
-                success(jsonObj["@graph"], "ctdlasn");
+                if (jsonObj["@graph"][0]["@type"].indexOf("Concept") != -1) {
+                    success(jsonObj["@graph"], "ctdlasnConcept");
+                }
+                else {
+                    success(jsonObj["@graph"], "ctdlasn");
+                }
             }
             else {
                 success(jsonObj["@graph"], null);
@@ -396,7 +404,7 @@ function importJsonLdFramework() {
                 var data2 = data.substring(data.indexOf("ctdlasn")+7);
                 data = data1 + "data" + data2;
             }
-            framework = EcFramework.getBlocking(data);
+            framework = EcRepository.getBlocking(data);
             showPage("framework");
             populateFramework();
             selectedCompetency = null;
