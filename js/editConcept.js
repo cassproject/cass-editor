@@ -122,6 +122,7 @@ unlinkConcept = function (c) {
     delete c["skos:broader"];
     if (framework["skos:hasTopConcept"] == null)
         framework["skos:hasTopConcept"] = [];
+    EcArray.setRemove(framework["skos:hasTopConcept"], c.shortId());
     EcArray.setAdd(framework["skos:hasTopConcept"], c.shortId());
     c["skos:topConceptOf"] = framework.shortId();
     if ($("#private")[0].checked) {
