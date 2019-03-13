@@ -472,7 +472,7 @@ renderSidebar = function (justLists) {
 			var label = $(this).attr(labelChoice);
 			if (label != null)
 				$(this).html("<i class='fa fa-info-circle'></i>" + ' ' + label);
-			else
+			else if ($(this).attr("class") != "private")
 				$(this).html("<i class='fa fa-info-circle'></i>" + ' ' + $(this).text());
 		});
 	if (justLists != true)
@@ -1179,16 +1179,9 @@ refreshSidebar = function () {
 		$("#sidebarFeedback").append("<li>You do not own this framework.</li> ");
 		$("#tree .competency").removeClass("grabbable");
 		$(".ownerRequired").hide();
-		$(".private").hide();
 	} else {
 		$("#tree .competency").addClass("grabbable");
 		$(".ownerRequired").show();
-		if (EcIdentityManager.ids[0]) {
-			$(".private").show();
-		}
-		else {
-			$(".private").hide();
-		}
 	}
 
 	if (!thing.canEditAny(EcIdentityManager.getMyPks())) {
@@ -1272,6 +1265,9 @@ editSidebar = function () {
 	if (thing == framework) {
 		$("#sidebarUnlink").hide();
 		$("#sidebarRemove").hide();
+		if (EcIdentityManager.ids[0]) {
+			$(".private").show();
+		}
 	}
 
 	if (selectedRelation == null) {

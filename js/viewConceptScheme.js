@@ -214,6 +214,9 @@ editConceptSidebar = function () {
     if (thing == framework) {
         $("#sidebarUnlink").hide();
         $("#sidebarRemove").hide();
+        if (EcIdentityManager.ids[0]) {
+            $(".private").show();
+        }
     }
 
     if (selectedRelation == null) {

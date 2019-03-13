@@ -307,18 +307,22 @@
 				<button id="sidebarMoveUp" class="viewMode editControl absentForConcepts frameworkEditControl" onclick="moveUp();" title="Move Up in hierarchy. Shortcut: Shift+Up"><i class="fa fa-arrow-up"></i></button>
 				<button id="sidebarMoveDown" class="viewMode editControl absentForConcepts frameworkEditControl" onclick="moveDown();" title="Move Down in hierarchy. Shortcut: Shift+Down"><i class="fa fa-arrow-down"></i></button>
 				<select id="sidebarExport" class="viewMode" onchange="exportSelected();$(this).children().first().prop('selected', true);">
-						<option style="display:none;" disabled selected>Download or view in...</option>
-						<option disabled>Schema (Format)</option>
-						<option class="absentForConcepts frameworkOnly" value="asn">Achievement Standards Network (JSON)</option>
-						<option class="" value="cass">CASS (JSON-LD)</option>
-						<option class="" value="cassn4">CASS (RDF Quads)</option>
-						<option class="" value="cassrdfjson">CASS (RDF+JSON)</option>
-						<option class="" value="cassrdfxml">CASS (RDF+XML)</option>
-						<option class="" value="cassturtle">CASS (Turtle)</option>
-						<option class="" value="ceasn">Credential Engine ASN (JSON-LD)</option>
-						<option class="absentForConcepts frameworkOnly" value="csv">Table (CSV)</option>
-						<option class="absentForConcepts" value="case">IMS Global CASE (JSON)</option>
-					</select>
+					<option style="display:none;" disabled selected>Download or view in...</option>
+					<option disabled>Schema (Format)</option>
+					<option class="absentForConcepts frameworkOnly" value="asn">Achievement Standards Network (JSON)</option>
+					<option class="" value="cass">CASS (JSON-LD)</option>
+					<option class="" value="cassn4">CASS (RDF Quads)</option>
+					<option class="" value="cassrdfjson">CASS (RDF+JSON)</option>
+					<option class="" value="cassrdfxml">CASS (RDF+XML)</option>
+					<option class="" value="cassturtle">CASS (Turtle)</option>
+					<option class="" value="ceasn">Credential Engine ASN (JSON-LD)</option>
+					<option class="absentForConcepts frameworkOnly" value="csv">Table (CSV)</option>
+					<option class="absentForConcepts" value="case">IMS Global CASE (JSON)</option>
+				</select>
+				<div class="private editMode" style="margin-top:.5rem;">
+					<label class="private" for="private" style="display:inline-block;vertical-align:middle;">Private</label>
+					<input id="private" class="private" type="checkbox" style="display:inline-block;vertical-align:middle;" />
+				</div>
 				<hr style="margin:0px;padding:0px;margin-top: 0.3rem">
 				<small id="sidebarFeedback" class="editControl"></small>
 			</div>
@@ -903,10 +907,6 @@
 			</div>
 		</div>
 		<div id="frameworkNameContainer" ondrop="unlinkCompetency(event);" ontouchend="handleTouchEnd(event);">
-			<div class="private">
-				<label for="private" style="display:inline-block;vertical-align:middle;">Private</label>
-				<input id="private" type="checkbox" style="display:inline-block;vertical-align:middle;" />
-			</div>
 			<button id="selectButton" class="greenButton" style="float:right;display:none;" onclick='select();'>&gt;</button>
 			<button id="selectAllButton" style="float: right;display: none;" status="select" onclick='handleSelectAll($("#selectAllButton").attr("status"));'>Select All</button>
 			<span id="editFrameworkBack" onclick='checkForChangesBeforeBack(event);' style="float:left;"><i class="fa fa-arrow-circle-left" style="font-size:32px;color:black" > </i></span>&nbsp;
