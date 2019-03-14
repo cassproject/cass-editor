@@ -694,17 +694,49 @@ renderSidebar = function (justLists) {
 				continue;
 			var renderAlignment = function (a, displayCompetency, relationType) {
 				var li = $(".relationList[" + labelChoice + "=" + relationType + "]").append("<li/>").children().last();
-				if (displayCompetency == null)
+				
+				var done = function() {
+					li.attr("id", a.shortId());
+					if (viewMode)
+						$(".relationList[" + labelChoice + "=" + relationType + "]").show().prev().show();
+					else {
+						var x = li.prepend("<button class='viewMode frameworkEditControl' tabindex='0' style='float:right; cursor:pointer;'><i class='fa fa-times'></i></button>").children().first();
+						x.click(function () {
+							if (conceptMode) {
+								let trimId = EcRemoteLinkedData.trimVersionFromUrl($(this).parent().attr("id"));
+								for (let i = 0; i < framework.relation.length; i++)
+									if (EcRemoteLinkedData.trimVersionFromUrl(framework.relation[i]).equals(trimId))
+										framework.relation.splice(i, 1);
+							} else {
+								framework.removeRelation($(this).parent().attr("id"));
+							}
+							conditionalDelete($(this).parent().attr("id"));
+				            if ($("#private")[0].checked) {
+				                framework = EcEncryptedValue.toEncryptedValue(framework);
+				            }
+				            repo.saveTo(framework, function() {
+				                framework = EcFramework.getBlocking(framework.id);
+				                afterSaveRender();
+				            }, error);
+						});
+					}
+				}
+
+				if (displayCompetency == null) {
 					li.text(a.target);
+					done();
+				}
 				else if (conceptMode) {
 					if (displayCompetency["skos:prefLabel"] != null)
 						li.text(Thing.getDisplayStringFrom(displayCompetency["skos:prefLabel"]));
 					else
 						li.text(displayCompetency);
+					done();
 				} else {
 					if (displayCompetency.getName) {
 						var name = displayCompetency.getName();
 						li.text(Thing.getDisplayStringFrom(name));
+						done();
 					}
 					else if (displayCompetency.indexOf("http") != -1) {
 						resolveNameFromUrl(displayCompetency, function(result) {
@@ -714,34 +746,13 @@ renderSidebar = function (justLists) {
                             else {
                             	li.text(displayCompetency);
                             }
+                            done();
                         });
 					}
-					else
+					else {
 						li.text(displayCompetency);
-				}
-				li.attr("id", a.shortId());
-				if (viewMode)
-					$(".relationList[" + labelChoice + "=" + relationType + "]").show().prev().show();
-				else {
-					var x = li.prepend("<button class='viewMode frameworkEditControl' tabindex='0' style='float:right; cursor:pointer;'><i class='fa fa-times'></i></button>").children().first();
-					x.click(function () {
-						if (conceptMode) {
-							let trimId = EcRemoteLinkedData.trimVersionFromUrl($(this).parent().attr("id"));
-							for (let i = 0; i < framework.relation.length; i++)
-								if (EcRemoteLinkedData.trimVersionFromUrl(framework.relation[i]).equals(trimId))
-									framework.relation.splice(i, 1);
-						} else {
-							framework.removeRelation($(this).parent().attr("id"));
-						}
-						conditionalDelete($(this).parent().attr("id"));
-			            if ($("#private")[0].checked) {
-			                framework = EcEncryptedValue.toEncryptedValue(framework);
-			            }
-			            repo.saveTo(framework, function() {
-			                framework = EcFramework.getBlocking(framework.id);
-			                afterSaveRender();
-			            }, error);
-					});
+						done();
+					}
 				}
 			};
 			if (a.source == selectedCompetency.shortId()) {
