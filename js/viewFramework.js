@@ -537,6 +537,13 @@ renderSidebar = function (justLists) {
 	$("#detailSlider ul").each(function () {
 		var u = $(this).attr(fieldChoice);
 		var val = thing[u];
+		var content = window.getComputedStyle($(this)[0], '::after').getPropertyValue('content');
+		if (viewMode && !$(this).hasClass("exempt") && content == '"None"') {
+			$(this).prev().prev("label").hide();
+			$(this).prev().hide();
+			$(this).removeClass("viewMode");
+			return;
+		}
 		if ($(this).attr(safeChoice) != null && ($(this).attr(labelChoice) == null || $(this).attr(labelChoice) === undefined)) {
 			$(this).prev().prev("label").hide();
 			$(this).prev().hide();
@@ -697,8 +704,10 @@ renderSidebar = function (justLists) {
 				
 				var done = function() {
 					li.attr("id", a.shortId());
-					if (viewMode)
-						$(".relationList[" + labelChoice + "=" + relationType + "]").show().prev().show();
+					if (viewMode) {
+						$(".relationList[" + labelChoice + "=" + relationType + "]").prevAll("label:first").addClass("viewMode");
+						$(".relationList[" + labelChoice + "=" + relationType + "]").show().prevAll("label:first").show();
+					}
 					else {
 						var x = li.prepend("<button class='viewMode frameworkEditControl' tabindex='0' style='float:right; cursor:pointer;'><i class='fa fa-times'></i></button>").children().first();
 						x.click(function () {
