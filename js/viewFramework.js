@@ -535,7 +535,7 @@ renderSidebar = function (justLists) {
 			}
 		});
 	$("#detailSlider ul").each(function () {
-		var u = $(this).prev().attr(fieldChoice);
+		var u = $(this).attr(fieldChoice);
 		var val = thing[u];
 		if ($(this).attr(safeChoice) != null && ($(this).attr(labelChoice) == null || $(this).attr(labelChoice) === undefined)) {
 			$(this).prev().prev("label").hide();
