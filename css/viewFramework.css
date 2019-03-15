@@ -308,7 +308,7 @@ hr {
 }
 
 
-#detailSlider input,
+#detailSlider input:not(.private),
 #detailSlider textarea,
 #detailSlider .ceasnDataFields select {
     width: calc(100% - 3.25rem);
@@ -328,11 +328,11 @@ hr {
     width:auto;
 }
 
-#detailSlider label {
+#detailSlider label:not(.private) {
     cursor: help;
 }
 
-#detailSlider label::before {
+.sidebarInner label::before {
     content: "\A";
     white-space: pre;
 }
@@ -455,13 +455,7 @@ hr {
 }
 
 .private {
-    margin-top: .5rem;
-    margin-right: 1rem;
+    display: none;
     float: right;
 }
 
-#selectCompetencySection .private,
-#selectConceptSection .private,
-#findCompetencySection .private {
-    display: none;
-}

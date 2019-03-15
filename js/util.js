@@ -70,6 +70,10 @@ if (queryParams.concepts == "true") {
 	$("#sidebarRemove").remove();
 	$("#sidebarExport option").each(function () {
 		$(this).text(this.text.replace("CASS", "SKOS"));
+		$(this).text(this.text.replace("ASN", "SKOS"));
+		if ($(this).val() == "ceasn") {
+			$(this).addClass("frameworkOnly");
+		}
 	});
 	$("#confirmDialog #confirmText").text("Are you sure you want to delete this concept?");
 	$("#createNewButton").attr("title", "Create a new concept scheme.");

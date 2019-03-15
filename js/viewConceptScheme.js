@@ -87,6 +87,27 @@ function afterConceptRefresh(level, subsearch) {
         if ($(".selected").length > 0)
             $(".selected").get(0).scrollIntoView(false);
     }
+    var sort = function () {
+        $(this).children().sort(function (a, b) {
+            var ax = null;
+            var bx = null;
+            if (framework["skos:hasTopConcept"].indexOf(a.getAttribute('id')) != -1) {
+                ax = framework["skos:hasTopConcept"].indexOf(a.getAttribute('id'));
+                bx = framework["skos:hasTopConcept"].indexOf(b.getAttribute('id'));
+            }
+            else {
+                var parentA = a.parentNode.parentNode;
+                var parentB = b.parentNode.parentNode;
+                if (parentA == parentB && parentA.getAttribute('id').indexOf("http") != -1) {
+                    parentA = EcConcept.getBlocking(parentA.getAttribute('id'));
+                    ax = parentA["skos:narrower"].indexOf(a.getAttribute('id'));
+                    bx = parentA["skos:narrower"].indexOf(b.getAttribute('id'));
+                }
+            }
+            return ax - bx;
+        }).detach().appendTo($(this));
+    };
+    $("#tree").each(sort).find("ul").each(sort);
     collapseCompetencies();
 }
 
@@ -193,6 +214,9 @@ editConceptSidebar = function () {
     if (thing == framework) {
         $("#sidebarUnlink").hide();
         $("#sidebarRemove").hide();
+        if (EcIdentityManager.ids[0]) {
+            $(".private").show();
+        }
     }
 
     if (selectedRelation == null) {
