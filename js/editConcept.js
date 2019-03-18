@@ -331,8 +331,8 @@ detangleConcepts = function (me, data, targetData) {
             }
             repo.saveTo(c, function () {
                 repo.saveTo(framework, function() {
-                    c = EcConcept.getBlocking(c);
-                    framework = EcConceptScheme.getBlocking(framework);
+                    c = EcConcept.getBlocking(c.id);
+                    framework = EcConceptScheme.getBlocking(framework.id);
                     part3();
                 }, console.error); //Saving framework again.
             }, console.error);
