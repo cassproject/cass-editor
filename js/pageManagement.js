@@ -91,6 +91,10 @@ function gotoPage(pageId, state) {
                 resizeWindow($(window).width() / 2);
             });
         });
+    if ($("#editFrameworkSection").hasClass("transparent")) {
+        $("#editFrameworkSection").removeClass("transparent");
+        $(".sidebarToolbar").removeClass("transparent");
+    }
 }
 
 function showPage(pageId, state) {
