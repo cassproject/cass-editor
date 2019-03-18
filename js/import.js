@@ -412,7 +412,7 @@ function importJsonLdFramework() {
             if (parent != null && queryParams.origin != null && queryParams.origin != "")
                 parent.postMessage({
                     message: "importFinished",
-                    framework: f.id
+                    framework: framework.id
                 }, queryParams.origin);
         },
         failure: function (failure) {
