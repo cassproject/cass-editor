@@ -409,6 +409,11 @@ function importJsonLdFramework() {
             populateFramework();
             selectedCompetency = null;
             refreshSidebar();
+            if (parent != null && queryParams.origin != null && queryParams.origin != "")
+                parent.postMessage({
+                    message: "importFinished",
+                    framework: f.id
+                }, queryParams.origin);
         },
         failure: function (failure) {
             alert("Import failed. Check your import file for any errors.");
