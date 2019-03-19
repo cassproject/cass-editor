@@ -448,7 +448,7 @@ EcRemoteLinkedData = stjs.extend(EcRemoteLinkedData, EcLinkedData, [], function(
      */
     prototype.getTimestamp = function() {
         var timestamp = this.id.substring(this.id.lastIndexOf("/") + 1);
-        if (timestamp.matches("\\/[0-9]+")) {
+        if (timestamp.matches("[0-9]+")) {
             return Integer.parseInt(timestamp);
         } else {
             return null;
