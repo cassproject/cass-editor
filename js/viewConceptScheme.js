@@ -216,6 +216,18 @@ editConceptSidebar = function () {
         $("#sidebarRemove").hide();
         if (EcIdentityManager.ids[0]) {
             $(".private").show();
+            if (!isFirstEdit && EcRepository.getBlocking(framework.id).type == "EncryptedValue") {
+                $("#private").prop("checked", true);
+            }
+            else if (framework.competency && EcRepository.getBlocking(framework.id).type == "EncryptedValue") {
+                $("#private").prop("checked", true);
+            }
+            else if (isFirstEdit && selectedCompetency == null && queryParams.private == "true") {
+                $("#private").prop("checked", true);
+            }
+            else {
+                $("#private").prop("checked", false);
+            }
         }
     }
 

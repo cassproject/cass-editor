@@ -169,19 +169,6 @@ populateFramework = function (subsearch) {
 		$("#editFrameworkSection #frameworkCount").text("0 items");
 	}
 
-	if (!isFirstEdit && EcRepository.getBlocking(framework.id).type == "EncryptedValue") {
-		$("#private").prop("checked", true);
-	}
-	else if (framework.competency && EcRepository.getBlocking(framework.id).type == "EncryptedValue") {
-		$("#private").prop("checked", true);
-	}
-	else if (isFirstEdit && selectedCompetency == null && queryParams.private == "true") {
-		$("#private").prop("checked", true);
-	}
-	else {
-		$("#private").prop("checked", false);
-	}
-
 	var frameworkDescription = framework.description;
 	frameworkDescription = EcArray.isArray(frameworkDescription) ? frameworkDescription : [frameworkDescription];
 	$("#editFrameworkSection #frameworkDescription").children().remove();
@@ -1287,6 +1274,18 @@ editSidebar = function () {
 		$("#sidebarRemove").hide();
 		if (EcIdentityManager.ids[0]) {
 			$(".private").show();
+			if (!isFirstEdit && EcRepository.getBlocking(framework.id).type == "EncryptedValue") {
+				$("#private").prop("checked", true);
+			}
+			else if (framework.competency && EcRepository.getBlocking(framework.id).type == "EncryptedValue") {
+				$("#private").prop("checked", true);
+			}
+			else if (isFirstEdit && selectedCompetency == null && queryParams.private == "true") {
+				$("#private").prop("checked", true);
+			}
+			else {
+				$("#private").prop("checked", false);
+			}
 		}
 	}
 
