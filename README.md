@@ -187,6 +187,9 @@ Along with user credentials, the cass-editor can be configured to not show other
 ## Only show concept schemes that individual owns.
 When linking a concept to a competency, the cass-editor can be configured to not show others' concept schemes. This functionality can be enabled by the URL parameter `conceptShow=mine`.
 
+## When selecting a concept to link to, allow editing.
+When linking a concept to a competency or another concept, the cass-editor can be configured to allow the user to edit concepts or concept schemes. This functionality can be enabled by the URL parameter `editIframe=true`.
+
 ## Use canonical identifiers.
 CASS supports the storage of objects where the @id parameter does not refer to the object in CASS.
 

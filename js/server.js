@@ -370,6 +370,8 @@ initIframe = function (comp) {
 		iframeConceptPath += "&selectVerbose=" + queryParams.selectVerbose;
 	if (queryParams.selectExport != null && queryParams.selectExport != undefined)
 		iframeConceptPath += "&selectExport=" + queryParams.selectExport;
+	if (queryParams.editIframe != "true")
+		iframeConceptPath += "&view=true";
 	if (queryParams.view != "true")
 		$("#selectConceptIframe").attr("src", iframeConceptPath);
 }
