@@ -613,6 +613,7 @@ deleteCompetency = function () {
                 searchFrameworks(createParamObj());
             else
                 showPage(defaultPage);
+            $('[id="'+framework.shortId()+'"').remove();
         }
         else
             showConfirmDialog(function (confirmed) {
@@ -633,6 +634,7 @@ deleteCompetency = function () {
                         if (framework.level != null)
                             for (var i = 0; i < framework.level.length; i++)
                                 conditionalDelete(framework.level[i]);
+                        $('[id="'+framework.shortId()+'"').remove();
                         framework = null;
                         selectedCompetency = null;
                     }, console.log);
