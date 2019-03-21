@@ -56,19 +56,34 @@ function importFile() {
     } else if (file.name.endsWith(".json") || file.name.endsWith(".jsonld")) {
         //Try JSON-LD first, checks for @graph
         analyzeJsonLdFramework(file, function (data, ctdlasn) {
+            var invalid = false;
             if (ctdlasn == "ctdlasnConcept") {
-                $("#importJsonLdFrameworks").text("1 Concept Scheme Detected.");
-                $("#importJsonLdCompetencies").text(EcObject.keys(data).length-1 + " Concepts Detected.");
+                if (queryParams.concepts == "true") {
+                    $("#importJsonLdFrameworks").text("1 Concept Scheme Detected.");
+                    $("#importJsonLdCompetencies").text(EcObject.keys(data).length-1 + " Concepts Detected.");
+                }
+                else {
+                    alert("Concept Schemes must be imported in the concept scheme editor.");
+                    showPage("#importSection");
+                    invalid = true;
+                }
             }
             else {
-                $("#importJsonLdFrameworks").text("1 Framework Detected.");
-                $("#importJsonLdCompetencies").text(EcObject.keys(data).length-1 + " Competencies Detected.");
+                if (queryParams.concepts != "true") {
+                    $("#importJsonLdFrameworks").text("1 Framework Detected.");
+                    $("#importJsonLdCompetencies").text(EcObject.keys(data).length-1 + " Competencies Detected.");
+                }
+                else {
+                    alert("Frameworks must be imported in the competency editor.");
+                    showPage("#importSection");
+                    invalid = true;
+                }
             }
             asnCompetencyCount = EcObject.keys(data).length;
-            if (ctdlasn == "ctdlasn" || ctdlasn == "ctdlasnConcept") {
+            if (!invalid && (ctdlasn == "ctdlasn" || ctdlasn == "ctdlasnConcept")) {
                 showPage("#jsonLdImportFrameworksSection");
             }
-            else {
+            else if (!invalid) {
                 alert("Context is not CTDL-ASN");
                 showPage("#importSection");
             }
