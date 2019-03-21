@@ -168,7 +168,13 @@ The cass-editor can be populated with templates that set initial properties of n
         competency: {
             "http://bogus/property": "woo"
         },
-        framework: {
+	    framework: {
+	    	"http://bogus/property": "woo"
+	    },
+        conceptScheme: {
+            "http://bogus/property": "woo"
+        },
+        concept: {
             "http://bogus/property": "woo"
         }
       }),

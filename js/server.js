@@ -435,8 +435,14 @@ var messageListener = function (evt) {
 		} catch (e) {}
 	if (data != null && data != "") {
 		if (data.action == "template") {
-			EcFramework.template = data.framework;
-			EcCompetency.template = data.competency;
+			if (data.framework != null)
+            	EcFramework.template = data.framework;
+            if (data.competency != null)
+            	EcCompetency.template = data.competency;
+            if (data.conceptScheme != null)
+            	EcConceptScheme.template = data.conceptScheme;
+            if (data.concept != null)
+            	EcConcept.template = data.concept;
 			var message = {
 				action: "response",
 				message: "templateOk"
