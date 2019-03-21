@@ -342,7 +342,7 @@
 									</div>
 								</div>
 								<div>
-									<label id="sidebarCTIDLabel" for="sidebarCTID" title="" cassCompetency="CTID:" cassCompetencyTitle="The CTID of the competency." cassFramework="CTID:" cassFrameworkTitle="The CTID of the framework." ceasnCompetency="CTID:" ceasnCompetencyTitle="The CTID of the competency." ceasnFramework="CTID:" ceasnFrameworkTitle="The CTID of the framework." skosCompetency="CTID:" skosCompetencyTitle="The CTID of the concept." skosFramework="CTID:" skosFrameworkTitle="The CTID of the concept scheme." ceasnConceptScheme="CTID:" class="viewMode editMode ceasnOnly">CTID:</label>
+									<label id="sidebarCTIDLabel" for="sidebarCTID" title="" cassCompetency="CTID:" cassCompetencyTitle="The CTID of the competency." cassFramework="CTID:" cassFrameworkTitle="The CTID of the framework." ceasnCompetency="CTID:" ceasnCompetencyTitle="The CTID of the competency." ceasnFramework="CTID:" ceasnFrameworkTitle="The CTID of the framework." skosCompetency="CTID:" skosCompetencyTitle="Globally unique Credential Transparency Identifier (CTID) by which the creator, owner or provider of a resource recognizes it in transactions with the external environment (e.g., in verifiable claims involving the resource)." skosFramework="CTID:" skosFrameworkTitle="Globally unique Credential Transparency Identifier (CTID) by which the creator, owner or provider of a resource recognizes it in transactions with the external environment (e.g., in verifiable claims involving the resource)." ceasnConceptScheme="CTID:" class="viewMode editMode ceasnOnly">CTID:</label>
 									<div style="word-break: break-all;" class="viewMode editMode ceasnOnly">
 										<div style="margin-top: 0;" class="sidebarPropertyLink">
 											<div>
@@ -360,7 +360,7 @@
 							<div class="sidebarEditSection">
 								<!-- General Properties -->
 								<!-- Name -->
-								<label id="sidebarNameInputLabel" for="sidebarNameInput" title="" cassCompetency="Name:" cassCompetencyTitle="The name of the competency. One name per language." cassFramework="Framework Name:" cassFrameworkTitle="The name of the framework. One name per language." ceasnCompetency="Competency Text:" ceasnCompetencyTitle="The text of the competency. One per language." ceasnFramework="Name:" ceasnFrameworkTitle="The name or title of this competency framework. One name or title per language." skosCompetency="Preferred Label:" skosCompetencyTitle="Preferred display label for this concept. One label per language." skosFramework="Title:" skosFrameworkTitle="Preferred display label for this scheme. One label per language." ceasnConceptScheme="Title:" class="editMode" style="margin: 0px;">Name:</label>
+								<label id="sidebarNameInputLabel" for="sidebarNameInput" title="" cassCompetency="Name:" cassCompetencyTitle="The name of the competency. One name per language." cassFramework="Framework Name:" cassFrameworkTitle="The name of the framework. One name per language." ceasnCompetency="Competency Text:" ceasnCompetencyTitle="The text of the competency. One per language." ceasnFramework="Name:" ceasnFrameworkTitle="The name or title of this competency framework. One name or title per language." skosCompetency="Preferred Label:" skosCompetencyTitle="Preferred language-tagged label representing this concept. One label per language." skosFramework="Title:" skosFrameworkTitle="The name or title of this resource." ceasnConceptScheme="Name:" class="editMode" style="margin: 0px;">Name:</label>
 								<h3 id="sidebarName" class="viewMode sidebarViewList">Framework Name Here</h3>
 								<div class="sidebarInputGrouping editMode editControl onePerLanguage">
 									<div class="sidebarInputRow">
@@ -371,7 +371,7 @@
 									</div>
 								</div>
 								<!-- Description (Concepts)-->
-								<label id="sidebarDescriptionInputLabel" for="sidebarDescriptionInput" title="" skosCompetency="Concept Definition:" skosCompetencyTitle="Definition of this concept. One definition per language." skosFramework="Description:" skosFrameworkTitle="Definition of this scheme. One definition per language." ceasnConceptScheme="Description:" class="editMode absentForCompetencies" style="margin: 0px;">Description:</label>
+								<label id="sidebarDescriptionInputLabel" for="sidebarDescriptionInput" title="" skosCompetency="Definition:" skosCompetencyTitle="Supplies a complete explanation of the intended meaning of a concept. One definition per language." skosFramework="Description:" skosFrameworkTitle="A short description of this resource. One definition per language." ceasnConceptScheme="Description:" class="editMode absentForCompetencies" style="margin: 0px;">Description:</label>
 								<p id="sidebarDescription" class="viewMode sidebarViewList absentForCompetencies">This is a super long description, it describes the things worth describing.</p>
 								<div class="sidebarInputGrouping editMode editControl absentForCompetencies onePerLanguage">
 									<div class="sidebarInputRow">
@@ -405,7 +405,7 @@
 									</div>
 								</div>
 								<!-- Concept Scheme Creator -->
-								<label id="sidebarConceptCreatorInputLabel" for="sidebarConceptCreator" title="" skosFramework="Creator:" ceasnConceptScheme="Creator:" class="viewMode editMode absentForCompetencies frameworkOnly" skosFrameworkTitle="An entity primarily responsible for making the resource. For example, https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. One entity per line." style="margin:0px;">Creator:</label>
+								<label id="sidebarConceptCreatorInputLabel" for="sidebarConceptCreator" title="" skosFramework="Creator:" ceasnConceptScheme="Creator:" class="viewMode editMode absentForCompetencies frameworkOnly" skosFrameworkTitle="An entity primarily responsible for making this resource. For example, https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. One entity per line." style="margin:0px;">Creator:</label>
 								<p id="sidebarConceptCreator" class="viewMode absentForCompetencies frameworkOnly sidebarViewList" style="font-weight:bold;"></p>
 								<div class="sidebarInputGrouping editMode editControl absentForCompetencies frameworkOnly">
 									<div class="sidebarInputRow">
@@ -416,20 +416,20 @@
 								</div>
 								<span id="sidebarConceptCreatorInputSpan" class="orangeUri">Note: URI only. For example, https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.</span>
 								<!-- Concept Scheme Publisher -->
-								<label id="sidebarConceptPublisherInputLabel" for="sidebarConceptPublisher" title="" skosFramework="Publisher:" ceasnConceptScheme="Publisher:" skosFrameworkTitle="A URI to an entity responsible for making this scheme available. For example, https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. One entity per line." class="viewMode editMode absentForCompetencies frameworkOnly" style="margin:0px;">Publisher:</label>
+								<label id="sidebarConceptPublisherInputLabel" for="sidebarConceptPublisher" title="" skosFramework="Publisher:" ceasnConceptScheme="Publisher:" skosFrameworkTitle="An agent responsible for making this entity available. For example, https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/." class="viewMode editMode absentForCompetencies frameworkOnly" style="margin:0px;">Publisher:</label>
 								<p id="sidebarConceptPublisher" class="viewMode absentForCompetencies frameworkOnly sidebarViewList" style="font-weight:bold;"></p>
 								<input id="sidebarConceptPublisherInput" skosFramework="dcterms:publisher" ceasnConceptScheme="ceasn:publisher" data-group="sidebarConceptPublisherInput" type="url" class="editMode editControl absentForCompetencies frameworkOnly sidebarConceptPublisherInput singular" />
 								<span id="sidebarConceptPublisherInputSpan" class="orangeUri">Note: URI only. For example, https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.</span>
 								<!-- Concept Scheme Publisher Name -->
-								<label id="sidebarConceptPublisherNameInputLabel" for="sidebarConceptPublisherName" title="" skosFramework="Publisher Name:" ceasnConceptScheme="Publisher Name:" skosFrameworkTitle="Name of the agent responsible for making this entity available. One name per line." class="viewMode editMode absentForCompetencies frameworkOnly" style="margin:0px;">Publisher Name:</label>
+								<label id="sidebarConceptPublisherNameInputLabel" for="sidebarConceptPublisherName" title="" skosFramework="Publisher Name:" ceasnConceptScheme="Publisher Name:" skosFrameworkTitle="Name of an agent responsible for making this resource available. One name per line." class="viewMode editMode absentForCompetencies frameworkOnly" style="margin:0px;">Publisher Name:</label>
 								<p id="sidebarConceptPublisherName" class="viewMode absentForCompetencies frameworkOnly sidebarViewList" style="font-weight:bold;"></p>
 								<input id="sidebarConceptPublisherNameInput" skosFramework="ceasn:publisherName" ceasnConceptScheme="ceasn:publisherName" data-group="sidebarConceptPublisherNameInput" class="editMode editControl absentForCompetencies frameworkOnly sidebarConceptPublisherNameInput singular" />
 								<!-- Concept Scheme Language -->
-								<label id="sidebarConceptInLanguageInputLabel" for="sidebarConceptInLanguage" title="" skosFramework="Language:" ceasnConceptScheme="Language:" skosFrameworkTitle="Language of the scheme. One language per line." class="viewMode editMode absentForCompetencies frameworkOnly" style="margin:0px;">In Language:</label>
+								<label id="sidebarConceptInLanguageInputLabel" for="sidebarConceptInLanguage" title="" skosFramework="Language:" ceasnConceptScheme="Language:" skosFrameworkTitle="The primary language used in or by this resource. One language per line." class="viewMode editMode absentForCompetencies frameworkOnly" style="margin:0px;">In Language:</label>
 								<p id="sidebarConceptInLanguage" class="viewMode absentForCompetencies frameworkOnly sidebarViewList" style="font-weight:bold;"></p>
 								<input id="sidebarConceptInLanguageInput" skosFramework="dcterms:language" ceasnConceptScheme="ceasn:inLanguage" data-group="sidebarConceptInLanguageInput" class="editMode editControl absentForCompetencies frameworkOnly sidebarConceptInLanguageInput singular language" />
 								<!-- Coded Notation -->
-								<label id="sidebarCodedNotationInputLabel" for="sidebarCodedNotation" title="" cassCompetency="Notation:" cassCompetencyTitle="An alphanumeric notation or ID code as defined by the promulgating body to identify this competency. One code per line." skosCompetency="Notation:" skosCompetencyTitle="An alphanumeric notation or ID code as defined by the promulgating body to identify this concept. One code per line." class="viewMode editMode absentForCompetencies competencyOnly" style="margin:0px;">Notation:</label>
+								<label id="sidebarCodedNotationInputLabel" for="sidebarCodedNotation" title="" cassCompetency="Notation:" cassCompetencyTitle="An alphanumeric notation or ID code as defined by the promulgating body to identify this resource." skosCompetency="Notation:" skosCompetencyTitle="Alphanumeric notation or ID code as defined by the promulgating body to identify this resource." class="viewMode editMode absentForCompetencies competencyOnly" style="margin:0px;">Notation:</label>
 								<p id="sidebarCodedNotation" class="viewMode competencyOnly absentForCompetencies sidebarViewList" style="font-weight:bold;"></p>
 								<input id="sidebarCodedNotationInput" cassCompetency="skos:notation" skosCompetency="skos:notation" data-group="sidebarCodedNotationInput" class="editMode editControl absentForCompetencies competencyOnly sidebarCodedNotationInput singular" />
 								<!-- Concept Other Section -->
@@ -437,7 +437,7 @@
 								<hr class="editMode viewMode absentForCompetencies competencyOnly" style="margin-top:0px;">
 								<div class="sidebarAccordion absentForCompetencies" id="conceptOther">
 									<!-- Alternative Name -->
-									<label id="sidebarAlternativeNameInputLabel" for="sidebarAlternativeName" title="" cassCompetency="Alternative Name:" cassCompetencyTitle="An alternative name for this competency. One name per line." skosCompetency="Alternative Label:" skosCompetencyTitle="An alternative name for this concept. One name per line." class="viewMode editMode competencyOnly" style="margin:0px;">Alternative Name:</label>
+									<label id="sidebarAlternativeNameInputLabel" for="sidebarAlternativeName" title="" cassCompetency="Alternative Name:" cassCompetencyTitle="An alternative name for this competency. One name per line." skosCompetency="Alternative Label:" skosCompetencyTitle="Non-preferred label for the concept used to relate a concept synonym to the preferred label." class="viewMode editMode competencyOnly" style="margin:0px;">Alternative Name:</label>
 									<p id="sidebarAlternativeName" class="viewMode competencyOnly sidebarViewList" style="font-weight:bold;"></p>
 									<div class="sidebarInputGrouping editMode editControl competencyOnly">
 										<div class="sidebarInputRow">
@@ -448,7 +448,7 @@
 										</div>
 									</div>
 									<!-- Hidden Label -->
-									<label id="sidebarHiddenLabelInputLabel" for="sidebarHiddenLabel" title="" cassCompetency="Hidden Label:" cassCompetencyTitle="Alternate hidden labels for this concept. One label per line." skosCompetency="Hidden Label:" skosCompetencyTitle="Alternate hidden labels for this concept. One label per line." class="viewMode editMode competencyOnly" style="margin:0px;">Hidden Label:</label>
+									<label id="sidebarHiddenLabelInputLabel" for="sidebarHiddenLabel" title="" cassCompetency="Hidden Label:" cassCompetencyTitle="Alternate hidden labels for this concept. One label per line." skosCompetency="Hidden Label:" skosCompetencyTitle="Label not intended for public presentation but to assist applications in disambiguating searcher intent - e.g., hidden labels can be used for common misspelling or a colloquial expression." class="viewMode editMode competencyOnly" style="margin:0px;">Hidden Label:</label>
 									<p id="sidebarHiddenLabel" class="viewMode competencyOnly sidebarViewList" style="font-weight:bold;"></p>
 									<div class="sidebarInputGrouping editMode editControl competencyOnly">
 										<div class="sidebarInputRow">
@@ -464,18 +464,18 @@
 								<hr class="editMode viewMode absentForCompetencies competencyOnly" style="margin-top:0px;">
 								<div class="sidebarAccordion absentForCompetencies competencyOnly" id="conceptDocumentation">
 									<!-- Preferred Label -->
-									<label id="sidebarPreferredLabelInputLabel" for="sidebarPreferredLabel" title="" cassCompetency="Note:" cassCompetencyTitle="Preferred display label for this concept. One label per line." skosCompetency="Note:" skosCompetencyTitle="Preferred display label for this concept. One label per line." class="viewMode editMode competencyOnly" style="margin:0px;">Note:</label>
+									<label id="sidebarPreferredLabelInputLabel" for="sidebarPreferredLabel" title="" cassCompetency="Note:" cassCompetencyTitle="Preferred display label for this concept. One label per line." skosCompetency="Note:" skosCompetencyTitle="Annotations to the concept for purposes of general documentation." class="viewMode editMode competencyOnly" style="margin:0px;">Note:</label>
 									<p id="sidebarPreferredLabel" class="viewMode competencyOnly sidebarViewList" style="font-weight:bold;"></p>
 									<div class="sidebarInputGrouping editMode editControl competencyOnly">
 										<div class="sidebarInputRow">
 											<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
 											<input class="sidebarInputLanguageSelect" placeholder="Language"></input>
 											<input id="sidebarPreferredLabelInput" cassCompetency="skos:note" skosCompetency="skos:note" data-group="sidebarPreferredLabelInput" class="sidebarPreferredLabelInput" />
-											<button title="Add another value." id="addChangeNoteInput" data-target="sidebarChangeNoteInput" data-autocomplete-field="true" class="addInputButton"><i class="fa fa-plus"></i></button>
+											<button title="Add another value." id="addPreferredLabelInput" data-target="sidebarPreferredLabelInput" data-autocomplete-field="true" class="addInputButton"><i class="fa fa-plus"></i></button>
 										</div>
 									</div>
 									<!-- Change Note -->
-									<label id="sidebarChangeNoteInputLabel" for="sidebarChangeNote" title="" cassCompetency="Change Note:" cassCompetencyTitle="Documents fine-grained changes to a competency, for the purposes of administration and maintenance. One note per line." skosCompetency="Change Note:" skosCompetencyTitle="Documents fine-grained changes to a concept, for the purposes of administration and maintenance. One note per line." class="viewMode editMode competencyOnly" style="margin:0px;">Change Note:</label>
+									<label id="sidebarChangeNoteInputLabel" for="sidebarChangeNote" title="" cassCompetency="Change Note:" cassCompetencyTitle="Documents fine-grained changes to a competency, for the purposes of administration and maintenance. One note per line." skosCompetency="Change Note:" skosCompetencyTitle="Text describing a significant change to the concept." class="viewMode editMode competencyOnly" style="margin:0px;">Change Note:</label>
 									<p id="sidebarChangeNote" class="viewMode competencyOnly sidebarViewList" style="font-weight:bold;"></p>
 									<div class="sidebarInputGrouping editMode editControl competencyOnly">
 										<div class="sidebarInputRow">
@@ -641,7 +641,7 @@
 										<hr class="editMode viewMode" style="margin-top:0px;">
 										<div class="sidebarAccordion" id="frameworkTagging">
 											<!-- Concept Keyword -->
-											<label id="sidebarFrameworkConceptKeywordInputLabel" for="sidebarFrameworkConceptKeyword" title="" cassFramework="Keywords:" cassFrameworkTitle="A word or phrase used by the promulgating agency to refine and differentiate individual frameworks contextually. One code per line." ceasnFramework="Concept Keyword:" ceasnFrameworkTitle="A word or phrase used by the promulgating agency to refine and differentiate individual frameworks contextually. One concept per line." skosFramework="Concept Keyword:" ceasnConceptScheme="Concept Keyword:" skosFrameworkTitle="A word or phrase used by the promulgating agency to refine and differentiate schemes contextually. One concept per line." class="viewMode editMode" style="margin:0px;">Concept Keyword:</label>
+											<label id="sidebarFrameworkConceptKeywordInputLabel" for="sidebarFrameworkConceptKeyword" title="" cassFramework="Keywords:" cassFrameworkTitle="A word or phrase used by the promulgating agency to refine and differentiate individual frameworks contextually. One code per line." ceasnFramework="Concept Keyword:" ceasnFrameworkTitle="A word or phrase used by the promulgating agency to refine and differentiate individual frameworks contextually. One concept per line." skosFramework="Concept Keyword:" ceasnConceptScheme="Concept Keyword:" skosFrameworkTitle="A word or phrase used by the promulgating agency to refine and differentiate individual resources contextually." class="viewMode editMode" style="margin:0px;">Concept Keyword:</label>
 											<p id="sidebarFrameworkConceptKeyword" class="viewMode sidebarViewList" style="font-weight:bold;"></p>
 											<div class="sidebarInputGrouping editMode editControl">
 												<div class="sidebarInputRow">
@@ -652,7 +652,7 @@
 												</div>
 											</div>
 											<!-- Concept Term -->
-											<label for="sidebarConceptTerm" title="" cassFramework="Concept Terms:" cassFrameworkTitle="A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual frameworks contextually." ceasnFramework="Concept Term:" ceasnFrameworkTitle="A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual competencies contextually." skosFramework="Concept Term:" ceasnConceptScheme="Concept Term:" skosFrameworkTitle="A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual concept schemes contextually." class="viewMode editMode" style="margin:0px;">Concept Term:</label>
+											<label for="sidebarConceptTerm" title="" cassFramework="Concept Terms:" cassFrameworkTitle="A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual frameworks contextually." ceasnFramework="Concept Term:" ceasnFrameworkTitle="A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual competencies contextually." skosFramework="Concept Term:" ceasnConceptScheme="Concept Term:" skosFrameworkTitle="A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual resources contextually." class="viewMode editMode" style="margin:0px;">Concept Term:</label>
 											<button id="sidebarConceptTermBrowse" cassFramework="ceasn:conceptTerm" ceasnFramework="ceasn:conceptTerm" skosFramework="ceasn:conceptTerm" ceasnConceptScheme="ceasn:conceptTerm" class="editMode editControl" onclick="$('#selectConceptSection').attr('destination','ceasn:conceptTerm');initIframe();overlayPage('#selectConceptSection', framework);"><i class="fa fa-search-plus"></i></button>
 											<ul id="sidebarConceptTerm" cassFramework="ceasn:conceptTerm" ceasnFramework="ceasn:conceptTerm" skosFramework="ceasn:conceptTerm" ceasnConceptScheme="ceasn:conceptTerm" class="viewMode editMode" style="font-weight:bold;"></ul>
 										</div>
@@ -721,7 +721,7 @@
 											</div>
 											<span id="sidebarHistoryNoteInputSpan" class="orangeUri">Note: URI only. For example, https://credentialengineregistry.org/.</span>
 											<!-- Publication Status -->
-											<label for="sidebarPublicationStatus" title="" cassFramework="Publication Status:" cassFrameworkTitle="The publication status of the of this competency framework." ceasnFramework="Source Publication Status:" ceasnFrameworkTitle="Publication status of the source competency framework. The original framework may be drafted, published, or depreciated outside of this system." skosFramework="Publication Status:" ceasnConceptScheme="Publication Status:" skosFrameworkTitle="The publication status of this scheme." class="viewMode editMode" style="margin:0px;">Publication Status:</label>
+											<label for="sidebarPublicationStatus" title="" cassFramework="Publication Status:" cassFrameworkTitle="The publication status of the of this competency framework." ceasnFramework="Source Publication Status:" ceasnFrameworkTitle="Publication status of the source competency framework. The original framework may be drafted, published, or depreciated outside of this system." skosFramework="Publication Status:" ceasnConceptScheme="Publication Status:" skosFrameworkTitle="The publication status of this resource." class="viewMode editMode" style="margin:0px;">Publication Status:</label>
 											<p id="sidebarPublicationStatus" class="viewMode sidebarViewList" style="font-weight:bold;"></p>
 											<select cassFramework="ceasn:publicationStatusType" ceasnFramework="ceasn:publicationStatusType" skosFramework="ceasn:publicationStatusType" ceasnConceptScheme="ceasn:publicationStatusType" id="sidebarPublicationStatusSelect" class="editMode editControl singular">
 													<option disabled selected>Please select one...</option>
@@ -746,12 +746,12 @@
 										<hr class="editMode viewMode" style="margin-top:0px;">
 										<div class="sidebarAccordion" id="frameworkRights">
 											<!-- Date Copyrighted -->
-											<label id="sidebarDateCopyrightedInputLabel" for="sidebarDateCopyrighted" title="" cassFramework="Year Copyrighted:" cassFrameworkTitle="Year of a statement of copyright for this competency framework." ceasnFramework="Year Copyrighted:" ceasnFrameworkTitle="Year of a statement of copyright for this competency framework, such as 2017." skosFramework="Year Copyrighted:" ceasnConceptScheme="Year Copyrighted:" skosFrameworkTitle="Year of a statement of copyright for this concept scheme." class="viewMode editMode" style="margin:0px;">Date Copyrighted:</label>
+											<label id="sidebarDateCopyrightedInputLabel" for="sidebarDateCopyrighted" title="" cassFramework="Year Copyrighted:" cassFrameworkTitle="Year of a statement of copyright for this competency framework." ceasnFramework="Year Copyrighted:" ceasnFrameworkTitle="Year of a statement of copyright for this competency framework, such as 2017." skosFramework="Year Copyrighted:" ceasnConceptScheme="Year Copyrighted:" skosFrameworkTitle="Year of a statement of copyright for this resource, such as 2017." class="viewMode editMode" style="margin:0px;">Date Copyrighted:</label>
 											<p id="sidebarDateCopyrighted" class="viewMode sidebarViewList" style="font-weight:bold;"></p>
 											<input id="sidebarDateCopyrightedInput" cassFramework="schema:copyrightYear" ceasnFramework="ceasn:dateCopyrighted" skosFramework="dcterms:dateCopyrighted" ceasnConceptScheme="ceasn:dateCopyrighted" type="dcterms:date" data-group="sidebarDateCopyrightedInput" class="editMode editControl sidebarDateCopyrightedInput singular" />
 											<span id="sidebarDateCopyrightedInputSpan" class="orangeUri">Note: Year only. For example, 2018</span>
 											<!-- License -->
-											<label id="sidebarLicenseInputLabel" for="sidebarLicense" title="" cassFramework="License:" cassFrameworkTitle="A URI to a legal document giving official permission to do something with this competency framework. For example, https://sandbox.credentialengineregistry.org/" ceasnFramework="License:" ceasnFrameworkTitle="A legal document giving official permission to do something with this competency framework. For example, https://sandbox.credentialengineregistry.org/" skosFramework="License:" ceasnConceptScheme="License:" skosFrameworkTitle="A URI to a legal document giving official permission to do something with this scheme. For example, https://sandbox.credentialengineregistry.org/" class="viewMode editMode" style="margin:0px;">License:</label>
+											<label id="sidebarLicenseInputLabel" for="sidebarLicense" title="" cassFramework="License:" cassFrameworkTitle="A URI to a legal document giving official permission to do something with this competency framework. For example, https://sandbox.credentialengineregistry.org/" ceasnFramework="License:" ceasnFrameworkTitle="A legal document giving official permission to do something with this competency framework. For example, https://sandbox.credentialengineregistry.org/" skosFramework="License:" ceasnConceptScheme="License:" skosFrameworkTitle="A legal document giving official permission to do something with this resource. For example, https://sandbox.credentialengineregistry.org/" class="viewMode editMode" style="margin:0px;">License:</label>
 											<p id="sidebarLicense" class="viewMode sidebarViewList" style="font-weight:bold;"></p>
 											<input id="sidebarLicenseInput" cassFramework="schema:license" ceasnFramework="ceasn:license" skosFramework="dcterms:license" ceasnConceptScheme="ceasn:license" type="url" data-group="sidebarLicenseInput" class="sidebarLicenseInput editMode editControl singular" />
 											<span id="sidebarLicenseInputSpan" class="orangeUri">Note: URI only. For example, https://sandbox.credentialengineregistry.org/</span>
@@ -766,7 +766,7 @@
 												</div>
 											</div>
 											<!-- Concept Scheme Rights -->
-											<label id="sidebarConceptRightsInputLabel" for="sidebarConceptRights" title="" cassFramework="Rights:" cassFrameworkTitle="Information about rights held in and over this competency framework." skosFramework="Rights:" ceasnConceptScheme="Rights:" skosFrameworkTitle="Information about rights held in and over this concept scheme." class="viewMode editMode absentForCompetencies" style="margin:0px;">Rights:</label>
+											<label id="sidebarConceptRightsInputLabel" for="sidebarConceptRights" title="" cassFramework="Rights:" cassFrameworkTitle="Information about rights held in and over this competency framework." skosFramework="Rights:" ceasnConceptScheme="Rights:" skosFrameworkTitle="Information about rights held in and over this resource." class="viewMode editMode absentForCompetencies" style="margin:0px;">Rights:</label>
 											<p id="sidebarConceptRights" class="viewMode sidebarViewList absentForCompetencies" style="font-weight:bold;"></p>
 											<div class="sidebarInputGrouping editMode editControl absentForCompetencies">
 												<div class="sidebarInputRow">
@@ -776,7 +776,7 @@
 												</div>
 											</div>
 											<!-- Rights Holder -->
-											<label id="sidebarRightsHolderInputLabel" for="sidebarRightsHolder" title="" cassFramework="Rights Holder:" cassFrameworkTitle="A URI to an agent owning or managing rights over this competency framework. For example, https://credentialengineregistry.org/" ceasnFramework="Rights Holder:" ceasnFrameworkTitle="The agent owning or managing rights over this competency framework. For example, https://credentialengineregistry.org/" skosFramework="Rights Holder:" ceasnConceptScheme="Rights Holder:" skosFrameworkTitle="A URI to an agent owning or managing rights over this scheme. For example, https://credentialengineregistry.org/." class="viewMode editMode" style="margin:0px;">Rights Holder:</label>
+											<label id="sidebarRightsHolderInputLabel" for="sidebarRightsHolder" title="" cassFramework="Rights Holder:" cassFrameworkTitle="A URI to an agent owning or managing rights over this competency framework. For example, https://credentialengineregistry.org/" ceasnFramework="Rights Holder:" ceasnFrameworkTitle="The agent owning or managing rights over this competency framework. For example, https://credentialengineregistry.org/" skosFramework="Rights Holder:" ceasnConceptScheme="Rights Holder:" skosFrameworkTitle="An agent owning or managing rights over this resource. For example, https://credentialengineregistry.org/." class="viewMode editMode" style="margin:0px;">Rights Holder:</label>
 											<p id="sidebarRightsHolder" class="viewMode sidebarViewList" style="font-weight:bold;"></p>
 											<input id="sidebarRightsHolderInput" cassFramework="schema:copyrightHolder" ceasnFramework="ceasn:rightsHolder" skosFramework="dcterms:rightsHolder" ceasnConceptScheme="ceasn:rightsHolder" type="url" data-group="sidebarRightsHolderInput" class="sidebarRightsInput editMode editControl singular" />
 											<span id="sidebarRightsHolderInputSpan" class="orangeUri">Note: URI only. For example, https://credentialengineregistry.org/</span>
@@ -796,10 +796,10 @@
 								<!-- hasChild and isChildOf -->
 								<div class="ceasnDataFields exempt ceasnOnly">
 									<!-- Has Child -->
-									<label for="sidebarHasChild" title="" style="margin:0px;" ceasnCompetency="Has Child:" skosCompetency="Broader:" ceasnCompetencyTitle="The referenced competency is lower in some arbitrary hierarchy than this competency." skosCompetencyTitle="The referenced concept is lower in some arbitrary hierarchy than this concept." class="viewMode editMode competencyOnly">hasChild:</label>
+									<label for="sidebarHasChild" title="" style="margin:0px;" ceasnCompetency="Has Child:" skosCompetency="Broader:" ceasnCompetencyTitle="The referenced competency is lower in some arbitrary hierarchy than this competency." skosCompetencyTitle="Concept that is broader in some way than this concept." class="viewMode editMode competencyOnly">hasChild:</label>
 									<ul id="sidebarHasChild" ceasnCompetency="hasChild" skosCompetency="hasChild" class="viewMode editMode relationList exempt competencyOnly"></ul>
 									<!-- Child Of -->
-									<label for="sidebarIsChildOf" title="" style="margin:0px;" ceasnCompetency="Child Of:" skosCompetency="Narrower:" ceasnCompetencyTitle="The referenced competency is higher in some arbitrary hierarchy than this competency." skosCompetencyTitle="The referenced concept is higher in some arbitrary hierarchy than this concept." class="viewMode editMode competencyOnly">isChildOf:</label>
+									<label for="sidebarIsChildOf" title="" style="margin:0px;" ceasnCompetency="Child Of:" skosCompetency="Narrower:" ceasnCompetencyTitle="The referenced competency is higher in some arbitrary hierarchy than this competency." skosCompetencyTitle="Concept that is narrower in some way than this concept." class="viewMode editMode competencyOnly">isChildOf:</label>
 									<ul id="sidebarIsChildOf" ceasnCompetency="isChildOf" skosCompetency="isChildOf" class="viewMode editMode relationList exempt competencyOnly"></ul>
 								</div>
 								<!-- Narrows -->
@@ -866,35 +866,35 @@
 								<span class="orangeUri">Note: URI only. For example, https://sandbox.credentialengineregistry.org/</span>
 								<ul id="sidebarDesires" cassCompetency="desires" class="viewMode editMode relationList competencyOnly absentForConcepts absentForCeasn"></ul>
 								<!-- Broad Match -->
-								<label for="sidebarBroadMatch" title="" style="margin:0px;" skosCompetency="Broad Match:" skosCompetencyTitle="A concept in a different concept scheme that is hierarchically broader than this concept." class="viewMode editMode competencyOnly absentForCompetencies">Broad Match:</label>
+								<label for="sidebarBroadMatch" title="" style="margin:0px;" skosCompetency="Broad Match:" skosCompetencyTitle="Assertion indicates that the referenced concept is broader in some way than this concept." class="viewMode editMode competencyOnly absentForCompetencies">Broad Match:</label>
 								<button data-mode="Add" title="Add a relation with a URI." skosCompetency="broadMatch" class="viewMode editMode editControl frameworkEditControl competencyOnly absentForCompetencies alignmentAddButton" onclick="handleAlignmentInput(event);"><i class="fa fa-plus"></i></button>
 								<button title="Search for a relation." id="sidebarBroadMatchBrowse" skosCompetency="broadMatch" plural="true" class="viewMode editMode editControl frameworkEditControl competencyOnly absentForCompetencies" onclick="$('#selectConceptSection').attr('relation','broadMatch');initIframe(true);overlayPage('#selectConceptSection', framework);"><i class="fa fa-search-plus"></i></button>
 								<input id="sidebarBroadMatchInput" type="url" class="viewMode editMode competencyOnly absentForCompetencies alignmentInput hidden" />
 								<span class="orangeUri">Note: URI only. For example, https://sandbox.credentialengineregistry.org/</span>
 								<ul id="sidebarBroadMatch" skosCompetency="broadMatch" class="viewMode editMode relationList competencyOnly absentForCompetencies"></ul>
 								<!-- Close Match -->
-								<label for="sidebarCloseMatch" title="" style="margin:0px;" skosCompetency="Close Match:" skosCompetencyTitle="A concept in a different concept scheme that is sufficiently equivalent that it can be used interchangeably for this concept." class="viewMode editMode competencyOnly absentForCompetencies">Close Match:</label>
+								<label for="sidebarCloseMatch" title="" style="margin:0px;" skosCompetency="Close Match:" skosCompetencyTitle="Assertion indicates that two concepts are sufficiently similar that they can be used interchangeably." class="viewMode editMode competencyOnly absentForCompetencies">Close Match:</label>
 								<button data-mode="Add" title="Add a relation with a URI." skosCompetency="closeMatch" class="viewMode editMode editControl frameworkEditControl competencyOnly absentForCompetencies alignmentAddButton" onclick="handleAlignmentInput(event);"><i class="fa fa-plus"></i></button>
 								<button title="Search for a relation." id="sidebarCloseMatchBrowse" skosCompetency="closeMatch" plural="true" class="viewMode editMode editControl frameworkEditControl competencyOnly absentForCompetencies" onclick="$('#selectConceptSection').attr('relation','closeMatch');initIframe(true);overlayPage('#selectConceptSection', framework);"><i class="fa fa-search-plus"></i></button>
 								<input id="sidebarCloseMatchInput" type="url" class="viewMode editMode competencyOnly absentForCompetencies alignmentInput hidden" />
 								<span class="orangeUri">Note: URI only. For example, https://sandbox.credentialengineregistry.org/</span>
 								<ul id="sidebarCloseMatch" skosCompetency="closeMatch" class="viewMode editMode relationList competencyOnly absentForCompetencies"></ul>
 								<!-- Exact Match -->
-								<label for="sidebarExactMatch" title="" style="margin:0px;" skosCompetency="Exact Match:" skosCompetencyTitle="A concept in a different concept scheme that can be used interchangeably for this concept with a high degree of confidence." class="viewMode editMode competencyOnly absentForCompetencies">Exact Match:</label>
+								<label for="sidebarExactMatch" title="" style="margin:0px;" skosCompetency="Exact Match:" skosCompetencyTitle="Indicates semantic similarity denoting an even higher degree of closeness than Close Match." class="viewMode editMode competencyOnly absentForCompetencies">Exact Match:</label>
 								<button data-mode="Add" title="Add a relation with a URI." skosCompetency="exactMatch" class="viewMode editMode editControl frameworkEditControl competencyOnly absentForCompetencies alignmentAddButton" onclick="handleAlignmentInput(event);"><i class="fa fa-plus"></i></button>
 								<button title="Search for a relation." id="sidebarExactMatchBrowse" skosCompetency="Exact Match" plural="true" class="viewMode editMode editControl frameworkEditControl competencyOnly absentForCompetencies" onclick="$('#selectConceptSection').attr('relation','exactMatch');initIframe(true);overlayPage('#selectConceptSection', framework);"><i class="fa fa-search-plus"></i></button>
 								<input id="sidebarExactMatchInput" type="url" class="viewMode editMode competencyOnly absentForCompetencies alignmentInput hidden" />
 								<span class="orangeUri">Note: URI only. For example, https://sandbox.credentialengineregistry.org/</span>
 								<ul id="sidebarExactMatch" skosCompetency="exactMatch" class="viewMode editMode relationList competencyOnly absentForCompetencies"></ul>
 								<!-- Narrow Match -->
-								<label for="sidebarNarrowMatch" title="" style="margin:0px;" skosCompetency="Narrow Match:" skosCompetencyTitle="A concept in a different concept scheme that is hierarchically narrower than this concept." class="viewMode editMode competencyOnly absentForCompetencies">Narrow Match:</label>
+								<label for="sidebarNarrowMatch" title="" style="margin:0px;" skosCompetency="Narrow Match:" skosCompetencyTitle="Assertion indicates that the referenced concept is narrower in some way than this concept." class="viewMode editMode competencyOnly absentForCompetencies">Narrow Match:</label>
 								<button data-mode="Add" title="Add a relation with a URI." skosCompetency="narrowMatch" class="viewMode editMode editControl frameworkEditControl competencyOnly absentForCompetencies alignmentAddButton" onclick="handleAlignmentInput(event);"><i class="fa fa-plus"></i></button>
 								<button title="Search for a relation." id="sidebarNarrowMatchBrowse" skosCompetency="narrowMatch" plural="true" class="viewMode editMode editControl frameworkEditControl competencyOnly absentForCompetencies" onclick="$('#selectConceptSection').attr('relation','narrowMatch');initIframe(true);overlayPage('#selectConceptSection', framework);"><i class="fa fa-search-plus"></i></button>
 								<input id="sidebarNarrowMatchInput" type="url" class="viewMode editMode competencyOnly absentForCompetencies alignmentInput hidden" />
 								<span class="orangeUri">Note: URI only. For example, https://sandbox.credentialengineregistry.org/</span>
 								<ul id="sidebarNarrowMatch" skosCompetency="narrowMatch" class="viewMode editMode relationList competencyOnly absentForCompetencies"></ul>
 								<!-- Related Match -->
-								<label for="sidebarRelatedMatch" title="" style="margin:0px;" skosCompetency="Related Match:" skosCompetencyTitle="A concept in a different concept scheme that is conceptually related but is neither a hierarchical or equivalence relationships." class="viewMode editMode competencyOnly absentForCompetencies">Related Match:</label>
+								<label for="sidebarRelatedMatch" title="" style="margin:0px;" skosCompetency="Related Match:" skosCompetencyTitle="Assertion indicating an associative, non-hierarchical relationship between the two concepts where neither is broader nor narrower than the other." class="viewMode editMode competencyOnly absentForCompetencies">Related Match:</label>
 								<button data-mode="Add" title="Add a relation with a URI." skosCompetency="relatedMatch" class="viewMode editMode editControl frameworkEditControl competencyOnly absentForCompetencies alignmentAddButton" onclick="handleAlignmentInput(event);"><i class="fa fa-plus"></i></button>
 								<button title="Search for a relation." id="sidebarRelatedMatchBrowse" skosCompetency="relatedMatch" plural="true" class="viewMode editMode editControl frameworkEditControl competencyOnly absentForCompetencies" onclick="$('#selectConceptSection').attr('relation','relatedMatch');initIframe(true);overlayPage('#selectConceptSection', framework);"><i class="fa fa-search-plus"></i></button>
 								<input id="sidebarRelatedMatchInput" type="url" class="viewMode editMode competencyOnly absentForCompetencies alignmentInput hidden" />
