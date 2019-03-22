@@ -428,6 +428,16 @@
 								<label id="sidebarConceptInLanguageInputLabel" for="sidebarConceptInLanguage" title="" skosFramework="Language:" ceasnConceptScheme="Language:" skosFrameworkTitle="The primary language used in or by this resource. One language per line." class="viewMode editMode absentForCompetencies frameworkOnly" style="margin:0px;">In Language:</label>
 								<p id="sidebarConceptInLanguage" class="viewMode absentForCompetencies frameworkOnly sidebarViewList" style="font-weight:bold;"></p>
 								<input id="sidebarConceptInLanguageInput" skosFramework="dcterms:language" ceasnConceptScheme="ceasn:inLanguage" data-group="sidebarConceptInLanguageInput" class="editMode editControl absentForCompetencies frameworkOnly sidebarConceptInLanguageInput singular language" />
+								<!-- Concept Scheme Source -->
+								<label id="sidebarConceptSourceInputLabel" for="sidebarConceptSource" title="" skosFramework="Source:" skosFrameworkTitle="A URI to the original resource which this resource is based on or derived from. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/." ceasnConceptScheme="Source:" class="viewMode editMode absentForCompetencies frameworkOnly" style="margin:0px;">Source:</label>
+								<p id="sidebarConceptSource" class="viewMode sidebarViewList absentForCompetencies frameworkOnly" style="font-weight:bold;"></p>
+								<div class="sidebarInputGrouping editMode editControl absentForCompetencies frameworkOnly">
+									<div class="sidebarInputRow">
+										<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
+										<input id="sidebarConceptSourceInput" cassFramework="dc:source" ceasnFramework="ceasn:source" type="url" data-group="sidebarConceptSourceInput" plural="true" class="sidebarConceptSourceInput" />
+									</div>
+								</div>
+								<span id="sidebarSourceInputSpan" class="orangeUri">Note: URI only. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.</span>
 								<!-- Coded Notation -->
 								<label id="sidebarCodedNotationInputLabel" for="sidebarCodedNotation" title="" cassCompetency="Notation:" cassCompetencyTitle="An alphanumeric notation or ID code as defined by the promulgating body to identify this resource." skosCompetency="Notation:" skosCompetencyTitle="Alphanumeric notation or ID code as defined by the promulgating body to identify this resource." class="viewMode editMode absentForCompetencies competencyOnly" style="margin:0px;">Notation:</label>
 								<p id="sidebarCodedNotation" class="viewMode competencyOnly absentForCompetencies sidebarViewList" style="font-weight:bold;"></p>
