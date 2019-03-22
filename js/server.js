@@ -116,19 +116,12 @@ openWebSocket = function (r) {
 						else {
 							com.copyFrom(wut);
 						}
-						$("#tree [id='" + com.shortId() + "']").remove();
-						if (com["skos:broader"] != null)
-							for (var i = 0; i < com["skos:broader"].length; i++) {
-
-								window.fetches++;
-								refreshConcept(com).appendTo($("[id=\"" + com["skos:broader"][i] + "\"]>ul"));
-							}
-						if (com["skos:topConceptOf"] != null)
-							refreshConcept(com);
+						populateConceptScheme();
 						if (selectedCompetency != null) {
 							if (selectedCompetency.shortId() == wut.shortId()) {
 								selectedCompetency = com;
-								refreshSidebar();
+								if (!$('.detailSliderEdit').length)
+									refreshSidebar();
 							}
 							spitEvent("competencyChanged", selectedCompetency.shortId());
 						}
