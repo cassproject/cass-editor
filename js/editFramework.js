@@ -114,6 +114,9 @@ addCompetency = function () {
 }
 
 addAlignments = function(targets, thing, relationType) {
+    if (conceptMode) {
+        return addConceptAlignments(targets, thing, relationType);
+    }
     for (var i = 0; i < targets.length; i++) {
         var r = new EcAlignment();
         if (newObjectEndpoint != null)

@@ -598,7 +598,7 @@ renderSidebar = function (justLists) {
         if (!$(this).next().val())
         	$(this).val(defaultLanguage);
     });
-	// Display Concept's broader or narrower connections
+	// Display Concept's connections
 	if (conceptMode && selectedCompetency != null) {
 		var renderConceptConnection = function (cId, displayConcept, relationType) {
 			var connectionsList = $(".relationList[" + labelChoice + "=" + relationType + "]").append("<li/>").children().last();
@@ -611,70 +611,73 @@ renderSidebar = function (justLists) {
 					connectionsList.text(displayConcept);
 			}
 			connectionsList.attr("id", cId);
-			$(".relationList[" + labelChoice + "=" + relationType + "]").show().prev().show();
+			$(".relationList[" + labelChoice + "=" + relationType + "]").show();
 		} //function renderConceptConnection
-		if (selectedCompetency["skos:broader"] != null) {
-			for (var bc = 0; bc < selectedCompetency["skos:broader"].length; bc++) {
-				(function (conceptId, renderConceptConnection) {
-					if (alignmentCache[framework.shortId()] != null && alignmentCache[framework.shortId()][conceptId] != null && alignmentCache[framework.shortId()][conceptId].target != null && alignmentCache[framework.shortId()][conceptId].target.shortId() > -1) {
-						renderConceptConnection(conceptId, alignmentCache[framework.shortId()][conceptId].target, "hasChild");
-					} else {
-						if (runningAsyncFunctions[conceptId] == null) {
-							runningAsyncFunctions[conceptId] = 1;
-							EcConcept.get(conceptId, function (broaderConcept) {
-								if (broaderConcept != null)
-									renderConceptConnection(conceptId, broaderConcept, "hasChild");
-								delete runningAsyncFunctions[conceptId];
-								if (alignmentCache[framework.shortId()] == null)
-									alignmentCache[framework.shortId()] = {};
-								if (alignmentCache[framework.shortId()][conceptId] == null)
-									alignmentCache[framework.shortId()][conceptId] = {};
-								alignmentCache[framework.shortId()][conceptId].target = broaderConcept;
-							}, function () {
-								renderConceptConnection(conceptId, conceptId, "hasChild");
-								delete runningAsyncFunctions[conceptId];
-								if (alignmentCache[framework.shortId()] == null)
-									alignmentCache[framework.shortId()] = {};
-								if (alignmentCache[framework.shortId()][conceptId] == null)
-									alignmentCache[framework.shortId()][conceptId] = {};
-								alignmentCache[framework.shortId()][conceptId].target = conceptId;
-							});
-						}
-					} //end if cached exists
-				})(selectedCompetency["skos:broader"][bc], renderConceptConnection);
-			} //end for each narrower
-		} //end if broader
-		if (selectedCompetency["skos:narrower"] != null) {
-			for (var nc = 0; nc < selectedCompetency["skos:narrower"].length; nc++) {
-				(function (conceptId, renderConceptConnection) {
-					if (alignmentCache[framework.shortId()] != null && alignmentCache[framework.shortId()][conceptId] != null && alignmentCache[framework.shortId()][conceptId].source != null && alignmentCache[framework.shortId()][conceptId].source.shortId() > -1) {
-						renderConceptConnection(conceptId, alignmentCache[framework.shortId()][conceptId].source, "isChildOf");
-					} else {
-						if (runningAsyncFunctions[conceptId] == null) {
-							runningAsyncFunctions[conceptId] = 1;
-							EcConcept.get(conceptId, function (narrowerConcept) {
-								if (narrowerConcept != null)
-									renderConceptConnection(conceptId, narrowerConcept, "isChildOf");
-								delete runningAsyncFunctions[conceptId];
-								if (alignmentCache[framework.shortId()] == null)
-									alignmentCache[framework.shortId()] = {};
-								if (alignmentCache[framework.shortId()][conceptId] == null)
-									alignmentCache[framework.shortId()][conceptId] = {};
-								alignmentCache[framework.shortId()][conceptId].source = narrowerConcept;
-							}, function () {
-								renderConceptConnection(conceptId, conceptId, "isChildOf");
-								delete runningAsyncFunctions[conceptId];
-								if (alignmentCache[framework.shortId()] == null)
-									alignmentCache[framework.shortId()] = {};
-								if (alignmentCache[framework.shortId()][conceptId] == null)
-									alignmentCache[framework.shortId()][conceptId] = {};
-								alignmentCache[framework.shortId()][conceptId].source = conceptId;
-							});
-						}
-					} //end if cached exists
-				})(selectedCompetency["skos:narrower"][nc], renderConceptConnection);
-			} //end for each narrower
-		} //end if narrower
+		if (selectedCompetency["skos:broader"] != null || selectedCompetency["skos:narrower"] != null || selectedCompetency["skos:broadMatch"] != null || selectedCompetency["skos:closeMatch"] != null
+			|| selectedCompetency["skos:exactMatch"] != null || selectedCompetency["skos:narrowMatch"] != null || selectedCompetency["skos:relatedMatch"] != null) {
+			var relationTypes = [];
+			if (selectedCompetency["skos:broader"] != null) {
+				relationTypes.push("hasChild");
+			}
+			if (selectedCompetency["skos:narrower"] != null) {
+				relationTypes.push("isChildOf");
+			}
+			if (selectedCompetency["skos:broadMatch"] != null) {
+				relationTypes.push("broadMatch");
+			}
+			if (selectedCompetency["skos:closeMatch"] != null) {
+				relationTypes.push("closeMatch");
+			}
+			if (selectedCompetency["skos:exactMatch"] != null) {
+				relationTypes.push("exactMatch");
+			}
+			if (selectedCompetency["skos:narrowMatch"] != null) {
+				relationTypes.push("narrowMatch");
+			}
+			if (selectedCompetency["skos:relatedMatch"] != null) {
+				relationTypes.push("relatedMatch");
+			}
+			for (var i = 0; i < relationTypes.length; i++) {
+				var relationType = relationTypes[i];
+				var relationWithSkos = "skos:" + relationTypes[i];
+				if (relationType == "hasChild") {
+					relationWithSkos = "skos:broader";
+				}
+				else if (relationType == "isChildOf") {
+					relationWithSkos = "skos:narrower";
+				}
+				
+				for (var j = 0; j < selectedCompetency[relationWithSkos].length; j++) {
+					(function (conceptId, renderConceptConnection, relationType) {
+						if (alignmentCache[framework.shortId()] != null && alignmentCache[framework.shortId()][conceptId] != null && alignmentCache[framework.shortId()][conceptId].target != null && alignmentCache[framework.shortId()][conceptId].target.shortId() > -1) {
+							renderConceptConnection(conceptId, alignmentCache[framework.shortId()][conceptId].target, relationType);
+						} else {
+							if (runningAsyncFunctions[conceptId] == null) {
+								runningAsyncFunctions[conceptId] = 1;
+								EcConcept.get(conceptId, function (connectionConcept) {
+									if (connectionConcept != null)
+										renderConceptConnection(conceptId, connectionConcept, relationType);
+									delete runningAsyncFunctions[conceptId];
+									if (alignmentCache[framework.shortId()] == null)
+										alignmentCache[framework.shortId()] = {};
+									if (alignmentCache[framework.shortId()][conceptId] == null)
+										alignmentCache[framework.shortId()][conceptId] = {};
+									alignmentCache[framework.shortId()][conceptId].target = connectionConcept;
+								}, function () {
+									renderConceptConnection(conceptId, conceptId, relationType);
+									delete runningAsyncFunctions[conceptId];
+									if (alignmentCache[framework.shortId()] == null)
+										alignmentCache[framework.shortId()] = {};
+									if (alignmentCache[framework.shortId()][conceptId] == null)
+										alignmentCache[framework.shortId()][conceptId] = {};
+									alignmentCache[framework.shortId()][conceptId].target = conceptId;
+								});
+							}
+						} //end if cached exists
+					})(selectedCompetency[relationWithSkos][j], renderConceptConnection, relationType);
+				} //end for this type
+			}
+		}
 	} //end if conceptMode & concept selected
 	// Note: ConceptScheme, if framework, may or may not have relations.
 	if (framework.relation != null && selectedCompetency != null) {
