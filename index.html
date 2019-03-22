@@ -431,12 +431,7 @@
 								<!-- Concept Scheme Source -->
 								<label id="sidebarConceptSourceInputLabel" for="sidebarConceptSource" title="" skosFramework="Source:" skosFrameworkTitle="A URI to the original resource which this resource is based on or derived from. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/." ceasnConceptScheme="Source:" class="viewMode editMode absentForCompetencies frameworkOnly" style="margin:0px;">Source:</label>
 								<p id="sidebarConceptSource" class="viewMode sidebarViewList absentForCompetencies frameworkOnly" style="font-weight:bold;"></p>
-								<div class="sidebarInputGrouping editMode editControl absentForCompetencies frameworkOnly">
-									<div class="sidebarInputRow">
-										<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
-										<input id="sidebarConceptSourceInput" cassFramework="dc:source" ceasnFramework="ceasn:source" type="url" data-group="sidebarConceptSourceInput" plural="true" class="sidebarConceptSourceInput" />
-									</div>
-								</div>
+								<input id="sidebarConceptSourceInput" skosFramework="dc:source" ceasnConceptScheme="ceasn:source" type="url" data-group="sidebarConceptSourceInput" class="sidebarConceptSourceInput editMode editControl absentForCompetencies frameworkOnly singular" />
 								<span id="sidebarSourceInputSpan" class="orangeUri">Note: URI only. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.</span>
 								<!-- Coded Notation -->
 								<label id="sidebarCodedNotationInputLabel" for="sidebarCodedNotation" title="" cassCompetency="Notation:" cassCompetencyTitle="An alphanumeric notation or ID code as defined by the promulgating body to identify this resource." skosCompetency="Notation:" skosCompetencyTitle="Alphanumeric notation or ID code as defined by the promulgating body to identify this resource." class="viewMode editMode absentForCompetencies competencyOnly" style="margin:0px;">Notation:</label>
