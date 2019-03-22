@@ -712,10 +712,11 @@
 											<!-- History Note -->
 											<label id="sidebarHistoryNoteInputLabel" for="sidebarHistoryNote" title="" cassFramework="History Note:" cassFrameworkTitle="Describes significant changes to the meaning or the form of a framework. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. One note per line." skosFramework="History Note:" ceasnConceptScheme="History Note:" skosFrameworkTitle="Describes significant changes to the meaning or the form of a scheme. For example, https://credentialengineregistry.org/. One note per line." class="viewMode editMode absentForCompetencies" style="margin:0px;">History Note:</label>
 											<p id="sidebarHistoryNote" class="viewMode sidebarViewList absentForCompetencies" style="font-weight:bold;"></p>
-											<div class="sidebarInputGrouping editMode editControl absentForCompetencies">
+											<div class="sidebarInputGrouping editMode editControl absentForCompetencies onePerLanguage">
 												<div class="sidebarInputRow">
 													<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
-													<input id="sidebarHistoryNoteInput" cassFramework="skos:historyNote" skosFramework="skos:historyNote" ceasnConceptScheme="skos:historyNote" data-group="sidebarHistoryNoteInput" plural="true" type="url" class="sidebarHistoryNoteInput" />
+													<input class="sidebarInputLanguageSelect" placeholder="Language"></input>
+													<input id="sidebarHistoryNoteInput" cassFramework="skos:historyNote" skosFramework="skos:historyNote" ceasnConceptScheme="skos:historyNote" data-group="sidebarHistoryNoteInput" plural="true" class="sidebarHistoryNoteInput" />
 													<button title="Add another value." id="addHistoryNoteInput" data-target="sidebarHistoryNoteInput" data-autocomplete-field="true" class="addInputButton"><i class="fa fa-plus"></i></button>
 												</div>
 											</div>
