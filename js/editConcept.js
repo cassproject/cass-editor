@@ -329,8 +329,8 @@ detangleConcepts = function (me, data, targetData) {
                 c = EcEncryptedValue.toEncryptedValue(c);
                 framework = EcEncryptedValue.toEncryptedValue(framework);
             }
-            repo.saveTo(c, function () {
-                repo.saveTo(framework, function() {
+            repo.saveTo(framework, function () {
+                repo.saveTo(c, function() {
                     c = EcConcept.getBlocking(c.id);
                     framework = EcConceptScheme.getBlocking(framework.id);
                     part3();
