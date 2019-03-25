@@ -440,6 +440,12 @@ renderSidebar = function (justLists) {
 		}
 	}
 
+	if (queryParams.view != "true" && EcIdentityManager.ids[0]) {
+		if (selectedCompetency != null && EcRepository.getBlocking(framework.id).type == "EncryptedValue") {
+			$("#private").prop("checked", true);
+		}
+	}
+
 	//Display cassCompetency only fields
 	if (!conceptMode && thing == selectedCompetency && queryParams.ceasnDataFields !== 'true') {
 		$('.cassCompetency').show();
