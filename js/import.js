@@ -380,7 +380,7 @@ function analyzeJsonLdFramework(file, success, failure) {
         var result = ((e)["target"])["result"];
         var jsonObj = JSON.parse(result);
         if (jsonObj["@graph"]) {
-            if (jsonObj["@context"] == "http://credreg.net/ctdlasn/schema/context/json") {
+            if (jsonObj["@context"] == "http://credreg.net/ctdlasn/schema/context/json" || jsonObj["@context"] == "http://credreg.net/ctdl/schema/context/json") {
                 if (jsonObj["@graph"][0]["@type"].indexOf("Concept") != -1) {
                     success(jsonObj["@graph"], "ctdlasnConcept");
                 }
