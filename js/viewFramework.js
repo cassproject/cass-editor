@@ -618,6 +618,25 @@ renderSidebar = function (justLists) {
 			}
 			connectionsList.attr("id", cId);
 			$(".relationList[" + labelChoice + "=" + relationType + "]").show();
+			if (relationType != "hasChild" && relationType != "isChildOf") {
+				if (viewMode) {
+					$(".relationList[" + labelChoice + "=" + relationType + "]").prevAll("label:first").addClass("viewMode");
+					$(".relationList[" + labelChoice + "=" + relationType + "]").show().prevAll("label:first").show();
+				}
+				else {
+					var x = connectionsList.prepend("<button class='viewMode frameworkEditControl' tabindex='0' style='float:right; cursor:pointer;'><i class='fa fa-times'></i></button>").children().first();
+					x.click(function () {
+						EcArray.setRemove(selectedCompetency["skos:" + relationType], cId);
+			            if ($("#private")[0].checked) {
+			            	selectedCompetency = EcEncryptedValue.toEncryptedValue(selectedCompetency);
+			            }
+			            repo.saveTo(selectedCompetency, function() {
+			            	selectedCompetency = EcConcept.getBlocking(selectedCompetency.id);
+			                afterSaveRender();
+			            }, error);
+					});
+				}
+			}
 		} //function renderConceptConnection
 		if (selectedCompetency["skos:broader"] != null || selectedCompetency["skos:narrower"] != null || selectedCompetency["skos:broadMatch"] != null || selectedCompetency["skos:closeMatch"] != null
 			|| selectedCompetency["skos:exactMatch"] != null || selectedCompetency["skos:narrowMatch"] != null || selectedCompetency["skos:relatedMatch"] != null) {
