@@ -527,9 +527,6 @@ setGlobalTouchDragDataConcept = function (obj) {
 addConceptAlignments = function(targets, thing, relationType) {
     var relation = "skos:" + relationType;
     for (var i = 0; i < targets.length; i++) {
-        console.log(targets[i]);
-        console.log(thing);
-        console.log(relationType);
         if (thing[relation] == null) {
             thing[relation] = [];
         }
