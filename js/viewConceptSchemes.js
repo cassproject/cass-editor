@@ -24,6 +24,8 @@ var frameworkLoading = 0;
 
 function conceptSchemeSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
     frameworkLoading++;
+    if (paramObj == null)
+        paramObj = {};
     paramObj.sort = '[ { "dcterms:title.keyword": {"order" : "asc" , "missing" : "_last"}} ]';
     var search = "";
     if (queryParams.filter != null || (queryParams.conceptShow != null && EcIdentityManager != null && EcIdentityManager.ids.length > 0)) {
