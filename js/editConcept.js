@@ -149,7 +149,7 @@ deleteConcept = function (c) {
                         searchFrameworks(createParamObj(5000));
                     else
                         showPage(defaultPage);
-                    EcConcept.search(repo, "skos%5C:inScheme:\"" + framework.shortId() + "\"", function (concepts) {
+                    EcConcept.search(repo, "skos\\:inScheme:\"" + framework.shortId() + "\"", function (concepts) {
                         for (var i = 0; i < concepts.length; i++)
                             repo.deleteRegistered(concepts[i], console.log, console.error);
                     }, console.error);
