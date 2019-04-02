@@ -153,7 +153,6 @@ populateFramework = function (subsearch) {
 	var me = this;
 	treeTop = $("#tree").scrollTop();
 	$("#tree").hide().html("");
-	me.fetches = 0;
 	var frameworkName = framework.name;
 	if (frameworkName == null) frameworkName = "Unknown Framework.";
 	frameworkName = EcArray.isArray(frameworkName) ? frameworkName : [frameworkName];
@@ -256,8 +255,7 @@ function afterRefresh(level, subsearch) {
 
 function refreshCompetency(col, level, subsearch, done) {
 	if (conceptMode) {
-		var ret = refreshConcept(col, level, subsearch);
-		done();
+		var ret = refreshConcept(col, level, subsearch, done);
 		return ret;
 	}
 	var treeNode = null;

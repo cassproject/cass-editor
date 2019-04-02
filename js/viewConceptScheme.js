@@ -2,21 +2,9 @@
 var globalTouchDragDestinationConcept = null;
 var globalTouchDragDataConcept = null;
 
-fetchFailure = function(failure) {
-    this.fetches--;
-    error(failure);
-    if (this.fetches == 0) {
-        if ($("#tree").html() == "")
-            $("#tree").html("<br><br><center><h3>This scheme is empty.</h3></center>");
-            afterRefresh(true);
-    }
-}
-
 populateConceptScheme = function (subsearch) {
-    var me = this;
     treeTop = $("#tree").scrollTop();
     $("#tree").hide().html("");
-    me.fetches = 0;
     if (!isFirstEdit && EcRepository.getBlocking(framework.id).type == "EncryptedValue") {
         $("#private").prop("checked", true);
     }
@@ -70,12 +58,13 @@ populateConceptScheme = function (subsearch) {
             $("#tree").html("<br><br><center><h3>This concept scheme is empty.</h3></center>");
         showPage("#editFrameworkSection", framework);
     } else {
-        me.fetches += framework["skos:hasTopConcept"].length;
-        for (var i = 0; i < framework["skos:hasTopConcept"].length; i++) {
-            EcConcept.get(framework["skos:hasTopConcept"][i], function (c) {
-                refreshConcept(c, null, subsearch);
-            }, fetchFailure);
-        }
+        new EcAsyncHelper().each(framework["skos:hasTopConcept"], function(conceptId, done) {
+            EcConcept.get(conceptId, function (c) {
+                refreshConcept(c, null, subsearch, null, done);
+            }, done);
+        }, function (conceptIds) {
+            afterConceptRefresh();
+        });
     }
 }
 
@@ -111,22 +100,17 @@ function afterConceptRefresh(level, subsearch) {
     collapseCompetencies();
 }
 
-function refreshConcept(col, level, subsearch, recurse) {
-    var me = this;
-    if (me.fetches > 0) {
-        me.fetches--;
-    }
+function refreshConcept(col, level, subsearch, recurse, done) {
     if (recurse == null) recurse = [];
     if (EcArray.has(recurse, col.shortId())) {
-        if (me.fetches == 0) {
-            if ($("#tree").html() == "")
-                $("#tree").html("<br><br><center><h3>This concept scheme is empty.</h3></center>");
-            afterRefresh(level, subsearch);
-        }
         return;
     }
     recurse.push(col.shortId());
     var treeNode = null;
+    if ($("#tree [id='" + col.shortId() + "']").length > 0) {
+        treeNode = $("[id='" + col.shortId() + "']");
+        treeNode.remove();
+    }
     treeNode = $("#tree").append("<li class = 'competency' draggable='true' ondragstart='dragConcept(event);' ontouchstart='handleTouchStartConcept(event)' ontouchmove='handleTouchMoveConcept(event);' ontouchend='handleTouchEndConcept(event);' ondrop='dropConcept(event);' ondragover='allowConceptDrop(event);'><span></span><ul></ul></li>").children().last();
     treeNode.attr("id", col.shortId());
     if (col["skos:prefLabel"] != null && col["skos:prefLabel"] != "NULL" && col["skos:prefLabel"] != col["skos:definition"] && col["skos:definition"]) {
@@ -147,23 +131,16 @@ function refreshConcept(col, level, subsearch, recurse) {
     if (col["skos:narrower"] != null && col["skos:narrower"].length > 0) {
         if (!$(".competency[id=\"" + col.shortId() + "\"]").hasClass("expandable"))
             $(".competency[id=\"" + col.shortId() + "\"]").addClass("expandable").children(".collapse").css("visibility", "visible");
-        for (var i = 0; i < col["skos:narrower"].length; i++) {
-            me.fetches++;
-            EcConcept.get(col["skos:narrower"][i], function (concept) {
-                refreshConcept(concept, level, subsearch, JSON.parse(JSON.stringify(recurse))).appendTo(treeNode.children("ul"));
+        new EcAsyncHelper().each(col["skos:narrower"], function(conceptId, done) {
+            EcConcept.get(conceptId, function (c) {
+                refreshConcept(c, level, subsearch, JSON.parse(JSON.stringify(recurse))).appendTo(treeNode.children("ul"));
+            }, done);
+        }, function (conceptIds) {
 
-                if (me.fetches == 0) {
-                    if ($("#tree").html() == "")
-                        $("#tree").html("<br><br><center><h3>This concept scheme is empty.</h3></center>");
-                    afterRefresh(level, subsearch);
-                }
-            }, fetchFailure);
-        }
-    } else
-    if (me.fetches == 0) {
-        if ($("#tree").html() == "")
-            $("#tree").html("<br><br><center><h3>This concept scheme is empty.</h3></center>");
-        afterRefresh(level, subsearch);
+        });
+    }
+    if (done != null && done !== undefined) {
+        done();
     }
     return treeNode;
 }
