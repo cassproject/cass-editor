@@ -187,6 +187,9 @@ Along with user credentials, the cass-editor can be configured to not show other
 ## Only show concept schemes that individual owns.
 When linking a concept to a competency, the cass-editor can be configured to not show others' concept schemes. This functionality can be enabled by the URL parameter `conceptShow=mine`.
 
+## Private frameworks and concept schemes by default.
+Users can make a framework or concept scheme private by clicking the checkbox in the edit pane. This checkbox can be selected by default with the URL parameter `private=true`. Note that this will not change existing frameworks and concept schemes but will apply to newly created ones.
+
 ## When selecting a concept to link to, allow editing.
 When linking a concept to a competency or another concept, the cass-editor can be configured to allow the user to edit concepts or concept schemes. This functionality can be enabled by the URL parameter `editIframe=true`.
 
