@@ -1269,39 +1269,46 @@ function encryptFramework(framework) {
 
 function encryptConcepts(c) {
     var toSave = [];
-    var length = c["skos:hasTopConcept"] ? c["skos:hasTopConcept"].length : c["skos:narrower"].length;
-    for (var i = 0; i < length; i++) {
-        var concept = c["skos:hasTopConcept"] ? EcRepository.getBlocking(c["skos:hasTopConcept"][i]) : EcRepository.getBlocking(c["skos:narrower"][i]);
-        concept.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-        if (concept["skos:narrower"] && concept["skos:narrower"].length > 0) {
-            encryptConcepts(concept);
+
+    var concepts = c["skos:hasTopConcept"] ? c["skos:hasTopConcept"] : c["skos:narrower"];
+    new EcAsyncHelper().each(concepts, function (conceptId, done) {
+        EcRepository.get(conceptId, function (concept) {
+            concept.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            if (concept["skos:narrower"] && concept["skos:narrower"].length > 0) {
+                encryptConcepts(concept);
+            }
+            concept = EcEncryptedValue.toEncryptedValue(concept);
+            toSave.push(concept);
+            done();
+        }, done);
+    }, function (conceptIds) {
+        for (var i = 0; i < toSave.length; i++) {
+            repo.saveTo(toSave[i], function() {}, error);
         }
-        concept = EcEncryptedValue.toEncryptedValue(concept);
-        toSave.push(concept);
-    }
-    for (var i = 0; i < toSave.length; i++) {
-        repo.saveTo(toSave[i], function() {}, error);
-    }
+    });
 }
 
 
 function decryptConcepts(c) {
-    var length = c["skos:hasTopConcept"] ? c["skos:hasTopConcept"].length : c["skos:narrower"].length;
-    for (var i = 0; i < length; i++) {
-        var concept = c["skos:hasTopConcept"] ? EcRepository.getBlocking(c["skos:hasTopConcept"][i]) : EcRepository.getBlocking(c["skos:narrower"][i]);
-        var v;
-        if (concept.isAny(new EcEncryptedValue().getTypes())) {
-            v = new EcEncryptedValue();
-            v.copyFrom(concept);
-        }
-        else {
-            v = EcEncryptedValue.toEncryptedValue(concept);
-        }
-        concept = new EcConcept();
-        concept.copyFrom(v.decryptIntoObject());
-        if (concept["skos:narrower"]) {
-            decryptConcepts(concept);
-        }
-        repo.saveTo(concept, function() {}, error);
-    }
+    var concepts = c["skos:hasTopConcept"] ? c["skos:hasTopConcept"] : c["skos:narrower"];
+
+    new EcAsyncHelper().each(concepts, function (conceptId, done) {
+        EcRepository.get(conceptId, function (concept) {
+            var v;
+            if (concept.isAny(new EcEncryptedValue().getTypes())) {
+                v = new EcEncryptedValue();
+                v.copyFrom(concept);
+            }
+            else {
+                v = EcEncryptedValue.toEncryptedValue(concept);
+            }
+            concept = new EcConcept();
+            concept.copyFrom(v.decryptIntoObject());
+            if (concept["skos:narrower"]) {
+                decryptConcepts(concept);
+            }
+            repo.saveTo(concept, done, done);
+        }, done);
+    }, function (conceptIds) {
+    });
 }
