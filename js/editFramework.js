@@ -1151,30 +1151,36 @@ $("#private").change(function() {
     if ($(this)[0].checked) {
         if (framework.isAny(new EcFramework().getTypes())) {
             if (framework.competency) {
-                for (var i = 0; i < framework.competency.length; i++) {
-                    var c = EcRepository.getBlocking(framework.competency[i]);
-                    if (c.canEditAny(EcIdentityManager.getMyPks())) {
-                        c = EcEncryptedValue.toEncryptedValue(c);
-                        repo.saveTo(c, function() {}, error);
+                new EcAsyncHelper().each(framework.competency, function (competencyId, done) {
+                    EcCompetency.get(competencyId, function (c) {
+                        if (c.canEditAny(EcIdentityManager.getMyPks())) {
+                            c = EcEncryptedValue.toEncryptedValue(c);
+                            repo.saveTo(c, done, done);
+                        }
+                        else {
+                            refreshCompetency(c, null, null, done);
+                        }
+                    }, done);
+                }, function (competencyIds) {
+                    if (framework.relation) {
+                        new EcAsyncHelper().each(framework.relation, function (relationId, done) {
+                            EcAlignment.get(relationId, function (r) {
+                                r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                                r = EcEncryptedValue.toEncryptedValue(r);
+                                repo.saveTo(r, done, done);
+                            }, done);
+                        }, function (relationIds) {
+                            encryptFramework(framework);
+                        });
                     }
                     else {
-                        refreshCompetency(c);
+                        encryptFramework(framework);
                     }
-                }
+                });
             }
-            if (framework.relation) {
-                for (var i = 0; i < framework.relation.length; i++) {
-                    var r = EcRepository.getBlocking(framework.relation[i]);
-                    r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-                    r = EcEncryptedValue.toEncryptedValue(r);
-                    repo.saveTo(r, function() {}, error);
-                }
+            else {
+                encryptFramework(framework);
             }
-            var f = new EcFramework();
-            f.copyFrom(framework);
-            f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-            f = EcEncryptedValue.toEncryptedValue(f);
-            repo.saveTo(f, function() {}, error);
         }
         else {
             var cs = new EcConceptScheme();
@@ -1196,41 +1202,46 @@ $("#private").change(function() {
             repo.saveTo(f, function() {}, error);
             framework = f;
             if (framework.competency) {
-                for (var i = 0; i < framework.competency.length; i++) {
-                    var c = EcRepository.getBlocking(framework.competency[i]);
-                    var v;
-                    if (c.canEditAny(EcIdentityManager.getMyPks())) {
-                        if (c.isAny(new EcEncryptedValue().getTypes())) {
-                            v = new EcEncryptedValue();
-                            v.copyFrom(c);
+                new EcAsyncHelper().each(framework.competency, function (competencyId, done) {
+                    EcRepository.get(competencyId, function (c) {
+                        var v;
+                        if (c.canEditAny(EcIdentityManager.getMyPks())) {
+                            if (c.isAny(new EcEncryptedValue().getTypes())) {
+                                v = new EcEncryptedValue();
+                                v.copyFrom(c);
+                            }
+                            else {
+                                v = EcEncryptedValue.toEncryptedValue(c);
+                            }
+                            c = new EcCompetency();
+                            c.copyFrom(v.decryptIntoObject());
+                            repo.saveTo(c, done, done);
                         }
                         else {
-                            v = EcEncryptedValue.toEncryptedValue(c);
+                            refreshCompetency(c, null, null, done);
                         }
-                        c = new EcCompetency();
-                        c.copyFrom(v.decryptIntoObject());
-                        repo.saveTo(c, function() {}, error);
+                    }, done);
+                }, function (competencyIds) {
+                    if (framework.relation) {
+                        new EcAsyncHelper().each(framework.relation, function (relationId, done) {
+                            EcRepository.get(relationId, function (r) {
+                                var v;
+                                if (r.isAny(new EcEncryptedValue().getTypes())) {
+                                    v = new EcEncryptedValue();
+                                    v.copyFrom(r);
+                                }
+                                else {
+                                    v = EcEncryptedValue.toEncryptedValue(r);
+                                }
+                                r = new EcAlignment();
+                                r.copyFrom(v.decryptIntoObject());
+                                repo.saveTo(r, done, done);
+                            }, done);
+                        }, function (relationIds) {
+                        });
                     }
-                    else {
-                        refreshCompetency(c);
-                    }
-                }
-            }
-            if (framework.relation) {
-                for (var i = 0; i < framework.relation.length; i++) {
-                    var r = EcRepository.getBlocking(framework.relation[i]);
-                    var v;
-                    if (r.isAny(new EcEncryptedValue().getTypes())) {
-                        v = new EcEncryptedValue();
-                        v.copyFrom(r);
-                    }
-                    else {
-                        v = EcEncryptedValue.toEncryptedValue(r);
-                    }
-                    r = new EcAlignment();
-                    r.copyFrom(v.decryptIntoObject());
-                    repo.saveTo(r, function() {}, error);
-                }
+                    
+                });
             }
         }
         else {
@@ -1247,6 +1258,14 @@ $("#private").change(function() {
         }
     }
 });
+
+function encryptFramework(framework) {
+    var f = new EcFramework();
+    f.copyFrom(framework);
+    f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+    f = EcEncryptedValue.toEncryptedValue(f);
+    repo.saveTo(f, function() {}, error);
+}
 
 function encryptConcepts(c) {
     var toSave = [];
