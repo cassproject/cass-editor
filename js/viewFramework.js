@@ -1295,6 +1295,24 @@ editSidebar = function () {
 		}
 	}
 
+	if (thing["schema:dateCreated"] == null || thing["schema:dateCreated"] === undefined) {
+		var timestamp;
+		var date;
+		if (!thing.id.substring(thing.id.lastIndexOf("/")).matches("\\/[0-9]+")) {
+            timestamp = null;
+		}
+		else {
+			timestamp = thing.id.substring(thing.id.lastIndexOf("/")+1);
+		}
+		if (timestamp != null) {
+			date = new Date(parseInt(timestamp)).toISOString();
+		}
+		else {
+			date = new Date().toISOString();
+		}
+		thing["schema:dateCreated"] = date;
+	}
+
 	if (thing == framework) {
 		$("#sidebarUnlink").hide();
 		$("#sidebarRemove").hide();
