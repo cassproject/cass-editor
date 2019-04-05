@@ -622,7 +622,7 @@ renderSidebar = function (justLists) {
 					$(".relationList[" + labelChoice + "=" + relationType + "]").show().prevAll("label:first").show();
 				}
 				else {
-					var x = connectionsList.prepend("<button class='viewMode frameworkEditControl' tabindex='0' style='float:right; cursor:pointer;'><i class='fa fa-times'></i></button>").children().first();
+					var x = connectionsList.prepend("<button class='editMode frameworkEditControl' tabindex='0' style='float:right; cursor:pointer;'><i class='fa fa-times'></i></button>").children().first();
 					x.click(function () {
 						EcArray.setRemove(selectedCompetency["skos:" + relationType], cId);
 			            if ($("#private")[0].checked) {
@@ -722,7 +722,7 @@ renderSidebar = function (justLists) {
 						$(".relationList[" + labelChoice + "=" + relationType + "]").show().prevAll("label:first").show();
 					}
 					else {
-						var x = li.prepend("<button class='viewMode frameworkEditControl' tabindex='0' style='float:right; cursor:pointer;'><i class='fa fa-times'></i></button>").children().first();
+						var x = li.prepend("<button class='editMode frameworkEditControl' tabindex='0' style='float:right; cursor:pointer;'><i class='fa fa-times'></i></button>").children().first();
 						x.click(function () {
 							if (conceptMode) {
 								let trimId = EcRemoteLinkedData.trimVersionFromUrl($(this).parent().attr("id"));
