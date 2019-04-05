@@ -520,12 +520,12 @@
 										<button id="sidebarEducationLevelTypeBrowse" cassCompetency="ceasn:educationLevelType" ceasnCompetency="ceasn:educationLevelType" plural="true" class="editMode editControl absentForConcepts" onclick="$('#selectConceptSection').attr('destination','ceasn:educationLevelType');initIframe();overlayPage('#selectConceptSection', framework);"><i class="fa fa-search-plus"></i></button>
 										<ul id="sidebarEducationLevelType" cassCompetency="ceasn:educationLevelType" ceasnCompetency="ceasn:educationLevelType" class="viewMode editMode absentForConcepts" style="font-weight:bold;"></ul>
 										<!-- In Language -->
-										<label id="sidebarInLanguageInputLabel" for="sidebarInLanguage" title="" cassCompetency="In Language:" cassCompetencyTitle="The primary language used in or by this competency framework or competency. One language per line." ceasnCompetency="In Language:" ceasnCompetencyTitle="The primary language used in or by this competency framework or competency. One language per line." skosCompetency="Language:" skosCompetencyTitle="Language of the concept. One language per line." class="viewMode editMode absentForConcepts" style="margin:0px;">In Language:</label>
-										<p id="sidebarInLanguage" class="viewMode absentForConcepts sidebarViewList" style="font-weight:bold;"></p>
-										<div class="sidebarInputGrouping editMode editControl absentForConcepts">
+										<label id="sidebarInLanguageInputLabel" for="sidebarInLanguage" title="" cassCompetency="In Language:" cassCompetencyTitle="The primary language used in or by this competency framework or competency. One language per line." ceasnCompetency="In Language:" ceasnCompetencyTitle="The primary language used in or by this competency framework or competency. One language per line." skosCompetency="Language:" skosCompetencyTitle="Language of the concept. One language per line." class="viewMode editMode" style="margin:0px;">In Language:</label>
+										<p id="sidebarInLanguage" class="viewMode sidebarViewList" style="font-weight:bold;"></p>
+										<div class="sidebarInputGrouping editMode editControl">
 											<div class="sidebarInputRow">
 												<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
-												<input id="sidebarInLanguageInput" cassCompetency="schema:inLanguage" ceasnCompetency="ceasn:inLanguage" data-group="sidebarInLanguageInput" plural="true" defaultToFramework="true" class="sidebarInLanguageInput language" />
+												<input id="sidebarInLanguageInput" cassCompetency="schema:inLanguage" ceasnCompetency="ceasn:inLanguage" skosCompetency="skos:inLanguage" data-group="sidebarInLanguageInput" plural="true" defaultToFramework="true" class="sidebarInLanguageInput language" />
 												<button title="Add another value." id="addInLanguageInput" data-target="sidebarInLanguageInput" data-autocomplete-field="true" class="addInputButton"><i class="fa fa-plus"></i></button>
 											</div>
 										</div>
