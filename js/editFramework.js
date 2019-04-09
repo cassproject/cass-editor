@@ -88,8 +88,13 @@ addCompetency = function () {
                         selectedCompetency = EcCompetency.getBlocking(c.id);
                         refreshSidebar();
                         editSidebar();
-                        $("#sidebarNameInput").focus();
-                        $("#sidebarNameInput").select();
+                        addDelay = setInterval(function() {
+                            if ($('#sidebarNameInput').is(':visible')) {
+                                $('#sidebarNameInput').focus();
+                                $('#sidebarNameInput').select();
+                                clearInterval(addDelay);
+                            }
+                        }, 1000);
                         afterSave();
                         $("#sidebarAddCompetencies").prop('disabled', false);
                     }, error);
@@ -103,8 +108,13 @@ addCompetency = function () {
                     selectedCompetency = EcCompetency.getBlocking(c.id);
                     refreshSidebar();
                     editSidebar();
-                    $("#sidebarNameInput").focus();
-                    $("#sidebarNameInput").select();
+                    addDelay = setInterval(function() {
+                        if ($('#sidebarNameInput').is(':visible')) {
+                            $('#sidebarNameInput').focus();
+                            $('#sidebarNameInput').select();
+                            clearInterval(addDelay);
+                        }
+                    }, 1000);
                     afterSave();
                     $("#sidebarAddCompetencies").prop('disabled', false);
                 }, error);
