@@ -516,6 +516,7 @@ select {
 
 #frameworkName {
     cursor: pointer;
+    overflow-wrap: break-word;
 }
 
 #addFrameworkSection {
