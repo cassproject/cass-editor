@@ -553,3 +553,95 @@ addConceptAlignments = function(targets, thing, relationType) {
         }, error);
     }, error);
 }
+
+moveUpConcept = function () {
+    var moveThisId = selectedCompetency.shortId();
+    var moveThis = EcConcept.getBlocking(moveThisId);
+    var done = false;
+    for (var i = 0; i < framework["skos:hasTopConcept"].length; i++) {
+        if (framework["skos:hasTopConcept"][i].startsWith(moveThisId)) {
+            done = true;
+            if (i != 0) {
+                //Swap with previous sibling
+                framework["skos:hasTopConcept"][i] = framework["skos:hasTopConcept"][i-1];
+                framework["skos:hasTopConcept"][i-1] = moveThisId;
+                if ($("#private")[0].checked) {
+                    framework = EcEncryptedValue.toEncryptedValue(framework);
+                }
+                repo.saveTo(framework, function() {
+                    framework = EcConceptScheme.getBlocking(framework.id);
+                    afterSave();
+                }, error);
+            }
+            break;
+        }
+    }
+    if (!done) {
+        var parentId = EcArray.isArray(moveThis["skos:broader"]) ? moveThis["skos:broader"][0] : moveThis["skos:broader"];
+        var parent = EcConcept.getBlocking(parentId);
+        for (var i = 0; i < parent["skos:narrower"].length; i++) {
+            if (parent["skos:narrower"][i].startsWith(moveThisId)) {
+                done = true;
+                if (i != 0) {
+                    //Swap with previous sibling
+                    parent["skos:narrower"][i] = parent["skos:narrower"][i-1];
+                    parent["skos:narrower"][i-1] = moveThisId;
+                    if ($("#private")[0].checked) {
+                        parent = EcEncryptedValue.toEncryptedValue(parent);
+                    }
+                    repo.saveTo(parent, function() {
+                        parent = EcConcept.getBlocking(parentId);
+                        afterSave();
+                    }, error);
+                }
+                break;
+            }
+        }
+    }  
+}
+
+moveDownConcept = function () {
+    var moveThisId = selectedCompetency.shortId();
+    var moveThis = EcConcept.getBlocking(moveThisId);
+    var done = false;
+    for (var i = 0; i < framework["skos:hasTopConcept"].length; i++) {
+        if (framework["skos:hasTopConcept"][i].startsWith(moveThisId)) {
+            done = true;
+            if (i != framework["skos:hasTopConcept"].length-1) {
+                //Swap with next sibling
+                framework["skos:hasTopConcept"][i] = framework["skos:hasTopConcept"][i+1];
+                framework["skos:hasTopConcept"][i+1] = moveThisId;
+                if ($("#private")[0].checked) {
+                    framework = EcEncryptedValue.toEncryptedValue(framework);
+                }
+                repo.saveTo(framework, function() {
+                    framework = EcConceptScheme.getBlocking(framework.id);
+                    afterSave();
+                }, error);
+            }
+            break;
+        }
+    }
+    if (!done) {
+        var parentId = EcArray.isArray(moveThis["skos:broader"]) ? moveThis["skos:broader"][0] : moveThis["skos:broader"];
+        var parent = EcConcept.getBlocking(parentId);
+        for (var i = 0; i < parent["skos:narrower"].length; i++) {
+            if (parent["skos:narrower"][i].startsWith(moveThisId)) {
+                done = true;
+                if (i != parent["skos:narrower"].length-1) {
+                    //Swap with next sibling
+                    parent["skos:narrower"][i] = parent["skos:narrower"][i+1];
+                    parent["skos:narrower"][i+1] = moveThisId;
+                    if ($("#private")[0].checked) {
+                        parent = EcEncryptedValue.toEncryptedValue(parent);
+                    }
+                    repo.saveTo(parent, function() {
+                        parent = EcConcept.getBlocking(parentId);
+                        afterSave();
+                    }, error);
+                }
+                break;
+            }
+        }
+    }  
+}

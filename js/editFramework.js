@@ -1075,6 +1075,9 @@ copyCompetencies = function (results) {
 }
 
 moveUp = function () {
+    if (conceptMode) {
+        return moveUpConcept();
+    }
     var moveThis = $("[id=\"" + selectedCompetency.shortId() + "\"]");
     var prevNodes = moveThis.prev();
     if (prevNodes.length > 0) {
@@ -1109,6 +1112,9 @@ moveUp = function () {
 }
 
 moveDown = function () {
+    if (conceptMode) {
+        return moveDownConcept();
+    }
     var moveThis = $("[id=\"" + selectedCompetency.shortId() + "\"]");
     var prevNodes = moveThis.next();
     if (prevNodes.length > 0) {
