@@ -241,4 +241,5 @@ editConceptSidebar = function () {
             $(this).val(defaultLanguage);
         }
     });
+    $(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
 }
