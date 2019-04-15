@@ -213,7 +213,9 @@ function importCtdlAsnCsv() {
                     }, queryParams.origin);
             }
             Task.asyncImmediate(function (callback2) {
-                f.addOwner(ceo.ppk.toPk());
+                if (ceo != null) {
+                    f.addOwner(ceo.ppk.toPk());
+                }
                 repo.saveTo(f, function (success) {
                     counter++;
                     loading(ah.counter + " objects remaining to save. " + (failed > 0 ? (failed + " failed to save.") : ""));
