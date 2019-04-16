@@ -123,6 +123,7 @@
 								<jsSourceFile>js/vendor/uuid.js</jsSourceFile>
 								<jsSourceFile>forge/forge.min.js</jsSourceFile>
 								<jsSourceFile>js/cass/papaparse.js</jsSourceFile>
+								<jsSourceFile>js/cass/jsonld.js</jsSourceFile>
 								<jsSourceFile>js/cass/FileSaver.js</jsSourceFile>
 								<jsSourceFile>js/cass/xml2json.js</jsSourceFile>
 								<jsSourceFile>js/cass/base64toArrayBuffer.js</jsSourceFile>
