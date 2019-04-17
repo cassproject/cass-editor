@@ -146,11 +146,7 @@ function importMedbiq() {
                     populateFramework();
                     selectedCompetency = null;
                     refreshSidebar();
-                    if (parent != null && queryParams.origin != null && queryParams.origin != "")
-                        parent.postMessage({
-                            message: "importFinished",
-                            framework: f.id
-                        }, queryParams.origin);
+                    spitEvent("importFinished", f.shortId());
                 }
             }, function (failure) {
                 error(failure);
@@ -178,11 +174,7 @@ function importAsn() {
                 populateFramework();
                 selectedCompetency = null;
                 refreshSidebar();
-                if (parent != null && queryParams.origin != null && queryParams.origin != "")
-                    parent.postMessage({
-                        message: "importFinished",
-                        framework: f.id
-                    }, queryParams.origin);
+                spitEvent("importFinished", f.shortId());
             }
         },
         function (failure) {
@@ -206,11 +198,7 @@ function importCtdlAsnCsv() {
         ah.each(all, function (f, callback) {
             if (f.isAny(new EcFramework().getTypes())) {
                 framework = f;
-                if (parent != null && queryParams.origin != null && queryParams.origin != "")
-                    parent.postMessage({
-                        message: "importFinished",
-                        framework: f.id
-                    }, queryParams.origin);
+                spitEvent("importFinished", f.shortId());
             }
             Task.asyncImmediate(function (callback2) {
                 if (ceo != null) {
@@ -297,11 +285,7 @@ function importCsv() {
                     populateFramework();
                     selectedCompetency = null;
                     refreshSidebar();
-                    if (parent != null && queryParams.origin != null && queryParams.origin != "")
-                        parent.postMessage({
-                            message: "importFinished",
-                            framework: f.id
-                        }, queryParams.origin);
+                    spitEvent("importFinished", f.shortId());
                 }
             }, function (failure) {
                 error(failure);
@@ -426,11 +410,7 @@ function importJsonLdFramework() {
             populateFramework();
             selectedCompetency = null;
             refreshSidebar();
-            if (parent != null && queryParams.origin != null && queryParams.origin != "")
-                parent.postMessage({
-                    message: "importFinished",
-                    framework: framework.id
-                }, queryParams.origin);
+            spitEvent("importFinished", f.shortId());
         },
         failure: function (failure) {
             alert("Import failed. Check your import file for any errors.");

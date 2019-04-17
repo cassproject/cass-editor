@@ -67,11 +67,10 @@ importCase = function () {
                 contentType: false,
 				success: function () {
 					$("#caseImportSection [id='" + id + "']").removeClass("unfinished").addClass("finished").find(".loading").hide().parent().find(".success").show();
-					if (parent != null && queryParams.origin != null && queryParams.origin != "")
-		                parent.postMessage({
-		                    message: "importFinished",
-		                    framework: id
-		                }, queryParams.origin);
+					EcFramework.get(id, function(f) {
+						framework = f;
+						spitEvent("importFinished", f.shortId());
+					}, error);
 					importCase();
 				},
 				failure: function (failure) {
