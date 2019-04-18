@@ -528,8 +528,7 @@ renderSidebar = function (justLists) {
 	$("#detailSlider ul").each(function () {
 		var u = $(this).attr(fieldChoice);
 		var val = thing[u];
-		var content = window.getComputedStyle($(this)[0], '::after').getPropertyValue('content');
-		if (viewMode && !$(this).hasClass("exempt") && content == '"None"') {
+		if (viewMode && !$(this).hasClass("exempt") && val === undefined) {
 			$(this).prev().prev("label").hide();
 			$(this).prev().hide();
 			$(this).removeClass("viewMode");
@@ -548,6 +547,7 @@ renderSidebar = function (justLists) {
 		$(this).html("");
 		$(this).prev("label").addClass("viewMode");
 		$(this).prev().prev("label").addClass("viewMode");
+		$(this).addClass("viewMode");
 		if (val === undefined || val == null || val == "") {
 			if ($(this).parents("#alignmentPanel").length == 0 && $('#detailSlider').hasClass('detailSliderView')) {
 				$(this).prev("label").removeClass("viewMode");
