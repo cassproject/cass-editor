@@ -672,7 +672,7 @@ renderSidebar = function (justLists) {
 				
 				for (var j = 0; j < selectedCompetency[relationWithSkos].length; j++) {
 					(function (conceptId, renderConceptConnection, relationType) {
-						if (alignmentCache[framework.shortId()] != null && alignmentCache[framework.shortId()][conceptId] != null && alignmentCache[framework.shortId()][conceptId].target != null && alignmentCache[framework.shortId()][conceptId].target.shortId() > -1) {
+						if (alignmentCache[framework.shortId()] != null && alignmentCache[framework.shortId()][conceptId] != null && alignmentCache[framework.shortId()][conceptId].target != null && alignmentCache[framework.shortId()][conceptId].target.id != null && alignmentCache[framework.shortId()][conceptId].target.shortId() > -1) {
 							renderConceptConnection(conceptId, alignmentCache[framework.shortId()][conceptId].target, relationType);
 						} else {
 							if (runningAsyncFunctions[conceptId] == null) {
@@ -2191,7 +2191,13 @@ handleAlignmentInput = function (event) {
 		button.next().next('input').focus();
 	} else if (button.attr('data-mode') == 'Save') {
 		if (!isEmpty(button.next().next('input').val()) && !button.next().next('input').is(':invalid')) {
-			addAlignments([button.next().next('input').val()], selectedCompetency, button.attr(button.attr('data-choice')));
+			if (button.hasClass("conceptAlignment")) {
+				var selected = (selectedCompetency != null) ? selectedCompetency : framework;
+				addConceptAlignments([button.next().next('input').val()], selected, button.attr(button.attr('data-choice')));
+			}
+			else {
+				addAlignments([button.next().next('input').val()], selectedCompetency, button.attr(button.attr('data-choice')));
+			}
 		} else if (!isEmpty(button.next().next('input').val()))
 			alert('Alignments must be a URI.');
 		if (!button.next().next('input').is(':invalid')) {

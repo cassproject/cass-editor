@@ -535,7 +535,11 @@ setGlobalTouchDragDataConcept = function (obj) {
 }
 
 addConceptAlignments = function(targets, thing, relationType) {
-    var relation = "skos:" + relationType;
+    var relation = "";
+    if (relationType.indexOf(":") == -1) {
+        relation += "skos:";
+    }
+    relation += relationType;
     for (var i = 0; i < targets.length; i++) {
         if (thing[relation] == null) {
             thing[relation] = [];
@@ -548,7 +552,12 @@ addConceptAlignments = function(targets, thing, relationType) {
     }
     repo.saveTo(thing, function() {
         repo.saveTo(framework, function() {
-            framework = EcConceptScheme.getBlocking(framework.id);
+            if (conceptMode) {
+                framework = EcConceptScheme.getBlocking(framework.id);
+            }
+            else {
+                framework = EcFramework.getBlocking(framework.id);
+            }
             afterSaveRender();
         }, error);
     }, error);
