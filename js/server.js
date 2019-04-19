@@ -289,28 +289,32 @@ for (var i = 0; i < servers.length; i++) {
 }
 
 var iframeInit = false;
+var iframeCompetencyPath = "";
 initIframe = function (comp) {
 	var iframeRoot = queryParams.editorRoot;
 	if (iframeRoot == null || iframeRoot === undefined)
 		iframeRoot = "";
 	if (comp == true) {
-		var iframeCompetencyPath = iframeRoot + "index.html?select=Align with...&view=true&back=true&frameworkId=" + framework.shortId() + "&iframeRoot=" + iframeRoot + "&origin=" + window.location.origin + (queryParams.server == null ? "" : "&server=" + queryParams.server + (queryParams.newObjectEndpoint == null ? "" : "&newObjectEndpoint=" + queryParams.newObjectEndpoint));
+		var iframeCompetencyPathTrue = iframeRoot + "index.html?select=Align with...&view=true&back=true&frameworkId=" + framework.shortId() + "&iframeRoot=" + iframeRoot + "&origin=" + window.location.origin + (queryParams.server == null ? "" : "&server=" + queryParams.server + (queryParams.newObjectEndpoint == null ? "" : "&newObjectEndpoint=" + queryParams.newObjectEndpoint));
 		if (queryParams.webSocketOverride != null && queryParams.webSocketOverride !== undefined)
-			iframeCompetencyPath += "&webSocketOverride=" + queryParams.webSocketOverride;
+			iframeCompetencyPathTrue += "&webSocketOverride=" + queryParams.webSocketOverride;
 		if (queryParams.ceasnDataFields != null && queryParams.ceasnDataFields != undefined)
-			iframeCompetencyPath += "&ceasnDataFields=" + queryParams.ceasnDataFields;
+			iframeCompetencyPathTrue += "&ceasnDataFields=" + queryParams.ceasnDataFields;
 		if (queryParams.inherit != null && queryParams.inherit != undefined)
-			iframeCompetencyPath += "&inherit=" + queryParams.inherit;
+			iframeCompetencyPathTrue += "&inherit=" + queryParams.inherit;
 		if (queryParams.css != null && queryParams.css != undefined)
-			iframeCompetencyPath += "&css=" + queryParams.css;
+			iframeCompetencyPathTrue += "&css=" + queryParams.css;
 		if (queryParams.selectVerbose != null && queryParams.selectVerbose != undefined)
-			iframeCompetencyPath += "&selectVerbose=" + queryParams.selectVerbose;
+			iframeCompetencyPathTrue += "&selectVerbose=" + queryParams.selectVerbose;
 		if (queryParams.selectExport != null && queryParams.selectExport != undefined)
-			iframeCompetencyPath += "&selectExport=" + queryParams.selectExport;
+			iframeCompetencyPathTrue += "&selectExport=" + queryParams.selectExport;
 		if (queryParams.view != "true")
-			$("#selectCompetencyIframe").attr("src", iframeCompetencyPath);
+			$("#selectCompetencyIframe").attr("src", iframeCompetencyPathTrue);
 	} else if (comp == false) {
-		var iframeCompetencyPath = iframeRoot + "index.html?select=Align with...&view=true&back=true&iframeRoot=" + iframeRoot + "&origin=" + window.location.origin + (queryParams.server == null ? "" : "&server=" + queryParams.server + (queryParams.newObjectEndpoint == null ? "" : "&newObjectEndpoint=" + queryParams.newObjectEndpoint));
+		if (iframeCompetencyPath != "") {
+			return;
+		}
+		iframeCompetencyPath = iframeRoot + "index.html?select=Align with...&view=true&back=true&iframeRoot=" + iframeRoot + "&origin=" + window.location.origin + (queryParams.server == null ? "" : "&server=" + queryParams.server + (queryParams.newObjectEndpoint == null ? "" : "&newObjectEndpoint=" + queryParams.newObjectEndpoint));
 		if (queryParams.webSocketOverride != null && queryParams.webSocketOverride !== undefined)
 			iframeCompetencyPath += "&webSocketOverride=" + queryParams.webSocketOverride;
 		if (queryParams.ceasnDataFields != null && queryParams.ceasnDataFields != undefined)
