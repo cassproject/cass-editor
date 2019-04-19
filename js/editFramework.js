@@ -192,6 +192,9 @@ attachUrlProperties = function (results) {
 
             if (resource[$("#selectConceptSection").attr("destination")] == null)
                 resource[$("#selectConceptSection").attr("destination")] = [];
+            else if (!EcArray.isArray(resource[$("#selectConceptSection").attr("destination")])) {
+                resource[$("#selectConceptSection").attr("destination")] = [resource[$("#selectConceptSection").attr("destination")]];
+            }
             EcArray.setAdd(resource[$("#selectConceptSection").attr("destination")], thing.shortId());
         }
     }
