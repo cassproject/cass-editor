@@ -410,7 +410,7 @@ function importJsonLdFramework() {
             populateFramework();
             selectedCompetency = null;
             refreshSidebar();
-            spitEvent("importFinished", f.shortId());
+            spitEvent("importFinished", framework.shortId());
         },
         failure: function (failure) {
             alert("Import failed. Check your import file for any errors.");
