@@ -117,6 +117,21 @@ function overlayPage(pageId, state) {
         $("#tree").height("calc(" + $(window).outerHeight() + "px - " + $("#tree").position().top + "px)");
         $(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
         resizeWindow($(window).width() / 2);
+        $("#selectCompetencyIframe").contents().find("input[type=checkbox]").each(function() {
+            if ($(this).prop("checked") == true) {
+                $(this).prop("checked", false);
+            }
+        });
+        $("#selectConceptIframe").contents().find("input[type=checkbox]").each(function() {
+            if ($(this).prop("checked") == true) {
+                $(this).prop("checked", false);
+            }
+        });
+        $("#findCompetencyIframe").contents().find("input[type=checkbox]").each(function() {
+            if ($(this).prop("checked") == true) {
+                $(this).prop("checked", false);
+            }
+        });
     });
 }
 
