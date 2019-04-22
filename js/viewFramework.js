@@ -2185,10 +2185,15 @@ handleAlignmentInput = function (event) {
 		button.next().next('input').val('');
 		button.next().next('input').removeClass('hidden');
 		button.attr('data-mode', 'Save');
-		button.children().first().removeClass('fa-plus').addClass('fa-check');
 		button.addClass('nudge');
 		button.attr('title', 'Save this relation.');
 		button.next().next('input').focus();
+		button.children("i").removeClass("fa-keyboard-o").addClass("fa-check");
+		button.next().next('input').on("keyup", function(evt) {
+			if (evt.keyCode == '13') {
+				$(event.srcElement).click();
+			}
+		});
 	} else if (button.attr('data-mode') == 'Save') {
 		if (!isEmpty(button.next().next('input').val()) && !button.next().next('input').is(':invalid')) {
 			if (button.hasClass("conceptAlignment")) {
@@ -2201,11 +2206,13 @@ handleAlignmentInput = function (event) {
 		} else if (!isEmpty(button.next().next('input').val()))
 			alert('Alignments must be a URI.');
 		if (!button.next().next('input').is(':invalid')) {
+			button.next().next('input').removeClass('changedField');
 			button.next().next('input').addClass('hidden');
 			button.attr('data-mode', 'Add');
-			button.children().first().removeClass('fa-check').addClass('fa-plus');
 			button.attr('title', 'Add a relation with a URI.');
 			button.removeClass('nudge');
+			button.children("i").removeClass("fa-check").addClass("fa-keyboard-o");
+			button.next().next('input').off("keyup");
 		}
 	}
 }
