@@ -34,13 +34,12 @@ addConcept = function () {
                     selectedCompetency = EcConcept.getBlocking(c.id);
                     refreshSidebar();
                     editSidebar();
-                    addDelay = setInterval(function() {
+                    setTimeout(function() {
                         if ($('#sidebarNameInput').is(':visible')) {
                             $('#sidebarNameInput').focus();
                             $('#sidebarNameInput').select();
-                            clearInterval(addDelay);
                         }
-                    }, 1000);
+                    }, 2000);
                     afterSave();
                 }, error);
             }, error);
@@ -59,13 +58,12 @@ addConcept = function () {
                     framework = EcConceptScheme.getBlocking(framework.id);
                     refreshSidebar();
                     editSidebar();
-                    addDelay = setInterval(function() {
+                    setTimeout(function() {
                         if ($('#sidebarNameInput').is(':visible')) {
                             $('#sidebarNameInput').focus();
                             $('#sidebarNameInput').select();
-                            clearInterval(addDelay);
                         }
-                    }, 1000);
+                    }, 2000);
                     afterSave();
                 }, error);
             }, error);
