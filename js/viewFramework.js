@@ -313,7 +313,7 @@ function refreshCompetency(col, level, subsearch, done) {
 	if (col.competency != null) {
 		level = true;
 		$(".competency[id=\"" + col.competency + "\"]").children().last().append($(".competency[id=\"" + col.shortId() + "\"]"));
-		treeNode.children().first().append(" <small>(Performance Level)</small>");
+		treeNode.children('span').last().append(" <small>(Performance Level)</small>");
 		if (!$(".competency[id=\"" + col.competency + "\"]").hasClass("expandable")) {
 			$(".competency[id=\"" + col.competency + "\"]").addClass("expandable").children(".collapse").css("visibility", "visible");
 			if ($("#collapseAllCompetencies").css("display") === 'none') {
