@@ -1094,7 +1094,7 @@ renderSidebar = function (justLists) {
 		});
 
 	//Hide or show section headers in viewmode based on if they have any populated fields
-	if ($('#detailSlider').hasClass('detailSliderView'))
+	if ($('#detailSlider').hasClass('detailSliderView')) {
 		$('.sidebarAccordion:not(.exempt)').each(function () {
 			var counter = 0;
 			$(this).children('p').each(function () {
@@ -1115,6 +1115,17 @@ renderSidebar = function (justLists) {
 				$(this).prev().prev().removeClass('viewMode');
 			}
 		});
+		//Hide alignment input fields that weren't saved
+		$('.alignmentInput').each(function () {
+			$(this).addClass('hidden');
+			$(this).off("keyup");
+			var button = $(this).prev().prev();
+			button.attr('data-mode', 'Add');
+			button.attr('title', 'Add a relation with a URI.');
+			button.removeClass('nudge');
+			button.children("i").removeClass("fa-check").addClass("fa-keyboard-o");
+		});
+	}
 }
 
 refreshSidebar = function () {
