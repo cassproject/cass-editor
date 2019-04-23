@@ -57,17 +57,26 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
     } else
         search = searchTerm;
     EcFramework.search(server, search, function (frameworks) {
-        var start = paramSize - 20;
-        if (firstLoad || loadNumber)
-            start = 0;
-        for (var v = start; v < frameworks.length; v++) {
+        for (var v = 0; v < frameworks.length; v++) {
             var fx = frameworks[v];
             if (fx.name === undefined || fx.name == null || fx.name == "")
                 continue;
             if ($("#frameworks [id='" + fx.shortId() + "']").length == 0) {
-                if ($("#frameworks").children().length > 0)
-                    $("#frameworks").append("<hr/>");
-                var p = $("#frameworks").append("<p><a/><span/></p>").children().last();
+                var p;
+                //Display in sorted order if new framework has been added
+                if ((v > 0) && $("#frameworks [id='" + frameworks[v-1].shortId() + "']").length != 0) {
+                    $("#frameworks [id='" + frameworks[v-1].shortId() + "']").after("<hr/>");
+                    p = $("#frameworks [id='" + frameworks[v-1].shortId() + "']").next().after("<p><a/><span/></p>").next();
+                }
+                else if ((v+1 < frameworks.length) && $("#frameworks [id='" + frameworks[v+1].shortId() + "']").length != 0) {
+                    $("#frameworks [id='" + frameworks[v+1].shortId() + "']").before("<hr/>");
+                    p = $("#frameworks [id='" + frameworks[v+1].shortId() + "']").prev().before("<p><a/><span/></p>").prev();
+                }
+                else {
+                    if ($("#frameworks").children().length > 0)
+                        $("#frameworks").append("<hr/>");
+                    p = $("#frameworks").append("<p><a/><span/></p>").children().last();
+                }
 
                 p.attr("id", fx.shortId());
                 p.attr("subsearch", subsearchTerm);
