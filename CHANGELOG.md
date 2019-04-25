@@ -1,5 +1,158 @@
 # Change Log
 
+## [1.2.6](https://github.com/cassproject/cass-editor/tree/1.2.6) (2019-04-24)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/1.2.5...1.2.6)
+
+## [1.2.5](https://github.com/cassproject/cass-editor/tree/1.2.5) (2019-04-24)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/1.2.4...1.2.5)
+
+**Fixed bugs:**
+
+- Empty data fields appearing under the in language field for frameworks [\#564](https://github.com/cassproject/cass-editor/issues/564)
+- Selecting a concept for competency framework fails [\#562](https://github.com/cassproject/cass-editor/issues/562)
+- Incorrect URL for publication status type [\#555](https://github.com/cassproject/cass-editor/issues/555)
+- Highlight name text when new competency/concept created [\#549](https://github.com/cassproject/cass-editor/issues/549)
+- Error saving matches to concepts [\#538](https://github.com/cassproject/cass-editor/issues/538)
+
+**Closed issues:**
+
+- When selecting competencies or concepts in the selector, clear selection. [\#560](https://github.com/cassproject/cass-editor/issues/560)
+- When selecting competencies from a different framework, should not start from the search screen every time. [\#559](https://github.com/cassproject/cass-editor/issues/559)
+- After entering several concepts in a row, \(sometimes\) the save buttons get hidden [\#556](https://github.com/cassproject/cass-editor/issues/556)
+- Inter-framework alignment properties still don't support direct entry [\#554](https://github.com/cassproject/cass-editor/issues/554)
+- Competency editor has no up/down arrows [\#550](https://github.com/cassproject/cass-editor/issues/550)
+
+## [1.2.4](https://github.com/cassproject/cass-editor/tree/1.2.4) (2019-04-19)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/1.2.3...1.2.4)
+
+## [1.2.3](https://github.com/cassproject/cass-editor/tree/1.2.3) (2019-04-15)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/1.2.2...1.2.3)
+
+## [1.2.2](https://github.com/cassproject/cass-editor/tree/1.2.2) (2019-04-15)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/1.2.1...1.2.2)
+
+## [1.2.1](https://github.com/cassproject/cass-editor/tree/1.2.1) (2019-04-15)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/1.2.0...1.2.1)
+
+## [1.2.0](https://github.com/cassproject/cass-editor/tree/1.2.0) (2019-04-12)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/1.1.2...1.2.0)
+
+**Implemented enhancements:**
+
+- Need concept export of entire scheme and graph. [\#77](https://github.com/cassproject/cass-editor/issues/77)
+
+**Fixed bugs:**
+
+- No option to add or select a Broader or Narrower concept [\#544](https://github.com/cassproject/cass-editor/issues/544)
+- Concept Matches cannot be deleted [\#537](https://github.com/cassproject/cass-editor/issues/537)
+- Possible to duplicate concepts when making a concept scheme private [\#536](https://github.com/cassproject/cass-editor/issues/536)
+
+**Closed issues:**
+
+- In Language field is not appearing for concepts [\#542](https://github.com/cassproject/cass-editor/issues/542)
+- Errors when trying to import something someone else has imported [\#540](https://github.com/cassproject/cass-editor/issues/540)
+- Error on download of competency framework [\#539](https://github.com/cassproject/cass-editor/issues/539)
+- Concepts should not have relations field [\#531](https://github.com/cassproject/cass-editor/issues/531)
+- Privacy changes are changing ids on ctitest [\#524](https://github.com/cassproject/cass-editor/issues/524)
+- Concept Scheme Export as SKOS \(Json-LD\) requires some changes [\#513](https://github.com/cassproject/cass-editor/issues/513)
+
+## [1.1.2](https://github.com/cassproject/cass-editor/tree/1.1.2) (2019-03-27)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/1.1.1...1.1.2)
+
+**Fixed bugs:**
+
+- CSV Import Error [\#532](https://github.com/cassproject/cass-editor/issues/532)
+- Concepts disappear when dragging and dropping a parent under a child [\#518](https://github.com/cassproject/cass-editor/issues/518)
+- ExactAlignment is being exported as a single string, needs to be a list [\#515](https://github.com/cassproject/cass-editor/issues/515)
+
+**Closed issues:**
+
+- Display an error message if user tries to import concept scheme into competency editor & vice versa [\#530](https://github.com/cassproject/cass-editor/issues/530)
+- newObjectEndpoint, and default property initialization \(organization, etc\) need to work on Concepts / Schemes. [\#529](https://github.com/cassproject/cass-editor/issues/529)
+- Checking/unchecking private on ctitest doesn't work the first time [\#528](https://github.com/cassproject/cass-editor/issues/528)
+- Searching for data fields that open the concept scheme editor causes panel overlap issues [\#520](https://github.com/cassproject/cass-editor/issues/520)
+- A deleted framework or concept scheme needs to be removed from the list of frameworks/schemes. [\#508](https://github.com/cassproject/cass-editor/issues/508)
+
+## [1.1.1](https://github.com/cassproject/cass-editor/tree/1.1.1) (2019-03-22)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/1.1.0...1.1.1)
+
+**Implemented enhancements:**
+
+- Should have a toggle that makes a framework public or private. [\#484](https://github.com/cassproject/cass-editor/issues/484)
+
+**Fixed bugs:**
+
+- Add button not present when looking for concept related data fields to add to framework [\#521](https://github.com/cassproject/cass-editor/issues/521)
+- Framework edit bar disappearing [\#519](https://github.com/cassproject/cass-editor/issues/519)
+
+**Closed issues:**
+
+- Order of concepts in a concept scheme vary from user to user and time period [\#527](https://github.com/cassproject/cass-editor/issues/527)
+- Concept preferred label is showing autocomplete error on change [\#526](https://github.com/cassproject/cass-editor/issues/526)
+- Scales category not shown in competency alignment select. [\#516](https://github.com/cassproject/cass-editor/issues/516)
+- Import for SKOS kicks the concepts out of order. [\#507](https://github.com/cassproject/cass-editor/issues/507)
+
+## [1.1.0](https://github.com/cassproject/cass-editor/tree/1.1.0) (2019-03-15)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/1.0.10...1.1.0)
+
+**Implemented enhancements:**
+
+- When adding competencies from another framework, private flag shows up. [\#501](https://github.com/cassproject/cass-editor/issues/501)
+
+**Fixed bugs:**
+
+- Resource is not available encountered while searching for a concept scheme from a competency [\#512](https://github.com/cassproject/cass-editor/issues/512)
+- Top level concept drag and drop not changing order in hasTopConcept list [\#511](https://github.com/cassproject/cass-editor/issues/511)
+- When adding competencies from another framework, private flag shows up. [\#501](https://github.com/cassproject/cass-editor/issues/501)
+
+**Closed issues:**
+
+- Alignment fetching mixed-content issue prevents remove "X" from showing up. [\#517](https://github.com/cassproject/cass-editor/issues/517)
+
+## [1.0.10](https://github.com/cassproject/cass-editor/tree/1.0.10) (2019-03-08)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/1.0.9...1.0.10)
+
+**Implemented enhancements:**
+
+- Competencies sent to parent window via postMessage \(via "add" button\) sometimes use expanded language maps [\#497](https://github.com/cassproject/cass-editor/issues/497)
+- Editable frameworks \(or public frameworks\) should be indicated by an "Editable" tag or a "Public" tag in the search. [\#483](https://github.com/cassproject/cass-editor/issues/483)
+- Move anywhere button/mode for tree [\#193](https://github.com/cassproject/cass-editor/issues/193)
+
+**Fixed bugs:**
+
+- Import and Production editor doesn't allow entry of registered \(®\) symbol [\#505](https://github.com/cassproject/cass-editor/issues/505)
+- Competency multiple comments have disappeared [\#461](https://github.com/cassproject/cass-editor/issues/461)
+- Rare occurrence of the alignment add button disappearing  [\#339](https://github.com/cassproject/cass-editor/issues/339)
+
+**Closed issues:**
+
+- Langstrings when initially created take on an index instead of a language. [\#493](https://github.com/cassproject/cass-editor/issues/493)
+- CE Test Server displays multiple framework titles poorly on the bottom footer [\#345](https://github.com/cassproject/cass-editor/issues/345)
+- Keyboard controls need work [\#297](https://github.com/cassproject/cass-editor/issues/297)
+- UPDATED: ceasn:rights was defined as a single absolute url. It is now defined as a language string [\#227](https://github.com/cassproject/cass-editor/issues/227)
+- Add relevant at-a-glance properties to framework/competencies on left side without making tree unreadable. [\#132](https://github.com/cassproject/cass-editor/issues/132)
+
+**Merged pull requests:**
+
+- JSON-LD Concept Scheme Import [\#510](https://github.com/cassproject/cass-editor/pull/510) ([woodkri](https://github.com/woodkri))
+
+## [1.0.9](https://github.com/cassproject/cass-editor/tree/1.0.9) (2019-03-01)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/1.0.8...1.0.9)
+
+**Fixed bugs:**
+
+- Competencies imported into CaSS cannot be viewed by Credential Engine team member [\#428](https://github.com/cassproject/cass-editor/issues/428)
+
+**Merged pull requests:**
+
+- Private frameworks [\#500](https://github.com/cassproject/cass-editor/pull/500) ([woodkri](https://github.com/woodkri))
+
+## [1.0.8](https://github.com/cassproject/cass-editor/tree/1.0.8) (2019-02-21)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/1.0.7...1.0.8)
+
+## [1.0.7](https://github.com/cassproject/cass-editor/tree/1.0.7) (2019-02-15)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/1.0.6...1.0.7)
+
 ## [1.0.6](https://github.com/cassproject/cass-editor/tree/1.0.6) (2019-02-15)
 [Full Changelog](https://github.com/cassproject/cass-editor/compare/1.0.5...1.0.6)
 
