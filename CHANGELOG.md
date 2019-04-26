@@ -1,5 +1,12 @@
 # Change Log
 
+## [1.2.7](https://github.com/cassproject/cass-editor/tree/1.2.7) (2019-04-26)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/1.2.6...1.2.7)
+
+**Closed issues:**
+
+- Ability to type or copy/paste a URL when adding concepts [\#557](https://github.com/cassproject/cass-editor/issues/557)
+
 ## [1.2.6](https://github.com/cassproject/cass-editor/tree/1.2.6) (2019-04-24)
 [Full Changelog](https://github.com/cassproject/cass-editor/compare/1.2.5...1.2.6)
 
