@@ -131,12 +131,12 @@ function refreshConcept(col, level, subsearch, recurse, done) {
     if (col["skos:narrower"] != null && col["skos:narrower"].length > 0) {
         if (!$(".competency[id=\"" + col.shortId() + "\"]").hasClass("expandable"))
             $(".competency[id=\"" + col.shortId() + "\"]").addClass("expandable").children(".collapse").css("visibility", "visible");
-        new EcAsyncHelper().each(col["skos:narrower"], function(conceptId, done) {
+        new EcAsyncHelper().each(col["skos:narrower"], function(conceptId, callback) {
             EcConcept.get(conceptId, function (c) {
-                refreshConcept(c, level, subsearch, JSON.parse(JSON.stringify(recurse))).appendTo(treeNode.children("ul"));
-            }, done);
+                refreshConcept(c, level, subsearch, JSON.parse(JSON.stringify(recurse)), callback).appendTo(treeNode.children("ul"));
+            }, callback);
         }, function (conceptIds) {
-
+            afterConceptRefresh();
         });
     }
     if (done != null && done !== undefined) {
