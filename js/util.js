@@ -209,7 +209,7 @@ alertDuplicateLanguages = function () {
 	$("#detailSlider").find('.onePerLanguage').each(function() {
 		var languagesUsed = [];
 		$(this).find('.sidebarInputLanguageSelect').each(function() {
-			if (languagesUsed.includes($(this).val())) {
+			if (languagesUsed.includes($(this).val().toLowerCase())) {
 				duplicates = true;
 				$(this).addClass('invalidLanguage');
 				$(this).autocomplete({
@@ -219,7 +219,7 @@ alertDuplicateLanguages = function () {
 				});
 			}
 			else {
-				languagesUsed.push($(this).val());
+				languagesUsed.push($(this).val().toLowerCase());
 			}
 		});
 	});
