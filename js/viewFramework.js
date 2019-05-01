@@ -539,7 +539,7 @@ renderSidebar = function (justLists) {
 			$(this).prev().hide();
 			$(this).hide();
 			return;
-		} else {
+		} else if (!$(this).hasClass("ui-menu")) {
 			$(this).prev().prev("label").css("display", "");
 			$(this).prev().css("display", "");
 			$(this).css("display", "");
