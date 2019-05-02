@@ -5,6 +5,7 @@ addConcept = function () {
         initIframe();
         showPage("#findCompetencySection", framework);
     } else if (addOrSearch == "new") {
+        $("#sidebarAddCompetencies").prop('disabled', true);
         isFirstEdit = true;
         previousSelectedCompetency = selectedCompetency;
         var c = new EcConcept();
@@ -12,10 +13,15 @@ addConcept = function () {
             c.generateShortId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
         else
             c.generateId(newObjectEndpoint == null ? repo.selectedServer : newObjectEndpoint);
+        c["schema:dateCreated"] = new Date().toISOString();
         if (EcIdentityManager.ids.length > 0)
             c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+        c["skos:inLanguage"] = (framework["ceasn:inLanguage"] != null) ? framework["ceasn:inLanguage"] : framework["dcterms:language"];
         setDefaultLanguage();
         c["skos:prefLabel"] = {"@language": defaultLanguage, "@value": "New Concept"};
+        if (!c["skos:inLanguage"]) {
+            c["skos:inLanguage"] = defaultLanguage;
+        }
         c["skos:inScheme"] = framework.shortId();
         if (selectedCompetency != null) {
             collapseCompetencyTracking(framework.shortId(),selectedCompetency.shortId(),"expanded");
@@ -29,6 +35,7 @@ addConcept = function () {
                 c = EcEncryptedValue.toEncryptedValue(c);
                 selectedCompetency = EcEncryptedValue.toEncryptedValue(selectedCompetency);
             }
+            framework["schema:dateModified"] = new Date().toISOString();
             repo.saveTo(c, function () {
                 repo.saveTo(selectedCompetency, function () {
                     selectedCompetency = EcConcept.getBlocking(c.id);
@@ -41,6 +48,7 @@ addConcept = function () {
                         }
                     }, 2000);
                     afterSave();
+                    $("#sidebarAddCompetencies").prop('disabled', false);
                 }, error);
             }, error);
         } else {
@@ -52,6 +60,7 @@ addConcept = function () {
                 c = EcEncryptedValue.toEncryptedValue(c);
                 framework = EcEncryptedValue.toEncryptedValue(framework);
             }
+            framework["schema:dateModified"] = new Date().toISOString();
             repo.saveTo(c, function () {
                 repo.saveTo(framework, function () {
                     selectedCompetency = EcConcept.getBlocking(c.id);
@@ -65,6 +74,7 @@ addConcept = function () {
                         }
                     }, 2000);
                     afterSave();
+                    $("#sidebarAddCompetencies").prop('disabled', false);
                 }, error);
             }, error);
         }
