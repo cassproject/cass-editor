@@ -677,3 +677,51 @@ moveDownConcept = function () {
         }
     }  
 }
+
+function encryptConcepts(c) {
+    var toSave = [];
+
+    var concepts = c["skos:hasTopConcept"] ? c["skos:hasTopConcept"] : c["skos:narrower"];
+    new EcAsyncHelper().each(concepts, function (conceptId, done) {
+        EcRepository.get(conceptId, function (concept) {
+            concept.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            if (concept["skos:narrower"] && concept["skos:narrower"].length > 0) {
+                encryptConcepts(concept);
+            }
+            concept = EcEncryptedValue.toEncryptedValue(concept);
+            toSave.push(concept);
+            done();
+        }, done);
+    }, function (conceptIds) {
+        for (var i = 0; i < toSave.length; i++) {
+            repo.saveTo(toSave[i], function() {}, error);
+        }
+    });
+}
+
+
+function decryptConcepts(c) {
+    var concepts = c["skos:hasTopConcept"] ? c["skos:hasTopConcept"] : c["skos:narrower"];
+
+    new EcAsyncHelper().each(concepts, function (conceptId, done) {
+        EcRepository.get(conceptId, function (concept) {
+            var v;
+            if (concept.isAny(new EcEncryptedValue().getTypes())) {
+                v = new EcEncryptedValue();
+                v.copyFrom(concept);
+            }
+            else {
+                v = EcEncryptedValue.toEncryptedValue(concept);
+            }
+            concept = new EcConcept();
+            concept.copyFrom(v.decryptIntoObject());
+            EcEncryptedValue.encryptOnSave(concept.id, false);
+            if (concept["skos:narrower"]) {
+                decryptConcepts(concept);
+            }
+            repo.saveTo(concept, done, done);
+        }, done);
+    }, function (conceptIds) {
+        populateConceptScheme();
+    });
+}
