@@ -226,10 +226,6 @@ editConceptSidebar = function () {
         }
     }
 
-    if (selectedRelation == null) {
-        $("#sidebarUnlink").prop('disabled', true);
-    }
-
     if (selectedCompetency != null) {
         $('.ceasnCompetency .editMode').show();
     } else {
