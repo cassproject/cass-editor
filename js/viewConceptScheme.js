@@ -5,19 +5,8 @@ var globalTouchDragDataConcept = null;
 populateConceptScheme = function (subsearch) {
     treeTop = $("#tree").scrollTop();
     $("#tree").hide().html("");
-    if (!isFirstEdit && EcRepository.getBlocking(framework.id).type == "EncryptedValue") {
-        $("#private").prop("checked", true);
-    }
-    else if (framework["skos:hasTopConcept"] && EcRepository.getBlocking(framework.id).type == "EncryptedValue") {
-        $("#private").prop("checked", true);
-    }
-    else if (isFirstEdit && selectedCompetency == null && queryParams.private == "true") {
-        $("#private").prop("checked", true);
-    }
-    else {
-        $("#private").prop("checked", false);
-    }
     var frameworkName = framework["dcterms:title"];
+    if (frameworkName == null) frameworkName = "Unknown Concept Scheme.";
     frameworkName = EcArray.isArray(frameworkName) ? frameworkName : [frameworkName];
     $("#editFrameworkSection #frameworkAKA").children().remove();
     $("#editFrameworkSection #frameworkName").text(Thing.getDisplayStringFrom(frameworkName));
@@ -48,8 +37,14 @@ populateConceptScheme = function (subsearch) {
         else
             $("#editFrameworkSection #frameworkCreated").hide();
     } catch (e) {}
-    if (queryParams.link == "true")
-        $("#editFrameworkSection #frameworkLink").attr("href", framework.shortId()).show();
+    if (framework["ceasn:publisherName"] != null && framework["ceasn:publisherName"] !== undefined)
+        if (queryParams.link == "true")
+            $("#editFrameworkSection #frameworkLink").attr("href", framework.shortId()).show();
+
+    if ($("#collapseAllCompetencies").css("display") != 'none') {
+        $("#collapseAllCompetencies").css("display", "none");
+        $("#expandAllCompetencies").css("display", "none");
+    }
 
     if (framework["skos:hasTopConcept"] == null)
         framework["skos:hasTopConcept"] = [];
