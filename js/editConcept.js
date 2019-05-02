@@ -160,28 +160,43 @@ deleteConcept = function (c) {
     if (viewMode) return;
     if (c == null) c = selectedCompetency;
     if (c == null) {
-        showConfirmDialog(function (confirmed) {
-            if (confirmed === true) {
-                repo.deleteRegistered(framework, function (success) {
-                    if (defaultPage == "#frameworksSection")
-                        searchFrameworks(createParamObj(5000));
-                    else
-                        showPage(defaultPage);
-                    EcConcept.search(repo, "skos\\:inScheme:\"" + framework.shortId() + "\"", function (concepts) {
-                        for (var i = 0; i < concepts.length; i++)
-                            repo.deleteRegistered(concepts[i], console.log, console.error);
-                    }, console.error);
-                    framework = null;
-                    selectedCompetency = null;
-                }, console.log);
-            }
-            hideConfirmDialog();
-        }, "Are you sure you want to delete this concept scheme? This will also delete all concepts referenced in this scheme.", "Cancel", "Confirm");
+        if (isFirstEdit) {
+            spitEvent("frameworkDeleted", framework.shortId());
+            if (defaultPage == "#frameworksSection")
+                searchFrameworks(createParamObj());
+            else
+                showPage(defaultPage);
+            $('[id="'+framework.shortId()+'"').remove();
+        }
+        else {
+            showConfirmDialog(function (confirmed) {
+                if (confirmed === true) {
+                    repo.deleteRegistered(framework, function (success) {
+                        spitEvent("frameworkDeleted", framework.shortId());
+                        if (defaultPage == "#frameworksSection")
+                            searchFrameworks(createParamObj());
+                        else
+                            showPage(defaultPage);
+                        EcConcept.search(repo, "skos\\:inScheme:\"" + framework.shortId() + "\"", function (concepts) {
+                            for (var i = 0; i < concepts.length; i++)
+                                repo.deleteRegistered(concepts[i], console.log, console.error);
+                        }, console.error);
+                        framework = null;
+                        selectedCompetency = null;
+                        $('[id="'+framework.shortId()+'"').remove();
+                        framework = null;
+                        selectedCompetency = null;
+                    }, console.log);
+                }
+                hideConfirmDialog();
+            }, "Are you sure you want to delete this concept scheme? This will also delete all concepts referenced in this scheme.", "Cancel", "Confirm");
+        }
     } else {
         showConfirmDialog(function (confirmed) {
             if (confirmed === true) {
                 deleteConceptInner(c);
 
+                framework["schema:dateModified"] = new Date().toISOString();
                 selectedRelation = null;
                 selectedCompetency = null;
                 refreshSidebar();
