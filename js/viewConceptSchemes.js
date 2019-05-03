@@ -6,21 +6,26 @@ function searchConceptSchemes(paramObj) {
         paramObj.size = paramSize ? paramSize : 20;
     paramSize = paramObj.size;
     var searchTerm = $("#search").val();
-    if (searchTerm == null || searchTerm == "")
+    if (searchTerm == null || searchTerm == "") {
         searchTerm = "*";
+        $("#resetSearchButton").hide();
+    } else {
+        $("#resetSearchButton").show();
+    }
+    if (searchTerm != "*")
+        delete paramObj.sort;
     if (firstLoad) {
         $("#frameworks").html("");
         searchCompetencies = [];
     }
     for (var i = 0; i < servers.length; i++) {
         conceptSchemeSearch(servers[i], searchTerm, null, paramObj);
-        if (viewMode)
-            if (searchTerm != "*") {
-                conceptSchemeSearchByConcept(servers[i], searchTerm);
-            }
+        if (searchTerm != "*" && firstLoad) {
+            firstLoadSubC = true;
+            conceptSchemeSearchByConcept(servers[i], searchTerm);
+        }
     }
 }
-var frameworkLoading = 0;
 
 function conceptSchemeSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
     frameworkLoading++;
@@ -47,17 +52,26 @@ function conceptSchemeSearch(server, searchTerm, subsearchTerm, paramObj, retry)
     else
         search = searchTerm;
     EcConceptScheme.search(server, search, function (frameworks) {
-        var start = paramSize - 20;
-        if (firstLoad)
-            start = 0;
-        for (var v = start; v < frameworks.length; v++) {
+        for (var v = 0; v < frameworks.length; v++) {
             var fx = frameworks[v];
             if (fx["dcterms:title"] === undefined || fx["dcterms:title"] == null || fx["dcterms:title"] == "")
                 continue;
             if ($("[id='" + fx.shortId() + "']").length == 0) {
-                if ($("#frameworks").children().length > 0)
-                    $("#frameworks").append("<hr/>");
-                var p = $("#frameworks").append("<p><a/><span/></p>").children().last();
+                var p;
+                //Display in sorted order if new framework has been added
+                if ((v > 0) && $("#frameworks [id='" + frameworks[v-1].shortId() + "']").length != 0 && !firstLoad && !firstLoadSubC) {
+                    $("#frameworks [id='" + frameworks[v-1].shortId() + "']").after("<hr/>");
+                    p = $("#frameworks [id='" + frameworks[v-1].shortId() + "']").next().after("<p><a/><span/></p>").next();
+                }
+                else if ((v+1 < frameworks.length) && $("#frameworks [id='" + frameworks[v+1].shortId() + "']").length != 0 && !firstLoad && !firstLoadSubC) {
+                    $("#frameworks [id='" + frameworks[v+1].shortId() + "']").before("<hr/>");
+                    p = $("#frameworks [id='" + frameworks[v+1].shortId() + "']").prev().before("<p><a/><span/></p>").prev();
+                }
+                else {
+                    if ($("#frameworks").children().length > 0)
+                        $("#frameworks").append("<hr/>");
+                    p = $("#frameworks").append("<p><a/><span/></p>").children().last();
+                }
 
                 p.attr("id", fx.shortId());
                 p.attr("subsearch", subsearchTerm);
@@ -73,6 +87,7 @@ function conceptSchemeSearch(server, searchTerm, subsearchTerm, paramObj, retry)
                         error("Critical: Couldn't find concept scheme ID.");
                     EcConceptScheme.get(frameworkId, function (f) {
                         framework = f;
+                        spitEvent("frameworkClicked", f.shortId());
                         populateFramework(subsearchTerm);
                         selectedCompetency = null;
                         refreshSidebar();
@@ -95,6 +110,53 @@ function conceptSchemeSearch(server, searchTerm, subsearchTerm, paramObj, retry)
                 for (var i = 1; i < frameworkName.length; i++) {
                     p.append("<span class='properties'>AKA: " + Thing.getDisplayStringFrom(frameworkName[i]) + "</span>");
                 }
+                if (queryParams.ceasnDataFields == "true") {
+                    if (fx['ceasn:publisherName'] != null) {
+                        var publisherName = EcArray.isArray(fx['ceasn:publisherName']) ? fx['ceasn:publisherName'] : [fx['ceasn:publisherName']];
+                        for (var i in publisherName) {
+                            if (Thing.getDisplayStringFrom(publisherName[i]).toLowerCase().indexOf("http") != -1) {
+                                var anchor = p;
+                                resolveNameFromUrlWithElem(name, anchor, function(result, elem) {
+                                    if (result != null) {
+                                        elem.append("<span class='properties'>" + result + "</span>");
+                                    }
+                                });
+                            } else
+                                p.append("<span class='properties'>" + Thing.getDisplayStringFrom(publisherName[i]) + "</span>");
+                        }
+                    }
+                    else {
+                        if (fx['dcterms:publisher'] != null) {
+                            var publisher = EcArray.isArray(fx['dcterms:publisher']) ? fx['dcterms:publisher'] : [fx['dcterms:publisher']];
+                            getArrayOfResolvedUrlsWithElem(publisher, p, function(result, elem) {
+                                if (result.length > 0) {
+                                    for (var i in result) {
+                                        elem.append("<span class='properties'>" + result[i] + "</span>");
+                                    }
+                                } else {
+                                    var creator = EcArray.isArray(fx['dcterms:creator']) ? fx['dcterms:creator'] : [fx['dcterms:creator']];
+                                    getArrayOfResolvedUrlsWithElem(creator, elem, function(result2, elem2) {
+                                        if (result2.length > 0) {
+                                            for (var i in result2) {
+                                                elem2.append("<span class='properties'>" + result2[i] + "</span>");
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                        } else if (fx['dcterms:creator'] != null) {
+                            var creator = EcArray.isArray(fx['dcterms:creator']) ? fx['dcterms:creator'] : [fx['dcterms:creator']];
+                            getArrayOfResolvedUrlsWithElem(creator, p, function(result, elem) {
+                                if (result.length > 0) {
+                                    for (var i in result) {
+                                        elem.append("<span class='properties'>" + result[i] + "</span>");
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
+
                 if (fx.canEditAny(EcIdentityManager.getMyPks())) {
                     p.append("<span class='properties'>Editable</span>");
                 }
@@ -103,7 +165,8 @@ function conceptSchemeSearch(server, searchTerm, subsearchTerm, paramObj, retry)
                     p.append("<span class='properties'>Private</span>");
                 }
                 if (searchTerm != "*" && subsearchTerm == null)
-                    p.mark(searchTerm);
+                    title.mark(searchTerm);
+                    desc.mark(searchTerm);
             }
         }
         frameworkLoading--;
@@ -114,6 +177,12 @@ function conceptSchemeSearch(server, searchTerm, subsearchTerm, paramObj, retry)
         }
         if (firstLoad) {
             firstLoad = false;
+        }
+        if (loadNumber) {
+            loadNumber = false;
+        }
+        if (subsearchTerm != null) {
+            firstLoadSubC = false;
         }
         scrollTime = true;
     }, function (failure) {
@@ -165,6 +234,6 @@ function conceptSchemeSearchByConcept(server, searchTerm, retry) {
             frameworkSearchByCompetency(server, "\"" + searchTerm + "\"", true);
         }
     }, {
-        size: 5000
+        size: 100
     });
 }

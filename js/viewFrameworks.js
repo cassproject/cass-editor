@@ -5,6 +5,7 @@ if (queryParams.select != null)
 var paramSize;
 var firstLoad = true;
 var loadNumber = false;
+var firstLoadSubC = true;
 function searchFrameworks(paramObj) {
     if (conceptMode)
         return searchConceptSchemes(paramObj);
@@ -30,6 +31,7 @@ function searchFrameworks(paramObj) {
     for (var i = 0; i < servers.length; i++) {
         frameworkSearch(servers[i], searchTerm, null, paramObj);
         if (searchTerm != "*" && paramObj.frameworksOnly != true && firstLoad) {
+            firstLoadSubC = true;
             frameworkSearchByCompetency(servers[i], searchTerm);
         }
     }
@@ -64,11 +66,11 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
             if ($("#frameworks [id='" + fx.shortId() + "']").length == 0) {
                 var p;
                 //Display in sorted order if new framework has been added
-                if ((v > 0) && $("#frameworks [id='" + frameworks[v-1].shortId() + "']").length != 0) {
+                if ((v > 0) && $("#frameworks [id='" + frameworks[v-1].shortId() + "']").length != 0 && !firstLoad && !firstLoadSubC) {
                     $("#frameworks [id='" + frameworks[v-1].shortId() + "']").after("<hr/>");
                     p = $("#frameworks [id='" + frameworks[v-1].shortId() + "']").next().after("<p><a/><span/></p>").next();
                 }
-                else if ((v+1 < frameworks.length) && $("#frameworks [id='" + frameworks[v+1].shortId() + "']").length != 0) {
+                else if ((v+1 < frameworks.length) && $("#frameworks [id='" + frameworks[v+1].shortId() + "']").length != 0 && !firstLoad && !firstLoadSubC) {
                     $("#frameworks [id='" + frameworks[v+1].shortId() + "']").before("<hr/>");
                     p = $("#frameworks [id='" + frameworks[v+1].shortId() + "']").prev().before("<p><a/><span/></p>").prev();
                 }
@@ -188,6 +190,9 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
         }
         if (loadNumber) {
             loadNumber = false;
+        }
+        if (subsearchTerm != null) {
+            firstLoadSubC = false;
         }
         scrollTime = true;
     }, function (failure) {
