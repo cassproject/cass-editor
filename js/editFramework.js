@@ -1203,7 +1203,9 @@ $("#private").change(function() {
             var cs = new EcConceptScheme();
             cs.copyFrom(framework);
             cs.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            var name = cs["dcterms:title"];
             cs = EcEncryptedValue.toEncryptedValue(cs);
+            cs["dcterms:title"] = name;
             repo.saveTo(cs, function() {
                 if (framework["skos:hasTopConcept"]) {
                     encryptConcepts(framework);

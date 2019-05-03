@@ -688,7 +688,9 @@ function encryptConcepts(c) {
             if (concept["skos:narrower"] && concept["skos:narrower"].length > 0) {
                 encryptConcepts(concept);
             }
+            var name = concept["skos:prefLabel"];
             concept = EcEncryptedValue.toEncryptedValue(concept);
+            concept["skos:prefLabel"] = name;
             toSave.push(concept);
             done();
         }, done);
