@@ -1921,7 +1921,7 @@ collapseCompetencyTracking = function (fId, cId, toggleState) {
 
 collapseAllCompetencies = function () {
 	if (conceptMode)
-		return;
+		return collapseAllConcepts();
 	if (framework.competency == null || framework.competency.length == 0)
 		return;
 	for (var i = 0; i < framework.competency.length; i++) {
@@ -1955,7 +1955,7 @@ collapseCompetencies = function () {
 
 expandAllCompetencies = function () {
 	if (conceptMode)
-		return;
+		return expandAllConcepts();
 	if (framework.competency == null || framework.competency.length == 0)
 		return;
 	for (var i = 0; i < framework.competency.length; i++) {

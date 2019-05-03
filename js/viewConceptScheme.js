@@ -265,3 +265,37 @@ editConceptSidebar = function () {
     });
     $(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
 }
+
+collapseAllConcepts = function() {
+    if (framework["skos:hasTopConcept"] == null || framework["skos:hasTopConcept"].length == 0)
+        return;
+    for (var i = 0; i < framework["skos:hasTopConcept"].length; i++) {
+        var conceptId = framework["skos:hasTopConcept"][i];
+        var concept = $("#tree [id='" + conceptId + "']");
+        if (concept.length > 0) {
+            if (concept.hasClass('expandable')) {
+                collapseCompetencyTracking(framework.shortId(), conceptId, 'collapsed');
+            } //end if concept expandable
+        } //end if
+    } //end for each concept
+    selectedCompetency = null; // so sidebar display of concept is cleared
+    refreshSidebar();
+    collapseCompetencies();
+}
+
+expandAllConcepts = function() {
+    if (framework["skos:hasTopConcept"] == null || framework["skos:hasTopConcept"].length == 0)
+        return;
+    $("#tree li").each(function() {
+        var concept = $(this);
+        var conceptId = $(this).attr("id");
+        if (concept.hasClass('expandable')) {
+            if (concept.children('.collapse').hasClass('collapsed')) {
+                concept.children('ul').slideToggle();
+                concept.children('.collapse').removeClass('collapsed');
+                concept.children('.collapse').children('i').removeClass('fa-plus-square').addClass('fa-minus-square');
+                collapseCompetencyTracking(framework.shortId(), conceptId, 'expanded');
+            }
+        }
+    });
+}
