@@ -486,6 +486,8 @@ saveCompetency = function (addAnother) {
         
         $('#sidebarAddCompetencies').click();
     }
+    //Force view framework page to update the framework since changes were made
+    $('[id="'+framework.shortId()+'"').remove();
 }
 
 var createFrameworkDelay;
@@ -1212,6 +1214,7 @@ $("#private").change(function() {
                 }
             }, error);
         }
+        $('[id="'+framework.shortId()+'"').remove();
     }
     else {
         if (framework.isAny(new EcFramework().getTypes())) {
@@ -1279,6 +1282,7 @@ $("#private").change(function() {
                 afterSave();
             }, error);
         }
+        $('[id="'+framework.shortId()+'"').remove();
     }
 });
 

@@ -5,7 +5,7 @@ if (queryParams.select != null)
 var paramSize;
 var firstLoad = true;
 var loadNumber = false;
-var firstLoadSubC = true;
+var firstLoadSubC = false;
 function searchFrameworks(paramObj) {
     if (conceptMode)
         return searchConceptSchemes(paramObj);
