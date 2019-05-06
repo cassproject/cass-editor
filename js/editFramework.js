@@ -302,6 +302,8 @@ saveCompetency = function (addAnother) {
     if (viewMode) return;
     //Prevent double click
     $("#sidebarSave").prop('disabled', true);
+    //Prevent user from clicking back button until save is complete
+    $("#editFrameworkBack").prop("onclick", null).attr("onclick", null);
     isFirstEdit = false;
     //Alert for bad characters in input, multiples of the same language in one-per-language fields
     if (alertBadCharacters() === false || alertDuplicateLanguages() === false) {
@@ -458,7 +460,13 @@ saveCompetency = function (addAnother) {
         if ($("#private")[0].checked) {
             f = EcEncryptedValue.toEncryptedValue(f);
         }
-        repo.saveTo(f, afterSaveSidebar, error);
+        repo.saveTo(f, function() {
+            afterSaveSidebar();
+            $("#editFrameworkBack").prop("onclick", 'checkForChangesBeforeBack(event);').attr("onclick", 'checkForChangesBeforeBack(event);');
+        }, function() {
+            $("#editFrameworkBack").prop("onclick", 'checkForChangesBeforeBack(event);').attr("onclick", 'checkForChangesBeforeBack(event);');
+            error();
+        });
     } else {
         var c = new EcCompetency();
         if (conceptMode) {
@@ -473,7 +481,13 @@ saveCompetency = function (addAnother) {
         if ($("#private")[0].checked) {
             c = EcEncryptedValue.toEncryptedValue(c);
         }
-        repo.saveTo(c, afterSave, error);
+        repo.saveTo(c, function() {
+            afterSave();
+            $("#editFrameworkBack").prop("onclick", 'checkForChangesBeforeBack(event);').attr("onclick", 'checkForChangesBeforeBack(event);');
+        }, function() {
+            $("#editFrameworkBack").prop("onclick", 'checkForChangesBeforeBack(event);').attr("onclick", 'checkForChangesBeforeBack(event);');
+            error();
+        });
     }
     refreshSidebar();
     //Reselect the parent of the selected competency, or the framework if there is no parent competency and add another
