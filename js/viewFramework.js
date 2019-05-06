@@ -1352,7 +1352,24 @@ editSidebar = function () {
 		$('#sidebarNameInput').removeData('autocomplete');
 	} catch (e) {}
 	if (selectedCompetency != null && isFirstEdit === true) {
-		EcCompetency.search(repo, $('#sidebarNameInput').val(), function (results) {
+		var search = $('#sidebarNameInput').val();
+	    if (queryParams.filter != null || queryParams.show != null) {
+	        search = "(" + search + ")";
+	        if (queryParams.filter != null)
+	            search += " AND (" + queryParams.filter + ")";
+	        if (queryParams.show != null && queryParams.show == "mine") {
+	            search += " AND (";
+	                for (var i = 0; i < EcIdentityManager.ids.length; i++) {
+	                    if (i != 0) {
+	                        search += " OR ";
+	                    }
+	                    var id = EcIdentityManager.ids[i];
+	                    search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
+	                }
+	                search += ")";
+	        }
+	    }
+		EcCompetency.search(repo, search, function (results) {
 			var competencies = [];
 			for (var i = 0; i < results.length; i++) {
 				comp = EcRepository.getBlocking(results[i].shortId());
@@ -1412,7 +1429,24 @@ editSidebar = function () {
 $('#sidebarNameInput').on('keyup', function (evt) {
 	if (selectedCompetency != null && isFirstEdit === true) {
 		if (queryParams.concepts != "true") {
-			EcCompetency.search(repo, $(this).val(), function (results) {
+			var search = $(this).val();
+		    if (queryParams.filter != null || queryParams.show != null) {
+		        search = "(" + search + ")";
+		        if (queryParams.filter != null)
+		            search += " AND (" + queryParams.filter + ")";
+		        if (queryParams.show != null && queryParams.show == "mine") {
+		            search += " AND (";
+		                for (var i = 0; i < EcIdentityManager.ids.length; i++) {
+		                    if (i != 0) {
+		                        search += " OR ";
+		                    }
+		                    var id = EcIdentityManager.ids[i];
+		                    search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
+		                }
+		                search += ")";
+		        }
+		    }
+			EcCompetency.search(repo, search, function (results) {
 				var competencies = [];
 				for (var i = 0; i < results.length; i++) {
 					comp = EcRepository.getBlocking(results[i].shortId());
