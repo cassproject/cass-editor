@@ -650,6 +650,7 @@ deleteCompetency = function () {
                 if (confirmed === true) {
                     repo.deleteRegistered(framework, function (success) {
                         spitEvent("frameworkDeleted", framework.shortId());
+                        $('[id="'+framework.shortId()+'"').remove();
                         if (defaultPage == "#frameworksSection")
                             searchFrameworks(createParamObj());
                         else
@@ -664,7 +665,6 @@ deleteCompetency = function () {
                         if (framework.level != null)
                             for (var i = 0; i < framework.level.length; i++)
                                 conditionalDelete(framework.level[i]);
-                        $('[id="'+framework.shortId()+'"').remove();
                         framework = null;
                         selectedCompetency = null;
                     }, console.log);

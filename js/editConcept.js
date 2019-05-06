@@ -173,6 +173,7 @@ deleteConcept = function (c) {
                 if (confirmed === true) {
                     repo.deleteRegistered(framework, function (success) {
                         spitEvent("frameworkDeleted", framework.shortId());
+                        $('[id="'+framework.shortId()+'"').remove();
                         if (defaultPage == "#frameworksSection")
                             searchFrameworks(createParamObj());
                         else
@@ -183,7 +184,6 @@ deleteConcept = function (c) {
                         }, console.error);
                         framework = null;
                         selectedCompetency = null;
-                        $('[id="'+framework.shortId()+'"').remove();
                         framework = null;
                         selectedCompetency = null;
                     }, console.log);
