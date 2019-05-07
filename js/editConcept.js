@@ -58,7 +58,9 @@ addConcept = function () {
             c["skos:topConceptOf"] = framework.shortId();
             if ($("#private")[0].checked) {
                 c = EcEncryptedValue.toEncryptedValue(c);
+                var name = framework["dcterms:title"];
                 framework = EcEncryptedValue.toEncryptedValue(framework);
+                framework["dcterms:title"] = name;
             }
             framework["schema:dateModified"] = new Date().toISOString();
             repo.saveTo(c, function () {
@@ -101,8 +103,10 @@ createConceptScheme = function () {
     framework["schema:dateCreated"] = new Date().toISOString();
     if ($("#description").val() != null && $("#description").val() != "")
         framework["dcterms:description"] = {"@language": defaultLanguage, "@value": $("#description").val()};
-    if ($("#private")[0].checked) {
+    if (queryParams.private == "true") {
+        var name = framework["dcterms:title"];
         framework = EcEncryptedValue.toEncryptedValue(framework);
+        framework["dcterms:title"] = name;
     }
     loading("Creating concept scheme...");
     repo.saveTo(framework, function () {
@@ -144,7 +148,9 @@ unlinkConcept = function (c) {
     EcArray.setAdd(framework["skos:hasTopConcept"], c.shortId());
     c["skos:topConceptOf"] = framework.shortId();
     if ($("#private")[0].checked) {
+        var name = framework["dcterms:title"];
         framework = EcEncryptedValue.toEncryptedValue(framework);
+        framework["dcterms:title"] = name;
         c = EcEncryptedValue.toEncryptedValue(c);
     }
     repo.saveTo(c, function () {
@@ -224,7 +230,9 @@ deleteConceptInner = function (c) {
     if (c["skos:topConceptOf"] != null) {
         EcArray.setRemove(framework["skos:hasTopConcept"], c.shortId());
         if ($("#private")[0].checked) {
+            var name = framework["dcterms:title"];
             framework = EcEncryptedValue.toEncryptedValue(framework);
+            framework["dcterms:title"] = name;
         }
         repo.saveTo(framework, function() {
             framework = EcConceptScheme.getBlocking(framework.id);
@@ -271,7 +279,9 @@ dropConceptShortcut = function (element) {
                 if (EcArray.has(framework["skos:hasTopConcept"], c.shortId())) {
                     EcArray.setRemove(framework["skos:hasTopConcept"], c.shortId());
                     if ($("#private")[0].checked) {
+                        var name = framework["dcterms:title"];
                         framework = EcEncryptedValue.toEncryptedValue(framework);
+                        framework["dcterms:title"] = name;
                     }
                     repo.saveTo(framework, function() {
                         framework = EcFramework.getBlocking(framework);
@@ -360,7 +370,9 @@ detangleConcepts = function (me, data, targetData) {
             c["skos:topConceptOf"] = framework.shortId();
             if ($("#private")[0].checked) {
                 c = EcEncryptedValue.toEncryptedValue(c);
+                var name = framework["dcterms:title"];
                 framework = EcEncryptedValue.toEncryptedValue(framework);
+                framework["dcterms:title"] = name;
             }
             repo.saveTo(framework, function () {
                 repo.saveTo(c, function() {
@@ -420,7 +432,9 @@ dropConcept = function (ev) {
                 if (EcArray.has(framework["skos:hasTopConcept"], c.shortId())) {
                     EcArray.setRemove(framework["skos:hasTopConcept"], c.shortId());
                     if ($("#private")[0].checked) {
+                        var name = framework["dcterms:title"];
                         framework = EcEncryptedValue.toEncryptedValue(framework);
+                        framework["dcterms:title"] = name;
                     }
                     repo.saveTo(framework, function () {
                         framework = EcConceptScheme.getBlocking(framework.id);
@@ -503,7 +517,9 @@ handleTouchEndConcept = function (event) {
                             if (EcArray.has(framework["skos:hasTopConcept"], c.shortId())) {
                                 EcArray.setRemove(framework["skos:hasTopConcept"], c.shortId());
                                 if ($("#private")[0].checked) {
+                                    var name = framework["dcterms:title"];
                                     framework = EcEncryptedValue.toEncryptedValue(framework);
+                                    framework["dcterms:title"] = name;
                                 }
                                 repo.saveTo(framework, function () {
                                     framework = EcConceptScheme.getBlocking(framework);
@@ -571,7 +587,9 @@ addConceptAlignments = function(targets, thing, relationType) {
     }
     if ($("#private")[0].checked) {
         thing = EcEncryptedValue.toEncryptedValue(thing);
+        var name = framework["dcterms:title"];
         framework = EcEncryptedValue.toEncryptedValue(framework);
+        framework["dcterms:title"] = name;
     }
     repo.saveTo(thing, function() {
         repo.saveTo(framework, function() {
@@ -598,7 +616,9 @@ moveUpConcept = function () {
                 framework["skos:hasTopConcept"][i] = framework["skos:hasTopConcept"][i-1];
                 framework["skos:hasTopConcept"][i-1] = moveThisId;
                 if ($("#private")[0].checked) {
+                    var name = framework["dcterms:title"];
                     framework = EcEncryptedValue.toEncryptedValue(framework);
+                    framework["dcterms:title"] = name;
                 }
                 repo.saveTo(framework, function() {
                     framework = EcConceptScheme.getBlocking(framework.id);
@@ -644,7 +664,9 @@ moveDownConcept = function () {
                 framework["skos:hasTopConcept"][i] = framework["skos:hasTopConcept"][i+1];
                 framework["skos:hasTopConcept"][i+1] = moveThisId;
                 if ($("#private")[0].checked) {
+                    var name = framework["dcterms:title"];
                     framework = EcEncryptedValue.toEncryptedValue(framework);
+                    framework["dcterms:title"] = name;
                 }
                 repo.saveTo(framework, function() {
                     framework = EcConceptScheme.getBlocking(framework.id);

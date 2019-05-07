@@ -169,12 +169,7 @@ addAlignments = function(targets, thing, relationType) {
         framework = EcEncryptedValue.toEncryptedValue(framework);
     }
     repo.saveTo(framework, function() {
-        if (queryParams.concepts == "true") {
-            framework = EcConceptScheme.getBlocking(framework.id);
-        }
-        else {
-            framework = EcFramework.getBlocking(framework.id);
-        }
+        framework = EcFramework.getBlocking(framework.id);
         afterSaveRender();
     }, error);
 }
@@ -458,7 +453,11 @@ saveCompetency = function (addAnother) {
             f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
         }
         if ($("#private")[0].checked) {
+            var name = thing["dcterms:title"];
             f = EcEncryptedValue.toEncryptedValue(f);
+            if (name != null && name !== undefined) {
+                f["dcterms:title"] = name;
+            }
         }
         repo.saveTo(f, function() {
             afterSaveSidebar();
