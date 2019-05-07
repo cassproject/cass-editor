@@ -1187,6 +1187,7 @@ $("#private").change(function() {
                     EcCompetency.get(competencyId, function (c) {
                         if (c.canEditAny(EcIdentityManager.getMyPks())) {
                             c = EcEncryptedValue.toEncryptedValue(c);
+                            EcEncryptedValue.encryptOnSave(c.id, false);
                             repo.saveTo(c, done, done);
                         }
                         else {
@@ -1199,6 +1200,7 @@ $("#private").change(function() {
                             EcAlignment.get(relationId, function (r) {
                                 r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                                 r = EcEncryptedValue.toEncryptedValue(r);
+                                EcEncryptedValue.encryptOnSave(r.id, false);
                                 repo.saveTo(r, done, done);
                             }, done);
                         }, function (relationIds) {
@@ -1220,6 +1222,7 @@ $("#private").change(function() {
             cs.addOwner(EcIdentityManager.ids[0].ppk.toPk());
             var name = cs["dcterms:title"];
             cs = EcEncryptedValue.toEncryptedValue(cs);
+            EcEncryptedValue.encryptOnSave(cs.id, false);
             cs["dcterms:title"] = name;
             repo.saveTo(cs, function() {
                 if (framework["skos:hasTopConcept"]) {
@@ -1304,5 +1307,6 @@ function encryptFramework(framework) {
     f.copyFrom(framework);
     f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
     f = EcEncryptedValue.toEncryptedValue(f);
+    EcEncryptedValue.encryptOnSave(f.id, false);
     repo.saveTo(f, function() {}, error);
 }

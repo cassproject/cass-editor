@@ -712,6 +712,7 @@ function encryptConcepts(c) {
             }
             var name = concept["skos:prefLabel"];
             concept = EcEncryptedValue.toEncryptedValue(concept);
+            EcEncryptedValue.encryptOnSave(concept.id, false);
             concept["skos:prefLabel"] = name;
             toSave.push(concept);
             done();
