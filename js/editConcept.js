@@ -33,7 +33,8 @@ addConcept = function () {
             EcArray.setAdd(c["skos:broader"], selectedCompetency.shortId());
             if ($("#private")[0].checked) {
                 c = EcEncryptedValue.toEncryptedValue(c);
-                selectedCompetency = EcEncryptedValue.toEncryptedValue(selectedCompetency);
+                if (EcEncryptedValue.encryptOnSaveMap[selectedCompetency.id] != true)
+                    selectedCompetency = EcEncryptedValue.toEncryptedValue(selectedCompetency);
             }
             framework["schema:dateModified"] = new Date().toISOString();
             repo.saveTo(c, function () {
@@ -58,9 +59,8 @@ addConcept = function () {
             c["skos:topConceptOf"] = framework.shortId();
             if ($("#private")[0].checked) {
                 c = EcEncryptedValue.toEncryptedValue(c);
-                var name = framework["dcterms:title"];
-                framework = EcEncryptedValue.toEncryptedValue(framework);
-                framework["dcterms:title"] = name;
+                if (EcEncryptedValue.encryptOnSaveMap[framework.id] != true)
+                    framework = EcEncryptedValue.toEncryptedValue(framework);
             }
             framework["schema:dateModified"] = new Date().toISOString();
             repo.saveTo(c, function () {
@@ -104,9 +104,7 @@ createConceptScheme = function () {
     if ($("#description").val() != null && $("#description").val() != "")
         framework["dcterms:description"] = {"@language": defaultLanguage, "@value": $("#description").val()};
     if (queryParams.private == "true") {
-        var name = framework["dcterms:title"];
         framework = EcEncryptedValue.toEncryptedValue(framework);
-        framework["dcterms:title"] = name;
     }
     loading("Creating concept scheme...");
     repo.saveTo(framework, function () {
@@ -134,7 +132,7 @@ unlinkConcept = function (c) {
         for (var i = 0; i < c["skos:broader"].length; i++)
             EcConcept.get(c["skos:broader"][i], function (concept) {
                 EcArray.setRemove(concept["skos:narrower"], c.shortId());
-                if ($("#private")[0].checked) {
+                if ($("#private")[0].checked && EcEncryptedValue.encryptOnSaveMap[concept.id] != true) {
                     concept = EcEncryptedValue.toEncryptedValue(concept);
                 }
                 repo.saveTo(concept, function() {
@@ -148,10 +146,10 @@ unlinkConcept = function (c) {
     EcArray.setAdd(framework["skos:hasTopConcept"], c.shortId());
     c["skos:topConceptOf"] = framework.shortId();
     if ($("#private")[0].checked) {
-        var name = framework["dcterms:title"];
-        framework = EcEncryptedValue.toEncryptedValue(framework);
-        framework["dcterms:title"] = name;
-        c = EcEncryptedValue.toEncryptedValue(c);
+        if (EcEncryptedValue.encryptOnSaveMap[framework.id] != true)
+            framework = EcEncryptedValue.toEncryptedValue(framework);
+        if (EcEncryptedValue.encryptOnSaveMap[c.id] != true)
+            c = EcEncryptedValue.toEncryptedValue(c);
     }
     repo.saveTo(c, function () {
         repo.saveTo(framework, function() {
@@ -217,7 +215,7 @@ deleteConceptInner = function (c) {
         for (var i = 0; i < c["skos:broader"].length; i++)
             EcConcept.get(c["skos:broader"][i], function (concept) {
                 EcArray.setRemove(concept["skos:narrower"], c.shortId());
-                if ($("#private")[0].checked) {
+                if ($("#private")[0].checked && EcEncryptedValue.encryptOnSaveMap[concept.id] != true) {
                     concept = EcEncryptedValue.toEncryptedValue(concept);
                 }
                 repo.saveTo(concept, afterSave, console.error);
@@ -229,10 +227,8 @@ deleteConceptInner = function (c) {
             }, console.error);
     if (c["skos:topConceptOf"] != null) {
         EcArray.setRemove(framework["skos:hasTopConcept"], c.shortId());
-        if ($("#private")[0].checked) {
-            var name = framework["dcterms:title"];
+        if ($("#private")[0].checked && EcEncryptedValue.encryptOnSaveMap[framework.id] != true) {
             framework = EcEncryptedValue.toEncryptedValue(framework);
-            framework["dcterms:title"] = name;
         }
         repo.saveTo(framework, function() {
             framework = EcConceptScheme.getBlocking(framework.id);
@@ -268,7 +264,7 @@ dropConceptShortcut = function (element) {
                     for (var i = 0; i < c["skos:broader"].length; i++)
                         EcConcept.get(c["skos:broader"][i], function (concept) {
                             EcArray.setRemove(concept["skos:narrower"], c.shortId());
-                            if ($("#private")[0].checked) {
+                            if ($("#private")[0].checked && EcEncryptedValue.encryptOnSaveMap[concept.id] != true) {
                                 concept = EcEncryptedValue.toEncryptedValue(concept);
                             }
                             repo.saveTo(concept, afterSave, console.error);
@@ -279,9 +275,8 @@ dropConceptShortcut = function (element) {
                 if (EcArray.has(framework["skos:hasTopConcept"], c.shortId())) {
                     EcArray.setRemove(framework["skos:hasTopConcept"], c.shortId());
                     if ($("#private")[0].checked) {
-                        var name = framework["dcterms:title"];
-                        framework = EcEncryptedValue.toEncryptedValue(framework);
-                        framework["dcterms:title"] = name;
+                        if (EcEncryptedValue.encryptOnSaveMap[framework.id] != true)
+                            framework = EcEncryptedValue.toEncryptedValue(framework);
                     }
                     repo.saveTo(framework, function() {
                         framework = EcFramework.getBlocking(framework);
@@ -342,8 +337,10 @@ dropAnyConcept = function (data, targetData) {
     selectedCompetency = thing;
     refreshSidebar();
     if ($("#private")[0].checked) {
-        thing = EcEncryptedValue.toEncryptedValue(thing);
-        targetThing = EcEncryptedValue.toEncryptedValue(targetThing);
+        if (EcEncryptedValue.encryptOnSaveMap[thing.id] != true)
+            thing = EcEncryptedValue.toEncryptedValue(thing);
+        if (EcEncryptedValue.encryptOnSaveMap[targetThing.id] != true)
+            targetThing = EcEncryptedValue.toEncryptedValue(targetThing);
     }
     repo.saveTo(thing, function () {
         repo.saveTo(targetThing, afterSave, console.error);
@@ -354,7 +351,7 @@ dropAnyConcept = function (data, targetData) {
 detangleConcepts = function (me, data, targetData) {
 
     var part3 = function () {
-        if ($("#private")[0].checked) {
+        if ($("#private")[0].checked && EcEncryptedValue.encryptOnSaveMap[c.id] != true) {
             c = EcEncryptedValue.toEncryptedValue(c);
         }
         repo.saveTo(c, function () {
@@ -369,10 +366,10 @@ detangleConcepts = function (me, data, targetData) {
             EcArray.setAdd(framework["skos:hasTopConcept"], c.shortId());
             c["skos:topConceptOf"] = framework.shortId();
             if ($("#private")[0].checked) {
-                c = EcEncryptedValue.toEncryptedValue(c);
-                var name = framework["dcterms:title"];
-                framework = EcEncryptedValue.toEncryptedValue(framework);
-                framework["dcterms:title"] = name;
+                if (EcEncryptedValue.encryptOnSaveMap[c.id] != true)
+                    c = EcEncryptedValue.toEncryptedValue(c);
+                if (EcEncryptedValue.encryptOnSaveMap[framework.id] != true)
+                    framework = EcEncryptedValue.toEncryptedValue(framework);
             }
             repo.saveTo(framework, function () {
                 repo.saveTo(c, function() {
@@ -394,7 +391,7 @@ detangleConcepts = function (me, data, targetData) {
             if (c["skos:broader"][i] == me.parent().parent().attr("id")) {
                 var concept = EcConcept.getBlocking(c["skos:broader"][i]);
                 EcArray.setRemove(concept["skos:narrower"], c.shortId());
-                if ($("#private")[0].checked) {
+                if ($("#private")[0].checked && EcEncryptedValue.encryptOnSaveMap[concept.id] != true) {
                     concept = EcEncryptedValue.toEncryptedValue(concept);
                 }
                 repo.saveTo(concept, part2, console.error); //Saving parent concept again.
@@ -431,10 +428,8 @@ dropConcept = function (ev) {
                 data.competency = c;
                 if (EcArray.has(framework["skos:hasTopConcept"], c.shortId())) {
                     EcArray.setRemove(framework["skos:hasTopConcept"], c.shortId());
-                    if ($("#private")[0].checked) {
-                        var name = framework["dcterms:title"];
+                    if ($("#private")[0].checked && EcEncryptedValue.encryptOnSaveMap[framework.id] != true) {
                         framework = EcEncryptedValue.toEncryptedValue(framework);
-                        framework["dcterms:title"] = name;
                     }
                     repo.saveTo(framework, function () {
                         framework = EcConceptScheme.getBlocking(framework.id);
@@ -452,7 +447,7 @@ dropConcept = function (ev) {
                 for (var i = 0; i < narrows.length; i++)
                     EcConcept.get(narrows[i], function (concept) {
                         EcArray.setRemove(concept["skos:narrower"], c.shortId());
-                        if ($("#private")[0].checked) {
+                        if ($("#private")[0].checked && EcEncryptedValue.encryptOnSaveMap[concept.id] != true) {
                             concept = EcEncryptedValue.toEncryptedValue(concept);
                         }
                         repo.saveTo(concept, stage2, console.error); //Saving previous parent.
@@ -516,10 +511,8 @@ handleTouchEndConcept = function (event) {
                             globalTouchDragDataConcept.competency = c;
                             if (EcArray.has(framework["skos:hasTopConcept"], c.shortId())) {
                                 EcArray.setRemove(framework["skos:hasTopConcept"], c.shortId());
-                                if ($("#private")[0].checked) {
-                                    var name = framework["dcterms:title"];
+                                if ($("#private")[0].checked && EcEncryptedValue.encryptOnSaveMap[framework.id] != true) {
                                     framework = EcEncryptedValue.toEncryptedValue(framework);
-                                    framework["dcterms:title"] = name;
                                 }
                                 repo.saveTo(framework, function () {
                                     framework = EcConceptScheme.getBlocking(framework);
@@ -537,7 +530,7 @@ handleTouchEndConcept = function (event) {
                             for (var i = 0; i < narrows.length; i++)
                                 EcConcept.get(narrows[i], function (concept) {
                                     EcArray.setRemove(concept["skos:narrower"], c.shortId());
-                                    if ($("#private")[0].checked) {
+                                    if ($("#private")[0].checked && EcEncryptedValue.encryptOnSaveMap[concept.id] != true) {
                                         concept = EcEncryptedValue.toEncryptedValue(concept);
                                     }
                                     repo.saveTo(concept, stage2, console.error); //Saving previous parent.
@@ -586,10 +579,10 @@ addConceptAlignments = function(targets, thing, relationType) {
         thing[relation].push(targets[i]);
     }
     if ($("#private")[0].checked) {
-        thing = EcEncryptedValue.toEncryptedValue(thing);
-        var name = framework["dcterms:title"];
-        framework = EcEncryptedValue.toEncryptedValue(framework);
-        framework["dcterms:title"] = name;
+        if (EcEncryptedValue.encryptOnSaveMap[thing.id] != true)
+            thing = EcEncryptedValue.toEncryptedValue(thing);
+        if (EcEncryptedValue.encryptOnSaveMap[framework.id] != true)
+            framework = EcEncryptedValue.toEncryptedValue(framework);
     }
     repo.saveTo(thing, function() {
         repo.saveTo(framework, function() {
@@ -615,10 +608,8 @@ moveUpConcept = function () {
                 //Swap with previous sibling
                 framework["skos:hasTopConcept"][i] = framework["skos:hasTopConcept"][i-1];
                 framework["skos:hasTopConcept"][i-1] = moveThisId;
-                if ($("#private")[0].checked) {
-                    var name = framework["dcterms:title"];
+                if ($("#private")[0].checked && EcEncryptedValue.encryptOnSaveMap[framework.id] != true) {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
-                    framework["dcterms:title"] = name;
                 }
                 repo.saveTo(framework, function() {
                     framework = EcConceptScheme.getBlocking(framework.id);
@@ -638,7 +629,7 @@ moveUpConcept = function () {
                     //Swap with previous sibling
                     parent["skos:narrower"][i] = parent["skos:narrower"][i-1];
                     parent["skos:narrower"][i-1] = moveThisId;
-                    if ($("#private")[0].checked) {
+                    if ($("#private")[0].checked && EcEncryptedValue.encryptOnSaveMap[parent.id] != true) {
                         parent = EcEncryptedValue.toEncryptedValue(parent);
                     }
                     repo.saveTo(parent, function() {
@@ -663,10 +654,8 @@ moveDownConcept = function () {
                 //Swap with next sibling
                 framework["skos:hasTopConcept"][i] = framework["skos:hasTopConcept"][i+1];
                 framework["skos:hasTopConcept"][i+1] = moveThisId;
-                if ($("#private")[0].checked) {
-                    var name = framework["dcterms:title"];
+                if ($("#private")[0].checked && EcEncryptedValue.encryptOnSaveMap[framework.id] != true) {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
-                    framework["dcterms:title"] = name;
                 }
                 repo.saveTo(framework, function() {
                     framework = EcConceptScheme.getBlocking(framework.id);
@@ -686,7 +675,7 @@ moveDownConcept = function () {
                     //Swap with next sibling
                     parent["skos:narrower"][i] = parent["skos:narrower"][i+1];
                     parent["skos:narrower"][i+1] = moveThisId;
-                    if ($("#private")[0].checked) {
+                    if ($("#private")[0].checked && EcEncryptedValue.encryptOnSaveMap[parent.id] != true) {
                         parent = EcEncryptedValue.toEncryptedValue(parent);
                     }
                     repo.saveTo(parent, function() {
@@ -710,10 +699,9 @@ function encryptConcepts(c) {
             if (concept["skos:narrower"] && concept["skos:narrower"].length > 0) {
                 encryptConcepts(concept);
             }
-            var name = concept["skos:prefLabel"];
-            concept = EcEncryptedValue.toEncryptedValue(concept);
-            EcEncryptedValue.encryptOnSave(concept.id, false);
-            concept["skos:prefLabel"] = name;
+            if (EcEncryptedValue.encryptOnSaveMap[concept.id] != true) {
+                concept = EcEncryptedValue.toEncryptedValue(concept);
+            }
             toSave.push(concept);
             done();
         }, done);

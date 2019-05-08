@@ -624,7 +624,7 @@ renderSidebar = function (justLists) {
 					var x = connectionsList.prepend("<button class='editMode frameworkEditControl' tabindex='0' style='float:right; cursor:pointer;'><i class='fa fa-times'></i></button>").children().first();
 					x.click(function () {
 						EcArray.setRemove(selectedCompetency["skos:" + relationType], cId);
-			            if ($("#private")[0].checked) {
+			            if ($("#private")[0].checked && EcEncryptedValue.encryptOnSaveMap[selectedCompetency.id] != true) {
 			            	selectedCompetency = EcEncryptedValue.toEncryptedValue(selectedCompetency);
 			            }
 			            repo.saveTo(selectedCompetency, function() {
@@ -732,7 +732,7 @@ renderSidebar = function (justLists) {
 								framework.removeRelation($(this).parent().attr("id"));
 							}
 							conditionalDelete($(this).parent().attr("id"));
-				            if ($("#private")[0].checked) {
+				            if ($("#private")[0].checked && EcEncryptedValue.encryptOnSaveMap[framework.id] != true) {
 				                framework = EcEncryptedValue.toEncryptedValue(framework);
 				            }
 				            repo.saveTo(framework, function() {
@@ -1391,7 +1391,7 @@ editSidebar = function () {
 						framework.removeCompetency(selectedCompetency.shortId());
 						framework.removeLevel(selectedCompetency.shortId());
 						conditionalDelete(selectedCompetency.shortId());
-			            if ($("#private")[0].checked) {
+			            if ($("#private")[0].checked && EcEncryptedValue.encryptOnSaveMap[framework.id] != true) {
 			                framework = EcEncryptedValue.toEncryptedValue(framework);
 			            }
 						repo.saveTo(framework, function () {
