@@ -46,6 +46,7 @@ importCase = function () {
 		let lis = $(".caseImportTemplate.unfinished");
 		if (lis.length == 0) {
 			$("#search").val("\"" + $("#urlEndpoint").val() + "\"");
+			firstLoad = true;
 			searchFrameworks({
 				frameworksOnly: true
 			});
