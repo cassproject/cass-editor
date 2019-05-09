@@ -341,7 +341,9 @@ refreshRelations = function (subsearch) {
 						var target = EcCompetency.getBlocking(relation.target);
 						if (source != null && target != null)
 							if ($(".competency[relationid=\"" + relation.shortId() + "\"]").length == 0) {
-								$(".competency[id=\"" + target.shortId() + "\"]").children().last().append($(".competency[id=\"" + source.shortId() + "\"]").outerHTML()).children().last().attr("relationid", relation.shortId());
+								$(".competency[id=\"" + target.shortId() + "\"]").each(function() {
+									$(this).children().last().append($(".competency[id=\"" + source.shortId() + "\"]").outerHTML()).children().last().attr("relationid", relation.shortId());
+								});
 								if ($(".competency[id=\"" + target.shortId() + "\"]").length > 0 &&
 									$("#tree>.competency[id=\"" + source.shortId() + "\"]").length > 0) {
 									let isRemoveSource = true;
