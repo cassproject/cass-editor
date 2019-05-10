@@ -192,51 +192,16 @@ function importCtdlAsnCsv() {
         ceo = EcIdentityManager.ids[0];
     CTDLASNCSVImport.importFrameworksAndCompetencies(repo, importFiles[0], function (frameworks, competencies, relations) {
         var all = frameworks.concat(competencies).concat(relations);
-        var ah = new EcAsyncHelper();
-        var counter = 0;
-        var failed = 0;
-        ah.each(all, function (f, callback) {
-            if (f.isAny(new EcFramework().getTypes())) {
-                framework = f;
-                spitEvent("importFinished", f.shortId());
-            }
-            Task.asyncImmediate(function (callback2) {
-                if (ceo != null) {
-                    f.addOwner(ceo.ppk.toPk());
-                }
-                repo.saveTo(f, function (success) {
-                    counter++;
-                    loading(ah.counter + " objects remaining to save. " + (failed > 0 ? (failed + " failed to save.") : ""));
-                    callback();
-                    callback2();
-                }, function (failure) {
-                    counter++;
-                    failed++;
-                    loading(ah.counter + " objects remaining to save. " + (failed > 0 ? (failed + " failed to save.") : ""));
-                    callback();
-                    callback2();
-                });
-            });
-        }, function (allDone) {
-            Task.asyncImmediate(function (callback) {
-                if (failed > 0) {
-                    loading(failed + " objects failed to save. Check your import file for any errors.");
-                    setTimeout(function () {
-                        showPage("framework");
-                        populateFramework();
-                        selectedCompetency = null;
-                        refreshSidebar();
-                        callback();
-                    }, 5000);
-                }
-                else {
-                    showPage("framework");
-                    populateFramework();
-                    selectedCompetency = null;
-                    refreshSidebar();
-                    callback();
-                }
-            });
+        loading("Saving " + all.length + " objects.");
+        repo.multiput(all,function () {
+            showPage("framework");
+            populateFramework();
+            selectedCompetency = null;
+            refreshSidebar();
+            callback();
+        },function (failure) {
+            error(failure);
+            backPage();
         });
     }, function (failure) {
         error(failure);
