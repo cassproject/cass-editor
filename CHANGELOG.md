@@ -1,5 +1,34 @@
 # Change Log
 
+## [1.2.8](https://github.com/cassproject/cass-editor/tree/1.2.8) (2019-05-10)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/1.2.7...1.2.8)
+
+**Implemented enhancements:**
+
+- Can a post message be added to the end of an import to notify the publisher of a successful upload [\#522](https://github.com/cassproject/cass-editor/issues/522)
+
+**Fixed bugs:**
+
+- Where a non-registry URL was entered for a competency framework, it is exported as exactAlignment and should be as source [\#567](https://github.com/cassproject/cass-editor/issues/567)
+- Concept schemes still not sorting properly in the tree [\#566](https://github.com/cassproject/cass-editor/issues/566)
+- On attempt to approve a framework, getting: Object not found or you did not supply sufficient permissions to access the object. [\#563](https://github.com/cassproject/cass-editor/issues/563)
+- Concept scheme of External Input exports with extra purl Uris in skos:hasTopConcept [\#552](https://github.com/cassproject/cass-editor/issues/552)
+- RelatedMatch is being exported as a object, or list of objects, and should be a list of strings [\#543](https://github.com/cassproject/cass-editor/issues/543)
+- Newly created frameworks don't show up in the framework list unless the page is refreshed [\#535](https://github.com/cassproject/cass-editor/issues/535)
+- In the export, Date created is missing from older frameworks and concept schemes [\#534](https://github.com/cassproject/cass-editor/issues/534)
+- Can't drag and drop! [\#503](https://github.com/cassproject/cass-editor/issues/503)
+
+**Closed issues:**
+
+- Check for owner while searching for autocomplete competencies when show=mine [\#575](https://github.com/cassproject/cass-editor/issues/575)
+- Global Collapse and Expand for Concepts [\#573](https://github.com/cassproject/cass-editor/issues/573)
+- Decryption no longer working [\#570](https://github.com/cassproject/cass-editor/issues/570)
+- Remove \(but do not delete\) button [\#569](https://github.com/cassproject/cass-editor/issues/569)
+- Property labeled "Level" in Competencies should be renamed [\#565](https://github.com/cassproject/cass-editor/issues/565)
+- Keyboard icon should change to save icon for second click [\#561](https://github.com/cassproject/cass-editor/issues/561)
+- Subcompetencies not indented in tree [\#525](https://github.com/cassproject/cass-editor/issues/525)
+- Accessibility of ceterms concept schemes to CASS editor. [\#104](https://github.com/cassproject/cass-editor/issues/104)
+
 ## [1.2.7](https://github.com/cassproject/cass-editor/tree/1.2.7) (2019-04-26)
 [Full Changelog](https://github.com/cassproject/cass-editor/compare/1.2.6...1.2.7)
 
