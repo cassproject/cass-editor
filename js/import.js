@@ -194,11 +194,14 @@ function importCtdlAsnCsv() {
         var all = frameworks.concat(competencies).concat(relations);
         loading("Saving " + all.length + " objects.");
         repo.multiput(all,function () {
+            for (var i = 0; i < frameworks.length; i++) {
+                framework = frameworks[i];
+                spitEvent("importFinished", frameworks[i].shortId());
+            }
             showPage("framework");
             populateFramework();
             selectedCompetency = null;
             refreshSidebar();
-            callback();
         },function (failure) {
             error(failure);
             backPage();
