@@ -71,6 +71,15 @@
 					<p style="text-align:justify">Using this format, you can import a concept scheme and concepts from a system that exports CTDL-ASN formatted JSON-LD.</p>
 					<button style="font-size:x-small" onclick='$.ajax({url: "files/ConnectingCredentialsLevels.json",success: function (data) {download("ConnectingCredentialsLevels.json", JSON.stringify(data,null,2));}});'>Download JSON-LD Sample</button>
 				</div>
+				<div class="panel absentForCompetencies">
+					<center>
+						<h4>CTDL-ASN formatted CSV</h4>
+					</center>
+					<p style="text-align:justify">For this import, you use one CSV. Each row in the CSV will represent one object, whether that be a concept, or a concept scheme. Particular fields will be used to determine hierarchy.</p>
+					<p style="text-align:justify">Using this format, you can import several concept schemes, each with their own concepts. Concepts may not be shared across schemes, and each concept may only have one parent.</p>
+					<p style="text-align:justify">It is also important that any field with multiple values be formatted exactly as in the sample file, e.g. "['entry 1', 'entry2']".</p>
+					<button style="font-size:x-small" onclick='$.ajax({url: "files/Concept Scheme Example.csv",success: function (data) {download("Concept Scheme Example.csv", data);}});'>Download CSV Sample</button><button style="font-size:x-small" onclick='$.ajax({url: "files/Concept Scheme Template.csv",success: function (data) {download("Concept Scheme Template.csv", data);}});'>Download CSV Template</button>
+				</div>
 			</div>
 		</div>
 		<div id="importFileForm" style="min-height:5rem; display: flex; align-items: center; border: 2px dashed black; margin-left: 1rem;margin-right: 1rem;">
@@ -114,7 +123,7 @@
 			<br><button id="urlEndpointButton">Connect</button>
 		</div>
 	</div>
-	<div id="ctdlasncsvImportSection" class="page absentForConcepts" style="display:none;margin-left: 1rem;">
+	<div id="ctdlasncsvImportSection" class="page" style="display:none;margin-left: 1rem;">
 		<h3 id="csvImportHeader">Import CTDL-ASN CSV</h3>
 		<i>This will import a CTDL-ASN formatted CSV.</i>
 		<hr>
