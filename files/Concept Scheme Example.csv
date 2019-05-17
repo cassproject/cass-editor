@@ -1,0 +1,5 @@
+@id,@type,ceasn:name,skos:prefLabel,skos:hasTopConcept,skos:topConceptOf,skos:narrower,skos:broader
+https://myid.com/1a,skos:ConceptScheme,123,,"['https://myid.com/2a', 'https://myid.com/3a']",,,
+https://myid.com/2a,skos:Concept,,New Concept,,https://myid.com/1a,https://myid.com/4a,
+https://myid.com/4a,skos:Concept,,New Concept2,,,,https://myid.com/2a
+https://myid.com/3a,skos:Concept,,New Concept,,https://myid.com/1a,,

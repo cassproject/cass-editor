@@ -17,42 +17,54 @@ function importFile() {
     $("#csvImportHeader").text("Import " + file.name);
     $("#importCsvFrameworkName").val(file.name.replace(".csv", ""));
     if (file.name.endsWith(".csv")) {
-        CTDLASNCSVImport.analyzeFile(file, function (frameworkCount, competencyCount) {
-            $("#ctdlasncsvImportSection #importButton").text("Import " + frameworkCount + " frameworks and " + competencyCount + " competencies.");
-            showPage("#ctdlasncsvImportSection");
+        if (conceptMode) {
+            CTDLASNCSVConceptImport.analyzeFile(file, function (frameworkCount, competencyCount) {
+                $("#ctdlasncsvImportSection #importButton").text("Import " + frameworkCount + " concept schemes and " + competencyCount + " concepts.");
+                showPage("#ctdlasncsvImportSection");
 
-        }, function (errorMsg) {
-            CSVImport.analyzeFile(file, function (data) {
-                $("#importCsvRelation").val(null);
-                $(".importCsvRelationOptions").hide();
-                $("#importCsvColumnName").html("<option>N/A</option>");
-                $("#importCsvColumnDescription").html("<option>N/A</option>");
-                $("#importCsvColumnScope").html("<option>N/A</option>");
-                $("#importCsvColumnId").html("<option>N/A</option>");
-                $("#importCsvTable").show();
-                for (var i = 0; i < data[0].length; i++) {
-                    $("#importCsvColumnName").append("<option/>").children().last().text(data[0][i]).attr("index", i);
-                    if (data[0][i].toLowerCase().indexOf("name") != -1)
-                        $("#importCsvColumnName").children().last().prop("selected", true);
-                    $("#importCsvColumnDescription").append("<option/>").children().last().text(data[0][i]).attr("index", i);
-                    if (data[0][i].toLowerCase().indexOf("description") != -1)
-                        $("#importCsvColumnDescription").children().last().prop("selected", true);
-                    $("#importCsvColumnScope").append("<option/>").children().last().text(data[0][i]).attr("index", i);
-                    if (data[0][i].toLowerCase().indexOf("scope") != -1)
-                        $("#importCsvColumnScope").children().last().prop("selected", true);
-                    $("#importCsvColumnId").append("<option/>").children().last().text(data[0][i]).attr("index", i);
-                    if (data[0][i].toLowerCase().indexOf("id") != -1)
-                        $("#importCsvColumnId").children().last().prop("selected", true);
-                }
-                $("#csvImportSection #importButton").text("Import " + (maxCsvCompetencies = (data.length - 1)) + " items.");
-                showPage("#csvImportSection");
-            }, function (error) {
-                {
-                    alert(error);
-                    showPage("#importSection");
-                }
+            }, function (errorMsg) {
+                alert(error);
+                showPage("#importSection");
             });
-        });
+        }
+        else {
+            CTDLASNCSVImport.analyzeFile(file, function (frameworkCount, competencyCount) {
+                $("#ctdlasncsvImportSection #importButton").text("Import " + frameworkCount + " frameworks and " + competencyCount + " competencies.");
+                showPage("#ctdlasncsvImportSection");
+
+            }, function (errorMsg) {
+                CSVImport.analyzeFile(file, function (data) {
+                    $("#importCsvRelation").val(null);
+                    $(".importCsvRelationOptions").hide();
+                    $("#importCsvColumnName").html("<option>N/A</option>");
+                    $("#importCsvColumnDescription").html("<option>N/A</option>");
+                    $("#importCsvColumnScope").html("<option>N/A</option>");
+                    $("#importCsvColumnId").html("<option>N/A</option>");
+                    $("#importCsvTable").show();
+                    for (var i = 0; i < data[0].length; i++) {
+                        $("#importCsvColumnName").append("<option/>").children().last().text(data[0][i]).attr("index", i);
+                        if (data[0][i].toLowerCase().indexOf("name") != -1)
+                            $("#importCsvColumnName").children().last().prop("selected", true);
+                        $("#importCsvColumnDescription").append("<option/>").children().last().text(data[0][i]).attr("index", i);
+                        if (data[0][i].toLowerCase().indexOf("description") != -1)
+                            $("#importCsvColumnDescription").children().last().prop("selected", true);
+                        $("#importCsvColumnScope").append("<option/>").children().last().text(data[0][i]).attr("index", i);
+                        if (data[0][i].toLowerCase().indexOf("scope") != -1)
+                            $("#importCsvColumnScope").children().last().prop("selected", true);
+                        $("#importCsvColumnId").append("<option/>").children().last().text(data[0][i]).attr("index", i);
+                        if (data[0][i].toLowerCase().indexOf("id") != -1)
+                            $("#importCsvColumnId").children().last().prop("selected", true);
+                    }
+                    $("#csvImportSection #importButton").text("Import " + (maxCsvCompetencies = (data.length - 1)) + " items.");
+                    showPage("#csvImportSection");
+                }, function (error) {
+                    {
+                        alert(error);
+                        showPage("#importSection");
+                    }
+                });
+            });
+        }
     } else if (file.name.endsWith(".json") || file.name.endsWith(".jsonld")) {
         //Try JSON-LD first, checks for @graph
         analyzeJsonLdFramework(file, function (data, ctdlasn) {
@@ -187,6 +199,9 @@ function importAsn() {
 }
 
 function importCtdlAsnCsv() {
+    if (conceptMode) {
+        return importCtdlAsnConceptCsv();
+    }
     var ceo = null;
     if (EcIdentityManager.ids.length > 0)
         ceo = EcIdentityManager.ids[0];
@@ -199,6 +214,32 @@ function importCtdlAsnCsv() {
             selectedCompetency = null;
             refreshSidebar();
             callback();
+        },function (failure) {
+            error(failure);
+            backPage();
+        });
+    }, function (failure) {
+        error(failure);
+        backPage();
+    },ceo);
+}
+
+function importCtdlAsnConceptCsv() {
+    var ceo = null;
+    if (EcIdentityManager.ids.length > 0)
+        ceo = EcIdentityManager.ids[0];
+    CTDLASNCSVConceptImport.importFrameworksAndCompetencies(repo, importFiles[0], function (frameworks, competencies) {
+        var all = frameworks.concat(competencies);
+        loading("Saving " + all.length + " objects.");
+        repo.multiput(all,function () {
+            for (var i = 0; i < frameworks.length; i++) {
+                framework = frameworks[i];
+                spitEvent("importFinished", frameworks[i].shortId());
+            }
+            showPage("framework");
+            populateFramework();
+            selectedCompetency = null;
+            refreshSidebar();
         },function (failure) {
             error(failure);
             backPage();
