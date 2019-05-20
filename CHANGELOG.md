@@ -1,5 +1,24 @@
 # Change Log
 
+## [Unreleased](https://github.com/cassproject/cass-editor/tree/HEAD)
+
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/1.2.9...HEAD)
+
+**Fixed bugs:**
+
+- Framework that forks and merges loses children [\#576](https://github.com/cassproject/cass-editor/issues/576)
+
+**Closed issues:**
+
+- Private frameworks show up in search but concept schemes do not [\#571](https://github.com/cassproject/cass-editor/issues/571)
+
+## [1.2.9](https://github.com/cassproject/cass-editor/tree/1.2.9) (2019-05-17)
+[Full Changelog](https://github.com/cassproject/cass-editor/compare/1.2.8...1.2.9)
+
+**Fixed bugs:**
+
+- New competencies that are nested \(not at the top level\) in a private framework don't seem to be made un-private when private is unchecked. [\#502](https://github.com/cassproject/cass-editor/issues/502)
+
 ## [1.2.8](https://github.com/cassproject/cass-editor/tree/1.2.8) (2019-05-10)
 [Full Changelog](https://github.com/cassproject/cass-editor/compare/1.2.7...1.2.8)
 
