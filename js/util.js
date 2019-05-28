@@ -129,14 +129,27 @@ function importParentStyles() {
 	document.getElementsByTagName("head")[0].appendChild(style);
 }
 
+var sortBy = "name.keyword";
+
 function createParamObj(size) {
 	var paramObj = {};
 	paramObj.size = size;
-	paramObj.sort = '[ { "name.keyword": {"order" : "asc" , "unmapped_type" : "long",  "missing" : "_last"}} ]';
+	var order = (sortBy == "name.keyword") ? "asc" : "desc";
+	paramObj.sort = '[ { "' + sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "long",  "missing" : "_last"}} ]';
 	if (queryParams.show != null && queryParams.show === 'mine')
 		paramObj.ownership = 'me';
 
 	return paramObj;
+}
+
+function changeSort() {
+	sortBy = $("#sortSelect").val();
+	if (conceptMode && sortBy == "name.keyword") {
+		sortBy = "dcterms:title.keyword";
+	}
+	firstLoad = true;
+    $('#frameworks').scrollTop(0);
+    searchFrameworks(createParamObj(20));
 }
 
 function download(filename, text) {

@@ -282,6 +282,14 @@
 			<span id="frameworksBack" onclick='parent.postMessage({message: "back"}, queryParams.origin);' style="float:left;display:none;"><i class="fa fa-arrow-circle-left" style="font-size:32px;color:black" > </i></span>&nbsp;
 			<input type="text" id="search" placeholder="Search...">
 			<button id="resetSearchButton" onclick="resetSearch();" style="">&#215;</button>
+			<select id="sortSelect" style="float:right" onchange="changeSort();">
+				<option selected disabled>Sort By</option>
+				<option value="name.keyword">Name</option>
+				<option value="schema:dateModified">Last Modified</option>
+			</select>
+		</div>
+		<div id="sort">
+			
 		</div>
 		<center id="frameworks"></center>
 	</div>
