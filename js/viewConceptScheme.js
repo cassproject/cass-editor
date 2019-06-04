@@ -252,6 +252,10 @@ editConceptSidebar = function () {
         $(".tlaDataFields").show();
     }
 
+    if (queryParams.newObjectEndpoint == null || queryParams.newObjectEndpoint === undefined) {
+        $('.newObjectEndpoint').hide();
+    }
+
     if (selectedCompetency != null) {
         $('.ceasnCompetency .editMode').show();
     } else {

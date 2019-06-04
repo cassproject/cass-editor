@@ -382,6 +382,34 @@ refreshRelations = function (subsearch) {
 	}
 }
 
+function ceasnRegistryUriTransform(uri, frameworkUri) {
+    var endpoint = queryParams.newObjectEndpoint;
+    if (endpoint == null)
+        return uri;
+    if (uri.startsWith(endpoint))
+        return uri;
+    var ctid = getCTID(uri, frameworkUri);
+    if (endpoint.indexOf("ce-") != -1) {
+    	ctid = ctid.substring(3);
+    }
+    return endpoint + ctid;
+}
+
+function getCTID(uri, frameworkUri) {
+    var uuid = null;
+    var parts = EcRemoteLinkedData.trimVersionFromUrl(uri).split("/");
+    uuid = parts[parts.length - 1];
+    if (frameworkUri != null && frameworkUri !== undefined) {
+    	uri = frameworkUri + uri;
+    }
+    if (!uuid.matches("^(ce-)?[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"))
+        uuid = new UUID(3, "nil", EcRemoteLinkedData.trimVersionFromUrl(uri)).format();
+    if (uuid.indexOf("ce-") == -1) {
+    	uuid = "ce-" + uuid;
+    }
+    return uuid;
+}
+
 renderSidebar = function (justLists) {
 	if ($(".changedField:visible").length > 0) {
 		if (!confirm("Some data has changed during edit. Do you want to discard changes?"))
@@ -455,9 +483,23 @@ renderSidebar = function (justLists) {
 	//Set the URL field
 	$('#sidebarURL').text(thing.shortId());
 	$('#sidebarURL').attr('href', thing.shortId());
-	//Set the CTID field
-	$('#sidebarCTID').text(thing.getGuid());
-	$('#sidebarCTID').attr('href', thing.getGuid());
+	if (thing == selectedCompetency) {
+		//Set the Registry URL field
+		$('#sidebarRegistryURL').text(ceasnRegistryUriTransform(thing.shortId(), framework.shortId()));
+		$('#sidebarRegistryURL').attr('href', ceasnRegistryUriTransform(thing.shortId(), framework.shortId()));
+		//Set the CTID field
+		$('#sidebarCTID').text(getCTID(thing.shortId(), framework.shortId()));
+		$('#sidebarCTID').attr('href', getCTID(thing.shortId(), framework.shortId()));
+	}
+	else {
+		//Set the Registry URL field
+		$('#sidebarRegistryURL').text(ceasnRegistryUriTransform(thing.shortId()));
+		$('#sidebarRegistryURL').attr('href', ceasnRegistryUriTransform(thing.shortId()));
+		//Set the CTID field
+		$('#sidebarCTID').text(getCTID(thing.shortId()));
+		$('#sidebarCTID').attr('href', getCTID(thing.shortId()));
+	}
+
 
 	if (justLists != true)
 		$("#detailSlider label").each(function () {
@@ -1228,6 +1270,10 @@ refreshSidebar = function () {
 		$("#sidebarVersion").hide();
 	}
 
+	if (queryParams.newObjectEndpoint == null || queryParams.newObjectEndpoint === undefined) {
+		$('.newObjectEndpoint').hide();
+	}
+
 	$("#sidebarFeedback").html("");
 	if (!framework.canEditAny(EcIdentityManager.getMyPks())) {
 		$(".frameworkEditControl").hide();
@@ -1432,6 +1478,11 @@ editSidebar = function () {
         $(".ceasnOnly").hide();
         $(".tlaDataFields").show();
     }
+
+    if (queryParams.newObjectEndpoint == null || queryParams.newObjectEndpoint === undefined) {
+		$('.newObjectEndpoint').hide();
+	}
+
 	setDefaultLanguage();
 	$("#detailSlider").find(".sidebarInputLanguageSelect").each(function () {
         if (!$(this).next().val()) {
