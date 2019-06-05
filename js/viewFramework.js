@@ -399,7 +399,7 @@ function getCTID(uri, frameworkUri) {
     var uuid = null;
     var parts = EcRemoteLinkedData.trimVersionFromUrl(uri).split("/");
     uuid = parts[parts.length - 1];
-    if (frameworkUri != null && frameworkUri !== undefined) {
+    if (frameworkUri != null && frameworkUri !== undefined && !conceptMode) {
     	uri = EcRemoteLinkedData.trimVersionFromUrl(frameworkUri) + EcRemoteLinkedData.trimVersionFromUrl(uri);
     }
     else {
@@ -486,7 +486,7 @@ renderSidebar = function (justLists) {
 	//Set the URL field
 	$('#sidebarURL').text(thing.shortId());
 	$('#sidebarURL').attr('href', thing.shortId());
-	if (thing == selectedCompetency) {
+	if (thing == selectedCompetency && !conceptMode) {
 		//Set the Registry URL field
 		$('#sidebarRegistryURL').text(ceasnRegistryUriTransform(thing.shortId(), framework.shortId()));
 		$('#sidebarRegistryURL').attr('href', ceasnRegistryUriTransform(thing.shortId(), framework.shortId()));
