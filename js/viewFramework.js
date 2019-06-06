@@ -1092,7 +1092,8 @@ renderSidebar = function (justLists) {
 			}
 			else
 				setTimeout(function() {
-					baseField.val('');
+					if (!baseField.hasClass("sidebarInLanguageInput") && !baseField.hasClass("sidebarConceptInLanguageInput") && !baseField.hasClass("sidebarFrameworkInLanguageInput"))
+						baseField.val('');
 				}, 10);
 		});
 
@@ -1492,6 +1493,16 @@ editSidebar = function () {
         	$(this).val(defaultLanguage);
         }
     });
+    if (selectedCompetency != null) {
+        if ($("#sidebarInLanguageInput").val() == null || $("#sidebarInLanguageInput").val() === undefined || $("#sidebarInLanguageInput").val() == "") {
+            $("#sidebarInLanguageInput").val(defaultLanguage);
+        }
+    }
+    else {
+        if ($("#sidebarFrameworkInLanguageInput").val() == null || $("#sidebarFrameworkInLanguageInput").val() === undefined || $("#sidebarFrameworkInLanguageInput").val() == "") {
+            $("#sidebarFrameworkInLanguageInput").val(defaultLanguage);
+        }
+    }
 }
 
 $('#sidebarNameInput').on('keyup', function (evt) {

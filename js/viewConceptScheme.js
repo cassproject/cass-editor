@@ -267,6 +267,16 @@ editConceptSidebar = function () {
             $(this).val(defaultLanguage);
         }
     });
+    if (selectedCompetency != null) {
+        if ($("#sidebarInLanguageInput").val() == null || $("#sidebarInLanguageInput").val() === undefined || $("#sidebarInLanguageInput").val() == "") {
+            $("#sidebarInLanguageInput").val(defaultLanguage);
+        }
+    }
+    else {
+        if ($("#sidebarConceptInLanguageInput").val() == null || $("#sidebarConceptInLanguageInput").val() === undefined || $("#sidebarConceptInLanguageInput").val() == "") {
+            $("#sidebarConceptInLanguageInput").val(defaultLanguage);
+        }
+    }
     $(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
 }
 
