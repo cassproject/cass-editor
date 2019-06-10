@@ -738,7 +738,7 @@ CTDLASNCSVImport = stjs.extend(CTDLASNCSVImport, null, [], function(constructor,
                             (translator)[key] = null;
                         }
                     }
-                    translator.recast("http://schema.cassproject.org/0.3/ceasn2cass", "http://schema.cassproject.org/0.3", function(e) {
+                    translator.recast("https://schema.cassproject.org/0.3/ceasn2cass", "https://schema.cassproject.org/0.3", function(e) {
                         var f = new EcFramework();
                         f.copyFrom(e);
                         if ((e)["owner"] != null) {
@@ -766,7 +766,7 @@ CTDLASNCSVImport = stjs.extend(CTDLASNCSVImport, null, [], function(constructor,
                             (translator)[key] = null;
                         }
                     }
-                    translator.recast("http://schema.cassproject.org/0.3/ceasn2cass", "http://schema.cassproject.org/0.3", function(e) {
+                    translator.recast("https://schema.cassproject.org/0.3/ceasn2cass", "https://schema.cassproject.org/0.3", function(e) {
                         var f = new EcCompetency();
                         f.copyFrom(e);
                         if ((e)["id"] == null) {
@@ -1791,7 +1791,7 @@ CTDLASNCSVConceptImport = stjs.extend(CTDLASNCSVConceptImport, null, [], functio
                         (nameWithLanguage)["en-US"] = name;
                         (translator)["ceasn:name"] = nameWithLanguage;
                     }
-                    translator.recast("http://schema.cassproject.org/0.3/ceasn2cassConcepts", "http://schema.cassproject.org/0.3/skos", function(e) {
+                    translator.recast("https://schema.cassproject.org/0.3/ceasn2cassConcepts", "https://schema.cassproject.org/0.3/skos", function(e) {
                         var f = new EcConceptScheme();
                         f.copyFrom(e);
                         if ((e)["owner"] != null) {
@@ -1829,7 +1829,7 @@ CTDLASNCSVConceptImport = stjs.extend(CTDLASNCSVConceptImport, null, [], functio
                         (nameWithLanguage)["en-US"] = name;
                         (translator)["skos:prefLabel"] = nameWithLanguage;
                     }
-                    translator.recast("http://schema.cassproject.org/0.3/ceasn2cassConcepts", "http://schema.cassproject.org/0.3/skos", function(e) {
+                    translator.recast("https://schema.cassproject.org/0.3/ceasn2cassConcepts", "https://schema.cassproject.org/0.3/skos", function(e) {
                         var f = new EcConcept();
                         f.copyFrom(e);
                         if ((e)["id"] == null) {
