@@ -290,43 +290,49 @@ for (var i = 0; i < servers.length; i++) {
 
 var iframeInit = false;
 var iframeCompetencyPath = "";
-initIframe = function (comp) {
+initIframe = function (intraFramework) {
 	var iframeRoot = queryParams.editorRoot;
 	if (iframeRoot == null || iframeRoot === undefined)
 		iframeRoot = "";
-	if (comp == true) {
-		var iframeCompetencyPathTrue = iframeRoot + "index.html?select=Align with...&view=true&back=true&frameworkId=" + framework.shortId() + "&iframeRoot=" + iframeRoot + "&origin=" + window.location.origin + (queryParams.server == null ? "" : "&server=" + queryParams.server + (queryParams.newObjectEndpoint == null ? "" : "&newObjectEndpoint=" + queryParams.newObjectEndpoint));
-		if (queryParams.webSocketOverride != null && queryParams.webSocketOverride !== undefined)
-			iframeCompetencyPathTrue += "&webSocketOverride=" + queryParams.webSocketOverride;
-		if (queryParams.ceasnDataFields != null && queryParams.ceasnDataFields != undefined)
-			iframeCompetencyPathTrue += "&ceasnDataFields=" + queryParams.ceasnDataFields;
-		if (queryParams.inherit != null && queryParams.inherit != undefined)
-			iframeCompetencyPathTrue += "&inherit=" + queryParams.inherit;
-		if (queryParams.css != null && queryParams.css != undefined)
-			iframeCompetencyPathTrue += "&css=" + queryParams.css;
-		if (queryParams.selectVerbose != null && queryParams.selectVerbose != undefined)
-			iframeCompetencyPathTrue += "&selectVerbose=" + queryParams.selectVerbose;
-		if (queryParams.selectExport != null && queryParams.selectExport != undefined)
-			iframeCompetencyPathTrue += "&selectExport=" + queryParams.selectExport;
+
+	var commonPath = "&iframeRoot=" + iframeRoot + "&origin=" + window.location.origin + (queryParams.server == null ? "" : "&server=" + queryParams.server) + (queryParams.newObjectEndpoint == null ? "" : "&newObjectEndpoint=" + queryParams.newObjectEndpoint);
+	if (queryParams.ceasnDataFields != null && queryParams.ceasnDataFields != undefined)
+		commonPath += "&ceasnDataFields=" + queryParams.ceasnDataFields;
+	if (queryParams.webSocketOverride != null && queryParams.webSocketOverride !== undefined)
+		commonPath += "&webSocketOverride=" + queryParams.webSocketOverride;
+	if (queryParams.inherit != null && queryParams.inherit != undefined)
+		commonPath += "&inherit=" + queryParams.inherit;
+	if (queryParams.css != null && queryParams.css != undefined)
+		commonPath += "&css=" + queryParams.css;
+	if (queryParams.selectVerbose != null && queryParams.selectVerbose != undefined)
+		commonPath += "&selectVerbose=" + queryParams.selectVerbose;
+	if (queryParams.selectExport != null && queryParams.selectExport != undefined)
+		commonPath += "&selectExport=" + queryParams.selectExport;
+	if (queryParams.user != null && queryParams.user != undefined)
+		commmonPath += "&user=" + queryParams.user;
+
+
+	if (intraFramework == true) {
+		var iframeCompetencyPathTrue = iframeRoot + "index.html?select=Align with...&view=true&back=true&frameworkId=" + framework.shortId();
+		iframeCompetencyPathTrue += commonPath;
 		if (queryParams.view != "true")
 			$("#selectCompetencyIframe").attr("src", iframeCompetencyPathTrue);
-	} else if (comp == false) {
+
+		iframeInit = false;
+		var iframeConceptPathTrue = iframeRoot + "index.html?select=Add&concepts=true&view=true" + "&frameworkId=" + framework.shortId();
+		if (queryParams.conceptShow != null && queryParams.conceptShow != undefined)
+			iframeConceptPathTrue += "&conceptShow=" + queryParams.conceptShow;
+		iframeConceptPathTrue += commonPath;
+		if (queryParams.view != "true")
+			$("#selectConceptIframe").attr("src", iframeConceptPathTrue);
+		return;
+	}
+	else if (intraFramework == false) {
 		if (iframeCompetencyPath != "") {
 			return;
 		}
-		iframeCompetencyPath = iframeRoot + "index.html?select=Align with...&view=true&back=true&iframeRoot=" + iframeRoot + "&origin=" + window.location.origin + (queryParams.server == null ? "" : "&server=" + queryParams.server + (queryParams.newObjectEndpoint == null ? "" : "&newObjectEndpoint=" + queryParams.newObjectEndpoint));
-		if (queryParams.webSocketOverride != null && queryParams.webSocketOverride !== undefined)
-			iframeCompetencyPath += "&webSocketOverride=" + queryParams.webSocketOverride;
-		if (queryParams.ceasnDataFields != null && queryParams.ceasnDataFields != undefined)
-			iframeCompetencyPath += "&ceasnDataFields=" + queryParams.ceasnDataFields;
-		if (queryParams.inherit != null && queryParams.inherit != undefined)
-			iframeCompetencyPath += "&inherit=" + queryParams.inherit;
-		if (queryParams.css != null && queryParams.css != undefined)
-			iframeCompetencyPath += "&css=" + queryParams.css;
-		if (queryParams.selectVerbose != null && queryParams.selectVerbose != undefined)
-			iframeCompetencyPath += "&selectVerbose=" + queryParams.selectVerbose;
-		if (queryParams.selectExport != null && queryParams.selectExport != undefined)
-			iframeCompetencyPath += "&selectExport=" + queryParams.selectExport;
+		iframeCompetencyPath = iframeRoot + "index.html?select=Align with...&view=true&back=true";
+		iframeCompetencyPath += commonPath;
 		if (queryParams.view != "true")
 			$("#selectCompetencyIframe").attr("src", iframeCompetencyPath);
 	}
@@ -334,41 +340,17 @@ initIframe = function (comp) {
 	if (iframeInit == true) return;
 	iframeInit = true;
 
-	var iframePath = iframeRoot + "index.html?select=Add&selectRelations=true&view=true&iframeRoot=" + iframeRoot + "&origin=" + window.location.origin + (queryParams.server == null ? "" : "&server=" + queryParams.server + (queryParams.newObjectEndpoint == null ? "" : "&newObjectEndpoint=" + queryParams.newObjectEndpoint));
-	if (queryParams.webSocketOverride != null && queryParams.webSocketOverride !== undefined)
-		iframePath += "&webSocketOverride=" + queryParams.webSocketOverride;
-	if (queryParams.ceasnDataFields != null && queryParams.ceasnDataFields != undefined)
-		iframePath += "&ceasnDataFields=" + queryParams.ceasnDataFields;
-	if (queryParams.inherit != null && queryParams.inherit != undefined)
-		iframePath += "&inherit=" + queryParams.inherit;
-	if (queryParams.css != null && queryParams.css != undefined)
-		iframePath += "&css=" + queryParams.css;
-	if (queryParams.selectVerbose != null && queryParams.selectVerbose != undefined)
-		iframePath += "&selectVerbose=" + queryParams.selectVerbose;
-	if (queryParams.selectExport != null && queryParams.selectExport != undefined)
-		iframePath += "&selectExport=" + queryParams.selectExport;
+	var iframePath = iframeRoot + "index.html?select=Add&selectRelations=true&view=true";
+	iframePath += commonPath;
 	if (queryParams.view != "true")
 		$("#findCompetencyIframe").attr("src", iframePath);
 
-	var iframeConceptPath = iframeRoot + "index.html?select=Add&concepts=true&iframeRoot=" + iframeRoot + "&ceasnDataFields=" + queryParams.ceasnDataFields + "&origin=" + window.location.origin + (queryParams.server == null ? "" : "&server=" + queryParams.server) + (queryParams.newObjectEndpoint == null ? "" : "&newObjectEndpoint=" + queryParams.newObjectEndpoint);
-	if (queryParams.webSocketOverride != null && queryParams.webSocketOverride !== undefined)
-		iframeConceptPath += "&webSocketOverride=" + queryParams.webSocketOverride;
-	if (queryParams.ceasnDataFields != null && queryParams.ceasnDataFields != undefined)
-		iframeConceptPath += "&ceasnDataFields=" + queryParams.ceasnDataFields;
-	if (queryParams.inherit != null && queryParams.inherit != undefined)
-		iframeConceptPath += "&inherit=" + queryParams.inherit;
-	if (queryParams.css != null && queryParams.css != undefined)
-		iframeConceptPath += "&css=" + queryParams.css;
-	if (queryParams.user != null && queryParams.user != undefined)
-		iframeConceptPath += "&user=" + queryParams.user;
+	var iframeConceptPath = iframeRoot + "index.html?select=Add&concepts=true" + "&ceasnDataFields=" + queryParams.ceasnDataFields;
 	if (queryParams.conceptShow != null && queryParams.conceptShow != undefined)
 		iframeConceptPath += "&conceptShow=" + queryParams.conceptShow;
-	if (queryParams.selectVerbose != null && queryParams.selectVerbose != undefined)
-		iframeConceptPath += "&selectVerbose=" + queryParams.selectVerbose;
-	if (queryParams.selectExport != null && queryParams.selectExport != undefined)
-		iframeConceptPath += "&selectExport=" + queryParams.selectExport;
 	if (queryParams.editIframe != "true")
 		iframeConceptPath += "&view=true";
+	iframeConceptPath += commonPath;
 	if (queryParams.view != "true")
 		$("#selectConceptIframe").attr("src", iframeConceptPath);
 }
