@@ -1283,7 +1283,12 @@ refreshSidebar = function () {
 		$(".frameworkEditControl").hide();
 		if ($("#sidebarFeedback").html() == "")
 			$("#sidebarFeedback").append("Edit options are limited:");
-		$("#sidebarFeedback").append("<li>You do not own this framework.</li> ");
+		if (conceptMode) {
+			$("#sidebarFeedback").append("<li>You do not own this concept scheme.</li> ");
+		}
+		else {
+			$("#sidebarFeedback").append("<li>You do not own this framework.</li> ");
+		}
 		$("#tree .competency").removeClass("grabbable");
 		$(".ownerRequired").hide();
 	} else {
@@ -1298,7 +1303,12 @@ refreshSidebar = function () {
 		if (thing == framework) {
 			//$("#sidebarEdit").hide();
 		} else {
-			$("#sidebarFeedback").append("<li>You do not own this competency.</li> ");
+			if (conceptMode) {
+				$("#sidebarFeedback").append("<li>You do not own this concept.</li> ");
+			}
+			else {
+				$("#sidebarFeedback").append("<li>You do not own this competency.</li> ");
+			}
 			//$("#sidebarEdit").hide();
 		}
 	}
