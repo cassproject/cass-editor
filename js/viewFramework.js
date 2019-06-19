@@ -1383,14 +1383,8 @@ editSidebar = function () {
 	}
 
 	if (thing["schema:dateCreated"] == null || thing["schema:dateCreated"] === undefined) {
-		var timestamp;
+		var timestamp = thing.getTimestamp();
 		var date;
-		if (!thing.id.substring(thing.id.lastIndexOf("/")).matches("\\/[0-9]+")) {
-            timestamp = null;
-		}
-		else {
-			timestamp = thing.id.substring(thing.id.lastIndexOf("/")+1);
-		}
 		if (timestamp != null) {
 			date = new Date(parseInt(timestamp)).toISOString();
 		}
@@ -1450,7 +1444,7 @@ editSidebar = function () {
 			var competencies = [];
 			for (var i = 0; i < results.length; i++) {
 				comp = EcRepository.getBlocking(results[i].shortId());
-				if (comp.isId(results[i].shortId()) && results[i].shortId().indexOf("http") != -1) {
+				if (comp != null && comp.isId(results[i].shortId()) && results[i].shortId().indexOf("http") != -1) {
 					competencies.push({label: results[i].getName(), id: results[i].shortId()});
 				}
 			}

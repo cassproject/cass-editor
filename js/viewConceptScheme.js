@@ -206,14 +206,8 @@ editConceptSidebar = function () {
     }
 
     if (thing["schema:dateCreated"] == null || thing["schema:dateCreated"] === undefined) {
-        var timestamp;
+        var timestamp = thing.getTimestamp();
         var date;
-        if (!thing.id.substring(thing.id.lastIndexOf("/")).matches("\\/[0-9]+")) {
-            timestamp = null;
-        }
-        else {
-            timestamp = thing.id.substring(thing.id.lastIndexOf("/")+1);
-        }
         if (timestamp != null) {
             date = new Date(parseInt(timestamp)).toISOString();
         }

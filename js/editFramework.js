@@ -1181,7 +1181,7 @@ $(document).on("change", '#sidebarDateValidFromInput', function() {
 $("#private").change(function() {
     if ($(this)[0].checked) {
         if (framework.isAny(new EcFramework().getTypes())) {
-            if (framework.competency) {
+            if (framework.competency && framework.competency.length > 0) {
                 new EcAsyncHelper().each(framework.competency, function (competencyId, done) {
                     EcCompetency.get(competencyId, function (c) {
                         if (c.canEditAny(EcIdentityManager.getMyPks())) {
@@ -1193,7 +1193,7 @@ $("#private").change(function() {
                         }
                     }, done);
                 }, function (competencyIds) {
-                    if (framework.relation) {
+                    if (framework.relation && framework.relation.length > 0) {
                         new EcAsyncHelper().each(framework.relation, function (relationId, done) {
                             EcAlignment.get(relationId, function (r) {
                                 r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
@@ -1236,7 +1236,7 @@ $("#private").change(function() {
             EcEncryptedValue.encryptOnSave(f.id, false);
             repo.saveTo(f, function() {}, error);
             framework = f;
-            if (framework.competency) {
+            if (framework.competency && framework.competency.length > 0) {
                 new EcAsyncHelper().each(framework.competency, function (competencyId, done) {
                     EcRepository.get(competencyId, function (c) {
                         var v;
@@ -1258,7 +1258,7 @@ $("#private").change(function() {
                         }
                     }, done);
                 }, function (competencyIds) {
-                    if (framework.relation) {
+                    if (framework.relation && framework.relation.length > 0) {
                         new EcAsyncHelper().each(framework.relation, function (relationId, done) {
                             EcRepository.get(relationId, function (r) {
                                 var v;
