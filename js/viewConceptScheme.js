@@ -251,6 +251,7 @@ editConceptSidebar = function () {
     }
 
     if (selectedCompetency != null) {
+        $('.ceasnCompetency').show();
         $('.ceasnCompetency .editMode').show();
     } else {
         $('.ceasnCompetency').hide();
