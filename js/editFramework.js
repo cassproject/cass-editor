@@ -52,10 +52,7 @@ addCompetency = function () {
         setDefaultLanguage();
         c.name = {"@language": defaultLanguage, "@value": "New Competency"};
         if (!c["ceasn:inLanguage"] && !c["schema:inLanguage"]) {
-            if (queryParams.ceasnDataFields == "true")
-                c["ceasn:inLanguage"] = defaultLanguage;
-            else
-                c["schema:inLanguage"] = defaultLanguage;
+            c["schema:inLanguage"] = defaultLanguage;
         }
         if ($("#private")[0].checked) {
             c = EcEncryptedValue.toEncryptedValue(c);
