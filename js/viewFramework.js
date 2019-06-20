@@ -1445,9 +1445,11 @@ editSidebar = function () {
 		EcCompetency.search(repo, search, function (results) {
 			var competencies = [];
 			for (var i = 0; i < results.length; i++) {
-				comp = EcRepository.getBlocking(results[i].shortId());
-				if (comp != null && comp.isId(results[i].shortId()) && results[i].shortId().indexOf("http") != -1) {
-					competencies.push({label: results[i].getName(), id: results[i].shortId()});
+				if (results[i].shortId() != null) {
+					comp = EcRepository.getBlocking(results[i].shortId());
+					if (comp != null && comp.isId(results[i].shortId()) && results[i].shortId().indexOf("http") != -1) {
+						competencies.push({label: results[i].getName(), id: results[i].shortId()});
+					}
 				}
 			}
 			$('#sidebarNameInput').autocomplete({
