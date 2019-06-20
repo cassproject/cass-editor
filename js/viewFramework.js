@@ -293,9 +293,9 @@ function refreshCompetency(col, level, subsearch, done) {
 		treeNode.children().first().find('.competencyName').after($('<span class="competencyAKA">AKA: ' + Thing.getDisplayStringFrom(competencyName[i]) + '</span>'));
 	}
 	if (queryParams.ceasnDataFields == 'true' || queryParams.tlaProfile == 'true') {
-		if (col["ceasn:codedNotation"] != null)
+		if (col["ceasn:codedNotation"] != null && col["ceasn:codedNotation"] !== undefined && col["ceasn:codedNotation"] != "")
 			treeNode.children().first().prepend("<span/>").children().first().addClass("competencyCodedNotation").text(col["ceasn:codedNotation"]);
-		if (col["ceasn:listID"] != null)
+		if (col["ceasn:listID"] != null && col["ceasn:listID"] !== undefined && col["ceasn:listID"] != "")
 			treeNode.children().first().prepend("<span/>").children().first().addClass("competencyListID").text(col["ceasn:listID"]);
 		if (col["dcterms:type"] != null)
 			if (typeof col["dcterms:type"] === "object"){
