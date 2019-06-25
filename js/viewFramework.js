@@ -555,6 +555,12 @@ renderSidebar = function (justLists) {
 							elem.text(result);
 						}
 					});
+					if (elem.is("#sidebarCreator") || elem.is("#sidebarConceptCreator")) {
+						elem.children().last().prepend("<div><button title='Search for frameworks by this creator.' onclick='searchByCreator(event);'><i class='fa fa-search'></i></button></div>");
+					}
+					else if (elem.is("#sidebarConceptCreator")) {
+						elem.children().last().prepend("<div><button title='Search for concept schemes by this creator.' onclick='searchByCreator(event);'><i class='fa fa-search'></i></button></div>");
+					}
 				} else if ($(this).next().attr("type") == "datetime-local") {
 					$(this).append("<div></div>");
 					$(this).children().last().append("<span/>").children().last().text(new Date(val).toDatetimeLocal().substring(0, 10));

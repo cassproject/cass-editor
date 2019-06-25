@@ -290,3 +290,19 @@ $("#search").keyup(function (event) {
     }
     return false;
 });
+
+searchByCreator = function (evt) {
+    var target = $(evt.currentTarget);
+    var text = target.parent().next().next().attr('href');
+    showPage("#frameworksSection");
+    $("#search").val("'\"" + text + "\"'");
+    firstLoad = true;
+    searchFrameworks({
+        frameworksOnly: true
+    });
+    resolveNameFromUrl(text, function(result) {
+        if (result != null) {
+            $("#search").val(result);
+        }
+    });
+}
