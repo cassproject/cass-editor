@@ -1444,6 +1444,7 @@ editSidebar = function () {
 	                    }
 	                    var id = EcIdentityManager.ids[i];
 	                    search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
+	                    search += " OR @owner:\"" + addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
 	                }
 	                search += ")";
 	        }
@@ -1538,6 +1539,7 @@ $('#sidebarNameInput').on('keyup', function (evt) {
 		                    }
 		                    var id = EcIdentityManager.ids[i];
 		                    search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
+		                    search += " OR @owner:\"" + addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
 		                }
 		                search += ")";
 		        }
