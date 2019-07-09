@@ -416,14 +416,18 @@ var messageListener = function (evt) {
 		} catch (e) {}
 	if (data != null && data != "") {
 		if (data.action == "template") {
-			if (data.framework != null)
-            	EcFramework.template = data.framework;
-            if (data.competency != null)
-            	EcCompetency.template = data.competency;
-            if (data.conceptScheme != null)
-            	EcConceptScheme.template = data.conceptScheme;
-            if (data.concept != null)
-            	EcConcept.template = data.concept;
+			if (data.framework != null) {
+            	EcFramework.template = removeNewlines(data.framework);
+			}
+            if (data.competency != null) {
+            	EcCompetency.template = removeNewlines(data.competency);
+            }
+            if (data.conceptScheme != null) {
+            	EcConceptScheme.template = removeNewlines(data.conceptScheme);
+            }
+            if (data.concept != null) {
+            	EcConcept.template = removeNewlines(data.concept);
+            }
 			var message = {
 				action: "response",
 				message: "templateOk"
@@ -637,3 +641,20 @@ $("#selectConceptIframe").ready(function () {
 		}
 	});
 });
+
+//Removes newlines from public key in owner and reader fields
+var removeNewlines = function(entity) {
+	if (entity["@owner"] != null) {
+		for (var i = 0; i < entity["@owner"].length; i++) {
+			var owner = entity["@owner"][i];
+			entity["@owner"][i] = EcPk.fromPem(owner).toPem();
+		}
+	}
+	if (entity["@reader"] != null) {
+		for (var i = 0; i < entity["@reader"].length; i++) {
+			var owner = entity["@reader"][i];
+			entity["@reader"][i] = EcPk.fromPem(owner).toPem();
+		}
+	}
+	return entity;
+}
