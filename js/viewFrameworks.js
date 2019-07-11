@@ -296,6 +296,7 @@ searchByCreator = function (evt) {
     var target = $(evt.currentTarget);
     var text = target.parent().next().next().attr('href');
     showPage("#frameworksSection");
+    framework = null;
     $("#search").val("'\"" + text + "\"'");
     firstLoad = true;
     searchFrameworks({
