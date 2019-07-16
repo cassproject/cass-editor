@@ -309,7 +309,7 @@ initIframe = function (intraFramework) {
 	if (queryParams.selectExport != null && queryParams.selectExport != undefined)
 		commonPath += "&selectExport=" + queryParams.selectExport;
 	if (queryParams.user != null && queryParams.user != undefined)
-		commmonPath += "&user=" + queryParams.user;
+		commonPath += "&user=" + queryParams.user;
 
 
 	if (intraFramework == true) {
