@@ -245,6 +245,7 @@ function importCtdlAsnConceptCsv() {
             refreshSidebar();
         },function (failure) {
             error(failure);
+            alert("Failed to save: " + failure);
             backPage();
         });
     }, function (failure) {
