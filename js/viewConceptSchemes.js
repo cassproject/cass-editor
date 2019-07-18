@@ -165,6 +165,12 @@ function conceptSchemeSearch(server, searchTerm, subsearchTerm, paramObj, retry)
                 if (fx.canEditAny(EcIdentityManager.getMyPks())) {
                     p.append("<span class='properties'>Editable</span>");
                 }
+                if (fx["Approved"] != null && fx["Approved"] !== undefined) {
+                    p.append("<span class='properties'>Approved</span>");
+                }
+                if (fx["Published"] != null && fx["Published"] !== undefined) {
+                    p.append("<span class='properties'>Published</span>");
+                }
                 var object = EcRepository.getBlocking(fx.id);
                 if (object != null && object.isAny(new EcEncryptedValue().getTypes())) {
                     p.append("<span class='properties'>Private</span>");
