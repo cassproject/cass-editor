@@ -325,8 +325,15 @@ function refreshCompetency(col, level, subsearch, done) {
 		treeNode.prepend(" <a class='link' title='Click to navigate to link address. Right click to copy link address.' style='float:right;' target='_blank'><i class='fa fa-link' aria-hidden='true'></a>").children().first().attr("href", col.shortId());
 	if (queryParams.select != null)
 		treeNode.prepend("<input type='checkbox' tabIndex='-1'>");
-	if (subsearch != null)
-		treeNode.mark(subsearch);
+	if (subsearch != null) {
+		if (subsearch.indexOf("\"" != -1)) {
+			var markTerm = subsearch.replace(/\"/g, '');
+			treeNode.mark(markTerm, {"separateWordSearch": false});
+		}
+		else {
+			treeNode.mark(subsearch);
+		}
+	}
 	if (done != null && done !== undefined)
 		done();
 }

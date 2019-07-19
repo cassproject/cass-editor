@@ -131,8 +131,15 @@ function refreshConcept(col, level, subsearch, recurse, done) {
         treeNode.prepend(" <a style='float:right;' title='Click to navigate to link address. Right click to copy link address.' target='_blank'><i class='fa fa-link' aria-hidden='true'></a>").children().first().attr("href", col.shortId());
     if (queryParams.select != null)
         treeNode.prepend("<input type='checkbox' tabIndex='-1'>");
-    if (subsearch != null)
-        treeNode.mark(subsearch);
+    if (subsearch != null) {
+        if (subsearch.indexOf("\"" != -1)) {
+            var markTerm = subsearch.replace(/\"/g, '');
+            treeNode.mark(markTerm, {"separateWordSearch": false});
+        }
+        else {
+            treeNode.mark(subsearch);
+        }
+    }
     treeNode.prepend("<span/>").children().first().addClass("collapse").css("visibility", "hidden").html('<i class="fa fa-minus-square" aria-hidden="true"></i> ');
     if (col["skos:narrower"] != null && col["skos:narrower"].length > 0) {
         if (!$(".competency[id=\"" + col.shortId() + "\"]").hasClass("expandable"))
