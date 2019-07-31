@@ -1533,7 +1533,9 @@ editSidebar = function () {
     }
 }
 
+var timerHandle = null;
 $('#sidebarNameInput').on('keyup', function (evt) {
+	clearTimeout(timerHandle);
 	if (selectedCompetency != null && isFirstEdit === true) {
 		if (queryParams.concepts != "true") {
 			var search = $(this).val();
@@ -1554,16 +1556,20 @@ $('#sidebarNameInput').on('keyup', function (evt) {
 		                search += ")";
 		        }
 		    }
-			EcCompetency.search(repo, search, function (results) {
-				var competencies = [];
-				for (var i = 0; i < results.length; i++) {
-					comp = EcRepository.getBlocking(results[i].shortId());
-					if (comp.isId(results[i].shortId()) && results[i].shortId().indexOf("http") != -1) {
-						competencies.push({label: results[i].getName(), id: results[i].shortId()});
-					}
-				}
-				$('#sidebarNameInput').autocomplete("option", "source", competencies);
-			}, error, {});
+		    timerHandle = setTimeout(function() {
+		    	if (validateString(search)) {
+			    	EcCompetency.search(repo, search, function (results) {
+						var competencies = [];
+						for (var i = 0; i < results.length; i++) {
+							comp = EcRepository.getBlocking(results[i].shortId());
+							if (comp.isId(results[i].shortId()) && results[i].shortId().indexOf("http") != -1) {
+								competencies.push({label: results[i].getName(), id: results[i].shortId()});
+							}
+						}
+						$('#sidebarNameInput').autocomplete("option", "source", competencies);
+					}, error, {});
+			    }
+		    }, 800);   
 		}
 	}
 });
