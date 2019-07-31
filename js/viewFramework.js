@@ -1456,42 +1456,45 @@ editSidebar = function () {
 	                search += ")";
 	        }
 	    }
-		EcCompetency.search(repo, search, function (results) {
-			var competencies = [];
-			for (var i = 0; i < results.length; i++) {
-				if (results[i].shortId() != null) {
-					comp = EcRepository.getBlocking(results[i].shortId());
-					if (comp != null && comp.isId(results[i].shortId()) && results[i].shortId().indexOf("http") != -1) {
-						competencies.push({label: results[i].getName(), id: results[i].shortId()});
+	    if (validateString(search)) {
+	    	EcCompetency.search(repo, search, function (results) {
+				var competencies = [];
+				for (var i = 0; i < results.length; i++) {
+					if (results[i].shortId() != null) {
+						comp = EcRepository.getBlocking(results[i].shortId());
+						if (comp != null && comp.isId(results[i].shortId()) && results[i].shortId().indexOf("http") != -1) {
+							competencies.push({label: results[i].getName(), id: results[i].shortId()});
+						}
 					}
 				}
-			}
-			$('#sidebarNameInput').autocomplete({
-				source: competencies,
-				appendTo: '.sidebarEditSection',
-				select: function (event, ui) {
-					if (confirm("Selecting this competency will delete the one you are currently creating and reuse an existing competency. You may not have permissions to edit this competency further. Would you like to continue?")) {
-						var competency = EcRepository.getBlocking(ui.item.id);
-						var results = [];
-						$(".changedField").removeClass("changedField");
-						results.push(competency.shortId());
+				$('#sidebarNameInput').autocomplete({
+					source: competencies,
+					appendTo: '.sidebarEditSection',
+					select: function (event, ui) {
+						if (confirm("Selecting this competency will delete the one you are currently creating and reuse an existing competency. You may not have permissions to edit this competency further. Would you like to continue?")) {
+							var competency = EcRepository.getBlocking(ui.item.id);
+							var results = [];
+							$(".changedField").removeClass("changedField");
+							results.push(competency.shortId());
 
-						//Delete the default created competency if selecting an existing one from dropdown
-						framework.removeCompetency(selectedCompetency.shortId());
-						framework.removeLevel(selectedCompetency.shortId());
-						conditionalDelete(selectedCompetency.shortId());
-			            if ($("#private")[0].checked && EcEncryptedValue.encryptOnSaveMap[framework.id] != true) {
-			                framework = EcEncryptedValue.toEncryptedValue(framework);
-			            }
-						repo.saveTo(framework, function () {
-							framework = EcFramework.getBlocking(framework.id);
-							appendCompetencies(results, true);
-						}, error);
-						selectedCompetency = competency;
+							//Delete the default created competency if selecting an existing one from dropdown
+							framework.removeCompetency(selectedCompetency.shortId());
+							framework.removeLevel(selectedCompetency.shortId());
+							conditionalDelete(selectedCompetency.shortId());
+				            if ($("#private")[0].checked && EcEncryptedValue.encryptOnSaveMap[framework.id] != true) {
+				                framework = EcEncryptedValue.toEncryptedValue(framework);
+				            }
+							repo.saveTo(framework, function () {
+								framework = EcFramework.getBlocking(framework.id);
+								appendCompetencies(results, true);
+							}, error);
+							selectedCompetency = competency;
+						}
 					}
-				}
-			});
-		}, error, {});
+				});
+			}, error, {});
+	    }
+		
 	} else {
 		$('#sidebarNameInput').autocomplete = null;
 	}
