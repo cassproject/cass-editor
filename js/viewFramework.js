@@ -1569,7 +1569,7 @@ $('#sidebarNameInput').on('keyup', function (evt) {
 						$('#sidebarNameInput').autocomplete("option", "source", competencies);
 					}, error, {});
 			    }
-		    }, 800);   
+		    }, 60000/200);   
 		}
 	}
 });
