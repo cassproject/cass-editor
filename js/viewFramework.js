@@ -59,23 +59,20 @@ function select() {
 					async: false,
 					method: "GET",
 					url: link,
-					success: function(data) {
+					success: function (data) {
 						ary.push(data);
 					},
-					error: function(xhr, status, error) {
+					error: function (xhr, status, error) {
 						console.log(status);
 						console.log(error);
 					}
 				});
-			}
-			else {
+			} else {
 				ary.push(JSON.parse(EcCompetency.getBlocking($(this).attr("id")).toJson()));
 			}
-		}
-		else if (queryParams.selectVerbose == "true") {
+		} else if (queryParams.selectVerbose == "true") {
 			ary.push(JSON.parse(EcConcept.getBlocking($(this).attr("id")).toJson()));
-		}
-		else {
+		} else {
 			ary.push($(this).attr("id"));
 		}
 		var rId = $(this).attr("relationId");
@@ -101,12 +98,12 @@ function select() {
 				async: false,
 				method: "GET",
 				url: link,
-				success: function(data) {
+				success: function (data) {
 					if (data["@graph"]) {
 						currentFramework = data["@graph"][0];
 					}
 				},
-				error: function(xhr, status, error) {
+				error: function (xhr, status, error) {
 					console.log(status);
 					console.log(error);
 				}
@@ -162,8 +159,7 @@ populateFramework = function (subsearch) {
 	}
 	if (framework.competency != null) {
 		$("#editFrameworkSection #frameworkCount").text(framework.competency.length + " items");
-	}
-	else {
+	} else {
 		$("#editFrameworkSection #frameworkCount").text("0 items");
 	}
 
@@ -298,15 +294,15 @@ function refreshCompetency(col, level, subsearch, done) {
 		if (col["ceasn:listID"] != null && col["ceasn:listID"] !== undefined && col["ceasn:listID"] != "")
 			treeNode.children().first().prepend("<span/>").children().first().addClass("competencyListID").text(col["ceasn:listID"]);
 		if (col["dcterms:type"] != null)
-			if (typeof col["dcterms:type"] === "object"){
+			if (typeof col["dcterms:type"] === "object") {
 				var type = col["dcterms:type"];
 				type = EcArray.isArray(type) ? type : [type];
-				for (var i in type){
+				for (var i in type) {
 					treeNode.children().first().prepend("<span/>").children().first().addClass("competencyType").text(Thing.getDisplayStringFrom(type[i]));
 				}
 			}
-			else
-				treeNode.children().first().prepend("<span/>").children().first().addClass("competencyType").text(col["dcterms:type"]);
+		else
+			treeNode.children().first().prepend("<span/>").children().first().addClass("competencyType").text(col["dcterms:type"]);
 	}
 	treeNode.prepend("<span/>").children().first().addClass("collapse").css("visibility", "hidden").html('<i class="fa fa-minus-square" aria-hidden="true"></i> ');
 	if (col.competency != null) {
@@ -328,9 +324,10 @@ function refreshCompetency(col, level, subsearch, done) {
 	if (subsearch != null) {
 		if (subsearch.indexOf("\"" != -1)) {
 			var markTerm = subsearch.replace(/\"/g, '');
-			treeNode.mark(markTerm, {"separateWordSearch": false});
-		}
-		else {
+			treeNode.mark(markTerm, {
+				"separateWordSearch": false
+			});
+		} else {
 			treeNode.mark(subsearch);
 		}
 	}
@@ -348,7 +345,7 @@ refreshRelations = function (subsearch) {
 						var target = EcCompetency.getBlocking(relation.target);
 						if (source != null && target != null)
 							if ($(".competency[relationid=\"" + relation.shortId() + "\"]").length == 0) {
-								$(".competency[id=\"" + target.shortId() + "\"]").each(function() {
+								$(".competency[id=\"" + target.shortId() + "\"]").each(function () {
 									$(this).children().last().append($(".competency[id=\"" + source.shortId() + "\"]").outerHTML()).children().last().attr("relationid", relation.shortId());
 								});
 								if ($(".competency[id=\"" + target.shortId() + "\"]").length > 0 &&
@@ -390,34 +387,33 @@ refreshRelations = function (subsearch) {
 }
 
 function ceasnRegistryUriTransform(uri, frameworkUri) {
-    var endpoint = queryParams.newObjectEndpoint;
-    if (endpoint == null)
-        return uri;
-    if (uri.startsWith(endpoint))
-        return uri;
-    var ctid = getCTID(uri, frameworkUri);
-    if (endpoint.indexOf("ce-") != -1) {
-    	ctid = ctid.substring(3);
-    }
-    return endpoint + ctid;
+	var endpoint = queryParams.newObjectEndpoint;
+	if (endpoint == null)
+		return uri;
+	if (uri.startsWith(endpoint))
+		return uri;
+	var ctid = getCTID(uri, frameworkUri);
+	if (endpoint.indexOf("ce-") != -1) {
+		ctid = ctid.substring(3);
+	}
+	return endpoint + ctid;
 }
 
 function getCTID(uri, frameworkUri) {
-    var uuid = null;
-    var parts = EcRemoteLinkedData.trimVersionFromUrl(uri).split("/");
-    uuid = parts[parts.length - 1];
-    if (frameworkUri != null && frameworkUri !== undefined && !conceptMode) {
-    	uri = EcRemoteLinkedData.trimVersionFromUrl(frameworkUri) + EcRemoteLinkedData.trimVersionFromUrl(uri);
-    }
-    else {
-    	uri = EcRemoteLinkedData.trimVersionFromUrl(uri);
-    }
-    if (!uuid.matches("^(ce-)?[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"))
-        uuid = new UUID(3, "nil", uri).format();
-    if (uuid.indexOf("ce-") == -1) {
-    	uuid = "ce-" + uuid;
-    }
-    return uuid;
+	var uuid = null;
+	var parts = EcRemoteLinkedData.trimVersionFromUrl(uri).split("/");
+	uuid = parts[parts.length - 1];
+	if (frameworkUri != null && frameworkUri !== undefined && !conceptMode) {
+		uri = EcRemoteLinkedData.trimVersionFromUrl(frameworkUri) + EcRemoteLinkedData.trimVersionFromUrl(uri);
+	} else {
+		uri = EcRemoteLinkedData.trimVersionFromUrl(uri);
+	}
+	if (!uuid.matches("^(ce-)?[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"))
+		uuid = new UUID(3, "nil", uri).format();
+	if (uuid.indexOf("ce-") == -1) {
+		uuid = "ce-" + uuid;
+	}
+	return uuid;
 }
 
 renderSidebar = function (justLists) {
@@ -500,8 +496,7 @@ renderSidebar = function (justLists) {
 		//Set the CTID field
 		$('#sidebarCTID').text(getCTID(thing.shortId(), framework.shortId()));
 		$('#sidebarCTID').attr('href', getCTID(thing.shortId(), framework.shortId()));
-	}
-	else {
+	} else {
 		//Set the Registry URL field
 		$('#sidebarRegistryURL').text(ceasnRegistryUriTransform(thing.shortId()));
 		$('#sidebarRegistryURL').attr('href', ceasnRegistryUriTransform(thing.shortId()));
@@ -546,8 +541,7 @@ renderSidebar = function (justLists) {
 				if (EcObject.isObject(displayString)) {
 					if (displayString["@id"]) {
 						displayString = displayString["@id"];
-					}
-					else {
+					} else {
 						var stringKeys = EcObject.keys(displayString);
 						displayString = displayString[stringKeys][0];
 					}
@@ -564,8 +558,7 @@ renderSidebar = function (justLists) {
 					});
 					if (elem.is("#sidebarCreator") || elem.is("#sidebarConceptCreator")) {
 						elem.children().last().prepend("<div><button title='Search for frameworks by this creator.' onclick='searchByCreator(event);'><i class='fa fa-search'></i></button></div>");
-					}
-					else if (elem.is("#sidebarConceptCreator")) {
+					} else if (elem.is("#sidebarConceptCreator")) {
 						elem.children().last().prepend("<div><button title='Search for concept schemes by this creator.' onclick='searchByCreator(event);'><i class='fa fa-search'></i></button></div>");
 					}
 				} else if ($(this).next().attr("type") == "datetime-local") {
@@ -577,10 +570,10 @@ renderSidebar = function (justLists) {
 				}
 				if (val[i]["@language"]) {
 					var language = val[i]["@language"];
-				    $(this).children().last().append($('<span class="languageTag">' + val[i]["@language"] + '</span>'));
-				    if ($(this).children().last().hasClass('sidebarPropertyLink')) {
-				    	$(this).children().last().children().last().css('margin-left', 'auto');
-				    }
+					$(this).children().last().append($('<span class="languageTag">' + val[i]["@language"] + '</span>'));
+					if ($(this).children().last().hasClass('sidebarPropertyLink')) {
+						$(this).children().last().children().last().css('margin-left', 'auto');
+					}
 				}
 			}
 		});
@@ -633,14 +626,12 @@ renderSidebar = function (justLists) {
 					//If available, show concept definition upon hover
 					if (it && it["skos:definition"]) {
 						title = Thing.getDisplayStringFrom(it["skos:definition"]);
-					}
-					else {
+					} else {
 						title = val[i];
 					}
 					li.attr("id", val[i]).attr("title", title);
 					li.append("<a target='_blank'/>").children().last().attr("href", val[i]).text(name);
-				}
-				else {
+				} else {
 					li.attr("id", val[i]).attr("title", val[i]).text(name);
 				}
 				if (!viewMode) {
@@ -658,9 +649,9 @@ renderSidebar = function (justLists) {
 		}
 	});
 	$("#detailSlider").find(".sidebarInputLanguageSelect").each(function () {
-        if (!$(this).next().val())
-        	$(this).val(defaultLanguage);
-    });
+		if (!$(this).next().val())
+			$(this).val(defaultLanguage);
+	});
 	// Display Concept's connections
 	if (conceptMode && selectedCompetency != null) {
 		var renderConceptConnection = function (cId, displayConcept, relationType) {
@@ -679,24 +670,23 @@ renderSidebar = function (justLists) {
 				if (viewMode) {
 					$(".relationList[" + labelChoice + "=" + relationType + "]").prevAll("label:first").addClass("viewMode");
 					$(".relationList[" + labelChoice + "=" + relationType + "]").show().prevAll("label:first").show();
-				}
-				else {
+				} else {
 					var x = connectionsList.prepend("<button class='editMode frameworkEditControl' tabindex='0' style='float:right; cursor:pointer;'><i class='fa fa-times'></i></button>").children().first();
 					x.click(function () {
 						EcArray.setRemove(selectedCompetency["skos:" + relationType], cId);
-			            if ($("#private")[0].checked && EcEncryptedValue.encryptOnSaveMap[selectedCompetency.id] != true) {
-			            	selectedCompetency = EcEncryptedValue.toEncryptedValue(selectedCompetency);
-			            }
-			            repo.saveTo(selectedCompetency, function() {
-			            	selectedCompetency = EcConcept.getBlocking(selectedCompetency.id);
-			                afterSaveRender();
-			            }, error);
+						if ($("#private")[0].checked && EcEncryptedValue.encryptOnSaveMap[selectedCompetency.id] != true) {
+							selectedCompetency = EcEncryptedValue.toEncryptedValue(selectedCompetency);
+						}
+						repo.saveTo(selectedCompetency, function () {
+							selectedCompetency = EcConcept.getBlocking(selectedCompetency.id);
+							afterSaveRender();
+						}, error);
 					});
 				}
 			}
 		} //function renderConceptConnection
-		if (selectedCompetency["skos:broader"] != null || selectedCompetency["skos:narrower"] != null || selectedCompetency["skos:broadMatch"] != null || selectedCompetency["skos:closeMatch"] != null
-			|| selectedCompetency["skos:exactMatch"] != null || selectedCompetency["skos:narrowMatch"] != null || selectedCompetency["skos:relatedMatch"] != null || selectedCompetency["skos:related"] != null) {
+		if (selectedCompetency["skos:broader"] != null || selectedCompetency["skos:narrower"] != null || selectedCompetency["skos:broadMatch"] != null || selectedCompetency["skos:closeMatch"] != null ||
+			selectedCompetency["skos:exactMatch"] != null || selectedCompetency["skos:narrowMatch"] != null || selectedCompetency["skos:relatedMatch"] != null || selectedCompetency["skos:related"] != null) {
 			var relationTypes = [];
 			if (selectedCompetency["skos:broader"] != null) {
 				relationTypes.push("hasChild");
@@ -727,11 +717,10 @@ renderSidebar = function (justLists) {
 				var relationWithSkos = "skos:" + relationTypes[i];
 				if (relationType == "hasChild") {
 					relationWithSkos = "skos:broader";
-				}
-				else if (relationType == "isChildOf") {
+				} else if (relationType == "isChildOf") {
 					relationWithSkos = "skos:narrower";
 				}
-				
+
 				for (var j = 0; j < selectedCompetency[relationWithSkos].length; j++) {
 					(function (conceptId, renderConceptConnection, relationType) {
 						if (alignmentCache[framework.shortId()] != null && alignmentCache[framework.shortId()][conceptId] != null && alignmentCache[framework.shortId()][conceptId].target != null && alignmentCache[framework.shortId()][conceptId].target.id != null && alignmentCache[framework.shortId()][conceptId].target.shortId() > -1) {
@@ -776,14 +765,13 @@ renderSidebar = function (justLists) {
 				continue;
 			var renderAlignment = function (a, displayCompetency, relationType) {
 				var li = $(".relationList[" + labelChoice + "=" + relationType + "]").append("<li/>").children().last();
-				
-				var done = function() {
+
+				var done = function () {
 					li.attr("id", a.shortId());
 					if (viewMode) {
 						$(".relationList[" + labelChoice + "=" + relationType + "]").prevAll("label:first").addClass("viewMode");
 						$(".relationList[" + labelChoice + "=" + relationType + "]").show().prevAll("label:first").show();
-					}
-					else {
+					} else {
 						var x = li.prepend("<button class='editMode frameworkEditControl' tabindex='0' style='float:right; cursor:pointer;'><i class='fa fa-times'></i></button>").children().first();
 						x.click(function () {
 							if (conceptMode) {
@@ -795,13 +783,13 @@ renderSidebar = function (justLists) {
 								framework.removeRelation($(this).parent().attr("id"));
 							}
 							conditionalDelete($(this).parent().attr("id"));
-				            if ($("#private")[0].checked && EcEncryptedValue.encryptOnSaveMap[framework.id] != true) {
-				                framework = EcEncryptedValue.toEncryptedValue(framework);
-				            }
-				            repo.saveTo(framework, function() {
-				                framework = EcFramework.getBlocking(framework.id);
-				                afterSaveRender();
-				            }, error);
+							if ($("#private")[0].checked && EcEncryptedValue.encryptOnSaveMap[framework.id] != true) {
+								framework = EcEncryptedValue.toEncryptedValue(framework);
+							}
+							repo.saveTo(framework, function () {
+								framework = EcFramework.getBlocking(framework.id);
+								afterSaveRender();
+							}, error);
 						});
 					}
 				}
@@ -809,8 +797,7 @@ renderSidebar = function (justLists) {
 				if (displayCompetency == null) {
 					li.text(a.target);
 					done();
-				}
-				else if (conceptMode) {
+				} else if (conceptMode) {
 					if (displayCompetency["skos:prefLabel"] != null)
 						li.text(Thing.getDisplayStringFrom(displayCompetency["skos:prefLabel"]));
 					else
@@ -821,19 +808,16 @@ renderSidebar = function (justLists) {
 						var name = displayCompetency.getName();
 						li.text(Thing.getDisplayStringFrom(name));
 						done();
-					}
-					else if (displayCompetency.indexOf("http") != -1) {
-						resolveNameFromUrl(displayCompetency, function(result) {
-                            if (result != null) {
-                                li.text(result);
-                            }
-                            else {
-                            	li.text(displayCompetency);
-                            }
-                            done();
-                        });
-					}
-					else {
+					} else if (displayCompetency.indexOf("http") != -1) {
+						resolveNameFromUrl(displayCompetency, function (result) {
+							if (result != null) {
+								li.text(result);
+							} else {
+								li.text(displayCompetency);
+							}
+							done();
+						});
+					} else {
 						li.text(displayCompetency);
 						done();
 					}
@@ -1057,7 +1041,7 @@ renderSidebar = function (justLists) {
 			$(this).css("display", "");
 
 			//Clear additional input fields
-			$(this).find('.sidebarInputRow.inputCopy').each(function() {
+			$(this).find('.sidebarInputRow.inputCopy').each(function () {
 				$(this).remove();
 			});
 
@@ -1066,15 +1050,15 @@ renderSidebar = function (justLists) {
 			var obj = thing[baseField.attr(inputChoice)];
 			var isFirstValue = true;
 			var elem = $(this);
-			if (obj != null){
+			if (obj != null) {
 				obj = EcArray.isArray(obj) ? obj : [obj];
-				Object.keys(obj).forEach(function(key) {
+				Object.keys(obj).forEach(function (key) {
 					var val = EcArray.isArray(obj[key]) ? obj[key] : [obj[key]];
 					for (var i in val) {
 						//The basefield
 						if (isFirstValue) {
 							isFirstValue = false;
-							setTimeout(function() {
+							setTimeout(function () {
 								if (val[i]["@language"]) {
 									baseField.prev('input.sidebarInputLanguageSelect').val(val[i]["@language"]);
 									baseField.val(val[i]["@value"]);
@@ -1089,7 +1073,7 @@ renderSidebar = function (justLists) {
 							newElem.children('input:not(.sidebarInputLanguageSelect),textarea').attr('id', uuid.format());
 							newElem.children('input:not(.sidebarInputLanguageSelect),textarea').addClass('inputCopy');
 							newElem.addClass('inputCopy');
-							setTimeout(function() {
+							setTimeout(function () {
 								var temp = newElem;
 								if (val[i]["@language"]) {
 									temp.children('input:not(.sidebarInputLanguageSelect),textarea').val(val[i]["@value"]);
@@ -1105,9 +1089,8 @@ renderSidebar = function (justLists) {
 						}
 					}
 				});
-			}
-			else
-				setTimeout(function() {
+			} else
+				setTimeout(function () {
 					if (!baseField.hasClass("sidebarInLanguageInput") && !baseField.hasClass("sidebarConceptInLanguageInput") && !baseField.hasClass("sidebarFrameworkInLanguageInput"))
 						baseField.val('');
 				}, 10);
@@ -1215,8 +1198,7 @@ refreshSidebar = function () {
 			if (f != null && f !== undefined && f.isAny(new EcEncryptedValue().getTypes())) {
 				$("#sidebarExport").find('option').prop('disabled', true);
 				$("#sidebarExport").find('option').first().text("Download not available while private");
-			}
-			else {
+			} else {
 				$("#sidebarExport").find('option').first().text("Download or view in...");
 				$("#sidebarExport").find('option').prop('disabled', false);
 				$("#sidebarExport").find('option').first().prop('disabled', true).next().prop('disabled', true);
@@ -1250,16 +1232,16 @@ refreshSidebar = function () {
 		$("#sidebarMoveUp").hide();
 		$("#sidebarMoveDown").hide();
 		$("#sidebarRemove").hide();
-        if (queryParams.ceasnDataFields === 'true') {
-            $(".absentForCeasn").hide();
-            $(".ceasnDataFields").show();
-        }
-        if (queryParams.tlaProfile == 'true') {
-            $(".ceasnDataFields").show();
-            $(".tlaDataFields").show();
-            $(".ceasnOnly").hide();
-            $(".tlaDataFields.competencyOnly").hide();
-        }
+		if (queryParams.ceasnDataFields === 'true') {
+			$(".absentForCeasn").hide();
+			$(".ceasnDataFields").show();
+		}
+		if (queryParams.tlaProfile == 'true') {
+			$(".ceasnDataFields").show();
+			$(".tlaDataFields").show();
+			$(".ceasnOnly").hide();
+			$(".tlaDataFields.competencyOnly").hide();
+		}
 	}
 
 	if (thing == selectedCompetency) {
@@ -1276,11 +1258,11 @@ refreshSidebar = function () {
 			$(".absentForCeasn").hide();
 			$(".ceasnDataFields").show();
 		}
-        if (queryParams.tlaProfile == 'true') {
-            $(".ceasnDataFields").show();
-            $(".tlaDataFields").show();
-            $(".ceasnOnly").hide();
-        }
+		if (queryParams.tlaProfile == 'true') {
+			$(".ceasnDataFields").show();
+			$(".tlaDataFields").show();
+			$(".ceasnOnly").hide();
+		}
 	}
 
 	if (new EcLevel().isA(thing.getFullType())) {
@@ -1303,8 +1285,7 @@ refreshSidebar = function () {
 			$("#sidebarFeedback").append("Edit options are limited:");
 		if (conceptMode) {
 			$("#sidebarFeedback").append("<li>You do not own this concept scheme.</li> ");
-		}
-		else {
+		} else {
 			$("#sidebarFeedback").append("<li>You do not own this framework.</li> ");
 		}
 		$("#tree .competency").removeClass("grabbable");
@@ -1323,8 +1304,7 @@ refreshSidebar = function () {
 		} else {
 			if (conceptMode) {
 				$("#sidebarFeedback").append("<li>You do not own this concept.</li> ");
-			}
-			else {
+			} else {
 				$("#sidebarFeedback").append("<li>You do not own this competency.</li> ");
 			}
 			//$("#sidebarEdit").hide();
@@ -1361,7 +1341,7 @@ editSidebar = function () {
 		$(this).removeClass('invalidInput');
 	});
 
-	$('.invalidLanguage').each(function() {
+	$('.invalidLanguage').each(function () {
 		$(this).removeClass('invalidLanguage');
 	});
 
@@ -1402,8 +1382,7 @@ editSidebar = function () {
 		var date;
 		if (timestamp != null) {
 			date = new Date(parseInt(timestamp)).toISOString();
-		}
-		else {
+		} else {
 			date = new Date().toISOString();
 		}
 		thing["schema:dateCreated"] = date;
@@ -1416,14 +1395,11 @@ editSidebar = function () {
 			$(".private").show();
 			if (!isFirstEdit && EcRepository.getBlocking(framework.id).type == "EncryptedValue") {
 				$("#private").prop("checked", true);
-			}
-			else if (framework.competency && EcRepository.getBlocking(framework.id).type == "EncryptedValue") {
+			} else if (framework.competency && EcRepository.getBlocking(framework.id).type == "EncryptedValue") {
 				$("#private").prop("checked", true);
-			}
-			else if (isFirstEdit && selectedCompetency == null && queryParams.private == "true") {
+			} else if (isFirstEdit && selectedCompetency == null && queryParams.private == "true") {
 				$("#private").prop("checked", true);
-			}
-			else {
+			} else {
 				$("#private").prop("checked", false);
 			}
 		}
@@ -1439,31 +1415,34 @@ editSidebar = function () {
 	} catch (e) {}
 	if (selectedCompetency != null && isFirstEdit === true) {
 		var search = $('#sidebarNameInput').val();
-	    if (queryParams.filter != null || queryParams.show != null) {
-	        search = "(" + search + ")";
-	        if (queryParams.filter != null)
-	            search += " AND (" + queryParams.filter + ")";
-	        if (queryParams.show != null && queryParams.show == "mine") {
-	            search += " AND (";
-	                for (var i = 0; i < EcIdentityManager.ids.length; i++) {
-	                    if (i != 0) {
-	                        search += " OR ";
-	                    }
-	                    var id = EcIdentityManager.ids[i];
-	                    search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
-	                    search += " OR @owner:\"" + addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
-	                }
-	                search += ")";
-	        }
-	    }
-	    if (validateString(search)) {
-	    	EcCompetency.search(repo, search, function (results) {
+		if (queryParams.filter != null || queryParams.show != null) {
+			search = "(" + search + ")";
+			if (queryParams.filter != null)
+				search += " AND (" + queryParams.filter + ")";
+			if (queryParams.show != null && queryParams.show == "mine") {
+				search += " AND (";
+				for (var i = 0; i < EcIdentityManager.ids.length; i++) {
+					if (i != 0) {
+						search += " OR ";
+					}
+					var id = EcIdentityManager.ids[i];
+					search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
+					search += " OR @owner:\"" + addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
+				}
+				search += ")";
+			}
+		}
+		if (validateString(search)) {
+			EcCompetency.search(repo, search, function (results) {
 				var competencies = [];
 				for (var i = 0; i < results.length; i++) {
 					if (results[i].shortId() != null) {
 						comp = EcRepository.getBlocking(results[i].shortId());
 						if (comp != null && comp.isId(results[i].shortId()) && results[i].shortId().indexOf("http") != -1) {
-							competencies.push({label: results[i].getName(), id: results[i].shortId()});
+							competencies.push({
+								label: results[i].getName(),
+								id: results[i].shortId()
+							});
 						}
 					}
 				}
@@ -1481,9 +1460,9 @@ editSidebar = function () {
 							framework.removeCompetency(selectedCompetency.shortId());
 							framework.removeLevel(selectedCompetency.shortId());
 							conditionalDelete(selectedCompetency.shortId());
-				            if ($("#private")[0].checked && EcEncryptedValue.encryptOnSaveMap[framework.id] != true) {
-				                framework = EcEncryptedValue.toEncryptedValue(framework);
-				            }
+							if ($("#private")[0].checked && EcEncryptedValue.encryptOnSaveMap[framework.id] != true) {
+								framework = EcEncryptedValue.toEncryptedValue(framework);
+							}
 							repo.saveTo(framework, function () {
 								framework = EcFramework.getBlocking(framework.id);
 								appendCompetencies(results, true);
@@ -1493,8 +1472,8 @@ editSidebar = function () {
 					}
 				});
 			}, error, {});
-	    }
-		
+		}
+
 	} else {
 		$('#sidebarNameInput').autocomplete = null;
 	}
@@ -1502,35 +1481,34 @@ editSidebar = function () {
 		attachCustomAutocomplete(this);
 	});
 	$(".sidebar table").css("margin-top", "calc(" + $(".sidebarToolbar").height() + "px)");
-    if (queryParams.ceasnDataFields === 'true') {
-        $(".ceasnDataFields").show();
-    }
-    if (queryParams.tlaProfile == 'true') {
-        $(".ceasnDataFields").show();
-        $(".ceasnOnly").hide();
-        $(".tlaDataFields").show();
-    }
+	if (queryParams.ceasnDataFields === 'true') {
+		$(".ceasnDataFields").show();
+	}
+	if (queryParams.tlaProfile == 'true') {
+		$(".ceasnDataFields").show();
+		$(".ceasnOnly").hide();
+		$(".tlaDataFields").show();
+	}
 
-    if (queryParams.newObjectEndpoint == null || queryParams.newObjectEndpoint === undefined) {
+	if (queryParams.newObjectEndpoint == null || queryParams.newObjectEndpoint === undefined) {
 		$('.newObjectEndpoint').hide();
 	}
 
 	setDefaultLanguage();
 	$("#detailSlider").find(".sidebarInputLanguageSelect").each(function () {
-        if (!$(this).next().val()) {
-        	$(this).val(defaultLanguage);
-        }
-    });
-    if (selectedCompetency != null) {
-        if ($("#sidebarInLanguageInput").val() == null || $("#sidebarInLanguageInput").val() === undefined || $("#sidebarInLanguageInput").val() == "") {
-            $("#sidebarInLanguageInput").val(defaultLanguage);
-        }
-    }
-    else {
-        if ($("#sidebarFrameworkInLanguageInput").val() == null || $("#sidebarFrameworkInLanguageInput").val() === undefined || $("#sidebarFrameworkInLanguageInput").val() == "") {
-            $("#sidebarFrameworkInLanguageInput").val(defaultLanguage);
-        }
-    }
+		if (!$(this).next().val()) {
+			$(this).val(defaultLanguage);
+		}
+	});
+	if (selectedCompetency != null) {
+		if ($("#sidebarInLanguageInput").val() == null || $("#sidebarInLanguageInput").val() === undefined || $("#sidebarInLanguageInput").val() == "") {
+			$("#sidebarInLanguageInput").val(defaultLanguage);
+		}
+	} else {
+		if ($("#sidebarFrameworkInLanguageInput").val() == null || $("#sidebarFrameworkInLanguageInput").val() === undefined || $("#sidebarFrameworkInLanguageInput").val() == "") {
+			$("#sidebarFrameworkInLanguageInput").val(defaultLanguage);
+		}
+	}
 }
 
 var timerHandle = null;
@@ -1539,37 +1517,41 @@ $('#sidebarNameInput').on('keyup', function (evt) {
 	if (selectedCompetency != null && isFirstEdit === true) {
 		if (queryParams.concepts != "true") {
 			var search = $(this).val();
-		    if (queryParams.filter != null || queryParams.show != null) {
-		        search = "(" + search + ")";
-		        if (queryParams.filter != null)
-		            search += " AND (" + queryParams.filter + ")";
-		        if (queryParams.show != null && queryParams.show == "mine") {
-		            search += " AND (";
-		                for (var i = 0; i < EcIdentityManager.ids.length; i++) {
-		                    if (i != 0) {
-		                        search += " OR ";
-		                    }
-		                    var id = EcIdentityManager.ids[i];
-		                    search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
-		                    search += " OR @owner:\"" + addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
-		                }
-		                search += ")";
-		        }
-		    }
-		    timerHandle = setTimeout(function() {
-		    	if (validateString(search)) {
-			    	EcCompetency.search(repo, search, function (results) {
+			if (queryParams.filter != null || queryParams.show != null) {
+				search = "(" + search + ")";
+				if (queryParams.filter != null)
+					search += " AND (" + queryParams.filter + ")";
+				if (queryParams.show != null && queryParams.show == "mine") {
+					search += " AND (";
+					for (var i = 0; i < EcIdentityManager.ids.length; i++) {
+						if (i != 0) {
+							search += " OR ";
+						}
+						var id = EcIdentityManager.ids[i];
+						search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
+						search += " OR @owner:\"" + addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
+					}
+					search += ")";
+				}
+			}
+			timerHandle = setTimeout(function () {
+				if (validateString(search)) {
+					EcCompetency.search(repo, search, function (results) {
 						var competencies = [];
 						for (var i = 0; i < results.length; i++) {
-							comp = EcRepository.getBlocking(results[i].shortId());
+							comp = EcCompetency.getBlocking(results[i].shortId());
+							if (comp != null)
 							if (comp.isId(results[i].shortId()) && results[i].shortId().indexOf("http") != -1) {
-								competencies.push({label: results[i].getName(), id: results[i].shortId()});
+								competencies.push({
+									label: results[i].getName(),
+									id: results[i].shortId()
+								});
 							}
 						}
 						$('#sidebarNameInput').autocomplete("option", "source", competencies);
 					}, error, {});
-			    }
-		    }, 60000/200);   
+				}
+			}, 60000 / 200);
 		}
 	}
 });
@@ -1632,10 +1614,9 @@ $('.sidebarEditSection').on('input', function (evt) {
 		$('#' + evt.target.getAttribute('data-group') + 'Span').addClass('active');
 	else
 		$('#' + evt.target.getAttribute('data-group') + 'Span').removeClass('active');
-	if (evt.target.id){
+	if (evt.target.id) {
 		target = evt.target;
-	}
-	else {
+	} else {
 		target = $(evt.target).next()[0];
 	}
 	changedFields[target.id] = 'input';
@@ -2019,13 +2000,11 @@ $('html').keydown(function (evt) {
 				$('.sidebarConceptKeywordInput:focus').next().click();
 				$('.sidebarConceptKeywordInput:focus').parent().next().children('.sidebarConceptKeywordInput').focus();
 				return;
-			}
-			else if ($('.sidebarFrameworkConceptKeywordInput').is(':focus')) {
+			} else if ($('.sidebarFrameworkConceptKeywordInput').is(':focus')) {
 				$('.sidebarFrameworkConceptKeywordInput:focus').next().click();
 				$('.sidebarFrameworkConceptKeywordInput:focus').parent().next().children('.sidebarFrameworkConceptKeywordInput').focus();
 				return;
-			}
-			else {
+			} else {
 				evt.preventDefault();
 				return false;
 			}
@@ -2237,8 +2216,7 @@ exportSelected = function () {
 			success: function (data) {
 				if (conceptMode) {
 					fileName = Thing.getDisplayStringFrom(framework["dcterms:title"]);
-				}
-				else {
+				} else {
 					fileName = Thing.getDisplayStringFrom(framework.name);
 				}
 				download(fileName + ".rdf.json", JSON.stringify(data, null, 2));
@@ -2253,8 +2231,7 @@ exportSelected = function () {
 			success: function (data) {
 				if (conceptMode) {
 					fileName = Thing.getDisplayStringFrom(framework["dcterms:title"]);
-				}
-				else {
+				} else {
 					fileName = Thing.getDisplayStringFrom(framework.name);
 				}
 				download(fileName + ".rdf.xml", data);
@@ -2269,8 +2246,7 @@ exportSelected = function () {
 			success: function (data) {
 				if (conceptMode) {
 					fileName = Thing.getDisplayStringFrom(framework["dcterms:title"]);
-				}
-				else {
+				} else {
 					fileName = Thing.getDisplayStringFrom(framework.name);
 				}
 				download(fileName + ".turtle", data);
@@ -2315,10 +2291,10 @@ setLanguageTagAutocomplete = function () {
 		appendTo: '.ceasnDataFields',
 		minLength: 2
 	});
-    $('.sidebarInputLanguageSelect').autocomplete({
-        source: tags,
-        minLength: 2
-    });
+	$('.sidebarInputLanguageSelect').autocomplete({
+		source: tags,
+		minLength: 2
+	});
 }
 
 highlightCompetencies = function (competencies) {
@@ -2347,7 +2323,7 @@ handleAlignmentInput = function (event) {
 		button.attr('title', 'Save this relation.');
 		button.next().next('input').focus();
 		button.children("i").removeClass("fa-keyboard-o").addClass("fa-check");
-		button.next().next('input').on("keyup", function(evt) {
+		button.next().next('input').on("keyup", function (evt) {
 			if (evt.keyCode == '13') {
 				$(event.srcElement).click();
 			}
@@ -2357,8 +2333,7 @@ handleAlignmentInput = function (event) {
 			if (button.hasClass("conceptAlignment")) {
 				var selected = (selectedCompetency != null) ? selectedCompetency : framework;
 				addConceptAlignments([button.next().next('input').val()], selected, button.attr(button.attr('data-choice')));
-			}
-			else {
+			} else {
 				addAlignments([button.next().next('input').val()], selectedCompetency, button.attr(button.attr('data-choice')));
 			}
 		} else if (!isEmpty(button.next().next('input').val()))
