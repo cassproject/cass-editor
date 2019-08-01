@@ -4,3 +4,9 @@ target/
 
 .idea/
 pom\.xml\.versionsBackup
+
+\.settings/
+
+\.classpath
+
+\.project
