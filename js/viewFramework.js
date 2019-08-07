@@ -1414,41 +1414,47 @@ editSidebar = function () {
 		$('#sidebarNameInput').removeData('autocomplete');
 	} catch (e) {}
 	if (selectedCompetency != null && isFirstEdit === true) {
-		var search = $('#sidebarNameInput').val();
-		if (queryParams.filter != null || queryParams.show != null) {
-			search = "(" + search + ")";
-			if (queryParams.filter != null)
-				search += " AND (" + queryParams.filter + ")";
-			if (queryParams.show != null && queryParams.show == "mine") {
-				search += " AND (";
-				for (var i = 0; i < EcIdentityManager.ids.length; i++) {
-					if (i != 0) {
-						search += " OR ";
-					}
-					var id = EcIdentityManager.ids[i];
-					search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
-					search += " OR @owner:\"" + addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
-				}
-				search += ")";
-			}
-		}
-		if (validateString(search)) {
-			EcCompetency.search(repo, search, function (results) {
-				var competencies = [];
-				for (var i = 0; i < results.length; i++) {
-					if (results[i].shortId() != null) {
-						comp = EcRepository.getBlocking(results[i].shortId());
-						if (comp != null && comp.isId(results[i].shortId()) && results[i].shortId().indexOf("http") != -1) {
-							competencies.push({
-								label: results[i].getName(),
-								id: results[i].shortId()
-							});
-						}
-					}
-				}
+		
+		
 				$('#sidebarNameInput').autocomplete({
-					source: competencies,
+					source: function (request, response) {
+						var search = request.term;
+						if (queryParams.filter != null || queryParams.show != null) {
+							search = "(" + search + ")";
+							if (queryParams.filter != null)
+								search += " AND (" + queryParams.filter + ")";
+							if (queryParams.show != null && queryParams.show == "mine") {
+								search += " AND (";
+								for (var i = 0; i < EcIdentityManager.ids.length; i++) {
+									if (i != 0) {
+										search += " OR ";
+									}
+									var id = EcIdentityManager.ids[i];
+									search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
+									search += " OR @owner:\"" + addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
+								}
+								search += ")";
+							}
+						}
+						if (validateString(search)) {
+							EcCompetency.search(repo, search, function (results) {
+								var competencies = [];
+								for (var i = 0; i < results.length; i++) {
+									if (results[i].shortId() != null) {
+										if (results[i].shortId().indexOf("http") != -1) {
+											competencies.push({
+												label: results[i].getName(),
+												id: results[i].shortId()
+											});
+										}
+									}
+								}
+								response(competencies);
+							}, error, {});
+						}
+					},
 					appendTo: '.sidebarEditSection',
+					delay: 300,
 					select: function (event, ui) {
 						if (confirm("Selecting this competency will delete the one you are currently creating and reuse an existing competency. You may not have permissions to edit this competency further. Would you like to continue?")) {
 							var competency = EcRepository.getBlocking(ui.item.id);
@@ -1471,8 +1477,7 @@ editSidebar = function () {
 						}
 					}
 				});
-			}, error, {});
-		}
+			
 
 	} else {
 		$('#sidebarNameInput').autocomplete = null;
@@ -1510,51 +1515,6 @@ editSidebar = function () {
 		}
 	}
 }
-
-var timerHandle = null;
-$('#sidebarNameInput').on('keyup', function (evt) {
-	clearTimeout(timerHandle);
-	if (selectedCompetency != null && isFirstEdit === true) {
-		if (queryParams.concepts != "true") {
-			var search = $(this).val();
-			if (queryParams.filter != null || queryParams.show != null) {
-				search = "(" + search + ")";
-				if (queryParams.filter != null)
-					search += " AND (" + queryParams.filter + ")";
-				if (queryParams.show != null && queryParams.show == "mine") {
-					search += " AND (";
-					for (var i = 0; i < EcIdentityManager.ids.length; i++) {
-						if (i != 0) {
-							search += " OR ";
-						}
-						var id = EcIdentityManager.ids[i];
-						search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
-						search += " OR @owner:\"" + addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
-					}
-					search += ")";
-				}
-			}
-			timerHandle = setTimeout(function () {
-				if (validateString(search)) {
-					EcCompetency.search(repo, search, function (results) {
-						var competencies = [];
-						for (var i = 0; i < results.length; i++) {
-							comp = EcCompetency.getBlocking(results[i].shortId());
-							if (comp != null)
-							if (comp.isId(results[i].shortId()) && results[i].shortId().indexOf("http") != -1) {
-								competencies.push({
-									label: results[i].getName(),
-									id: results[i].shortId()
-								});
-							}
-						}
-						$('#sidebarNameInput').autocomplete("option", "source", competencies);
-					}, error, {});
-				}
-			}, 60000 / 200);
-		}
-	}
-});
 
 $("body").on("click", ".collapse", null, function (evt) {
 	$(this).parent().children("ul").slideToggle();
