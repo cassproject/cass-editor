@@ -942,16 +942,12 @@
 								<input id="sidebarNarrowMatchInput" type="url" skosCompetency="narrowMatch" class="viewMode editMode competencyOnly absentForCompetencies alignmentInput hidden" />
 								<span class="orangeUri">Note: URI only. For example, https://sandbox.credentialengineregistry.org/</span>
 								<ul id="sidebarNarrowMatch" skosCompetency="narrowMatch" class="viewMode editMode relationList competencyOnly absentForCompetencies"></ul>
-								<!-- Related Match -->
-								<label for="sidebarRelatedMatch" title="" style="margin:0px;" skosCompetency="Related Match:" skosCompetencyTitle="Assertion indicating an associative, non-hierarchical relationship between the two concepts in different frameworks where neither is broader nor narrower than the other." class="viewMode editMode competencyOnly absentForCompetencies">Related Match:</label>
-								<button data-mode="Add" title="Add a relation with a URI." skosCompetency="relatedMatch" class="viewMode editMode editControl frameworkEditControl competencyOnly absentForCompetencies alignmentAddButton" onclick="handleAlignmentInput(event);"><i class="fa fa-keyboard-o"></i></button>
-								<button title="Search for a relation." id="sidebarRelatedMatchBrowse" skosCompetency="relatedMatch" plural="true" class="viewMode editMode editControl frameworkEditControl competencyOnly absentForCompetencies" onclick="$('#selectConceptSection').attr('relation','relatedMatch');initIframe();overlayPage('#selectConceptSection', framework);"><i class="fa fa-search-plus"></i></button>
-								<input id="sidebarRelatedMatchInput" type="url" skosCompetency="relatedMatch" class="viewMode editMode competencyOnly absentForCompetencies alignmentInput hidden" />
-								<span class="orangeUri">Note: URI only. For example, https://sandbox.credentialengineregistry.org/</span>
-								<ul id="sidebarRelatedMatch" skosCompetency="relatedMatch" class="viewMode editMode relationList competencyOnly absentForCompetencies"></ul>
 								<!-- Related -->
-								<label for="sidebarRelated" title="" style="margin:0px;" skosCompetency="Related:" skosCompetencyTitle="Assertion indicating an associative, non-hierarchical relationship between the two concepts in the same framework where neither is broader nor narrower than the other." class="viewMode editMode competencyOnly absentForCompetencies">Related Match:</label>
+								<label for="sidebarRelated" title="" style="margin:0px;" skosCompetency="Related:" skosCompetencyTitle="URL of an associatively related concept." class="viewMode editMode competencyOnly absentForCompetencies">Related Match:</label>
+								<button data-mode="Add" title="Add a relation with a URI." skosCompetency="related" class="viewMode editMode editControl frameworkEditControl competencyOnly absentForCompetencies alignmentAddButton" onclick="handleAlignmentInput(event);"><i class="fa fa-keyboard-o"></i></button>
 								<button title="Search for a relation." id="sidebarRelatedBrowse" skosCompetency="related" plural="true" class="viewMode editMode editControl frameworkEditControl competencyOnly absentForCompetencies" onclick="$('#selectConceptSection').attr('relation','related');initIframe(true);overlayPage('#selectConceptSection', framework);"><i class="fa fa-search-plus"></i></button>
+								<input id="sidebarRelatedInput" type="url" skosCompetency="related" class="viewMode editMode competencyOnly absentForCompetencies alignmentInput hidden" />
+								<span class="orangeUri">Note: URI only. For example, https://sandbox.credentialengineregistry.org/</span>
 								<ul id="sidebarRelated" skosCompetency="related" class="viewMode editMode relationList competencyOnly absentForCompetencies"></ul>
 							</div>
 						</td>

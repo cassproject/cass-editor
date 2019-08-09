@@ -686,7 +686,7 @@ renderSidebar = function (justLists) {
 			}
 		} //function renderConceptConnection
 		if (selectedCompetency["skos:broader"] != null || selectedCompetency["skos:narrower"] != null || selectedCompetency["skos:broadMatch"] != null || selectedCompetency["skos:closeMatch"] != null ||
-			selectedCompetency["skos:exactMatch"] != null || selectedCompetency["skos:narrowMatch"] != null || selectedCompetency["skos:relatedMatch"] != null || selectedCompetency["skos:related"] != null) {
+			selectedCompetency["skos:exactMatch"] != null || selectedCompetency["skos:narrowMatch"] != null || selectedCompetency["skos:related"] != null) {
 			var relationTypes = [];
 			if (selectedCompetency["skos:broader"] != null) {
 				relationTypes.push("hasChild");
@@ -705,9 +705,6 @@ renderSidebar = function (justLists) {
 			}
 			if (selectedCompetency["skos:narrowMatch"] != null) {
 				relationTypes.push("narrowMatch");
-			}
-			if (selectedCompetency["skos:relatedMatch"] != null) {
-				relationTypes.push("relatedMatch");
 			}
 			if (selectedCompetency["skos:related"] != null) {
 				relationTypes.push("related");

@@ -319,7 +319,7 @@ initIframe = function (intraFramework) {
 			$("#selectCompetencyIframe").attr("src", iframeCompetencyPathTrue);
 
 		iframeInit = false;
-		var iframeConceptPathTrue = iframeRoot + "index.html?select=Add&concepts=true&view=true" + "&frameworkId=" + framework.shortId();
+		var iframeConceptPathTrue = iframeRoot + "index.html?select=Add&concepts=true&view=true&back=true&frameworkId=" + framework.shortId();
 		if (queryParams.conceptShow != null && queryParams.conceptShow != undefined)
 			iframeConceptPathTrue += "&conceptShow=" + queryParams.conceptShow;
 		iframeConceptPathTrue += commonPath;
