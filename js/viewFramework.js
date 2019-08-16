@@ -386,28 +386,24 @@ refreshRelations = function (subsearch) {
 	}
 }
 
-function ceasnRegistryUriTransform(uri, frameworkUri) {
+function ceasnRegistryUriTransform(uri) {
 	var endpoint = queryParams.newObjectEndpoint;
 	if (endpoint == null)
 		return uri;
 	if (uri.startsWith(endpoint))
 		return uri;
-	var ctid = getCTID(uri, frameworkUri);
+	var ctid = getCTID(uri);
 	if (endpoint.indexOf("ce-") != -1) {
 		ctid = ctid.substring(3);
 	}
 	return endpoint + ctid;
 }
 
-function getCTID(uri, frameworkUri) {
+function getCTID(uri) {
 	var uuid = null;
 	var parts = EcRemoteLinkedData.trimVersionFromUrl(uri).split("/");
 	uuid = parts[parts.length - 1];
-	if (frameworkUri != null && frameworkUri !== undefined && !conceptMode) {
-		uri = EcRemoteLinkedData.trimVersionFromUrl(frameworkUri) + EcRemoteLinkedData.trimVersionFromUrl(uri);
-	} else {
-		uri = EcRemoteLinkedData.trimVersionFromUrl(uri);
-	}
+	uri = EcRemoteLinkedData.trimVersionFromUrl(uri);
 	if (!uuid.matches("^(ce-)?[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"))
 		uuid = new UUID(3, "nil", uri).format();
 	if (uuid.indexOf("ce-") == -1) {
@@ -489,21 +485,12 @@ renderSidebar = function (justLists) {
 	//Set the URL field
 	$('#sidebarURL').text(thing.shortId());
 	$('#sidebarURL').attr('href', thing.shortId());
-	if (thing == selectedCompetency && !conceptMode) {
-		//Set the Registry URL field
-		$('#sidebarRegistryURL').text(ceasnRegistryUriTransform(thing.shortId(), framework.shortId()));
-		$('#sidebarRegistryURL').attr('href', ceasnRegistryUriTransform(thing.shortId(), framework.shortId()));
-		//Set the CTID field
-		$('#sidebarCTID').text(getCTID(thing.shortId(), framework.shortId()));
-		$('#sidebarCTID').attr('href', getCTID(thing.shortId(), framework.shortId()));
-	} else {
-		//Set the Registry URL field
-		$('#sidebarRegistryURL').text(ceasnRegistryUriTransform(thing.shortId()));
-		$('#sidebarRegistryURL').attr('href', ceasnRegistryUriTransform(thing.shortId()));
-		//Set the CTID field
-		$('#sidebarCTID').text(getCTID(thing.shortId()));
-		$('#sidebarCTID').attr('href', getCTID(thing.shortId()));
-	}
+	//Set the Registry URL field
+	$('#sidebarRegistryURL').text(ceasnRegistryUriTransform(thing.shortId()));
+	$('#sidebarRegistryURL').attr('href', ceasnRegistryUriTransform(thing.shortId()));
+	//Set the CTID field
+	$('#sidebarCTID').text(getCTID(thing.shortId()));
+	$('#sidebarCTID').attr('href', getCTID(thing.shortId()));
 
 
 	if (justLists != true)
