@@ -436,7 +436,7 @@ var messageListener = function (evt) {
 			for (var key in data) {
 				d[key] = data[key];
 			}
-			EcRepository.save(d, function (success) {
+			repo.saveTo(d, function (success) {
 				var message = {
 					action: "response",
 					message: "setOk"
