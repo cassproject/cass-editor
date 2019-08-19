@@ -2277,6 +2277,8 @@ handleAlignmentInput = function (event) {
 			if (button.hasClass("conceptAlignment")) {
 				var selected = (selectedCompetency != null) ? selectedCompetency : framework;
 				addConceptAlignments([button.next().next('input').val()], selected, button.attr(button.attr('data-choice')));
+			} else if (button.hasClass("propertyOfCompetency")) {
+				addAlignments([button.next().next('input').val()], selectedCompetency, button.attr(button.attr('data-choice')), "propertyOfCompetency");
 			} else {
 				addAlignments([button.next().next('input').val()], selectedCompetency, button.attr(button.attr('data-choice')));
 			}

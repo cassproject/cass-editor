@@ -123,6 +123,10 @@ addAlignments = function(targets, thing, relationType) {
     if (conceptMode) {
         return addConceptAlignments(targets, thing, relationType);
     }
+    if (relationType == "ceasn:skillEmbodied" || relationType == "ceasn:abilityEmbodied" || relationType == "ceasn:knowledgeEmbodied" || relationType == "ceasn:taskEmbodied") {
+        //This property is attached to competency, not a relation attached to framework
+        return addRelationAsCompetencyField(targets, thing, relationType);
+    }
     for (var i = 0; i < targets.length; i++) {
         var r = new EcAlignment();
         if (newObjectEndpoint != null)
@@ -169,6 +173,27 @@ addAlignments = function(targets, thing, relationType) {
     repo.saveTo(framework, function() {
         framework = EcFramework.getBlocking(framework.id);
         afterSaveRender();
+    }, error);
+}
+
+addRelationAsCompetencyField = function(targets, thing, relationType) {
+    for (var i = 0; i < targets.length; i++) {
+        if (thing[relationType] == null) {
+            thing[relationType] = [];
+        }
+        thing[relationType].push(targets[i]);
+    }
+    if ($("#private")[0].checked) {
+        if (EcEncryptedValue.encryptOnSaveMap[thing.id] != true)
+            thing = EcEncryptedValue.toEncryptedValue(thing);
+        if (EcEncryptedValue.encryptOnSaveMap[framework.id] != true)
+            framework = EcEncryptedValue.toEncryptedValue(framework);
+    }
+    repo.saveTo(thing, function() {
+        repo.saveTo(framework, function() {
+            framework = EcFramework.getBlocking(framework.id);
+            afterSaveRender();
+        }, error);
     }, error);
 }
 

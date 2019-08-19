@@ -218,19 +218,13 @@ function cappend(event) {
 				$(".ceasnDataFields").show();
 			}
 		} else if ($("#selectCompetencySection:visible").length > 0) {
-			//Don't allow alignments within the same framework.
-			if (framework.id == selectedFrameworkId) {
-				$("#selectCompetencySection").hide();
-				$("#editFrameworkSection").removeClass("transparent");
-				$(".sidebarToolbar:visible").removeClass("transparent");
-			} else {
-				var targets = selectedIds;
-				var thing = selectedCompetency;
-				addAlignments(targets, thing);
-				$("#selectCompetencySection").hide();
-				$("#editFrameworkSection").removeClass("transparent");
-				$(".sidebarToolbar:visible").removeClass("transparent");
-			}
+			var targets = selectedIds;
+			var thing = selectedCompetency;
+			var relationType = $("#selectCompetencySection").attr("relation");
+			addAlignments(targets, thing, relationType);
+			$("#selectCompetencySection").hide();
+			$("#editFrameworkSection").removeClass("transparent");
+			$(".sidebarToolbar:visible").removeClass("transparent");
 		} else if (selectedIds.length > 0) {
 			showCopyOrLinkDialog(function (copy) {
 				if (copy === true) {
