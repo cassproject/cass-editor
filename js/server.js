@@ -439,7 +439,7 @@ var messageListener = function (evt) {
 				var d = EcRepository.getBlocking(data.id);
 			delete data.id;
 			delete data.action;
-			for (var key in EcObject.keys(data)) {
+			for (var key in data) {
 				d[key] = data[key];
 			}
 			EcRepository.save(d, function (success) {
