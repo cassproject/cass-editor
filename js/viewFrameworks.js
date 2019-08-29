@@ -172,9 +172,21 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
                 }
                 if (fx["Approved"] != null && fx["Approved"] !== undefined) {
                     p.append("<span class='properties'>Approved</span>");
+                    p.children().last().tooltip({
+                        content: fx["Approved"],
+                        items: p.children().last(),
+                        show: false,
+                        hide: false
+                    });
                 }
                 if (fx["Published"] != null && fx["Published"] !== undefined) {
                     p.append("<span class='properties'>Published</span>");
+                    p.children().last().tooltip({
+                        content: fx["Published"],
+                        items: p.children().last(),
+                        show: false,
+                        hide: false
+                    });
                 }
                 var object = EcRepository.getBlocking(fx.id);
                 if (object.isAny(new EcEncryptedValue().getTypes())) {
