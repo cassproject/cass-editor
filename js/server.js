@@ -437,7 +437,14 @@ var messageListener = function (evt) {
 				d[key] = data[key];
 			}
 			repo.saveTo(d, function (success) {
-				var message = {
+				//Force view framework page to update the framework since changes were made
+    			if (d.isAny(new EcFramework().getTypes())) {
+    				$('[id="'+d.shortId()+'"').remove();
+    				if ($('#frameworks').is(':visible')) {
+    					searchFrameworks(createParamObj());
+    				}
+    			}
+    			var message = {
 					action: "response",
 					message: "setOk"
 				};
