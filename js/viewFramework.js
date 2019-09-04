@@ -2196,9 +2196,16 @@ exportSelected = function () {
 				download(fileName + ".turtle", data);
 			}
 		});
-	} else if (v == "ceasn")
+	} else if (v == "ceasn") {
 		window.open(link.replace("/data/", "/ceasn/"), '_blank');
-	else if (v == "csv") {
+	} else if (v == "ceasnCsv") {
+		$.ajax({
+			url: link.replace("/data/", "/ceasn/"),
+			success: function (data) {
+				CSVExport.exportCTDLASN(data, framework.getName());
+			}
+		});
+	} else if (v == "csv") {
 		CSVExport.exportFramework(framework.id, console.log, console.log);
 	} else if (v == "case")
 		if (selectedCompetency == null)
