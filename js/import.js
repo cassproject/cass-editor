@@ -206,6 +206,14 @@ function importCtdlAsnCsv() {
     if (EcIdentityManager.ids.length > 0)
         ceo = EcIdentityManager.ids[0];
     CTDLASNCSVImport.importFrameworksAndCompetencies(repo, importFiles[0], function (frameworks, competencies, relations) {
+        if (queryParams.ceasnDataFields == true) {
+            for (var i = 0; i < frameworks.length; i++) {
+                if (frameworks[i]["schema:inLanguage"] == null || frameworks[i]["schema:inLanguage"] === undefined) {
+                    setDefaultLanguage();
+                    frameworks[i]["schema:inLanguage"] = defaultLanguage;
+                }
+            }
+        }
         var all = frameworks.concat(competencies).concat(relations);
         loading("Saving " + all.length + " objects.");
         repo.multiput(all,function () {
@@ -232,6 +240,14 @@ function importCtdlAsnConceptCsv() {
     if (EcIdentityManager.ids.length > 0)
         ceo = EcIdentityManager.ids[0];
     CTDLASNCSVConceptImport.importFrameworksAndCompetencies(repo, importFiles[0], function (frameworks, competencies) {
+        if (queryParams.ceasnDataFields == true) {
+            for (var i = 0; i < frameworks.length; i++) {
+                if (frameworks[i]["dcterms:language"] == null || frameworks[i]["dcterms:language"] === undefined) {
+                    setDefaultLanguage();
+                    frameworks[i]["dcterms:language"] = defaultLanguage;
+                }
+            }
+        }
         var all = frameworks.concat(competencies);
         loading("Saving " + all.length + " objects.");
         repo.multiput(all,function () {
