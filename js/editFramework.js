@@ -47,13 +47,8 @@ addCompetency = function () {
         framework.addCompetency(c.id);
         if (EcIdentityManager.ids.length > 0)
             c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-        c["ceasn:inLanguage"] = framework["ceasn:inLanguage"];
-        c["schema:inLanguage"] = framework["schema:inLanguage"];
         setDefaultLanguage();
         c.name = {"@language": defaultLanguage, "@value": "New Competency"};
-        if (!c["ceasn:inLanguage"] && !c["schema:inLanguage"]) {
-            c["schema:inLanguage"] = defaultLanguage;
-        }
         if ($("#private")[0].checked) {
             c = EcEncryptedValue.toEncryptedValue(c);
         }

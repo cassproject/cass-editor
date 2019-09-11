@@ -16,12 +16,8 @@ addConcept = function () {
         c["schema:dateCreated"] = new Date().toISOString();
         if (EcIdentityManager.ids.length > 0)
             c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-        c["skos:inLanguage"] = (framework["ceasn:inLanguage"] != null) ? framework["ceasn:inLanguage"] : framework["dcterms:language"];
         setDefaultLanguage();
         c["skos:prefLabel"] = {"@language": defaultLanguage, "@value": "New Concept"};
-        if (!c["skos:inLanguage"]) {
-            c["skos:inLanguage"] = defaultLanguage;
-        }
         c["skos:inScheme"] = framework.shortId();
         if (selectedCompetency != null) {
             collapseCompetencyTracking(framework.shortId(),selectedCompetency.shortId(),"expanded");
