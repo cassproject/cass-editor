@@ -32,7 +32,7 @@ var webSocketBackoff = 100;
 var webSocketConnection = false;
 
 if (navigator.appVersion.indexOf("Chrome/76.0.3809.132") != -1) {
-	alert("There is a known issue with this version of Chrome that is causing problems with the editor. We recommend using Firefox until the issue has been resolved.");
+	alert("There is a known issue with this version of Chrome that is causing problems with the editor. Please update your browser before continuing.");
 }
 
 openWebSocket = function (r) {
