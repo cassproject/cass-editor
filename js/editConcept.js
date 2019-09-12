@@ -195,6 +195,7 @@ deleteConcept = function (c) {
         showConfirmDialog(function (confirmed) {
             if (confirmed === true) {
                 deleteConceptInner(c);
+                spitEvent("conceptDeleted", c.shortId());
 
                 framework["schema:dateModified"] = new Date().toISOString();
                 selectedRelation = null;

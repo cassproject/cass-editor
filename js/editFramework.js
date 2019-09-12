@@ -693,6 +693,7 @@ deleteCompetency = function () {
                     framework.removeLevel(selectedCompetency.shortId());
                     selectedRelation = null;
                     conditionalDelete(selectedCompetency.shortId());
+                    spitEvent("competencyDeleted", selectedCompetency.shortId());
                     selectedCompetency = null;
                     if ($("#private")[0].checked && EcEncryptedValue.encryptOnSaveMap[framework.id] != true) {
                         framework = EcEncryptedValue.toEncryptedValue(framework);
