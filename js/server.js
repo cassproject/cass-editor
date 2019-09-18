@@ -636,10 +636,10 @@ if (window.addEventListener) {
 	window.attachEvent("onmessage", messageListener);
 }
 
-//Forward the logged in identity to the concept frame
-sendIdentityInitializeMessage = function() {
+//Forward the logged in identity to the other iframes
+sendIdentityInitializeMessage = function(iframe) {
 	var loggedInPpkPem = EcIdentityManager.ids[0].ppk.toPem();
-	$("#selectConceptIframe")[0].contentWindow.postMessage(JSON.stringify({
+	$(iframe)[0].contentWindow.postMessage(JSON.stringify({
 		action: "identity",
 		identity: loggedInPpkPem
 	}), window.location.origin);
@@ -648,7 +648,23 @@ sendIdentityInitializeMessage = function() {
 $("#selectConceptIframe").ready(function () {
 	$(window).on("message", function (event) {
 		if (event.originalEvent.data.message == "waiting") {
-			sendIdentityInitializeMessage();
+			sendIdentityInitializeMessage("#selectConceptIframe");
+		}
+	});
+});
+
+$("#selectCompetencyIframe").ready(function () {
+	$(window).on("message", function (event) {
+		if (event.originalEvent.data.message == "waiting") {
+			sendIdentityInitializeMessage("#selectCompetencyIframe");
+		}
+	});
+});
+
+$("#findCompetencyIframe").ready(function () {
+	$(window).on("message", function (event) {
+		if (event.originalEvent.data.message == "waiting") {
+			sendIdentityInitializeMessage("#findCompetencyIframe");
 		}
 	});
 });
