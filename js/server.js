@@ -286,9 +286,9 @@ for (var i = 0; i < servers.length; i++) {
 	openWebSocket(r);
 }
 
-var iframeInit = false;
 var iframeCompetencyPath = "";
-initIframe = function (intraFramework) {
+var iframeConceptPath = "";
+initIframe = function (intraFramework, type) {
 	var iframeRoot = queryParams.editorRoot;
 	if (iframeRoot == null || iframeRoot === undefined)
 		iframeRoot = "";
@@ -311,18 +311,21 @@ initIframe = function (intraFramework) {
 
 
 	if (intraFramework == true) {
-		var iframeCompetencyPathTrue = iframeRoot + "index.html?select=Align with...&view=true&back=true&frameworkId=" + framework.shortId();
-		iframeCompetencyPathTrue += commonPath;
-		if (queryParams.view != "true")
-			$("#selectCompetencyIframe").attr("src", iframeCompetencyPathTrue);
-
-		iframeInit = false;
-		var iframeConceptPathTrue = iframeRoot + "index.html?select=Add&concepts=true&view=true&back=true&frameworkId=" + framework.shortId();
-		if (queryParams.conceptShow != null && queryParams.conceptShow != undefined)
-			iframeConceptPathTrue += "&conceptShow=" + queryParams.conceptShow;
-		iframeConceptPathTrue += commonPath;
-		if (queryParams.view != "true")
-			$("#selectConceptIframe").attr("src", iframeConceptPathTrue);
+		if (type == "Competency") {
+			var iframeCompetencyPathTrue = iframeRoot + "index.html?select=Align with...&view=true&back=true&frameworkId=" + framework.shortId();
+			iframeCompetencyPathTrue += commonPath;
+			if (queryParams.view != "true")
+				$("#selectCompetencyIframe").attr("src", iframeCompetencyPathTrue);
+			iframeInit = false;
+		}
+		else {
+			var iframeConceptPathTrue = iframeRoot + "index.html?select=Add&concepts=true&view=true&back=true&frameworkId=" + framework.shortId();
+			if (queryParams.conceptShow != null && queryParams.conceptShow != undefined)
+				iframeConceptPathTrue += "&conceptShow=" + queryParams.conceptShow;
+			iframeConceptPathTrue += commonPath;
+			if (queryParams.view != "true")
+				$("#selectConceptIframe").attr("src", iframeConceptPathTrue);
+		}
 		return;
 	}
 	else if (intraFramework == false) {
@@ -333,24 +336,27 @@ initIframe = function (intraFramework) {
 		iframeCompetencyPath += commonPath;
 		if (queryParams.view != "true")
 			$("#selectCompetencyIframe").attr("src", iframeCompetencyPath);
+		return;
 	}
 
-	if (iframeInit == true) return;
-	iframeInit = true;
-
-	var iframePath = iframeRoot + "index.html?select=Add&selectRelations=true&view=true";
-	iframePath += commonPath;
-	if (queryParams.view != "true")
-		$("#findCompetencyIframe").attr("src", iframePath);
-
-	var iframeConceptPath = iframeRoot + "index.html?select=Add&concepts=true" + "&ceasnDataFields=" + queryParams.ceasnDataFields;
-	if (queryParams.conceptShow != null && queryParams.conceptShow != undefined)
-		iframeConceptPath += "&conceptShow=" + queryParams.conceptShow;
-	if (queryParams.editIframe != "true")
-		iframeConceptPath += "&view=true";
-	iframeConceptPath += commonPath;
-	if (queryParams.view != "true")
-		$("#selectConceptIframe").attr("src", iframeConceptPath);
+	if (type == "Competency") {
+		var iframePath = iframeRoot + "index.html?select=Add&selectRelations=true&view=true";
+		iframePath += commonPath;
+		if (queryParams.view != "true")
+			$("#findCompetencyIframe").attr("src", iframePath);
+	} else {
+		if (iframeConceptPath != "") {
+			return;
+		}
+		iframeConceptPath = iframeRoot + "index.html?select=Add&concepts=true" + "&ceasnDataFields=" + queryParams.ceasnDataFields;
+		if (queryParams.conceptShow != null && queryParams.conceptShow != undefined)
+			iframeConceptPath += "&conceptShow=" + queryParams.conceptShow;
+		if (queryParams.editIframe != "true")
+			iframeConceptPath += "&view=true";
+		iframeConceptPath += commonPath;
+		if (queryParams.view != "true")
+			$("#selectConceptIframe").attr("src", iframeConceptPath);
+	}	
 }
 
 loadIdentity = function (callback) {

@@ -2,7 +2,7 @@ addConcept = function () {
     if (viewMode) return;
     var addOrSearch = $("#sidebarAddCompetencies").attr('value');
     if (addOrSearch == "search") {
-        initIframe();
+        initIframe(null, "Concept");
         showPage("#findCompetencySection", framework);
     } else if (addOrSearch == "new") {
         $("#sidebarAddCompetencies").prop('disabled', true);

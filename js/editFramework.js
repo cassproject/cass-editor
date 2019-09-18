@@ -32,7 +32,7 @@ addCompetency = function () {
     if (viewMode) return;
     var addOrSearch = $("#sidebarAddCompetencies").attr('value');
     if (addOrSearch == "search") {
-        initIframe();
+        initIframe(null, "Competency");
         overlayPage("#findCompetencySection", framework);
     } else if (addOrSearch == "new") {
         $("#sidebarAddCompetencies").prop('disabled', true);
@@ -278,7 +278,7 @@ addLevel = function () {
     if (viewMode) return;
     var addOrSearch = $("#sidebarAddLevels").val();
     if (addOrSearch == "search") {
-        initIframe();
+        initIframe(null, "Competency");
         gotoPage("#findCompetencySection", framework);
     } else if (addOrSearch == "new") {
         var c = new EcLevel();
