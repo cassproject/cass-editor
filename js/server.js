@@ -448,7 +448,7 @@ var messageListener = function (evt) {
 			}
 			repo.saveTo(d, function (success) {
 				//Force view framework page to update the framework since changes were made
-    			if (d.isAny(new EcFramework().getTypes())) {
+    			if (d.isAny(new EcFramework().getTypes()) || d.isAny(new EcConceptScheme().getTypes())) {
     				$('[id="'+d.shortId()+'"').remove();
     				if ($('#frameworks').is(':visible')) {
     					searchFrameworks(createParamObj());
