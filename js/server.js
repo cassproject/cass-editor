@@ -102,7 +102,7 @@ openWebSocket = function (r) {
 						else {
 							framework.copyFrom(wut);
 						}
-						renderSidebar(true);
+						renderSidebar(true, true);
 						playSavedAnimation('frameworkNameContainer');
 						populateFramework();
 						spitEvent("frameworkChanged", framework.shortId());

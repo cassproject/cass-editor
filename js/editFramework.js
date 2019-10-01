@@ -4,9 +4,9 @@ afterSave = function (stuff) {
     if (webSocketConnection == false)
         populateFramework();
 }
-afterSaveRender = function () {
+afterSaveRender = function (allowSave) {
     afterSave();
-    renderSidebar(true);
+    renderSidebar(true, allowSave);
 }
 afterSaveSidebar = function (stuff) {
     refreshSidebar();
@@ -114,13 +114,13 @@ addCompetency = function () {
     }
 }
 
-addAlignments = function(targets, thing, relationType) {
+addAlignments = function(targets, thing, relationType, allowSave) {
     if (conceptMode) {
         return addConceptAlignments(targets, thing, relationType);
     }
     if (relationType == "ceasn:skillEmbodied" || relationType == "ceasn:abilityEmbodied" || relationType == "ceasn:knowledgeEmbodied" || relationType == "ceasn:taskEmbodied") {
         //This property is attached to competency, not a relation attached to framework
-        return addRelationAsCompetencyField(targets, thing, relationType);
+        return addRelationAsCompetencyField(targets, thing, relationType, allowSave);
     }
     for (var i = 0; i < targets.length; i++) {
         var r = new EcAlignment();
@@ -167,11 +167,11 @@ addAlignments = function(targets, thing, relationType) {
     }
     repo.saveTo(framework, function() {
         framework = EcFramework.getBlocking(framework.id);
-        afterSaveRender();
+        afterSaveRender(allowSave);
     }, error);
 }
 
-addRelationAsCompetencyField = function(targets, thing, relationType) {
+addRelationAsCompetencyField = function(targets, thing, relationType, allowSave) {
     for (var i = 0; i < targets.length; i++) {
         if (thing[relationType] == null) {
             thing[relationType] = [];
@@ -187,7 +187,7 @@ addRelationAsCompetencyField = function(targets, thing, relationType) {
     repo.saveTo(thing, function() {
         repo.saveTo(framework, function() {
             framework = EcFramework.getBlocking(framework.id);
-            afterSaveRender();
+            afterSaveRender(allowSave);
         }, error);
     }, error);
 }

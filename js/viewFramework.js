@@ -412,8 +412,8 @@ function getCTID(uri) {
 	return uuid;
 }
 
-renderSidebar = function (justLists) {
-	if ($(".changedField:visible").length > 0) {
+renderSidebar = function (justLists, allowSave) {
+	if (allowSave !== true && $(".changedField:visible").length > 0) {
 		if (!confirm("Some data has changed during edit. Do you want to discard changes?"))
 			return;
 	}
@@ -2272,13 +2272,13 @@ handleAlignmentInput = function (event) {
 		});
 	} else if (button.attr('data-mode') == 'Save') {
 		if (!isEmpty(button.next().next('input').val()) && !button.next().next('input').is(':invalid')) {
+			//Pass through a variable to allow relations to be saved while still editing.
+			var allowSave = true;
 			if (button.hasClass("conceptAlignment")) {
 				var selected = (selectedCompetency != null) ? selectedCompetency : framework;
-				addConceptAlignments([button.next().next('input').val()], selected, button.attr(button.attr('data-choice')));
-			} else if (button.hasClass("propertyOfCompetency")) {
-				addAlignments([button.next().next('input').val()], selectedCompetency, button.attr(button.attr('data-choice')), "propertyOfCompetency");
+				addConceptAlignments([button.next().next('input').val()], selected, button.attr(button.attr('data-choice')), allowSave);
 			} else {
-				addAlignments([button.next().next('input').val()], selectedCompetency, button.attr(button.attr('data-choice')));
+				addAlignments([button.next().next('input').val()], selectedCompetency, button.attr(button.attr('data-choice')), allowSave);
 			}
 		} else if (!isEmpty(button.next().next('input').val()))
 			alert('Alignments must be a URI.');
