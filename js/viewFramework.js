@@ -1180,12 +1180,9 @@ refreshSidebar = function () {
 	if (isFirstEdit != true) {
 		EcRepository.get(framework.id, function (f) {
 			if (f != null && f !== undefined && f.isAny(new EcEncryptedValue().getTypes())) {
-				$("#sidebarExport").find('option').prop('disabled', true);
-				$("#sidebarExport").find('option').first().text("Download not available while private");
+				$("#sidebarExport").find('option').first().text("Some downloads not available while private");
 			} else {
 				$("#sidebarExport").find('option').first().text("Download or view in...");
-				$("#sidebarExport").find('option').prop('disabled', false);
-				$("#sidebarExport").find('option').first().prop('disabled', true).next().prop('disabled', true);
 			}
 		}, error);
 	}
