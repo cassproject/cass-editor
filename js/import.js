@@ -413,10 +413,14 @@ function analyzeJsonLdFramework(file, success, failure) {
     reader.readAsText(file, "UTF-8");
 }
 
-function importJsonLdFramework() {
-    var file = importFiles[0];
+function importJsonLdFramework(data) {
     var formData = new FormData();
-    formData.append('file', file);
+    if (data != null && data !== undefined) {
+        formData.append('data', JSON.stringify(data));
+    } else {
+        var file = importFiles[0];
+        formData.append('file', file);
+    }    
     var identity = EcIdentityManager.ids[0];
     if (identity != null)
         formData.append('owner',identity.ppk.toPk().toPem());
@@ -451,4 +455,34 @@ function importJsonLdFramework() {
         }
     });
     loading("Importing Framework");
+}
+
+importCTDLASNURL = function() {
+    var url = $("#urlEndpoint").val();
+    $.ajax({
+        url: url,
+        method: "GET",
+        success: function (result, b, c) {
+            var graph = result["@graph"];
+            if (graph != null) {
+                importJsonLdFramework(result);
+            }
+            else {
+                importCTDLASNURLError("URL must have an '@graph' field at the top level.");
+            }
+            if (graph[0]["@type"].indexOf("Concept") != -1) {
+                importCTDLASNURLError("Competency Editor cannot be used to import concept schemes.");
+            }
+        },
+        failure: importCTDLASNURLError,
+        error: importCTDLASNURLError
+    });
+}
+
+importCTDLASNURLError = function(msg) {
+    if (!msg) {
+        msg = "Import Error";
+    }
+    alert(msg);
+    showPage("#importSection");
 }

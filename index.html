@@ -118,6 +118,18 @@
 					<p style="text-align:justify">After entering the endpoint below, you can select which frameworks you would like to import.</p>
 					<button style="font-size:x-small" onclick="$('#urlEndpoint').val('https://opensalt.net');">Example: Connect to OpenSalt.net</button>
 				</div>
+				<div class="panel">
+					<center>
+						<h4>CTDL-ASN JSON-LD Graphs</h4>
+					</center>
+					<p style="text-align:justify">If you know the URL of a CTDL-ASN JSON-LD graph, you can import published frameworks by URL.</p>
+					<p style="text-align:justify">This import maintains the URLs of the original frameworks and changes both the format and schema used to store the CTDL-ASN frameworks in CaSS, but does not change any of the data. Please note that the Technology Skills framework below is very large and will take a long time to import.</p>
+					<button style="font-size:x-small" onclick="$('#urlEndpoint').val('https://www.onetcenter.org/ctdlasn/graph/ce-07c257d6-9119-11e8-b852-782bcb5df6ac');">Example: O*NET Abilities Competency Framework</button>
+					<button style="font-size:x-small" onclick="$('#urlEndpoint').val('https://www.onetcenter.org/ctdlasn/graph/ce-07c25f74-9119-11e8-b852-782bcb5df6ac');">Example: O*NET Basic Skills Competency Framework</button>
+					<button style="font-size:x-small" onclick="$('#urlEndpoint').val('https://www.onetcenter.org/ctdlasn/graph/ce-07c264d7-9119-11e8-b852-782bcb5df6ac');">Example: O*NET Cross-Functional Skills Competency Framework</button>
+					<button style="font-size:x-small" onclick="$('#urlEndpoint').val('https://www.onetcenter.org/ctdlasn/graph/ce-07c27a0f-9119-11e8-b852-782bcb5df6ac');">Example: O*NET Knowledge Competency Framework</button>
+					<button style="font-size:x-small" onclick="$('#urlEndpoint').val('https://www.onetcenter.org/ctdlasn/graph/ce-9fab4187-d8e7-11e9-8250-782bcb5df6ac');">Example: O*NET Technology Skills Competency Framework</button>
+				</div>
 			</div>
 			<input type="text" name="urlEndpoint" id="urlEndpoint" style="width:calc(100% - 2rem);" placeholder="https://case.yourorganization.com" />
 			<br><small id="urlEndpointSuccess" style="display:none;" class="greenButton">Success text.</small> <small id="urlEndpointError" style="display:none;" class="redButton">Error text.</small>

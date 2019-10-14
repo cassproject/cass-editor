@@ -37,7 +37,15 @@ detectEndpoint2 = function (error) {
 	$("#urlEndpointError").text("No frameworks found. Please check the URL and try again.").show();
 }
 
-$("#urlEndpointButton").click(detectEndpoint1);
+detectURLType = function() {
+	if ($("#urlEndpoint").val().indexOf("graph") != -1 || $("#urlEndpoint").val().indexOf("ceasn") != -1) {
+		importCTDLASNURL();
+	} else {
+		detectEndpoint1();
+	}
+}
+
+$("#urlEndpointButton").click(detectURLType);
 
 importCase = function () {
 	$("#caseImportSection #importButton").hide();
