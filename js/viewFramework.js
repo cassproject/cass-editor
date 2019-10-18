@@ -147,6 +147,8 @@ var treeTop = 0;
 populateFramework = function (subsearch) {
 	if (conceptMode)
 		return populateConceptScheme(subsearch);
+	if (framework == null)
+		return;
 	treeTop = $("#tree").scrollTop();
 	$("#tree").hide().html("");
 	var frameworkName = framework.name;

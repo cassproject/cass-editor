@@ -436,7 +436,7 @@ function importJsonLdFramework(data) {
                 var data2 = data.substring(data.indexOf("ctdlasn")+7);
                 data = data1 + "data" + data2;
             }
-            framework = EcRepository.getBlocking(data);
+            framework = EcFramework.getBlocking(data);
             showPage("framework");
             populateFramework();
             selectedCompetency = null;
