@@ -287,7 +287,7 @@ function refreshCompetency(col, level, subsearch, done) {
 
 	competencyDescription = EcArray.isArray(competencyDescription) ? competencyDescription : [competencyDescription];
 	for (var i = competencyDescription.length - 1; i >= 0; i--) {
-		if (competencyDescription[i] != null && competencyDescription[i] != "NULL" && competencyDescription[i] != col.name)
+		if (competencyDescription[i] != null && competencyDescription[i] != "NULL" && competencyDescription[i] != competencyName)
 			treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").css('display', 'block').text(Thing.getDisplayStringFrom(competencyDescription[i]));
 	}
 	competencyName = EcArray.isArray(competencyName) ? competencyName : [competencyName];
