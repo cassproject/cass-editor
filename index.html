@@ -397,6 +397,17 @@
 							<hr class="editMode viewMode" style="margin-top:0px;">
 							<div class="sidebarEditSection">
 								<!-- General Properties -->
+								<!-- Competency Label -->
+								<label id="sidebarCompetencyLabelInputLabel" for="sidebarCompetencyLabelInput" title="" cassCompetency="Competency Label:" cassCompetencyTitle="Short identifying phrase or name applied to a competency by the creator of the competency framework." ceasnCompetency="Competency Label:" ceasnCompetencyTitle="Short identifying phrase or name applied to a competency by the creator of the competency framework." class="editMode competencyOnly absentForConcepts ceasnOnly" style="margin: 0px;">Competency Label:</label>
+								<h3 id="sidebarCompetencyLabel" class="viewMode sidebarViewList competencyOnly absentForConcepts ceasnOnly">Competency Label Here</h3>
+								<div class="sidebarInputGrouping editMode editControl onePerLanguage competencyOnly absentForConcepts ceasnOnly">
+									<div class="sidebarInputRow">
+										<button title="Remove this value." class="removeInputButton"><i class="fa fa-times"></i></button>
+										<input class="sidebarInputLanguageSelect" placeholder="Language"></input>
+										<textarea id="sidebarCompetencyLabelInput" cassCompetency="ceasn:competencyLabel" ceasnCompetency="ceasn:competencyLabel" class="sidebarCompetencyLabelInput" data-group="sidebarCompetencyLabelInput" plural="true"></textarea>
+										<button title="Add another value." id="addCompetencyLabelInput" class="addInputButton"><i class="fa fa-plus"></i></button>
+									</div>
+								</div>
 								<!-- Name -->
 								<label id="sidebarNameInputLabel" for="sidebarNameInput" title="" cassCompetency="Name:" cassCompetencyTitle="The name of the competency. One name per language." cassFramework="Framework Name:" cassFrameworkTitle="The name of the framework. One name per language." ceasnCompetency="Competency Text:" ceasnCompetencyTitle="The text of the competency. One per language." ceasnFramework="Name:" ceasnFrameworkTitle="The name or title of this competency framework. One name or title per language." skosCompetency="Preferred Label:" skosCompetencyTitle="Preferred language-tagged label representing this concept. One label per language." skosFramework="Title:" skosFrameworkTitle="The name or title of this resource." ceasnConceptScheme="Name:" class="editMode" style="margin: 0px;">Name:</label>
 								<h3 id="sidebarName" class="viewMode sidebarViewList">Framework Name Here</h3>

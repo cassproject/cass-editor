@@ -277,13 +277,19 @@ function refreshCompetency(col, level, subsearch, done) {
 	}
 	treeNode = $("#tree").append("<li class = 'competency' draggable='" + draggable + "' ondragstart='dragCompetency(event);' ontouchstart='handleTouchStart(event)' ontouchmove='handleTouchMove(event);' ontouchend='handleTouchEnd(event);' ondrop='dropCompetency(event);' ondragover='allowCompetencyDrop(event);'><span></span><ul></ul></li>").children().last();
 	treeNode.attr("id", col.shortId());
+
 	var competencyDescription = col.description;
+	var competencyName = col.name;
+	if (queryParams.ceasnDataFields == 'true' && col["ceasn:competencyLabel"] != null && col["ceasn:competencyLabel"] != undefined && col["ceasn:competencyLabel"] != "") {
+		competencyName = col["ceasn:competencyLabel"];
+		competencyDescription = col.name;
+	}
+
 	competencyDescription = EcArray.isArray(competencyDescription) ? competencyDescription : [competencyDescription];
 	for (var i = competencyDescription.length - 1; i >= 0; i--) {
 		if (competencyDescription[i] != null && competencyDescription[i] != "NULL" && competencyDescription[i] != col.name)
 			treeNode.children().first().prepend("<small/>").children().first().addClass("competencyDescription").css('display', 'block').text(Thing.getDisplayStringFrom(competencyDescription[i]));
 	}
-	var competencyName = col.name;
 	competencyName = EcArray.isArray(competencyName) ? competencyName : [competencyName];
 	if (competencyName == null) competencyName = "Unknown Competency.";
 	treeNode.children().first().prepend("<span/>").children().first().addClass("competencyName").text(Thing.getDisplayStringFrom(competencyName));
