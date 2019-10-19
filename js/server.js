@@ -62,82 +62,54 @@ openWebSocket = function (r) {
 		}, webSocketBackoff);
 	};
 
-	connection.onmessage = function (e) {
-		console.log('Server: ' + e.data);
-		if (framework == null) return;
-		delete EcRepository.cache[e.data];
-		EcRepository.get(e.data, function (wut) {
-			delete EcRepository.cache[wut.id];
-			delete EcRepository.cache[wut.shortId()];
+	connection.changedObject = function(wut)
+	{
+				//delete EcRepository.cache[wut.id];
+				//delete EcRepository.cache[wut.shortId()];
 
-			if (!$("#editFrameworkSection").is(":visible"))
-				return;
+				if (!$("#editFrameworkSection").is(":visible"))
+					return;
 
-			if (new ConceptScheme().isA(wut.getFullType()) || wut["encryptedType"] == "ConceptScheme")
-				if (framework != null)
-					if (framework.shortId() == wut.shortId()) {
-						framework = new ConceptScheme();
-						if (wut["encryptedType"] == "ConceptScheme") {
-							var v = new EcEncryptedValue();
-							v.copyFrom(wut);
-							framework.copyFrom(v.decryptIntoObject());
-						}
-						else {
-							framework.copyFrom(wut);
-						}
-						populateFramework();
-						playSavedAnimation('frameworkNameContainer');
-						spitEvent("frameworkChanged", framework.shortId());
-					}
-
-			if (new EcFramework().isA(wut.getFullType()) || wut["encryptedType"] == "Framework")
-				if (framework != null)
-					if (framework.shortId() == wut.shortId()) {
-						framework = new EcFramework();
-						if (wut["encryptedType"] == "Framework") {
-							var v = new EcEncryptedValue();
-							v.copyFrom(wut);
-							framework.copyFrom(v.decryptIntoObject());
-						}
-						else {
-							framework.copyFrom(wut);
-						}
-						renderSidebar(true, true);
-						playSavedAnimation('frameworkNameContainer');
-						populateFramework();
-						spitEvent("frameworkChanged", framework.shortId());
-					}
-
-			if (new Concept().isA(wut.getFullType())  || wut["encryptedType"] == "Concept") {
-				if (framework != null)
-					if ($("[id=\"" + wut.shortId() + "\"]").length > 0) {
-						var com = new EcConcept();
-						if (wut["encryptedType"] == "Concept") {
-							var v = new EcEncryptedValue();
-							v.copyFrom(wut);
-							com.copyFrom(v.decryptIntoObject());
-						}
-						else {
-							com.copyFrom(wut);
-						}
-						populateConceptScheme();
-						if (selectedCompetency != null) {
-							if (selectedCompetency.shortId() == wut.shortId()) {
-								selectedCompetency = com;
-								if (!$('.detailSliderEdit').length)
-									refreshSidebar();
+				if (new ConceptScheme().isA(wut.getFullType()) || wut["encryptedType"] == "ConceptScheme")
+					if (framework != null)
+						if (framework.shortId() == wut.shortId()) {
+							framework = new ConceptScheme();
+							if (wut["encryptedType"] == "ConceptScheme") {
+								var v = new EcEncryptedValue();
+								v.copyFrom(wut);
+								framework.copyFrom(v.decryptIntoObject());
 							}
-							spitEvent("competencyChanged", selectedCompetency.shortId());
+							else {
+								framework.copyFrom(wut);
+							}
+							populateFramework();
+							playSavedAnimation('frameworkNameContainer');
+							spitEvent("frameworkChanged", framework.shortId());
 						}
-						playSavedAnimation(wut.shortId());
-					}
-			}
-			if (new EcCompetency().isA(wut.getFullType()) || wut["encryptedType"] == "Competency") {
-				if (framework != null)
-					if (framework.competency != null)
-						if (EcArray.has(framework.competency, wut.shortId()) || EcArray.has(framework.competency, wut.shortId()) || JSON.stringify(framework.competency).indexOf(EcCrypto.md5(wut.id)) != -1) {
-							var com = new EcCompetency();
-							if (wut["encryptedType"] == "Competency") {
+
+				if (new EcFramework().isA(wut.getFullType()) || wut["encryptedType"] == "Framework")
+					if (framework != null)
+						if (framework.shortId() == wut.shortId()) {
+							framework = new EcFramework();
+							if (wut["encryptedType"] == "Framework") {
+								var v = new EcEncryptedValue();
+								v.copyFrom(wut);
+								framework.copyFrom(v.decryptIntoObject());
+							}
+							else {
+								framework.copyFrom(wut);
+							}
+							renderSidebar(true, true);
+							playSavedAnimation('frameworkNameContainer');
+							populateFramework();
+							spitEvent("frameworkChanged", framework.shortId());
+						}
+
+				if (new Concept().isA(wut.getFullType())  || wut["encryptedType"] == "Concept") {
+					if (framework != null)
+						if ($("[id=\"" + wut.shortId() + "\"]").length > 0) {
+							var com = new EcConcept();
+							if (wut["encryptedType"] == "Concept") {
 								var v = new EcEncryptedValue();
 								v.copyFrom(wut);
 								com.copyFrom(v.decryptIntoObject());
@@ -145,7 +117,7 @@ openWebSocket = function (r) {
 							else {
 								com.copyFrom(wut);
 							}
-							populateFramework();
+							populateConceptScheme();
 							if (selectedCompetency != null) {
 								if (selectedCompetency.shortId() == wut.shortId()) {
 									selectedCompetency = com;
@@ -156,36 +128,88 @@ openWebSocket = function (r) {
 							}
 							playSavedAnimation(wut.shortId());
 						}
-			}
-
-			if (new EcLevel().isA(wut.getFullType()) || wut["encryptedType"] == "Level") {
-				if (framework != null)
-					if (framework.level != null)
-						if (EcArray.has(framework.level, wut.shortId()) || EcArray.has(framework.level, wut.shortId())) {
-							var com = new EcLevel();
-							if (wut["encryptedType"] == "Level") {
-								var v = new EcEncryptedValue();
-								v.copyFrom(wut);
-								com.copyFrom(v.decryptIntoObject());
-							}
-							else {
-								com.copyFrom(wut);
-							}
-							window.fetches++;
-							refreshCompetency(com);
-							if (selectedCompetency != null) {
-								if (selectedCompetency.shortId() == wut.shortId()) {
-									selectedCompetency = com;
-									refreshSidebar();
+				}
+				if (new EcCompetency().isA(wut.getFullType()) || wut["encryptedType"] == "Competency") {
+					if (framework != null)
+						if (framework.competency != null)
+							if (EcArray.has(framework.competency, wut.shortId()) || EcArray.has(framework.competency, wut.shortId()) || JSON.stringify(framework.competency).indexOf(EcCrypto.md5(wut.id)) != -1) {
+								var com = new EcCompetency();
+								if (wut["encryptedType"] == "Competency") {
+									var v = new EcEncryptedValue();
+									v.copyFrom(wut);
+									com.copyFrom(v.decryptIntoObject());
 								}
-								spitEvent("competencyChanged", selectedCompetency.shortId());
+								else {
+									com.copyFrom(wut);
+								}
+								populateFramework();
+								if (selectedCompetency != null) {
+									if (selectedCompetency.shortId() == wut.shortId()) {
+										selectedCompetency = com;
+										if (!$('.detailSliderEdit').length)
+											refreshSidebar();
+									}
+									spitEvent("competencyChanged", selectedCompetency.shortId());
+								}
+								playSavedAnimation(wut.shortId());
 							}
-							playSavedAnimation(wut.shortId());
-						}
+				}
+
+				if (new EcLevel().isA(wut.getFullType()) || wut["encryptedType"] == "Level") {
+					if (framework != null)
+						if (framework.level != null)
+							if (EcArray.has(framework.level, wut.shortId()) || EcArray.has(framework.level, wut.shortId())) {
+								var com = new EcLevel();
+								if (wut["encryptedType"] == "Level") {
+									var v = new EcEncryptedValue();
+									v.copyFrom(wut);
+									com.copyFrom(v.decryptIntoObject());
+								}
+								else {
+									com.copyFrom(wut);
+								}
+								window.fetches++;
+								refreshCompetency(com);
+								if (selectedCompetency != null) {
+									if (selectedCompetency.shortId() == wut.shortId()) {
+										selectedCompetency = com;
+										refreshSidebar();
+									}
+									spitEvent("competencyChanged", selectedCompetency.shortId());
+								}
+								playSavedAnimation(wut.shortId());
+							}
+				} 
+	}
+
+	connection.onmessage = function (e) {
+		var resp = e.data;
+		console.log('Server: ' + resp);
+		if (!EcArray.isArray(resp) && resp.startsWith("["))
+			resp = JSON.parse(resp);
+		if (EcArray.isArray(resp))
+		{
+			for (var i = 0;i < resp.length;i++)
+			{
+				delete EcRepository.cache[resp[i]];
+				delete EcRepository.cache[EcRemoteLinkedData.trimVersionFromUrl(resp[i])];
 			}
-		}, error);
+			if (framework == null) return;
+			repo.precache(resp,function(){
+				for (var i = 0;i < resp.length;i++)
+					EcRepository.get(resp, connection.changedObject, error);
+			});
+		}
+		else
+		{
+			delete EcRepository.cache[resp];
+			delete EcRepository.cache[EcRemoteLinkedData.trimVersionFromUrl(resp)];
+			if (framework == null) return;
+			EcRepository.get(resp, connection.changedObject, error);
+		}
 	};
 
+	
 }
 
 function cappend(event) {
