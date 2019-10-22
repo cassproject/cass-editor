@@ -441,6 +441,7 @@ function importJsonLdFramework(data) {
                 framework = EcConceptScheme.getBlocking(data);
             }
             showPage("framework");
+            loading("Loading framework...");
             populateFramework();
             selectedCompetency = null;
             refreshSidebar();
