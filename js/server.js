@@ -197,7 +197,7 @@ openWebSocket = function (r) {
 			if (framework == null) return;
 			repo.precache(resp,function(){
 				for (var i = 0;i < resp.length;i++)
-					EcRepository.get(resp, connection.changedObject, error);
+					EcRepository.get(resp[i], connection.changedObject, error);
 			});
 		}
 		else
@@ -208,8 +208,6 @@ openWebSocket = function (r) {
 			EcRepository.get(resp, connection.changedObject, error);
 		}
 	};
-
-	
 }
 
 function cappend(event) {
