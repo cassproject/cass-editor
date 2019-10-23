@@ -189,7 +189,7 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
                     });
                 }
                 var object = EcRepository.getBlocking(fx.id);
-                if (object.isAny(new EcEncryptedValue().getTypes())) {
+                if (object != null && object.isAny(new EcEncryptedValue().getTypes())) {
                     p.append("<span class='properties'>Private</span>");
                 }
                 if (searchTerm != "*" && subsearchTerm == null) {
