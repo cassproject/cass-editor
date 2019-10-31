@@ -12,6 +12,9 @@ detectEndpoint1 = function () {
 	$.ajax({
 		url: url + "ims/case/v1p0/CFDocuments",
 		method: "GET",
+		headers: {
+			Accept: "application/json"
+		},
 		success: function (result, b, c) {
 			if (result.CFDocuments == null)
 				detectEndpoint2();
