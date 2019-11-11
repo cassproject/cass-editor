@@ -15,22 +15,38 @@ detectEndpoint1 = function () {
 		headers: {
 			Accept: "application/json"
 		},
-		success: function (result, b, c) {
-			if (result.CFDocuments == null)
-				detectEndpoint2();
-			else {
-				$("#urlEndpointSuccess").text(result.CFDocuments.length + " frameworks detected.").show();
-				$("#caseImportList").html("");
-				for (var i = 0; i < result.CFDocuments.length; i++) {
-					var doc = result.CFDocuments[i];
-					var t = $("#caseImportList").append(caseImportTemplate).children().last();
-					t.attr("id", doc.uri);
-					t.find(".caseImportTitle").text(doc.title);
-				}
-				isImportCaseCanceled = false;
-				showPage("#caseImportSection");
-			}
-		},
+		success: getDocsSuccess,
+		failure: getServerSide,
+		error: getServerSide
+	});
+}
+
+getDocsSuccess = function(result, b, c) {
+	if (result.CFDocuments == null)
+		detectEndpoint2();
+	else {
+		$("#urlEndpointSuccess").text(result.CFDocuments.length + " frameworks detected.").show();
+		$("#caseImportList").html("");
+		for (var i = 0; i < result.CFDocuments.length; i++) {
+			var doc = result.CFDocuments[i];
+			var t = $("#caseImportList").append(caseImportTemplate).children().last();
+			t.attr("id", doc.uri);
+			t.attr("identifier", doc.identifier);
+			t.find(".caseImportTitle").text(doc.title);
+		}
+		isImportCaseCanceled = false;
+		showPage("#caseImportSection");
+	}
+}
+
+getServerSide = function() {
+	var url = $("#urlEndpoint").val();
+	if (url.endsWith("/") == false)
+		url += "/";
+	$.ajax({
+		url: repo.selectedServer + "ims/case/getDocs?url=" + url,
+		method: "GET",
+		success: getDocsSuccess,
 		failure: detectEndpoint2,
 		error: detectEndpoint2
 	});
@@ -64,7 +80,7 @@ importCase = function () {
 		} else {
 			lis.find("input").hide();
 			var id = lis.first().attr("id");
-			var uuid = id.split("/")[id.split("/").length - 1];
+			var uuid = lis.first().attr("identifier");
 
 			$("#caseImportSection [id='" + id + "']").find(".loading").show();
             var identity = EcIdentityManager.ids[0];
