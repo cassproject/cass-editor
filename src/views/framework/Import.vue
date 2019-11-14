@@ -1,8 +1,25 @@
 <template>
     <div class="import-page">
         <aside class="menu is-info">
-            <div class="menu-header">
+            <div
+                class="menu-header"
+                v-if="method=='file'">
                 Supported File Types
+            </div>
+            <div
+                class="menu-header"
+                v-if="method=='server'">
+                Supported Servers
+            </div>
+            <div
+                class="menu-header"
+                v-if="method=='text'">
+                How to format text
+            </div>
+            <div
+                class="menu-header"
+                v-if="method=='url'">
+                Supported URL Imports
             </div>
             <div
                 class="menu-item"
@@ -20,8 +37,8 @@
                     <br>
                     You can select the columns to use to describe the id, name, description, and other fields.
                 </h2>
-                <small class="right">Template <i class="fa fa-download" /></small>
-                <small>Example <i class="fa fa-download" /></small>
+                <a class="right">Template <i class="fa fa-download" /></a>
+                <a>Example <i class="fa fa-download" /></a>
             </div>
             <div
                 class="menu-item"
@@ -41,8 +58,8 @@
                     <br>
                     Any field with multiple values must be formatted as entry 1|entry 2.
                 </h2>
-                <small class="right">Template <i class="fa fa-download" /></small>
-                <small>Example <i class="fa fa-download" /></small>
+                <a class="right">Template <i class="fa fa-download" /></a>
+                <a>Example <i class="fa fa-download" /></a>
             </div>
             <div
                 class="menu-item"
@@ -53,7 +70,7 @@
                     <br>
                     Using this format, you can import competencies exported from a system that exports Medbiquitous formatted XML.
                 </h2>
-                <small>Example <i class="fa fa-download" /></small>
+                <a>Example <i class="fa fa-download" /></a>
             </div>
             <div
                 class="menu-item"
@@ -67,8 +84,8 @@
                     Using this format,
                     you can import competencies exported from achievementstandards.org and other systems in an RDF JSON format.
                 </h2>
-                <small class="right">Template <i class="fa fa-download" /></small>
-                <small>Example <i class="fa fa-download" /></small>
+                <a class="right">Template <i class="fa fa-download" /></a>
+                <a>Example <i class="fa fa-download" /></a>
             </div>
             <div
                 class="menu-item"
@@ -79,8 +96,8 @@
                     <br>
                     Using this format, you can import a framework and competencies from a system that exports CTDL-ASN formatted JSON-LD.
                 </h2>
-                <small class="right">Template <i class="fa fa-download" /></small>
-                <small>Example <i class="fa fa-download" /></small>
+                <a class="right">Template <i class="fa fa-download" /></a>
+                <a>Example <i class="fa fa-download" /></a>
             </div>
             <div
                 class="menu-item"
@@ -94,7 +111,7 @@
                     <br>
                     After entering the endpoint below, you can select which frameworks you would like to import.
                 </h2>
-                <small>Example <i class="fa fa-link" /></small>
+                <a>Example: CaSS Sandbox <i class="fa fa-link" /></a>
             </div>
             <div
                 class="menu-item"
@@ -109,7 +126,41 @@
                     <br>
                     After entering the endpoint below, you can select which frameworks you would like to import.
                 </h2>
-                <small>Example <i class="fa fa-link" /></small>
+                <a>Example: OpenSalt.net <i class="fa fa-link" /></a>
+            </div>
+            <div
+                class="menu-item"
+                v-if="method=='url'">
+                <h1>CTDL-ASN JSON-LD Graphs</h1>
+                <h2>
+                    If you know the URL of a CTDL-ASN JSON-LD graph, you can import published frameworks by URL.
+                    <br>
+                    This import maintains the URLs of the original frameworks and changes both the format and
+                    schema used to store the CTDL-ASN frameworks in CaSS, but does not change any of the data.
+                    Please note that the Technology Skills framework below is very large and will take a long time to import.
+                </h2>
+                <a>Example: O*NET Abilities <i class="fa fa-link" /></a>
+                <a>Example: O*NET Basic Skills <i class="fa fa-link" /></a>
+                <a>Example: O*NET Cross-Functional Skills <i class="fa fa-link" /></a>
+                <a>Example: O*NET Knowledge <i class="fa fa-link" /></a>
+                <a>Example: O*NET Technology Skills <i class="fa fa-link" /></a>
+            </div>
+            <div
+                class="menu-item"
+                v-if="method=='text'">
+                <h2>
+                    To enter a framework using text: Copy and paste or start writing in the box here. Use spaces to indicate indenture.
+                    <br>
+                    eg:
+                    <pre>
+First Level
+ Second Level
+     Third Level
+ Second Level
+                    </pre>
+                </h2>
+                <a
+                    @click="text='First Level\n Second Level\n     Third Level\n Second Level'">Example <i class="fa fa-quote-right" /></a>
             </div>
         </aside>
         <div class="main">
@@ -158,47 +209,144 @@
                 </div>
             </div>
             <div
-                class="section section-file"
+                class="section-import section-file"
                 v-if="method=='file'">
-                <center><h1>Drop file or click to select.</h1></center>
-                <input type="file">
+                <center>
+                    <h1>Drop file or click to select.</h1>
+                </center>
+                <input
+                    type="file">
                 <button @click="importFromFile">
                     Import
                 </button>
-            </div>
-            <div
-                class="section section-server"
-                v-if="method=='server'">
                 <center>
-                    <h1>Paste URL endpoint of server</h1>
-                    <input type="url">
+                    <div>
+                        {{ status }}
+                    </div>
                 </center>
             </div>
             <div
-                class="section section-text"
-                v-if="method=='text'">
-                <textarea />
+                class="section-import section-server"
+                v-if="method=='server'">
+                <center>
+                    <h1>Paste URL endpoint of server</h1>
+                    <input
+                        v-model="serverUrl"
+                        type="url">
+                    <button @click="connectToServer">
+                        Connect
+                    </button>
+                    <div>
+                        {{ status }}
+                    </div>
+                </center>
             </div>
             <div
-                class="section section-url"
+                class="section-import section-text"
+                v-if="method=='text'">
+                <center>
+                    <h1>Paste Text</h1>
+                    <textarea v-model="text" />
+                    <div>
+                        {{ status }}
+                        <button @click="parseText">
+                            Import
+                        </button>
+                    </div>
+                </center>
+                <Hierarchy
+                    v-if="framework"
+                    :container="framework"
+                    containerType="Framework"
+                    containerNodeProperty="competency"
+                    containerEdgeProperty="relation"
+                    nodeType="Competency"
+                    edgeType="Relation"
+                    edgeRelationProperty="relationType"
+                    edgeRelationLiteral="narrows"
+                    edgeSourceProperty="source"
+                    edgeTargetProperty="target"
+                    editable="false"
+                    :repo="repo" />
+            </div>
+            <div
+                class="section-import section-url"
                 v-if="method=='url'">
-                <input type="url">
+                <center>
+                    <h1>Paste URL of document</h1>
+                    <input
+                        v-model="url"
+                        type="url">
+                    <button @click="importFromUrl">
+                        Check
+                    </button>
+                    <div>
+                        {{ status }}
+                    </div>
+                </center>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import Hierarchy from '@/lode/components/lode/Hierarchy.vue';
 export default {
     name: "Import",
+    props: {
+    },
+    components: {Hierarchy},
     data: function() {
         return {
-            method: "file"
+            method: "file",
+            file: null,
+            serverUrl: null,
+            text: "",
+            framework: null,
+            url: null,
+            repo: window.repo,
+            status: "Ready."
         };
+    },
+    watch: {
+        text: function(newText, oldText) {
+            var me = this;
+            TabStructuredImport.importCompetencies(
+                newText,
+                this.repo.selectedServer,
+                EcIdentityManager.ids[0],
+                function(competencies, relations) {
+                    me.status = competencies.length + " competencies and " + relations.length + " relations.";
+                    var f = new EcFramework();
+                    me.framework = null;
+                    me.$nextTick(function() { this.framework = f; });
+                    for (var i = 0; i < competencies.length; i++) {
+                        EcRepository.cache[competencies[i].shortId()] = competencies[i];
+                        f.addCompetency(competencies[i].shortId());
+                    }
+                    for (var i = 0; i < relations.length; i++) {
+                        EcRepository.cache[relations[i].shortId()] = relations[i];
+                        f.addRelation(relations[i].shortId());
+                    }
+                }, function(status) {
+                    me.status = status;
+                },
+                console.error,
+                this.repo,
+                true);
+        }
     },
     methods:
     {
         importFromFile: function() {
+
+        },
+        connectToServer: function() {
+
+        },
+        parseText: function() {
+        },
+        importFromUrl: function() {
 
         }
     }
@@ -216,6 +364,12 @@ export default {
         padding-left:1rem;
         small{
             display:block;
+        }
+        a{
+            display:block;
+            font-size:.9rem;
+            color:black;
+            font-weight:bold;
         }
     }
     .menu-header{
@@ -252,13 +406,17 @@ export default {
     }
     .main{
         margin-left:420px;
-        }
+    }
+
     .right{float:right;}
-    .section{
+
+    .section-import{
         h1{
             font-size:x-large;
         }
+        padding-bottom:0px;
     }
+
     .section-file{
         input{
             width:100%;
@@ -269,9 +427,52 @@ export default {
             padding-left:calc(50% - 100px);
         }
     }
+
     .section-server{
         input{
             width:30rem;
+        }
+    }
+    .section-text{
+        textarea{
+            width:30rem;
+            height:10rem;
+            display:block;
+        }
+    }
+    .section-url{
+        input{
+            width:30rem;
+        }
+    }
+    .e-Thing-always-ul .e-name{
+        label{
+            display:none;
+        }
+    }
+
+    .e-Thing-always-ul .e-description{
+        label{
+            display:none;
+        }
+        font-size:.8rem;
+    }
+
+    .e-Competency{
+        a {display:none;}
+        >.expand{float:right;}
+        >.compact{float:right;}
+    }
+    .e-HierarchyNode{
+        >ul{padding-left:1rem;}
+        >.icon{
+            width:0px;
+            height:0px;
+            line-height:0px;
+            display:block;
+            position:relative;
+            left:-.5rem;
+            top:-2rem;
         }
     }
 }
