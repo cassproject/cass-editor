@@ -98,8 +98,8 @@
             </div>
         </nav>
         <div class="custom-overflow">
-            <div class="columns is-multiline is-desktop is-centered">
-                <router-view class="column is-full pagesFull" />
+            <div class="is-multiline is-desktop is-centered">
+                <router-view class="is-full pagesFull" />
             </div>
         </div>
     </div>
@@ -107,7 +107,7 @@
 <style scoped lang="scss">
 
 .pagesFull {
-    margin-top:50px;
+    margin-top:40px;
 }
 .pagesRightFull {
     width: calc(100% - 360px) !important;
