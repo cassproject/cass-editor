@@ -26,6 +26,7 @@
             edgeRelationLiteral="narrows"
             edgeSourceProperty="source"
             edgeTargetProperty="target"
+            :editable="true"
             :repo="repo" />
     </div>
 </template>
@@ -71,6 +72,7 @@ export default {
         a {display:none;}
         >.expand{float:right;position:relative;top:.5rem;}
         >.compact{float:right;position:relative;top:.5rem;}
+        >.editable{float:right;position:relative;top:.5rem;}
         .e-Property-text{font-size:larger;}
     }
 
@@ -78,9 +80,13 @@ export default {
         a {display:none;}
         >.expand{float:right;}
         >.compact{float:right;}
+        >.editable {float:right;}
     }
     .e-HierarchyNode{
         >ul{padding-left:1rem;}
+        >ul>div{
+        border-bottom:1px solid lightgray;
+        }
         >.icon{
             width:0px;
             height:0px;
@@ -90,6 +96,8 @@ export default {
             left:-.5rem;
             top:-2rem;
         }
+        padding-left:1rem;
+        border-left:1px solid lightgray;
     }
 }
 

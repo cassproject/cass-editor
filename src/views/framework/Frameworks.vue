@@ -50,6 +50,7 @@ export default {
 .page-open .e-Framework{
     a {display:none;}
     .icon {display:none;}
+    .editable {display:block;float:right;}
 }
 
 </style>
