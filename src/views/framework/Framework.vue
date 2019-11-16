@@ -20,8 +20,8 @@
             containerType="Framework"
             containerNodeProperty="competency"
             containerEdgeProperty="relation"
-            nodeType="Competency"
-            edgeType="Relation"
+            nodeType="EcCompetency"
+            edgeType="EcAlignment"
             edgeRelationProperty="relationType"
             edgeRelationLiteral="narrows"
             edgeSourceProperty="source"
@@ -97,7 +97,6 @@ export default {
             top:-2rem;
         }
         padding-left:1rem;
-        border-left:1px solid lightgray;
     }
 }
 
