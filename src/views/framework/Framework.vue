@@ -54,6 +54,10 @@ export default {
 <style lang="scss">
 
 .page-framework{
+    .e-Thing-ul{
+
+        margin-top:0px;
+    }
     .e-Thing-always-ul .e-name{
         label{
             display:none;
@@ -83,13 +87,16 @@ export default {
         >.editable {float:right;}
     }
     .e-HierarchyNode{
-        >ul{padding-left:1rem;}
-        >ul>div{
-        border-bottom:1px solid lightgray;
+        >ul{
+            padding-left:1rem;
+            >div{
+                border:1px dashed whitesmoke;
+            }
         }
         >.icon{
             width:0px;
             height:0px;
+            margin:0px;
             line-height:0px;
             display:block;
             position:relative;
@@ -97,6 +104,16 @@ export default {
             top:-2rem;
         }
         padding-left:1rem;
+    }
+    .dragging{
+        div{
+            border:1px dashed gray !important;
+            .drag-footer::before{
+                content:'' !important
+            }
+            .drag-footer{
+            }
+        }
     }
 }
 
