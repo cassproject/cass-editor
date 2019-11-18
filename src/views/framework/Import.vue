@@ -111,7 +111,7 @@
                     <br>
                     After entering the endpoint below, you can select which frameworks you would like to import.
                 </h2>
-                <a>Example: CaSS Sandbox <i class="fa fa-link" /></a>
+                <a @click="serverUrl='https://sandbox.cassproject.org/'">Example: CaSS Sandbox <i class="fa fa-link" /></a>
             </div>
             <div
                 class="menu-item"
@@ -126,7 +126,7 @@
                     <br>
                     After entering the endpoint below, you can select which frameworks you would like to import.
                 </h2>
-                <a>Example: OpenSalt.net <i class="fa fa-link" /></a>
+                <a @click="serverUrl='https://opensalt.net'">Example: OpenSalt.net <i class="fa fa-link" /></a>
             </div>
             <div
                 class="menu-item"
@@ -139,11 +139,11 @@
                     schema used to store the CTDL-ASN frameworks in CaSS, but does not change any of the data.
                     Please note that the Technology Skills framework below is very large and will take a long time to import.
                 </h2>
-                <a>Example: O*NET Abilities <i class="fa fa-link" /></a>
-                <a>Example: O*NET Basic Skills <i class="fa fa-link" /></a>
-                <a>Example: O*NET Cross-Functional Skills <i class="fa fa-link" /></a>
-                <a>Example: O*NET Knowledge <i class="fa fa-link" /></a>
-                <a>Example: O*NET Technology Skills <i class="fa fa-link" /></a>
+                <a @click="url='https://www.onetcenter.org/ctdlasn/graph/ce-07c257d6-9119-11e8-b852-782bcb5df6ac'">Example: O*NET Abilities <i class="fa fa-link" /></a>
+                <a @click="url='https://www.onetcenter.org/ctdlasn/graph/ce-07c25f74-9119-11e8-b852-782bcb5df6ac'">Example: O*NET Basic Skills <i class="fa fa-link" /></a>
+                <a @click="url='https://www.onetcenter.org/ctdlasn/graph/ce-07c264d7-9119-11e8-b852-782bcb5df6ac'">Example: O*NET Cross-Functional Skills <i class="fa fa-link" /></a>
+                <a @click="url='https://www.onetcenter.org/ctdlasn/graph/ce-07c27a0f-9119-11e8-b852-782bcb5df6ac'">Example: O*NET Knowledge <i class="fa fa-link" /></a>
+                <a @click="url='https://www.onetcenter.org/ctdlasn/graph/ce-9fab4187-d8e7-11e9-8250-782bcb5df6ac'">Example: O*NET Technology Skills <i class="fa fa-link" /></a>
             </div>
             <div
                 class="menu-item"
