@@ -10,3 +10,5 @@ pom\.xml\.versionsBackup
 \.classpath
 
 \.project
+
+node_modules/
