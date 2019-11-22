@@ -9,11 +9,22 @@
         <span
             class="info-tag"
             v-else-if="framework.competency.length > 1">{{ framework.competency.length }} items</span>
-        <!-- TODO: look at schema:lastModified as well -->
         <span
             class="info-tag"
-            v-if="framework.getTimestamp()"
-            :title="new Date(framework.getTimestamp())">Last modified {{ lastModified }}</span>
+            v-if="timestamp"
+            :title="new Date(timestamp)">Last modified {{ lastModified }}</span>
+        <span
+            class="info-tag"
+            v-if="framework['schema:dateCreated']"
+            :title="new Date(framework['schema:dateCreated'])">Created {{ $moment(framework['schema:dateCreated']).fromNow() }}</span>
+        <span
+            class="info-tag"
+            v-if="framework['Approved']"
+            :title="framework['Approved']">Approved</span>
+        <span
+            class="info-tag"
+            v-if="framework['Published']"
+            :title="framework['Published']">Published</span>
         <hr>
         <Hierarchy
             :container="framework"
@@ -42,9 +53,22 @@ export default {
         };
     },
     computed: {
+        timestamp: function() {
+            if (this.framework.getTimestamp()) {
+                return this.framework.getTimestamp();
+            }
+            else if (this.framework["schema:dateModified"]) {
+                return this.framework["schema:dateModified"];
+            }
+            else {
+                return null;
+            }
+        },
         lastModified: function() {
             if (this.framework == null) return "Unknown.";
-            return this.$moment(this.framework.getTimestamp()).fromNow();
+            if (this.timestamp) {
+                return this.$moment(this.timestamp).fromNow();
+            }
         }
     },
     components: {Hierarchy, Thing}
