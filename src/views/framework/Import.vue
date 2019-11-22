@@ -39,6 +39,8 @@
                 </h2>
                 <a class="right" :href="csvTemplateCompetenciesFile" download='Template - Competencies.csv'>Template - Competencies <i class="fa fa-download" /></a>
                 <a :href="csvExampleCompetenciesFile" download='CAP Software Engineering - Competencies.csv'>Example - Competencies <i class="fa fa-download" /></a>
+                <a class="right" :href="csvTemplateRelationsFile" download='Template - Relations.csv'>Template - Relations <i class="fa fa-download" /></a>
+                <a :href="csvExampleRelationsFile" download='CAP Software Engineering - Relations.csv'>Example - Relations <i class="fa fa-download" /></a>
             </div>
             <div
                 class="menu-item"
