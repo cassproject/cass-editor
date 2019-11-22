@@ -37,8 +37,8 @@
                     <br>
                     You can select the columns to use to describe the id, name, description, and other fields.
                 </h2>
-                <a class="right">Template <i class="fa fa-download" /></a>
-                <a>Example <i class="fa fa-download" /></a>
+                <a class="right" :href="csvTemplateCompetenciesFile" download='Template - Competencies.csv'>Template - Competencies <i class="fa fa-download" /></a>
+                <a :href="csvExampleCompetenciesFile" download='CAP Software Engineering - Competencies.csv'>Example - Competencies <i class="fa fa-download" /></a>
             </div>
             <div
                 class="menu-item"
@@ -58,8 +58,8 @@
                     <br>
                     Any field with multiple values must be formatted as entry 1|entry 2.
                 </h2>
-                <a class="right">Template <i class="fa fa-download" /></a>
-                <a>Example <i class="fa fa-download" /></a>
+                <a class="right" :href="ctdlAsnCsvTemplateFile" download='CTDL-ASN.ONET.template.csv'>Template <i class="fa fa-download" /></a>
+                <a :href="ctdlAsnCsvExampleFile" download='CTDL-ASN.ONET.example.csv'>Example <i class="fa fa-download" /></a>
             </div>
             <div
                 class="menu-item"
@@ -70,7 +70,7 @@
                     <br>
                     Using this format, you can import competencies exported from a system that exports Medbiquitous formatted XML.
                 </h2>
-                <a>Example <i class="fa fa-download" /></a>
+                <a :href="medbiquitousFile" download='educational_achievement_sample_1June2012.xml'>Example <i class="fa fa-download" /></a>
             </div>
             <div
                 class="menu-item"
@@ -84,8 +84,7 @@
                     Using this format,
                     you can import competencies exported from achievementstandards.org and other systems in an RDF JSON format.
                 </h2>
-                <a class="right">Template <i class="fa fa-download" /></a>
-                <a>Example <i class="fa fa-download" /></a>
+                <a :href="asnRdfJsonFile" download='D2695955.json'>Example <i class="fa fa-download" /></a>
             </div>
             <div
                 class="menu-item"
@@ -96,8 +95,7 @@
                     <br>
                     Using this format, you can import a framework and competencies from a system that exports CTDL-ASN formatted JSON-LD.
                 </h2>
-                <a class="right">Template <i class="fa fa-download" /></a>
-                <a>Example <i class="fa fa-download" /></a>
+                <a :href="ctdlAsnJsonldFile" download='DQP.jsonld'>Example <i class="fa fa-download" /></a>
             </div>
             <div
                 class="menu-item"
@@ -291,6 +289,18 @@ First Level
 
 <script>
 import Hierarchy from '@/lode/components/lode/Hierarchy.vue';
+import ctdlAsnCsvExample from 'file-loader!../../../files/CTDL-ASN.ONET.example.csv';
+import ctdlAsnCsvTemplate from 'file-loader!../../../files/CTDL-ASN.ONET.template.csv';
+import csvExampleCompetencies from 'file-loader!../../../files/CAP Software Engineering - Competencies.csv';
+import csvExampleRelations from 'file-loader!../../../files/CAP Software Engineering - Relations.csv';
+import csvTemplateCompetencies from 'file-loader!../../../files/Template - Competencies.csv';
+import csvTemplateRelations from 'file-loader!../../../files/Template - Relations.csv';
+import csvConceptExample from 'file-loader!../../../files/Concept Scheme Example.csv';
+import csvConceptTemplate from 'file-loader!../../../files/Concept Scheme Template.csv';
+import ctdlAsnJsonldConcepts from 'file-loader!../../../files/ConnectingCredentialsLevels.jsonld';
+import ctdlAsnJsonld from 'file-loader!../../../files/DQP.jsonld';
+import asnRdfJson from 'file-loader!../../../files/D2695955';
+import medbiquitous from 'file-loader!../../../files/educational_achievement_sample_1June2012.xml';
 export default {
     name: "Import",
     props: {
@@ -305,7 +315,19 @@ export default {
             framework: null,
             url: null,
             repo: window.repo,
-            status: "Ready."
+            status: "Ready.",
+            ctdlAsnCsvExampleFile: ctdlAsnCsvExample,
+            ctdlAsnCsvTemplateFile: ctdlAsnCsvTemplate,
+            csvExampleCompetenciesFile: csvExampleCompetencies,
+            csvExampleRelationsFile: csvExampleRelations,
+            csvTemplateCompetenciesFile: csvTemplateCompetencies,
+            csvTemplateRelationsFile: csvTemplateRelations,
+            csvConceptExampleFile: csvConceptExample,
+            csvConceptTemplateFile: csvConceptTemplate,
+            ctdlAsnJsonldConceptsFile: ctdlAsnJsonldConcepts,
+            ctdlAsnJsonldFile: ctdlAsnJsonld,
+            asnRdfJsonFile: asnRdfJson,
+            medbiquitousFile: medbiquitous
         };
     },
     watch: {
