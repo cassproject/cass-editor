@@ -215,7 +215,71 @@ First Level
                     <h1>Drop file or click to select.</h1>
                 </center>
                 <input
-                    type="file">
+                    type="file"
+                    ref="fileInput"
+                    @change="fileChange">
+                <div v-if="importType=='csv'">
+                    <div>
+                        <label>Step 1: Name the framework.</label>
+                        <input v-model="importCsvFrameworkName">
+                    </div>
+                    <div>
+                        <label>Step 2: Describe the framework (optional).</label>
+                        <input v-model="importCsvFrameworkDescription">
+                    </div>
+                    <div>
+                        <label>Step 3: Select the Name column.</label>
+                        <select v-model="importCsvColumnName">
+                            <option v-for="(column, i) in csvColumns" :key="i" :value="column">{{column.name}}</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Step 4: Select the Description column (optional).</label>
+                        <select v-model="importCsvColumnDescription">
+                            <option>N/A</option>
+                            <option v-for="(column, i) in csvColumns" :key="i" :value="column">{{column.name}}</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Step 5: Select the Scope column (optional).</label>
+                        <select v-model="importCsvColumnScope">
+                            <option>N/A</option>
+                            <option v-for="(column, i) in csvColumns" :key="i" :value="column">{{column.name}}</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Step 6: Select the ID column (optional). If chosen, this should be a URL from another CaSS system or a non-numeric ID.</label>
+                        <select v-model="importCsvColumnId">
+                            <option>N/A</option>
+                            <option v-for="(column, i) in csvColumns" :key="i" :value="column">{{column.name}}</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Step 7: Select a relation file (optional). The relation source/target must be in the form of ID or Name, and the relation types should be "requires", "desires", "narrows", "isEnabledBy", "isRelatedTo", or "isEquivalentTo".</label>
+                        <input type="file" @change="analyzeCsvRelation">
+                    </div>
+                    <div v-if="csvRelationFile">
+                        <div>
+                            <label>Step 8: Select the Source column.</label>
+                            <select v-model="importCsvColumnSource">
+                                <option v-for="(column, i) in csvRelationColumns" :key="i" :value="column">{{column.name}}</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Step 9: Select the Relation Type column.</label>
+                            <select v-model="importCsvColumnRelationType">
+                                <option v-for="(column, i) in csvRelationColumns" :key="i" :value="column">{{column.name}}</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Step 10: Select the Target column.</label>
+                            <select v-model="importCsvColumnTarget">
+                                <option v-for="(column, i) in csvRelationColumns" :key="i" :value="column">{{column.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    </div>
+                </div>
                 <button @click="importFromFile">
                     Import
                 </button>
@@ -329,7 +393,26 @@ export default {
             ctdlAsnJsonldConceptsFile: ctdlAsnJsonldConcepts,
             ctdlAsnJsonldFile: ctdlAsnJsonld,
             asnRdfJsonFile: asnRdfJson,
-            medbiquitousFile: medbiquitous
+            medbiquitousFile: medbiquitous,
+            competencyCount: 0,
+            importType: null,
+            importCsvFrameworkName: null,
+            importCsvFrameworkDescription: null,
+            importCsvColumnName: null,
+            importCsvColumnDescription: "N/A",
+            importCsvColumnScope: "N/A",
+            importCsvColumnId: "N/A",
+            importCsvRelation: null,
+            importCsvColumnSource: null,
+            importCsvColumnRelationType: null,
+            importCsvColumnTarget: null,
+            csvColumns: [],
+            csvRelationFile: null,
+            importCsvColumnSource: null,
+            importCsvColumnRelationType: null,
+            importCsvColumnTarget: null,
+            csvRelationColumns: [],
+            relationCount: 0
         };
     },
     watch: {
@@ -362,6 +445,169 @@ export default {
     },
     methods:
     {
+        fileChange: function(e) {
+            var files = e.target.files || e.dataTransfer.files;
+            if (!files.length) {
+                this.file = null;
+            } else {
+                this.file = files;
+                this.analyzeImportFile();
+            }
+            this.importType = null;
+        },
+        analyzeImportFile: function() {
+            var me = this;
+            for (let i = 0; i < this.file.length; i++) {
+                var file = this.file[i];
+                if (file.name.endsWith(".csv")) {
+                    CTDLASNCSVImport.analyzeFile(file, function (frameworkCount, competencyCount) {
+                        me.importType = "ctdlasncsv";
+                        me.status = "Import " + frameworkCount + " frameworks and " + competencyCount + " competencies.";
+                    }, function (errorMsg) {
+                        CSVImport.analyzeFile(file, function (data) {
+                            me.importType = "csv";
+                            me.importCsvFrameworkName = file.name.replace(".csv", "");
+                            for (var i = 0; i < data[0].length; i++) {
+                                let column = {};
+                                column.name = data[0][i];
+                                column.index = i;
+                                me.csvColumns.push(column);
+                                if (column.name.toLowerCase().indexOf("name") != -1) {
+                                    me.importCsvColumnName = column;
+                                }
+                                if (column.name.toLowerCase().indexOf("description") != -1) {
+                                    me.importCsvColumnDescription = column;
+                                }
+                                if (column.name.toLowerCase().indexOf("scope") != -1) {
+                                    me.importCsvColumnScope = column;
+                                }
+                                if (column.name.toLowerCase().indexOf("id") != -1) {
+                                    me.importCsvColumnId = column;
+                                }
+                            }
+                            me.status = (me.competencyCount = (data.length - 1)) + " Competencies Detected.";
+                        }, function (error) {
+                            {
+                                me.status = error;
+                            }
+                        });
+                    });
+                } else if (file.name.endsWith(".json") || file.name.endsWith(".jsonld")) {
+                    //Try JSON-LD first, checks for @graph
+                    this.analyzeJsonLdFramework(file, function (data, ctdlasn) {
+                        var invalid = false;
+                        if (ctdlasn == "ctdlasnConcept") {
+                            me.status = "Concept Schemes must be imported in the concept scheme editor.";
+                            invalid = true;
+                        }
+                        else {
+                            me.importType = "ctdlasnjsonld";
+                            me.status = "1 Framework and " + (EcObject.keys(data).length-1) + " Competencies Detected.";                        
+                        }
+                        me.competencyCount = EcObject.keys(data).length;
+                        if (!invalid && (ctdlasn == "ctdlasn" || ctdlasn == "ctdlasnConcept")) {
+                        }
+                        else if (!invalid) {
+                            me.status = "Context is not CTDL-ASN";
+                        }
+                    }, function (error) {
+                        {
+                            //If JSON-LD doesn't work, try JSON
+                            ASNImport.analyzeFile(file, function (data) {
+                                me.importType = "asn";
+                                me.status = "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.";
+                                me.competencyCount = EcObject.keys(data).length;
+                            }, function (error) {
+                                {
+                                    me.status = error;
+                                }
+                            });
+                        }
+                    });
+                } else if (file.name.endsWith(".xml")) {
+                    MedbiqImport.analyzeFile(file, function (data) {
+                        me.importType = "medbiq";
+                        me.status = "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.";
+                        me.competencyCount = EcObject.keys(data).length;
+                    }, function (error) {
+                        {
+                            me.status = error;
+                        }
+                    });
+                }
+            }
+        },
+        analyzeCsvRelation: function(e) {
+            var files = e.target.files || e.dataTransfer.files;
+            if (!files.length) {
+                this.csvRelationFile = null;
+            } else {
+                this.csvRelationFile = files[0];
+            }
+            let me = this;
+            CSVImport.analyzeFile(this.csvRelationFile, function (data) {
+                for (var i = 0; i < data[0].length; i++) {
+                    let column = {};
+                    column.name = data[0][i];
+                    column.index = i;
+                    me.csvRelationColumns.push(column);
+                    if (column.name.toLowerCase().indexOf("source") != -1) {
+                        me.importCsvColumnSource = column;
+                    }
+                    if (column.name.toLowerCase().indexOf("origin") != -1) {
+                        me.importCsvColumnSource = column;
+                    }
+                    if (column.name.toLowerCase().indexOf("type") != -1) {
+                        me.importCsvColumnRelationType = column;
+                    }
+                    if (column.name.toLowerCase().indexOf("target") != -1) {
+                        me.importCsvColumnTarget = column;
+                    }
+                    if (column.name.toLowerCase().indexOf("destination") != -1) {
+                        me.importCsvColumnTarget = column;
+                    }
+                }
+                me.relationCount = (data.length - 1);
+            }, function (error) {
+                {
+                    me.status = error;
+                }
+            });
+        },
+        analyzeJsonLdFramework: function(file, success, failure) {
+            if (file == null) {
+                failure("No file to analyze");
+                return;
+            }
+            if ((file)["name"] == null) {
+                failure("Invalid file");
+                return;
+            }
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var result = ((e)["target"])["result"];
+                var jsonObj = JSON.parse(result);
+                if (jsonObj["@graph"]) {
+                    if (jsonObj["@context"] == "http://credreg.net/ctdlasn/schema/context/json" || jsonObj["@context"] == "http://credreg.net/ctdl/schema/context/json" 
+                        || jsonObj["@context"] == "https://credreg.net/ctdlasn/schema/context/json" || jsonObj["@context"] == "https://credreg.net/ctdl/schema/context/json") {
+                        if (jsonObj["@graph"][0]["@type"].indexOf("Concept") != -1) {
+                            success(jsonObj["@graph"], "ctdlasnConcept");
+                        }
+                        else {
+                            success(jsonObj["@graph"], "ctdlasn");
+                        }
+                    }
+                    else {
+                        success(jsonObj["@graph"], null);
+                    }
+                }
+                else {
+                    failure("Invalid file");
+                    return;
+                }
+            };
+            reader.readAsText(file, "UTF-8");
+        },
         importFromFile: function() {
 
         },
@@ -442,7 +688,7 @@ export default {
     }
 
     .section-file{
-        input{
+        input[type=file]:first-of-type{
             width:100%;
             display:block;
             border:1px dashed black;
