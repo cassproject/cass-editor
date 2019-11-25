@@ -278,7 +278,6 @@ First Level
                             </select>
                         </div>
                     </div>
-                    </div>
                 </div>
                 <button @click="importFromFile">
                     Import
