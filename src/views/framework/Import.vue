@@ -221,11 +221,11 @@ First Level
                 <div v-if="importType=='csv'">
                     <div>
                         <label>Step 1: Name the framework.</label>
-                        <input v-model="importCsvFrameworkName">
+                        <input v-model="importFrameworkName">
                     </div>
                     <div>
                         <label>Step 2: Describe the framework (optional).</label>
-                        <input v-model="importCsvFrameworkDescription">
+                        <input v-model="importFrameworkDescription">
                     </div>
                     <div>
                         <label>Step 3: Select the Name column.</label>
@@ -277,6 +277,16 @@ First Level
                                 <option v-for="(column, i) in csvRelationColumns" :key="i" :value="column">{{column.name}}</option>
                             </select>
                         </div>
+                    </div>
+                </div>
+                <div v-else-if="importType=='medbiq'">
+                    <div>
+                        <label>Step 1: Name the framework.</label>
+                        <input v-model="importFrameworkName">
+                    </div>
+                    <div>
+                        <label>Step 2: Describe the framework (optional).</label>
+                        <input v-model="importFrameworkDescription">
                     </div>
                 </div>
                 <button @click="importFromFile">
@@ -366,10 +376,12 @@ import ctdlAsnJsonldConcepts from 'file-loader!../../../files/ConnectingCredenti
 import ctdlAsnJsonld from 'file-loader!../../../files/DQP.jsonld';
 import asnRdfJson from 'file-loader!../../../files/D2695955';
 import medbiquitous from 'file-loader!../../../files/educational_achievement_sample_1June2012.xml';
+import common from '@/mixins/common.js'
 export default {
     name: "Import",
     props: {
     },
+    mixins: [common],
     components: {Hierarchy},
     data: function() {
         return {
@@ -395,8 +407,8 @@ export default {
             medbiquitousFile: medbiquitous,
             competencyCount: 0,
             importType: null,
-            importCsvFrameworkName: null,
-            importCsvFrameworkDescription: null,
+            importFrameworkName: null,
+            importFrameworkDescription: null,
             importCsvColumnName: null,
             importCsvColumnDescription: "N/A",
             importCsvColumnScope: "N/A",
@@ -411,7 +423,8 @@ export default {
             importCsvColumnRelationType: null,
             importCsvColumnTarget: null,
             csvRelationColumns: [],
-            relationCount: 0
+            relationCount: 0,
+            queryParams: {}
         };
     },
     watch: {
@@ -449,7 +462,10 @@ export default {
             if (!files.length) {
                 this.file = null;
             } else {
-                this.file = files;
+                this.file = [];
+                for (let i = 0; i < files.length; i++) {
+                    this.file[i] = files[i];
+                }
                 this.analyzeImportFile();
             }
             this.importType = null;
@@ -465,7 +481,7 @@ export default {
                     }, function (errorMsg) {
                         CSVImport.analyzeFile(file, function (data) {
                             me.importType = "csv";
-                            me.importCsvFrameworkName = file.name.replace(".csv", "");
+                            me.importFrameworkName = file.name.replace(".csv", "");
                             for (var i = 0; i < data[0].length; i++) {
                                 let column = {};
                                 column.name = data[0][i];
@@ -526,6 +542,7 @@ export default {
                 } else if (file.name.endsWith(".xml")) {
                     MedbiqImport.analyzeFile(file, function (data) {
                         me.importType = "medbiq";
+                        me.importFrameworkName = file.name.replace(".xml", "");
                         me.status = "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.";
                         me.competencyCount = EcObject.keys(data).length;
                     }, function (error) {
@@ -607,8 +624,74 @@ export default {
             };
             reader.readAsText(file, "UTF-8");
         },
+        importMedbiq: function() {
+            var file = this.file[0];
+            var identity = EcIdentityManager.ids[0];
+            var f = new EcFramework();
+            if (identity != null)
+                f.addOwner(identity.ppk.toPk());
+            if (this.queryParams.newObjectEndpoint != null)
+                f.generateShortId(this.queryParams.newObjectEndpoint == null ? this.repo.selectedServer : this.queryParams.newObjectEndpoint);
+            else
+                f.generateId(this.queryParams.newObjectEndpoint == null ? this.repo.selectedServer : this.queryParams.newObjectEndpoint);
+            f["schema:dateCreated"] = new Date().toISOString();
+            f.setName(this.importFrameworkName);
+            f.setDescription(this.importFrameworkDescription);
+            let me = this;
+            MedbiqImport.importCompetencies(this.queryParams.newObjectEndpoint == null ? this.repo.selectedServer : this.queryParams.newObjectEndpoint, identity, function (competencies) {
+                    for (var i = 0; i < competencies.length; i++)
+                        f.addCompetency(competencies[i].shortId());
+                    me.repo.saveTo(f, function (success) {
+                        me.file.splice(0, 1);
+                        if (me.file.length > 0)
+                            me.analyzeImportFile();
+                        else {
+                            me.framework = f;
+                            me.spitEvent("importFinished", f.shortId(), "importPage");
+                        }
+                    }, function (failure) {
+                        me.status = failure;
+                    });
+                },
+                function (failure) {
+                    me.status = failure;
+                },
+                function (increment) {
+                    me.status = increment.competencies + "/" + me.competencyCount + " competencies imported.";
+                }, me.repo);
+        },
+        importAsn: function() {
+            var file = this.file[0];
+            var identity = EcIdentityManager.ids[0];
+            let me = this;
+            ASNImport.importCompetencies(this.repo.selectedServer, identity, true, function (competencies, f) {
+                    me.file.splice(0, 1);
+                    if (me.file.length > 0)
+                        me.analyzeImportFile();
+                    else {
+                        me.framework = f;
+                        me.spitEvent("importFinished", f.shortId(), "importPage");
+                    }
+                },
+                function (failure) {
+                    me.status = failure;
+                },
+                function (increment) {
+                    me.status = increment.competencies + "/" + me.competencyCount + " competencies imported.";
+                }, me.repo);
+        },
         importFromFile: function() {
-
+            if (this.importType == "csv") {
+                this.importCsv();
+            } else if (this.importType == "ctdlasncsv") {
+                this.importCtdlAsnCsv();
+            } else if (this.importType == "ctdlasnjsonld") {
+                this.importJsonLd();
+            } else if (this.importType == "asn") {
+                this.importAsn();
+            } else if (this.importType == "medbiq") {
+                this.importMedbiq();
+            }
         },
         connectToServer: function() {
 
