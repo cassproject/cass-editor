@@ -760,6 +760,36 @@ export default {
                         me.status = "Importing...";
                 }, false, me.repo);
         },
+        importJsonLd: function(data) {
+            var formData = new FormData();
+            if (data != null && data !== undefined) {
+                formData.append('data', JSON.stringify(data));
+            } else {
+                var file = this.file[0];
+                formData.append('file', file);
+            }    
+            var identity = EcIdentityManager.ids[0];
+            if (identity != null)
+                formData.append('owner',identity.ppk.toPk().toPem());
+            let me = this;
+            EcRemote.postInner(this.repo.selectedServer, "ctdlasn", formData, null, function(data) {
+                if (data.indexOf("ctdlasn") != -1) {
+                        var data1 = data.substring(0, data.indexOf("ctdlasn"));
+                        var data2 = data.substring(data.indexOf("ctdlasn")+7);
+                        data = data1 + "data" + data2;
+                    }
+                    me.framework = EcFramework.getBlocking(data);
+                    if (me.framework == null) {
+                        me.framework = EcConceptScheme.getBlocking(data);
+                    }
+                    me.status = "Import Finished.";
+                    me.spitEvent("importFinished", me.framework.shortId(), "importPage");
+            }, function(failure) {
+                me.status = "Import failed. Check your import file for any errors.";
+                console.log(failure.statusText);
+            });
+            me.status = "Importing Framework";
+        },
         importFromFile: function() {
             if (this.importType == "csv") {
                 this.importCsv();
