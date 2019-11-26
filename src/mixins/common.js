@@ -37,6 +37,20 @@ export default {
             /*if (parent != null)
                 if (queryParams.origin != null && queryParams.origin != '')
                     parent.postMessage(evt, queryParams.origin);*/
+        },
+        setDefaultLanguage: function() {
+            // To do: add default language to the store
+            if (this.framework && this.framework["ceasn:inLanguage"]) {
+                defaultLanguage = EcArray.isArray(this.framework["ceasn:inLanguage"]) ? this.framework["ceasn:inLanguage"][0] : this.framework["ceasn:inLanguage"];
+            } else if (this.framework && this.framework["schema:inLanguage"]) {
+                defaultLanguage = EcArray.isArray(this.framework["schema:inLanguage"]) ? this.framework["schema:inLanguage"][0] : this.framework["schema:inLanguage"];
+            } else if (this.framework && this.framework["dcterms:language"]) {
+                defaultLanguage = this.framework["dcterms:language"];
+            } else if (navigator.language || navigator.userLanguage) {
+                defaultLanguage = navigator.language || navigator.userLanguage;
+            } else {
+                defaultLanguage = "en";
+            }
         }
     }
 };

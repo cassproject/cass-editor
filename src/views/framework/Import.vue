@@ -413,7 +413,6 @@ export default {
             importCsvColumnDescription: "N/A",
             importCsvColumnScope: "N/A",
             importCsvColumnId: "N/A",
-            importCsvRelation: null,
             importCsvColumnSource: null,
             importCsvColumnRelationType: null,
             importCsvColumnTarget: null,
@@ -679,6 +678,87 @@ export default {
                 function (increment) {
                     me.status = increment.competencies + "/" + me.competencyCount + " competencies imported.";
                 }, me.repo);
+        },
+        importCtdlAsnCsv: function() {
+            let ceo = null;
+            if (EcIdentityManager.ids.length > 0)
+                ceo = EcIdentityManager.ids[0];
+            let me = this;
+            CTDLASNCSVImport.importFrameworksAndCompetencies(me.repo, me.file[0], function (frameworks, competencies, relations) {
+                if (me.queryParams.ceasnDataFields == true) {
+                    for (var i = 0; i < frameworks.length; i++) {
+                        if (frameworks[i]["schema:inLanguage"] == null || frameworks[i]["schema:inLanguage"] === undefined) {
+                            // me.setDefaultLanguage();
+                            // frameworks[i]["schema:inLanguage"] = defaultLanguage;
+                        }
+                    }
+                }
+                var all = frameworks.concat(competencies).concat(relations);
+                me.status = "Saving " + all.length + " objects.";
+                me.repo.multiput(all,function () {
+                    for (var i = 0; i < frameworks.length; i++) {
+                        me.framework = frameworks[i];
+                        me.status = "Import Finished.";
+                        me.spitEvent("importFinished", frameworks[i].shortId(), "importPage");
+                    }
+                },function (failure) {
+                    me.status = failure;
+                });
+            }, function (failure) {
+                me.status = failure;
+            },ceo);
+        },
+        importCsv: function() {
+            var file = this.file[0];
+            var relations = this.csvRelationFile;
+            var identity = EcIdentityManager.ids[0];
+            var endpoint = this.queryParams.newObjectEndpoint == null ? this.repo.selectedServer : this.queryParams.newObjectEndpoint;
+
+            var f = new EcFramework();
+            if (identity != null)
+                f.addOwner(identity.ppk.toPk());
+            if (this.queryParams.newObjectEndpoint != null)
+                f.generateShortId(endpoint);
+            else
+                f.generateId(endpoint);
+            f["schema:dateCreated"] = new Date().toISOString();
+            f.setName(this.importFrameworkName);
+            f.setDescription(this.importFrameworkDescription);
+            let me = this;
+            CSVImport.importCompetencies(file, endpoint, identity, this.importCsvColumnName.index, this.importCsvColumnDescription.index, this.importCsvColumnScope.index, this.importCsvColumnId.index, relations, this.importCsvColumnSource.index, this.importCsvColumnRelationType.index, this.importCsvColumnTarget.index,
+                function (competencies, alignments) {
+                    f.competency = [];
+                    f.relation = [];
+                    for (var i = 0; i < competencies.length; i++) {
+                        f.competency.push(competencies[i].shortId());
+                    }
+                    for (var i = 0; i < alignments.length; i++) {
+                        f.relation.push(alignments[i].shortId());
+                    }
+                    repo.saveTo(f, function (success) {
+                        me.file.splice(0, 1);
+                        if (me.file.length > 0)
+                            me.analyzeImportFile();
+                        else {
+                            me.framework = f;
+                            me.status = "Import Finished.";
+                            me.spitEvent("importFinished", f.shortId(), "importPage");
+                        }
+                    }, function (failure) {
+                        me.status = failure;
+                    });
+                },
+                function (failure) {
+                    me.status = failure;
+                },
+                function (increment) {
+                    if (increment.relations != null && increment.relations !== undefined)
+                        me.status = (increment.relations + "/" + me.relationCount + " relations imported.");
+                    else if (increment.competencies != null && increment.competencies !== undefined)
+                        me.status = (increment.competencies + "/" + me.competencyCount + " competencies imported.");
+                    else
+                        me.status = "Importing...";
+                }, false, me.repo);
         },
         importFromFile: function() {
             if (this.importType == "csv") {
