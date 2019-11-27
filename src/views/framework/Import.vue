@@ -809,7 +809,27 @@ export default {
         parseText: function() {
         },
         importFromUrl: function() {
-
+            let me = this;
+            EcRemote.getExpectingString(this.url, null, function(result) {
+                result = JSON.parse(result);
+                var graph = result["@graph"];
+                if (graph != null) {
+                    me.importJsonLd(result);
+                }
+                else {
+                    me.status = "URL must have an '@graph' field at the top level.";
+                    return;
+                }
+                if (graph[0]["@type"].indexOf("Concept") != -1) {
+                    me.status = "Competency Editor cannot be used to import concept schemes.";
+                }
+            }, function(failure) {
+                if (!failure) {
+                    me.status = "Import Error";
+                } else {
+                    me.status = failure;
+                }
+            });
         }
     }
 };
