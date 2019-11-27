@@ -217,7 +217,8 @@ First Level
                 <input
                     type="file"
                     ref="fileInput"
-                    @change="fileChange">
+                    @change="fileChange"
+                    multiple>
                 <div v-if="importType=='csv'">
                     <div>
                         <label>Step 1: Name the framework.</label>
@@ -468,88 +469,90 @@ export default {
                 this.analyzeImportFile();
             }
             this.importType = null;
+            this.firstImport = true;
         },
         analyzeImportFile: function() {
             var me = this;
-            for (let i = 0; i < this.file.length; i++) {
-                var file = this.file[i];
-                if (file.name.endsWith(".csv")) {
-                    CTDLASNCSVImport.analyzeFile(file, function (frameworkCount, competencyCount) {
-                        me.importType = "ctdlasncsv";
-                        me.status = "Import " + frameworkCount + " frameworks and " + competencyCount + " competencies.";
-                    }, function (errorMsg) {
-                        CSVImport.analyzeFile(file, function (data) {
-                            me.importType = "csv";
-                            me.importFrameworkName = file.name.replace(".csv", "");
-                            for (var i = 0; i < data[0].length; i++) {
-                                let column = {};
-                                column.name = data[0][i];
-                                column.index = i;
-                                me.csvColumns.push(column);
-                                if (column.name.toLowerCase().indexOf("name") != -1) {
-                                    me.importCsvColumnName = column;
-                                }
-                                if (column.name.toLowerCase().indexOf("description") != -1) {
-                                    me.importCsvColumnDescription = column;
-                                }
-                                if (column.name.toLowerCase().indexOf("scope") != -1) {
-                                    me.importCsvColumnScope = column;
-                                }
-                                if (column.name.toLowerCase().indexOf("id") != -1) {
-                                    me.importCsvColumnId = column;
-                                }
+            var file = this.file[0];
+            if (file.name.endsWith(".csv")) {
+                CTDLASNCSVImport.analyzeFile(file, function (frameworkCount, competencyCount) {
+                    me.importType = "ctdlasncsv";
+                    me.status = "Import " + frameworkCount + " frameworks and " + competencyCount + " competencies.";
+                }, function (errorMsg) {
+                    CSVImport.analyzeFile(file, function (data) {
+                        me.importType = "csv";
+                        me.importFrameworkName = file.name.replace(".csv", "");
+                        for (var i = 0; i < data[0].length; i++) {
+                            let column = {};
+                            column.name = data[0][i];
+                            column.index = i;
+                            me.csvColumns.push(column);
+                            if (column.name.toLowerCase().indexOf("name") != -1) {
+                                me.importCsvColumnName = column;
                             }
-                            me.status = (me.competencyCount = (data.length - 1)) + " Competencies Detected.";
-                        }, function (error) {
-                            {
-                                me.status = error;
+                            if (column.name.toLowerCase().indexOf("description") != -1) {
+                                me.importCsvColumnDescription = column;
                             }
-                        });
-                    });
-                } else if (file.name.endsWith(".json") || file.name.endsWith(".jsonld")) {
-                    //Try JSON-LD first, checks for @graph
-                    this.analyzeJsonLdFramework(file, function (data, ctdlasn) {
-                        var invalid = false;
-                        if (ctdlasn == "ctdlasnConcept") {
-                            me.status = "Concept Schemes must be imported in the concept scheme editor.";
-                            invalid = true;
+                            if (column.name.toLowerCase().indexOf("scope") != -1) {
+                                me.importCsvColumnScope = column;
+                            }
+                            if (column.name.toLowerCase().indexOf("id") != -1) {
+                                me.importCsvColumnId = column;
+                            }
                         }
-                        else {
-                            me.importType = "ctdlasnjsonld";
-                            me.status = "1 Framework and " + (EcObject.keys(data).length-1) + " Competencies Detected.";                        
-                        }
-                        me.competencyCount = EcObject.keys(data).length;
-                        if (!invalid && (ctdlasn == "ctdlasn" || ctdlasn == "ctdlasnConcept")) {
-                        }
-                        else if (!invalid) {
-                            me.status = "Context is not CTDL-ASN";
-                        }
-                    }, function (error) {
-                        {
-                            //If JSON-LD doesn't work, try JSON
-                            ASNImport.analyzeFile(file, function (data) {
-                                me.importType = "asn";
-                                me.status = "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.";
-                                me.competencyCount = EcObject.keys(data).length;
-                            }, function (error) {
-                                {
-                                    me.status = error;
-                                }
-                            });
-                        }
-                    });
-                } else if (file.name.endsWith(".xml")) {
-                    MedbiqImport.analyzeFile(file, function (data) {
-                        me.importType = "medbiq";
-                        me.importFrameworkName = file.name.replace(".xml", "");
-                        me.status = "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.";
-                        me.competencyCount = EcObject.keys(data).length;
+                        me.status = (me.competencyCount = (data.length - 1)) + " Competencies Detected.";
                     }, function (error) {
                         {
                             me.status = error;
                         }
                     });
-                }
+                });
+            } else if (file.name.endsWith(".json") || file.name.endsWith(".jsonld")) {
+                //Try JSON-LD first, checks for @graph
+                this.analyzeJsonLdFramework(file, function (data, ctdlasn) {
+                    var invalid = false;
+                    if (ctdlasn == "ctdlasnConcept") {
+                        me.status = "Concept Schemes must be imported in the concept scheme editor.";
+                        invalid = true;
+                    }
+                    else {
+                        me.importType = "ctdlasnjsonld";
+                        me.status = "1 Framework and " + (EcObject.keys(data).length-1) + " Competencies Detected.";                        
+                    }
+                    me.competencyCount = EcObject.keys(data).length;
+                    if (!invalid && (ctdlasn == "ctdlasn" || ctdlasn == "ctdlasnConcept")) {
+                    }
+                    else if (!invalid) {
+                        me.status = "Context is not CTDL-ASN";
+                    }
+                }, function (error) {
+                    {
+                        //If JSON-LD doesn't work, try JSON
+                        ASNImport.analyzeFile(file, function (data) {
+                            me.importType = "asn";
+                            me.status = "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.";
+                            me.competencyCount = EcObject.keys(data).length;
+                        }, function (error) {
+                            {
+                                me.status = error;
+                            }
+                        });
+                    }
+                });
+            } else if (file.name.endsWith(".xml")) {
+                MedbiqImport.analyzeFile(file, function (data) {
+                    me.importType = "medbiq";
+                    me.importFrameworkName = file.name.replace(".xml", "");
+                    me.status = "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.";
+                    me.competencyCount = EcObject.keys(data).length;
+                }, function (error) {
+                    {
+                        me.status = error;
+                    }
+                });
+            }
+            if (!me.firstImport) {
+                me.importFromFile();
             }
         },
         analyzeCsvRelation: function(e) {
@@ -642,8 +645,10 @@ export default {
                         f.addCompetency(competencies[i].shortId());
                     me.repo.saveTo(f, function (success) {
                         me.file.splice(0, 1);
-                        if (me.file.length > 0)
+                        if (me.file.length > 0) {
+                            me.firstImport = false;
                             me.analyzeImportFile();
+                        }
                         else {
                             me.framework = f;
                             me.spitEvent("importFinished", f.shortId(), "importPage");
@@ -665,8 +670,10 @@ export default {
             let me = this;
             ASNImport.importCompetencies(this.repo.selectedServer, identity, true, function (competencies, f) {
                     me.file.splice(0, 1);
-                    if (me.file.length > 0)
+                    if (me.file.length > 0) {
+                        me.firstImport = false;
                         me.analyzeImportFile();
+                    }
                     else {
                         me.framework = f;
                         me.spitEvent("importFinished", f.shortId(), "importPage");
@@ -700,6 +707,11 @@ export default {
                         me.framework = frameworks[i];
                         me.status = "Import Finished.";
                         me.spitEvent("importFinished", frameworks[i].shortId(), "importPage");
+                    }
+                    me.file.splice(0, 1);
+                    if (me.file.length > 0) {
+                        me.firstImport = false;
+                        me.analyzeImportFile();
                     }
                 },function (failure) {
                     me.status = failure;
@@ -737,8 +749,10 @@ export default {
                     }
                     repo.saveTo(f, function (success) {
                         me.file.splice(0, 1);
-                        if (me.file.length > 0)
+                        if (me.file.length > 0) {
+                            me.firstImport = false;
                             me.analyzeImportFile();
+                        }
                         else {
                             me.framework = f;
                             me.status = "Import Finished.";
@@ -784,6 +798,11 @@ export default {
                     }
                     me.status = "Import Finished.";
                     me.spitEvent("importFinished", me.framework.shortId(), "importPage");
+                    me.file.splice(0, 1);
+                    if (me.file.length > 0) {
+                        me.firstImport = false;
+                        me.analyzeImportFile();
+                    }
             }, function(failure) {
                 me.status = "Import failed. Check your import file for any errors.";
                 console.log(failure.statusText);
