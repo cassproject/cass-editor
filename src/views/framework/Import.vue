@@ -314,6 +314,23 @@ First Level
                         {{ status }}
                     </div>
                 </center>
+                <div v-if="caseDocs.length">
+                    <ul>
+                        <li v-for="doc in caseDocs" :key="doc.id">
+                            <input type="checkbox" v-model="doc.checked" v-if="!doc.loading && !doc.success && !doc.error">
+                            <i class="fa fa-circle-notch fa-spin" v-if="doc.loading"></i>
+                            <i class="fa fa-check" v-else-if="doc.success"></i>
+                            <i class="fa fa-exclamation-triangle" v-else-if="doc.error"></i>
+                            {{ doc.name }}
+                        </li>
+                    </ul>
+                    <button @click="importCase">
+                        Import
+                    </button>
+                    <button @click="cancelCase">
+                        Cancel
+                    </button>
+                </div>
             </div>
             <div
                 class="section-import section-text"
@@ -424,7 +441,9 @@ export default {
             importCsvColumnTarget: null,
             csvRelationColumns: [],
             relationCount: 0,
-            queryParams: {}
+            queryParams: {},
+            caseDocs: [],
+            caseCancel: false
         };
     },
     watch: {
@@ -823,7 +842,112 @@ export default {
             }
         },
         connectToServer: function() {
+            this.caseDocs.splice(0, this.caseDocs.length);
+            // To do: add import from CaSS Server
+            this.caseDetectEndpoint();
+        },
+        caseDetectEndpoint: function() {
+            var me = this;
+            if (!this.serverUrl.endsWith("/")) {
+                this.serverUrl += "/";
+            }
+            EcRemote.getExpectingString(this.serverUrl, "ims/case/v1p0/CFDocuments", function(success) {
+                me.caseGetDocsSuccess(success);
+            }, function(failure) {
+                me.caseGetServerSide();
+            });
+        },
+        caseGetDocsSuccess: function(result) {
+            result = JSON.parse(result);
+            if (result.CFDocuments == null)
+                this.status = "No frameworks found. Please check the URL and try again.";
+            else {
+                this.status = result.CFDocuments.length + " frameworks detected.";
+                for (var i = 0; i < result.CFDocuments.length; i++) {
+                    var doc = result.CFDocuments[i];
+                    var obj = {};
+                    obj.name = doc.title;
+                    obj.id = doc.uri;
+                    obj.identifier = doc.identifier;
+                    obj.loading = false;
+                    obj.success = false;
+                    obj.error = false;
+                    obj.checked = false;
+                    this.caseDocs.push(obj);
+                }
+                this.caseCancel = false;
+            }
+        },
+        caseGetServerSide: function() {
+            var me = this;
+            EcRemote.getExpectingString(this.repo.selectedServer, "ims/case/getDocs?url=" + this.serverUrl, function(success) {
+                me.caseGetDocsSuccess(success);
+            }, function(failure) {
+                me.status = "No frameworks found. Please check the URL and try again.";
+            });
+        },
+        importCase: function () {
+            for (var i = this.caseDocs.length-1; i >= 0; i--) {
+                if (!this.caseDocs[i].checked) {
+                    this.caseDocs.splice(i, 1);
+                }
+                else if (this.caseDocs[i].success == false && this.caseDocs[i].error == false) {
+                    this.caseDocs[i].loading = true;
+                }
+            }
+            if (!this.caseCancel) {
+                let lis = 0;
+                let firstIndex = null;
+                for (var i = 0; i < this.caseDocs.length; i++) {
+                    if (this.caseDocs[i].loading == true) {
+                        lis++;
+                        if (firstIndex == null) {
+                            firstIndex = i;
+                        }
+                    }
+                }
+                if (lis == 0) {
+                    this.status = "Import finished.";
+                } else {
+                    var me = this;
+                    var id = this.caseDocs[firstIndex].id;
+                    var uuid = this.caseDocs[firstIndex].identifier;
 
+                    var identity = EcIdentityManager.ids[0];
+                    var formData = new FormData();
+                    if (identity != null)
+                        formData.append('owner',identity.ppk.toPk().toPem());
+                    EcRemote.postInner(this.repo.selectedServer, "ims/case/harvest?caseEndpoint=" + this.serverUrl + "&dId=" + uuid, formData, null, function(success) {
+                        me.caseDocs[firstIndex].loading = false;
+                        me.caseDocs[firstIndex].success = true;
+                        EcFramework.get(id, function(f) {
+                            me.framework = f;
+                            me.spitEvent("importFinished", f.shortId(), "importPage");
+                        }, console.error);
+                        me.importCase();
+                    }, function(failure) {
+                        me.caseDocs[firstIndex].loading = false;
+                        me.caseDocs[firstIndex].error = true;
+                        me.importCase();
+                    });
+                }
+            }// if not canceled
+        },
+        cancelCase: function() {
+            this.caseCancel = true;
+            var first = null;
+            for (var i = 0; i < this.caseDocs.length; i++) {
+                if (this.caseDocs[i].loading == true) {
+                    if (first == null) {
+                        first = i;
+                    }
+                    else {
+                        this.caseDocs[i].loading = false;
+                        this.caseDocs[i].error = true;
+                    }
+                }
+            }
+            this.status = "Import Canceled."
         },
         parseText: function() {
         },
