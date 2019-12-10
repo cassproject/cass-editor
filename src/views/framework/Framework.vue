@@ -46,10 +46,15 @@ import Thing from '@/lode/components/lode/Thing.vue';
 import Hierarchy from '@/lode/components/lode/Hierarchy.vue';
 export default {
     name: "Framework",
+    props: {
+        exportType: String
+    },
     data: function() {
         return {
             repo: window.repo,
-            framework: EcFramework.getBlocking(this.$route.params.frameworkId)
+            framework: EcFramework.getBlocking(this.$route.params.frameworkId),
+            exportLink: null,
+            exportGuid: null
         };
     },
     computed: {
@@ -71,7 +76,73 @@ export default {
             }
         }
     },
-    components: {Hierarchy, Thing}
+    components: {Hierarchy, Thing},
+    created: function() {
+        if (EcRepository.shouldTryUrl(this.framework.id) == false) {
+            this.exportLink = this.repo.selectedServer + "data/" + EcCrypto.md5(this.framework.id);
+            this.exportGuid = EcCrypto.md5(this.framework.id);
+        } else {
+            this.exportLink = this.framework.id;
+            this.exportGuid = this.framework.getGuid();
+        }
+    },
+    watch: {
+        exportType: function() {
+            if (this.exportType == "asn") {
+                this.exportAsn();
+            } else if (this.exportType == "jsonld") {
+                this.exportJsonld();
+            } else if (this.exportType == "rdfQuads") {
+                this.exportRdfQuads();
+            } else if (this.exportType == "rdfJson") {
+                this.exportRdfJson();
+            } else if (this.exportType == "rdfXml") {
+                this.exportRdfXml();
+            } else if (this.exportType == "turtle") {
+                this.exportTurtle();
+            } else if (this.exportType == "ctdlasnJsonld") {
+                this.exportCtdlasnJsonld();
+            } else if (this.exportType == "ctdlasnCsv") {
+                this.exportCtdlAsnCsv();
+            } else if (this.exportType == "csv") {
+                this.exportCsv();
+            } else if (this.exportType == "case") {
+                this.exportCase();
+            }
+        }
+    },
+    methods: {
+        exportAsn: function() {
+            window.open(this.exportLink.replace("/data/", "/asn/"), '_blank');
+        },
+        exportJsonld: function() {
+            window.open(this.exportLink, '_blank');
+        },
+        exportRdfQuads: function() {
+
+        },
+        exportRdfJson: function() {
+
+        },
+        exportRdfXml: function() {
+
+        },
+        exportTurtle: function() {
+
+        },
+        exportCtdlasnJsonld: function() {
+            window.open(this.exportLink.replace("/data/", "/ceasn/"), '_blank');
+        },
+        exportCtdlasnCsv: function() {
+
+        },
+        exportCsv: function() {
+
+        },
+        exportCase: function() {
+            window.open(this.repo.selectedServer + "ims/case/v1p0/CFDocuments/" + this.exportGuid, '_blank');
+        }
+    }
 };
 </script>
 

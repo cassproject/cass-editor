@@ -32,34 +32,34 @@
                         </a>
 
                         <div class="navbar-dropdown">
-                            <a class="navbar-item">
-                                Achivement Standards Network (RDF+JSON)
+                            <a class="navbar-item" @click="exportType='asn'">
+                                Achievement Standards Network (RDF+JSON)
                             </a>
-                            <a class="navbar-item">
+                            <a class="navbar-item" @click="exportType='jsonld'">
                                 CaSS (JSON-LD)
                             </a>
-                            <a class="navbar-item">
+                            <a class="navbar-item" @click="exportType='rdfQuads'">
                                 CaSS (RDF Quads)
                             </a>
-                            <a class="navbar-item">
+                            <a class="navbar-item" @click="exportType='rdfJson'">
                                 CaSS (RDF+JSON)
                             </a>
-                            <a class="navbar-item">
+                            <a class="navbar-item" @click="exportType='rdfXml'">
                                 CaSS (RDF+XML)
                             </a>
-                            <a class="navbar-item">
+                            <a class="navbar-item" @click="exportType='turtle'">
                                 CaSS (Turtle)
                             </a>
-                            <a class="navbar-item">
+                            <a class="navbar-item" @click="exportType='ctdlasnJsonld'">
                                 Credential Engine ASN (JSON-LD)
                             </a>
-                            <a class="navbar-item">
+                            <a class="navbar-item" @click="exportType='ctdlasnCsv'">
                                 Credential Engine ASN (CSV)
                             </a>
-                            <a class="navbar-item">
+                            <a class="navbar-item" @click="exportType='csv'">
                                 Table (CSV)
                             </a>
-                            <a class="navbar-item">
+                            <a class="navbar-item" @click="exportType='case'">
                                 IMS Global CASE (JSON)
                             </a>
                         </div>
@@ -99,7 +99,7 @@
         </nav>
         <div class="custom-overflow">
             <div class="is-multiline is-desktop is-centered">
-                <router-view class="is-full pagesFull" />
+                <router-view class="is-full pagesFull" :exportType="exportType" />
             </div>
         </div>
     </div>
@@ -152,7 +152,10 @@
 <script>
 export default {
     data: function() {
-        return {navBarActive: false};
+        return {
+            navBarActive: false,
+            exportType: null
+        };
     }
 };
 </script>
