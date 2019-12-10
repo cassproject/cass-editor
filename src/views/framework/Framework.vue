@@ -103,7 +103,7 @@ export default {
             } else if (this.exportType == "ctdlasnJsonld") {
                 this.exportCtdlasnJsonld();
             } else if (this.exportType == "ctdlasnCsv") {
-                this.exportCtdlAsnCsv();
+                this.exportCtdlasnCsv();
             } else if (this.exportType == "csv") {
                 this.exportCsv();
             } else if (this.exportType == "case") {
@@ -134,10 +134,15 @@ export default {
             window.open(this.exportLink.replace("/data/", "/ceasn/"), '_blank');
         },
         exportCtdlasnCsv: function() {
-
+            var me = this;
+            EcRemote.getExpectingString(this.exportLink.replace("/data/", "/ceasn/"), null, function(success) {
+                CSVExport.exportCTDLASN(JSON.parse(success), me.framework.getName());
+            }, function(error) {
+                console.error;
+            });
         },
         exportCsv: function() {
-
+            CSVExport.exportFramework(this.framework.id, console.log, console.log);
         },
         exportCase: function() {
             window.open(this.repo.selectedServer + "ims/case/v1p0/CFDocuments/" + this.exportGuid, '_blank');
