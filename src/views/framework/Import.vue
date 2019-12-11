@@ -851,7 +851,7 @@ export default {
             if (!this.serverUrl.endsWith("/")) {
                 this.serverUrl += "/";
             }
-            EcRemote.getExpectingString(this.serverUrl, "ims/case/v1p0/CFDocuments", function(success) {
+            this.get(this.serverUrl, "ims/case/v1p0/CFDocuments", {"Accept": "application/json"}, function(success) {
                 me.caseGetDocsSuccess(success);
             }, function(failure) {
                 me.caseGetServerSide();

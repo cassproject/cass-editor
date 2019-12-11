@@ -12,6 +12,7 @@
     "bulma": "^0.7.5",
     "cassproject": "^2.11.2",
     "core-js": "^2.6.5",
+    "file-saver": "^2.0.2",
     "jsonld": "^1.8.1",
     "vue": "^2.6.10",
     "vue-moment": "^4.0.0",

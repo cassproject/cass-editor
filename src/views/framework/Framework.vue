@@ -44,11 +44,14 @@
 <script>
 import Thing from '@/lode/components/lode/Thing.vue';
 import Hierarchy from '@/lode/components/lode/Hierarchy.vue';
+import saveAs from 'file-saver';
+import common from '@/mixins/common.js'
 export default {
     name: "Framework",
     props: {
         exportType: String
     },
+    mixins: [common],
     data: function() {
         return {
             repo: window.repo,
@@ -112,6 +115,10 @@ export default {
         }
     },
     methods: {
+        download: function(fileName, data) {
+            var blob = new Blob([data], {type: "text/plain;charset=utf-8"});
+            saveAs(blob, fileName);
+        },
         exportAsn: function() {
             window.open(this.exportLink.replace("/data/", "/asn/"), '_blank');
         },
@@ -119,16 +126,40 @@ export default {
             window.open(this.exportLink, '_blank');
         },
         exportRdfQuads: function() {
-
+            var fileName = this.framework.getName();
+            var me = this;
+            this.get(this.exportLink, null, {"Accept": "text/n4"}, function(success) {
+                me.download(fileName + ".n4", success);
+            }, function(failure) {
+                console.log(failure);
+            });
         },
         exportRdfJson: function() {
-
+            var fileName = this.framework.getName();
+            var me = this;
+            this.get(this.exportLink, null, {"Accept": "application/rdf+json"}, function(success) {
+                me.download(fileName + ".rdf.json", success);
+            }, function(failure) {
+                console.log(failure);
+            });
         },
         exportRdfXml: function() {
-
+            var fileName = this.framework.getName();
+            var me = this;
+            this.get(this.exportLink, null, {"Accept": "application/rdf+xml"}, function(success) {
+                me.download(fileName + ".rdf.xml", success);
+            }, function(failure) {
+                console.log(failure);
+            });
         },
         exportTurtle: function() {
-
+            var fileName = this.framework.getName();
+            var me = this;
+            this.get(this.exportLink, null, {"Accept": "text/turtle"}, function(success) {
+                me.download(fileName + ".turtle", success);
+            }, function(failure) {
+                console.log(failure);
+            });
         },
         exportCtdlasnJsonld: function() {
             window.open(this.exportLink.replace("/data/", "/ceasn/"), '_blank');
