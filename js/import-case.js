@@ -72,11 +72,16 @@ importCase = function () {
 	if (!isImportCaseCanceled) {
 		let lis = $(".caseImportTemplate.unfinished");
 		if (lis.length == 0) {
-			$("#search").val("\"" + $("#urlEndpoint").val() + "\"");
-			firstLoad = true;
-			searchFrameworks({
-				frameworksOnly: true
-			});
+			if (framework != null) {
+				showPage("framework");
+				loading("Loading framework...");
+	            populateFramework();
+	            selectedCompetency = null;
+	            refreshSidebar();
+	        }
+	        else {
+	        	showPage("importSection");
+	        }
 		} else {
 			lis.find("input").hide();
 			var id = lis.first().attr("id");
@@ -98,8 +103,10 @@ importCase = function () {
 					EcFramework.get(id, function(f) {
 						framework = f;
 						spitEvent("importFinished", f.shortId());
-					}, error);
-					importCase();
+						importCase();
+					}, function(error) {
+						importCase();
+					});
 				},
 				failure: function (failure) {
 					$("#caseImportSection [id='" + id + "']").removeClass("unfinished").addClass("finished").find(".loading").hide().parent().find(".error").show().attr("title", failure.statusText);
