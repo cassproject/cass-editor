@@ -10,6 +10,9 @@
 import List from '@/lode/components/lode/List.vue';
 export default {
     name: "Frameworks",
+    props: {
+        queryParams: Object
+    },
     data: function() {
         return {
             repo: window.repo

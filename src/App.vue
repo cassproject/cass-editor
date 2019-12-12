@@ -99,7 +99,7 @@
         </nav>
         <div class="custom-overflow">
             <div class="is-multiline is-desktop is-centered">
-                <router-view class="is-full pagesFull" :exportType="exportType" />
+                <router-view class="is-full pagesFull" :exportType="exportType" :queryParams="queryParams" />
             </div>
         </div>
     </div>
@@ -154,8 +154,14 @@ export default {
     data: function() {
         return {
             navBarActive: false,
-            exportType: null
+            exportType: null,
+            queryParams: null
         };
+    },
+    created: function() {
+        if (this.$route.query) {
+            this.queryParams = this.$route.query;
+        }
     }
 };
 </script>

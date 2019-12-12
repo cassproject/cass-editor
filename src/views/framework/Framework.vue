@@ -49,7 +49,8 @@ import common from '@/mixins/common.js'
 export default {
     name: "Framework",
     props: {
-        exportType: String
+        exportType: String,
+        queryParams: Object
     },
     mixins: [common],
     data: function() {

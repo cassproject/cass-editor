@@ -12,18 +12,19 @@ export default {
                 selectedCompetencyName: this.selectedCompetency == null ? null : (this.selectedCompetency.getName == null ? this.selectedCompetency["skos:prefLabel"] : this.selectedCompetency.getName()),
                 visiblePage: page
             };
-            /*if (queryParams.ceasnDataFields == "true") {
-                if (framework != null)
-                    if (framework.getGuid != null) {
-                        if (framework.getGuid().startsWith("ce-"))
-                            evt.selectedFrameworkCtid = framework == null ? null : framework.getGuid();
-                        else if (framework.getGuid().matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"))
-                            evt.selectedFrameworkCtid = framework == null ? null : "ce-" + framework.getGuid();
-                        else
-                            evt.selectedFrameworkCtid = "ce-" + new UUID(3, "nil", framework.shortId()).format();
-        
+            if (this.queryParams && this.queryParams.ceasnDataFields === "true") {
+                if (this.framework != null) {
+                    if (this.framework.getGuid != null) {
+                        if (this.framework.getGuid().startsWith("ce-")) {
+                            evt.selectedFrameworkCtid = this.framework == null ? null : this.framework.getGuid();
+                        } else if (this.framework.getGuid().matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")) {
+                            evt.selectedFrameworkCtid = this.framework == null ? null : "ce-" + this.framework.getGuid();
+                        } else {
+                            evt.selectedFrameworkCtid = "ce-" + new UUID(3, "nil", this.framework.shortId()).format();
+                        }
                     }
-                if (selectedCompetency != null)
+                }
+                /*if (selectedCompetency != null)
                     if (selectedCompetency.getGuid != null) {
                         if (selectedCompetency.getGuid().startsWith("ce-"))
                             evt.selectedCompetencyCtid = selectedCompetency == null ? null : selectedCompetency.getGuid();
@@ -31,8 +32,8 @@ export default {
                             evt.selectedCompetencyCtid = selectedCompetency == null ? null : "ce-" + selectedCompetency.getGuid();
                         else
                             evt.selectedCompetencyCtid = "ce-" + new UUID(3, "nil", framework.shortId() + selectedCompetency.shortId()).format();
-                    }
-            }*/
+                    }*/
+            }
             console.log(evt);
             /*if (parent != null)
                 if (queryParams.origin != null && queryParams.origin != '')

@@ -398,6 +398,7 @@ import common from '@/mixins/common.js'
 export default {
     name: "Import",
     props: {
+        queryParams: Object
     },
     mixins: [common],
     components: {Hierarchy},
@@ -441,7 +442,6 @@ export default {
             importCsvColumnTarget: null,
             csvRelationColumns: [],
             relationCount: 0,
-            queryParams: {},
             caseDocs: [],
             caseCancel: false
         };
