@@ -37,10 +37,20 @@
                     <br>
                     You can select the columns to use to describe the id, name, description, and other fields.
                 </h2>
-                <a class="right" :href="csvTemplateCompetenciesFile" download='Template - Competencies.csv'>Template - Competencies <i class="fa fa-download" /></a>
-                <a :href="csvExampleCompetenciesFile" download='CAP Software Engineering - Competencies.csv'>Example - Competencies <i class="fa fa-download" /></a>
-                <a class="right" :href="csvTemplateRelationsFile" download='Template - Relations.csv'>Template - Relations <i class="fa fa-download" /></a>
-                <a :href="csvExampleRelationsFile" download='CAP Software Engineering - Relations.csv'>Example - Relations <i class="fa fa-download" /></a>
+                <a
+                    :href="csvExampleCompetenciesFile"
+                    download="CAP Software Engineering - Competencies.csv">Example - Competencies <i class="fa fa-download" /></a>
+                <a
+                    :href="csvExampleRelationsFile"
+                    download="CAP Software Engineering - Relations.csv">Example - Relations <i class="fa fa-download" /></a>
+                <a
+                    class=""
+                    :href="csvTemplateCompetenciesFile"
+                    download="Template - Competencies.csv">Template - Competencies <i class="fa fa-download" /></a>
+                <a
+                    class=""
+                    :href="csvTemplateRelationsFile"
+                    download="Template - Relations.csv">Template - Relations <i class="fa fa-download" /></a>
             </div>
             <div
                 class="menu-item"
@@ -60,8 +70,13 @@
                     <br>
                     Any field with multiple values must be formatted as entry 1|entry 2.
                 </h2>
-                <a class="right" :href="ctdlAsnCsvTemplateFile" download='CTDL-ASN.ONET.template.csv'>Template <i class="fa fa-download" /></a>
-                <a :href="ctdlAsnCsvExampleFile" download='CTDL-ASN.ONET.example.csv'>Example <i class="fa fa-download" /></a>
+                <a
+                    class="right"
+                    :href="ctdlAsnCsvTemplateFile"
+                    download="CTDL-ASN.ONET.template.csv">Template <i class="fa fa-download" /></a>
+                <a
+                    :href="ctdlAsnCsvExampleFile"
+                    download="CTDL-ASN.ONET.example.csv">Example <i class="fa fa-download" /></a>
             </div>
             <div
                 class="menu-item"
@@ -72,7 +87,9 @@
                     <br>
                     Using this format, you can import competencies exported from a system that exports Medbiquitous formatted XML.
                 </h2>
-                <a :href="medbiquitousFile" download='educational_achievement_sample_1June2012.xml'>Example <i class="fa fa-download" /></a>
+                <a
+                    :href="medbiquitousFile"
+                    download="educational_achievement_sample_1June2012.xml">Example <i class="fa fa-download" /></a>
             </div>
             <div
                 class="menu-item"
@@ -86,7 +103,9 @@
                     Using this format,
                     you can import competencies exported from achievementstandards.org and other systems in an RDF JSON format.
                 </h2>
-                <a :href="asnRdfJsonFile" download='D2695955.json'>Example <i class="fa fa-download" /></a>
+                <a
+                    :href="asnRdfJsonFile"
+                    download="D2695955.json">Example <i class="fa fa-download" /></a>
             </div>
             <div
                 class="menu-item"
@@ -97,7 +116,9 @@
                     <br>
                     Using this format, you can import a framework and competencies from a system that exports CTDL-ASN formatted JSON-LD.
                 </h2>
-                <a :href="ctdlAsnJsonldFile" download='DQP.jsonld'>Example <i class="fa fa-download" /></a>
+                <a
+                    :href="ctdlAsnJsonldFile"
+                    download="DQP.jsonld">Example <i class="fa fa-download" /></a>
             </div>
             <div
                 class="menu-item"
@@ -168,7 +189,7 @@ First Level
                 <div class="tabs is-small is-boxed">
                     <ul>
                         <li :class="{ 'is-active': method === 'file'}">
-                            <a @click="method = 'file'">
+                            <a @click="method = 'file';framework = null;status='';">
                                 <span class="icon is-small"><i
                                     class="fas fa-file"
                                     aria-hidden="true" /></span>
@@ -176,7 +197,7 @@ First Level
                             </a>
                         </li>
                         <li :class="{ 'is-active': method === 'server'}">
-                            <a @click="method = 'server'">
+                            <a @click="method = 'server';framework = null;status='';">
                                 <span class="icon is-small">
                                     <i
                                         class="fa fa-server"
@@ -186,7 +207,7 @@ First Level
                             </a>
                         </li>
                         <li :class="{ 'is-active': method === 'text'}">
-                            <a @click="method = 'text'">
+                            <a @click="method = 'text';framework = null;status='';">
                                 <span class="icon is-small">
                                     <i
                                         class="fas fa-paste"
@@ -196,7 +217,7 @@ First Level
                             </a>
                         </li>
                         <li :class="{ 'is-active': method === 'url'}">
-                            <a @click="method = 'url'">
+                            <a @click="method = 'url';framework = null;status='';">
                                 <span class="icon is-small">
                                     <i
                                         class="fas fa-link"
@@ -231,51 +252,88 @@ First Level
                     <div>
                         <label>Step 3: Select the Name column.</label>
                         <select v-model="importCsvColumnName">
-                            <option v-for="(column, i) in csvColumns" :key="i" :value="column">{{column.name}}</option>
+                            <option
+                                v-for="(column, i) in csvColumns"
+                                :key="i"
+                                :value="column">
+                                {{ column.name }}
+                            </option>
                         </select>
                     </div>
                     <div>
                         <label>Step 4: Select the Description column (optional).</label>
                         <select v-model="importCsvColumnDescription">
                             <option>N/A</option>
-                            <option v-for="(column, i) in csvColumns" :key="i" :value="column">{{column.name}}</option>
+                            <option
+                                v-for="(column, i) in csvColumns"
+                                :key="i"
+                                :value="column">
+                                {{ column.name }}
+                            </option>
                         </select>
                     </div>
                     <div>
                         <label>Step 5: Select the Scope column (optional).</label>
                         <select v-model="importCsvColumnScope">
                             <option>N/A</option>
-                            <option v-for="(column, i) in csvColumns" :key="i" :value="column">{{column.name}}</option>
+                            <option
+                                v-for="(column, i) in csvColumns"
+                                :key="i"
+                                :value="column">
+                                {{ column.name }}
+                            </option>
                         </select>
                     </div>
                     <div>
                         <label>Step 6: Select the ID column (optional). If chosen, this should be a URL from another CaSS system or a non-numeric ID.</label>
                         <select v-model="importCsvColumnId">
                             <option>N/A</option>
-                            <option v-for="(column, i) in csvColumns" :key="i" :value="column">{{column.name}}</option>
+                            <option
+                                v-for="(column, i) in csvColumns"
+                                :key="i"
+                                :value="column">
+                                {{ column.name }}
+                            </option>
                         </select>
                     </div>
                     <div>
                         <label>Step 7: Select a relation file (optional). The relation source/target must be in the form of ID or Name, and the relation types should be "requires", "desires", "narrows", "isEnabledBy", "isRelatedTo", or "isEquivalentTo".</label>
-                        <input type="file" @change="analyzeCsvRelation">
+                        <input
+                            type="file"
+                            @change="analyzeCsvRelation">
                     </div>
                     <div v-if="csvRelationFile">
                         <div>
                             <label>Step 8: Select the Source column.</label>
                             <select v-model="importCsvColumnSource">
-                                <option v-for="(column, i) in csvRelationColumns" :key="i" :value="column">{{column.name}}</option>
+                                <option
+                                    v-for="(column, i) in csvRelationColumns"
+                                    :key="i"
+                                    :value="column">
+                                    {{ column.name }}
+                                </option>
                             </select>
                         </div>
                         <div>
                             <label>Step 9: Select the Relation Type column.</label>
                             <select v-model="importCsvColumnRelationType">
-                                <option v-for="(column, i) in csvRelationColumns" :key="i" :value="column">{{column.name}}</option>
+                                <option
+                                    v-for="(column, i) in csvRelationColumns"
+                                    :key="i"
+                                    :value="column">
+                                    {{ column.name }}
+                                </option>
                             </select>
                         </div>
                         <div>
                             <label>Step 10: Select the Target column.</label>
                             <select v-model="importCsvColumnTarget">
-                                <option v-for="(column, i) in csvRelationColumns" :key="i" :value="column">{{column.name}}</option>
+                                <option
+                                    v-for="(column, i) in csvRelationColumns"
+                                    :key="i"
+                                    :value="column">
+                                    {{ column.name }}
+                                </option>
                             </select>
                         </div>
                     </div>
@@ -316,11 +374,22 @@ First Level
                 </center>
                 <div v-if="caseDocs.length">
                     <ul>
-                        <li v-for="doc in caseDocs" :key="doc.id">
-                            <input type="checkbox" v-model="doc.checked" v-if="!doc.loading && !doc.success && !doc.error">
-                            <i class="fa fa-circle-notch fa-spin" v-if="doc.loading"></i>
-                            <i class="fa fa-check" v-else-if="doc.success"></i>
-                            <i class="fa fa-exclamation-triangle" v-else-if="doc.error"></i>
+                        <li
+                            v-for="doc in caseDocs"
+                            :key="doc.id">
+                            <input
+                                type="checkbox"
+                                v-model="doc.checked"
+                                v-if="!doc.loading && !doc.success && !doc.error">
+                            <i
+                                class="fa fa-circle-notch fa-spin"
+                                v-if="doc.loading" />
+                            <i
+                                class="fa fa-check"
+                                v-else-if="doc.success" />
+                            <i
+                                class="fa fa-exclamation-triangle"
+                                v-else-if="doc.error" />
                             {{ doc.name }}
                         </li>
                     </ul>
@@ -351,8 +420,8 @@ First Level
                     containerType="Framework"
                     containerNodeProperty="competency"
                     containerEdgeProperty="relation"
-                    nodeType="Competency"
-                    edgeType="Relation"
+                    nodeType="EcCompetency"
+                    edgeType="EcAlignment"
                     edgeRelationProperty="relationType"
                     edgeRelationLiteral="narrows"
                     edgeSourceProperty="source"
@@ -369,12 +438,26 @@ First Level
                         v-model="url"
                         type="url">
                     <button @click="importFromUrl">
-                        Check
+                        Import
                     </button>
                     <div>
                         {{ status }}
                     </div>
                 </center>
+                <Hierarchy
+                    v-if="framework"
+                    :container="framework"
+                    containerType="Framework"
+                    containerNodeProperty="competency"
+                    containerEdgeProperty="relation"
+                    nodeType="EcCompetency"
+                    edgeType="EcAlignment"
+                    edgeRelationProperty="relationType"
+                    edgeRelationLiteral="narrows"
+                    edgeSourceProperty="source"
+                    edgeTargetProperty="target"
+                    editable="false"
+                    :repo="repo" />
             </div>
         </div>
     </div>
@@ -394,7 +477,7 @@ import ctdlAsnJsonldConcepts from 'file-loader!../../../files/ConnectingCredenti
 import ctdlAsnJsonld from 'file-loader!../../../files/DQP.jsonld';
 import asnRdfJson from 'file-loader!../../../files/D2695955';
 import medbiquitous from 'file-loader!../../../files/educational_achievement_sample_1June2012.xml';
-import common from '@/mixins/common.js'
+import common from '@/mixins/common.js';
 export default {
     name: "Import",
     props: {
@@ -457,7 +540,6 @@ export default {
                     me.status = competencies.length + " competencies and " + relations.length + " relations.";
                     var f = new EcFramework();
                     me.framework = null;
-                    me.$nextTick(function() { this.framework = f; });
                     for (var i = 0; i < competencies.length; i++) {
                         EcRepository.cache[competencies[i].shortId()] = competencies[i];
                         f.addCompetency(competencies[i].shortId());
@@ -466,6 +548,7 @@ export default {
                         EcRepository.cache[relations[i].shortId()] = relations[i];
                         f.addRelation(relations[i].shortId());
                     }
+                    me.$nextTick(function() { me.framework = f; });
                 }, function(status) {
                     me.status = status;
                 },
@@ -494,11 +577,11 @@ export default {
             var me = this;
             var file = this.file[0];
             if (file.name.endsWith(".csv")) {
-                CTDLASNCSVImport.analyzeFile(file, function (frameworkCount, competencyCount) {
+                CTDLASNCSVImport.analyzeFile(file, function(frameworkCount, competencyCount) {
                     me.importType = "ctdlasncsv";
                     me.status = "Import " + frameworkCount + " frameworks and " + competencyCount + " competencies.";
-                }, function (errorMsg) {
-                    CSVImport.analyzeFile(file, function (data) {
+                }, function(errorMsg) {
+                    CSVImport.analyzeFile(file, function(data) {
                         me.importType = "csv";
                         me.importFrameworkName = file.name.replace(".csv", "");
                         for (var i = 0; i < data[0].length; i++) {
@@ -520,38 +603,36 @@ export default {
                             }
                         }
                         me.status = (me.competencyCount = (data.length - 1)) + " Competencies Detected.";
-                    }, function (error) {
+                    }, function(error) {
                         {
                             me.status = error;
                         }
                     });
                 });
             } else if (file.name.endsWith(".json") || file.name.endsWith(".jsonld")) {
-                //Try JSON-LD first, checks for @graph
-                this.analyzeJsonLdFramework(file, function (data, ctdlasn) {
+                // Try JSON-LD first, checks for @graph
+                this.analyzeJsonLdFramework(file, function(data, ctdlasn) {
                     var invalid = false;
                     if (ctdlasn == "ctdlasnConcept") {
                         me.status = "Concept Schemes must be imported in the concept scheme editor.";
                         invalid = true;
-                    }
-                    else {
+                    } else {
                         me.importType = "ctdlasnjsonld";
-                        me.status = "1 Framework and " + (EcObject.keys(data).length-1) + " Competencies Detected.";                        
+                        me.status = "1 Framework and " + (EcObject.keys(data).length - 1) + " Competencies Detected.";
                     }
                     me.competencyCount = EcObject.keys(data).length;
                     if (!invalid && (ctdlasn == "ctdlasn" || ctdlasn == "ctdlasnConcept")) {
-                    }
-                    else if (!invalid) {
+                    } else if (!invalid) {
                         me.status = "Context is not CTDL-ASN";
                     }
-                }, function (error) {
+                }, function(error) {
                     {
-                        //If JSON-LD doesn't work, try JSON
-                        ASNImport.analyzeFile(file, function (data) {
+                        // If JSON-LD doesn't work, try JSON
+                        ASNImport.analyzeFile(file, function(data) {
                             me.importType = "asn";
                             me.status = "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.";
                             me.competencyCount = EcObject.keys(data).length;
-                        }, function (error) {
+                        }, function(error) {
                             {
                                 me.status = error;
                             }
@@ -559,12 +640,12 @@ export default {
                     }
                 });
             } else if (file.name.endsWith(".xml")) {
-                MedbiqImport.analyzeFile(file, function (data) {
+                MedbiqImport.analyzeFile(file, function(data) {
                     me.importType = "medbiq";
                     me.importFrameworkName = file.name.replace(".xml", "");
                     me.status = "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.";
                     me.competencyCount = EcObject.keys(data).length;
-                }, function (error) {
+                }, function(error) {
                     {
                         me.status = error;
                     }
@@ -582,7 +663,7 @@ export default {
                 this.csvRelationFile = files[0];
             }
             let me = this;
-            CSVImport.analyzeFile(this.csvRelationFile, function (data) {
+            CSVImport.analyzeFile(this.csvRelationFile, function(data) {
                 for (var i = 0; i < data[0].length; i++) {
                     let column = {};
                     column.name = data[0][i];
@@ -605,7 +686,7 @@ export default {
                     }
                 }
                 me.relationCount = (data.length - 1);
-            }, function (error) {
+            }, function(error) {
                 {
                     me.status = error;
                 }
@@ -625,22 +706,18 @@ export default {
                 var result = ((e)["target"])["result"];
                 var jsonObj = JSON.parse(result);
                 if (jsonObj["@graph"]) {
-                    if (jsonObj["@context"] == "http://credreg.net/ctdlasn/schema/context/json" || jsonObj["@context"] == "http://credreg.net/ctdl/schema/context/json" 
-                        || jsonObj["@context"] == "https://credreg.net/ctdlasn/schema/context/json" || jsonObj["@context"] == "https://credreg.net/ctdl/schema/context/json") {
+                    if (jsonObj["@context"] == "http://credreg.net/ctdlasn/schema/context/json" || jsonObj["@context"] == "http://credreg.net/ctdl/schema/context/json" ||
+                        jsonObj["@context"] == "https://credreg.net/ctdlasn/schema/context/json" || jsonObj["@context"] == "https://credreg.net/ctdl/schema/context/json") {
                         if (jsonObj["@graph"][0]["@type"].indexOf("Concept") != -1) {
                             success(jsonObj["@graph"], "ctdlasnConcept");
-                        }
-                        else {
+                        } else {
                             success(jsonObj["@graph"], "ctdlasn");
                         }
-                    }
-                    else {
+                    } else {
                         success(jsonObj["@graph"], null);
                     }
-                }
-                else {
+                } else {
                     failure("Invalid file");
-                    return;
                 }
             };
             reader.readAsText(file, "UTF-8");
@@ -649,79 +726,73 @@ export default {
             var file = this.file[0];
             var identity = EcIdentityManager.ids[0];
             var f = new EcFramework();
-            if (identity != null)
-                f.addOwner(identity.ppk.toPk());
-            if (this.queryParams.newObjectEndpoint != null)
-                f.generateShortId(this.queryParams.newObjectEndpoint == null ? this.repo.selectedServer : this.queryParams.newObjectEndpoint);
-            else
-                f.generateId(this.queryParams.newObjectEndpoint == null ? this.repo.selectedServer : this.queryParams.newObjectEndpoint);
+            if (identity != null) { f.addOwner(identity.ppk.toPk()); }
+            if (this.queryParams.newObjectEndpoint != null) { f.generateShortId(this.queryParams.newObjectEndpoint == null ? this.repo.selectedServer : this.queryParams.newObjectEndpoint); } else { f.generateId(this.queryParams.newObjectEndpoint == null ? this.repo.selectedServer : this.queryParams.newObjectEndpoint); }
             f["schema:dateCreated"] = new Date().toISOString();
             f.setName(this.importFrameworkName);
             f.setDescription(this.importFrameworkDescription);
             let me = this;
-            MedbiqImport.importCompetencies(this.queryParams.newObjectEndpoint == null ? this.repo.selectedServer : this.queryParams.newObjectEndpoint, identity, function (competencies) {
-                    for (var i = 0; i < competencies.length; i++)
-                        f.addCompetency(competencies[i].shortId());
-                    me.repo.saveTo(f, function (success) {
-                        me.file.splice(0, 1);
-                        if (me.file.length > 0) {
-                            me.firstImport = false;
-                            me.analyzeImportFile();
-                        }
-                        else {
-                            me.framework = f;
-                            me.spitEvent("importFinished", f.shortId(), "importPage");
-                        }
-                    }, function (failure) {
-                        me.status = failure;
-                    });
-                },
-                function (failure) {
+            MedbiqImport.importCompetencies(this.queryParams.newObjectEndpoint == null ? this.repo.selectedServer : this.queryParams.newObjectEndpoint, identity, function(competencies) {
+                for (var i = 0; i < competencies.length; i++) { f.addCompetency(competencies[i].shortId()); }
+                me.repo.saveTo(f, function(success) {
+                    me.file.splice(0, 1);
+                    if (me.file.length > 0) {
+                        me.firstImport = false;
+                        me.analyzeImportFile();
+                    } else {
+                        me.framework = f;
+                        me.spitEvent("importFinished", f.shortId(), "importPage");
+                    }
+                }, function(failure) {
                     me.status = failure;
-                },
-                function (increment) {
-                    me.status = increment.competencies + "/" + me.competencyCount + " competencies imported.";
-                }, me.repo);
+                });
+            },
+            function(failure) {
+                me.status = failure;
+            },
+            function(increment) {
+                me.status = increment.competencies + "/" + me.competencyCount + " competencies imported.";
+            }, me.repo);
         },
         importAsn: function() {
             var file = this.file[0];
             var identity = EcIdentityManager.ids[0];
             let me = this;
-            ASNImport.importCompetencies(this.repo.selectedServer, identity, true, function (competencies, f) {
-                    me.file.splice(0, 1);
-                    if (me.file.length > 0) {
-                        me.firstImport = false;
-                        me.analyzeImportFile();
-                    }
-                    else {
-                        me.framework = f;
-                        me.spitEvent("importFinished", f.shortId(), "importPage");
-                    }
-                },
-                function (failure) {
-                    me.status = failure;
-                },
-                function (increment) {
-                    me.status = increment.competencies + "/" + me.competencyCount + " competencies imported.";
-                }, me.repo);
+            ASNImport.importCompetencies(this.repo.selectedServer, identity, true, function(competencies, f) {
+                me.file.splice(0, 1);
+                if (me.file.length > 0) {
+                    me.firstImport = false;
+                    me.analyzeImportFile();
+                } else {
+                    me.framework = f;
+                    me.spitEvent("importFinished", f.shortId(), "importPage");
+                }
+            },
+            function(failure) {
+                me.status = failure;
+            },
+            function(increment) {
+                me.status = increment.competencies + "/" + me.competencyCount + " competencies imported.";
+            }, me.repo);
         },
         importCtdlAsnCsv: function() {
             let ceo = null;
-            if (EcIdentityManager.ids.length > 0)
-                ceo = EcIdentityManager.ids[0];
+            if (EcIdentityManager.ids.length > 0) { ceo = EcIdentityManager.ids[0]; }
             let me = this;
-            CTDLASNCSVImport.importFrameworksAndCompetencies(me.repo, me.file[0], function (frameworks, competencies, relations) {
+            CTDLASNCSVImport.importFrameworksAndCompetencies(me.repo, me.file[0], function(frameworks, competencies, relations) {
                 if (me.queryParams.ceasnDataFields == true) {
                     for (var i = 0; i < frameworks.length; i++) {
                         if (frameworks[i]["schema:inLanguage"] == null || frameworks[i]["schema:inLanguage"] === undefined) {
-                            // me.setDefaultLanguage();
-                            // frameworks[i]["schema:inLanguage"] = defaultLanguage;
+                            /*
+                             * me.setDefaultLanguage();
+                             * frameworks[i]["schema:inLanguage"] = defaultLanguage;
+                             */
                         }
                     }
                 }
                 var all = frameworks.concat(competencies).concat(relations);
                 me.status = "Saving " + all.length + " objects.";
-                me.repo.multiput(all,function () {
+                me.repo.multiput(all, function() {
                     for (var i = 0; i < frameworks.length; i++) {
                         me.framework = frameworks[i];
                         me.status = "Import Finished.";
@@ -732,12 +803,12 @@ export default {
                         me.firstImport = false;
                         me.analyzeImportFile();
                     }
-                },function (failure) {
+                }, function(failure) {
                     me.status = failure;
                 });
-            }, function (failure) {
+            }, function(failure) {
                 me.status = failure;
-            },ceo);
+            }, ceo);
         },
         importCsv: function() {
             var file = this.file[0];
@@ -746,18 +817,14 @@ export default {
             var endpoint = this.queryParams.newObjectEndpoint == null ? this.repo.selectedServer : this.queryParams.newObjectEndpoint;
 
             var f = new EcFramework();
-            if (identity != null)
-                f.addOwner(identity.ppk.toPk());
-            if (this.queryParams.newObjectEndpoint != null)
-                f.generateShortId(endpoint);
-            else
-                f.generateId(endpoint);
+            if (identity != null) { f.addOwner(identity.ppk.toPk()); }
+            if (this.queryParams.newObjectEndpoint != null) { f.generateShortId(endpoint); } else { f.generateId(endpoint); }
             f["schema:dateCreated"] = new Date().toISOString();
             f.setName(this.importFrameworkName);
             f.setDescription(this.importFrameworkDescription);
             let me = this;
             CSVImport.importCompetencies(file, endpoint, identity, this.importCsvColumnName.index, this.importCsvColumnDescription.index, this.importCsvColumnScope.index, this.importCsvColumnId.index, relations, this.importCsvColumnSource.index, this.importCsvColumnRelationType.index, this.importCsvColumnTarget.index,
-                function (competencies, alignments) {
+                function(competencies, alignments) {
                     f.competency = [];
                     f.relation = [];
                     for (var i = 0; i < competencies.length; i++) {
@@ -766,31 +833,25 @@ export default {
                     for (var i = 0; i < alignments.length; i++) {
                         f.relation.push(alignments[i].shortId());
                     }
-                    repo.saveTo(f, function (success) {
+                    repo.saveTo(f, function(success) {
                         me.file.splice(0, 1);
                         if (me.file.length > 0) {
                             me.firstImport = false;
                             me.analyzeImportFile();
-                        }
-                        else {
+                        } else {
                             me.framework = f;
                             me.status = "Import Finished.";
                             me.spitEvent("importFinished", f.shortId(), "importPage");
                         }
-                    }, function (failure) {
+                    }, function(failure) {
                         me.status = failure;
                     });
                 },
-                function (failure) {
+                function(failure) {
                     me.status = failure;
                 },
-                function (increment) {
-                    if (increment.relations != null && increment.relations !== undefined)
-                        me.status = (increment.relations + "/" + me.relationCount + " relations imported.");
-                    else if (increment.competencies != null && increment.competencies !== undefined)
-                        me.status = (increment.competencies + "/" + me.competencyCount + " competencies imported.");
-                    else
-                        me.status = "Importing...";
+                function(increment) {
+                    if (increment.relations != null && increment.relations !== undefined) { me.status = (increment.relations + "/" + me.relationCount + " relations imported."); } else if (increment.competencies != null && increment.competencies !== undefined) { me.status = (increment.competencies + "/" + me.competencyCount + " competencies imported."); } else { me.status = "Importing..."; }
                 }, false, me.repo);
         },
         importJsonLd: function(data) {
@@ -800,28 +861,30 @@ export default {
             } else {
                 var file = this.file[0];
                 formData.append('file', file);
-            }    
+            }
             var identity = EcIdentityManager.ids[0];
-            if (identity != null)
-                formData.append('owner',identity.ppk.toPk().toPem());
+            if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
             let me = this;
+            me.framework = null;
             EcRemote.postInner(this.repo.selectedServer, "ctdlasn", formData, null, function(data) {
-                if (data.indexOf("ctdlasn") != -1) {
-                        var data1 = data.substring(0, data.indexOf("ctdlasn"));
-                        var data2 = data.substring(data.indexOf("ctdlasn")+7);
-                        data = data1 + "data" + data2;
-                    }
-                    me.framework = EcFramework.getBlocking(data);
-                    if (me.framework == null) {
-                        me.framework = EcConceptScheme.getBlocking(data);
-                    }
-                    me.status = "Import Finished.";
-                    me.spitEvent("importFinished", me.framework.shortId(), "importPage");
+                if (data.indexOf("ctdlasn") !== -1) {
+                    var data1 = data.substring(0, data.indexOf("ctdlasn"));
+                    var data2 = data.substring(data.indexOf("ctdlasn") + 7);
+                    data = data1 + "data" + data2;
+                }
+                me.framework = EcFramework.getBlocking(data);
+                if (me.framework == null) {
+                    me.framework = EcConceptScheme.getBlocking(data);
+                }
+                me.status = "Import Finished.";
+                me.spitEvent("importFinished", me.framework.shortId(), "importPage");
+                if (me.file != null) {
                     me.file.splice(0, 1);
-                    if (me.file.length > 0) {
-                        me.firstImport = false;
-                        me.analyzeImportFile();
-                    }
+                }
+                if (me.file.length > 0) {
+                    me.firstImport = false;
+                    me.analyzeImportFile();
+                }
             }, function(failure) {
                 me.status = "Import failed. Check your import file for any errors.";
                 console.log(failure.statusText);
@@ -859,9 +922,7 @@ export default {
         },
         caseGetDocsSuccess: function(result) {
             result = JSON.parse(result);
-            if (result.CFDocuments == null)
-                this.status = "No frameworks found. Please check the URL and try again.";
-            else {
+            if (result.CFDocuments == null) { this.status = "No frameworks found. Please check the URL and try again."; } else {
                 this.status = result.CFDocuments.length + " frameworks detected.";
                 for (var i = 0; i < result.CFDocuments.length; i++) {
                     var doc = result.CFDocuments[i];
@@ -886,12 +947,11 @@ export default {
                 me.status = "No frameworks found. Please check the URL and try again.";
             });
         },
-        importCase: function () {
-            for (var i = this.caseDocs.length-1; i >= 0; i--) {
+        importCase: function() {
+            for (var i = this.caseDocs.length - 1; i >= 0; i--) {
                 if (!this.caseDocs[i].checked) {
                     this.caseDocs.splice(i, 1);
-                }
-                else if (this.caseDocs[i].success == false && this.caseDocs[i].error == false) {
+                } else if (this.caseDocs[i].success == false && this.caseDocs[i].error == false) {
                     this.caseDocs[i].loading = true;
                 }
             }
@@ -915,8 +975,7 @@ export default {
 
                     var identity = EcIdentityManager.ids[0];
                     var formData = new FormData();
-                    if (identity != null)
-                        formData.append('owner',identity.ppk.toPk().toPem());
+                    if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
                     EcRemote.postInner(this.repo.selectedServer, "ims/case/harvest?caseEndpoint=" + this.serverUrl + "&dId=" + uuid, formData, null, function(success) {
                         me.caseDocs[firstIndex].loading = false;
                         me.caseDocs[firstIndex].success = true;
@@ -940,14 +999,13 @@ export default {
                 if (this.caseDocs[i].loading == true) {
                     if (first == null) {
                         first = i;
-                    }
-                    else {
+                    } else {
                         this.caseDocs[i].loading = false;
                         this.caseDocs[i].error = true;
                     }
                 }
             }
-            this.status = "Import Canceled."
+            this.status = "Import Canceled.";
         },
         parseText: function() {
         },
@@ -958,8 +1016,7 @@ export default {
                 var graph = result["@graph"];
                 if (graph != null) {
                     me.importJsonLd(result);
-                }
-                else {
+                } else {
                     me.status = "URL must have an '@graph' field at the top level.";
                     return;
                 }
