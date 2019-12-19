@@ -24,23 +24,28 @@ export default {
                         }
                     }
                 }
-                /*if (selectedCompetency != null)
+                var selectedCompetency = this.$store.state.editor.selectedCompetency;
+                if (selectedCompetency != null) {
                     if (selectedCompetency.getGuid != null) {
-                        if (selectedCompetency.getGuid().startsWith("ce-"))
+                        if (selectedCompetency.getGuid().startsWith("ce-")) {
                             evt.selectedCompetencyCtid = selectedCompetency == null ? null : selectedCompetency.getGuid();
-                        else if (selectedCompetency.getGuid().matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"))
+                        } else if (selectedCompetency.getGuid().matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")) {
                             evt.selectedCompetencyCtid = selectedCompetency == null ? null : "ce-" + selectedCompetency.getGuid();
-                        else
-                            evt.selectedCompetencyCtid = "ce-" + new UUID(3, "nil", framework.shortId() + selectedCompetency.shortId()).format();
-                    }*/
+                        } else {
+                            evt.selectedCompetencyCtid = "ce-" + new UUID(3, "nil", this.framework.shortId() + selectedCompetency.shortId()).format();
+                        }
+                    }
+                }
             }
             console.log(evt);
-            /*if (parent != null)
-                if (queryParams.origin != null && queryParams.origin != '')
-                    parent.postMessage(evt, queryParams.origin);*/
+            if (parent != null) {
+                if (this.queryParams && this.queryParams.origin != null && this.queryParams.origin !== '') {
+                    parent.postMessage(evt, this.queryParams.origin);
+                }
+            }
         },
         setDefaultLanguage: function() {
-            // To do: add default language to the store
+            var defaultLanguage;
             if (this.framework && this.framework["ceasn:inLanguage"]) {
                 defaultLanguage = EcArray.isArray(this.framework["ceasn:inLanguage"]) ? this.framework["ceasn:inLanguage"][0] : this.framework["ceasn:inLanguage"];
             } else if (this.framework && this.framework["schema:inLanguage"]) {
@@ -52,6 +57,7 @@ export default {
             } else {
                 defaultLanguage = "en";
             }
+            me.$store.commit('defaultLanguage', defaultLanguage);
         },
         get: function(server, service, headers, success, failure) {
             var url = EcRemote.urlAppend(server, service);

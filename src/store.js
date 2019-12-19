@@ -4,12 +4,18 @@ import lode from './lode/store.js';
 
 Vue.use(Vuex);
 
-const editorStore = {
+const editor = {
     state: {
-
+        selectedCompetency: null,
+        defaultLanguage: null
     },
     mutations: {
-
+        selectedCompetency(state, comp) {
+            state.selectedCompetency = comp;
+        },
+        defaultLanguage(state, lang) {
+            state.defaultLanguage = lang;
+        }
     },
     actions: {
 
@@ -19,6 +25,6 @@ const editorStore = {
 export default new Vuex.Store({
     modules: {
         lode,
-        editorStore
+        editor
     }
 });

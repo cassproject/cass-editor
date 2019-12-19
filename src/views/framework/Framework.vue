@@ -45,7 +45,7 @@
 import Thing from '@/lode/components/lode/Thing.vue';
 import Hierarchy from '@/lode/components/lode/Hierarchy.vue';
 import saveAs from 'file-saver';
-import common from '@/mixins/common.js'
+import common from '@/mixins/common.js';
 export default {
     name: "Framework",
     props: {
@@ -65,11 +65,9 @@ export default {
         timestamp: function() {
             if (this.framework.getTimestamp()) {
                 return this.framework.getTimestamp();
-            }
-            else if (this.framework["schema:dateModified"]) {
+            } else if (this.framework["schema:dateModified"]) {
                 return this.framework["schema:dateModified"];
-            }
-            else {
+            } else {
                 return null;
             }
         },
@@ -77,12 +75,14 @@ export default {
             if (this.framework == null) return "Unknown.";
             if (this.timestamp) {
                 return this.$moment(this.timestamp).fromNow();
+            } else {
+                return null;
             }
         }
     },
     components: {Hierarchy, Thing},
     created: function() {
-        if (EcRepository.shouldTryUrl(this.framework.id) == false) {
+        if (EcRepository.shouldTryUrl(this.framework.id) === false) {
             this.exportLink = this.repo.selectedServer + "data/" + EcCrypto.md5(this.framework.id);
             this.exportGuid = EcCrypto.md5(this.framework.id);
         } else {
@@ -92,25 +92,25 @@ export default {
     },
     watch: {
         exportType: function() {
-            if (this.exportType == "asn") {
+            if (this.exportType === "asn") {
                 this.exportAsn();
-            } else if (this.exportType == "jsonld") {
+            } else if (this.exportType === "jsonld") {
                 this.exportJsonld();
-            } else if (this.exportType == "rdfQuads") {
+            } else if (this.exportType === "rdfQuads") {
                 this.exportRdfQuads();
-            } else if (this.exportType == "rdfJson") {
+            } else if (this.exportType === "rdfJson") {
                 this.exportRdfJson();
-            } else if (this.exportType == "rdfXml") {
+            } else if (this.exportType === "rdfXml") {
                 this.exportRdfXml();
-            } else if (this.exportType == "turtle") {
+            } else if (this.exportType === "turtle") {
                 this.exportTurtle();
-            } else if (this.exportType == "ctdlasnJsonld") {
+            } else if (this.exportType === "ctdlasnJsonld") {
                 this.exportCtdlasnJsonld();
-            } else if (this.exportType == "ctdlasnCsv") {
+            } else if (this.exportType === "ctdlasnCsv") {
                 this.exportCtdlasnCsv();
-            } else if (this.exportType == "csv") {
+            } else if (this.exportType === "csv") {
                 this.exportCsv();
-            } else if (this.exportType == "case") {
+            } else if (this.exportType === "case") {
                 this.exportCase();
             }
         }
@@ -170,7 +170,7 @@ export default {
             EcRemote.getExpectingString(this.exportLink.replace("/data/", "/ceasn/"), null, function(success) {
                 CSVExport.exportCTDLASN(JSON.parse(success), me.framework.getName());
             }, function(error) {
-                console.error;
+                console.log(error);
             });
         },
         exportCsv: function() {
