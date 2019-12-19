@@ -297,7 +297,8 @@ First Level
                         </select>
                     </div>
                     <div>
-                        <label>Step 7: Select a relation file (optional). The relation source/target must be in the form of ID or Name, and the relation types should be "requires", "desires", "narrows", "isEnabledBy", "isRelatedTo", or "isEquivalentTo".</label>
+                        <label>Step 7: Select a relation file (optional).
+                            The relation source/target must be in the form of ID or Name, and the relation types should be "requires", "desires", "narrows", "isEnabledBy", "isRelatedTo", or "isEquivalentTo".</label>
                         <input
                             type="file"
                             @change="analyzeCsvRelation">
@@ -414,20 +415,6 @@ First Level
                         </button>
                     </div>
                 </center>
-                <Hierarchy
-                    v-if="framework"
-                    :container="framework"
-                    containerType="Framework"
-                    containerNodeProperty="competency"
-                    containerEdgeProperty="relation"
-                    nodeType="EcCompetency"
-                    edgeType="EcAlignment"
-                    edgeRelationProperty="relationType"
-                    edgeRelationLiteral="narrows"
-                    edgeSourceProperty="source"
-                    edgeTargetProperty="target"
-                    editable="false"
-                    :repo="repo" />
             </div>
             <div
                 class="section-import section-url"
@@ -444,21 +431,21 @@ First Level
                         {{ status }}
                     </div>
                 </center>
-                <Hierarchy
-                    v-if="framework"
-                    :container="framework"
-                    containerType="Framework"
-                    containerNodeProperty="competency"
-                    containerEdgeProperty="relation"
-                    nodeType="EcCompetency"
-                    edgeType="EcAlignment"
-                    edgeRelationProperty="relationType"
-                    edgeRelationLiteral="narrows"
-                    edgeSourceProperty="source"
-                    edgeTargetProperty="target"
-                    editable="false"
-                    :repo="repo" />
             </div>
+            <Hierarchy
+                v-if="framework"
+                :container="framework"
+                containerType="Framework"
+                containerNodeProperty="competency"
+                containerEdgeProperty="relation"
+                nodeType="EcCompetency"
+                edgeType="EcAlignment"
+                edgeRelationProperty="relationType"
+                edgeRelationLiteral="narrows"
+                edgeSourceProperty="source"
+                edgeTargetProperty="target"
+                editable="false"
+                :repo="repo" />
         </div>
     </div>
 </template>
@@ -520,9 +507,6 @@ export default {
             importCsvColumnTarget: null,
             csvColumns: [],
             csvRelationFile: null,
-            importCsvColumnSource: null,
-            importCsvColumnRelationType: null,
-            importCsvColumnTarget: null,
             csvRelationColumns: [],
             relationCount: 0,
             caseDocs: [],
@@ -589,31 +573,29 @@ export default {
                             column.name = data[0][i];
                             column.index = i;
                             me.csvColumns.push(column);
-                            if (column.name.toLowerCase().indexOf("name") != -1) {
+                            if (column.name.toLowerCase().indexOf("name") !== -1) {
                                 me.importCsvColumnName = column;
                             }
-                            if (column.name.toLowerCase().indexOf("description") != -1) {
+                            if (column.name.toLowerCase().indexOf("description") !== -1) {
                                 me.importCsvColumnDescription = column;
                             }
-                            if (column.name.toLowerCase().indexOf("scope") != -1) {
+                            if (column.name.toLowerCase().indexOf("scope") !== -1) {
                                 me.importCsvColumnScope = column;
                             }
-                            if (column.name.toLowerCase().indexOf("id") != -1) {
+                            if (column.name.toLowerCase().indexOf("id") !== -1) {
                                 me.importCsvColumnId = column;
                             }
                         }
                         me.status = (me.competencyCount = (data.length - 1)) + " Competencies Detected.";
                     }, function(error) {
-                        {
-                            me.status = error;
-                        }
+                        me.status = error;
                     });
                 });
             } else if (file.name.endsWith(".json") || file.name.endsWith(".jsonld")) {
                 // Try JSON-LD first, checks for @graph
                 this.analyzeJsonLdFramework(file, function(data, ctdlasn) {
                     var invalid = false;
-                    if (ctdlasn == "ctdlasnConcept") {
+                    if (ctdlasn === "ctdlasnConcept") {
                         me.status = "Concept Schemes must be imported in the concept scheme editor.";
                         invalid = true;
                     } else {
@@ -621,23 +603,21 @@ export default {
                         me.status = "1 Framework and " + (EcObject.keys(data).length - 1) + " Competencies Detected.";
                     }
                     me.competencyCount = EcObject.keys(data).length;
-                    if (!invalid && (ctdlasn == "ctdlasn" || ctdlasn == "ctdlasnConcept")) {
+                    if (!invalid && (ctdlasn === "ctdlasn" || ctdlasn === "ctdlasnConcept")) {
+                        // Do nothing
                     } else if (!invalid) {
                         me.status = "Context is not CTDL-ASN";
                     }
                 }, function(error) {
-                    {
-                        // If JSON-LD doesn't work, try JSON
-                        ASNImport.analyzeFile(file, function(data) {
-                            me.importType = "asn";
-                            me.status = "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.";
-                            me.competencyCount = EcObject.keys(data).length;
-                        }, function(error) {
-                            {
-                                me.status = error;
-                            }
-                        });
-                    }
+                    var error = error;
+                    // If JSON-LD doesn't work, try JSON
+                    ASNImport.analyzeFile(file, function(data) {
+                        me.importType = "asn";
+                        me.status = "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.";
+                        me.competencyCount = EcObject.keys(data).length;
+                    }, function(error) {
+                        me.status = error;
+                    });
                 });
             } else if (file.name.endsWith(".xml")) {
                 MedbiqImport.analyzeFile(file, function(data) {
@@ -646,10 +626,14 @@ export default {
                     me.status = "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.";
                     me.competencyCount = EcObject.keys(data).length;
                 }, function(error) {
-                    {
-                        me.status = error;
-                    }
+                    me.status = error;
                 });
+            } else if (file.name.endsWith(".pdf")) {
+                me.importType = "pdf";
+                me.status = "File selected.";
+            } else if (file.name.endsWith(".docx")) {
+                me.importType = "pdf";
+                me.status = "File selected.";
             }
             if (!me.firstImport) {
                 me.importFromFile();
@@ -669,27 +653,25 @@ export default {
                     column.name = data[0][i];
                     column.index = i;
                     me.csvRelationColumns.push(column);
-                    if (column.name.toLowerCase().indexOf("source") != -1) {
+                    if (column.name.toLowerCase().indexOf("source") !== -1) {
                         me.importCsvColumnSource = column;
                     }
-                    if (column.name.toLowerCase().indexOf("origin") != -1) {
+                    if (column.name.toLowerCase().indexOf("origin") !== -1) {
                         me.importCsvColumnSource = column;
                     }
-                    if (column.name.toLowerCase().indexOf("type") != -1) {
+                    if (column.name.toLowerCase().indexOf("type") !== -1) {
                         me.importCsvColumnRelationType = column;
                     }
-                    if (column.name.toLowerCase().indexOf("target") != -1) {
+                    if (column.name.toLowerCase().indexOf("target") !== -1) {
                         me.importCsvColumnTarget = column;
                     }
-                    if (column.name.toLowerCase().indexOf("destination") != -1) {
+                    if (column.name.toLowerCase().indexOf("destination") !== -1) {
                         me.importCsvColumnTarget = column;
                     }
                 }
                 me.relationCount = (data.length - 1);
             }, function(error) {
-                {
-                    me.status = error;
-                }
+                me.status = error;
             });
         },
         analyzeJsonLdFramework: function(file, success, failure) {
@@ -706,9 +688,9 @@ export default {
                 var result = ((e)["target"])["result"];
                 var jsonObj = JSON.parse(result);
                 if (jsonObj["@graph"]) {
-                    if (jsonObj["@context"] == "http://credreg.net/ctdlasn/schema/context/json" || jsonObj["@context"] == "http://credreg.net/ctdl/schema/context/json" ||
-                        jsonObj["@context"] == "https://credreg.net/ctdlasn/schema/context/json" || jsonObj["@context"] == "https://credreg.net/ctdl/schema/context/json") {
-                        if (jsonObj["@graph"][0]["@type"].indexOf("Concept") != -1) {
+                    if (jsonObj["@context"] === "http://credreg.net/ctdlasn/schema/context/json" || jsonObj["@context"] === "http://credreg.net/ctdl/schema/context/json" ||
+                        jsonObj["@context"] === "https://credreg.net/ctdlasn/schema/context/json" || jsonObj["@context"] === "https://credreg.net/ctdl/schema/context/json") {
+                        if (jsonObj["@graph"][0]["@type"].indexOf("Concept") !== -1) {
                             success(jsonObj["@graph"], "ctdlasnConcept");
                         } else {
                             success(jsonObj["@graph"], "ctdlasn");
@@ -723,17 +705,22 @@ export default {
             reader.readAsText(file, "UTF-8");
         },
         importMedbiq: function() {
-            var file = this.file[0];
             var identity = EcIdentityManager.ids[0];
             var f = new EcFramework();
             if (identity != null) { f.addOwner(identity.ppk.toPk()); }
-            if (this.queryParams.newObjectEndpoint != null) { f.generateShortId(this.queryParams.newObjectEndpoint == null ? this.repo.selectedServer : this.queryParams.newObjectEndpoint); } else { f.generateId(this.queryParams.newObjectEndpoint == null ? this.repo.selectedServer : this.queryParams.newObjectEndpoint); }
+            if (this.queryParams.newObjectEndpoint != null) {
+                f.generateShortId(this.queryParams.newObjectEndpoint == null ? this.repo.selectedServer : this.queryParams.newObjectEndpoint);
+            } else {
+                f.generateId(this.queryParams.newObjectEndpoint == null ? this.repo.selectedServer : this.queryParams.newObjectEndpoint);
+            }
             f["schema:dateCreated"] = new Date().toISOString();
             f.setName(this.importFrameworkName);
             f.setDescription(this.importFrameworkDescription);
             let me = this;
             MedbiqImport.importCompetencies(this.queryParams.newObjectEndpoint == null ? this.repo.selectedServer : this.queryParams.newObjectEndpoint, identity, function(competencies) {
-                for (var i = 0; i < competencies.length; i++) { f.addCompetency(competencies[i].shortId()); }
+                for (var i = 0; i < competencies.length; i++) {
+                    f.addCompetency(competencies[i].shortId());
+                }
                 me.repo.saveTo(f, function(success) {
                     me.file.splice(0, 1);
                     if (me.file.length > 0) {
@@ -755,7 +742,6 @@ export default {
             }, me.repo);
         },
         importAsn: function() {
-            var file = this.file[0];
             var identity = EcIdentityManager.ids[0];
             let me = this;
             ASNImport.importCompetencies(this.repo.selectedServer, identity, true, function(competencies, f) {
@@ -780,7 +766,7 @@ export default {
             if (EcIdentityManager.ids.length > 0) { ceo = EcIdentityManager.ids[0]; }
             let me = this;
             CTDLASNCSVImport.importFrameworksAndCompetencies(me.repo, me.file[0], function(frameworks, competencies, relations) {
-                if (me.queryParams.ceasnDataFields == true) {
+                if (me.queryParams.ceasnDataFields === true) {
                     for (var i = 0; i < frameworks.length; i++) {
                         if (frameworks[i]["schema:inLanguage"] == null || frameworks[i]["schema:inLanguage"] === undefined) {
                             /*
@@ -810,6 +796,56 @@ export default {
                 me.status = failure;
             }, ceo);
         },
+        importPdf: function() {
+            var me = this;
+            var formData = new FormData();
+            formData.append(me.file[0].name, me.file[0]);
+            EcRemote.postExpectingObject(
+                "http://ec2-52-10-142-111.us-west-2.compute.amazonaws.com:8080/tp3Demo2/api/custom/",
+                "t3demo",
+                formData,
+                function(d) {
+                    var toSave = [];
+                    var f = new EcFramework();
+                    f.setName(d.name);
+                    f.setDescription(d.description);
+                    f.assignId(me.repo.selectedServer, me.file.name);
+                    f.competency = [];
+                    f.relation = [];
+                    toSave.push(f);
+                    console.log(d);
+                    console.log(JSON.parse(f.toJson()));
+                    var cs = {};
+                    for (var i = 0; i < d.competencies.length; i++) {
+                        var c = new EcCompetency();
+                        c.assignId(me.repo.selectedServer, d.competencies[i].id);
+                        cs[d.competencies[i].id] = c.shortId();
+                        if (d.competencies[i].name != null) { c.setName(d.competencies[i].name.trim()); }
+                        if (d.competencies[i].name !== d.competencies[i].description) { c.setDescription(d.competencies[i].description.trim()); }
+                        f.competency.push(c.shortId());
+                        toSave.push(c);
+                    }
+                    for (var i = 0; i < d.relation.length; i++) {
+                        var c = new EcAlignment();
+                        c.assignId(me.repo.selectedServer, d.relation[i].source + "_" + d.relation[i].relationType + "_" + d.relation[i].target);
+                        c.source = cs[d.relation[i].source];
+                        c.target = cs[d.relation[i].target];
+                        c.relationType = d.relation[i].relationType;
+                        if (c.source !== undefined && c.target !== undefined) {
+                            f.relation.push(c.shortId());
+                            toSave.push(c);
+                        } else {
+                            console.log(JSON.parse(c.toJson()));
+                        }
+                    }
+                    me.repo.multiput(toSave, function() {
+                        me.framework = f;
+                        me.status = "";
+                    }, console.error);
+                    me.status = "Writing Framework to CaSS.";
+                }, console.error);
+            me.status = "Importing Framework...";
+        },
         importCsv: function() {
             var file = this.file[0];
             var relations = this.csvRelationFile;
@@ -818,12 +854,27 @@ export default {
 
             var f = new EcFramework();
             if (identity != null) { f.addOwner(identity.ppk.toPk()); }
-            if (this.queryParams.newObjectEndpoint != null) { f.generateShortId(endpoint); } else { f.generateId(endpoint); }
+            if (this.queryParams.newObjectEndpoint !== null) {
+                f.generateShortId(endpoint);
+            } else {
+                f.generateId(endpoint);
+            }
             f["schema:dateCreated"] = new Date().toISOString();
             f.setName(this.importFrameworkName);
             f.setDescription(this.importFrameworkDescription);
             let me = this;
-            CSVImport.importCompetencies(file, endpoint, identity, this.importCsvColumnName.index, this.importCsvColumnDescription.index, this.importCsvColumnScope.index, this.importCsvColumnId.index, relations, this.importCsvColumnSource.index, this.importCsvColumnRelationType.index, this.importCsvColumnTarget.index,
+            CSVImport.importCompetencies(
+                file,
+                endpoint,
+                identity,
+                this.importCsvColumnName.index,
+                this.importCsvColumnDescription.index,
+                this.importCsvColumnScope.index,
+                this.importCsvColumnId.index,
+                relations,
+                this.importCsvColumnSource.index,
+                this.importCsvColumnRelationType.index,
+                this.importCsvColumnTarget.index,
                 function(competencies, alignments) {
                     f.competency = [];
                     f.relation = [];
@@ -851,7 +902,13 @@ export default {
                     me.status = failure;
                 },
                 function(increment) {
-                    if (increment.relations != null && increment.relations !== undefined) { me.status = (increment.relations + "/" + me.relationCount + " relations imported."); } else if (increment.competencies != null && increment.competencies !== undefined) { me.status = (increment.competencies + "/" + me.competencyCount + " competencies imported."); } else { me.status = "Importing..."; }
+                    if (increment.relations != null && increment.relations !== undefined) {
+                        me.status = (increment.relations + "/" + me.relationCount + " relations imported.");
+                    } else if (increment.competencies != null && increment.competencies !== undefined) {
+                        me.status = (increment.competencies + "/" + me.competencyCount + " competencies imported.");
+                    } else {
+                        me.status = "Importing...";
+                    }
                 }, false, me.repo);
         },
         importJsonLd: function(data) {
@@ -892,15 +949,17 @@ export default {
             me.status = "Importing Framework";
         },
         importFromFile: function() {
-            if (this.importType == "csv") {
+            if (this.importType === "csv") {
                 this.importCsv();
-            } else if (this.importType == "ctdlasncsv") {
+            } else if (this.importType === "ctdlasncsv") {
                 this.importCtdlAsnCsv();
-            } else if (this.importType == "ctdlasnjsonld") {
+            } else if (this.importType === "ctdlasnjsonld") {
                 this.importJsonLd();
-            } else if (this.importType == "asn") {
+            } else if (this.importType === "asn") {
                 this.importAsn();
-            } else if (this.importType == "medbiq") {
+            } else if (this.importType === "pdf") {
+                this.importPdf();
+            } else if (this.importType === "medbiq") {
                 this.importMedbiq();
             }
         },
@@ -951,7 +1010,7 @@ export default {
             for (var i = this.caseDocs.length - 1; i >= 0; i--) {
                 if (!this.caseDocs[i].checked) {
                     this.caseDocs.splice(i, 1);
-                } else if (this.caseDocs[i].success == false && this.caseDocs[i].error == false) {
+                } else if (this.caseDocs[i].success === false && this.caseDocs[i].error === false) {
                     this.caseDocs[i].loading = true;
                 }
             }
@@ -959,14 +1018,14 @@ export default {
                 let lis = 0;
                 let firstIndex = null;
                 for (var i = 0; i < this.caseDocs.length; i++) {
-                    if (this.caseDocs[i].loading == true) {
+                    if (this.caseDocs[i].loading === true) {
                         lis++;
                         if (firstIndex == null) {
                             firstIndex = i;
                         }
                     }
                 }
-                if (lis == 0) {
+                if (lis === 0) {
                     this.status = "Import finished.";
                 } else {
                     var me = this;
@@ -996,7 +1055,7 @@ export default {
             this.caseCancel = true;
             var first = null;
             for (var i = 0; i < this.caseDocs.length; i++) {
-                if (this.caseDocs[i].loading == true) {
+                if (this.caseDocs[i].loading === true) {
                     if (first == null) {
                         first = i;
                     } else {
@@ -1020,7 +1079,7 @@ export default {
                     me.status = "URL must have an '@graph' field at the top level.";
                     return;
                 }
-                if (graph[0]["@type"].indexOf("Concept") != -1) {
+                if (graph[0]["@type"].indexOf("Concept") !== -1) {
                     me.status = "Competency Editor cannot be used to import concept schemes.";
                 }
             }, function(failure) {
