@@ -83,12 +83,11 @@ export default {
     components: {Hierarchy, Thing},
     created: function() {
         if (EcRepository.shouldTryUrl(this.framework.id) === false) {
-            this.exportLink = this.repo.selectedServer + "data/" + EcCrypto.md5(this.framework.id);
             this.exportGuid = EcCrypto.md5(this.framework.id);
         } else {
-            this.exportLink = this.framework.id;
             this.exportGuid = this.framework.getGuid();
         }
+        this.exportLink = this.repo.selectedServer + "data/" + this.exportGuid;
     },
     watch: {
         exportType: function() {
@@ -177,7 +176,7 @@ export default {
             CSVExport.exportFramework(this.framework.id, console.log, console.log);
         },
         exportCase: function() {
-            window.open(this.repo.selectedServer + "ims/case/v1p0/CFDocuments/" + this.exportGuid, '_blank');
+            window.open(this.repo.selectedServer + "ims/case/v1p0/CFPackages/" + this.exportGuid, '_blank');
         }
     }
 };
