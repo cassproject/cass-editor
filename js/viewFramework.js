@@ -2118,21 +2118,18 @@ exportSelected = function () {
 	var guid;
 	if (selectedCompetency != null) {
 		if (EcRepository.shouldTryUrl(selectedCompetency.id) == false) {
-			link = repo.selectedServer + "data/" + EcCrypto.md5(selectedCompetency.id);
 			guid = EcCrypto.md5(selectedCompetency.id);
 		} else {
-			link = selectedCompetency.id;
 			guid = selectedCompetency.getGuid();
 		}
 	} else {
 		if (EcRepository.shouldTryUrl(framework.id) == false) {
-			link = repo.selectedServer + "data/" + EcCrypto.md5(framework.id);
 			guid = EcCrypto.md5(framework.id);
 		} else {
-			link = framework.id;
 			guid = framework.getGuid();
 		}
 	}
+	link = repo.selectedServer + "data/" + guid;
 	if (v == "asn")
 		window.open(link.replace("/data/", "/asn/"), '_blank');
 	else if (v == "cass")
