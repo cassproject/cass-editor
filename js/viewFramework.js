@@ -2210,7 +2210,7 @@ exportSelected = function () {
 		CSVExport.exportFramework(framework.id, console.log, console.log);
 	} else if (v == "case")
 		if (selectedCompetency == null)
-			window.open(repo.selectedServer + "ims/case/v1p0/CFDocuments/" + guid, '_blank');
+			window.open(repo.selectedServer + "ims/case/v1p0/CFPackages/" + guid, '_blank');
 		else
 			window.open(repo.selectedServer + "ims/case/v1p0/CFItems/" + guid, '_blank');
 
