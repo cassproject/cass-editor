@@ -53,6 +53,7 @@ module.exports = {
          * 'no-extra-boolean-cast': 2, // eslint:recommended
          * 'no-ex-assign': 2, // eslint:recommended
          */
+        'import/no-webpack-loader-syntax': 0,
         'no-extra-parens': 2,
         'no-extra-semi': 2, // eslint:recommended
         /*
