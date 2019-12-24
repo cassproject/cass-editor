@@ -3,7 +3,9 @@
         <List
             type="Framework"
             :repo="repo"
-            :click="frameworkClick">
+            :click="frameworkClick"
+            :searchOptions="searchOptions"
+            :paramObj="paramObj">
             <template
                 v-slot:frameworkTags="slotProps">
                 <span>{{ slotProps.item.competency.length }} items </span>
@@ -52,8 +54,40 @@ export default {
     mixins: [common],
     data: function() {
         return {
-            repo: window.repo
+            repo: window.repo,
+            sortBy: "name.keyword"
         };
+    },
+    computed: {
+        searchOptions: function() {
+            let search = "";
+            if (this.queryParams && this.queryParams.filter != null) {
+                search += " AND (" + this.queryParams.filter + ")";
+            }
+            if (this.queryParams && this.queryParams.show === "mine") {
+                search += " AND (";
+                for (var i = 0; i < EcIdentityManager.ids.length; i++) {
+                    if (i !== 0) {
+                        search += " OR ";
+                    }
+                    var id = EcIdentityManager.ids[i];
+                    search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
+                    search += " OR @owner:\"" + addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
+                }
+                search += ")";
+            }
+            return search;
+        },
+        paramObj: function() {
+            let obj = {};
+            obj.size = 20;
+            var order = (this.sortBy === "name.keyword") ? "asc" : "desc";
+            obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "long",  "missing" : "_last"}} ]';
+            if (this.queryParams && this.queryParams.show != null && this.queryParams.show === 'mine') {
+                obj.ownership = 'me';
+            }
+            return obj;
+        }
     },
     components: {List},
     methods: {
@@ -66,6 +100,12 @@ export default {
                 return this.resolveNameFromUrl(Thing.getDisplayStringFrom(name));
             } else {
                 return Thing.getDisplayStringFrom(name);
+            }
+        },
+        changeSort: function() {
+            // this.sortBy = $("#sortSelect").val();
+            if (this.queryParams && this.queryParams.concepts === "true" && this.sortBy === "name.keyword") {
+                this.sortBy = "dcterms:title.keyword";
             }
         }
     }
