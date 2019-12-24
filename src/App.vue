@@ -184,6 +184,9 @@ export default {
     created: function() {
         if (this.$route.query) {
             this.queryParams = this.$route.query;
+            if (this.queryParams.server) {
+                window.repo.selectedServer = this.queryParams.server;
+            }
             if (this.queryParams.frameworkId) {
                 this.$router.push({name: "framework", params: {frameworkId: this.queryParams.frameworkId}});
             }
