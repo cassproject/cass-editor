@@ -3,7 +3,12 @@
         <List
             type="Framework"
             :repo="repo"
-            :click="frameworkClick" />
+            :click="frameworkClick">
+            <template
+                v-slot:frameworkTags="slotProps">
+                {{ slotProps.item.competency.length }} competencies
+            </template>
+        </List>
     </div>
 </template>
 <script>
