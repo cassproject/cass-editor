@@ -32,34 +32,54 @@
                         </a>
 
                         <div class="navbar-dropdown">
-                            <a class="navbar-item" @click="exportType='asn'">
+                            <a
+                                class="navbar-item"
+                                @click="exportType='asn'">
                                 Achievement Standards Network (RDF+JSON)
                             </a>
-                            <a class="navbar-item" @click="exportType='jsonld'">
+                            <a
+                                class="navbar-item"
+                                @click="exportType='jsonld'">
                                 CaSS (JSON-LD)
                             </a>
-                            <a class="navbar-item" @click="exportType='rdfQuads'">
+                            <a
+                                class="navbar-item"
+                                @click="exportType='rdfQuads'">
                                 CaSS (RDF Quads)
                             </a>
-                            <a class="navbar-item" @click="exportType='rdfJson'">
+                            <a
+                                class="navbar-item"
+                                @click="exportType='rdfJson'">
                                 CaSS (RDF+JSON)
                             </a>
-                            <a class="navbar-item" @click="exportType='rdfXml'">
+                            <a
+                                class="navbar-item"
+                                @click="exportType='rdfXml'">
                                 CaSS (RDF+XML)
                             </a>
-                            <a class="navbar-item" @click="exportType='turtle'">
+                            <a
+                                class="navbar-item"
+                                @click="exportType='turtle'">
                                 CaSS (Turtle)
                             </a>
-                            <a class="navbar-item" @click="exportType='ctdlasnJsonld'">
+                            <a
+                                class="navbar-item"
+                                @click="exportType='ctdlasnJsonld'">
                                 Credential Engine ASN (JSON-LD)
                             </a>
-                            <a class="navbar-item" @click="exportType='ctdlasnCsv'">
+                            <a
+                                class="navbar-item"
+                                @click="exportType='ctdlasnCsv'">
                                 Credential Engine ASN (CSV)
                             </a>
-                            <a class="navbar-item" @click="exportType='csv'">
+                            <a
+                                class="navbar-item"
+                                @click="exportType='csv'">
                                 Table (CSV)
                             </a>
-                            <a class="navbar-item" @click="exportType='case'">
+                            <a
+                                class="navbar-item"
+                                @click="exportType='case'">
                                 IMS Global CASE (JSON)
                             </a>
                         </div>
@@ -99,7 +119,10 @@
         </nav>
         <div class="custom-overflow">
             <div class="is-multiline is-desktop is-centered">
-                <router-view class="is-full pagesFull" :exportType="exportType" :queryParams="queryParams" />
+                <router-view
+                    class="is-full pagesFull"
+                    :exportType="exportType"
+                    :queryParams="queryParams" />
             </div>
         </div>
     </div>
@@ -161,6 +184,9 @@ export default {
     created: function() {
         if (this.$route.query) {
             this.queryParams = this.$route.query;
+            if (this.queryParams.frameworkId) {
+                this.$router.push({name: "framework", params: {frameworkId: this.queryParams.frameworkId}});
+            }
         }
     }
 };
