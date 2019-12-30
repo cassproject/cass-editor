@@ -6,15 +6,26 @@ Vue.use(Vuex);
 
 const editor = {
     state: {
+        framework: null,
         selectedCompetency: null,
-        defaultLanguage: null
+        defaultLanguage: null,
+        webSocketBackoff: 100,
+        selectConceptRelation: null,
+        selectCompetencyRelation: null,
+        selectingCompetencies: false
     },
     mutations: {
+        framework(state, f) {
+            state.framework = f;
+        },
         selectedCompetency(state, comp) {
             state.selectedCompetency = comp;
         },
         defaultLanguage(state, lang) {
             state.defaultLanguage = lang;
+        },
+        webSocketBackoffIncrease(state) {
+            state.webSocketBackoff *= 2;
         }
     },
     actions: {

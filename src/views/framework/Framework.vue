@@ -56,7 +56,7 @@ export default {
     data: function() {
         return {
             repo: window.repo,
-            framework: EcFramework.getBlocking(this.$route.params.frameworkId),
+            framework: null,
             exportLink: null,
             exportGuid: null
         };
@@ -82,6 +82,7 @@ export default {
     },
     components: {Hierarchy, Thing},
     created: function() {
+        this.framework = this.$store.state.editor.framework;
         if (EcRepository.shouldTryUrl(this.framework.id) === false) {
             this.exportGuid = EcCrypto.md5(this.framework.id);
         } else {

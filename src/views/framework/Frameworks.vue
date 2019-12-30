@@ -92,7 +92,11 @@ export default {
     components: {List},
     methods: {
         frameworkClick: function(framework) {
-            this.$router.push({name: "framework", params: {frameworkId: framework.id}});
+            var me = this;
+            EcFramework.get(framework.id, function(success) {
+                me.$store.commit('framework', success);
+                me.$router.push({name: "framework", params: {frameworkId: framework.id}});
+            }, console.error);
         },
         getName: function(field) {
             let name = EcArray.isArray(field) ? field : [field];
