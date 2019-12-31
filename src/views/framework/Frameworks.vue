@@ -1,5 +1,31 @@
 <template>
     <div class="page-open">
+        <div>
+            <span v-if="queryParams.concepts==='true'">
+                <input
+                    type="radio"
+                    value="dcterms:title.keyword"
+                    id="dcterms:title.keyword"
+                    v-model="sortBy">
+                <label for="dcterms:title.keyword">Sort alphabetically</label>
+            </span>
+            <span v-else>
+                <input
+                    type="radio"
+                    value="name.keyword"
+                    id="name.keyword"
+                    v-model="sortBy">
+                <label for="name.keyword">Sort alphabetically</label>
+            </span>
+            <span>
+                <input
+                    type="radio"
+                    value="schema:dateModified"
+                    id="schema:dateModified"
+                    v-model="sortBy">
+                <label for="schema:dateModified">Sort by last modified</label>
+            </span>
+        </div>
         <List
             type="Framework"
             :repo="repo"
@@ -104,12 +130,6 @@ export default {
                 return this.resolveNameFromUrl(Thing.getDisplayStringFrom(name));
             } else {
                 return Thing.getDisplayStringFrom(name);
-            }
-        },
-        changeSort: function() {
-            // this.sortBy = $("#sortSelect").val();
-            if (this.queryParams && this.queryParams.concepts === "true" && this.sortBy === "name.keyword") {
-                this.sortBy = "dcterms:title.keyword";
             }
         }
     }

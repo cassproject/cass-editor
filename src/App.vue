@@ -187,7 +187,7 @@ export default {
         if (this.$route.query) {
             this.queryParams = this.$route.query;
             if (this.queryParams.server) {
-                if (this.queryParams.server.endsWith && this.queryParams.server.endsWith("/") == false) {
+                if (this.queryParams.server.endsWith && this.queryParams.server.endsWith("/") === false) {
                     this.queryParams.server += "/";
                 }
                 window.repo.selectedServer = this.queryParams.server;
@@ -210,8 +210,7 @@ export default {
     },
     methods: {
         cappend: function(event) {
-            if (event.data.message == "selected") {
-                var selectedFrameworkId = event.data.selectedFramework.id;
+            if (event.data.message === "selected") {
                 var selectedIds = [];
                 if (event.data.selectedFramework["ceasn:exactAlignment"]) {
                     selectedFrameworkId = event.data.selectedFramework["ceasn:exactAlignment"];
@@ -219,27 +218,25 @@ export default {
                 for (var i = 0; i < event.data.selected.length; i++) {
                     if (event.data.selected[i]["ceasn:exactAlignment"]) {
                         selectedIds.push(event.data.selected[i]["ceasn:exactAlignment"]);
-                    }
-                    else if (event.data.selected[i]["@id"]) {
+                    } else if (event.data.selected[i]["@id"]) {
                         selectedIds.push(event.data.selected[i]["@id"]);
-                    }
-                    else {
+                    } else {
                         selectedIds.push(event.data.selected[i]);
                     }
                 }
                 console.log("I got " + event.data.selected.length + " selected items from the iframe");
                 console.log(event.data.selected);
-                if (this.queryParams.concepts === "true" && event.data.type == 'Concept' && this.$store.state.editor.selectConceptRelation) {
+                if (this.queryParams.concepts === "true" && event.data.type === 'Concept' && this.$store.state.editor.selectConceptRelation) {
                     this.addAlignments(selectedIds, selectedCompetency, this.$store.state.editor.selectConceptRelation);
-                } else if (event.data.type == 'Concept') {
+                } else if (event.data.type === 'Concept') {
                     this.attachUrlProperties(selectedIds);
-                } else if (this.$store.state.editor.selectingCompetencies == true) {
+                } else if (this.$store.state.editor.selectingCompetencies === true) {
                     var targets = selectedIds;
                     var thing = this.$store.state.editor.selectedCompetency;
                     var relationType = this.$store.state.editor.selectCompetencyRelation;
                     this.addAlignments(targets, thing, relationType);
                 } else if (selectedIds.length > 0) {
-                    this.showCopyOrLinkDialog(function (copy) {
+                    this.showCopyOrLinkDialog(function(copy) {
                         if (copy === true) {
                             this.copyCompetencies(selectedIds);
                         } else {
@@ -250,14 +247,15 @@ export default {
                 } else if (event.data.selected.length <= 0) {
                     alert("No items have been selected.");
                 }
-            } else if (event.data.message == "back") {
+            } else if (event.data.message === "back") {
                 this.$router.push({name: "framework", params: {frameworkId: this.$store.state.editor.framework.id}});
-            } else if (event.data.message == "highlightedCompetencies") {
-                if (!event.data.competencies)
+            } else if (event.data.message === "highlightedCompetencies") {
+                if (!event.data.competencies) {
                     return;
+                }
                 this.highlightCompetencies(event.data.competencies);
-            } else if (event.data.message == "select") {
-                if (this.$route.name == 'framework' && this.queryParams.select) {
+            } else if (event.data.message === "select") {
+                if (this.$route.name === 'framework' && this.queryParams.select) {
                     this.select();
                 }
             }
@@ -265,113 +263,112 @@ export default {
         openWebSocket: function(r) {
             var connection;
             // Instead of /ws/custom, will be /ws in next release.
-            if (this.queryParams.webSocketOverride == null || this.queryParams.webSocketOverride === undefined)
+            if (this.queryParams.webSocketOverride == null || this.queryParams.webSocketOverride === undefined) {
                 connection = new WebSocket(r.selectedServer.replace(/http/, "ws").replace(/api\//, "ws/custom"));
-            else
+            } else {
                 connection = new WebSocket(this.queryParams.webSocketOverride);
+            }
 
-            connection.onopen = function () {
+            connection.onopen = function() {
                 console.log("WebSocket open.");
             };
 
-            connection.onerror = function (error) {
+            connection.onerror = function(error) {
                 console.log(error);
             };
 
-            //Re-establish connection on close.
-            connection.onclose = function (evt) {
+            // Re-establish connection on close.
+            connection.onclose = function(evt) {
                 console.log(evt);
                 this.$store.commit('webSocketBackoffIncrease');
-                setTimeout(function () {
+                setTimeout(function() {
                     openWebSocket(r);
                 }, webSocketBackoff);
             };
 
-            connection.changedObject = function(wut)
-            {
-                if (this.$route.name != 'framework') {
+            connection.changedObject = function(wut) {
+                if (this.$route.name !== 'framework') {
                     return;
                 }
 
-                var framework = this.$store.state.editor.framework
+                var framework = this.$store.state.editor.framework;
 
-                if (new ConceptScheme().isA(wut.getFullType()) || wut["encryptedType"] == "ConceptScheme")
-                    if (framework != null)
-                        if (framework.shortId() == wut.shortId()) {
+                if (new ConceptScheme().isA(wut.getFullType()) || wut["encryptedType"] === "ConceptScheme") {
+                    if (framework != null) {
+                        if (framework.shortId() === wut.shortId()) {
                             var f = new ConceptScheme();
-                            if (wut["encryptedType"] == "ConceptScheme") {
+                            if (wut["encryptedType"] === "ConceptScheme") {
                                 f = this.decrypt(wut, f);
-                            }
-                            else {
+                            } else {
                                 f.copyFrom(wut);
                             }
                             this.$store.commit('framework', f);
-                            //populateFramework();
-                            //playSavedAnimation('frameworkNameContainer');
+                            // populateFramework();
+                            // playSavedAnimation('frameworkNameContainer');
                             this.spitEvent("frameworkChanged", f.shortId());
                         }
+                    }
+                }
 
-                if (new EcFramework().isA(wut.getFullType()) || wut["encryptedType"] == "Framework")
-                    if (framework != null)
-                        if (framework.shortId() == wut.shortId()) {
+                if (new EcFramework().isA(wut.getFullType()) || wut["encryptedType"] === "Framework") {
+                    if (framework != null) {
+                        if (framework.shortId() === wut.shortId()) {
                             var f = new EcFramework();
-                            if (wut["encryptedType"] == "Framework") {
+                            if (wut["encryptedType"] === "Framework") {
                                 f = this.decrypt(wut, f);
-                            }
-                            else {
+                            } else {
                                 f.copyFrom(wut);
                             }
                             this.$store.commit('framework', f);
-                            //renderSidebar(true, true);
-                            //playSavedAnimation('frameworkNameContainer');
-                            //populateFramework();
+                            // renderSidebar(true, true);
+                            // playSavedAnimation('frameworkNameContainer');
+                            // populateFramework();
                             spitEvent("frameworkChanged", f.shortId());
                         }
+                    }
+                }
 
-                if (new Concept().isA(wut.getFullType())  || wut["encryptedType"] == "Concept") {
-                    if (framework != null)
+                if (new Concept().isA(wut.getFullType()) || wut["encryptedType"] === "Concept") {
+                    if (framework != null) {
                         if (this.$store.state.editor.selectedCompetency != null) {
-                            if (this.$store.state.editor.selectedCompetency.shortId() == wut.shortId()) {
+                            if (this.$store.state.editor.selectedCompetency.shortId() === wut.shortId()) {
                                 var com = new EcConcept();
-                                if (wut["encryptedType"] == "Concept") {
+                                if (wut["encryptedType"] === "Concept") {
                                     com = this.decrypt(wut, com);
-                                }
-                                else {
+                                } else {
                                     com.copyFrom(wut);
                                 }
                                 this.$store.commit('selectedCompetency', com);
                             }
                             spitEvent("competencyChanged", this.$store.state.editor.selectedCompetency.shortId());
                         }
+                    }
                 }
-                if (new EcCompetency().isA(wut.getFullType()) || wut["encryptedType"] == "Competency") {
+                if (new EcCompetency().isA(wut.getFullType()) || wut["encryptedType"] === "Competency") {
                     if (framework != null) {
                         if (this.$store.state.editor.selectedCompetency != null) {
-                            if (this.$store.state.editor.selectedCompetency.shortId() == wut.shortId()) {
+                            if (this.$store.state.editor.selectedCompetency.shortId() === wut.shortId()) {
                                 var com = new EcCompetency();
-                                if (wut["encryptedType"] == "Competency") {
+                                if (wut["encryptedType"] === "Competency") {
                                     com = this.decrypt(wut, com);
-                                }
-                                else {
+                                } else {
                                     com.copyFrom(wut);
                                 }
                                 this.$store.commit('selectedCompetency', com);
-
                             }
                             spitEvent("competencyChanged", this.$store.state.editor.selectedCompetency.shortId());
                         }
                     }
                 }
 
-                if (new EcLevel().isA(wut.getFullType()) || wut["encryptedType"] == "Level") {
+                if (new EcLevel().isA(wut.getFullType()) || wut["encryptedType"] === "Level") {
                     if (framework != null) {
                         if (this.$store.state.editor.selectedCompetency != null) {
-                            if (this.$store.state.editor.selectedCompetency.shortId() == wut.shortId()) {
+                            if (this.$store.state.editor.selectedCompetency.shortId() === wut.shortId()) {
                                 var com = new EcLevel();
-                                if (wut["encryptedType"] == "Level") {
+                                if (wut["encryptedType"] === "Level") {
                                     com = this.decrypt(wut, com);
-                                }
-                                else {
+                                } else {
                                     com.copyFrom(wut);
                                 }
                                 this.$store.commit('selectedCompetency', com);
@@ -379,29 +376,27 @@ export default {
                             spitEvent("competencyChanged", this.$store.state.editor.selectedCompetency.shortId());
                         }
                     }
-                } 
-            }
+                }
+            };
 
-            connection.onmessage = function (e) {
+            connection.onmessage = function(e) {
                 var resp = e.data;
                 console.log('Server: ' + resp);
-                if (!EcArray.isArray(resp) && resp.startsWith("["))
+                if (!EcArray.isArray(resp) && resp.startsWith("[")) {
                     resp = JSON.parse(resp);
-                if (EcArray.isArray(resp))
-                {
-                    for (var i = 0;i < resp.length;i++)
-                    {
+                }
+                if (EcArray.isArray(resp)) {
+                    for (var i = 0; i < resp.length; i++) {
                         delete EcRepository.cache[resp[i]];
                         delete EcRepository.cache[EcRemoteLinkedData.trimVersionFromUrl(resp[i])];
                     }
                     if (framework == null) return;
-                    this.repo.precache(resp,function(){
-                        for (var i = 0; i < resp.length; i++)
+                    this.repo.precache(resp, function() {
+                        for (var i = 0; i < resp.length; i++) {
                             EcRepository.get(resp[i], connection.changedObject, error);
+                        }
                     });
-                }
-                else
-                {
+                } else {
                     delete EcRepository.cache[resp];
                     delete EcRepository.cache[EcRemoteLinkedData.trimVersionFromUrl(resp)];
                     if (framework == null) return;
