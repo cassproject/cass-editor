@@ -38,7 +38,7 @@
             edgeSourceProperty="source"
             edgeTargetProperty="target"
             :editable="true"
-            :repo="repo"><span>test</span></Hierarchy>
+            :repo="repo"></Hierarchy>
     </div>
 </template>
 <script>

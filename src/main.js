@@ -22,7 +22,7 @@ Vue.config.warnHandler = function(msg, vm, trace) {
     // `trace` is the component hierarchy trace
 };
 
-new Vue({
+window.app = new Vue({
     router,
     store,
     render: h => h(App)

@@ -7,6 +7,7 @@ Vue.use(Vuex);
 const editor = {
     state: {
         framework: null,
+        organization: null,
         selectedCompetency: null,
         defaultLanguage: null,
         webSocketBackoff: 100,
@@ -17,6 +18,9 @@ const editor = {
     mutations: {
         framework(state, f) {
             state.framework = f;
+        },
+        organization(state, f) {
+            state.organization = f;
         },
         selectedCompetency(state, comp) {
             state.selectedCompetency = comp;

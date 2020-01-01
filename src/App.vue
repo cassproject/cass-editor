@@ -84,6 +84,23 @@
                             </a>
                         </div>
                     </div>
+                    <div
+                        v-if="this.queryParams.x"
+                        class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link">
+                            Experimental
+                        </a>
+
+                        <div class="navbar-dropdown">
+                            <a
+                                class="navbar-item"
+                                @click="exportType='asn'">
+                                <router-link to="/organizations">
+                                    Organizations
+                                </router-link>
+                            </a>
+                        </div>
+                    </div>
                     <div class="navbar-item">
                         <router-link to="/help">
                             Help
@@ -303,8 +320,10 @@ export default {
                                 f.copyFrom(wut);
                             }
                             this.$store.commit('framework', f);
-                            // populateFramework();
-                            // playSavedAnimation('frameworkNameContainer');
+                            /*
+                             * populateFramework();
+                             * playSavedAnimation('frameworkNameContainer');
+                             */
                             this.spitEvent("frameworkChanged", f.shortId());
                         }
                     }
@@ -320,9 +339,11 @@ export default {
                                 f.copyFrom(wut);
                             }
                             this.$store.commit('framework', f);
-                            // renderSidebar(true, true);
-                            // playSavedAnimation('frameworkNameContainer');
-                            // populateFramework();
+                            /*
+                             * renderSidebar(true, true);
+                             * playSavedAnimation('frameworkNameContainer');
+                             * populateFramework();
+                             */
                             spitEvent("frameworkChanged", f.shortId());
                         }
                     }

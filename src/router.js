@@ -5,6 +5,8 @@ import About from './views/About.vue';
 import Test from './lode/views/Test.vue';
 import Frameworks from './views/framework/Frameworks.vue';
 import Framework from './views/framework/Framework.vue';
+import Organizations from './views/organization/Organizations.vue';
+import Organization from './views/organization/Organization.vue';
 import Import from './views/framework/Import.vue';
 
 Vue.use(Router);
@@ -31,6 +33,16 @@ export default new Router({
             path: '/import',
             name: 'import',
             component: Import
+        },
+        {
+            path: '/organizations',
+            name: 'organizations',
+            component: Organizations
+        },
+        {
+            path: '/organization',
+            name: 'organization',
+            component: Organization
         },
         {
             path: '/test',
