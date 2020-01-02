@@ -2,7 +2,8 @@
     <div class="page-framework">
         <Thing
             :obj="framework"
-            :repo="repo" />
+            :repo="repo"
+            :parentNotEditable="queryParams.view==='true'" />
         <span
             class="info-tag"
             v-if="framework.competency.length == 1">{{ framework.competency.length }} item</span>
@@ -37,8 +38,8 @@
             edgeRelationLiteral="narrows"
             edgeSourceProperty="source"
             edgeTargetProperty="target"
-            :editable="true"
-            :repo="repo"></Hierarchy>
+            :editable="!queryParams.view === 'true'"
+            :repo="repo" />
     </div>
 </template>
 <script>

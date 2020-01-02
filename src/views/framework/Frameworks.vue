@@ -39,7 +39,8 @@
             :repo="repo"
             :click="frameworkClick"
             :searchOptions="searchOptions"
-            :paramObj="paramObj">
+            :paramObj="paramObj"
+            :disallowEdits="queryParams.view==='true'">
             <template
                 v-slot:frameworkTags="slotProps">
                 <span>{{ slotProps.item.competency.length }} items </span>
