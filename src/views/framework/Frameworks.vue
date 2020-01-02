@@ -25,6 +25,14 @@
                     v-model="sortBy">
                 <label for="schema:dateModified">Sort by last modified</label>
             </span>
+            <span v-if="queryParams.showMine!=='true'&&numIdentities">
+                <input
+                    type="checkbox"
+                    value="true"
+                    id="showMine"
+                    v-model="showMine">
+                <label for="showMine">Show only mine</label>
+            </span>
         </div>
         <List
             type="Framework"
@@ -81,7 +89,9 @@ export default {
     data: function() {
         return {
             repo: window.repo,
-            sortBy: "name.keyword"
+            sortBy: "name.keyword",
+            showMine: false,
+            numIdentities: EcIdentityManager.ids.length
         };
     },
     computed: {
@@ -90,7 +100,7 @@ export default {
             if (this.queryParams && this.queryParams.filter != null) {
                 search += " AND (" + this.queryParams.filter + ")";
             }
-            if (this.queryParams && this.queryParams.show === "mine") {
+            if (this.showMine || (this.queryParams && this.queryParams.show === "mine")) {
                 search += " AND (";
                 for (var i = 0; i < EcIdentityManager.ids.length; i++) {
                     if (i !== 0) {
