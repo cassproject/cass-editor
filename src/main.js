@@ -5,6 +5,7 @@ import router from './router';
 import store from './store.js';
 require("cassproject");
 Vue.use(require('vue-moment'));
+Vue.use(require('vue-infinite-scroll'));
 
 EcRepository.caching = true;
 window.repo = new EcRepository();
