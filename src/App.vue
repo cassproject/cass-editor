@@ -223,6 +223,9 @@ export default {
                     me.$router.push({name: "framework", params: {frameworkId: me.queryParams.frameworkId}});
                 }, console.error);
             }
+            if (this.queryParams.action === "import") {
+                this.$router.push({name: "import"});
+            }
         }
     },
     methods: {
