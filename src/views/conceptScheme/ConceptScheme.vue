@@ -73,9 +73,7 @@ export default {
     },
     watch: {
         exportType: function() {
-            if (this.exportType === "asn") {
-                this.exportAsn();
-            } else if (this.exportType === "jsonld") {
+            if (this.exportType === "jsonld") {
                 this.exportJsonld();
             } else if (this.exportType === "rdfQuads") {
                 this.exportRdfQuads();
@@ -87,12 +85,6 @@ export default {
                 this.exportTurtle();
             } else if (this.exportType === "ctdlasnJsonld") {
                 this.exportCtdlasnJsonld();
-            } else if (this.exportType === "ctdlasnCsv") {
-                this.exportCtdlasnCsv();
-            } else if (this.exportType === "csv") {
-                this.exportCsv();
-            } else if (this.exportType === "case") {
-                this.exportCase();
             }
         }
     },
@@ -101,14 +93,11 @@ export default {
             var blob = new Blob([data], {type: "text/plain;charset=utf-8"});
             saveAs(blob, fileName);
         },
-        exportAsn: function() {
-            window.open(this.exportLink.replace("/data/", "/asn/"), '_blank');
-        },
         exportJsonld: function() {
             window.open(this.exportLink, '_blank');
         },
         exportRdfQuads: function() {
-            var fileName = this.framework.getName();
+            var fileName = this.getDisplayStringFrom(this.framework["dcterms:title"]);
             var me = this;
             this.get(this.exportLink, null, {"Accept": "text/n4"}, function(success) {
                 me.download(fileName + ".n4", success);
@@ -117,7 +106,7 @@ export default {
             });
         },
         exportRdfJson: function() {
-            var fileName = this.framework.getName();
+            var fileName = this.getDisplayStringFrom(this.framework["dcterms:title"]);
             var me = this;
             this.get(this.exportLink, null, {"Accept": "application/rdf+json"}, function(success) {
                 me.download(fileName + ".rdf.json", success);
@@ -126,7 +115,7 @@ export default {
             });
         },
         exportRdfXml: function() {
-            var fileName = this.framework.getName();
+            var fileName = this.getDisplayStringFrom(this.framework["dcterms:title"]);
             var me = this;
             this.get(this.exportLink, null, {"Accept": "application/rdf+xml"}, function(success) {
                 me.download(fileName + ".rdf.xml", success);
@@ -135,7 +124,7 @@ export default {
             });
         },
         exportTurtle: function() {
-            var fileName = this.framework.getName();
+            var fileName = this.getDisplayStringFrom(this.framework["dcterms:title"]);
             var me = this;
             this.get(this.exportLink, null, {"Accept": "text/turtle"}, function(success) {
                 me.download(fileName + ".turtle", success);
@@ -146,19 +135,16 @@ export default {
         exportCtdlasnJsonld: function() {
             window.open(this.exportLink.replace("/data/", "/ceasn/"), '_blank');
         },
-        exportCtdlasnCsv: function() {
-            var me = this;
-            EcRemote.getExpectingString(this.exportLink.replace("/data/", "/ceasn/"), null, function(success) {
-                CSVExport.exportCTDLASN(JSON.parse(success), me.framework.getName());
-            }, function(error) {
-                console.log(error);
-            });
-        },
-        exportCsv: function() {
-            CSVExport.exportFramework(this.framework.id, console.log, console.log);
-        },
-        exportCase: function() {
-            window.open(this.repo.selectedServer + "ims/case/v1p0/CFPackages/" + this.exportGuid, '_blank');
+        getDisplayStringFrom: function(n) {
+            if (n != null && EcArray.isArray(n)) {
+                if ((n).length > 0) {
+                    n = (n)[0];
+                }
+            }
+            if (n != null && EcObject.isObject(n) && (n).hasOwnProperty("@value")) {
+                return (n)["@value"];
+            }
+            return n;
         }
     }
 };
