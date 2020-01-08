@@ -8,6 +8,7 @@ import Framework from './views/framework/Framework.vue';
 import Organizations from './views/organization/Organizations.vue';
 import Organization from './views/organization/Organization.vue';
 import Import from './views/framework/Import.vue';
+import ConceptScheme from './views/conceptScheme/ConceptScheme.vue';
 
 Vue.use(Router);
 export default new Router({
@@ -48,6 +49,11 @@ export default new Router({
             path: '/test',
             name: 'test',
             component: Test
+        },
+        {
+            path: '/conceptScheme',
+            name: 'conceptScheme',
+            component: ConceptScheme
         }
     ]
 });
