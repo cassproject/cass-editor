@@ -70,23 +70,25 @@ export default {
             var me = this;
             this.structure = [];
             if (this.container == null) { return r; }
+            var structure = [];
             if (this.container["skos:hasTopConcept"] !== null) {
                 for (var i = 0; i < this.container["skos:hasTopConcept"].length; i++) {
                     var c = EcConcept.getBlocking(this.container["skos:hasTopConcept"][i]);
-                    this.structure.push({"obj": c, "children": []});
+                    structure.push({"obj": c, "children": []});
                     if (c["skos:narrower"]) {
-                        this.addChildren(c, i);
+                        this.addChildren(structure, c, i);
                     }
                 }
             }
+            this.structure = structure;
             this.once = false;
         },
-        addChildren: function(c, i) {
+        addChildren: function(structure, c, i) {
             for (var j = 0; j < c["skos:narrower"].length; j++) {
                 var subC = EcConcept.getBlocking(c["skos:narrower"][j]);
-                this.structure[i].children.push({"obj": subC, "children": []});
+                structure[i].children.push({"obj": subC, "children": []});
                 if (subC["skos:narrower"]) {
-                    this.addChildren(subC, j);
+                    this.addChildren(structure[i].children, subC, j);
                 }
             }
         },
