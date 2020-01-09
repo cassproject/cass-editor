@@ -91,13 +91,14 @@ export default {
         return {
             repo: window.repo,
             showMine: false,
-            numIdentities: EcIdentityManager.ids.length
+            numIdentities: EcIdentityManager.ids.length,
+            sortBy: null
         };
     },
+    created: function() {
+        this.sortBy = this.queryParams.concepts === 'true' ? "dcterms:title.keyword" : "name.keyword";
+    },
     computed: {
-        sortBy: function() {
-            return this.queryParams.concepts === 'true' ? "dcterms:title.keyword" : "name.keyword";
-        },
         type: function() {
             return this.queryParams.concepts === 'true' ? "ConceptScheme" : "Framework";
         },

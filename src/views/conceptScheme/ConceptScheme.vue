@@ -24,7 +24,7 @@
         <ConceptHierarchy
             :container="framework"
             containerType="Framework"
-            :editable="!queryParams.view === 'true'"
+            :editable="queryParams.view !== 'true'"
             :repo="repo" />
     </div>
 </template>
