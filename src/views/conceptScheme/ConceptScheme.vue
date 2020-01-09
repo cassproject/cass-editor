@@ -23,7 +23,7 @@
         <hr>
         <ConceptHierarchy
             :container="framework"
-            containerType="Framework"
+            containerType="ConceptScheme"
             :editable="queryParams.view !== 'true'"
             :repo="repo" />
     </div>

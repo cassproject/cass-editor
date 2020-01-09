@@ -68,7 +68,7 @@ export default {
     methods: {
         computeHierarchy: function() {
             var me = this;
-            this.structure = [];
+            this.structure.splice(0, this.structure.length);
             if (this.container == null) { return r; }
             var structure = [];
             if (this.container["skos:hasTopConcept"] !== null) {
@@ -126,56 +126,59 @@ export default {
         },
         move: function(fromId, toId, fromContainerId, toContainerId, removeOldRelations, plusup) {
             this.once = true;
-            if (fromId !== toId) {
-                var fromIndex = this.container[this.containerNodeProperty].indexOf(fromId);
-                console.log(fromIndex);
-                this.container[this.containerNodeProperty].splice(fromIndex, 1);
-                var toIndex = null;
+            if (fromContainerId === toContainerId) {
+                var container = EcConcept.getBlocking(toContainerId);
+                var property = "skos:narrower";
+                if (container === null) {
+                    container = this.container;
+                    property = "skos:hasTopConcept";
+                }
+                var fromIndex = container[property].indexOf(fromId);
+                container[property].splice(fromIndex, 1);
                 if (toId == null || toId === undefined) {
-                    toIndex = -1;
+                    if (!EcArray.isArray(container[property])) {
+                        container[property] = [];
+                    }
+                    container[property].push(fromId);
                 } else {
-                    toIndex = this.container[this.containerNodeProperty].indexOf(toId);
+                    var toIndex = container[property].indexOf(toId);
+                    container[property].splice(toIndex, 0, fromId);
                 }
-                console.log(toIndex);
-                if (plusup > 0 && fromIndex <= toIndex) { toIndex += plusup; }
-                if (plusup < 0 && fromIndex < toIndex) { toIndex += plusup; }
-                if (toIndex === -1) {
-                    this.container[this.containerNodeProperty].push(fromId);
-                } else {
-                    this.container[this.containerNodeProperty].splice(toIndex, 0, fromId);
+                this.repo.saveTo(container, function() {
+                    this.computeHierarchy();
+                }, console.error);
+            } else {
+                var fromContainer = EcConcept.getBlocking(fromContainerId);
+                var fromProperty = "skos:narrower";
+                var toContainer = EcConcept.getBlocking(toContainerId);
+                var toProperty = "skos:narrower";
+                if (fromContainer === null) {
+                    fromContainer = this.container;
+                    fromProperty = "skos:hasTopConcept";
                 }
-            }
-            if (fromContainerId !== toContainerId) {
-                if (removeOldRelations === true) {
-                    for (var i = 0; i < this.container[this.containerEdgeProperty].length; i++) {
-                        var a = window[this.edgeType].getBlocking(this.container[this.containerEdgeProperty][i]);
-                        if (a == null) { continue; }
-                        if (a[this.edgeRelationProperty] === this.edgeRelationLiteral) {
-                            if (a[this.edgeTargetProperty] == null) continue;
-                            if (a[this.edgeSourceProperty] == null) continue;
-                            if (a[this.edgeSourceProperty] !== fromId) continue;
-                            console.log("Identified edge to remove: ", JSON.parse(a.toJson()));
-                            this.container[this.containerEdgeProperty].splice(i--, 1);
+                if (toContainer === null) {
+                    toContainer = this.container;
+                    toProperty = "skos:hasTopConcept";
+                }
+                var fromIndex = fromContainer[fromProperty].indexOf(fromId);
+                fromContainer[fromProperty].splice(fromIndex, 1);
+                var me = this;
+                this.repo.saveTo(fromContainer, function() {
+                    if (toId == null || toId === undefined) {
+                        if (!EcArray.isArray(toContainer[toProperty])) {
+                            toContainer[toProperty] = [];
                         }
+                        toContainer[toProperty].push(fromId);
+                    } else {
+                        var toIndex = toContainer[toProperty].indexOf(toId);
+                        toContainer[toProperty].splice(toIndex, 0, fromId);
                     }
-                }
-                if (toContainerId != null && toContainerId !== "") {
-                    var a = new window[this.edgeType]();
-                    if (EcIdentityManager.ids != null && EcIdentityManager.ids.length > 0) {
-                        a.addOwner(EcIdentityManager.ids[0]);
-                    }
-                    var source = window[this.nodeType].getBlocking(fromId);
-                    var target = window[this.nodeType].getBlocking(toContainerId);
-                    a.assignId(this.repo.selectedServer, EcCrypto.md5(source.shortId()) + "_" + this.edgeRelationLiteral + "_" + EcCrypto.md5(target.shortId()));
-                    a.source = source.shortId();
-                    a.target = target.shortId();
-                    a.relationType = this.edgeRelationLiteral;
-                    this.container[this.containerEdgeProperty].push(a.shortId());
-                    console.log("Added edge: ", JSON.parse(a.toJson()));
-                    this.repo.saveTo(a, console.log, console.error);
-                }
+                    me.repo.saveTo(toContainer, function() {
+                        me.computeHierarchy();
+                    }, console.log);
+                }, console.error);
+                
             }
-            this.repo.saveTo(this.stripEmptyArrays(this.container), console.log, console.error);
             this.dragging = false;
         },
         add: function(containerId) {
