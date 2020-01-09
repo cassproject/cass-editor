@@ -21,10 +21,16 @@
             v-if="framework['Published']"
             :title="framework['Published']">Published</span>
         <hr>
+        <ConceptHierarchy
+            :container="framework"
+            containerType="Framework"
+            :editable="!queryParams.view === 'true'"
+            :repo="repo" />
     </div>
 </template>
 <script>
 import Thing from '@/lode/components/lode/Thing.vue';
+import ConceptHierarchy from './ConceptHierarchy.vue';
 import saveAs from 'file-saver';
 import common from '@/mixins/common.js';
 export default {
@@ -61,7 +67,7 @@ export default {
             }
         }
     },
-    components: {Thing},
+    components: {Thing, ConceptHierarchy},
     created: function() {
         this.framework = this.$store.state.editor.framework;
         if (EcRepository.shouldTryUrl(this.framework.id) === false) {
@@ -157,13 +163,13 @@ export default {
 
         margin-top:0px;
     }
-    .e-Thing-always-ul .e-name{
+    .e-Thing-always-ul .e-title, .e-Thing-always-ul .e-prefLabel{
         label{
             display:none;
         }
     }
 
-    .e-Thing-always-ul .e-description{
+    .e-Thing-always-ul .e-description, .e-Thing-always-ul .e-definition{
         label{
             display:none;
         }
@@ -179,7 +185,7 @@ export default {
         .e-Property-text{font-size:larger;}
     }
 
-    .e-Competency{
+    .e-Concept{
         a {display:none;}
         >.expand{float:right;}
         >.compact{float:right;}

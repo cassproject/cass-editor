@@ -163,21 +163,7 @@ export default {
 
 <style lang="scss">
 
-.page-open .e-name{
-    label{
-        display:none;
-    }
-    ul{
-        margin-left:0px;
-        display:inline;
-        li{
-            display:inline;
-            margin-right:.5rem;
-        }
-    }
-}
-
-.page-open .e-title{
+.page-open .e-name, .page-open .e-title{
     label{
         display:none;
     }
@@ -198,13 +184,7 @@ export default {
     font-size:.8rem;
 }
 
-.page-open .e-Framework{
-    a {display:none;}
-    .icon {display:none;}
-    .editable {display:block;float:right;}
-}
-
-.page-open .e-ConceptScheme{
+.page-open .e-Framework, .page-open .e-ConceptScheme{
     a {display:none;}
     .icon {display:none;}
     .editable {display:block;float:right;}
