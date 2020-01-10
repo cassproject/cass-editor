@@ -67,20 +67,17 @@ export default {
     },
     methods: {
         computeHierarchy: function() {
-            var me = this;
             this.structure.splice(0, this.structure.length);
             if (this.container == null) { return r; }
-            var structure = [];
             if (this.container["skos:hasTopConcept"] !== null) {
                 for (var i = 0; i < this.container["skos:hasTopConcept"].length; i++) {
                     var c = EcConcept.getBlocking(this.container["skos:hasTopConcept"][i]);
-                    structure.push({"obj": c, "children": []});
+                    this.structure.push({"obj": c, "children": []});
                     if (c["skos:narrower"]) {
-                        this.addChildren(structure, c, i);
+                        this.addChildren(this.structure, c, i);
                     }
                 }
             }
-            this.structure = structure;
             this.once = false;
         },
         addChildren: function(structure, c, i) {
@@ -126,6 +123,7 @@ export default {
         },
         move: function(fromId, toId, fromContainerId, toContainerId, removeOldRelations, plusup) {
             this.once = true;
+            var me = this;
             if (fromContainerId === toContainerId) {
                 var container = EcConcept.getBlocking(toContainerId);
                 var property = "skos:narrower";
@@ -145,24 +143,36 @@ export default {
                     container[property].splice(toIndex, 0, fromId);
                 }
                 this.repo.saveTo(container, function() {
-                    this.computeHierarchy();
+                    me.computeHierarchy();
                 }, console.error);
             } else {
+                var moveComp = EcConcept.getBlocking(fromId);
                 var fromContainer = EcConcept.getBlocking(fromContainerId);
                 var fromProperty = "skos:narrower";
+                var fromProperty2 = "skos:broader";
                 var toContainer = EcConcept.getBlocking(toContainerId);
                 var toProperty = "skos:narrower";
+                var toProperty2 = "skos:broader";
                 if (fromContainer === null) {
                     fromContainer = this.container;
                     fromProperty = "skos:hasTopConcept";
+                    fromProperty2 = "skos:topConceptOf";
                 }
                 if (toContainer === null) {
                     toContainer = this.container;
                     toProperty = "skos:hasTopConcept";
+                    toProperty2 = "skos:topConceptOf";
                 }
                 var fromIndex = fromContainer[fromProperty].indexOf(fromId);
                 fromContainer[fromProperty].splice(fromIndex, 1);
-                var me = this;
+                if (fromContainerId && moveComp[fromProperty2]) {
+                    EcArray.setRemove(moveComp[fromProperty2], fromContainerId);
+                    if (moveComp[fromProperty2].length === 0) {
+                        delete moveComp[fromProperty2];
+                    }
+                } else {
+                    delete moveComp[fromProperty2];
+                }
                 this.repo.saveTo(fromContainer, function() {
                     if (toId == null || toId === undefined) {
                         if (!EcArray.isArray(toContainer[toProperty])) {
@@ -173,11 +183,19 @@ export default {
                         var toIndex = toContainer[toProperty].indexOf(toId);
                         toContainer[toProperty].splice(toIndex, 0, fromId);
                     }
+                    if (!EcArray.isArray(moveComp[toProperty2])) {
+                        moveComp[toProperty2] = [];
+                    }
+                    if (toContainerId) {
+                        moveComp[toProperty2].push(toContainerId);
+                    } else {
+                        moveComp[toProperty2].push(me.container.shortId());
+                    }
                     me.repo.saveTo(toContainer, function() {
+                        me.repo.saveTo(moveComp, console.log, console.error);
                         me.computeHierarchy();
                     }, console.log);
                 }, console.error);
-                
             }
             this.dragging = false;
         },
