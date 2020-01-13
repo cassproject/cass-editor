@@ -200,53 +200,37 @@ export default {
             this.dragging = false;
         },
         add: function(containerId) {
+            var me = this;
             this.once = true;
-            var c = new window[this.nodeType]();
+            var c = new EcConcept();
             c.generateId(this.repo.selectedServer);
+            c["skos:prefLabel"] = "New Concept";
             if (EcIdentityManager.ids != null && EcIdentityManager.ids.length > 0) {
                 c.addOwner(EcIdentityManager.ids[0]);
             }
-            this.container[this.containerNodeProperty].push(c.shortId());
+            if (this.containerId === this.container.shortId()) {
+                if (!EcArray.isArray(this.container["skos:hasTopConcept"])) {
+                    this.container["skos:hasTopConcept"] = [];
+                }
+                this.container["skos:hasTopConcept"].push(c.shortId());
+                c["skos:topConceptOf"] = this.container.shortId();
+                c["skos:inScheme"] = this.container.shortId();
+                this.repo.saveTo(c, function() {
+                    me.repo.saveTo(me.container, console.log, console.error);
+                }, console.error);
+            } else {
+                c["skos:broader"] = [containerId];
+                var parent = EcConcept.getBlocking(containerId);
+                if (!EcArray.isArray(parent["skos:narrower"])) {
+                    parent["skos:narrower"] = [];
+                }
+                parent["skos:narrower"].push(c.shortId());
+                c["skos:inScheme"] = this.container.shortId();
+                this.repo.saveTo(c, function() {
+                    me.repo.saveTo(parent, console.log, console.error);
+                }, console.error);
+            }
             console.log("Added node: ", JSON.parse(c.toJson()));
-            this.repo.saveTo(c, console.log, console.error);
-
-            var a = new window[this.edgeType]();
-            if (EcIdentityManager.ids != null && EcIdentityManager.ids.length > 0) {
-                a.addOwner(EcIdentityManager.ids[0]);
-            }
-            var source = c;
-            var target = window[this.nodeType].getBlocking(containerId);
-            a.assignId(this.repo.selectedServer, EcCrypto.md5(source.shortId()) + "_" + this.edgeRelationLiteral + "_" + EcCrypto.md5(target.shortId()));
-            a.source = source.shortId();
-            a.target = target.shortId();
-            a.relationType = this.edgeRelationLiteral;
-            this.container[this.containerEdgeProperty].push(a.shortId());
-            console.log("Added edge: ", JSON.parse(a.toJson()));
-            this.repo.saveTo(a, console.log, console.error);
-            this.repo.saveTo(this.stripEmptyArrays(this.container), console.log, console.error);
-        },
-        // Supports save() by removing reactify arrays.
-        stripEmptyArrays(o) {
-            // TODO: Investigate use of Vue.$set instead of reactification method.
-            if (EcArray.isArray(o)) {
-                if (o.length === 0) {
-                    return null;
-                }
-                for (var i = 0; i < o.length; i++) {
-                    o[i] = this.stripEmptyArrays(o[i]);
-                    if (o[i] == null) {
-                        o.splice(i--, 1);
-                    }
-                }
-            } else if (EcObject.isObject(o)) {
-                for (var key in o) {
-                    var value = this.stripEmptyArrays(o[key]);
-                    if (value == null) {
-                        delete o[key];
-                    }
-                }
-            }
-            return o;
         }
     }
 };
