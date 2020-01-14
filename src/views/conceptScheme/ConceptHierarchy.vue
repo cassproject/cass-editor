@@ -26,6 +26,7 @@
 <script>
 import HierarchyNode from '@/lode/components/lode/HierarchyNode.vue';
 import draggable from 'vuedraggable';
+import common from '@/mixins/common.js';
 export default {
     name: 'ConceptHierarchy',
     props: {
@@ -33,7 +34,8 @@ export default {
         containerType: String,
         editable: Boolean,
         repo: Object,
-        profile: Object
+        profile: Object,
+        queryParams: Object
     },
     data: function() {
         return {
@@ -44,6 +46,7 @@ export default {
         };
     },
     components: {HierarchyNode, draggable},
+    mixins: [common],
     computed: {
         hierarchy: function() {
             var me = this;
@@ -84,7 +87,7 @@ export default {
             for (var j = 0; j < c["skos:narrower"].length; j++) {
                 var subC = EcConcept.getBlocking(c["skos:narrower"][j]);
                 structure[i].children.push({"obj": subC, "children": []});
-                if (subC["skos:narrower"]) {
+                if (subC && subC["skos:narrower"]) {
                     this.addChildren(structure[i].children, subC, j);
                 }
             }
@@ -203,18 +206,31 @@ export default {
             var me = this;
             this.once = true;
             var c = new EcConcept();
-            c.generateId(this.repo.selectedServer);
-            c["skos:prefLabel"] = "New Concept";
+            if (this.queryParams.newObjectEndpoint) {
+                c.generateShortId(newObjectEndpoint);
+            } else {
+                c.generateId(this.repo.selectedServer);
+            }
+            c["schema:dateCreated"] = new Date().toISOString();
             if (EcIdentityManager.ids != null && EcIdentityManager.ids.length > 0) {
                 c.addOwner(EcIdentityManager.ids[0]);
             }
-            if (this.containerId === this.container.shortId()) {
+            this.setDefaultLanguage();
+            c["skos:prefLabel"] = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Concept"};
+            c["skos:inScheme"] = this.container.shortId();
+            if (containerId === this.container.shortId()) {
                 if (!EcArray.isArray(this.container["skos:hasTopConcept"])) {
                     this.container["skos:hasTopConcept"] = [];
                 }
                 this.container["skos:hasTopConcept"].push(c.shortId());
                 c["skos:topConceptOf"] = this.container.shortId();
-                c["skos:inScheme"] = this.container.shortId();
+                this.container["schema:dateModified"] = new Date().toISOString();
+                if (this.$store.state.editor.private === true) {
+                    c = EcEncryptedValue.toEncryptedValue(c);
+                    if (EcEncryptedValue.encryptOnSaveMap[me.container.id] !== true) {
+                        me.container = EcEncryptedValue.toEncryptedValue(me.container);
+                    }
+                }
                 this.repo.saveTo(c, function() {
                     me.repo.saveTo(me.container, console.log, console.error);
                 }, console.error);
@@ -225,9 +241,20 @@ export default {
                     parent["skos:narrower"] = [];
                 }
                 parent["skos:narrower"].push(c.shortId());
-                c["skos:inScheme"] = this.container.shortId();
+                this.container["schema:dateModified"] = new Date().toISOString();
+                if (this.$store.state.editor.private === true) {
+                    c = EcEncryptedValue.toEncryptedValue(c);
+                    if (EcEncryptedValue.encryptOnSaveMap[parent.id] !== true) {
+                        parent = EcEncryptedValue.toEncryptedValue(parent);
+                    }
+                    if (EcEncryptedValue.encryptOnSaveMap[me.container.id] !== true) {
+                        me.container = EcEncryptedValue.toEncryptedValue(me.container);
+                    }
+                }
                 this.repo.saveTo(c, function() {
-                    me.repo.saveTo(parent, console.log, console.error);
+                    me.repo.saveTo(parent, function() {
+                        me.repo.saveTo(me.container, console.log, console.error);
+                    }, console.error);
                 }, console.error);
             }
             console.log("Added node: ", JSON.parse(c.toJson()));

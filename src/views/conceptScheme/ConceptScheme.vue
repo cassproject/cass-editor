@@ -25,7 +25,8 @@
             :container="framework"
             containerType="ConceptScheme"
             :editable="queryParams.view !== 'true'"
-            :repo="repo" />
+            :repo="repo"
+            :queryParams="queryParams" />
     </div>
 </template>
 <script>

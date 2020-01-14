@@ -57,7 +57,7 @@ export default {
             } else {
                 defaultLanguage = "en";
             }
-            me.$store.commit('defaultLanguage', defaultLanguage);
+            this.$store.commit('defaultLanguage', defaultLanguage);
         },
         get: function(server, service, headers, success, failure) {
             var url = EcRemote.urlAppend(server, service);
