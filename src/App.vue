@@ -26,7 +26,7 @@
                     </div>
                     <div
                         class="navbar-item has-dropdown is-hoverable"
-                        v-if="$route.name=='framework'">
+                        v-if="$route.name=='framework'||$route.name=='conceptScheme'">
                         <a class="navbar-link">
                             Export
                         </a>
@@ -34,7 +34,8 @@
                         <div class="navbar-dropdown">
                             <a
                                 class="navbar-item"
-                                @click="exportType='asn'">
+                                @click="exportType='asn'"
+                                v-if="queryParams.concepts!=='true'">
                                 Achievement Standards Network (RDF+JSON)
                             </a>
                             <a
@@ -69,17 +70,20 @@
                             </a>
                             <a
                                 class="navbar-item"
-                                @click="exportType='ctdlasnCsv'">
+                                @click="exportType='ctdlasnCsv'"
+                                v-if="queryParams.concepts!=='true'">
                                 Credential Engine ASN (CSV)
                             </a>
                             <a
                                 class="navbar-item"
-                                @click="exportType='csv'">
+                                @click="exportType='csv'"
+                                v-if="queryParams.concepts!=='true'">
                                 Table (CSV)
                             </a>
                             <a
                                 class="navbar-item"
-                                @click="exportType='case'">
+                                @click="exportType='case'"
+                                v-if="queryParams.concepts!=='true'">
                                 IMS Global CASE (JSON)
                             </a>
                         </div>

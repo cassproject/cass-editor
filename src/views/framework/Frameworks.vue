@@ -25,7 +25,7 @@
                     v-model="sortBy">
                 <label for="schema:dateModified">Sort by last modified</label>
             </span>
-            <span v-if="queryParams.showMine!=='true'&&numIdentities">
+            <span v-if="queryParams.show!=='mine'&&queryParams.conceptShow!=='mine'&&numIdentities">
                 <input
                     type="checkbox"
                     value="true"
@@ -35,7 +35,7 @@
             </span>
         </div>
         <List
-            type="Framework"
+            :type="type"
             :repo="repo"
             :click="frameworkClick"
             :searchOptions="searchOptions"
@@ -43,7 +43,7 @@
             :disallowEdits="queryParams.view==='true'">
             <template
                 v-slot:frameworkTags="slotProps">
-                <span>{{ slotProps.item.competency.length }} items </span>
+                <span v-if="queryParams.concepts!=='true'">{{ slotProps.item.competency.length }} items </span>
                 <span
                     v-if="slotProps.item.Published"
                     :title="slotProps.item.Published">Published </span>
@@ -90,18 +90,25 @@ export default {
     data: function() {
         return {
             repo: window.repo,
-            sortBy: "name.keyword",
             showMine: false,
-            numIdentities: EcIdentityManager.ids.length
+            numIdentities: EcIdentityManager.ids.length,
+            sortBy: null
         };
     },
+    created: function() {
+        this.sortBy = this.queryParams.concepts === 'true' ? "dcterms:title.keyword" : "name.keyword";
+    },
     computed: {
+        type: function() {
+            return this.queryParams.concepts === 'true' ? "ConceptScheme" : "Framework";
+        },
         searchOptions: function() {
             let search = "";
             if (this.queryParams && this.queryParams.filter != null) {
                 search += " AND (" + this.queryParams.filter + ")";
             }
-            if (this.showMine || (this.queryParams && this.queryParams.show === "mine")) {
+            if (this.showMine || (this.queryParams && this.queryParams.concepts !== "true" && this.queryParams.show === "mine") ||
+                (this.queryParams && this.queryParams.concepts === "true" && this.queryParams.conceptShow === "mine")) {
                 search += " AND (";
                 for (var i = 0; i < EcIdentityManager.ids.length; i++) {
                     if (i !== 0) {
@@ -118,9 +125,10 @@ export default {
         paramObj: function() {
             let obj = {};
             obj.size = 20;
-            var order = (this.sortBy === "name.keyword") ? "asc" : "desc";
+            var order = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "asc" : "desc";
             obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "long",  "missing" : "_last"}} ]';
-            if (this.queryParams && this.queryParams.show != null && this.queryParams.show === 'mine') {
+            if (this.queryParams && ((this.queryParams.concepts !== "true" && this.queryParams.show === 'mine') ||
+                (this.queryParams.concepts === "true" && this.queryParams.conceptShow === "mine"))) {
                 obj.ownership = 'me';
             }
             return obj;
@@ -130,10 +138,17 @@ export default {
     methods: {
         frameworkClick: function(framework) {
             var me = this;
-            EcFramework.get(framework.id, function(success) {
-                me.$store.commit('framework', success);
-                me.$router.push({name: "framework", params: {frameworkId: framework.id}});
-            }, console.error);
+            if (this.queryParams.concepts === "true") {
+                EcConceptScheme.get(framework.id, function(success) {
+                    me.$store.commit('framework', success);
+                    me.$router.push({name: "conceptScheme", params: {frameworkId: framework.id}});
+                }, console.error);
+            } else {
+                EcFramework.get(framework.id, function(success) {
+                    me.$store.commit('framework', success);
+                    me.$router.push({name: "framework", params: {frameworkId: framework.id}});
+                }, console.error);
+            }
         },
         getName: function(field) {
             let name = EcArray.isArray(field) ? field : [field];
@@ -149,7 +164,7 @@ export default {
 
 <style lang="scss">
 
-.page-open .e-name{
+.page-open .e-name, .page-open .e-title{
     label{
         display:none;
     }
@@ -170,7 +185,7 @@ export default {
     font-size:.8rem;
 }
 
-.page-open .e-Framework{
+.page-open .e-Framework, .page-open .e-ConceptScheme{
     a {display:none;}
     .icon {display:none;}
     .editable {display:block;float:right;}

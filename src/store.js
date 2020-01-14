@@ -13,7 +13,8 @@ const editor = {
         webSocketBackoff: 100,
         selectConceptRelation: null,
         selectCompetencyRelation: null,
-        selectingCompetencies: false
+        selectingCompetencies: false,
+        private: false
     },
     mutations: {
         framework(state, f) {
@@ -30,6 +31,9 @@ const editor = {
         },
         webSocketBackoffIncrease(state) {
             state.webSocketBackoff *= 2;
+        },
+        private(state, bool) {
+            state.private = bool;
         }
     },
     actions: {
