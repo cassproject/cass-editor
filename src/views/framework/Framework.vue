@@ -30,6 +30,7 @@
         <Hierarchy
             :container="framework"
             containerType="Framework"
+            containerTypeGet="EcFramework"
             containerNodeProperty="competency"
             containerEdgeProperty="relation"
             nodeType="EcCompetency"
@@ -39,7 +40,8 @@
             edgeSourceProperty="source"
             edgeTargetProperty="target"
             :editable="queryParams.view !== 'true'"
-            :repo="repo" />
+            :repo="repo"
+            :queryParams="queryParams" />
     </div>
 </template>
 <script>
@@ -90,6 +92,7 @@ export default {
             this.exportGuid = this.framework.getGuid();
         }
         this.exportLink = this.repo.selectedServer + "data/" + this.exportGuid;
+        this.setDefaultLanguage();
     },
     watch: {
         exportType: function() {

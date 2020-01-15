@@ -21,6 +21,10 @@
                 </HierarchyNode>
             </draggable>
         </ul>
+        <i
+            v-if="canEdit"
+            class="drag-footer fa fa-plus"
+            @click="add(container.shortId())" />
     </div>
 </template>
 <script>
@@ -204,7 +208,6 @@ export default {
         },
         add: function(containerId) {
             var me = this;
-            this.once = true;
             var c = new EcConcept();
             if (this.queryParams.newObjectEndpoint) {
                 c.generateShortId(newObjectEndpoint);
@@ -232,7 +235,9 @@ export default {
                     }
                 }
                 this.repo.saveTo(c, function() {
-                    me.repo.saveTo(me.container, console.log, console.error);
+                    me.repo.saveTo(me.container, function() {
+                        me.once = true;
+                    }, console.error);
                 }, console.error);
             } else {
                 c["skos:broader"] = [containerId];
@@ -253,7 +258,9 @@ export default {
                 }
                 this.repo.saveTo(c, function() {
                     me.repo.saveTo(parent, function() {
-                        me.repo.saveTo(me.container, console.log, console.error);
+                        me.repo.saveTo(me.container, function() {
+                            me.once = true;
+                        }, console.error);
                     }, console.error);
                 }, console.error);
             }
