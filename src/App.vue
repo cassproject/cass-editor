@@ -222,10 +222,17 @@ export default {
             }
             if (this.queryParams.frameworkId) {
                 var me = this;
-                EcFramework.get(this.queryParams.frameworkId, function(success) {
-                    me.$store.commit('framework', success);
-                    me.$router.push({name: "framework", params: {frameworkId: me.queryParams.frameworkId}});
-                }, console.error);
+                if (this.queryParams.concepts === "true") {
+                    EcConceptScheme.get(this.queryParams.frameworkId, function(success) {
+                        me.$store.commit('framework', success);
+                        me.$router.push({name: "conceptScheme", params: {frameworkId: me.queryParams.frameworkId}});
+                    }, console.error);
+                } else {
+                    EcFramework.get(this.queryParams.frameworkId, function(success) {
+                        me.$store.commit('framework', success);
+                        me.$router.push({name: "framework", params: {frameworkId: me.queryParams.frameworkId}});
+                    }, console.error);
+                }
             }
             if (this.queryParams.action === "import") {
                 this.$router.push({name: "import"});
