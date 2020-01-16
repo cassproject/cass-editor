@@ -152,6 +152,27 @@ export default {
                 return (n)["@value"];
             }
             return n;
+        },
+        deleteThing: function(thing) {
+            console.log("deleting " + thing.id);
+            var me = this;
+            if (thing.shortId() === this.framework.shortId()) {
+                // delete scheme
+                var framework = this.framework;
+                this.repo.deleteRegistered(framework, function(success) {
+                    me.spitEvent("frameworkDeleted", framework.shortId(), "editFrameworkSection");
+                    // Delete the framework, delete all non-used stuff.
+                    EcConcept.search(me.repo, "skos\\:inScheme:\"" + framework.shortId() + "\"", function(concepts) {
+                        for (var i = 0; i < concepts.length; i++) {
+                            me.repo.deleteRegistered(concepts[i], console.log, console.error);
+                        }
+                    }, console.error);
+                    me.$store.commit('framework', null);
+                    me.$router.push({name: "frameworks"});
+                }, console.log);
+            } else {
+                // Delete concept and fields
+            }
         }
     }
 };
@@ -183,6 +204,7 @@ export default {
         >.expand{float:right;position:relative;top:.5rem;}
         >.compact{float:right;position:relative;top:.5rem;}
         >.editable{float:right;position:relative;top:.5rem;}
+        >.delete-thing{float:right;position:relative;top:.5rem;}
         .e-Property-text{font-size:larger;}
     }
 
@@ -191,6 +213,7 @@ export default {
         >.expand{float:right;}
         >.compact{float:right;}
         >.editable {float:right;}
+        >.delete-thing {float:right;}
     }
     .e-HierarchyNode{
         >ul{

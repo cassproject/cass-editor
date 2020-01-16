@@ -137,6 +137,7 @@ export default {
         >.expand{float:right;position:relative;top:.5rem;}
         >.compact{float:right;position:relative;top:.5rem;}
         >.editable{float:right;position:relative;top:.5rem;}
+        >.delete-thing{float:right;position:relative;top:.5rem;}
         .e-Property-text{font-size:larger;}
     }
 
@@ -145,6 +146,7 @@ export default {
         >.expand{float:right;}
         >.compact{float:right;}
         >.editable {float:right;}
+        >.delete-thing {float:right;}
     }
     .e-HierarchyNode{
         >ul{

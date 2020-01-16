@@ -182,6 +182,53 @@ export default {
         },
         exportCase: function() {
             window.open(this.repo.selectedServer + "ims/case/v1p0/CFPackages/" + this.exportGuid, '_blank');
+        },
+        removeThing: function(thing) {
+            // Remove from container but don't delete
+            console.log("removing " + thing.id);
+            var me = this;
+            this.framework["schema:dateModified"] = new Date().toISOString();
+            this.framework.removeCompetency(thing.shortId(), function() {
+                var framework = me.framework;
+                if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[f.id] !== true) {
+                    framework = EcEncryptedValue.toEncryptedValue(framework);
+                }
+                repo.saveTo(framework, function() {
+                    me.confirmDialog = false;
+                    me.$store.commit('framework', me.framework);
+                }, console.error);
+            }, console.log);
+        },
+        deleteThing: function(thing) {
+            console.log("deleting " + thing.id);
+            var me = this;
+            if (thing.shortId() === this.framework.shortId()) {
+                // delete framework
+                var framework = this.framework;
+                this.repo.deleteRegistered(framework, function(success) {
+                    me.spitEvent("frameworkDeleted", framework.shortId(), "editFrameworkSection");
+                    // Delete the framework, delete all non-used stuff.
+                    if (framework.competency != null) {
+                        for (var i = 0; i < framework.competency.length; i++) {
+                            me.conditionalDelete(framework.competency[i]);
+                        }
+                    }
+                    if (framework.relation != null) {
+                        for (var i = 0; i < framework.relation.length; i++) {
+                            me.conditionalDelete(framework.relation[i]);
+                        }
+                    }
+                    if (framework.level != null) {
+                        for (var i = 0; i < framework.level.length; i++) {
+                            me.conditionalDelete(framework.level[i]);
+                        }
+                    }
+                    me.$store.commit('framework', null);
+                    me.$router.push({name: "frameworks"});
+                }, console.log);
+            } else {
+                // Delete competency and relations
+            }
         }
     }
 };
@@ -213,6 +260,7 @@ export default {
         >.expand{float:right;position:relative;top:.5rem;}
         >.compact{float:right;position:relative;top:.5rem;}
         >.editable{float:right;position:relative;top:.5rem;}
+        >.delete-thing{float:right;position:relative;top:.5rem;}
         .e-Property-text{font-size:larger;}
     }
 
@@ -221,6 +269,8 @@ export default {
         >.expand{float:right;}
         >.compact{float:right;}
         >.editable {float:right;}
+        >.delete-thing {float:right;}
+        >.remove {float:right;}
     }
     .e-HierarchyNode{
         >ul{

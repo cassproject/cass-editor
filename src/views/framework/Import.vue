@@ -1203,6 +1203,7 @@ export default {
         a {display:none;}
         >.expand{float:right;}
         >.compact{float:right;}
+        >.delete-thing{float:right;}
     }
     .e-HierarchyNode{
         >ul{padding-left:1rem;}
