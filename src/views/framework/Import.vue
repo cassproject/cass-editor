@@ -1,18 +1,19 @@
 <template>
-    <div class="import-page">
-        <aside class="menu is-info">
+    <div class="columns is-mobile">
+        <div class="column is-narrow">
+        <aside class="menu is-primary" style="width: 240px; padding: 12px">
             <div
-                class="menu-header"
+                class="menu-label"
                 v-if="method=='file'">
                 Supported File Types
             </div>
             <div
-                class="menu-header"
+                class="menu-label"
                 v-if="method=='server'">
                 Supported Servers
             </div>
             <div
-                class="menu-header"
+                class="menu-label"
                 v-if="method=='text'">
                 How to format text
             </div>
@@ -24,8 +25,16 @@
             <div
                 class="menu-item"
                 v-if="method=='file'">
-                <h1>CaSS formatted CSV</h1>
-                <h2>
+                <div class="menu-label">
+                    <h1 class="">
+                        CaSS formatted CSV
+                    <span @click="showCassCsv = !showCassCsv" class="icon is-pulled-right">
+                        <i class="fa fa-info-circle" />
+                    </span>
+                    </h1>
+                </div>
+                <div>
+                <p class="is-size-7" v-if="showCassCsv">
                     For this import, you can use one or two CSVs.
                     The first (required) CSV describes the competencies to include in a new framework.
                     The second (optional) CSV describes the relations between the competencies found in the first framework.
@@ -36,27 +45,64 @@
                     competencies found in other frameworks, or a mixture of the two.
                     <br>
                     You can select the columns to use to describe the id, name, description, and other fields.
-                </h2>
-                <a
-                    :href="csvExampleCompetenciesFile"
-                    download="CAP Software Engineering - Competencies.csv">Example - Competencies <i class="fa fa-download" /></a>
-                <a
-                    :href="csvExampleRelationsFile"
-                    download="CAP Software Engineering - Relations.csv">Example - Relations <i class="fa fa-download" /></a>
-                <a
-                    class=""
+                </p>
+                </div>
+                <h4 class="is-size-6">
+                    Examples
+                </h4>
+                <div class="buttons is-left">
+                    <a class="button is-text is-small"
+                        :href="csvExampleCompetenciesFile"
+                        download="CAP Software Engineering - Competencies.csv">
+                        <span>
+                            Competency
+                        </span>
+                        <span class="icon">
+                            <i class="fa fa-download" />
+                        </span>
+                    </a>
+                    <a class="button is-text is-small"
+                        :href="csvExampleRelationsFile"
+                        download="CAP Software Engineering - Relations.csv">
+                        <span>
+                            Relations
+                        </span>
+                        <span class="icon">
+                            <i class="fa fa-download" />
+                        </span>
+                    </a>
+                </div>
+                <p class="is-size-6">
+                    Templates
+                </p>
+                <div class="buttons is-left">
+                <a class="button is-small is-text"
                     :href="csvTemplateCompetenciesFile"
-                    download="Template - Competencies.csv">Template - Competencies <i class="fa fa-download" /></a>
-                <a
-                    class=""
+                    download="Template - Competencies.csv">
+                    <span>
+                        Competency
+                    </span>
+                    <span class="icon">
+                        <i class="fa fa-download" />
+                    </span>
+                </a>
+                <a class="button is-small is-text"
                     :href="csvTemplateRelationsFile"
-                    download="Template - Relations.csv">Template - Relations <i class="fa fa-download" /></a>
+                    download="Template - Relations.csv">
+                    <span>
+                        Relations
+                    </span>
+                    <span>
+                        <i class="fa fa-download" />
+                    </span>
+                </a>
+            </div>
             </div>
             <div
                 class="menu-item"
                 v-if="method=='file'">
                 <h1>CTDL-ASN formatted CSV</h1>
-                <h2>
+                <p class="is-size-7">
                     For this import, you use one CSV.
                     Each row in the CSV will represent one object, whether that be a competency, or a competency framework.
                     Particular fields will be used to determine hierarchy.
@@ -69,7 +115,7 @@
                     and for a parent to be in a row above a child of that parent.
                     <br>
                     Any field with multiple values must be formatted as entry 1|entry 2.
-                </h2>
+                </p>
                 <a
                     class="right"
                     :href="ctdlAsnCsvTemplateFile"
@@ -82,11 +128,11 @@
                 class="menu-item"
                 v-if="method=='file'">
                 <h1>Medbiquitous XML</h1>
-                <h2>
+                <p class="is-size-7">
                     Medbiquitous is a standards body that includes medical competencies as one of their XML based formats.
                     <br>
                     Using this format, you can import competencies exported from a system that exports Medbiquitous formatted XML.
-                </h2>
+                </p>
                 <a
                     :href="medbiquitousFile"
                     download="educational_achievement_sample_1June2012.xml">Example <i class="fa fa-download" /></a>
@@ -95,14 +141,14 @@
                 class="menu-item"
                 v-if="method=='file'">
                 <h1>Achievement Standards Network RDF+JSON</h1>
-                <h2>
+                <p class="is-size-7">
                     The Achievement Standards Network set of standards, or ASN standard for short,
                     is a legacy standard used primarily by achievementstandards.org to transmit
                     state standards and other national and organizational standards.
                     <br>
                     Using this format,
                     you can import competencies exported from achievementstandards.org and other systems in an RDF JSON format.
-                </h2>
+                </p>
                 <a
                     :href="asnRdfJsonFile"
                     download="D2695955.json">Example <i class="fa fa-download" /></a>
@@ -111,11 +157,11 @@
                 class="menu-item"
                 v-if="method=='file'">
                 <h1>CTDL-ASN formatted JSON-LD</h1>
-                <h2>
+                <p class="is-size-7">
                     For this import, you use one JSON-LD file that includes a graph of the framework and all of its competencies.
                     <br>
                     Using this format, you can import a framework and competencies from a system that exports CTDL-ASN formatted JSON-LD.
-                </h2>
+                </p>
                 <a
                     :href="ctdlAsnJsonldFile"
                     download="DQP.jsonld">Example <i class="fa fa-download" /></a>
@@ -174,16 +220,18 @@
                     <br>
                     eg:
                     <pre>
-First Level
- Second Level
-     Third Level
- Second Level
+                        First Level
+                        Second Level
+                            Third Level
+                        Second Level
                     </pre>
                 </h2>
                 <a
                     @click="text='First Level\n Second Level\n     Third Level\n Second Level'">Example <i class="fa fa-quote-right" /></a>
             </div>
         </aside>
+    </div>
+    <div class="column is-9">
         <div class="main">
             <div class="task-controls section">
                 <div class="tabs is-small is-boxed">
@@ -448,6 +496,7 @@ First Level
                 :repo="repo" />
         </div>
     </div>
+    </div>
 </template>
 
 <script>
@@ -474,6 +523,7 @@ export default {
     components: {Hierarchy},
     data: function() {
         return {
+            showCassCsv: false,
             method: "file",
             file: null,
             serverUrl: null,
@@ -1095,126 +1145,8 @@ export default {
 </script>
 
 <style lang="scss">
-.import-page{
-    .menu-item{
-        display:block;
-        border-radius: 1rem;
-        margin-top:1rem;
-        margin-right:1rem;
-        padding:.25rem;
-        padding-left:1rem;
-        small{
-            display:block;
-        }
-        a{
-            display:block;
-            font-size:.9rem;
-            color:black;
-            font-weight:bold;
-        }
-    }
-    .menu-header{
-        display:block;
-        font-size:x-large;
-        margin-top:1rem;
-        margin-right:1rem;
-        padding:.25rem;
-        padding-left:1rem;
-    }
-    aside{
-        width:405px;
-        float:left;
-        height:calc(100vh - 60px);
-        h1{
-            font-weight:bold;
-            font-size:1.05rem;
-        }
-        h2{
-            font-size:.8rem;
-            text-align: justify;
-            text-justify: inter-word;
-            br{
-                margin: 10px;
-                display:block;
-                content: " ";
-            }
-        }
-        small{
-            font-weight:bold;
-            font-size:.8rem;
-        }
-        overflow-y:scroll;
-    }
-    .main{
-        margin-left:420px;
-    }
-
-    .right{float:right;}
-
-    .section-import{
-        h1{
-            font-size:x-large;
-        }
-        padding-bottom:0px;
-    }
-
-    .section-file{
-        input[type=file]:first-of-type{
-            width:100%;
-            display:block;
-            border:1px dashed black;
-            border-radius:1rem;
-            padding:100px;
-            padding-left:calc(50% - 100px);
-        }
-    }
-
-    .section-server{
-        input{
-            width:30rem;
-        }
-    }
-    .section-text{
-        textarea{
-            width:30rem;
-            height:10rem;
-            display:block;
-        }
-    }
-    .section-url{
-        input{
-            width:30rem;
-        }
-    }
-    .e-Thing-always-ul .e-name{
-        label{
-            display:none;
-        }
-    }
-
-    .e-Thing-always-ul .e-description{
-        label{
-            display:none;
-        }
-        font-size:.8rem;
-    }
-
-    .e-Competency{
-        a {display:none;}
-        >.expand{float:right;}
-        >.compact{float:right;}
-    }
-    .e-HierarchyNode{
-        >ul{padding-left:1rem;}
-        >.icon{
-            width:0px;
-            height:0px;
-            line-height:0px;
-            display:block;
-            position:relative;
-            left:-.5rem;
-            top:-2rem;
-        }
-    }
+.menu {
+    overflow-y:scroll;
+    height: calc(100vh - 5rem);
 }
 </style>

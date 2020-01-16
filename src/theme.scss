@@ -3,40 +3,40 @@
 
 
 // generic variables need to update before import 
-$artt-yellow: #FDB634;
-$art-blue-1: #1377A7;
-$art-blue-2: #6EB6D3;
-$art-blue-3: #94D1DD;
-$art-blue-4: #2334B4;
-$art-black: #022a3a;
-$art-white: whitesmoke;
-$dark-white: lighten($art-white, 95%);
-$light-black: lighten($art-black, 95%);
-$disabled-black: rgba($art-black, .1);
-$family-primary: 'Roboto',
+$cass-primary:#374169;
+$cass-primary-up: #4B588C;
+$cass-primary-down: #30385A;
+
+$cass-secondary:#136E91;
+$cass-secondary-up: #1A8FBD;
+$cass-secondary-down: #116180;
+
+$cass-error: #C23206;
+$cass-success: #0835ED;
+$cass-highlight: #ED823F;
+
+$cass-black: #160B0B;
+$cass-light: #F5F5F3;
+
+$family-primary: 'Open Sans',
 'sans-serif';
-$family-secondary: 'Roboto slab',
-'serif';
+$family-secondary: 'Oswald',
+'sans-serif';
 
-$black: $art-black;
-$white: white;
-// used for sign and other actions
-$primary: $art-blue-1;
-$link: $art-blue-1;
-// used for selected tags
-$info: $art-blue-3;
-$type: $artt-yellow;
-// used for complete
-$success: $art-blue-4;
-// used for unsign and other negative actions actions 
-$warning: $artt-yellow;
-// used for incomplete 
-$danger: #FF4311;
-// used for unselected tags
-$dark: lightGrey;
-$text: $art-black;
+$black: $cass-black;
+$white: $cass-light;
+$light: $cass-light;
+$primary: $cass-primary;
+$link: $cass-highlight;
+$info: $cass-secondary;
+$success: $cass-success;
+$warning: $cass-error;
+$danger: $cass-error;
+
+$dark:$cass-black;
+$text: $dark;
+
 $section-padding: .5rem .5rem;
-
 
 $menu-item-color:$black;
 $menu-item-hover-color: $black;
@@ -55,11 +55,6 @@ $title-family: $family-secondary;
 $subtitle-color: $black;
 $subtitle-family: $family-secondary;
 
-$size-1: 2.2rem ;
-$size-2: 1.5rem;
-$size-3: 1.5rem;
-$size-4: 1.15rem;
-$size-7: .8rem;
 
 $tag-radius: 1rem;
 $navbar-padding-vertical: 2rem;
@@ -72,25 +67,21 @@ $menu-list-link-padding: .5em 1em;
     color: $black;
 }
 
+/* side bad menu theme*/ 
+$menu-label-color: $primary;
+$menu-label-font-size:1em;
+$menu-label-letter-spacing: .1em;
+$menu-label-spacing:1em;
 
 // utilities
-@import "bulma/sass/utilities/_all.sass";
-@import "bulma/sass/utilities/mixins.sass";
+@import "../node_modules/bulma/sass/utilities/_all.sass";
 @import "../node_modules/bulma/sass/base/_all.sass";
 
-//components
-@import "bulma/sass/components/_all.sass";
-// elements
-
-@import "bulma/sass/elements/_all.sass";
-
-// forms
-@import "bulma/sass/form/_all.sass";
-// grid
-@import "bulma/sass/grid/_all.sass";
-// layout
-@import "bulma/sass/layout/_all.sass";
-
+@import "../node_modules/bulma/sass/components/_all.sass";
+@import "../node_modules/bulma/sass/elements/_all.sass";
+@import "../node_modules/bulma/sass/form/_all.sass";
+@import "../node_modules/bulma/sass/grid/_all.sass";
+@import "../node_modules/bulma/sass/layout/_all.sass";
 
 @include desktop {
     .pagesRight {
@@ -106,6 +97,13 @@ $menu-list-link-padding: .5em 1em;
     }
 }
 
+$size-1: 2.2rem ;
+$size-2: 1.5rem;
+$size-3: 1.5rem;
+$size-4: 1.15rem;
+$size-7: .8rem;
+
+
 $two-dp: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
 0 3px 1px -2px rgba(0, 0, 0, 0.12),
 0 1px 5px 0 rgba(0, 0, 0, 0.20);
@@ -118,17 +116,19 @@ $three-dp: 0 3px 4px 0 rgba(0, 0, 0, 0.14),
 
 
 .button {
-    box-shadow: $one-dp;
 }
 
 .button:hover {
-    box-shadow: $three-dp;
 }
 
 .button:active {
-    box-shadow: none;
 }
 
 .tag {
     border: 1px solid $background;
+}
+
+.menu-label {
+    font-family: $family-secondary;
+    text-transform: none !important;
 }

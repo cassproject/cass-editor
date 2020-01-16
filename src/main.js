@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import App from './App.vue';
-import './../node_modules/bulma/css/bulma.css';
+import './theme.scss';
+import './styles.scss';
 import router from './router';
 import store from './store.js';
 require("cassproject");
