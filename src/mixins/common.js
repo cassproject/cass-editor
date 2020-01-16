@@ -1,30 +1,31 @@
 export default {
     methods: {
         spitEvent: function(message, id, page) {
+            var framework = this.framework ? this.framework : this.$store.state.editor.framework;
+            var selectedCompetency = this.$store.state.editor.selectedCompetency;
             var evt = {
                 message: message,
                 changed: id,
-                selectedFramework: this.framework == null ? null : this.framework.shortId(),
-                selectedCompetency: this.selectedCompetency == null ? null : this.selectedCompetency.shortId(),
-                selectedFrameworkObject: this.framework == null ? null : JSON.parse(this.framework.toJson()),
-                selectedCompetencyObject: this.selectedCompetency == null ? null : JSON.parse(this.selectedCompetency.toJson()),
-                selectedFrameworkName: this.framework == null ? null : (this.framework.getName == null ? this.framework["dcterms:title"] : this.framework.getName()),
-                selectedCompetencyName: this.selectedCompetency == null ? null : (this.selectedCompetency.getName == null ? this.selectedCompetency["skos:prefLabel"] : this.selectedCompetency.getName()),
+                selectedFramework: framework == null ? null : framework.shortId(),
+                selectedCompetency: selectedCompetency == null ? null : selectedCompetency.shortId(),
+                selectedFrameworkObject: framework == null ? null : JSON.parse(framework.toJson()),
+                selectedCompetencyObject: selectedCompetency == null ? null : JSON.parse(selectedCompetency.toJson()),
+                selectedFrameworkName: framework == null ? null : (framework.getName == null ? framework["dcterms:title"] : framework.getName()),
+                selectedCompetencyName: selectedCompetency == null ? null : (selectedCompetency.getName == null ? selectedCompetency["skos:prefLabel"] : selectedCompetency.getName()),
                 visiblePage: page
             };
             if (this.queryParams && this.queryParams.ceasnDataFields === "true") {
-                if (this.framework != null) {
-                    if (this.framework.getGuid != null) {
-                        if (this.framework.getGuid().startsWith("ce-")) {
-                            evt.selectedFrameworkCtid = this.framework == null ? null : this.framework.getGuid();
-                        } else if (this.framework.getGuid().matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")) {
-                            evt.selectedFrameworkCtid = this.framework == null ? null : "ce-" + this.framework.getGuid();
+                if (framework != null) {
+                    if (framework.getGuid != null) {
+                        if (framework.getGuid().startsWith("ce-")) {
+                            evt.selectedFrameworkCtid = framework == null ? null : framework.getGuid();
+                        } else if (framework.getGuid().matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")) {
+                            evt.selectedFrameworkCtid = framework == null ? null : "ce-" + framework.getGuid();
                         } else {
-                            evt.selectedFrameworkCtid = "ce-" + new UUID(3, "nil", this.framework.shortId()).format();
+                            evt.selectedFrameworkCtid = "ce-" + new UUID(3, "nil", framework.shortId()).format();
                         }
                     }
                 }
-                var selectedCompetency = this.$store.state.editor.selectedCompetency;
                 if (selectedCompetency != null) {
                     if (selectedCompetency.getGuid != null) {
                         if (selectedCompetency.getGuid().startsWith("ce-")) {
@@ -138,6 +139,38 @@ export default {
             }, function(error) {
                 console.log(error);
             });
+        },
+        conditionalDelete: function(id, depth) {
+            var me = this;
+            (function(id, depth) {
+                Task.asyncImmediate(function(callback) {
+                    if (depth === undefined || depth == null) depth = 0;
+                    if (id == null || id === undefined) {
+                        console.trace("ID is undefined.");
+                    }
+                    if (depth < 5) {
+                        EcFramework.search(me.repo, "\"" + id + "\"", function(results) {
+                            if (results.length <= 0) {
+                                console.log("No references found for " + id + "... deleting.");
+                                me.repo.deleteRegistered(EcRepository.getBlocking(id), function(success) {
+                                    callback();
+                                }, function(failure) {
+                                    console.log(failure);
+                                    callback();
+                                });
+                            } else {
+                                console.log(results.length + " references found for " + id + "... Not deleting. Will see again in another second.");
+                                callback();
+                                setTimeout(function() {
+                                    me.conditionalDelete(id, depth + 1);
+                                }, 1000);
+                            }
+                        }, console.error, {});
+                    } else {
+                        callback();
+                    }
+                });
+            })(id, depth);
         }
     }
 };

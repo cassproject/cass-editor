@@ -1145,8 +1145,133 @@ export default {
 </script>
 
 <style lang="scss">
+<<<<<<< HEAD
 .menu {
     overflow-y:scroll;
     height: calc(100vh - 5rem);
+=======
+.import-page{
+    .menu-item{
+        display:block;
+        border-radius: 1rem;
+        margin-top:1rem;
+        margin-right:1rem;
+        padding:.25rem;
+        padding-left:1rem;
+        small{
+            display:block;
+        }
+        a{
+            display:block;
+            font-size:.9rem;
+            color:black;
+            font-weight:bold;
+        }
+    }
+    .menu-header{
+        display:block;
+        font-size:x-large;
+        margin-top:1rem;
+        margin-right:1rem;
+        padding:.25rem;
+        padding-left:1rem;
+    }
+    aside{
+        width:405px;
+        float:left;
+        height:calc(100vh - 60px);
+        h1{
+            font-weight:bold;
+            font-size:1.05rem;
+        }
+        h2{
+            font-size:.8rem;
+            text-align: justify;
+            text-justify: inter-word;
+            br{
+                margin: 10px;
+                display:block;
+                content: " ";
+            }
+        }
+        small{
+            font-weight:bold;
+            font-size:.8rem;
+        }
+        overflow-y:scroll;
+    }
+    .main{
+        margin-left:420px;
+    }
+
+    .right{float:right;}
+
+    .section-import{
+        h1{
+            font-size:x-large;
+        }
+        padding-bottom:0px;
+    }
+
+    .section-file{
+        input[type=file]:first-of-type{
+            width:100%;
+            display:block;
+            border:1px dashed black;
+            border-radius:1rem;
+            padding:100px;
+            padding-left:calc(50% - 100px);
+        }
+    }
+
+    .section-server{
+        input{
+            width:30rem;
+        }
+    }
+    .section-text{
+        textarea{
+            width:30rem;
+            height:10rem;
+            display:block;
+        }
+    }
+    .section-url{
+        input{
+            width:30rem;
+        }
+    }
+    .e-Thing-always-ul .e-name{
+        label{
+            display:none;
+        }
+    }
+
+    .e-Thing-always-ul .e-description{
+        label{
+            display:none;
+        }
+        font-size:.8rem;
+    }
+
+    .e-Competency{
+        a {display:none;}
+        >.expand{float:right;}
+        >.compact{float:right;}
+        >.delete-thing{float:right;}
+    }
+    .e-HierarchyNode{
+        >ul{padding-left:1rem;}
+        >.icon{
+            width:0px;
+            height:0px;
+            line-height:0px;
+            display:block;
+            position:relative;
+            left:-.5rem;
+            top:-2rem;
+        }
+    }
+>>>>>>> vue/refactor
 }
 </style>
