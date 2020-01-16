@@ -228,6 +228,21 @@ export default {
                 }, console.log);
             } else {
                 // Delete competency and relations
+                this.$store.commit('selectedCompetency', thing);
+                this.framework["schema:dateModified"] = new Date().toISOString();
+                this.framework.removeCompetency(thing.shortId(), function() {
+                    me.framework.removeLevel(thing.shortId());
+                    me.conditionalDelete(thing.shortId());
+                    me.spitEvent("competencyDeleted", thing.shortId(), "editFrameworkSection");
+                    me.$store.commit('selectedCompetency', null);
+                    var framework = me.framework;
+                    if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[me.framework.id] !== true) {
+                        framework = EcEncryptedValue.toEncryptedValue(framework);
+                    }
+                    me.repo.saveTo(framework, function() {
+                        me.$store.commit('framework', me.framework);
+                    }, console.error);
+                }, console.log);
             }
         }
     }

@@ -72,6 +72,14 @@ export default {
             return this.container.canEditAny(EcIdentityManager.ids);
         }
     },
+    watch: {
+        container: {
+            handler() {
+                this.once = true;
+            },
+            deep: true
+        }
+    },
     methods: {
         computeHierarchy: function() {
             this.structure.splice(0, this.structure.length);

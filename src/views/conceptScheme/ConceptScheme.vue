@@ -172,7 +172,48 @@ export default {
                 }, console.log);
             } else {
                 // Delete concept and fields
+                this.deleteConceptInner(thing);
+                this.spitEvent("conceptDeleted", thing.shortId(), "editFrameworkPage");
+
+                this.framework["schema:dateModified"] = new Date().toISOString();
+                this.$store.commit('selectedCompetency', null);
             }
+        },
+        deleteConceptInner: function(c) {
+            var me = this;
+            if (c["skos:broader"] != null) {
+                for (var i = 0; i < c["skos:broader"].length; i++) {
+                    EcConcept.get(c["skos:broader"][i], function(concept) {
+                        EcArray.setRemove(concept["skos:narrower"], c.shortId());
+                        if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[concept.id] !== true) {
+                            concept = EcEncryptedValue.toEncryptedValue(concept);
+                        }
+                        repo.saveTo(concept, function() {
+                            me.$store.commit('framework', me.framework);
+                        }, console.error);
+                    }, console.error);
+                }
+            }
+            if (c["skos:narrower"] != null) {
+                for (var i = 0; i < c["skos:narrower"].length; i++) {
+                    EcConcept.get(c["skos:narrower"][i], function(concept) {
+                        me.deleteConceptInner(concept);
+                    }, console.error);
+                }
+            }
+            if (c["skos:topConceptOf"] != null) {
+                EcArray.setRemove(this.framework["skos:hasTopConcept"], c.shortId());
+                var framework = this.framework;
+                if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                    framework = EcEncryptedValue.toEncryptedValue(framework);
+                }
+                repo.saveTo(framework, function() {
+                    me.$store.commit('framework', me.framework);
+                }, console.error);
+            }
+            repo.deleteRegistered(c, function() {
+                me.$store.commit('framework', me.framework);
+            }, console.error);
         }
     }
 };
