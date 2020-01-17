@@ -26,7 +26,8 @@
             containerType="ConceptScheme"
             :editable="queryParams.view !== 'true'"
             :repo="repo"
-            :queryParams="queryParams" />
+            :queryParams="queryParams"
+            :exportOptions="conceptExportOptions" />
     </div>
 </template>
 <script>
@@ -45,8 +46,15 @@ export default {
         return {
             repo: window.repo,
             framework: null,
-            exportLink: null,
-            exportGuid: null
+            schemeExportLink: null,
+            schemeExportGuid: null,
+            conceptExportOptions: [
+                {name: "SKOS (JSON-LD)", value: "jsonld"},
+                {name: "SKOS (RDF Quads)", value: "rdfQuads"},
+                {name: "SKOS (RDF+JSON)", value: "rdfJson"},
+                {name: "SKOS (RDF+XML)", value: "rdfXml"},
+                {name: "SKOS (Turtle)", value: "turtle"}
+            ]
         };
     },
     computed: {
@@ -72,26 +80,26 @@ export default {
     created: function() {
         this.framework = this.$store.state.editor.framework;
         if (EcRepository.shouldTryUrl(this.framework.id) === false) {
-            this.exportGuid = EcCrypto.md5(this.framework.id);
+            this.schemeExportGuid = EcCrypto.md5(this.framework.id);
         } else {
-            this.exportGuid = this.framework.getGuid();
+            this.schemeExportGuid = this.framework.getGuid();
         }
-        this.exportLink = this.repo.selectedServer + "data/" + this.exportGuid;
+        this.schemeExportLink = this.repo.selectedServer + "data/" + this.schemeExportGuid;
     },
     watch: {
         exportType: function() {
             if (this.exportType === "jsonld") {
-                this.exportJsonld();
+                this.exportJsonld(this.schemeExportLink);
             } else if (this.exportType === "rdfQuads") {
-                this.exportRdfQuads();
+                this.exportRdfQuads(this.schemeExportLink);
             } else if (this.exportType === "rdfJson") {
-                this.exportRdfJson();
+                this.exportRdfJson(this.schemeExportLink);
             } else if (this.exportType === "rdfXml") {
-                this.exportRdfXml();
+                this.exportRdfXml(this.schemeExportLink);
             } else if (this.exportType === "turtle") {
-                this.exportTurtle();
+                this.exportTurtle(this.schemeExportLink);
             } else if (this.exportType === "ctdlasnJsonld") {
-                this.exportCtdlasnJsonld();
+                this.exportCtdlasnJsonld(this.schemeExportLink);
             }
         }
     },
@@ -100,47 +108,47 @@ export default {
             var blob = new Blob([data], {type: "text/plain;charset=utf-8"});
             saveAs(blob, fileName);
         },
-        exportJsonld: function() {
-            window.open(this.exportLink, '_blank');
+        exportJsonld: function(link) {
+            window.open(link, '_blank');
         },
-        exportRdfQuads: function() {
+        exportRdfQuads: function(link) {
             var fileName = this.getDisplayStringFrom(this.framework["dcterms:title"]);
             var me = this;
-            this.get(this.exportLink, null, {"Accept": "text/n4"}, function(success) {
+            this.get(link, null, {"Accept": "text/n4"}, function(success) {
                 me.download(fileName + ".n4", success);
             }, function(failure) {
                 console.log(failure);
             });
         },
-        exportRdfJson: function() {
+        exportRdfJson: function(link) {
             var fileName = this.getDisplayStringFrom(this.framework["dcterms:title"]);
             var me = this;
-            this.get(this.exportLink, null, {"Accept": "application/rdf+json"}, function(success) {
+            this.get(link, null, {"Accept": "application/rdf+json"}, function(success) {
                 me.download(fileName + ".rdf.json", success);
             }, function(failure) {
                 console.log(failure);
             });
         },
-        exportRdfXml: function() {
+        exportRdfXml: function(link) {
             var fileName = this.getDisplayStringFrom(this.framework["dcterms:title"]);
             var me = this;
-            this.get(this.exportLink, null, {"Accept": "application/rdf+xml"}, function(success) {
+            this.get(link, null, {"Accept": "application/rdf+xml"}, function(success) {
                 me.download(fileName + ".rdf.xml", success);
             }, function(failure) {
                 console.log(failure);
             });
         },
-        exportTurtle: function() {
+        exportTurtle: function(link) {
             var fileName = this.getDisplayStringFrom(this.framework["dcterms:title"]);
             var me = this;
-            this.get(this.exportLink, null, {"Accept": "text/turtle"}, function(success) {
+            this.get(link, null, {"Accept": "text/turtle"}, function(success) {
                 me.download(fileName + ".turtle", success);
             }, function(failure) {
                 console.log(failure);
             });
         },
-        exportCtdlasnJsonld: function() {
-            window.open(this.exportLink.replace("/data/", "/ceasn/"), '_blank');
+        exportCtdlasnJsonld: function(link) {
+            window.open(link.replace("/data/", "/ceasn/"), '_blank');
         },
         getDisplayStringFrom: function(n) {
             if (n != null && EcArray.isArray(n)) {
@@ -153,7 +161,7 @@ export default {
             }
             return n;
         },
-        deleteThing: function(thing) {
+        deleteObject: function(thing) {
             console.log("deleting " + thing.id);
             var me = this;
             if (thing.shortId() === this.framework.shortId()) {
@@ -172,6 +180,67 @@ export default {
                 }, console.log);
             } else {
                 // Delete concept and fields
+                this.deleteConceptInner(thing);
+                this.spitEvent("conceptDeleted", thing.shortId(), "editFrameworkPage");
+
+                this.framework["schema:dateModified"] = new Date().toISOString();
+                this.$store.commit('selectedCompetency', null);
+            }
+        },
+        deleteConceptInner: function(c) {
+            var me = this;
+            if (c["skos:broader"] != null) {
+                for (var i = 0; i < c["skos:broader"].length; i++) {
+                    EcConcept.get(c["skos:broader"][i], function(concept) {
+                        EcArray.setRemove(concept["skos:narrower"], c.shortId());
+                        if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[concept.id] !== true) {
+                            concept = EcEncryptedValue.toEncryptedValue(concept);
+                        }
+                        repo.saveTo(concept, function() {
+                            me.$store.commit('framework', me.framework);
+                        }, console.error);
+                    }, console.error);
+                }
+            }
+            if (c["skos:narrower"] != null) {
+                for (var i = 0; i < c["skos:narrower"].length; i++) {
+                    EcConcept.get(c["skos:narrower"][i], function(concept) {
+                        me.deleteConceptInner(concept);
+                    }, console.error);
+                }
+            }
+            if (c["skos:topConceptOf"] != null) {
+                EcArray.setRemove(this.framework["skos:hasTopConcept"], c.shortId());
+                var framework = this.framework;
+                if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                    framework = EcEncryptedValue.toEncryptedValue(framework);
+                }
+                repo.saveTo(framework, function() {
+                    me.$store.commit('framework', me.framework);
+                }, console.error);
+            }
+            repo.deleteRegistered(c, function() {
+                me.$store.commit('framework', me.framework);
+            }, console.error);
+        },
+        exportObject: function(concept, exportType) {
+            var guid;
+            if (EcRepository.shouldTryUrl(concept.id) === false) {
+                guid = EcCrypto.md5(concept.id);
+            } else {
+                guid = concept.getGuid();
+            }
+            var link = this.repo.selectedServer + "data/" + guid;
+            if (exportType === "jsonld") {
+                this.exportJsonld(link);
+            } else if (exportType === "rdfQuads") {
+                this.exportRdfQuads(link);
+            } else if (exportType === "rdfJson") {
+                this.exportRdfJson(link);
+            } else if (exportType === "rdfXml") {
+                this.exportRdfXml(link);
+            } else if (exportType === "turtle") {
+                this.exportTurtle(link);
             }
         }
     }
@@ -214,6 +283,7 @@ export default {
         >.compact{float:right;}
         >.editable {float:right;}
         >.delete-thing {float:right;}
+        >.export {float:right;}
     }
     .e-HierarchyNode{
         >ul{
