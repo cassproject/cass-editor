@@ -1,62 +1,12 @@
 @charset 'utf-8';
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,700,800|Oswald&display=swap');
 
-
-// generic variables need to update before import 
-$cass-primary:#374169;
-$cass-primary-up: #4B588C;
-$cass-primary-down: #30385A;
-
-$cass-secondary:#136E91;
-$cass-secondary-up: #1A8FBD;
-$cass-secondary-down: #116180;
-
-$cass-error: #C23206;
-$cass-success: #0835ED;
-$cass-highlight: #ED823F;
-
-$cass-black: #160B0B;
-$cass-light: #F5F5F3;
-
-$family-primary: 'Open Sans',
-'sans-serif';
-$family-secondary: 'Oswald',
-'sans-serif';
-
-$black: $cass-black;
-$white: #ffffff;
-$light: $cass-light;
-$primary: $cass-primary;
-$link: $cass-highlight;
-$info: $cass-secondary;
-$success: $cass-success;
-$warning: $cass-error;
-$danger: $cass-error;
-
-$dark:$cass-black;
-$text: $dark;
+@import './variables.scss';
 
 $section-padding: .5rem .5rem;
 
 $menu-item-color:$black;
 $menu-item-hover-color: $black;
-
-$weight-normal: 400;
-$family-code: $family-primary;
-$has-background-white: $white;
-$has-background-white: $light;
-$has-background-primary: $primary;
-$background: $white;
-$text-strong: $black;
-$weight-bold: 600;
-$link-hover: $black;
-$text-hover: $primary;
-$title-size: 2.2rem !important;
-$subtitle-weight: 600;
-$title-color: $black;
-$title-family: $family-secondary;
-$subtitle-color: $black;
-$subtitle-family: $family-secondary;
 
 
 $tag-radius: 1rem;
@@ -79,13 +29,6 @@ $menu-label-spacing:1em;
 
 $button-text-hover-background-color: transparent;
 
-$size-1: 2.2rem;
-$size-2: 2rem;
-$size-3: 1.5rem;
-$size-4: 1.2rem;
-$size-5: 1rem;
-$size-6: .9rem;
-$size-7: .7rem;
 
 
 // utilities
@@ -122,4 +65,8 @@ $size-7: .7rem;
 .menu-label {
     font-family: $family-secondary;
     text-transform: none !important;
+}
+
+.has-text-secondary {
+    color: $secondary !important;
 }
