@@ -41,7 +41,8 @@
             edgeTargetProperty="target"
             :editable="queryParams.view !== 'true'"
             :repo="repo"
-            :queryParams="queryParams" />
+            :queryParams="queryParams"
+            :exportOptions="competencyExportOptions" />
     </div>
 </template>
 <script>
@@ -60,8 +61,17 @@ export default {
         return {
             repo: window.repo,
             framework: null,
-            exportLink: null,
-            exportGuid: null
+            frameworkExportLink: null,
+            frameworkExportGuid: null,
+            competencyExportOptions: [
+                {name: "CASS (JSON-LD)", value: "jsonld"},
+                {name: "CASS (RDF Quads)", value: "rdfQuads"},
+                {name: "CASS (RDF+JSON)", value: "rdfJson"},
+                {name: "CASS (RDF+XML)", value: "rdfXml"},
+                {name: "CASS (Turtle)", value: "turtle"},
+                {name: "Credential Engine ASN (JSON-LD)", value: "ctdlasnJsonld"},
+                {name: "IMS Global CASE (JSON)", value: "case"}
+            ]
         };
     },
     computed: {
@@ -87,11 +97,11 @@ export default {
     created: function() {
         this.framework = this.$store.state.editor.framework;
         if (EcRepository.shouldTryUrl(this.framework.id) === false) {
-            this.exportGuid = EcCrypto.md5(this.framework.id);
+            this.frameworkExportGuid = EcCrypto.md5(this.framework.id);
         } else {
-            this.exportGuid = this.framework.getGuid();
+            this.frameworkExportGuid = this.framework.getGuid();
         }
-        this.exportLink = this.repo.selectedServer + "data/" + this.exportGuid;
+        this.frameworkExportLink = this.repo.selectedServer + "data/" + this.frameworkExportGuid;
         this.setDefaultLanguage();
     },
     watch: {
@@ -99,23 +109,23 @@ export default {
             if (this.exportType === "asn") {
                 this.exportAsn();
             } else if (this.exportType === "jsonld") {
-                this.exportJsonld();
+                this.exportJsonld(this.frameworkExportLink);
             } else if (this.exportType === "rdfQuads") {
-                this.exportRdfQuads();
+                this.exportRdfQuads(this.frameworkExportLink);
             } else if (this.exportType === "rdfJson") {
-                this.exportRdfJson();
+                this.exportRdfJson(this.frameworkExportLink);
             } else if (this.exportType === "rdfXml") {
-                this.exportRdfXml();
+                this.exportRdfXml(this.frameworkExportLink);
             } else if (this.exportType === "turtle") {
-                this.exportTurtle();
+                this.exportTurtle(this.frameworkExportLink);
             } else if (this.exportType === "ctdlasnJsonld") {
-                this.exportCtdlasnJsonld();
+                this.exportCtdlasnJsonld(this.frameworkExportLink);
             } else if (this.exportType === "ctdlasnCsv") {
                 this.exportCtdlasnCsv();
             } else if (this.exportType === "csv") {
                 this.exportCsv();
             } else if (this.exportType === "case") {
-                this.exportCase();
+                this.exportCasePackages();
             }
         }
     },
@@ -125,53 +135,53 @@ export default {
             saveAs(blob, fileName);
         },
         exportAsn: function() {
-            window.open(this.exportLink.replace("/data/", "/asn/"), '_blank');
+            window.open(this.frameworkExportLink.replace("/data/", "/asn/"), '_blank');
         },
-        exportJsonld: function() {
-            window.open(this.exportLink, '_blank');
+        exportJsonld: function(link) {
+            window.open(link, '_blank');
         },
-        exportRdfQuads: function() {
+        exportRdfQuads: function(link) {
             var fileName = this.framework.getName();
             var me = this;
-            this.get(this.exportLink, null, {"Accept": "text/n4"}, function(success) {
+            this.get(link, null, {"Accept": "text/n4"}, function(success) {
                 me.download(fileName + ".n4", success);
             }, function(failure) {
                 console.log(failure);
             });
         },
-        exportRdfJson: function() {
+        exportRdfJson: function(link) {
             var fileName = this.framework.getName();
             var me = this;
-            this.get(this.exportLink, null, {"Accept": "application/rdf+json"}, function(success) {
+            this.get(link, null, {"Accept": "application/rdf+json"}, function(success) {
                 me.download(fileName + ".rdf.json", success);
             }, function(failure) {
                 console.log(failure);
             });
         },
-        exportRdfXml: function() {
+        exportRdfXml: function(link) {
             var fileName = this.framework.getName();
             var me = this;
-            this.get(this.exportLink, null, {"Accept": "application/rdf+xml"}, function(success) {
+            this.get(link, null, {"Accept": "application/rdf+xml"}, function(success) {
                 me.download(fileName + ".rdf.xml", success);
             }, function(failure) {
                 console.log(failure);
             });
         },
-        exportTurtle: function() {
+        exportTurtle: function(link) {
             var fileName = this.framework.getName();
             var me = this;
-            this.get(this.exportLink, null, {"Accept": "text/turtle"}, function(success) {
+            this.get(link, null, {"Accept": "text/turtle"}, function(success) {
                 me.download(fileName + ".turtle", success);
             }, function(failure) {
                 console.log(failure);
             });
         },
-        exportCtdlasnJsonld: function() {
-            window.open(this.exportLink.replace("/data/", "/ceasn/"), '_blank');
+        exportCtdlasnJsonld: function(link) {
+            window.open(link.replace("/data/", "/ceasn/"), '_blank');
         },
         exportCtdlasnCsv: function() {
             var me = this;
-            EcRemote.getExpectingString(this.exportLink.replace("/data/", "/ceasn/"), null, function(success) {
+            EcRemote.getExpectingString(this.frameworkExportLink.replace("/data/", "/ceasn/"), null, function(success) {
                 CSVExport.exportCTDLASN(JSON.parse(success), me.framework.getName());
             }, function(error) {
                 console.log(error);
@@ -180,10 +190,13 @@ export default {
         exportCsv: function() {
             CSVExport.exportFramework(this.framework.id, console.log, console.log);
         },
-        exportCase: function() {
-            window.open(this.repo.selectedServer + "ims/case/v1p0/CFPackages/" + this.exportGuid, '_blank');
+        exportCasePackages: function() {
+            window.open(this.repo.selectedServer + "ims/case/v1p0/CFPackages/" + this.frameworkExportGuid, '_blank');
         },
-        removeThing: function(thing) {
+        exportCaseItems: function(guid) {
+            window.open(this.repo.selectedServer + "ims/case/v1p0/CFItems/" + guid, '_blank');
+        },
+        removeObject: function(thing) {
             // Remove from container but don't delete
             console.log("removing " + thing.id);
             var me = this;
@@ -199,7 +212,7 @@ export default {
                 }, console.error);
             }, console.log);
         },
-        deleteThing: function(thing) {
+        deleteObject: function(thing) {
             console.log("deleting " + thing.id);
             var me = this;
             if (thing.shortId() === this.framework.shortId()) {
@@ -244,6 +257,30 @@ export default {
                     }, console.error);
                 }, console.log);
             }
+        },
+        exportObject: function(selectedCompetency, exportType) {
+            var guid;
+            if (EcRepository.shouldTryUrl(selectedCompetency.id) === false) {
+                guid = EcCrypto.md5(selectedCompetency.id);
+            } else {
+                guid = selectedCompetency.getGuid();
+            }
+            var link = this.repo.selectedServer + "data/" + guid;
+            if (exportType === "jsonld") {
+                this.exportJsonld(link);
+            } else if (exportType === "rdfQuads") {
+                this.exportRdfQuads(link);
+            } else if (exportType === "rdfJson") {
+                this.exportRdfJson(link);
+            } else if (exportType === "rdfXml") {
+                this.exportRdfXml(link);
+            } else if (exportType === "turtle") {
+                this.exportTurtle(link);
+            } else if (exportType === "ctdlasnJsonld") {
+                this.exportCtdlasnJsonld(link);
+            } else if (exportType === "case") {
+                this.exportCaseItems(guid);
+            }
         }
     }
 };
@@ -286,6 +323,7 @@ export default {
         >.editable {float:right;}
         >.delete-thing {float:right;}
         >.remove {float:right;}
+        >.export {float:right;}
     }
     .e-HierarchyNode{
         >ul{

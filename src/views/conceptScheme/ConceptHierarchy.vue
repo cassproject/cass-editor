@@ -16,7 +16,8 @@
                     :dragging="dragging"
                     :canEdit="canEdit"
                     :hasChild="item.children"
-                    :profile="profile">
+                    :profile="profile"
+                    :exportOptions="exportOptions">
                     <slot />
                 </HierarchyNode>
             </draggable>
@@ -39,7 +40,8 @@ export default {
         editable: Boolean,
         repo: Object,
         profile: Object,
-        queryParams: Object
+        queryParams: Object,
+        exportOptions: Array
     },
     data: function() {
         return {
