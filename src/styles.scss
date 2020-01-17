@@ -5,20 +5,24 @@ html {
     font-family: $family-primary;
     max-width: 100vw !important;
     margin: 0px;
+    height: 100%;
     padding: 0px;
     overflow: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-size: 16px;
 }
 body{
+    height: 100%;
     background: $light;
     background-repeat: no-repeat;
     background-size: cover;
     min-height: 100vh;
 }
-.icon{
-    margin:.25rem;
+#app {
+    height: 100%;
 }
+
 p {
     font-style: normal;
 }

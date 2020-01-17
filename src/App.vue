@@ -1,7 +1,7 @@
 <template>
     <div
         id="app"
-        class="">
+        class="has-background-white">
         <!-- nav bar navigation -->
         <nav
             class="navbar is-black is-fixed-top"
@@ -152,28 +152,6 @@
     margin-top:50px;
 }
 
-.menu {
-    min-height: calc(100vh - 50px);
-    z-index: 1;
-    width: 360px;
-    position: fixed;
-    top: 52px;
-    a {
-        cursor: pointer;
-    }
-    .menu-list a {
-        display: inline-block;
-        width: 100%;
-    }
-    .menu-item {
-        padding: 1rem;
-        margin-bottom:0;
-    }
-    .custom-overflow{
-        overflow-y:scroll;
-        height: calc(100vh - 52px);
-    }
-}
 </style>
 <style lang="scss">
     @import './styles.scss';

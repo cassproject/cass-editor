@@ -1,37 +1,37 @@
 <template>
-    <div class="columns is-marginless is-gapless is-mobile">
-        <div class="column is-narrow">
-            <aside
-                class="menu has-background-primary has-text-white"
-                style="width: 300px; padding: 12px">
-                <div
-                    class="menu-label is-size-5"
-                    v-if="method=='file'">
-                    Supported File Types
-                </div>
-                <div
-                    class="menu-label"
-                    v-if="method=='server'">
-                    Supported Servers
-                </div>
-                <div
-                    class="menu-label"
-                    v-if="method=='text'">
-                    How to format text
-                </div>
-                <div
-                    class="menu-header"
-                    v-if="method=='url'">
-                    Supported URL Imports
-                </div>
-                <div
-                    class="menu-item"
-                    v-if="method=='file'">
+    <div class="container is-fluid is-marginless is-paddingless">
+        <div class="columns is-marginless is-gapless is-mobile">
+            <div class="column is-narrow">
+                <aside
+                    class="menu has-background-primary has-text-white">
                     <div
-                        v-for="(supportedType, index) in supportedFileTypes"
-                        :key="index">
-                        <div>
-                            <h1 class="is-size-6">
+                        class="menu-label is-size-3"
+                        v-if="method=='file'">
+                        Supported File Types
+                    </div>
+                    <div
+                        class="menu-label"
+                        v-if="method=='server'">
+                        Supported Servers
+                    </div>
+                    <div
+                        class="menu-label"
+                        v-if="method=='text'">
+                        How to format text
+                    </div>
+                    <div
+                        class="menu-header"
+                        v-if="method=='url'">
+                        Supported URL Imports
+                    </div>
+                    <div
+                        v-if="method=='file'"
+                        class="menu-list">
+                        <li
+                            class="menu-list_list-item"
+                            v-for="(supportedType, index) in supportedFileTypes"
+                            :key="index">
+                            <h1 class="is-size-6 has-text-weight-medium">
                                 {{ supportedType.type }}
                                 <span
                                     @click="supportedType.showDescription = !supportedType.showDescription"
@@ -39,310 +39,322 @@
                                     <i class="fa fa-info-circle" />
                                 </span>
                             </h1>
-                        </div>
-                        <div>
                             <p
-                                class="is-size-7"
+                                class="is-size-7 content-body-wrapper"
                                 v-if="supportedType.showDescription"
                                 v-html="supportedType.description" />
-                        </div>
-                        <div class="buttons is-right">
-                            <a
-                                v-for="(example, index) in supportedType.examples"
-                                :key="index"
-                                class="button has-text-link  is-small is-text"
-                                :href="example.location"
-                                download="example.download">
-                                <span>
-                                    {{ example.name }}
-                                </span>
-                                <span class="icon">
-                                    <i class="fa fa-download" />
-                                </span>
-                            </a>
-                        </div>
-                        <div class="buttons is-right">
-                            <a
-                                v-for="(template, index) in supportedType.templates"
-                                :key="index"
-                                class="button has-text-link  is-small is-text"
-                                :href="template.location"
-                                download="template.download">
-                                <span>
-                                    {{ template.name }}
-                                </span>
-                                <span class="icon">
-                                    <i class="fa fa-download" />
-                                </span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </aside>
-        </div>
-        <div class="column">
-            <div class="section">
-                <div class="task-controls section">
-                    <div class="tabs is-small is-boxed">
-                        <ul>
-                            <li :class="{ 'is-active': method === 'file'}">
-                                <a @click="method = 'file';framework = null;status='';">
-                                    <span class="icon is-small"><i
-                                        class="fas fa-file"
-                                        aria-hidden="true" /></span>
-                                    <span>File Import</span>
-                                </a>
-                            </li>
-                            <li :class="{ 'is-active': method === 'server'}">
-                                <a @click="method = 'server';framework = null;status='';">
-                                    <span class="icon is-small">
-                                        <i
-                                            class="fa fa-server"
-                                            aria-hidden="true" />
-                                    </span>
-                                    <span>Remote Server</span>
-                                </a>
-                            </li>
-                            <li :class="{ 'is-active': method === 'text'}">
-                                <a @click="method = 'text';framework = null;status='';">
-                                    <span class="icon is-small">
-                                        <i
-                                            class="fas fa-paste"
-                                            aria-hidden="true" />
-                                    </span>
-                                    <span>Paste Text</span>
-                                </a>
-                            </li>
-                            <li :class="{ 'is-active': method === 'url'}">
-                                <a @click="method = 'url';framework = null;status='';">
-                                    <span class="icon is-small">
-                                        <i
-                                            class="fas fa-link"
-                                            aria-hidden="true" />
-                                    </span>
-                                    <span>URL</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div
-                    class="section-import section-file"
-                    v-if="method=='file'">
-                    <center>
-                        <h1>Drop file or click to select.</h1>
-                    </center>
-                    <input
-                        type="file"
-                        ref="fileInput"
-                        @change="fileChange"
-                        multiple>
-                    <div v-if="importType=='csv'">
-                        <div>
-                            <label>Step 1: Name the framework.</label>
-                            <input v-model="importFrameworkName">
-                        </div>
-                        <div>
-                            <label>Step 2: Describe the framework (optional).</label>
-                            <input v-model="importFrameworkDescription">
-                        </div>
-                        <div>
-                            <label>Step 3: Select the Name column.</label>
-                            <select v-model="importCsvColumnName">
-                                <option
-                                    v-for="(column, i) in csvColumns"
-                                    :key="i"
-                                    :value="column">
-                                    {{ column.name }}
-                                </option>
-                            </select>
-                        </div>
-                        <div>
-                            <label>Step 4: Select the Description column (optional).</label>
-                            <select v-model="importCsvColumnDescription">
-                                <option>N/A</option>
-                                <option
-                                    v-for="(column, i) in csvColumns"
-                                    :key="i"
-                                    :value="column">
-                                    {{ column.name }}
-                                </option>
-                            </select>
-                        </div>
-                        <div>
-                            <label>Step 5: Select the Scope column (optional).</label>
-                            <select v-model="importCsvColumnScope">
-                                <option>N/A</option>
-                                <option
-                                    v-for="(column, i) in csvColumns"
-                                    :key="i"
-                                    :value="column">
-                                    {{ column.name }}
-                                </option>
-                            </select>
-                        </div>
-                        <div>
-                            <label>Step 6: Select the ID column (optional). If chosen, this should be a URL from another CaSS system or a non-numeric ID.</label>
-                            <select v-model="importCsvColumnId">
-                                <option>N/A</option>
-                                <option
-                                    v-for="(column, i) in csvColumns"
-                                    :key="i"
-                                    :value="column">
-                                    {{ column.name }}
-                                </option>
-                            </select>
-                        </div>
-                        <div>
-                            <label>Step 7: Select a relation file (optional).
-                                The relation source/target must be in the form of ID or Name, and the relation types should be "requires", "desires", "narrows", "isEnabledBy", "isRelatedTo", or "isEquivalentTo".</label>
-                            <input
-                                type="file"
-                                @change="analyzeCsvRelation">
-                        </div>
-                        <div v-if="csvRelationFile">
-                            <div>
-                                <label>Step 8: Select the Source column.</label>
-                                <select v-model="importCsvColumnSource">
-                                    <option
-                                        v-for="(column, i) in csvRelationColumns"
-                                        :key="i"
-                                        :value="column">
-                                        {{ column.name }}
-                                    </option>
-                                </select>
+                            <div class="menu-list_list-subitem">
+                                <h5
+                                    class="is-size-7 has-text-weight-bold"
+                                    v-if="supportedType.examples.length > 0">
+                                    Examples
+                                </h5>
+                                <div class="buttons is-left">
+                                    <a
+                                        class="button has-text-link is-size-7 is-small is-text"
+                                        v-for="(example) in supportedType.examples"
+                                        :key="example.id"
+                                        :href="example.location"
+                                        download="example.download">
+                                        <span>
+                                            {{ example.name }}
+                                        </span>
+                                        <span class="icon">
+                                            <i class="fa fa-download" />
+                                        </span>
+                                    </a>
+                                </div>
                             </div>
-                            <div>
-                                <label>Step 9: Select the Relation Type column.</label>
-                                <select v-model="importCsvColumnRelationType">
-                                    <option
-                                        v-for="(column, i) in csvRelationColumns"
-                                        :key="i"
-                                        :value="column">
-                                        {{ column.name }}
-                                    </option>
-                                </select>
+                            <div class="menu-list_list-subitem">
+                                <h5
+                                    class="is-size-7 has-text-weight-bold"
+                                    v-if="supportedType.templates.length > 0">
+                                    Templates
+                                </h5>
+                                <div class="buttons is-left">
+                                    <a
+                                        class="button has-text-link is-size-7 is-small is-text"
+                                        v-for="(template) in supportedType.templates"
+                                        :key="template.id"
+                                        :href="template.location"
+                                        download="example.download">
+                                        <span>
+                                            {{ template.name }}
+                                        </span>
+                                        <span class="icon">
+                                            <i class="fa fa-download" />
+                                        </span>
+                                    </a>
+                                </div>
                             </div>
-                            <div>
-                                <label>Step 10: Select the Target column.</label>
-                                <select v-model="importCsvColumnTarget">
-                                    <option
-                                        v-for="(column, i) in csvRelationColumns"
-                                        :key="i"
-                                        :value="column">
-                                        {{ column.name }}
-                                    </option>
-                                </select>
-                            </div>
+                        </li>
+                    </div>
+                </aside>
+            </div>
+            <div class="column has-background-white">
+                <div class="section">
+                    <div class="task-controls section">
+                        <div class="tabs is-small is-boxed">
+                            <ul>
+                                <li :class="{ 'is-active': method === 'file'}">
+                                    <a @click="method = 'file';framework = null;status='';">
+                                        <span class="icon is-small"><i
+                                            class="fas fa-file"
+                                            aria-hidden="true" /></span>
+                                        <span>File Import</span>
+                                    </a>
+                                </li>
+                                <li :class="{ 'is-active': method === 'server'}">
+                                    <a @click="method = 'server';framework = null;status='';">
+                                        <span class="icon is-small">
+                                            <i
+                                                class="fa fa-server"
+                                                aria-hidden="true" />
+                                        </span>
+                                        <span>Remote Server</span>
+                                    </a>
+                                </li>
+                                <li :class="{ 'is-active': method === 'text'}">
+                                    <a @click="method = 'text';framework = null;status='';">
+                                        <span class="icon is-small">
+                                            <i
+                                                class="fas fa-paste"
+                                                aria-hidden="true" />
+                                        </span>
+                                        <span>Paste Text</span>
+                                    </a>
+                                </li>
+                                <li :class="{ 'is-active': method === 'url'}">
+                                    <a @click="method = 'url';framework = null;status='';">
+                                        <span class="icon is-small">
+                                            <i
+                                                class="fas fa-link"
+                                                aria-hidden="true" />
+                                        </span>
+                                        <span>URL</span>
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
-                    <div v-else-if="importType=='medbiq'">
-                        <div>
-                            <label>Step 1: Name the framework.</label>
-                            <input v-model="importFrameworkName">
-                        </div>
-                        <div>
-                            <label>Step 2: Describe the framework (optional).</label>
-                            <input v-model="importFrameworkDescription">
-                        </div>
-                    </div>
-                    <button @click="importFromFile">
-                        Import
-                    </button>
-                    <center>
-                        <div>
-                            {{ status }}
-                        </div>
-                    </center>
-                </div>
-                <div
-                    class="section-import section-server"
-                    v-if="method=='server'">
-                    <center>
-                        <h1>Paste URL endpoint of server</h1>
+                    <div
+                        class="section scrollable-section"
+                        v-if="method=='file'">
+                        <center>
+                            <h1>Drop file or click to select.</h1>
+                        </center>
                         <input
-                            v-model="serverUrl"
-                            type="url">
-                        <button @click="connectToServer">
-                            Connect
-                        </button>
-                        <div>
-                            {{ status }}
-                        </div>
-                    </center>
-                    <div v-if="caseDocs.length">
-                        <ul>
-                            <li
-                                v-for="doc in caseDocs"
-                                :key="doc.id">
+                            type="file"
+                            ref="fileInput"
+                            @change="fileChange"
+                            multiple>
+                        <div v-if="importType=='csv'">
+                            <div>
+                                <label>Step 1: Name the framework.</label>
+                                <input v-model="importFrameworkName">
+                            </div>
+                            <div>
+                                <label>Step 2: Describe the framework (optional).</label>
+                                <input v-model="importFrameworkDescription">
+                            </div>
+                            <div>
+                                <label>Step 3: Select the Name column.</label>
+                                <select v-model="importCsvColumnName">
+                                    <option
+                                        v-for="(column, i) in csvColumns"
+                                        :key="i"
+                                        :value="column">
+                                        {{ column.name }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Step 4: Select the Description column (optional).</label>
+                                <select v-model="importCsvColumnDescription">
+                                    <option>N/A</option>
+                                    <option
+                                        v-for="(column, i) in csvColumns"
+                                        :key="i"
+                                        :value="column">
+                                        {{ column.name }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Step 5: Select the Scope column (optional).</label>
+                                <select v-model="importCsvColumnScope">
+                                    <option>N/A</option>
+                                    <option
+                                        v-for="(column, i) in csvColumns"
+                                        :key="i"
+                                        :value="column">
+                                        {{ column.name }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Step 6: Select the ID column (optional). If chosen, this should be a URL from another CaSS system or a non-numeric ID.</label>
+                                <select v-model="importCsvColumnId">
+                                    <option>N/A</option>
+                                    <option
+                                        v-for="(column, i) in csvColumns"
+                                        :key="i"
+                                        :value="column">
+                                        {{ column.name }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Step 7: Select a relation file (optional).
+                                    The relation source/target must be in the form of ID or Name, and the relation types should be "requires", "desires", "narrows", "isEnabledBy", "isRelatedTo", or "isEquivalentTo".</label>
                                 <input
-                                    type="checkbox"
-                                    v-model="doc.checked"
-                                    v-if="!doc.loading && !doc.success && !doc.error">
-                                <i
-                                    class="fa fa-circle-notch fa-spin"
-                                    v-if="doc.loading" />
-                                <i
-                                    class="fa fa-check"
-                                    v-else-if="doc.success" />
-                                <i
-                                    class="fa fa-exclamation-triangle"
-                                    v-else-if="doc.error" />
-                                {{ doc.name }}
-                            </li>
-                        </ul>
-                        <button @click="importCase">
+                                    type="file"
+                                    @change="analyzeCsvRelation">
+                            </div>
+                            <div v-if="csvRelationFile">
+                                <div>
+                                    <label>Step 8: Select the Source column.</label>
+                                    <select v-model="importCsvColumnSource">
+                                        <option
+                                            v-for="(column, i) in csvRelationColumns"
+                                            :key="i"
+                                            :value="column">
+                                            {{ column.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label>Step 9: Select the Relation Type column.</label>
+                                    <select v-model="importCsvColumnRelationType">
+                                        <option
+                                            v-for="(column, i) in csvRelationColumns"
+                                            :key="i"
+                                            :value="column">
+                                            {{ column.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label>Step 10: Select the Target column.</label>
+                                    <select v-model="importCsvColumnTarget">
+                                        <option
+                                            v-for="(column, i) in csvRelationColumns"
+                                            :key="i"
+                                            :value="column">
+                                            {{ column.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-else-if="importType=='medbiq'">
+                            <div>
+                                <label>Step 1: Name the framework.</label>
+                                <input v-model="importFrameworkName">
+                            </div>
+                            <div>
+                                <label>Step 2: Describe the framework (optional).</label>
+                                <input v-model="importFrameworkDescription">
+                            </div>
+                        </div>
+                        <button @click="importFromFile">
                             Import
                         </button>
-                        <button @click="cancelCase">
-                            Cancel
-                        </button>
+                        <center>
+                            <div>
+                                {{ status }}
+                            </div>
+                        </center>
                     </div>
-                </div>
-                <div
-                    class="section-import section-text"
-                    v-if="method=='text'">
-                    <center>
-                        <h1>Paste Text</h1>
-                        <textarea v-model="text" />
-                        <div>
-                            {{ status }}
-                            <button @click="parseText">
+                    <div
+                        class="section-import section-server"
+                        v-if="method=='server'">
+                        <center>
+                            <h1>Paste URL endpoint of server</h1>
+                            <input
+                                v-model="serverUrl"
+                                type="url">
+                            <button @click="connectToServer">
+                                Connect
+                            </button>
+                            <div>
+                                {{ status }}
+                            </div>
+                        </center>
+                        <div v-if="caseDocs.length">
+                            <ul>
+                                <li
+                                    v-for="doc in caseDocs"
+                                    :key="doc.id">
+                                    <input
+                                        type="checkbox"
+                                        v-model="doc.checked"
+                                        v-if="!doc.loading && !doc.success && !doc.error">
+                                    <i
+                                        class="fa fa-circle-notch fa-spin"
+                                        v-if="doc.loading" />
+                                    <i
+                                        class="fa fa-check"
+                                        v-else-if="doc.success" />
+                                    <i
+                                        class="fa fa-exclamation-triangle"
+                                        v-else-if="doc.error" />
+                                    {{ doc.name }}
+                                </li>
+                            </ul>
+                            <button @click="importCase">
                                 Import
                             </button>
+                            <button @click="cancelCase">
+                                Cancel
+                            </button>
                         </div>
-                    </center>
+                    </div>
+                    <div
+                        class="section-import section-text"
+                        v-if="method=='text'">
+                        <center>
+                            <h1>Paste Text</h1>
+                            <textarea v-model="text" />
+                            <div>
+                                {{ status }}
+                                <button @click="parseText">
+                                    Import
+                                </button>
+                            </div>
+                        </center>
+                    </div>
+                    <div
+                        class="section-import section-url"
+                        v-if="method=='url'">
+                        <center>
+                            <h1>Paste URL of document</h1>
+                            <input
+                                v-model="url"
+                                type="url">
+                            <button @click="importFromUrl">
+                                Import
+                            </button>
+                            <div>
+                                {{ status }}
+                            </div>
+                        </center>
+                    </div>
+                    <Hierarchy
+                        v-if="framework"
+                        :container="framework"
+                        containerType="Framework"
+                        containerNodeProperty="competency"
+                        containerEdgeProperty="relation"
+                        nodeType="EcCompetency"
+                        edgeType="EcAlignment"
+                        edgeRelationProperty="relationType"
+                        edgeRelationLiteral="narrows"
+                        edgeSourceProperty="source"
+                        edgeTargetProperty="target"
+                        editable="false"
+                        :repo="repo" />
                 </div>
-                <div
-                    class="section-import section-url"
-                    v-if="method=='url'">
-                    <center>
-                        <h1>Paste URL of document</h1>
-                        <input
-                            v-model="url"
-                            type="url">
-                        <button @click="importFromUrl">
-                            Import
-                        </button>
-                        <div>
-                            {{ status }}
-                        </div>
-                    </center>
-                </div>
-                <Hierarchy
-                    v-if="framework"
-                    :container="framework"
-                    containerType="Framework"
-                    containerNodeProperty="competency"
-                    containerEdgeProperty="relation"
-                    nodeType="EcCompetency"
-                    edgeType="EcAlignment"
-                    edgeRelationProperty="relationType"
-                    edgeRelationLiteral="narrows"
-                    edgeSourceProperty="source"
-                    edgeTargetProperty="target"
-                    editable="false"
-                    :repo="repo" />
             </div>
         </div>
     </div>
@@ -415,24 +427,28 @@ export default {
                     type: 'CaSS formatted CSV',
                     examples: [
                         {
-                            name: 'Example Competencies',
+                            name: 'Competencies',
+                            id: 'cassCsvExComp',
                             location: this.csvExampleCompetenciesFile,
                             download: 'CAP Software Engineering - Competencies.csv'
                         },
                         {
-                            name: 'Example Competencies',
+                            name: 'Relations',
+                            id: 'cassCsvExRel',
                             location: this.csvExampleRelationsFile,
                             download: 'CAP Software Engineering - Relations.csv'
                         }
                     ],
                     templates: [
                         {
-                            name: 'Template Competencies',
+                            name: 'Competencies',
+                            id: 'cassCsvTemlComp',
                             location: this.csvTemplateCompetenciesFile,
                             download: 'Template - Competencies.csv'
                         },
                         {
-                            name: 'Template Competencies',
+                            name: 'Relations',
+                            id: 'cassCsvTempRel',
                             location: this.csvTemplateRelationsFile,
                             download: 'Template - Relations.csv'
                         }
@@ -442,19 +458,21 @@ export default {
                             For this import, you can use one or two CSVs.
                             The first (required) CSV describes the competencies to include in a new framework.
                             The second (optional) CSV describes the relations between the competencies found in the first framework.
-                            <br>
+                            </p><p class="content-body">
                             Each row in the first CSV will represent one competency,
                             and each row in the second CSV will represent one relation between two competencies.
                             The relations can be between competencies found in the first CSV,
                             competencies found in other frameworks, or a mixture of the two.
-                            <br>
-                            You can select the columns to use to describe the id, name, description, and other fields.`
+                            </p><p class="content-body">
+                            You can select the columns to use to describe the id, name,
+                            description, and other fields.`
                 },
                 {
                     type: 'CTDL-ASN formatted CSV',
                     examples: [
                         {
                             name: 'Example',
+                            id: 'ctdlEx',
                             file: this.ctdlAsnCsvExampleFile,
                             download: 'CTDL-ASN.ONET.example.csv'
                         }
@@ -462,6 +480,7 @@ export default {
                     templates: [
                         {
                             name: 'Template',
+                            id: 'ctdTempl',
                             file: this.ctdlAsnCsvTemplateFile,
                             download: 'CTDL-ASN.ONET.template.csv'
                         }
@@ -469,23 +488,29 @@ export default {
                     showDescription: false,
                     description: `
                         For this import, you use one CSV.
-                        Each row in the CSV will represent one object, whether that be a competency, or a competency framework.
+                        Each row in the CSV will represent one object, whether
+                        that be a competency, or a competency framework.
                         Particular fields will be used to determine hierarchy.
-                        <br>
-                        Using this format, you can import several frameworks, each with their own competencies.
-                        Competencies may not be shared across frameworks, and each competency may only have one parent.
-                        <br>
+                        </p><p class="content-body">
+                        Using this format, you can import several frameworks,
+                        each with their own competencies.
+                        </p><p>Competencies may not be shared across frameworks, and
+                        each competency may only have one parent.
+                        </p><p class="content-body">
                         It is also important that the rows be sequenced correctly,
-                        with competency frameworks appearing before the competencies inside of them,
-                        and for a parent to be in a row above a child of that parent.
-                        <br>
-                        Any field with multiple values must be formatted as entry 1|entry 2.`
+                        with competency frameworks appearing before the competencies
+                        inside of them,and for a parent to be in a row above
+                        a child of that parent.
+                        </p><p class="content-body">
+                        Any field with multiple values must be formatted as entry
+                        1|entry 2.`
                 },
                 {
                     type: 'Medbiquitous XML',
                     examples: [
                         {
-                            name: '',
+                            name: 'example',
+                            id: 'medXmlEx',
                             location: this.medbiquitousFile,
                             download: 'educational_achievement_sample_1June2012.xml'
                         }
@@ -493,61 +518,75 @@ export default {
                     templates: [],
                     showDescription: false,
                     description: `
-                        Medbiquitous is a standards body that includes medical competencies as one of their XML based formats.
-                        <br>
-                        Using this format, you can import competencies exported from a system that exports Medbiquitous formatted XML.`
+                        Medbiquitous is a standards body that includes medical
+                        competencies as one of their XML based formats.
+                        </p><p class="content-body">
+                        Using this format, you can import competencies exported
+                        from a system that exports Medbiquitous formatted XML.`
                 },
                 {
                     type: 'Achievement Standards Network RDF+JSON',
                     examples: [
                         {
                             name: 'Example',
+                            id: 'asnrdEx',
                             location: this.asnRdfJsonFile,
                             download: 'D2695955.json'
                         }
                     ],
+                    templates: [],
                     showDescription: false,
                     description: `
-                        The Achievement Standards Network set of standards, or ASN standard for short,
-                        is a legacy standard used primarily by achievementstandards.org to transmit
-                        state standards and other national and organizational standards.
-                        <br>
-                        Using this format,
-                        you can import competencies exported from achievementstandards.org and other systems in an RDF JSON format.`
+                        The Achievement Standards Network set of standards, or ASN
+                        standard for short, is a legacy standard used primarily by
+                        achievementstandards.org to transmit state standards and
+                        other national and organizational standards.
+                        </p><p class="content-body">
+                        Using this format,you can import competencies exported from
+                        achievementstandards.org and other systems in an RDF JSON
+                        format.`
                 },
                 {
                     type: 'CTDL-ASN formatted JSON-LD',
-                    templates: [
+                    examples: [
                         {
-                            name: 'Template',
+                            name: 'Example',
+                            id: 'ctdlJsonTemp',
                             location: this.ctdlAsnJsonldFile,
                             download: 'DQP.jsonld'
                         }
                     ],
+                    templates: [],
                     showDescription: false,
                     description: `
-                        For this import, you use one JSON-LD file that includes a graph of the framework and all of its competencies.
-                        <br>
-                        Using this format, you can import a framework and competencies from a system that exports CTDL-ASN formatted JSON-LD.`
+                        For this import, you use one JSON-LD file that includes a
+                        graph of the framework and all of its competencies.
+                        </p><p class="content-body">
+                        Using this format, you can import a framework and
+                        competencies from a system that exports CTDL-ASN formatted
+                        JSON-LD.`
                 },
                 {
                     type: 'CaSS Server',
                     examples: [
                         {
                             name: 'Example: CaSS Sandbox',
+                            id: 'cassSandbox',
                             location: "serverUrl='https://sandbox.cassproject.org/'",
                             download: ''
                         }
                     ],
-                    templateS: [],
+                    templates: [],
                     showDescription: false,
                     description: `
                      If you know the URL of a CaSS Repository,
                     you can import frameworks from that repository.
-                    <br>
-                    This import maintains the URLs of the Competency Frameworks and does not change any of the data.
-                    <br>
-                    After entering the endpoint below, you can select which frameworks you would like to import.`
+                    </p><p class="content-body">
+                    This import maintains the URLs of the Competency Frameworks
+                    and does not change any of the data.
+                    </p><p class="content-body">
+                    After entering the endpoint below, you can select which
+                    frameworks you would like to import.`
                 }
 
             ],
@@ -1144,12 +1183,45 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .menu {
-    overflow-y:scroll;
-    height: calc(100vh - 5rem);
+    overflow-y: scroll;
+    height: 100vh;
+    padding: 1rem;
+    width: 300px;
 }
-.buttons:not(:last-child) {
-    margin-bottom: 0rem;
+.scrollable-section {
+    overflow-y: scroll;
+    height: 100vh;
+}
+.menu-list_list-item {
+    list-style-type: none;
+    padding: .5rem 0em;
+}
+.menu-list_list-subitem {
+    list-style-type: none;
+    padding: .25rem 0em;
+}
+.buttons {
+    margin-right: 0em !important;
+    margin: 0em !important;
+    :not(:last-child) {
+    }
+    a:first {
+        padding-left: 0em !important;
+        margin-left: 0em !important;
+    }
+}
+.content-body-wrapper {
+    padding: .5em 0em;
+    .content-body {
+        padding-top: .25rem;
+        :last {
+            padding-bottom: 1em;
+        }
+    }
+}
+.menu-list a {
+    padding: .5em .5em .5em 0em;
 }
 </style>
