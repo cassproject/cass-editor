@@ -136,9 +136,9 @@
 
             <!-- nav bar tablet and mobile drop down side navigation -->
         </nav>
-            <router-view
-                :exportType="exportType"
-                :queryParams="queryParams" />
+        <router-view
+            :exportType="exportType"
+            :queryParams="queryParams" />
     </div>
 </template>
 <style scoped lang="scss">
