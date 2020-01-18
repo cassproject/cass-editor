@@ -3,7 +3,9 @@
 
 @import './variables.scss';
 
-$section-padding: .5rem .5rem;
+$section-padding: .5rem 1.5rem;
+$section-padding-medium: 1.5rem 1.5rem;
+$section-padding-large: 3rem 1.5rem;
 
 $menu-item-color:$black;
 $menu-item-hover-color: $black;
@@ -28,7 +30,6 @@ $menu-label-spacing:1em;
 
 
 $button-text-hover-background-color: transparent;
-
 
 
 // utilities
@@ -70,3 +71,32 @@ $button-text-hover-background-color: transparent;
 .has-text-secondary {
     color: $secondary !important;
 }
+
+.section.is-large {
+   padding: $section-padding-large !important;
+}
+.section.is-medium {
+    padding: $section-padding-medium !important;
+ }
+ .has-dashed-border {
+    border:2px dashed $black !important;
+    border-radius: 1rem;
+    height: 200px;
+    
+    div {
+        display: block;
+        width: 100%;
+        height: 100%;
+        margin: auto;
+        flex-direction: column;
+        display: flex;
+        align-content: center;
+        align-items: center;
+    }
+    input {
+        display: block;
+        width: auto;
+        margin: auto;
+
+    }
+ }

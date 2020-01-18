@@ -1,7 +1,8 @@
 <template>
     <div class="container is-fluid is-marginless is-paddingless">
         <div class="columns is-multiline is-marginless is-gapless is-mobile">
-            <div class="column is-narrow">
+            <div class="column is-narrow is-hidden-mobile">
+                <!--- side bar -->
                 <aside
                     class="menu has-background-primary has-text-white">
                     <div
@@ -90,287 +91,333 @@
                         </li>
                     </div>
                 </aside>
+                <!--- end side bar -->
             </div>
-            <div class="column has-background-white">
-                <div class="section">
-                    <div class="container drag-file-area">
+            <!--- main body section -->
+            <div class="column has-background-white is-scrollable">
+                <section class="section">
+                    <div class="container">
                         <div class="section">
                             <h1 class="title is-size-2">
                                 Import a framework
                             </h1>
                         </div>
-                        <div class="section">
+                        <!-- types of import for tabs -->
+                        <div
+                            v-if="!framework"
+                            class="section is-large">
                             <div class="tile is-vertical has-background-light">
-                                <div class="section">
-                                    <div class="columns">
-                                        <div class="column" :class="{ 'is-active': method === 'file'}">
-                                            <a @click="method = 'file';framework = null;status='';">
-                                                <i
-                                                    class="fa fa-file has-text-secondary has-text-centered is-block"
-                                                    aria-hidden="true" />
-                                                <div class="has-text-secondary is-block has-text-centered">
-                                                    File Import
-                                                </div>
-                                            </a>
+                                <div class="section is-medium">
+                                    <div class="columns is-mobile">
+                                        <div class="column">
+                                            <div
+                                                class="import-tab"
+                                                :class="{ 'is-active-tab': method === 'file'}">
+                                                <a @click="method = 'file';framework = null;status='';">
+                                                    <i
+                                                        class="fa fa-file has-text-centered is-block"
+                                                        aria-hidden="true" />
+                                                    <div class="is-block has-text-centered">
+                                                        File Import
+                                                    </div>
+                                                </a>
+                                            </div>
                                         </div>
-                                        <div class="column" :class="{ 'is-active': method === 'server'}">
-                                            <a @click="method = 'server';framework = null;status='';">
-                                                <i
-                                                    class="fa fa-server has-text-centered is-block"
-                                                    aria-hidden="true" />
-                                                <div class="is-block has-text-centered">
-                                                    Remote Server
-                                                </div>
-                                            </a>
+                                        <div class="column">
+                                            <div
+                                                class="import-tab"
+                                                :class="{ 'is-active-tab': method === 'server'}">
+                                                <a @click="method = 'server';framework = null;status='';">
+                                                    <i
+                                                        class="fa fa-server is-block has-text-centered"
+                                                        aria-hidden="true" />
+                                                    <div class="is-block has-text-centered">
+                                                        Remote Server
+                                                    </div>
+                                                </a>
+                                            </div>
                                         </div>
-                                        <div class="column" :class="{ 'is-active': method === 'text'}">
-                                            <a @click="method = 'text';framework = null;status='';">
-                                                <i
-                                                    class="fa fa-paste has-text-centered is-block"
-                                                    aria-hidden="true" />
-                                                <div class="is-block has-text-centered">
-                                                    Paste Text
-                                                </div>
-                                            </a>
+                                        <div class="column">
+                                            <div
+                                                class="import-tab"
+                                                :class="{ 'is-active-tab': method === 'text'}">
+                                                <a @click="method = 'text';framework = null;status='';">
+                                                    <i
+                                                        class="fa fa-paste has-text-centered is-block"
+                                                        aria-hidden="true" />
+                                                    <div class=" is-block has-text-centered">
+                                                        Paste Text
+                                                    </div>
+                                                </a>
+                                            </div>
                                         </div>
-                                        <div class="column" :class="{ 'is-active': method === 'url'}">
-                                            <a @click="method = 'url';framework = null;status='';">
-                                                <i
-                                                    class="fa fa-link has-text-centered is-block"
-                                                    aria-hidden="true" />
-                                                <div class="is-block has-text-centered">
-                                                    URL Source
-                                                </div>
-                                            </a>
+                                        <div class="column">
+                                            <div
+                                                class="import-tab"
+                                                :class="{ 'is-active-tab': method === 'url'}">
+                                                <a @click="method = 'url';framework = null;status='';">
+                                                    <i
+                                                        class="fa fa-link has-text-centered is-block"
+                                                        aria-hidden="true" />
+                                                    <div class="is-block has-text-centered">
+                                                        URL Source
+                                                    </div>
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <!-- file input -->
-                                <div
-                                    class="section"
-                                    v-if="method=='file'">
-                                    <center>
-                                        <h1>Drop file or click to select.</h1>
-                                    </center>
-                                    <input
-                                        type="file"
-                                        ref="fileInput"
-                                        @change="fileChange"
-                                        multiple>
-                                    <div v-if="importType=='csv'">
-                                        <div>
-                                            <label>Step 1: Name the framework.</label>
-                                            <input v-model="importFrameworkName">
+                                    <!-- file input -->
+                                    <div
+                                        class="section has-dashed-border"
+                                        id="drop-area"
+                                        v-if="method=='file'">
+                                        <div v-if="processingFile">
+                                            <span class="icon is-large">
+                                                <i class="fa fa-spinner fa-pulse fa-2x" />
+                                            </span>
                                         </div>
-                                        <div>
-                                            <label>Step 2: Describe the framework (optional).</label>
-                                            <input v-model="importFrameworkDescription">
+                                        <div v-if="processingSuccess">
+                                            <span class="icon is-large">
+                                                <i class="fa fa-spinner fa-pulse fa-2x" />
+                                            </span>
                                         </div>
-                                        <div>
-                                            <label>Step 3: Select the Name column.</label>
-                                            <select v-model="importCsvColumnName">
-                                                <option
-                                                    v-for="(column, i) in csvColumns"
-                                                    :key="i"
-                                                    :value="column">
-                                                    {{ column.name }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label>Step 4: Select the Description column (optional).</label>
-                                            <select v-model="importCsvColumnDescription">
-                                                <option>N/A</option>
-                                                <option
-                                                    v-for="(column, i) in csvColumns"
-                                                    :key="i"
-                                                    :value="column">
-                                                    {{ column.name }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label>Step 5: Select the Scope column (optional).</label>
-                                            <select v-model="importCsvColumnScope">
-                                                <option>N/A</option>
-                                                <option
-                                                    v-for="(column, i) in csvColumns"
-                                                    :key="i"
-                                                    :value="column">
-                                                    {{ column.name }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label>Step 6: Select the ID column (optional). If chosen, this should be a URL from another CaSS system or a non-numeric ID.</label>
-                                            <select v-model="importCsvColumnId">
-                                                <option>N/A</option>
-                                                <option
-                                                    v-for="(column, i) in csvColumns"
-                                                    :key="i"
-                                                    :value="column">
-                                                    {{ column.name }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label>Step 7: Select a relation file (optional).
-                                                The relation source/target must be in the form of ID or Name, and the relation types should be "requires", "desires", "narrows", "isEnabledBy", "isRelatedTo", or "isEquivalentTo".</label>
+                                        <div v-else>
                                             <input
                                                 type="file"
-                                                @change="analyzeCsvRelation">
-                                        </div>
-                                        <div v-if="csvRelationFile">
-                                            <div>
-                                                <label>Step 8: Select the Source column.</label>
-                                                <select v-model="importCsvColumnSource">
-                                                    <option
-                                                        v-for="(column, i) in csvRelationColumns"
-                                                        :key="i"
-                                                        :value="column">
-                                                        {{ column.name }}
-                                                    </option>
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <label>Step 9: Select the Relation Type column.</label>
-                                                <select v-model="importCsvColumnRelationType">
-                                                    <option
-                                                        v-for="(column, i) in csvRelationColumns"
-                                                        :key="i"
-                                                        :value="column">
-                                                        {{ column.name }}
-                                                    </option>
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <label>Step 10: Select the Target column.</label>
-                                                <select v-model="importCsvColumnTarget">
-                                                    <option
-                                                        v-for="(column, i) in csvRelationColumns"
-                                                        :key="i"
-                                                        :value="column">
-                                                        {{ column.name }}
-                                                    </option>
-                                                </select>
-                                            </div>
+                                                ref="fileInput"
+                                                placeholder=""
+                                                @change="fileChange"
+                                                multiple>
                                         </div>
                                     </div>
-                                    <div v-else-if="importType=='medbiq'">
-                                        <div>
-                                            <label>Step 1: Name the framework.</label>
-                                            <input v-model="importFrameworkName">
-                                        </div>
-                                        <div>
-                                            <label>Step 2: Describe the framework (optional).</label>
-                                            <input v-model="importFrameworkDescription">
-                                        </div>
-                                    </div>
-                                    <button @click="importFromFile">
-                                        Import
-                                    </button>
-                                    <center>
-                                        <div>
-                                            {{ status }}
-                                        </div>
-                                    </center>
-                                </div>
-                                <!-- sever input -->
-                                <div
-                                    class="section"
-                                    v-if="method=='server'">
-                                    <center>
-                                        <h1>Paste URL endpoint of server</h1>
-                                        <input
-                                            v-model="serverUrl"
-                                            type="url">
-                                        <button @click="connectToServer">
-                                            Connect
-                                        </button>
-                                        <div>
-                                            {{ status }}
-                                        </div>
-                                    </center>
-                                    <div v-if="caseDocs.length">
-                                        <ul>
-                                            <li
-                                                v-for="doc in caseDocs"
-                                                :key="doc.id">
+                                    <div
+                                        class="section">
+                                        <div v-if="importType=='csv'">
+                                            <div>
+                                                <label>Step 1: Name the framework.</label>
+                                                <input v-model="importFrameworkName">
+                                            </div>
+                                            <div>
+                                                <label>Step 2: Describe the framework (optional).</label>
+                                                <input v-model="importFrameworkDescription">
+                                            </div>
+                                            <div>
+                                                <label>Step 3: Select the Name column.</label>
+                                                <select v-model="importCsvColumnName">
+                                                    <option
+                                                        v-for="(column, i) in csvColumns"
+                                                        :key="i"
+                                                        :value="column">
+                                                        {{ column.name }}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label>Step 4: Select the Description column (optional).</label>
+                                                <select v-model="importCsvColumnDescription">
+                                                    <option>N/A</option>
+                                                    <option
+                                                        v-for="(column, i) in csvColumns"
+                                                        :key="i"
+                                                        :value="column">
+                                                        {{ column.name }}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label>Step 5: Select the Scope column (optional).</label>
+                                                <select v-model="importCsvColumnScope">
+                                                    <option>N/A</option>
+                                                    <option
+                                                        v-for="(column, i) in csvColumns"
+                                                        :key="i"
+                                                        :value="column">
+                                                        {{ column.name }}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label>Step 6: Select the ID column (optional). If chosen, this should be a URL from another CaSS system or a non-numeric ID.</label>
+                                                <select v-model="importCsvColumnId">
+                                                    <option>N/A</option>
+                                                    <option
+                                                        v-for="(column, i) in csvColumns"
+                                                        :key="i"
+                                                        :value="column">
+                                                        {{ column.name }}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label>
+                                                    Step 7: Select a relation file (optional).
+                                                    The relation source/target must be in the
+                                                    form of ID or Name, and the relation types
+                                                    should be "requires", "desires", "narrows",
+                                                    "isEnabledBy", "isRelatedTo", or "isEquivalentTo".
+                                                </label>
                                                 <input
-                                                    type="checkbox"
-                                                    v-model="doc.checked"
-                                                    v-if="!doc.loading && !doc.success && !doc.error">
-                                                <i
-                                                    class="fa fa-circle-notch fa-spin"
-                                                    v-if="doc.loading" />
-                                                <i
-                                                    class="fa fa-check"
-                                                    v-else-if="doc.success" />
-                                                <i
-                                                    class="fa fa-exclamation-triangle"
-                                                    v-else-if="doc.error" />
-                                                {{ doc.name }}
-                                            </li>
-                                        </ul>
-                                        <button @click="importCase">
+                                                    type="file"
+                                                    @change="analyzeCsvRelation">
+                                            </div>
+                                            <div v-if="csvRelationFile">
+                                                <div>
+                                                    <label>
+                                                        Step 8: Select the Source column.
+                                                    </label>
+                                                    <select v-model="importCsvColumnSource">
+                                                        <option
+                                                            v-for="(column, i) in csvRelationColumns"
+                                                            :key="i"
+                                                            :value="column">
+                                                            {{ column.name }}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label>Step 9: Select the Relation Type column.</label>
+                                                    <select v-model="importCsvColumnRelationType">
+                                                        <option
+                                                            v-for="(column, i) in csvRelationColumns"
+                                                            :key="i"
+                                                            :value="column">
+                                                            {{ column.name }}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label>Step 10: Select the Target column.</label>
+                                                    <select v-model="importCsvColumnTarget">
+                                                        <option
+                                                            v-for="(column, i) in csvRelationColumns"
+                                                            :key="i"
+                                                            :value="column">
+                                                            {{ column.name }}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div v-else-if="importType=='medbiq'">
+                                            <div>
+                                                <label>Step 1: Name the framework.</label>
+                                                <input v-model="importFrameworkName">
+                                            </div>
+                                            <div>
+                                                <label>Step 2: Describe the framework (optional).</label>
+                                                <input v-model="importFrameworkDescription">
+                                            </div>
+                                        </div>
+                                        <button @click="importFromFile">
                                             Import
                                         </button>
-                                        <button @click="cancelCase">
-                                            Cancel
-                                        </button>
-                                    </div>
-                                </div>
-                                <!-- text input -->
-                                <div
-                                    class="section"
-                                    v-if="method=='text'">
-                                    <center>
-                                        <h1>Paste Text</h1>
-                                        <textarea v-model="text" />
                                         <div>
                                             {{ status }}
-                                            <button @click="parseText">
+                                        </div>
+                                    </div>
+                                    <!-- sever input -->
+                                    <div
+                                        class="section has-dashed-border"
+                                        v-if="method=='server'">
+                                        <center>
+                                            <h1>Paste URL endpoint of server</h1>
+                                            <input
+                                                v-model="serverUrl"
+                                                type="url">
+                                            <button @click="connectToServer">
+                                                Connect
+                                            </button>
+                                            <div>
+                                                {{ status }}
+                                            </div>
+                                        </center>
+                                        <div v-if="caseDocs.length">
+                                            <ul>
+                                                <li
+                                                    v-for="doc in caseDocs"
+                                                    :key="doc.id">
+                                                    <input
+                                                        type="checkbox"
+                                                        v-model="doc.checked"
+                                                        v-if="!doc.loading && !doc.success && !doc.error">
+                                                    <i
+                                                        class="fa fa-circle-notch fa-spin"
+                                                        v-if="doc.loading" />
+                                                    <i
+                                                        class="fa fa-check"
+                                                        v-else-if="doc.success" />
+                                                    <i
+                                                        class="fa fa-exclamation-triangle"
+                                                        v-else-if="doc.error" />
+                                                    {{ doc.name }}
+                                                </li>
+                                            </ul>
+                                            <button @click="importCase">
                                                 Import
                                             </button>
+                                            <button @click="cancelCase">
+                                                Cancel
+                                            </button>
                                         </div>
-                                    </center>
-                                </div>
-                                <!-- url input -->
-                                <div
-                                    class="section"
-                                    v-if="method=='url'">
-                                    <center>
-                                        <h1>Paste URL of document</h1>
-                                        <input
-                                            v-model="url"
-                                            type="url">
-                                        <button @click="importFromUrl">
-                                            Import
-                                        </button>
-                                        <div>
-                                            {{ status }}
-                                        </div>
-                                    </center>
-                                </div>
+                                    </div>
+                                    <!-- text input -->
+                                    <div
+                                        class="section has-dashed-border"
+                                        v-if="method=='text'">
+                                        <center>
+                                            <h1>Paste Text</h1>
+                                            <textarea v-model="text" />
+                                            <div>
+                                                {{ status }}
+                                                <button @click="parseText">
+                                                    Import
+                                                </button>
+                                            </div>
+                                        </center>
+                                    </div>
+                                    <!-- url input -->
+                                    <div
+                                        class="section has-dashed-border"
+                                        v-if="method=='url'">
+                                        <center>
+                                            <h1>Paste URL of document</h1>
+                                            <input
+                                                v-model="url"
+                                                type="url">
+                                            <button @click="importFromUrl">
+                                                Import
+                                            </button>
+                                            <div>
+                                                {{ status }}
+                                            </div>
+                                        </center>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <Hierarchy
+                        <div
                             v-if="framework"
-                            :container="framework"
-                            containerType="Framework"
-                            containerNodeProperty="competency"
-                            containerEdgeProperty="relation"
-                            nodeType="EcCompetency"
-                            edgeType="EcAlignment"
-                            edgeRelationProperty="relationType"
-                            edgeRelationLiteral="narrows"
-                            edgeSourceProperty="source"
-                            edgeTargetProperty="target"
-                            editable="false"
-                            :repo="repo" />
+                            class="section"
+                            id="framework-container">
+                            <div class="tile is-vertical">
+                                <Hierarchy
+                                    v-if="framework"
+                                    :container="framework"
+                                    containerType="Framework"
+                                    containerNodeProperty="competency"
+                                    containerEdgeProperty="relation"
+                                    nodeType="EcCompetency"
+                                    edgeType="EcAlignment"
+                                    edgeRelationProperty="relationType"
+                                    edgeRelationLiteral="narrows"
+                                    edgeSourceProperty="source"
+                                    edgeTargetProperty="target"
+                                    editable="false"
+                                    :repo="repo" />
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </section>
             </div>
         </div>
     </div>
@@ -400,6 +447,8 @@ export default {
     components: {Hierarchy},
     data: function() {
         return {
+            processingFile: false,
+            processingSuccess: false,
             showCassCsv: false,
             method: "file",
             file: null,
@@ -618,6 +667,36 @@ export default {
             ]
         };
     },
+    computed: {
+        isUrl: function() {
+            if (this.method === 'url') {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        isFile: function() {
+            if (this.method === 'file') {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        isText: function() {
+            if (this.method === 'text') {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        isServer: function() {
+            if (this.method === 'server') {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    },
     watch: {
         text: function(newText, oldText) {
             var me = this;
@@ -649,6 +728,8 @@ export default {
     methods:
     {
         fileChange: function(e) {
+            this.processingFile = true;
+            this.processingSuccess = false;
             var files = e.target.files || e.dataTransfer.files;
             if (!files.length) {
                 this.file = null;
@@ -692,6 +773,8 @@ export default {
                             }
                         }
                         me.status = (me.competencyCount = (data.length - 1)) + " Competencies Detected.";
+                        this.processingFile = false;
+                        this.processingSuccess = true;
                     }, function(error) {
                         me.status = error;
                     });
@@ -1194,6 +1277,9 @@ export default {
                     me.status = failure;
                 }
             });
+        },
+        mounted: function() {
+
         }
     }
 };
@@ -1243,15 +1329,51 @@ export default {
     padding: .5em .5em .5em 0em;
 }
 
- .drag-file-area{
-        input{
-            width:100%;
-            display:block;
-            border:1px dashed black;
-            border-radius:1rem;
-            padding:100px;
-            padding-left:calc(50% - 100px);
-        }
-}
+ .drag-file-area {
+    width:100%;
+    display:block;
+    border:2px dashed $black;
+    border-radius:1rem;
+    padding:100px;
+    margin: auto;
 
+}
+.import-tab {
+    margin-top: -40px;
+    height: 100px;
+    color: $dark;
+    width: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: .7rem;
+    border-radius: 100px;
+    background-color: transparent;
+   i {
+     color: $dark;
+   }
+   div {
+       color: $dark;
+   }
+}
+.is-active-tab{
+  background-color: $light;
+  color: $secondary;
+  i {
+      color: $secondary;
+  }
+  div {
+      color: $secondary;
+  }
+}
+.tile {
+    border-radius: 1rem;
+}
+#framework-container {
+    min-height: 400px;
+    max-height:60vh;
+    overflow-y: scroll;
+    border: 2px solid $black;
+    border-radius: 1rem;
+}
 </style>

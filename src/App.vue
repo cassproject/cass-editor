@@ -173,7 +173,6 @@ export default {
         }
     },
     created: function() {
-        console.error("here we are");
         if (this.$route.query) {
             this.queryParams = this.$route.query;
             if (this.queryParams.server) {
