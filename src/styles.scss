@@ -23,11 +23,16 @@ body{
     height: 100%;
 }
 
+.icon{
+    margin:.25rem;
+}
 p {
     font-style: normal;
 }
 .is-scrollable{
     overflow-y: scroll;
+    height: calc(100vh - 3.25em);
+
 }
 
 .e-HierarchyNode-ul
@@ -58,11 +63,10 @@ p {
 }
 
 .e-Thing-ul{
-    background-color:$white;
+    background-color:$light;
     border-radius: .25rem;
     margin-top:.5rem;
     padding: .25rem;
-    margin-left: 1rem;
     .edit{
         float:left;
     }
@@ -70,14 +74,17 @@ p {
         float:left;
     }
 }
+.e-Thing-ul::first {
+        background-color: trasnparent;
+}
 .e-Property-text{
-    background-color: $white;
+    background-color: $light;
     border-radius: .25rem;
 }
 .e-Property-ul{
     border-radius: .25rem;
     padding: .25rem;
-    margin-left: 1rem; 
+    margin: .125em .5em;
 }
 
 input{
@@ -131,7 +138,7 @@ iframe {
 
 .thing-tag {
     border-radius: 1rem;
-    background-color: $white;
+    background-color: $light;
     font-size: 1rem;
     font-weight: 400;
     padding: .25rem;
@@ -259,14 +266,10 @@ iframe {
 
     .right{float:right;}
 */
-   
-/*
- 
-   
-    
+
     .e-Thing-always-ul .e-name{
-        label{
-            display:none;
+        label {
+            display: none;
         }
     }
 
@@ -278,20 +281,22 @@ iframe {
     }
 
     .e-Competency{
-        a {display:none;}
-        >.expand{float:right;}
-        >.compact{float:right;}
-    }
-    .e-HierarchyNode{
-        >ul{padding-left:1rem;}
-        >.icon{
-            width:0px;
-            height:0px;
-            line-height:0px;
-            display:block;
-            position:relative;
-            left:-.5rem;
-            top:-2rem;
+        a {
+            display:none;
+        }
+        >.expand{
+            float:right;
+        }
+        >.compact{
+            float:right;
         }
     }
-}*/
+    .e-HierarchyNode {
+        ul {
+            padding-left:.25rem;
+       
+        }
+    }
+    .fa .fa-caret-square-down {
+        display: none !important;
+    }

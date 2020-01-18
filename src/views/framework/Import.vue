@@ -98,9 +98,49 @@
                 <section class="section">
                     <div class="container">
                         <div class="section">
-                            <h1 class="title is-size-2">
-                                Import a framework
-                            </h1>
+                            <div class="columns">
+                                <div class="column is-narrow">
+                                    <h1 class="title is-size-2">
+                                        Import a framework
+                                    </h1>
+                                </div>
+                                <div class="column">
+                                    <div class="successful-import has-text-right has-text-success">
+                                        <i class="fa fa-check" />
+                                        <span class="is-size-6">
+                                            Successfully imported framework
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <p>
+                                Below is a preview of your Competency Framework, from this screen
+                                you can edit names and descriptions, rearrange hierarchy. After
+                                accepting the preview, you will gain access to the full editor to further
+                                modify the imported competency framework.
+                            </p>
+                        </div>
+                        <div class="section">
+                            <div class="columns is-mobile">
+                                <div class="column is-6">
+                                    <span class="icon">
+                                        <i class="fas fa-hand has-text-black" />
+                                    </span>
+                                    <span class="is-size-7">
+                                        Use your mouse to drag competencies
+                                    </span>
+                                </div>
+                                <div class="column is-6">
+                                    <span>
+                                        <span class="icon">
+                                            <i class="far fa-pencil has-text-black" />
+                                        </span>
+                                        <span class="is-size-7">
+                                            Click the pencil button to edit
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                         <!-- types of import for tabs -->
                         <div
@@ -115,9 +155,9 @@
                                                 :class="{ 'is-active-tab': method === 'file'}">
                                                 <a @click="method = 'file';framework = null;status='';">
                                                     <i
-                                                        class="fa fa-file has-text-centered is-block"
+                                                        class="fa fa-2x fa-file has-text-centered is-block"
                                                         aria-hidden="true" />
-                                                    <div class="is-block has-text-centered">
+                                                    <div class="is-hidden-mobile is-block has-text-centered">
                                                         File Import
                                                     </div>
                                                 </a>
@@ -129,9 +169,9 @@
                                                 :class="{ 'is-active-tab': method === 'server'}">
                                                 <a @click="method = 'server';framework = null;status='';">
                                                     <i
-                                                        class="fa fa-server is-block has-text-centered"
+                                                        class="fa fa-2x fa-server is-block has-text-centered"
                                                         aria-hidden="true" />
-                                                    <div class="is-block has-text-centered">
+                                                    <div class="is-hidden-mobile is-block has-text-centered">
                                                         Remote Server
                                                     </div>
                                                 </a>
@@ -143,9 +183,9 @@
                                                 :class="{ 'is-active-tab': method === 'text'}">
                                                 <a @click="method = 'text';framework = null;status='';">
                                                     <i
-                                                        class="fa fa-paste has-text-centered is-block"
+                                                        class="fa fa-2x fa-paste has-text-centered is-block"
                                                         aria-hidden="true" />
-                                                    <div class=" is-block has-text-centered">
+                                                    <div class="is-hidden-mobile is-block has-text-centered">
                                                         Paste Text
                                                     </div>
                                                 </a>
@@ -157,9 +197,9 @@
                                                 :class="{ 'is-active-tab': method === 'url'}">
                                                 <a @click="method = 'url';framework = null;status='';">
                                                     <i
-                                                        class="fa fa-link has-text-centered is-block"
+                                                        class="fa fa-link has-text-centered is-block fa-2x"
                                                         aria-hidden="true" />
-                                                    <div class="is-block has-text-centered">
+                                                    <div class="is-hidden-mobile is-block has-text-centered">
                                                         URL Source
                                                     </div>
                                                 </a>
@@ -773,8 +813,6 @@ export default {
                             }
                         }
                         me.status = (me.competencyCount = (data.length - 1)) + " Competencies Detected.";
-                        this.processingFile = false;
-                        this.processingSuccess = true;
                     }, function(error) {
                         me.status = error;
                     });
@@ -1342,10 +1380,13 @@ export default {
     margin-top: -40px;
     height: 100px;
     color: $dark;
-    width: 100px;
+    width: 100%;
+    max-width: 100px;
     display: flex;
     flex-direction: column;
+    justify-items: center;
     justify-content: center;
+    align-items: center;
     font-size: .7rem;
     border-radius: 100px;
     background-color: transparent;
