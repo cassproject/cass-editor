@@ -989,8 +989,8 @@ export default {
             var formData = new FormData();
             formData.append(me.file[0].name, me.file[0]);
             EcRemote.postExpectingObject(
-                "http://ec2-52-10-142-111.us-west-2.compute.amazonaws.com:8080/tp3Demo2/api/custom/",
-                "t3demo",
+                "https://t3.cassproject.org/service/parse/",
+                "docx",
                 formData,
                 function(d) {
                     var toSave = [];
