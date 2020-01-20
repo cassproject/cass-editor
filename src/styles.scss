@@ -24,7 +24,7 @@ body{
 }
 
 .icon{
-    margin:.25rem;
+    margin: 1rem .25rem 0rem;
 }
 p {
     font-style: normal;
@@ -38,7 +38,6 @@ p {
 
 .e-HierarchyNode {
     .icon {
-        display: none;
     }
     
 }
@@ -70,11 +69,15 @@ p {
      }
 }
 
+.page-framework.e-Thing-ul {
+    margin-top: .5rem;
+}
 .e-Thing-ul{
     background-color:$light;
     border-radius: .25rem;
     margin-top:.5rem;
     padding: .25rem;
+
     .edit{
         float:left;
     }
@@ -83,7 +86,7 @@ p {
     }
 }
 .e-Thing-ul::first {
-        background-color: trasnparent;
+        background-color: transparent;
 }
 .e-Property-text{
     background-color: $light;
@@ -100,6 +103,11 @@ input{
 }
 .page {
     margin-top: 2rem;
+}
+.page-open,
+.page-framework {
+    overflow-y: scroll;
+    height: 95vh;
 }
 
 progress,
@@ -301,10 +309,12 @@ iframe {
     }
     .e-HierarchyNode {
         ul {
-            padding-left:.25rem;
+            margin-top: .25rem;
+            padding-left:.75rem;
        
         }
     }
-    .fa .fa-caret-square-down {
-        display: none !important;
+
+    .far.fa-circle {
+        font-size: .5rem;
     }

@@ -1,48 +1,52 @@
 <template>
     <div class="page-framework">
-        <Thing
-            :obj="framework"
-            :repo="repo"
-            :parentNotEditable="queryParams.view==='true'" />
-        <span
-            class="info-tag"
-            v-if="framework.competency.length == 1">{{ framework.competency.length }} item</span>
-        <span
-            class="info-tag"
-            v-else-if="framework.competency.length > 1">{{ framework.competency.length }} items</span>
-        <span
-            class="info-tag"
-            v-if="timestamp"
-            :title="new Date(timestamp)">Last modified {{ lastModified }}</span>
-        <span
-            class="info-tag"
-            v-if="framework['schema:dateCreated']"
-            :title="new Date(framework['schema:dateCreated'])">Created {{ $moment(framework['schema:dateCreated']).fromNow() }}</span>
-        <span
-            class="info-tag"
-            v-if="framework['Approved']"
-            :title="framework['Approved']">Approved</span>
-        <span
-            class="info-tag"
-            v-if="framework['Published']"
-            :title="framework['Published']">Published</span>
-        <hr>
-        <Hierarchy
-            :container="framework"
-            containerType="Framework"
-            containerTypeGet="EcFramework"
-            containerNodeProperty="competency"
-            containerEdgeProperty="relation"
-            nodeType="EcCompetency"
-            edgeType="EcAlignment"
-            edgeRelationProperty="relationType"
-            edgeRelationLiteral="narrows"
-            edgeSourceProperty="source"
-            edgeTargetProperty="target"
-            :editable="queryParams.view !== 'true'"
-            :repo="repo"
-            :queryParams="queryParams"
-            :exportOptions="competencyExportOptions" />
+        <div class="container">
+            <div class="section">
+                <Thing
+                    :obj="framework"
+                    :repo="repo"
+                    :parentNotEditable="queryParams.view==='true'" />
+                <span
+                    class="info-tag"
+                    v-if="framework.competency.length == 1">{{ framework.competency.length }} item</span>
+                <span
+                    class="info-tag"
+                    v-else-if="framework.competency.length > 1">{{ framework.competency.length }} items</span>
+                <span
+                    class="info-tag"
+                    v-if="timestamp"
+                    :title="new Date(timestamp)">Last modified {{ lastModified }}</span>
+                <span
+                    class="info-tag"
+                    v-if="framework['schema:dateCreated']"
+                    :title="new Date(framework['schema:dateCreated'])">Created {{ $moment(framework['schema:dateCreated']).fromNow() }}</span>
+                <span
+                    class="info-tag"
+                    v-if="framework['Approved']"
+                    :title="framework['Approved']">Approved</span>
+                <span
+                    class="info-tag"
+                    v-if="framework['Published']"
+                    :title="framework['Published']">Published</span>
+                <hr>
+                <Hierarchy
+                    :container="framework"
+                    containerType="Framework"
+                    containerTypeGet="EcFramework"
+                    containerNodeProperty="competency"
+                    containerEdgeProperty="relation"
+                    nodeType="EcCompetency"
+                    edgeType="EcAlignment"
+                    edgeRelationProperty="relationType"
+                    edgeRelationLiteral="narrows"
+                    edgeSourceProperty="source"
+                    edgeTargetProperty="target"
+                    :editable="queryParams.view !== 'true'"
+                    :repo="repo"
+                    :queryParams="queryParams"
+                    :exportOptions="competencyExportOptions" />
+            </div>
+        </div>
     </div>
 </template>
 <script>
