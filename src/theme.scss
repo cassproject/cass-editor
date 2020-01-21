@@ -4,6 +4,7 @@
 @import './variables.scss';
 
 $section-padding-small: .125rem .125rem;
+$section-padding-basic: .25rem .75rem;
 $section-padding: 1rem 1rem;
 $section-padding-medium: 1.5rem 1.5rem;
 $section-padding-large: 3rem 1.5rem;
@@ -72,7 +73,9 @@ $button-text-hover-background-color: transparent;
 .has-text-secondary {
     color: $secondary !important;
 }
-
+.section.is-basic {
+    padding: $section-padding-basic !important;
+}
 .section.is-small {
     padding: $section-padding-small !important;
 }

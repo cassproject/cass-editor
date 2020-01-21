@@ -105,7 +105,9 @@
                                     </h1>
                                 </div>
                                 <div class="column">
-                                    <div class="successful-import has-text-right has-text-success">
+                                    <div
+                                        v-if="framework !== null"
+                                        class="successful-import has-text-right has-text-success">
                                         <i class="fa fa-check" />
                                         <span class="is-size-6">
                                             framework imported
@@ -216,12 +218,12 @@
                                                 <i class="fa fa-spinner fa-pulse fa-2x" />
                                             </span>
                                         </div>
-                                        <div v-if="processingSuccess">
+                                        <div v-if="framework !== null">
                                             <span class="icon is-large">
                                                 <i class="fa fa-spinner fa-pulse fa-2x" />
                                             </span>
                                         </div>
-                                        <div v-else>
+                                        <div v-if="file === null">
                                             <input
                                                 type="file"
                                                 ref="fileInput"
@@ -469,6 +471,7 @@
                                             <span>start over</span>
                                         </div>-->
                                         <div
+                                            v-if="framework"
                                             @click="openFramework"
                                             class="button is-primary is-pulled-right">
                                             <span class="icon">
@@ -1105,7 +1108,7 @@ export default {
                         me.framework = f;
                         me.status = "";
                     }, console.error);
-                    me.status = "Writing Framework to CaSS.";
+                    me.status = "Writing Framework to CaSS...";
                 }, console.error);
             me.status = "Importing Framework...";
         },

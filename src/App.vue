@@ -28,23 +28,23 @@
             </div>
             <div class="navbar-menu">
                 <div class="navbar-start">
-                    <div class="navbar-item">
+                    <!--<div class="navbar-item">
                         <router-link
-                            class="button is-primary"
+                            class="has-text-light"
                             to="/new">
                             New
                         </router-link>
-                    </div>
+                    </div>-->
                     <div class="navbar-item">
                         <router-link
-                            class="button is-primary"
+                            class="has-text-light"
                             to="/">
                             Open
                         </router-link>
                     </div>
                     <div class="navbar-item">
                         <router-link
-                            class="button is-primary"
+                            class="has-text-light"
                             to="/import">
                             Import
                         </router-link>
@@ -52,10 +52,9 @@
                     <div
                         class="navbar-item has-dropdown is-hoverable"
                         v-if="$route.name=='framework'">
-                        <a class="navbar-link button is-primary">
+                        <a class="navbar-link is-primary">
                             Export
                         </a>
-
                         <div class="navbar-dropdown">
                             <a class="navbar-item">
                                 Achivement Standards Network (RDF+JSON)
@@ -89,13 +88,13 @@
                             </a>
                         </div>
                     </div>
-                    <div class="navbar-item">
+                    <!--<div class="navbar-item">
                         <router-link
-                            class="button is-primary"
+                            class="has-text-light"
                             to="/help">
                             Help
                         </router-link>
-                    </div>
+                    </div>-->
                 </div>
                 <div class="navbar-end" />
             </div>

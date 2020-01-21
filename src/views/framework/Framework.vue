@@ -317,7 +317,9 @@ export default {
         >.compact{float:right;position:relative;top:.5rem;}
         >.editable{float:right;position:relative;top:.5rem;}
         >.delete-thing{float:right;position:relative;top:.5rem;}
-        .e-Property-text{font-size:larger;}
+        .e-Property-text{
+            font-size:larger;
+        }
     }
 
     .e-Competency{

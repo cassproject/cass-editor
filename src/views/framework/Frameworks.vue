@@ -2,40 +2,52 @@
     <div class="page-open">
         <div class="container">
             <div class="section">
-                <div>
-                    <span v-if="queryParams.concepts==='true'">
+                <div class="control">
+                    <label
+                        v-if="queryParams.concepts==='true'"
+                        class="radio is-large"
+                        for="dcterms:title.keyword">
                         <input
                             type="radio"
                             value="dcterms:title.keyword"
                             id="dcterms:title.keyword"
                             v-model="sortBy">
-                        <label for="dcterms:title.keyword">Sort alphabetically</label>
-                    </span>
-                    <span v-else>
+                        Sort alphabetically</label>
+                    <label
+                        v-else
+                        class="radio"
+                        for="name.keyword">
                         <input
                             type="radio"
                             value="name.keyword"
                             id="name.keyword"
                             v-model="sortBy">
-                        <label for="name.keyword">Sort alphabetically</label>
-                    </span>
-                    <span>
+                        Sort alphabetically</label>
+                    <label
+                        class="radio"
+                        for="schema:dateModified">
                         <input
                             type="radio"
                             value="schema:dateModified"
                             id="schema:dateModified"
                             v-model="sortBy">
-                        <label for="schema:dateModified">Sort by last modified</label>
-                    </span>
-                    <span v-if="queryParams.show!=='mine'&&queryParams.conceptShow!=='mine'&&numIdentities">
-                        <input
-                            type="checkbox"
-                            value="true"
-                            id="showMine"
-                            v-model="showMine">
-                        <label for="showMine">Show only mine</label>
-                    </span>
+                        Sort by last modified</label>
                 </div>
+                <div class="control">
+                    <div v-if="queryParams.show!=='mine'&&queryParams.conceptShow!=='mine'&&numIdentities">
+                        <label
+                            class="checkbox"
+                            for="showMine">
+                            <input
+                                type="checkbox"
+                                value="true"
+                                id="showMine"
+                                v-model="showMine">
+                            Show only mine</label>
+                    </div>
+                </div>
+            </div>
+            <div class="section">
                 <List
                     :type="type"
                     :repo="repo"
