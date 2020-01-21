@@ -23,9 +23,13 @@ body{
     height: 100%;
 }
 
-.icon{
-    margin: 1rem .25rem 0rem;
+#hierarchy-page {
+    .column.icon {
+        height: 100%;
+        
+    }
 }
+
 p {
     font-style: normal;
 }
@@ -37,10 +41,22 @@ p {
 
 
 .e-HierarchyNode {
-    .icon {
+    .icon{
+        padding: 0rem;
+        margin: 0rem;
+        height: 100%;
+        font-size: .8rem;
+    }
+    .column .left {
+        background-color: $cass-primary-up;
+        border-radius: 0px 0px 0px 0px !important;
+    }
+    .column .right{
+        border-radius: 0px 5px 5px 0px !important;
     }
     
 }
+
 
 .e-HierarchyNode-ul
 {
@@ -87,6 +103,16 @@ p {
 }
 .e-Thing-ul::first {
         background-color: transparent;
+}
+.e-Property {
+    .fa {
+        font-size: $size-7;
+        color: $dark;
+    }
+    label {
+        font-size: $size-7;
+        font-weight: 500;
+    }
 }
 .e-Property-text{
     background-color: $light;
@@ -306,11 +332,14 @@ iframe {
         >.compact{
             float:right;
         }
+        .icon {
+            padding: .5rem;
+        }
     }
     .e-HierarchyNode {
         ul {
             margin-top: .25rem;
-            padding-left:.75rem;
+            padding-left:.375rem;
        
         }
     }
