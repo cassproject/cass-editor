@@ -236,6 +236,9 @@ export default {
             if (this.queryParams.action === "import") {
                 this.$router.push({name: "import"});
             }
+            if (this.queryParams.action === "add") {
+                this.createNew();
+            }
         }
     },
     methods: {
