@@ -283,7 +283,7 @@ export default {
                 if (!event.data.competencies) {
                     return;
                 }
-                this.highlightCompetencies(event.data.competencies);
+                this.queryParams.highlightCompetency = event.data.competencies;
             } else if (event.data.message === "select") {
                 if (this.$route.name === 'framework' && this.queryParams.select) {
                     this.select();

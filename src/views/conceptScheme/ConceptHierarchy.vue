@@ -17,7 +17,8 @@
                     :canEdit="canEdit"
                     :hasChild="item.children"
                     :profile="profile"
-                    :exportOptions="exportOptions">
+                    :exportOptions="exportOptions"
+                    :highlightList="highlightList">
                     <slot />
                 </HierarchyNode>
             </draggable>
@@ -41,7 +42,8 @@ export default {
         repo: Object,
         profile: Object,
         queryParams: Object,
-        exportOptions: Array
+        exportOptions: Array,
+        highlightList: Array
     },
     data: function() {
         return {

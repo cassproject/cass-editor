@@ -27,7 +27,8 @@
             :editable="queryParams.view !== 'true'"
             :repo="repo"
             :queryParams="queryParams"
-            :exportOptions="conceptExportOptions" />
+            :exportOptions="conceptExportOptions"
+            :highlightList="highlightCompetency" />
     </div>
 </template>
 <script>
@@ -54,7 +55,8 @@ export default {
                 {name: "SKOS (RDF+JSON)", value: "rdfJson"},
                 {name: "SKOS (RDF+XML)", value: "rdfXml"},
                 {name: "SKOS (Turtle)", value: "turtle"}
-            ]
+            ],
+            highlightCompetency: null
         };
     },
     computed: {
@@ -112,6 +114,14 @@ export default {
                 this.schemeExportGuid = this.framework.getGuid();
             }
             this.schemeExportLink = this.repo.selectedServer + "data/" + this.schemeExportGuid;
+            this.highlightCompetency = [];
+            if (this.queryParams.highlightCompetency) {
+                if (!EcArray.isArray(highlightCompetency)) {
+                    this.highlightCompetency = [this.queryParams.highlightCompetency];
+                } else {
+                    this.highlightCompetency = this.queryParams.highlightCompetency;
+                }
+            }
         },
         download: function(fileName, data) {
             var blob = new Blob([data], {type: "text/plain;charset=utf-8"});
@@ -310,6 +320,9 @@ export default {
             position:relative;
             left:-.5rem;
             top:-2rem;
+        }
+        .highlighted{
+            background-color:yellow;
         }
         padding-left:1rem;
     }
