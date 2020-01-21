@@ -26,6 +26,16 @@
             class="info-tag"
             v-if="framework['Published']"
             :title="framework['Published']">Published</span>
+        <button
+            v-if="selectAllButton"
+            @click="selectAll=!selectAll">
+            Select All
+        </button>
+        <button
+            v-if="selectButtonText"
+            @click="selectButton">
+            {{ selectButtonText }}
+        </button>
         <hr>
         <Hierarchy
             :container="framework"
@@ -43,7 +53,9 @@
             :repo="repo"
             :queryParams="queryParams"
             :exportOptions="competencyExportOptions"
-            :highlightList="highlightCompetency" />
+            :highlightList="highlightCompetency"
+            :selectMode="selectButtonText != null"
+            :selectAll="selectAll" />
     </div>
 </template>
 <script>
@@ -73,7 +85,11 @@ export default {
                 {name: "Credential Engine ASN (JSON-LD)", value: "ctdlasnJsonld"},
                 {name: "IMS Global CASE (JSON)", value: "case"}
             ],
-            highlightCompetency: null
+            highlightCompetency: null,
+            selectButtonText: null,
+            selectAllButton: false,
+            selectAll: false,
+            selectedArray: []
         };
     },
     computed: {
@@ -147,6 +163,15 @@ export default {
                 } else {
                     this.highlightCompetency = this.queryParams.highlightCompetency;
                 }
+            }
+            if (this.queryParams.singleSelect) {
+                this.selectButtonText = this.queryParams.singleSelect;
+            }
+            if (this.queryParams.select) {
+                if (this.queryParams.select !== "" && this.queryParams.select !== "select") {
+                    this.selectButtonText = this.queryParams.select;
+                }
+                this.selectAllButton = true;
             }
         },
         download: function(fileName, data) {
@@ -299,6 +324,13 @@ export default {
                 this.exportCtdlasnJsonld(link);
             } else if (exportType === "case") {
                 this.exportCaseItems(guid);
+            }
+        },
+        select: function(id, checked) {
+            if (checked) {
+                EcArray.setAdd(this.selectedArray, id);
+            } else {
+                EcArray.setRemove(this.selectedArray, id);
             }
         }
     }
