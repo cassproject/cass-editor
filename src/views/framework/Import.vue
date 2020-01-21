@@ -56,7 +56,7 @@
                                         v-for="(example) in supportedType.examples"
                                         :key="example.id"
                                         :href="example.location"
-                                        download="example.download">
+                                        :download="example.download">
                                         <span>
                                             {{ example.name }}
                                         </span>
@@ -561,13 +561,13 @@ export default {
                         {
                             name: 'Competencies',
                             id: 'cassCsvExComp',
-                            location: this.csvExampleCompetenciesFile,
+                            location: 'file-loader!../../../files/CAP Software Engineering - Competencies.csv',
                             download: 'CAP Software Engineering - Competencies.csv'
                         },
                         {
                             name: 'Relations',
                             id: 'cassCsvExRel',
-                            location: this.csvExampleRelationsFile,
+                            location: 'file-loader!../../../files/CAP Software Engineering - Relations.csv',
                             download: 'CAP Software Engineering - Relations.csv'
                         }
                     ],
@@ -575,13 +575,13 @@ export default {
                         {
                             name: 'Competencies',
                             id: 'cassCsvTemlComp',
-                            location: this.csvTemplateCompetenciesFile,
+                            location: 'file-loader!../../../files/Template - Competencies.csv',
                             download: 'Template - Competencies.csv'
                         },
                         {
                             name: 'Relations',
                             id: 'cassCsvTempRel',
-                            location: this.csvTemplateRelationsFile,
+                            location: 'file-loader!../../../files/Template - Relations.csv',
                             download: 'Template - Relations.csv'
                         }
                     ],
@@ -605,7 +605,7 @@ export default {
                         {
                             name: 'Example',
                             id: 'ctdlEx',
-                            file: this.ctdlAsnCsvExampleFile,
+                            location: 'file-loader!../../../files/CTDL-ASN.ONET.example.csv',
                             download: 'CTDL-ASN.ONET.example.csv'
                         }
                     ],
@@ -613,7 +613,7 @@ export default {
                         {
                             name: 'Template',
                             id: 'ctdTempl',
-                            file: this.ctdlAsnCsvTemplateFile,
+                            location: 'file-loader!../../../files/CTDL-ASN.ONET.template.csv',
                             download: 'CTDL-ASN.ONET.template.csv'
                         }
                     ],
@@ -643,7 +643,7 @@ export default {
                         {
                             name: 'example',
                             id: 'medXmlEx',
-                            location: this.medbiquitousFile,
+                            location: 'file-loader!../../../files/educational_achievement_sample_1June2012.xml',
                             download: 'educational_achievement_sample_1June2012.xml'
                         }
                     ],
@@ -662,7 +662,7 @@ export default {
                         {
                             name: 'Example',
                             id: 'asnrdEx',
-                            location: this.asnRdfJsonFile,
+                            location: 'file-loader!../../../files/D2695955',
                             download: 'D2695955.json'
                         }
                     ],
@@ -684,7 +684,7 @@ export default {
                         {
                             name: 'Example',
                             id: 'ctdlJsonTemp',
-                            location: this.ctdlAsnJsonldFile,
+                            location: 'file-loader!../../../files/DQP.jsonld',
                             download: 'DQP.jsonld'
                         }
                     ],
