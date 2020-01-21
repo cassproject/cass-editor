@@ -74,17 +74,14 @@ export default {
             } else {
                 return null;
             }
+        },
+        shortId: function() {
+            return this.$store.state.editor.framework.shortId();
         }
     },
     components: {Thing, ConceptHierarchy},
     created: function() {
-        this.framework = this.$store.state.editor.framework;
-        if (EcRepository.shouldTryUrl(this.framework.id) === false) {
-            this.schemeExportGuid = EcCrypto.md5(this.framework.id);
-        } else {
-            this.schemeExportGuid = this.framework.getGuid();
-        }
-        this.schemeExportLink = this.repo.selectedServer + "data/" + this.schemeExportGuid;
+        this.refreshPage();
     },
     watch: {
         exportType: function() {
@@ -101,9 +98,21 @@ export default {
             } else if (this.exportType === "ctdlasnJsonld") {
                 this.exportCtdlasnJsonld(this.schemeExportLink);
             }
+        },
+        shortId: function() {
+            this.refreshPage();
         }
     },
     methods: {
+        refreshPage: function() {
+            this.framework = this.$store.state.editor.framework;
+            if (EcRepository.shouldTryUrl(this.framework.id) === false) {
+                this.schemeExportGuid = EcCrypto.md5(this.framework.id);
+            } else {
+                this.schemeExportGuid = this.framework.getGuid();
+            }
+            this.schemeExportLink = this.repo.selectedServer + "data/" + this.schemeExportGuid;
+        },
         download: function(fileName, data) {
             var blob = new Blob([data], {type: "text/plain;charset=utf-8"});
             saveAs(blob, fileName);

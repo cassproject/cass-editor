@@ -6,10 +6,10 @@
             :parentNotEditable="queryParams.view==='true'" />
         <span
             class="info-tag"
-            v-if="framework.competency.length == 1">{{ framework.competency.length }} item</span>
+            v-if="framework.competency && framework.competency.length == 1">{{ framework.competency.length }} item</span>
         <span
             class="info-tag"
-            v-else-if="framework.competency.length > 1">{{ framework.competency.length }} items</span>
+            v-else-if="framework.competency && framework.competency.length > 1">{{ framework.competency.length }} items</span>
         <span
             class="info-tag"
             v-if="timestamp"
@@ -91,18 +91,14 @@ export default {
             } else {
                 return null;
             }
+        },
+        shortId: function() {
+            return this.$store.state.editor.framework.shortId();
         }
     },
     components: {Hierarchy, Thing},
     created: function() {
-        this.framework = this.$store.state.editor.framework;
-        if (EcRepository.shouldTryUrl(this.framework.id) === false) {
-            this.frameworkExportGuid = EcCrypto.md5(this.framework.id);
-        } else {
-            this.frameworkExportGuid = this.framework.getGuid();
-        }
-        this.frameworkExportLink = this.repo.selectedServer + "data/" + this.frameworkExportGuid;
-        this.setDefaultLanguage();
+        this.refreshPage();
     },
     watch: {
         exportType: function() {
@@ -127,9 +123,22 @@ export default {
             } else if (this.exportType === "case") {
                 this.exportCasePackages();
             }
+        },
+        shortId: function() {
+            this.refreshPage();
         }
     },
     methods: {
+        refreshPage: function() {
+            this.framework = this.$store.state.editor.framework;
+            if (EcRepository.shouldTryUrl(this.framework.id) === false) {
+                this.frameworkExportGuid = EcCrypto.md5(this.framework.id);
+            } else {
+                this.frameworkExportGuid = this.framework.getGuid();
+            }
+            this.frameworkExportLink = this.repo.selectedServer + "data/" + this.frameworkExportGuid;
+            this.setDefaultLanguage();
+        },
         download: function(fileName, data) {
             var blob = new Blob([data], {type: "text/plain;charset=utf-8"});
             saveAs(blob, fileName);
