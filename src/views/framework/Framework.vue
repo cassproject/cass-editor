@@ -7,25 +7,25 @@
                     :repo="repo"
                     :parentNotEditable="queryParams.view==='true'" />
                 <span
-                    class="info-tag"
+                    class="tag is-info has-text-white"
                     v-if="framework.competency.length == 1">{{ framework.competency.length }} item</span>
                 <span
-                    class="info-tag"
+                    class="tag is-info has-text-white"
                     v-else-if="framework.competency.length > 1">{{ framework.competency.length }} items</span>
                 <span
-                    class="info-tag"
+                    class="tag is-info has-text-white"
                     v-if="timestamp"
                     :title="new Date(timestamp)">Last modified {{ lastModified }}</span>
                 <span
-                    class="info-tag"
+                    class="tag is-info has-text-white"
                     v-if="framework['schema:dateCreated']"
                     :title="new Date(framework['schema:dateCreated'])">Created {{ $moment(framework['schema:dateCreated']).fromNow() }}</span>
                 <span
-                    class="info-tag"
+                    class="tag is-info has-text-white"
                     v-if="framework['Approved']"
                     :title="framework['Approved']">Approved</span>
                 <span
-                    class="info-tag"
+                    class="tag is-info has-text-white"
                     v-if="framework['Published']"
                     :title="framework['Published']">Published</span>
                 <hr>

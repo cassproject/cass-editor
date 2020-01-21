@@ -98,7 +98,7 @@
                 <section class="section">
                     <div class="container">
                         <div class="section">
-                            <div class="columns">
+                            <div class="columns is-mobile">
                                 <div class="column is-narrow">
                                     <h1 class="title is-size-2">
                                         Import a framework
@@ -108,12 +108,12 @@
                                     <div class="successful-import has-text-right has-text-success">
                                         <i class="fa fa-check" />
                                         <span class="is-size-6">
-                                            Successfully imported framework
+                                            framework imported
                                         </span>
                                     </div>
                                 </div>
                             </div>
-                            <p>
+                            <p class="is-size-6">
                                 Below is a preview of your Competency Framework, from this screen
                                 you can edit names and descriptions, rearrange hierarchy. After
                                 accepting the preview, you will gain access to the full editor to further
@@ -348,10 +348,12 @@
                                                 <input v-model="importFrameworkDescription">
                                             </div>
                                         </div>
-                                        <button @click="importFromFile">
+                                        <!--<button @click="importFromFile">
                                             Import
-                                        </button>
-                                        <div>
+                                        </button>-->
+                                    </div>
+                                    <div class="section">
+                                        <div class="is-size-7 has-text-weight-bold has-text-info has-text-right">
                                             {{ status }}
                                         </div>
                                     </div>
@@ -454,6 +456,28 @@
                                     edgeTargetProperty="target"
                                     editable="false"
                                     :repo="repo" />
+                            </div>
+                        </div>
+                        <div class="section">
+                            <div class="columns is-mobile">
+                                <div class="column is-12">
+                                    <div class="buttons is-right">
+                                        <!--<div class="button is-light is-pulled-right">
+                                            <span class="icon">
+                                                <i class="fas fa-undo-alt"/>
+                                            </span>
+                                            <span>start over</span>
+                                        </div>-->
+                                        <div
+                                            @click="openFramework"
+                                            class="button is-primary is-pulled-right">
+                                            <span class="icon">
+                                                <i class="fa fa-edit" />
+                                            </span>
+                                            <span>open editor</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -765,8 +789,21 @@ export default {
                 true);
         }
     },
-    methods:
-    {
+    methods: {
+        openFramework: function() {
+            var me = this;
+            if (this.queryParams.concepts === "true") {
+                EcConceptScheme.get(me.framework.id, function(success) {
+                    me.$store.commit('framework', success);
+                    me.$router.push({name: "conceptScheme", params: {frameworkId: me.framework.id}});
+                }, console.error);
+            } else {
+                EcFramework.get(me.framework.id, function(success) {
+                    me.$store.commit('framework', success);
+                    me.$router.push({name: "framework", params: {frameworkId: me.framework.id}});
+                }, console.error);
+            }
+        },
         fileChange: function(e) {
             this.processingFile = true;
             this.processingSuccess = false;
