@@ -122,7 +122,7 @@
                                 modify the imported competency framework.
                             </p>
                         </div>
-                        <div class="section">
+                        <div class="is-hidden section">
                             <div class="columns is-mobile">
                                 <div class="column is-6">
                                     <span class="icon">
@@ -1452,7 +1452,7 @@ export default {
 }
 #framework-container {
     min-height: 400px;
-    max-height:60vh;
+    max-height:68vh;
     overflow-y: scroll;
     border: 2px solid $black;
     border-radius: 1rem;
