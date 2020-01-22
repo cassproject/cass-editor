@@ -20,6 +20,16 @@
             class="info-tag"
             v-if="framework['Published']"
             :title="framework['Published']">Published</span>
+        <button
+            v-if="selectAllButton"
+            @click="selectAll=!selectAll">
+            Select All
+        </button>
+        <button
+            v-if="selectButtonText"
+            @click="selectButton">
+            {{ selectButtonText }}
+        </button>
         <hr>
         <ConceptHierarchy
             :container="framework"
@@ -27,7 +37,10 @@
             :editable="queryParams.view !== 'true'"
             :repo="repo"
             :queryParams="queryParams"
-            :exportOptions="conceptExportOptions" />
+            :exportOptions="conceptExportOptions"
+            :highlightList="highlightCompetency"
+            :selectMode="selectButtonText != null"
+            :selectAll="selectAll" />
     </div>
 </template>
 <script>
@@ -54,7 +67,12 @@ export default {
                 {name: "SKOS (RDF+JSON)", value: "rdfJson"},
                 {name: "SKOS (RDF+XML)", value: "rdfXml"},
                 {name: "SKOS (Turtle)", value: "turtle"}
-            ]
+            ],
+            highlightCompetency: null,
+            selectButtonText: null,
+            selectAllButton: false,
+            selectAll: false,
+            selectedArray: []
         };
     },
     computed: {
@@ -74,17 +92,14 @@ export default {
             } else {
                 return null;
             }
+        },
+        shortId: function() {
+            return this.$store.state.editor.framework.shortId();
         }
     },
     components: {Thing, ConceptHierarchy},
     created: function() {
-        this.framework = this.$store.state.editor.framework;
-        if (EcRepository.shouldTryUrl(this.framework.id) === false) {
-            this.schemeExportGuid = EcCrypto.md5(this.framework.id);
-        } else {
-            this.schemeExportGuid = this.framework.getGuid();
-        }
-        this.schemeExportLink = this.repo.selectedServer + "data/" + this.schemeExportGuid;
+        this.refreshPage();
     },
     watch: {
         exportType: function() {
@@ -101,9 +116,38 @@ export default {
             } else if (this.exportType === "ctdlasnJsonld") {
                 this.exportCtdlasnJsonld(this.schemeExportLink);
             }
+        },
+        shortId: function() {
+            this.refreshPage();
         }
     },
     methods: {
+        refreshPage: function() {
+            this.framework = this.$store.state.editor.framework;
+            if (EcRepository.shouldTryUrl(this.framework.id) === false) {
+                this.schemeExportGuid = EcCrypto.md5(this.framework.id);
+            } else {
+                this.schemeExportGuid = this.framework.getGuid();
+            }
+            this.schemeExportLink = this.repo.selectedServer + "data/" + this.schemeExportGuid;
+            this.highlightCompetency = [];
+            if (this.queryParams.highlightCompetency) {
+                if (!EcArray.isArray(highlightCompetency)) {
+                    this.highlightCompetency = [this.queryParams.highlightCompetency];
+                } else {
+                    this.highlightCompetency = this.queryParams.highlightCompetency;
+                }
+            }
+            if (this.queryParams.singleSelect) {
+                this.selectButtonText = this.queryParams.singleSelect;
+            }
+            if (this.queryParams.select) {
+                if (this.queryParams.select !== "" && this.queryParams.select !== "select") {
+                    this.selectButtonText = this.queryParams.select;
+                }
+                this.selectAllButton = true;
+            }
+        },
         download: function(fileName, data) {
             var blob = new Blob([data], {type: "text/plain;charset=utf-8"});
             saveAs(blob, fileName);
@@ -242,6 +286,13 @@ export default {
             } else if (exportType === "turtle") {
                 this.exportTurtle(link);
             }
+        },
+        select: function(id, checked) {
+            if (checked) {
+                EcArray.setAdd(this.selectedArray, id);
+            } else {
+                EcArray.setRemove(this.selectedArray, id);
+            }
         }
     }
 };
@@ -301,6 +352,9 @@ export default {
             position:relative;
             left:-.5rem;
             top:-2rem;
+        }
+        .highlighted{
+            background-color:yellow;
         }
         padding-left:1rem;
     }

@@ -171,6 +171,75 @@ export default {
                     }
                 });
             })(id, depth);
+        },
+        selectButton: function() {
+            var ary = [];
+            var async = EcRemote.async;
+            EcRemote.async = false;
+            for (var i = 0; i < this.selectedArray.length; i++) {
+                if (this.queryParams.selectVerbose === "true" && this.queryParams.concepts !== "true") {
+                    if (this.queryParams.selectExport === "ctdlasn") {
+                        var link;
+                        if (EcRepository.shouldTryUrl(this.selectedArray[i]) === false) {
+                            link = this.repo.selectedServer + "ceasn/" + EcCrypto.md5(this.selectedArray[i]);
+                        } else {
+                            link = this.selectedArray[i].replace("/data/", "/ceasn/");
+                        }
+                        this.get(link, null, null, function(success) {
+                            ary.push(JSON.parse(success));
+                        }, function(failure) {
+                            console.log(failure);
+                        });
+                    } else {
+                        ary.push(JSON.parse(EcCompetency.getBlocking(this.selectedArray[i]).toJson()));
+                    }
+                } else if (this.queryParams.selectVerbose === "true") {
+                    ary.push(JSON.parse(EcConcept.getBlocking(this.selectedArray[i]).toJson()));
+                } else {
+                    ary.push(this.selectedArray[i]);
+                }
+            }
+            if (this.queryParams.selectRelations === "true" && this.framework.relation) {
+                for (var i = 0; i < this.framework.relation.length; i++) {
+                    var relation = EcAlignment.getBlocking(this.framework.relation[i]);
+                    if (EcArray.has(this.selectedArray, relation.target)) {
+                        if (this.queryParams.selectVerbose === "true") {
+                            ary.push(JSON.parse((rld).toJson()));
+                        } else {
+                            ary.push(relation.shortId());
+                        }
+                    }
+                }
+            }
+            var currentFramework = this.framework;
+            if (this.queryParams.selectExport === "ctdlasn" && this.queryParams.concepts !== "true") {
+                if (this.framework != null) {
+                    var link;
+                    if (EcRepository.shouldTryUrl(this.framework.id) === false) {
+                        link = this.repo.selectedServer + "ceasn/" + EcCrypto.md5(this.framework.id);
+                    } else {
+                        link = this.framework.id.replace("/data/", "/ceasn/");
+                    }
+                    this.get(link, null, null, function(success) {
+                        success = JSON.parse(success);
+                        if (success["@graph"]) {
+                            currentFramework = success["@graph"][0];
+                        }
+                    }, function(failure) {
+                        console.log(failure);
+                    });
+                }
+            }
+            var message = {
+                message: "selected",
+                selected: ary,
+                type: this.queryParams.concepts === "true" ? 'Concept' : 'Competency',
+                selectedFramework: currentFramework
+            };
+            message = JSON.parse(JSON.stringify(message));
+            console.log(message);
+            parent.postMessage(message, this.queryParams.origin);
+            EcRemote.async = async;
         }
     }
 };

@@ -28,13 +28,13 @@
             </div>
             <div class="navbar-menu">
                 <div class="navbar-start">
-                    <!--<div class="navbar-item">
+                    <div class="navbar-item">
                         <router-link
                             class="has-text-light"
-                            to="/new">
+                            @click="createNew">
                             New
                         </router-link>
-                    </div>-->
+                    </div>
                     <div class="navbar-item">
                         <router-link
                             class="has-text-light"
@@ -162,7 +162,8 @@ export default {
         return {
             navBarActive: false,
             exportType: null,
-            queryParams: null
+            queryParams: null,
+            repo: window.repo
         };
     },
     mixins: [common],
@@ -203,6 +204,9 @@ export default {
             }
             if (this.queryParams.action === "import") {
                 this.$router.push({name: "import"});
+            }
+            if (this.queryParams.action === "add") {
+                this.createNew();
             }
         }
     },
@@ -251,7 +255,7 @@ export default {
                 if (!event.data.competencies) {
                     return;
                 }
-                this.highlightCompetencies(event.data.competencies);
+                this.queryParams.highlightCompetency = event.data.competencies;
             } else if (event.data.message === "select") {
                 if (this.$route.name === 'framework' && this.queryParams.select) {
                     this.select();
@@ -260,6 +264,7 @@ export default {
         },
         openWebSocket: function(r) {
             var connection;
+            var me = this;
             // Instead of /ws/custom, will be /ws in next release.
             if (this.queryParams.webSocketOverride == null || this.queryParams.webSocketOverride === undefined) {
                 connection = new WebSocket(r.selectedServer.replace(/http/, "ws").replace(/api\//, "ws/custom"));
@@ -280,7 +285,7 @@ export default {
                 console.log(evt);
                 this.$store.commit('webSocketBackoffIncrease');
                 setTimeout(function() {
-                    openWebSocket(r);
+                    me.openWebSocket(r);
                 }, webSocketBackoff);
             };
 
@@ -325,7 +330,7 @@ export default {
                              * playSavedAnimation('frameworkNameContainer');
                              * populateFramework();
                              */
-                            spitEvent("frameworkChanged", f.shortId());
+                            this.spitEvent("frameworkChanged", f.shortId());
                         }
                     }
                 }
@@ -342,7 +347,7 @@ export default {
                                 }
                                 this.$store.commit('selectedCompetency', com);
                             }
-                            spitEvent("competencyChanged", this.$store.state.editor.selectedCompetency.shortId());
+                            this.spitEvent("competencyChanged", this.$store.state.editor.selectedCompetency.shortId());
                         }
                     }
                 }
@@ -358,7 +363,7 @@ export default {
                                 }
                                 this.$store.commit('selectedCompetency', com);
                             }
-                            spitEvent("competencyChanged", this.$store.state.editor.selectedCompetency.shortId());
+                            this.spitEvent("competencyChanged", this.$store.state.editor.selectedCompetency.shortId());
                         }
                     }
                 }
@@ -375,7 +380,7 @@ export default {
                                 }
                                 this.$store.commit('selectedCompetency', com);
                             }
-                            spitEvent("competencyChanged", this.$store.state.editor.selectedCompetency.shortId());
+                            this.spitEvent("competencyChanged", this.$store.state.editor.selectedCompetency.shortId());
                         }
                     }
                 }
@@ -411,6 +416,55 @@ export default {
             v.copyFrom(encryptedThing);
             returnObject.copyFrom(v.decryptIntoObject());
             return returnObject;
+        },
+        createNew: function() {
+            this.setDefaultLanguage();
+            var me = this;
+            if (this.queryParams.concepts !== "true") {
+                var framework = new EcFramework();
+                if (this.queryParams.newObjectEndpoint != null) {
+                    framework.generateShortId(this.repo.newObjectEndpoint);
+                } else {
+                    framework.generateId(this.repo.selectedServer);
+                }
+                framework["schema:dateCreated"] = new Date().toISOString();
+                if (EcIdentityManager.ids.length > 0) {
+                    framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                }
+                framework.name = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Framework"};
+                var saveFramework = framework;
+                if (this.queryParams.private === "true") {
+                    saveFramework = EcEncryptedValue.toEncryptedValue(framework);
+                }
+                this.repo.saveTo(saveFramework, function() {
+                    me.$store.commit('framework', framework);
+                    if (me.$route.name !== 'framework') {
+                        me.$router.push({name: "framework"});
+                    }
+                }, console.error);
+            } else {
+                var framework = new EcConceptScheme();
+                if (this.queryParams.newObjectEndpoint != null) {
+                    framework.generateShortId(newObjectEndpoint);
+                } else {
+                    framework.generateId(this.repo.selectedServer);
+                }
+                if (EcIdentityManager.ids.length > 0) {
+                    framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                }
+                framework["dcterms:title"] = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Concept Scheme"};
+                framework["schema:dateCreated"] = new Date().toISOString();
+                var saveFramework = framework;
+                if (this.queryParams.private === "true") {
+                    saveFramework = EcEncryptedValue.toEncryptedValue(framework);
+                }
+                this.repo.saveTo(saveFramework, function() {
+                    me.$store.commit('framework', framework);
+                    if (me.$route.name !== 'conceptScheme') {
+                        me.$router.push({name: "conceptScheme"});
+                    }
+                }, console.error);
+            }
         }
     }
 };

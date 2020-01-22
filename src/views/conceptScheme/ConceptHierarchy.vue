@@ -17,7 +17,10 @@
                     :canEdit="canEdit"
                     :hasChild="item.children"
                     :profile="profile"
-                    :exportOptions="exportOptions">
+                    :exportOptions="exportOptions"
+                    :highlightList="highlightList"
+                    :selectMode="selectMode"
+                    :selectAll="selectAll">
                     <slot />
                 </HierarchyNode>
             </draggable>
@@ -41,7 +44,10 @@ export default {
         repo: Object,
         profile: Object,
         queryParams: Object,
-        exportOptions: Array
+        exportOptions: Array,
+        highlightList: Array,
+        selectMode: Boolean,
+        selectAll: Boolean
     },
     data: function() {
         return {
@@ -61,9 +67,13 @@ export default {
             console.log("Computing hierarchy.");
             var precache = [];
             if (this.container["skos:hasTopConcept"] != null) { precache = precache.concat(this.container["skos:hasTopConcept"]); }
-            this.repo.multiget(precache, function(success) {
+            if (precache.length > 0) {
+                this.repo.multiget(precache, function(success) {
+                    me.computeHierarchy();
+                }, console.error, console.log);
+            } else {
                 me.computeHierarchy();
-            }, console.error, console.log);
+            }
             return this.structure;
         },
         // True if the current client can edit this object.
@@ -86,7 +96,7 @@ export default {
         computeHierarchy: function() {
             this.structure.splice(0, this.structure.length);
             if (this.container == null) { return r; }
-            if (this.container["skos:hasTopConcept"] !== null) {
+            if (this.container["skos:hasTopConcept"] !== null && this.container["skos:hasTopConcept"] !== undefined) {
                 for (var i = 0; i < this.container["skos:hasTopConcept"].length; i++) {
                     var c = EcConcept.getBlocking(this.container["skos:hasTopConcept"][i]);
                     this.structure.push({"obj": c, "children": []});
