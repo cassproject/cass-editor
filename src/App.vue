@@ -204,20 +204,14 @@ export default {
     },
     mixins: [common],
     created: function() {
+        var servers = ["https://dev.cassproject.org/api/"];
         if (this.$route.query) {
             this.queryParams = this.$route.query;
             if (this.queryParams.server) {
                 if (this.queryParams.server.endsWith && this.queryParams.server.endsWith("/") === false) {
                     this.queryParams.server += "/";
                 }
-                window.repo.selectedServer = this.queryParams.server;
-                window.repo.autoDetectRepository();
-                try {
-                    window.addEventListener('message', this.cappend, false);
-                } catch (e) {
-                    console.error(e);
-                }
-                this.openWebSocket(window.repo);
+                servers = [this.queryParams.server];
             }
             if (this.queryParams.frameworkId) {
                 var me = this;
@@ -240,14 +234,26 @@ export default {
                 this.createNew();
             }
         }
+        for (var i = 0; i < servers.length; i++) {
+            var r = new EcRepository();
+            r.selectedServer = servers[i];
+            r.autoDetectRepository();
+            servers[i] = r;
+            window.repo = r;
+
+            try {
+                window.addEventListener('message', this.cappend, false);
+            } catch (e) {
+                console.error(e);
+            }
+
+            this.openWebSocket(r);
+        }
     },
     methods: {
         cappend: function(event) {
             if (event.data.message === "selected") {
                 var selectedIds = [];
-                if (event.data.selectedFramework["ceasn:exactAlignment"]) {
-                    selectedFrameworkId = event.data.selectedFramework["ceasn:exactAlignment"];
-                }
                 for (var i = 0; i < event.data.selected.length; i++) {
                     if (event.data.selected[i]["ceasn:exactAlignment"]) {
                         selectedIds.push(event.data.selected[i]["ceasn:exactAlignment"]);
@@ -437,7 +443,7 @@ export default {
                 } else {
                     delete EcRepository.cache[resp];
                     delete EcRepository.cache[EcRemoteLinkedData.trimVersionFromUrl(resp)];
-                    if (framework == null) return;
+                    if (this.$store.state.editor.framework == null) return;
                     EcRepository.get(resp, connection.changedObject, error);
                 }
             };
@@ -496,6 +502,67 @@ export default {
                     }
                 }, console.error);
             }
+        },
+        addAlignments: function(targets, thing, relationType, allowSave) {
+            if (this.queryParams.concepts === "true") {
+                return this.addConceptAlignments(targets, thing, relationType);
+            }
+            if (relationType === "ceasn:skillEmbodied" || relationType === "ceasn:abilityEmbodied" || relationType === "ceasn:knowledgeEmbodied" || relationType === "ceasn:taskEmbodied") {
+                // This property is attached to competency, not a relation attached to framework
+                return this.addRelationAsCompetencyField(targets, thing, relationType, allowSave);
+            }
+            for (var i = 0; i < targets.length; i++) {
+                var r = new EcAlignment();
+                if (this.queryParams.newObjectEndpoint != null) {
+                    r.generateShortId(this.newObjectEndpoint);
+                } else {
+                    r.generateId(this.repo.selectedServer);
+                }
+                r["schema:dateCreated"] = new Date().toISOString();
+                r.target = EcRemoteLinkedData.trimVersionFromUrl(targets[i]);
+                r.source = thing.shortId();
+                if (r.target === r.source) {
+                    return;
+                }
+                r.relationType = relationType;
+                if (r.relationType === "broadens") {
+                    var dosedo = r.target;
+                    r.target = r.source;
+                    r.source = dosedo;
+                    r.relationType = "narrows";
+                }
+                if (EcIdentityManager.ids.length > 0) {
+                    r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                }
+                var framework = this.$store.state.editor.framework;
+                if (thing.type === 'Concept') {
+                    if (framework.relation == null) {
+                        framework.relation = [];
+                    }
+                    let isNew = true;
+                    let idx = 0;
+                    while (isNew && idx < framework.relation.length) {
+                        if (EcRemoteLinkedData.trimVersionFromUrl(framework.relation[idx]).equals(r.id)) {
+                            isNew = false;
+                        }
+                        idx++;
+                    }
+                    if (isNew) {
+                        framework.relation.push(r.id);
+                    }
+                } else {
+                    framework.addRelation(r.id);
+                }
+                if (this.$store.state.editor.private === true) {
+                    r = EcEncryptedValue.toEncryptedValue(r);
+                }
+                this.repo.saveTo(r, function() {}, console.error);
+            }
+            this.$store.commit('framework', framework);
+            if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                framework = EcEncryptedValue.toEncryptedValue(framework);
+            }
+            this.repo.saveTo(framework, function() {}, console.error);
         }
     }
 };

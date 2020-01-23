@@ -102,7 +102,7 @@ hr {
 }
 
 iframe {
-    height: calc(100vh - 250px);
+    min-height: 800px;
     border: 1px solid black;
 }
 
