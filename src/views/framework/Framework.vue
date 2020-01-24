@@ -76,7 +76,6 @@ export default {
     data: function() {
         return {
             repo: window.repo,
-            framework: null,
             frameworkExportLink: null,
             frameworkExportGuid: null,
             competencyExportOptions: [
@@ -150,6 +149,9 @@ export default {
         };
     },
     computed: {
+        framework: function() {
+            return this.$store.state.editor.framework;
+        },
         timestamp: function() {
             if (this.framework.getTimestamp()) {
                 return this.framework.getTimestamp();
@@ -238,7 +240,6 @@ export default {
     },
     methods: {
         refreshPage: function() {
-            this.framework = this.$store.state.editor.framework;
             if (EcRepository.shouldTryUrl(this.framework.id) === false) {
                 this.frameworkExportGuid = EcCrypto.md5(this.framework.id);
             } else {
@@ -422,6 +423,9 @@ export default {
             } else {
                 EcArray.setRemove(this.selectedArray, id);
             }
+        },
+        handleSaveSpecialProperty: function(selectedCompetency, property, values) {
+            this.$parent.addAlignments(values, selectedCompetency, property);
         }
     }
 };
