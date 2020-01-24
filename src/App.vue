@@ -9,9 +9,11 @@
             aria-label="main navigation">
             <div class="navbar-brand">
                 <div class="navbar-item">
-                    <h2 class="has-text-white subtitle">
-                        Cass Editor
-                    </h2>
+                    <router-link to="/">
+                        <h2 class="has-text-white subtitle">
+                            Cass Editor
+                        </h2>
+                    </router-link>
                 </div>
                 <a
                     role="button"
@@ -29,11 +31,11 @@
             <div class="navbar-menu">
                 <div class="navbar-start">
                     <div class="navbar-item">
-                        <router-link
+                        <a
                             class="has-text-light"
                             @click="createNew">
                             New
-                        </router-link>
+                        </a>
                     </div>
                     <div class="navbar-item">
                         <router-link
