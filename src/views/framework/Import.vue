@@ -210,27 +210,28 @@
                                     </div>
                                     <!-- file input -->
                                     <div
-                                        class="section has-dashed-border"
+                                        class="has-dashed-border columns"
                                         id="drop-area"
                                         v-if="method=='file'">
-                                        <div v-if="processingFile">
+                                        <drag-and-drop
+                                            class="column is-12"
+                                            v-if="!processingFile"
+                                            @dragAndDropEmitFiles="onUploadFiles" />
+                                        <div
+                                            v-if="processingFile"
+                                            class="column is-12">
                                             <span class="icon is-large">
                                                 <i class="fa fa-spinner fa-pulse fa-2x" />
                                             </span>
                                         </div>
-                                        <div v-if="framework !== null">
-                                            <span class="icon is-large">
-                                                <i class="fa fa-spinner fa-pulse fa-2x" />
-                                            </span>
-                                        </div>
-                                        <div v-if="file === null">
+                                        <!--<div v-if="file === null">
                                             <input
                                                 type="file"
                                                 ref="fileInput"
                                                 placeholder=""
                                                 @change="fileChange"
                                                 multiple>
-                                        </div>
+                                        </div>-->
                                     </div>
                                     <div
                                         class="section">
@@ -505,13 +506,15 @@ import ctdlAsnJsonld from 'file-loader!../../../files/DQP.jsonld';
 import asnRdfJson from 'file-loader!../../../files/D2695955';
 import medbiquitous from 'file-loader!../../../files/educational_achievement_sample_1June2012.xml';
 import common from '@/mixins/common.js';
+import dragAndDrop from './../../components/DragAndDrop.vue';
+
 export default {
     name: "Import",
     props: {
         queryParams: Object
     },
     mixins: [common],
-    components: {Hierarchy},
+    components: {Hierarchy, dragAndDrop},
     data: function() {
         return {
             processingFile: false,
@@ -793,6 +796,10 @@ export default {
         }
     },
     methods: {
+        onUploadFiles: function(value) {
+            this.file = value;
+            this.fileChange(this.file);
+        },
         openFramework: function() {
             var me = this;
             if (this.queryParams.concepts === "true") {
@@ -810,16 +817,7 @@ export default {
         fileChange: function(e) {
             this.processingFile = true;
             this.processingSuccess = false;
-            var files = e.target.files || e.dataTransfer.files;
-            if (!files.length) {
-                this.file = null;
-            } else {
-                this.file = [];
-                for (let i = 0; i < files.length; i++) {
-                    this.file[i] = files[i];
-                }
-                this.analyzeImportFile();
-            }
+            this.analyzeImportFile();
             this.importType = null;
             this.firstImport = true;
         },
@@ -906,12 +904,7 @@ export default {
             }
         },
         analyzeCsvRelation: function(e) {
-            var files = e.target.files || e.dataTransfer.files;
-            if (!files.length) {
-                this.csvRelationFile = null;
-            } else {
-                this.csvRelationFile = files[0];
-            }
+            this.csvRelationFile = this.file[0];
             let me = this;
             CSVImport.analyzeFile(this.csvRelationFile, function(data) {
                 for (var i = 0; i < data[0].length; i++) {
@@ -1365,7 +1358,15 @@ export default {
 
 <style lang="scss">
     @import './../../variables.scss';
-
+#drop-area {
+    height: auto;
+    margin: 0px;
+    padding: 0px;
+    width: auto;
+    .column {
+        height: auto;
+    }
+}
 .menu {
     overflow-y: scroll;
     height: 100vh;
