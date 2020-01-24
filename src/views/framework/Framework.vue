@@ -5,7 +5,8 @@
                 <Thing
                     :obj="framework"
                     :repo="repo"
-                    :parentNotEditable="queryParams.view==='true'" />
+                    :parentNotEditable="queryParams.view==='true'"
+                    :profile="frameworkProfile"  />
                 <span
                     class="tag is-info has-text-white"
                     v-if="framework.competency && framework.competency.length == 1">{{ framework.competency.length }} item</span>
@@ -57,7 +58,9 @@
                     :exportOptions="competencyExportOptions"
                     :highlightList="highlightCompetency"
                     :selectMode="selectButtonText != null"
-                    :selectAll="selectAll" />
+                    :selectAll="selectAll"
+                    :profile="competencyProfile"
+                    :specialProperties="specialProperties"  />
             </div>
         </div>
     </div>
@@ -77,7 +80,6 @@ export default {
     data: function() {
         return {
             repo: window.repo,
-            framework: null,
             frameworkExportLink: null,
             frameworkExportGuid: null,
             competencyExportOptions: [
@@ -93,10 +95,67 @@ export default {
             selectButtonText: null,
             selectAllButton: false,
             selectAll: false,
-            selectedArray: []
+            selectedArray: [],
+            frameworkProfile: {
+                "http://schema.org/name": {
+                    "@id": "http://schema.org/name",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Name of the competency framework."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "name"}]
+                },
+                "http://schema.org/description": {
+                    "@id": "http://schema.org/description",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Description of the framework."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "description"}]
+                }
+            },
+            competencyProfile: {
+                "http://schema.org/name": {
+                    "@id": "http://schema.org/name",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Name of the competency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}]
+                },
+                "http://schema.org/description": {
+                    "@id": "http://schema.org/description",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Description of the competency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}]
+                },
+                "https://schema.cassproject.org/0.4/Competency/scope": {
+                    "@id": "https://schema.cassproject.org/0.4/Competency/scope",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Scope in which the competency may be applied. e.g. Underwater."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Scope"}]
+                }
+            }
         };
     },
     computed: {
+        framework: function() {
+            return this.$store.state.editor.framework;
+        },
         timestamp: function() {
             if (this.framework.getTimestamp()) {
                 return this.framework.getTimestamp();
@@ -116,6 +175,39 @@ export default {
         },
         shortId: function() {
             return this.$store.state.editor.framework.shortId();
+        },
+        commonPathIframe: function() {
+            var path = "&iframeRoot=" + (this.queryParams.editorRoot ? this.queryParams.editorRoot : "");
+            path += "&origin=" + window.location.origin;
+            path += this.queryParams.server ? "&server=" + this.queryParams.server : "";
+            path += this.queryParams.newObjectEndpoint ? "&newObjectEndpoint=" + this.queryParams.newObjectEndpoint : "";
+            path += this.queryParams.ceasnDataFields ? "&ceasnDataFields=" + this.queryParams.ceasnDataFields : "";
+            path += this.queryParams.webSocketOverride ? "&webSocketOverride=" + this.queryParams.webSocketOverride : "";
+            path += this.queryParams.inherit ? "&inherit=" + this.queryParams.inherit : "";
+            path += this.queryParams.css ? "&css=" + this.queryParams.css : "";
+            path += this.queryParams.selectVerbose ? "&selectVerbose=" + this.queryParams.selectVerbose : "";
+            path += this.queryParams.selectExport ? "&selectExport=" + this.queryParams.selectExport : "";
+            path += this.queryParams.user ? "&user=" + this.queryParams.user : "";
+            return path;
+        },
+        iframeCompetencyPathInterframework: function() {
+            var path = this.queryParams.editorRoot ? this.queryParams.editorRoot : "";
+            path += "/?select=Align with...&view=true&back=true";
+            path += this.commonPathIframe;
+            return path;
+        },
+        specialProperties: function() {
+            var props = {};
+            props["narrows"] =
+            {
+                "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                "http://www.w3.org/2000/01/rdf-schema#comment":
+                [{"@language": "en", "@value": "A sub-competency relationship which has relevance to this competency."}],
+                "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Narrows"}],
+                "iframePath": this.iframeCompetencyPathInterframework,
+                "iframeText": "Select competencies to align..."
+            };
+            return props;
         }
     },
     components: {Hierarchy, Thing},
@@ -152,7 +244,6 @@ export default {
     },
     methods: {
         refreshPage: function() {
-            this.framework = this.$store.state.editor.framework;
             if (EcRepository.shouldTryUrl(this.framework.id) === false) {
                 this.frameworkExportGuid = EcCrypto.md5(this.framework.id);
             } else {
@@ -336,6 +427,29 @@ export default {
             } else {
                 EcArray.setRemove(this.selectedArray, id);
             }
+        },
+        handleSaveSpecialProperty: function(selectedCompetency, property, values) {
+            this.$parent.addAlignments(values, selectedCompetency, property);
+        },
+        handleRemoveSpecialProperty: function(source, property, target) {
+            var me = this;
+            new EcAsyncHelper().each(this.framework.relation, function(relation, callback) {
+                EcAlignment.get(relation, function(r) {
+                    if (r.source === source && r.target === target && r.relationType === property) {
+                        me.framework.removeRelation(r.shortId());
+                        me.conditionalDelete(r.shortId());
+                        callback();
+                    }
+                    callback();
+                }, callback);
+            }, function() {
+                var framework = me.framework;
+                me.$store.commit('framework', framework);
+                if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                    framework = EcEncryptedValue.toEncryptedValue(framework);
+                }
+                me.repo.saveTo(framework, function() {}, console.error);
+            });
         }
     }
 };

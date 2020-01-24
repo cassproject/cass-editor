@@ -175,20 +175,14 @@ export default {
         }
     },
     created: function() {
+        var servers = ["https://dev.cassproject.org/api/"];
         if (this.$route.query) {
             this.queryParams = this.$route.query;
             if (this.queryParams.server) {
                 if (this.queryParams.server.endsWith && this.queryParams.server.endsWith("/") === false) {
                     this.queryParams.server += "/";
                 }
-                window.repo.selectedServer = this.queryParams.server;
-                window.repo.autoDetectRepository();
-                try {
-                    window.addEventListener('message', this.cappend, false);
-                } catch (e) {
-                    console.error(e);
-                }
-                this.openWebSocket(window.repo);
+                servers = [this.queryParams.server];
             }
             if (this.queryParams.frameworkId) {
                 var me = this;
@@ -211,14 +205,26 @@ export default {
                 this.createNew();
             }
         }
+        for (var i = 0; i < servers.length; i++) {
+            var r = new EcRepository();
+            r.selectedServer = servers[i];
+            r.autoDetectRepository();
+            servers[i] = r;
+            window.repo = r;
+
+            try {
+                window.addEventListener('message', this.cappend, false);
+            } catch (e) {
+                console.error(e);
+            }
+
+            this.openWebSocket(r);
+        }
     },
     methods: {
         cappend: function(event) {
             if (event.data.message === "selected") {
                 var selectedIds = [];
-                if (event.data.selectedFramework["ceasn:exactAlignment"]) {
-                    selectedFrameworkId = event.data.selectedFramework["ceasn:exactAlignment"];
-                }
                 for (var i = 0; i < event.data.selected.length; i++) {
                     if (event.data.selected[i]["ceasn:exactAlignment"]) {
                         selectedIds.push(event.data.selected[i]["ceasn:exactAlignment"]);
@@ -285,34 +291,30 @@ export default {
             // Re-establish connection on close.
             connection.onclose = function(evt) {
                 console.log(evt);
-                this.$store.commit('webSocketBackoffIncrease');
+                me.$store.commit('webSocketBackoffIncrease');
                 setTimeout(function() {
                     me.openWebSocket(r);
                 }, webSocketBackoff);
             };
 
             connection.changedObject = function(wut) {
-                if (this.$route.name !== 'framework') {
+                if (me.$route.name !== 'framework') {
                     return;
                 }
 
-                var framework = this.$store.state.editor.framework;
+                var framework = me.$store.state.editor.framework;
 
                 if (new ConceptScheme().isA(wut.getFullType()) || wut["encryptedType"] === "ConceptScheme") {
                     if (framework != null) {
                         if (framework.shortId() === wut.shortId()) {
                             var f = new ConceptScheme();
                             if (wut["encryptedType"] === "ConceptScheme") {
-                                f = this.decrypt(wut, f);
+                                f = me.decrypt(wut, f);
                             } else {
                                 f.copyFrom(wut);
                             }
-                            this.$store.commit('framework', f);
-                            /*
-                             * populateFramework();
-                             * playSavedAnimation('frameworkNameContainer');
-                             */
-                            this.spitEvent("frameworkChanged", f.shortId());
+                            me.$store.commit('framework', f);
+                            me.spitEvent("frameworkChanged", f.shortId());
                         }
                     }
                 }
@@ -322,67 +324,62 @@ export default {
                         if (framework.shortId() === wut.shortId()) {
                             var f = new EcFramework();
                             if (wut["encryptedType"] === "Framework") {
-                                f = this.decrypt(wut, f);
+                                f = me.decrypt(wut, f);
                             } else {
                                 f.copyFrom(wut);
                             }
-                            this.$store.commit('framework', f);
-                            /*
-                             * renderSidebar(true, true);
-                             * playSavedAnimation('frameworkNameContainer');
-                             * populateFramework();
-                             */
-                            this.spitEvent("frameworkChanged", f.shortId());
+                            me.$store.commit('framework', f);
+                            me.spitEvent("frameworkChanged", f.shortId());
                         }
                     }
                 }
 
                 if (new Concept().isA(wut.getFullType()) || wut["encryptedType"] === "Concept") {
                     if (framework != null) {
-                        if (this.$store.state.editor.selectedCompetency != null) {
-                            if (this.$store.state.editor.selectedCompetency.shortId() === wut.shortId()) {
+                        if (me.$store.state.editor.selectedCompetency != null) {
+                            if (me.$store.state.editor.selectedCompetency.shortId() === wut.shortId()) {
                                 var com = new EcConcept();
                                 if (wut["encryptedType"] === "Concept") {
-                                    com = this.decrypt(wut, com);
+                                    com = me.decrypt(wut, com);
                                 } else {
                                     com.copyFrom(wut);
                                 }
-                                this.$store.commit('selectedCompetency', com);
+                                me.$store.commit('selectedCompetency', com);
                             }
-                            this.spitEvent("competencyChanged", this.$store.state.editor.selectedCompetency.shortId());
+                            me.spitEvent("competencyChanged", me.$store.state.editor.selectedCompetency.shortId());
                         }
                     }
                 }
                 if (new EcCompetency().isA(wut.getFullType()) || wut["encryptedType"] === "Competency") {
                     if (framework != null) {
-                        if (this.$store.state.editor.selectedCompetency != null) {
-                            if (this.$store.state.editor.selectedCompetency.shortId() === wut.shortId()) {
+                        if (me.$store.state.editor.selectedCompetency != null) {
+                            if (me.$store.state.editor.selectedCompetency.shortId() === wut.shortId()) {
                                 var com = new EcCompetency();
                                 if (wut["encryptedType"] === "Competency") {
-                                    com = this.decrypt(wut, com);
+                                    com = me.decrypt(wut, com);
                                 } else {
                                     com.copyFrom(wut);
                                 }
-                                this.$store.commit('selectedCompetency', com);
+                                me.$store.commit('selectedCompetency', com);
                             }
-                            this.spitEvent("competencyChanged", this.$store.state.editor.selectedCompetency.shortId());
+                            me.spitEvent("competencyChanged", me.$store.state.editor.selectedCompetency.shortId());
                         }
                     }
                 }
 
                 if (new EcLevel().isA(wut.getFullType()) || wut["encryptedType"] === "Level") {
                     if (framework != null) {
-                        if (this.$store.state.editor.selectedCompetency != null) {
-                            if (this.$store.state.editor.selectedCompetency.shortId() === wut.shortId()) {
+                        if (me.$store.state.editor.selectedCompetency != null) {
+                            if (me.$store.state.editor.selectedCompetency.shortId() === wut.shortId()) {
                                 var com = new EcLevel();
                                 if (wut["encryptedType"] === "Level") {
-                                    com = this.decrypt(wut, com);
+                                    com = me.decrypt(wut, com);
                                 } else {
                                     com.copyFrom(wut);
                                 }
-                                this.$store.commit('selectedCompetency', com);
+                                me.$store.commit('selectedCompetency', com);
                             }
-                            this.spitEvent("competencyChanged", this.$store.state.editor.selectedCompetency.shortId());
+                            me.spitEvent("competencyChanged", me.$store.state.editor.selectedCompetency.shortId());
                         }
                     }
                 }
@@ -399,17 +396,17 @@ export default {
                         delete EcRepository.cache[resp[i]];
                         delete EcRepository.cache[EcRemoteLinkedData.trimVersionFromUrl(resp[i])];
                     }
-                    if (framework == null) return;
-                    this.repo.precache(resp, function() {
+                    if (me.$store.state.editor.framework == null) return;
+                    me.repo.precache(resp, function() {
                         for (var i = 0; i < resp.length; i++) {
-                            EcRepository.get(resp[i], connection.changedObject, error);
+                            EcRepository.get(resp[i], connection.changedObject, console.error);
                         }
                     });
                 } else {
                     delete EcRepository.cache[resp];
                     delete EcRepository.cache[EcRemoteLinkedData.trimVersionFromUrl(resp)];
-                    if (framework == null) return;
-                    EcRepository.get(resp, connection.changedObject, error);
+                    if (me.$store.state.editor.framework == null) return;
+                    EcRepository.get(resp, connection.changedObject, console.error);
                 }
             };
         },
@@ -467,6 +464,67 @@ export default {
                     }
                 }, console.error);
             }
+        },
+        addAlignments: function(targets, thing, relationType, allowSave) {
+            if (this.queryParams.concepts === "true") {
+                return this.addConceptAlignments(targets, thing, relationType);
+            }
+            if (relationType === "ceasn:skillEmbodied" || relationType === "ceasn:abilityEmbodied" || relationType === "ceasn:knowledgeEmbodied" || relationType === "ceasn:taskEmbodied") {
+                // This property is attached to competency, not a relation attached to framework
+                return this.addRelationAsCompetencyField(targets, thing, relationType, allowSave);
+            }
+            for (var i = 0; i < targets.length; i++) {
+                var r = new EcAlignment();
+                if (this.queryParams.newObjectEndpoint != null) {
+                    r.generateShortId(this.newObjectEndpoint);
+                } else {
+                    r.generateId(this.repo.selectedServer);
+                }
+                r["schema:dateCreated"] = new Date().toISOString();
+                r.target = EcRemoteLinkedData.trimVersionFromUrl(targets[i]);
+                r.source = thing.shortId();
+                if (r.target === r.source) {
+                    return;
+                }
+                r.relationType = relationType;
+                if (r.relationType === "broadens") {
+                    var dosedo = r.target;
+                    r.target = r.source;
+                    r.source = dosedo;
+                    r.relationType = "narrows";
+                }
+                if (EcIdentityManager.ids.length > 0) {
+                    r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                }
+                var framework = this.$store.state.editor.framework;
+                if (thing.type === 'Concept') {
+                    if (framework.relation == null) {
+                        framework.relation = [];
+                    }
+                    let isNew = true;
+                    let idx = 0;
+                    while (isNew && idx < framework.relation.length) {
+                        if (EcRemoteLinkedData.trimVersionFromUrl(framework.relation[idx]).equals(r.id)) {
+                            isNew = false;
+                        }
+                        idx++;
+                    }
+                    if (isNew) {
+                        framework.relation.push(r.id);
+                    }
+                } else {
+                    framework.addRelation(r.id);
+                }
+                if (this.$store.state.editor.private === true) {
+                    r = EcEncryptedValue.toEncryptedValue(r);
+                }
+                this.repo.saveTo(r, function() {}, console.error);
+            }
+            this.$store.commit('framework', framework);
+            if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                framework = EcEncryptedValue.toEncryptedValue(framework);
+            }
+            this.repo.saveTo(framework, function() {}, console.error);
         }
     }
 };

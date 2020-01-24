@@ -34,6 +34,12 @@ const editor = {
         },
         private(state, bool) {
             state.private = bool;
+        },
+        selectCompetencyRelation(state, r) {
+            state.selectCompetencyRelation = r;
+        },
+        selectingCompetencies(state, bool) {
+            state.selectingCompetencies = bool;
         }
     },
     actions: {
