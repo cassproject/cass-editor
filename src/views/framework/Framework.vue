@@ -426,6 +426,26 @@ export default {
         },
         handleSaveSpecialProperty: function(selectedCompetency, property, values) {
             this.$parent.addAlignments(values, selectedCompetency, property);
+        },
+        handleRemoveSpecialProperty: function(source, property, target) {
+            var me = this;
+            new EcAsyncHelper().each(this.framework.relation, function(relation, callback) {
+                EcAlignment.get(relation, function(r) {
+                    if (r.source === source && r.target === target && r.relationType === property) {
+                        me.framework.removeRelation(r.shortId());
+                        me.conditionalDelete(r.shortId());
+                        callback();
+                    }
+                    callback();
+                }, callback);
+            }, function() {
+                var framework = me.framework;
+                me.$store.commit('framework', framework);
+                if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                    framework = EcEncryptedValue.toEncryptedValue(framework);
+                }
+                me.repo.saveTo(framework, function() {}, console.error);
+            });
         }
     }
 };
