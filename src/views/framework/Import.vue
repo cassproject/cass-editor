@@ -146,11 +146,13 @@
                         </div>
                         <!-- types of import for tabs -->
                         <div
-                            v-if="!framework"
+
                             class="section is-large">
                             <div class="tile is-vertical has-background-light">
                                 <div class="section is-medium">
-                                    <div class="columns is-mobile">
+                                    <div
+                                        v-if="!file"
+                                        class="columns is-mobile">
                                         <div class="column">
                                             <div
                                                 class="import-tab"
@@ -212,7 +214,7 @@
                                     <div
                                         class="has-dashed-border columns"
                                         id="drop-area"
-                                        v-if="method=='file'">
+                                        v-if="method=='file' && !file">
                                         <drag-and-drop
                                             class="column is-12"
                                             v-if="!processingFile"
@@ -232,6 +234,18 @@
                                                 @change="fileChange"
                                                 multiple>
                                         </div>-->
+                                    </div>
+                                    <div class="has-solid-border columns">
+                                        <import-info
+                                            @acceptImportInfo="showCompetencyPreview"
+                                            v-if="showImportInfo" />
+                                        <framework-preview
+                                            @acceptFrameworkPreview="showImportedCompetency"
+                                            v-if="showFrameworkPreview" />
+                                        <framework-light
+                                            :framework="framework"
+                                            :repo="repo"
+                                            v-if="showFrameworkLight" />
                                     </div>
                                     <div
                                         class="section">
@@ -440,27 +454,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div
-                            v-if="framework"
-                            class="section"
-                            id="framework-container">
-                            <div class="tile is-vertical">
-                                <Hierarchy
-                                    v-if="framework"
-                                    :container="framework"
-                                    containerType="Framework"
-                                    containerNodeProperty="competency"
-                                    containerEdgeProperty="relation"
-                                    nodeType="EcCompetency"
-                                    edgeType="EcAlignment"
-                                    edgeRelationProperty="relationType"
-                                    edgeRelationLiteral="narrows"
-                                    edgeSourceProperty="source"
-                                    edgeTargetProperty="target"
-                                    editable="false"
-                                    :repo="repo" />
-                            </div>
-                        </div>
                         <div class="section">
                             <div class="columns is-mobile">
                                 <div class="column is-12">
@@ -492,7 +485,6 @@
 </template>
 
 <script>
-import Hierarchy from '@/lode/components/lode/Hierarchy.vue';
 import ctdlAsnCsvExample from 'file-loader!../../../files/CTDL-ASN.ONET.example.csv';
 import ctdlAsnCsvTemplate from 'file-loader!../../../files/CTDL-ASN.ONET.template.csv';
 import csvExampleCompetencies from 'file-loader!../../../files/CAP Software Engineering - Competencies.csv';
@@ -507,6 +499,9 @@ import asnRdfJson from 'file-loader!../../../files/D2695955';
 import medbiquitous from 'file-loader!../../../files/educational_achievement_sample_1June2012.xml';
 import common from '@/mixins/common.js';
 import dragAndDrop from './../../components/DragAndDrop.vue';
+import importInfo from './ImportInfo.vue';
+import frameworkPreview from './FrameworkPreview.vue';
+import frameworkLight from './FrameworkLight.vue';
 
 export default {
     name: "Import",
@@ -514,9 +509,17 @@ export default {
         queryParams: Object
     },
     mixins: [common],
-    components: {Hierarchy, dragAndDrop},
+    components: {
+        dragAndDrop,
+        frameworkPreview,
+        frameworkLight,
+        importInfo
+    },
     data: function() {
         return {
+            showImportInfo: false,
+            showFrameworkPreview: false,
+            showFrameworkLight: false,
             processingFile: false,
             processingSuccess: false,
             showCassCsv: false,
@@ -796,9 +799,19 @@ export default {
         }
     },
     methods: {
+        showImportedCompetency: function() {
+            this.showFrameworkPreview = false;
+            this.showFrameworkLight = true;
+        },
+        showCompetencyPreview: function() {
+            this.showImportInfo = false;
+            this.showFrameworkPreview = true;
+        },
         onUploadFiles: function(value) {
             this.file = value;
             this.fileChange(this.file);
+            // show interstitial screen
+            this.showImportInfo = true;
         },
         openFramework: function() {
             var me = this;

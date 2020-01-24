@@ -6,7 +6,7 @@
                     :obj="framework"
                     :repo="repo"
                     :parentNotEditable="queryParams.view==='true'"
-                    :profile="frameworkProfile"  />
+                    :profile="frameworkProfile" />
                 <span
                     class="tag is-info has-text-white"
                     v-if="framework.competency && framework.competency.length == 1">{{ framework.competency.length }} item</span>
@@ -60,7 +60,7 @@
                     :selectMode="selectButtonText != null"
                     :selectAll="selectAll"
                     :profile="competencyProfile"
-                    :specialProperties="specialProperties"  />
+                    :specialProperties="specialProperties" />
             </div>
         </div>
     </div>
