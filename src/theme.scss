@@ -88,8 +88,8 @@ $button-text-hover-background-color: transparent;
  .has-dashed-border {
     border:2px dashed $black !important;
     border-radius: 1rem;
-    height: 200px;
-    
+    min-height: 200px;
+    height: 100%;
     div {
         display: block;
         width: 100%;
