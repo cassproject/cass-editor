@@ -6,7 +6,7 @@
                     :obj="framework"
                     :repo="repo"
                     :parentNotEditable="queryParams.view==='true'"
-                    :profile="frameworkProfile"  />
+                    :profile="frameworkProfile" />
                 <span
                     class="tag is-info has-text-white"
                     v-if="framework.competency && framework.competency.length == 1">{{ framework.competency.length }} item</span>
@@ -52,7 +52,7 @@
                     edgeRelationLiteral="narrows"
                     edgeSourceProperty="source"
                     edgeTargetProperty="target"
-                    :editable="queryParams.view !== 'true'"
+                    :editable="disallowEdits !== true && queryParams.view !== 'true'"
                     :repo="repo"
                     :queryParams="queryParams"
                     :exportOptions="competencyExportOptions"
@@ -60,7 +60,7 @@
                     :selectMode="selectButtonText != null"
                     :selectAll="selectAll"
                     :profile="competencyProfile"
-                    :specialProperties="specialProperties"  />
+                    :specialProperties="specialProperties" />
             </div>
         </div>
     </div>
@@ -74,7 +74,9 @@ export default {
     name: "Framework",
     props: {
         exportType: String,
-        queryParams: Object
+        queryParams: Object,
+        disallowEdits: Boolean,
+        profileOverride: Object
     },
     mixins: [common],
     data: function() {
@@ -116,38 +118,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Description of the framework."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "description"}]
-                }
-            },
-            competencyProfile: {
-                "http://schema.org/name": {
-                    "@id": "http://schema.org/name",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Name of the competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}]
-                },
-                "http://schema.org/description": {
-                    "@id": "http://schema.org/description",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Description of the competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}]
-                },
-                "https://schema.cassproject.org/0.4/Competency/scope": {
-                    "@id": "https://schema.cassproject.org/0.4/Competency/scope",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Scope in which the competency may be applied. e.g. Underwater."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Scope"}]
                 }
             }
         };
@@ -208,6 +178,44 @@ export default {
                 "iframeText": "Select competencies to align..."
             };
             return props;
+        },
+        competencyProfile: function() {
+            if (this.profileOverride) {
+                return this.profileOverride;
+            } else {
+                return {
+                    "http://schema.org/name": {
+                        "@id": "http://schema.org/name",
+                        "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                        "http://schema.org/domainIncludes":
+                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                        "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                        "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "Name of the competency."}],
+                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}]
+                    },
+                    "http://schema.org/description": {
+                        "@id": "http://schema.org/description",
+                        "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                        "http://schema.org/domainIncludes":
+                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                        "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                        "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "Description of the competency."}],
+                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}]
+                    },
+                    "https://schema.cassproject.org/0.4/Competency/scope": {
+                        "@id": "https://schema.cassproject.org/0.4/Competency/scope",
+                        "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                        "http://schema.org/domainIncludes":
+                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                        "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                        "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "Scope in which the competency may be applied. e.g. Underwater."}],
+                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Scope"}]
+                    }
+                };
+            }
         }
     },
     components: {Hierarchy, Thing},
