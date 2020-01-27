@@ -176,6 +176,7 @@ export default {
     },
     created: function() {
         var servers = ["https://dev.cassproject.org/api/"];
+        var me = this;
         if (this.$route.query) {
             this.queryParams = this.$route.query;
             if (this.queryParams.server) {
@@ -183,26 +184,6 @@ export default {
                     this.queryParams.server += "/";
                 }
                 servers = [this.queryParams.server];
-            }
-            if (this.queryParams.frameworkId) {
-                var me = this;
-                if (this.queryParams.concepts === "true") {
-                    EcConceptScheme.get(this.queryParams.frameworkId, function(success) {
-                        me.$store.commit('framework', success);
-                        me.$router.push({name: "conceptScheme", params: {frameworkId: me.queryParams.frameworkId}});
-                    }, console.error);
-                } else {
-                    EcFramework.get(this.queryParams.frameworkId, function(success) {
-                        me.$store.commit('framework', success);
-                        me.$router.push({name: "framework", params: {frameworkId: me.queryParams.frameworkId}});
-                    }, console.error);
-                }
-            }
-            if (this.queryParams.action === "import") {
-                this.$router.push({name: "import"});
-            }
-            if (this.queryParams.action === "add") {
-                this.createNew();
             }
         }
         for (var i = 0; i < servers.length; i++) {
@@ -220,6 +201,34 @@ export default {
 
             this.openWebSocket(r);
         }
+        if (window.addEventListener) {
+            window.addEventListener("message", this.messageListener, false);
+        } else {
+            window.attachEvent("onmessage", this.messageListener);
+        }
+        this.loadIdentity(function() {
+            if (me.queryParams) {
+                if (me.queryParams.frameworkId) {
+                    if (me.queryParams.concepts === "true") {
+                        EcConceptScheme.get(me.queryParams.frameworkId, function(success) {
+                            me.$store.commit('framework', success);
+                            me.$router.push({name: "conceptScheme", params: {frameworkId: me.queryParams.frameworkId}});
+                        }, console.error);
+                    } else {
+                        EcFramework.get(me.queryParams.frameworkId, function(success) {
+                            me.$store.commit('framework', success);
+                            me.$router.push({name: "framework", params: {frameworkId: me.queryParams.frameworkId}});
+                        }, console.error);
+                    }
+                }
+                if (me.queryParams.action === "import") {
+                    me.$router.push({name: "import"});
+                }
+                if (me.queryParams.action === "add") {
+                    me.createNew();
+                }
+            }
+        });
     },
     methods: {
         cappend: function(event) {
@@ -525,6 +534,280 @@ export default {
                 framework = EcEncryptedValue.toEncryptedValue(framework);
             }
             this.repo.saveTo(framework, function() {}, console.error);
+        },
+        loadIdentity: function(callback) {
+            var identity;
+            if (this.queryParams.user === "self") {
+                EcIdentityManager.readIdentities();
+                EcIdentityManager.readContacts();
+                if (EcIdentityManager.ids.length === 0) {
+                    EcPpk.generateKeyAsync(
+                        function(p1) {
+                            identity = new EcIdentity();
+                            identity.ppk = p1;
+                            identity.displayName = "You";
+                            EcIdentityManager.onIdentityChanged = EcIdentityManager.saveIdentities;
+                            EcIdentityManager.addIdentity(identity);
+                            callback();
+                        }
+                    );
+                } else {
+                    callback();
+                }
+            } else if (this.queryParams.user === "wait") {
+                var fun = function(evt) {
+                    var data = evt.data;
+                    if (data != null && data !== "" && !EcObject.isObject(data)) {
+                        data = JSON.parse(data);
+                    }
+                    if (data.action === "identity") {
+                        identity = new EcIdentity();
+                        identity.ppk = EcPpk.fromPem(data.identity);
+                        identity.displayName = "You";
+                        EcIdentityManager.addIdentity(identity);
+                        callback();
+                        var message = {
+                            action: "response",
+                            message: "identityOk"
+                        };
+                        console.log(message);
+                        parent.postMessage(message, this.queryParams.origin);
+                    }
+                };
+                if (window.addEventListener) {
+                    window.addEventListener("message", fun, false);
+                } else {
+                    window.attachEvent("onmessage", fun);
+                }
+                var message = {
+                    message: "waiting"
+                };
+                console.log(message);
+                parent.postMessage(message, this.queryParams.origin);
+            } else {
+                callback();
+            }
+        },
+        messageListener: function(evt) {
+            var data = evt.data;
+            var me = this;
+            if (data != null && data !== "" && !EcObject.isObject(data)) {
+                try {
+                    data = JSON.parse(data);
+                } catch (e) {
+                    console.log(e);
+                }
+            }
+            if (data != null && data !== "") {
+                if (data.action === "template") {
+                    if (data.framework != null) {
+                        EcFramework.template = this.removeNewlines(data.framework);
+                    }
+                    if (data.competency != null) {
+                        EcCompetency.template = this.removeNewlines(data.competency);
+                    }
+                    if (data.conceptScheme != null) {
+                        EcConceptScheme.template = this.removeNewlines(data.conceptScheme);
+                    }
+                    if (data.concept != null) {
+                        EcConcept.template = this.removeNewlines(data.concept);
+                    }
+                    var message = {
+                        action: "response",
+                        message: "templateOk"
+                    };
+                    console.log(message);
+                    parent.postMessage(message, this.queryParams.origin);
+                } else if (data.action === "set") {
+                    if (data.id != null) {
+                        var d = EcRepository.getBlocking(data.id);
+                    }
+                    delete data.id;
+                    delete data.action;
+                    for (var key in data) {
+                        d[key] = data[key];
+                    }
+                    repo.saveTo(d, function(success) {
+                        // Force view framework page to update the framework since changes were made
+                        if (d.isAny(new EcFramework().getTypes()) || d.isAny(new EcConceptScheme().getTypes())) {
+                            if (me.$route.name === 'frameworks') {
+                                // To do: Refresh page
+                            }
+                        }
+                        var message = {
+                            action: "response",
+                            message: "setOk"
+                        };
+                        console.log(message);
+                        parent.postMessage(message, me.queryParams.origin);
+                    }, function(failure) {
+                        var message = {
+                            action: "response",
+                            message: "setFail"
+                        };
+                        console.log(message);
+                        parent.postMessage(message, me.queryParams.origin);
+                    });
+                } else if (data.action === "export") {
+                    var v = data.schema;
+                    var link;
+                    var fid;
+                    var guid;
+                    var framework = this.$store.state.editor.framework;
+                    if (this.$store.state.editor.selectedCompetency != null) {
+                        var selectedCompetency = this.$store.state.editor.selectedCompetency;
+                        if (EcRepository.shouldTryUrl(selectedCompetency.id) === false) {
+                            link = this.repo.selectedServer + "data/" + EcCrypto.md5(selectedCompetency.id);
+                            fid = this.repo.selectedServer + "data/" + EcCrypto.md5(framework.id);
+                            guid = EcCrypto.md5(selectedCompetency.id);
+                        } else {
+                            link = selectedCompetency.id;
+                            fid = framework.id;
+                            guid = selectedCompetency.getGuid();
+                        }
+                    } else {
+                        if (EcRepository.shouldTryUrl(framework.id) === false) {
+                            link = this.repo.selectedServer + "data/" + EcCrypto.md5(framework.id);
+                            fid = this.repo.selectedServer + "data/" + EcCrypto.md5(framework.id);
+                            guid = EcCrypto.md5(framework.id);
+                        } else {
+                            link = framework.id;
+                            fid = framework.id;
+                            guid = framework.getGuid();
+                        }
+                    }
+                    if (v === "asn") {
+                        this.get(fid.replace("/data/", "/asn/"), null, null, function(success) {
+                            var data = JSON.parse(success);
+                            parent.postMessage({
+                                action: "response",
+                                message: "export",
+                                schema: "asn",
+                                format: "rdf+json",
+                                data: data
+                            }, me.queryParams.origin);
+                        });
+                    } else if (v === "cass") {
+                        this.get(link, null, null, function(success) {
+                            var data = JSON.parse(success);
+                            parent.postMessage({
+                                action: "response",
+                                message: "export",
+                                schema: "cass",
+                                format: "application/ld+json",
+                                data: data
+                            }, me.queryParams.origin);
+                        });
+                    } else if (v === "cassn4") {
+                        this.get(link, null, {"Accept": "text/n4"}, function(success) {
+                            var data = JSON.parse(success);
+                            parent.postMessage({
+                                action: "response",
+                                message: "export",
+                                schema: "cass",
+                                format: "text/n4",
+                                data: data
+                            }, me.queryParams.origin);
+                        }, function(failure) {
+                            console.log(failure);
+                        });
+                    } else if (v === "cassrdfjson") {
+                        this.get(link, null, {"Accept": "application/rdf+json"}, function(success) {
+                            var data = JSON.parse(success);
+                            parent.postMessage({
+                                action: "response",
+                                message: "export",
+                                schema: "cass",
+                                format: "application/rdf+json",
+                                data: data
+                            }, me.queryParams.origin);
+                        }, function(failure) {
+                            console.log(failure);
+                        });
+                    } else if (v === "cassrdfxml") {
+                        this.get(link, null, {"Accept": "application/rdf+xml"}, function(success) {
+                            var data = JSON.parse(success);
+                            parent.postMessage({
+                                action: "response",
+                                message: "export",
+                                schema: "cass",
+                                format: "application/rdf+xml",
+                                data: data
+                            }, me.queryParams.origin);
+                        }, function(failure) {
+                            console.log(failure);
+                        });
+                    } else if (v === "cassturtle") {
+                        this.get(link, null, {"Accept": "text/turtle"}, function(success) {
+                            var data = JSON.parse(success);
+                            parent.postMessage({
+                                action: "response",
+                                message: "export",
+                                schema: "cass",
+                                format: "text/turtle",
+                                data: data
+                            }, me.queryParams.origin);
+                        }, function(failure) {
+                            console.log(failure);
+                        });
+                    } else if (v === "ceasn" || v === "ctdlasn") {
+                        this.get(fid.replace("/data/", "/ceasn/"), null, null, function(success) {
+                            var data = JSON.parse(success);
+                            parent.postMessage({
+                                action: "response",
+                                message: "export",
+                                schema: v,
+                                format: "application/ld+json",
+                                data: data
+                            }, me.queryParams.origin);
+                        });
+                    } else if (v === "case") {
+                        if (selectedCompetency == null) {
+                            this.get(this.repo.selectedServer + "ims/case/v1p0/CFDocuments/" + guid, null, null, function(success) {
+                                var data = JSON.parse(success);
+                                parent.postMessage({
+                                    action: "response",
+                                    message: "export",
+                                    schema: "case",
+                                    format: "application/json",
+                                    data: data
+                                }, me.queryParams.origin);
+                            }, function(failure) {
+                                console.log(failure);
+                            });
+                        } else {
+                            this.get(this.repo.selectedServer + "ims/case/v1p0/CFItems/" + guid, null, null, function(success) {
+                                var data = JSON.parse(success);
+                                parent.postMessage({
+                                    action: "response",
+                                    message: "export",
+                                    schema: "case",
+                                    format: "application/json",
+                                    data: data
+                                }, me.queryParams.origin);
+                            }, function(failure) {
+                                console.log(failure);
+                            });
+                        }
+                    }
+                }
+            }
+        },
+        // Removes newlines from public key in owner and reader fields
+        removeNewlines: function(entity) {
+            if (entity["@owner"] != null) {
+                for (var i = 0; i < entity["@owner"].length; i++) {
+                    var owner = entity["@owner"][i];
+                    entity["@owner"][i] = EcPk.fromPem(owner).toPem();
+                }
+            }
+            if (entity["@reader"] != null) {
+                for (var i = 0; i < entity["@reader"].length; i++) {
+                    var owner = entity["@reader"][i];
+                    entity["@reader"][i] = EcPk.fromPem(owner).toPem();
+                }
+            }
+            return entity;
         }
     }
 };

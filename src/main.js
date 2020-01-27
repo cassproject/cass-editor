@@ -13,6 +13,7 @@ window.repo = new EcRepository();
 window.repo.selectedServer = "https://dev.cassproject.org/api/";
 
 global.jsonld = require('jsonld');
+global.base64 = require('base64-arraybuffer');
 
 Vue.config.productionTip = false;
 // Vue.config.silent = true;

@@ -132,7 +132,7 @@ export default {
                     }
                     var id = EcIdentityManager.ids[i];
                     search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
-                    search += " OR @owner:\"" + addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
+                    search += " OR @owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
                 }
                 search += ")";
             }
@@ -173,6 +173,20 @@ export default {
             } else {
                 return Thing.getDisplayStringFrom(name);
             }
+        },
+        addNewlinesToId: function(pem) {
+            // Begin public key line
+            pem = pem.substring(0, 26) + "\n" + pem.substring(26);
+            var length = pem.length;
+            var start = 27;
+            while (start + 64 < length) {
+                pem = pem.substring(0, start + 64) + "\n" + pem.substring(start + 64);
+                start += 65;
+                length++;
+            }
+            // End public key line
+            pem = pem.substring(0, length - 24) + "\n" + pem.substring(length - 24);
+            return pem;
         }
     }
 };

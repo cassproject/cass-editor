@@ -81,7 +81,7 @@ export default {
             if (this.editable !== true) {
                 return false;
             }
-            return this.container.canEditAny(EcIdentityManager.ids);
+            return this.container.canEditAny(EcIdentityManager.getMyPks());
         }
     },
     watch: {
@@ -236,7 +236,7 @@ export default {
             }
             c["schema:dateCreated"] = new Date().toISOString();
             if (EcIdentityManager.ids != null && EcIdentityManager.ids.length > 0) {
-                c.addOwner(EcIdentityManager.ids[0]);
+                c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
             }
             this.setDefaultLanguage();
             c["skos:prefLabel"] = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Concept"};
