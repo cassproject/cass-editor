@@ -150,6 +150,7 @@
                             class="section is-large">
                             <div class="tile is-vertical has-background-light">
                                 <div class="section is-medium">
+                                    <!-- columns for tabs -->
                                     <div class="columns is-mobile">
                                         <div class="column">
                                             <div
@@ -224,15 +225,8 @@
                                                 <i class="fa fa-spinner fa-pulse fa-2x" />
                                             </span>
                                         </div>
-                                        <!--<div v-if="file === null">
-                                            <input
-                                                type="file"
-                                                ref="fileInput"
-                                                placeholder=""
-                                                @change="fileChange"
-                                                multiple>
-                                        </div>-->
                                     </div>
+                                    <!-- appears to be part of an interstitial screen -->
                                     <div
                                         class="section">
                                         <div v-if="importType=='csv'">
@@ -457,7 +451,7 @@
                                     edgeRelationLiteral="narrows"
                                     edgeSourceProperty="source"
                                     edgeTargetProperty="target"
-                                    editable="false"
+                                    editable=false
                                     :repo="repo" />
                             </div>
                         </div>
