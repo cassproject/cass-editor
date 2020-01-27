@@ -167,6 +167,9 @@ export default {
             return path;
         },
         specialProperties: function() {
+            if (this.profileOverride) {
+                return null;
+            }
             var props = {};
             props["narrows"] =
             {
