@@ -8,6 +8,7 @@ $section-padding-basic: .25rem .75rem;
 $section-padding: 1rem 1rem;
 $section-padding-medium: 1.5rem 1.5rem;
 $section-padding-large: 3rem 1.5rem;
+$section-padding-tb: .125rem 0rem;
 
 $menu-item-color:$black;
 $menu-item-hover-color: $black;
@@ -75,6 +76,9 @@ $button-text-hover-background-color: transparent;
 }
 .section.is-basic {
     padding: $section-padding-basic !important;
+}
+.section.is-tb {
+    padding: $section-padding-tb !important;
 }
 .section.is-small {
     padding: $section-padding-small !important;

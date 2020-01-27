@@ -115,7 +115,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <p class="is-size-6">
+                            <p class="is-size-7">
                                 Below is a preview of your Competency Framework, from this screen
                                 you can edit names and descriptions, rearrange hierarchy. After
                                 accepting the preview, you will gain access to the full editor to further
@@ -465,12 +465,27 @@
                             <div class="columns is-mobile">
                                 <div class="column is-12">
                                     <div class="buttons is-right">
-                                        <!--<div class="button is-light is-pulled-right">
+                                        <div @click="resetImport" class="button is-light is-pulled-right">
+                                            <span class="icon">
+                                                <i class="fas fa-undo-alt"/>
+                                            </span>
+                                            <span>cancel</span>
+                                        </div>
+                                        <div @click="resetImport" class="button is-light is-pulled-right">
                                             <span class="icon">
                                                 <i class="fas fa-undo-alt"/>
                                             </span>
                                             <span>start over</span>
-                                        </div>-->
+                                        </div>
+                                         <div
+                                            v-if="framework"
+                                            @click="openFramework"
+                                            class="button is-primary is-pulled-right">
+                                            <span class="icon">
+                                                <i class="fa fa-edit" />
+                                            </span>
+                                            <span>open editor</span>
+                                        </div>
                                         <div
                                             v-if="framework"
                                             @click="openFramework"
@@ -796,6 +811,12 @@ export default {
         }
     },
     methods: {
+        resetImport: function(value) {
+            this.framework = null;
+            this.file = null;
+            this.processingFile = false;
+            this.processingSuccess = false;
+        },
         onUploadFiles: function(value) {
             this.file = value;
             this.fileChange(this.file);
