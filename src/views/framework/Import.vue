@@ -722,6 +722,68 @@ export default {
             } else {
                 return false;
             }
+        },
+        postImportProfile: function() {
+            var me = this;
+            return {
+                "@id": {
+                    "@id": "https://schema.cassproject.org/0.4/Competency/id",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "The URL of the competency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "ID"}]
+                },
+                "http://schema.org/name": {
+                    ...this.$store.state.lode.schemataLookup["https://schema.cassproject.org/0.4/"]["http://schema.org/name"],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Name of the competency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}]
+                },
+                "@type": {
+                    "@id": "https://schema.cassproject.org/0.4/Competency/type",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "The type of the object."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Type"}]
+                },
+                "https://schema.cassproject.org/0.4/Competency/scope": {
+                    ...this.$store.state.lode.schemataLookup["https://schema.cassproject.org/0.4/"]["https://schema.cassproject.org/0.4/Competency/scope"],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Scope in which the competency may be applied. e.g. Underwater."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Scope"}]
+                },
+                "@context": {
+                    "@id": "https://schema.cassproject.org/0.4/Competency/context",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "The context of the competency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Context"}]
+                },
+                "https://schema.cassproject.org/0.4/Level": {
+                    ...this.$store.state.lode.schemataLookup["https://schema.cassproject.org/0.4/"]["https://schema.cassproject.org/0.4/Level"],
+                    "valuesIndexed": function() {
+                        var levels = {};
+                        if (!me.framework.level) {
+                            return null;
+                        }
+                        for (var i = 0; i < me.framework.level.length; i++) {
+                            var level = EcLevel.getBlocking(me.framework.level[i]);
+                            var comp = level.competency;
+                            levels[comp] = level;
+                        }
+                        return levels;
+                    }
+                }
+            }
         }
     },
     watch: {

@@ -64,7 +64,7 @@
                     edgeRelationLiteral="narrows"
                     edgeSourceProperty="source"
                     edgeTargetProperty="target"
-                    :editable="queryParams.view !== 'true'"
+                    :editable="disallowEdits !== true && queryParams.view !== 'true'"
                     :repo="repo"
                     :queryParams="queryParams"
                     :exportOptions="competencyExportOptions"
@@ -86,7 +86,9 @@ export default {
     name: "Framework",
     props: {
         exportType: String,
-        queryParams: Object
+        queryParams: Object,
+        disallowEdits: Boolean,
+        profileOverride: Object
     },
     mixins: [common],
     data: function() {
@@ -110,56 +112,16 @@ export default {
             selectedArray: [],
             frameworkProfile: {
                 "http://schema.org/name": {
-                    "@id": "http://schema.org/name",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    ...this.$store.state.lode.schemataLookup["https://schema.cassproject.org/0.4/"]["http://schema.org/name"],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Name of the competency framework."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "name"}]
                 },
                 "http://schema.org/description": {
-                    "@id": "http://schema.org/description",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    ...this.$store.state.lode.schemataLookup["https://schema.cassproject.org/0.4/"]["http://schema.org/description"],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Description of the framework."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "description"}]
-                }
-            },
-            competencyProfile: {
-                "http://schema.org/name": {
-                    "@id": "http://schema.org/name",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Name of the competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}]
-                },
-                "http://schema.org/description": {
-                    "@id": "http://schema.org/description",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Description of the competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}]
-                },
-                "https://schema.cassproject.org/0.4/Competency/scope": {
-                    "@id": "https://schema.cassproject.org/0.4/Competency/scope",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Scope in which the competency may be applied. e.g. Underwater."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Scope"}]
                 }
             }
         };
@@ -209,6 +171,9 @@ export default {
             return path;
         },
         specialProperties: function() {
+            if (this.profileOverride) {
+                return null;
+            }
             var props = {};
             props["narrows"] =
             {
@@ -220,6 +185,41 @@ export default {
                 "iframeText": "Select competencies to align..."
             };
             return props;
+        },
+        competencyProfile: function() {
+            if (this.profileOverride) {
+                return this.profileOverride;
+            } else {
+                var me = this;
+                return {
+                    "http://schema.org/name": {
+                        ...this.$store.state.lode.schemataLookup["https://schema.cassproject.org/0.4/"]["http://schema.org/name"],
+                        "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "Name of the competency."}],
+                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}]
+                    },
+                    "http://schema.org/description": {
+                        ...this.$store.state.lode.schemataLookup["https://schema.cassproject.org/0.4/"]["http://schema.org/description"],
+                        "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "Description of the competency."}],
+                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}]
+                    },
+                    "https://schema.cassproject.org/0.4/Competency/scope": {
+                        ...this.$store.state.lode.schemataLookup["https://schema.cassproject.org/0.4/"]["https://schema.cassproject.org/0.4/Competency/scope"],
+                        "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "Scope in which the competency may be applied. e.g. Underwater."}],
+                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Scope"}]
+                    },
+                    "https://schema.cassproject.org/0.4/Level": {
+                        ...this.$store.state.lode.schemataLookup["https://schema.cassproject.org/0.4/"]["https://schema.cassproject.org/0.4/Level"],
+                        "valuesIndexed": function() {
+                            var level = me.getLevel();
+                            return level;
+                        },
+                        "remove": function() {}
+                    }
+                };
+            }
         }
     },
     components: {Hierarchy, Thing},
@@ -255,6 +255,18 @@ export default {
         }
     },
     methods: {
+        getLevel: function() {
+            var levels = {};
+            if (!this.framework.level) {
+                return null;
+            }
+            for (var i = 0; i < this.framework.level.length; i++) {
+                var level = EcLevel.getBlocking(this.framework.level[i]);
+                var comp = level.competency;
+                levels[comp] = level;
+            }
+            return levels;
+        },
         refreshPage: function() {
             if (EcRepository.shouldTryUrl(this.framework.id) === false) {
                 this.frameworkExportGuid = EcCrypto.md5(this.framework.id);
