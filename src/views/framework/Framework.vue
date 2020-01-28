@@ -178,6 +178,7 @@ export default {
             if (this.profileOverride) {
                 return this.profileOverride;
             } else {
+                var me = this;
                 return {
                     "http://schema.org/name": {
                         ...this.$store.state.lode.schemataLookup["https://schema.cassproject.org/0.4/"]["http://schema.org/name"],
@@ -196,6 +197,14 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "Scope in which the competency may be applied. e.g. Underwater."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Scope"}]
+                    },
+                    "https://schema.cassproject.org/0.4/Level": {
+                        ...this.$store.state.lode.schemataLookup["https://schema.cassproject.org/0.4/"]["https://schema.cassproject.org/0.4/Level"],
+                        "valuesIndexed": function() {
+                            var level = me.getLevel();
+                            return level;
+                        },
+                        "remove": function() {}
                     }
                 };
             }
@@ -234,6 +243,18 @@ export default {
         }
     },
     methods: {
+        getLevel: function() {
+            var levels = {};
+            if (!this.framework.level) {
+                return null;
+            }
+            for (var i = 0; i < this.framework.level.length; i++) {
+                var level = EcLevel.getBlocking(this.framework.level[i]);
+                var comp = level.competency;
+                levels[comp] = level;
+            }
+            return levels;
+        },
         refreshPage: function() {
             if (EcRepository.shouldTryUrl(this.framework.id) === false) {
                 this.frameworkExportGuid = EcCrypto.md5(this.framework.id);
