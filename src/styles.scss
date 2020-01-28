@@ -41,6 +41,7 @@ p {
 
 
 .e-HierarchyNode {
+    transform: translateX(0);
     .icon{
         padding: 0rem;
         margin: 0rem;
@@ -93,12 +94,10 @@ p {
     border-radius: .25rem;
     margin-top:.5rem;
     padding: .25rem;
-
+  
     .edit{
-        float:left;
     }
     .save{
-        float:left;
     }
 }
 
@@ -114,6 +113,10 @@ p {
         font-size: $size-7;
         font-weight: 500;
     }
+    .e-name {
+        font-size: $size-4;
+        font-weight: 600;
+    }
 }
 .e-Property-text{
     border-radius: .25rem;
@@ -121,6 +124,15 @@ p {
 .e-Property-ul{
     border-radius: .25rem;
     padding: .25rem;
+    .e-description {
+        font-weight: 400;
+        font-size: $size-6;
+    }
+    .e-name {
+        font-weight: 600;
+        font-size: $size-4;
+    }
+    
     margin: .125em .5em;
 }
 
@@ -267,6 +279,97 @@ iframe {
 }
 
 
+/***** framework ********/
+.page-framework{
+    .e-Thing-ul{
+        margin-top:0px;
+    }
+    .e-Thing-always-ul .e-name{
+        label{
+            display:none;
+        }
+    }
+
+    .e-Thing-always-ul .e-description{
+        label{
+            display:none;
+        }
+        font-size:.8rem;
+    }
+
+    .e-Framework{
+        ul{
+            margin-left:0px;
+        }
+        a {
+            display:none;
+        }
+        >.expand {
+        }
+        >.compact {
+        }
+        >.editable {
+        }
+        >.delete-thing{
+        }
+        .e-Property-text{
+            font-size:larger;
+        }
+    }
+
+    .e-Competency{
+        a {
+        }
+        >.expand{
+        }
+        >.compact{
+        }
+        >.editable {
+        }
+        >.delete-thing {
+        }
+        >.remove {
+        }
+        >.export {
+        }
+        .active {
+            color: $link;
+        }
+    }
+    .e-HierarchyNode{
+        >ul{
+            padding-left:1rem;
+            >div{
+                border:1px dashed whitesmoke;
+            }
+        }
+        >.icon{
+            width:0px;
+            height:0px;
+            margin:0px;
+            line-height:0px;
+            display:block;
+            position:relative;
+            left:-.5rem;
+            top:-2rem;
+        }
+        .highlighted{
+            background-color:yellow;
+        }
+        padding-left:1rem;
+    }
+    .dragging{
+        div{
+            border:1px dashed gray !important;
+            .drag-footer::before{
+                content:'' !important
+            }
+            .drag-footer{
+            }
+        }
+    }
+}
+
 
 
 .e-Thing-always-ul .e-description{
@@ -277,24 +380,83 @@ iframe {
 }
 
 .e-Competency{
+        transform: translateX(0);
+        cursor: pointer;
+        .clickable-hierarchy {
+            height: 100%;
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 32;
+            left: 0;
+        }
+        .e-Thing-always-ul {
+            width: 100%;
+        }
+        .thing-actions {
+            position: fixed;
+            visibility: hidden;
+            width: 100%;
+            padding: 6px;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            background-color: rgba(grey, 1);
+            .action {
+                display: block;
+                width: 100%;
+            }
+        }
     a {
         display:none;
     }
     >.expand{
-        float:right;
     }
     >.compact{
-        float:right;
     }
     .icon {
         padding: .5rem;
     }
 }
+
+.e-Think.e-Competency {
+        .confirm-delete-dialog {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top:0;
+        right: 0;
+        left: 0;
+        z-index: 100;
+        background-color: $dark;
+    }
+}
+/* On Hover show Toolset on Competency card in Editor view */
+.e-Thing.e-Competency.showHoverItems {
+    background-color: rgba($dark, .1);
+    padding-bottom: 44px !important;
+    .e-Thing-ul {
+        background-color: rgba($dark, .1);
+    }
+    .thing-actions {
+         visibility: visible !important;
+         background: rgba($white, .2);
+         height: 44px;
+         display: flex;
+         flex-direction: row;
+         justify-content: flex-end;
+         
+         .action {
+             width: 33%;
+         }
+    }
+}
+
+
 .e-HierarchyNode {
     ul {
         margin-top: .25rem;
         padding-left:.375rem;
-    
     }
 }
 
@@ -303,6 +465,92 @@ iframe {
 }
 
 
-.page-open {
-   
+/******* Actions on framework list fiew (page open)  ********/
+.e-Thing.e-Framework {
+    transform: translateX(0);
+    cursor: pointer;
+    .e-Thing-always-ul {
+        width: 80%;
+    }
+    .thing-actions {
+        position: fixed;
+        width: 20%;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(grey, .3);
+        .action {
+            display: none;
+        }
+        .info {
+
+        }
+        .view {
+            display: none;
+        }
+    }
+}
+
+/* Framework details at the top of framework page  */
+ .page-framework {
+     .e-Thing.e-Framework {
+        display: flex;
+        flex-direction: column;
+        flex-flow: column-reverse;
+        .e-Thing-always-ul {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        .thing-actions {
+            display: flex;
+            position: relative;
+            flex-direction: row;
+            width: 100%;
+            height: 48px;
+            background-color: white;
+             .action, .info, .view {
+                display: block;
+                width: 30%;
+            }
+        }
+    }
+}
+
+
+
+.page-open .e-name, .page-open .e-title{
+    label{
+        display:none;
+    }
+    ul{
+        margin-left:0px;
+        display:inline;
+        li{
+            display:inline;
+            margin-right:.5rem;
+        }
+    }
+}
+
+.page-open .e-description{
+    label{
+        display:none;
+    }
+    font-size:.8rem;
+}
+
+.page-open .e-Framework, .page-open .e-ConceptScheme{
+    a {
+        display:none;
+    }
+    .icon {
+        display:none;
+    }
+    .editable {
+        display:inline;
+    }
+    .not-editable {
+        display:inline;
+    }
 }

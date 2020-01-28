@@ -180,31 +180,5 @@ export default {
 
 <style lang="scss">
 
-.page-open .e-name, .page-open .e-title{
-    label{
-        display:none;
-    }
-    ul{
-        margin-left:0px;
-        display:inline;
-        li{
-            display:inline;
-            margin-right:.5rem;
-        }
-    }
-}
-
-.page-open .e-description{
-    label{
-        display:none;
-    }
-    font-size:.8rem;
-}
-
-.page-open .e-Framework, .page-open .e-ConceptScheme{
-    a {display:none;}
-    .icon {display:none;}
-    .editable {display:block;float:right;}
-}
 
 </style>

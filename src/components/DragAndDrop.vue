@@ -98,7 +98,11 @@ export default {
             }
         },
         fileChange(e) {
-            this.files = e.target.files || e.dataTransfer.files;
+            if (e) {
+                this.files = e.target.files || e.dataTransfer.files;
+            } else {
+                this.files = [];
+            }
         },
         addFile(e) {
             let droppedFiles = e.dataTransfer.files;

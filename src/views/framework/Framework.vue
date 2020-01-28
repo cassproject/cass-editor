@@ -6,39 +6,51 @@
                     :obj="framework"
                     :repo="repo"
                     :parentNotEditable="queryParams.view==='true'"
-                    :profile="frameworkProfile"  />
-                <span
-                    class="tag is-info has-text-white"
-                    v-if="framework.competency && framework.competency.length == 1">{{ framework.competency.length }} item</span>
-                <span
-                    class="tag is-info has-text-white"
-                    v-else-if="framework.competency && framework.competency.length > 1">{{ framework.competency.length }} items</span>
-                <span
-                    class="tag is-info has-text-white"
-                    v-if="timestamp"
-                    :title="new Date(timestamp)">Last modified {{ lastModified }}</span>
-                <span
-                    class="tag is-info has-text-white"
-                    v-if="framework['schema:dateCreated']"
-                    :title="new Date(framework['schema:dateCreated'])">Created {{ $moment(framework['schema:dateCreated']).fromNow() }}</span>
-                <span
-                    class="tag is-info has-text-white"
-                    v-if="framework['Approved']"
-                    :title="framework['Approved']">Approved</span>
-                <span
-                    class="tag is-info has-text-white"
-                    v-if="framework['Published']"
-                    :title="framework['Published']">Published</span>
-                <button
-                    v-if="selectAllButton"
-                    @click="selectAll=!selectAll">
-                    Select All
-                </button>
-                <button
-                    v-if="selectButtonText"
-                    @click="selectButton">
-                    {{ selectButtonText }}
-                </button>
+                    :profile="frameworkProfile" />
+                <span class="actions">
+                    <span
+                        class="tag is-info has-text-white"
+                        v-if="framework.competency && framework.competency.length == 1">
+                        {{ framework.competency.length }} item
+                    </span>
+                    <span
+                        class="tag is-info has-text-white"
+                        v-else-if="framework.competency && framework.competency.length > 1">
+                        {{ framework.competency.length }} items
+                    </span>
+                    <span
+                        class="tag is-info has-text-white"
+                        v-if="timestamp"
+                        :title="new Date(timestamp)">
+                        Last modified {{ lastModified }}
+                    </span>
+                    <span
+                        class="tag is-info has-text-white"
+                        v-if="framework['schema:dateCreated']"
+                        :title="new Date(framework['schema:dateCreated'])">
+                        Created {{ $moment(framework['schema:dateCreated']).fromNow() }}
+                    </span>
+                    <span
+                        class="tag is-info has-text-white"
+                        v-if="framework['Approved']"
+                        :title="framework['Approved']">
+                        Approved
+                    </span>
+                    <span
+                        class="tag is-info has-text-white"
+                        v-if="framework['Published']"
+                        :title="framework['Published']">Published</span>
+                    <button
+                        v-if="selectAllButton"
+                        @click="selectAll=!selectAll">
+                        Select All
+                    </button>
+                    <button
+                        v-if="selectButtonText"
+                        @click="selectButton">
+                        {{ selectButtonText }}
+                    </button>
+                </span>
                 <hr>
                 <Hierarchy
                     :container="framework"
@@ -60,7 +72,7 @@
                     :selectMode="selectButtonText != null"
                     :selectAll="selectAll"
                     :profile="competencyProfile"
-                    :specialProperties="specialProperties"  />
+                    :specialProperties="specialProperties" />
             </div>
         </div>
     </div>
@@ -457,77 +469,5 @@ export default {
 
 <style lang="scss">
 
-.page-framework{
-    .e-Thing-ul{
-
-        margin-top:0px;
-    }
-    .e-Thing-always-ul .e-name{
-        label{
-            display:none;
-        }
-    }
-
-    .e-Thing-always-ul .e-description{
-        label{
-            display:none;
-        }
-        font-size:.8rem;
-    }
-
-    .e-Framework{
-        ul{margin-left:0px;}
-        a {display:none;}
-        >.expand{float:right;position:relative;top:.5rem;}
-        >.compact{float:right;position:relative;top:.5rem;}
-        >.editable{float:right;position:relative;top:.5rem;}
-        >.delete-thing{float:right;position:relative;top:.5rem;}
-        .e-Property-text{
-            font-size:larger;
-        }
-    }
-
-    .e-Competency{
-        a {display:none;}
-        >.expand{float:right;}
-        >.compact{float:right;}
-        >.editable {float:right;}
-        >.delete-thing {float:right;}
-        >.remove {float:right;}
-        >.export {float:right;}
-    }
-    .e-HierarchyNode{
-        >ul{
-            padding-left:1rem;
-            >div{
-                border:1px dashed whitesmoke;
-            }
-        }
-        >.icon{
-            width:0px;
-            height:0px;
-            margin:0px;
-            line-height:0px;
-            display:block;
-            position:relative;
-            left:-.5rem;
-            top:-2rem;
-        }
-        .highlighted{
-            background-color:yellow;
-        }
-        padding-left:1rem;
-    }
-    .dragging{
-        div{
-            border:1px dashed gray !important;
-            .drag-footer::before{
-                content:'' !important
-            }
-            .drag-footer{
-            }
-        }
-    }
-}
 
 </style>

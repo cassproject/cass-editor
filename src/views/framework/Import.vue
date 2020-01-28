@@ -3,200 +3,9 @@
         <div class="columns is-multiline is-marginless is-gapless is-mobile">
             <div class="column is-narrow is-hidden-mobile">
                 <!--- side bar -->
-                <aside
-                    class="menu has-background-primary has-text-white">
-                    <div
-                        class="menu-label is-size-3"
-                        v-if="method=='file'">
-                        Supported File Types
-                    </div>
-                    <div
-                        class="menu-label"
-                        v-if="method=='server'">
-                        Supported Servers
-                    </div>
-                    <div
-                        class="menu-label"
-                        v-if="method=='text'">
-                        How to format text
-                    </div>
-                    <div
-                        class="menu-header"
-                        v-if="method=='url'">
-                        Supported URL Imports
-                    </div>
-                    <div
-                        v-if="method=='file'"
-                        class="menu-list">
-                        <li
-                            class="menu-list_list-item"
-                            v-for="(supportedType, index) in supportedFileTypes"
-                            :key="index">
-                            <h1 class="is-size-6 has-text-weight-medium">
-                                {{ supportedType.type }}
-                                <span
-                                    @click="supportedType.showDescription = !supportedType.showDescription"
-                                    class="icon is-pulled-right">
-                                    <i class="fa fa-info-circle" />
-                                </span>
-                            </h1>
-                            <p
-                                class="is-size-7 content-body-wrapper"
-                                v-if="supportedType.showDescription"
-                                v-html="supportedType.description" />
-                            <div class="menu-list_list-subitem">
-                                <h5
-                                    class="is-size-7 has-text-weight-bold"
-                                    v-if="supportedType.examples.length > 0">
-                                    Examples
-                                </h5>
-                                <div class="buttons is-left">
-                                    <a
-                                        class="button has-text-link is-size-7 is-small is-text"
-                                        v-for="(example) in supportedType.examples"
-                                        :key="example.id"
-                                        :href="example.location"
-                                        :download="example.download">
-                                        <span>
-                                            {{ example.name }}
-                                        </span>
-                                        <span class="icon">
-                                            <i class="fa fa-download" />
-                                        </span>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="menu-list_list-subitem">
-                                <h5
-                                    class="is-size-7 has-text-weight-bold"
-                                    v-if="supportedType.templates.length > 0">
-                                    Templates
-                                </h5>
-                                <div class="buttons is-left">
-                                    <a
-                                        class="button has-text-link is-size-7 is-small is-text"
-                                        v-for="(template) in supportedType.templates"
-                                        :key="template.id"
-                                        :href="template.location"
-                                        :download="template.download">
-                                        <span>
-                                            {{ template.name }}
-                                        </span>
-                                        <span class="icon">
-                                            <i class="fa fa-download" />
-                                        </span>
-                                    </a>
-                                </div>
-                            </div>
-                        </li>
-                    </div>
-                    <div
-                        v-else-if="method=='server'"
-                        class="menu-list">
-                        <li
-                            class="menu-list_list-item"
-                            v-for="(supportedType, index) in supportedServer"
-                            :key="index">
-                            <h1 class="is-size-6 has-text-weight-medium">
-                                {{ supportedType.type }}
-                                <span
-                                    @click="supportedType.showDescription = !supportedType.showDescription"
-                                    class="icon is-pulled-right">
-                                    <i class="fa fa-info-circle" />
-                                </span>
-                            </h1>
-                            <p
-                                class="is-size-7 content-body-wrapper"
-                                v-if="supportedType.showDescription"
-                                v-html="supportedType.description" />
-                            <div class="menu-list_list-subitem">
-                                <h5
-                                    class="is-size-7 has-text-weight-bold"
-                                    v-if="supportedType.examples.length > 0">
-                                    Examples
-                                </h5>
-                                <div class="buttons is-left">
-                                    <a
-                                        class="button has-text-link is-size-7 is-small is-text"
-                                        v-for="(example) in supportedType.examples"
-                                        :key="example.id"
-                                        @click="serverUrl=example.location">
-                                        <span>
-                                            {{ example.name }}
-                                        </span>
-                                    </a>
-                                </div>
-                            </div>
-                        </li>
-                    </div>
-                    <div
-                        v-else-if="method=='url'"
-                        class="menu-list">
-                        <li
-                            class="menu-list_list-item"
-                            v-for="(supportedType, index) in supportedUrl"
-                            :key="index">
-                            <h1 class="is-size-6 has-text-weight-medium">
-                                {{ supportedType.type }}
-                                <span
-                                    @click="supportedType.showDescription = !supportedType.showDescription"
-                                    class="icon is-pulled-right">
-                                    <i class="fa fa-info-circle" />
-                                </span>
-                            </h1>
-                            <p
-                                class="is-size-7 content-body-wrapper"
-                                v-if="supportedType.showDescription"
-                                v-html="supportedType.description" />
-                            <div class="menu-list_list-subitem">
-                                <h5
-                                    class="is-size-7 has-text-weight-bold"
-                                    v-if="supportedType.examples.length > 0">
-                                    Examples
-                                </h5>
-                                <div class="buttons is-left">
-                                    <a
-                                        class="button has-text-link is-size-7 is-small is-text"
-                                        v-for="(example) in supportedType.examples"
-                                        :key="example.id"
-                                        @click="url=example.location">
-                                        <span>
-                                            {{ example.name }}
-                                        </span>
-                                    </a>
-                                </div>
-                            </div>
-                        </li>
-                    </div>
-                    <div
-                        v-else-if="method=='text'"
-                        class="menu-list">
-                        <li
-                            class="menu-list_list-item">
-                            <p
-                                class="is-size-7 content-body-wrapper">
-                                To enter a framework using text: Copy and paste or start writing in the box here. Use spaces to indicate indenture.
-                                <br>
-                                eg:
-                                <pre>
-                                    First Level
-                                      Second Level
-                                        Third Level
-                                      Second Level
-                                </pre>
-                            </p>
-                            <div class="buttons is-left">
-                                <a
-                                    class="button has-text-link is-size-7 is-small is-text"
-                                    @click="text='First Level\n Second Level\n  Third Level\n Second Level'">
-                                    <span>
-                                        Example
-                                    </span>
-                                </a>
-                            </div>
-                        </li>
-                    </div>
-                </aside>
+                <side-bar
+                    type="import"
+                    :method="method" />
                 <!--- end side bar -->
             </div>
             <!--- main body section -->
@@ -211,14 +20,9 @@
                                     </h1>
                                 </div>
                                 <div class="column">
-                                    <div
-                                        v-if="framework !== null"
-                                        class="successful-import has-text-right has-text-success">
-                                        <i class="fa fa-check" />
-                                        <span class="is-size-6">
-                                            framework imported
-                                        </span>
-                                    </div>
+                                    <p class="is-primary is-size-7">
+                                        {{ status }}
+                                    </p>
                                 </div>
                             </div>
                             <p class="is-size-7">
@@ -455,11 +259,6 @@
                                             Import
                                         </button>-->
                                     </div>
-                                    <div class="section">
-                                        <div class="is-size-7 has-text-weight-bold has-text-info has-text-right">
-                                            {{ status }}
-                                        </div>
-                                    </div>
                                     <!-- sever input -->
                                     <div
                                         class="section has-dashed-border"
@@ -557,7 +356,7 @@
                                     edgeRelationLiteral="narrows"
                                     edgeSourceProperty="source"
                                     edgeTargetProperty="target"
-                                    editable=false
+                                    editable="true"
                                     :repo="repo" />
                             </div>
                         </div>
@@ -565,19 +364,23 @@
                             <div class="columns is-mobile">
                                 <div class="column is-12">
                                     <div class="buttons is-right">
-                                        <div @click="resetImport" class="button is-light is-pulled-right">
+                                        <div
+                                            @click="cancelCase"
+                                            class="button is-light is-pulled-right">
                                             <span class="icon">
-                                                <i class="fas fa-undo-alt"/>
+                                                <i class="fas fa-undo-alt" />
                                             </span>
                                             <span>cancel</span>
                                         </div>
-                                        <div @click="resetImport" class="button is-light is-pulled-right">
+                                        <div
+                                            @click="resetImport"
+                                            class="button is-light is-pulled-right">
                                             <span class="icon">
-                                                <i class="fas fa-undo-alt"/>
+                                                <i class="fas fa-undo-alt" />
                                             </span>
                                             <span>start over</span>
                                         </div>
-                                         <div
+                                        <div
                                             v-if="framework"
                                             @click="openFramework"
                                             class="button is-primary is-pulled-right">
@@ -622,6 +425,7 @@ import asnRdfJson from 'file-loader!../../../files/D2695955';
 import medbiquitous from 'file-loader!../../../files/educational_achievement_sample_1June2012.xml';
 import common from '@/mixins/common.js';
 import dragAndDrop from './../../components/DragAndDrop.vue';
+import sideBar from './../../components/SideBar.vue';
 
 export default {
     name: "Import",
@@ -629,7 +433,7 @@ export default {
         queryParams: Object
     },
     mixins: [common],
-    components: {Hierarchy, dragAndDrop},
+    components: {Hierarchy, dragAndDrop, sideBar},
     data: function() {
         return {
             processingFile: false,
@@ -954,6 +758,8 @@ export default {
             this.file = null;
             this.processingFile = false;
             this.processingSuccess = false;
+            this.$refs.dragAndDrop.fileChange();
+            this.status = "Ready.";
         },
         onUploadFiles: function(value) {
             this.file = value;

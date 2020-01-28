@@ -144,9 +144,13 @@ export default {
 }
 
 .page-open .e-Organization{
-    a {display:none;}
-    .icon {display:none;}
-    .editable {display:block;float:right;}
+    a {
+        display:none;}
+    .icon {
+        display:none;}
+    .editable {
+        display:block;
+    }
 }
 
 </style>

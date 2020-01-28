@@ -3,6 +3,7 @@
         id="app"
         class="has-background-white">
         <!-- nav bar navigation -->
+        <cass-modal />
         <nav
             class="navbar is-black is-fixed-top"
             role="navigation"
@@ -159,6 +160,8 @@
 </style>
 <script>
 import common from '@/mixins/common.js';
+import cassModal from './components/CassModal.vue';
+
 export default {
     data: function() {
         return {
