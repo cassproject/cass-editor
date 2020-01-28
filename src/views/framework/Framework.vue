@@ -59,8 +59,7 @@
                     :highlightList="highlightCompetency"
                     :selectMode="selectButtonText != null"
                     :selectAll="selectAll"
-                    :profile="competencyProfile"
-                    :specialProperties="specialProperties" />
+                    :profile="competencyProfile" />
             </div>
         </div>
     </div>
@@ -158,22 +157,6 @@ export default {
             path += this.commonPathIframe;
             return path;
         },
-        specialProperties: function() {
-            if (this.profileOverride) {
-                return null;
-            }
-            var props = {};
-            props["narrows"] =
-            {
-                "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
-                "http://www.w3.org/2000/01/rdf-schema#comment":
-                [{"@language": "en", "@value": "A sub-competency relationship which has relevance to this competency."}],
-                "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Narrows"}],
-                "iframePath": this.iframeCompetencyPathInterframework,
-                "iframeText": "Select competencies to align..."
-            };
-            return props;
-        },
         competencyProfile: function() {
             if (this.profileOverride) {
                 return this.profileOverride;
@@ -200,14 +183,64 @@ export default {
                     },
                     "https://schema.cassproject.org/0.4/Level": {
                         ...this.$store.state.lode.schemataLookup["https://schema.cassproject.org/0.4/"]["https://schema.cassproject.org/0.4/Level"],
-                        "valuesIndexed": function() {
-                            var level = me.getLevel();
-                            return level;
-                        },
-                        "remove": function() {}
+                        "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Level"}],
+                        "valuesIndexed": function() { return me.levels; },
+                        "noTextEditing": true,
+                        "iframePath": me.iframeCompetencyPathInterframework,
+                        "iframeText": "Select levels to align...",
+                        "add": function(selectedCompetency) { me.addLevel(selectedCompetency); },
+                        "remove": function() {},
+                        "save": function() { me.saveFramework(); }
+                    },
+                    "narrows": {
+                        "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                        "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "A sub-competency relationship which has relevance to this competency."}],
+                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Narrows"}],
+                        "iframePath": this.iframeCompetencyPathInterframework,
+                        "iframeText": "Select competencies to align...",
+                        "valuesIndexed": function() { return me.relations["narrows"]; }
                     }
                 };
             }
+        },
+        levels: function() {
+            var levels = {};
+            if (!this.framework.level) {
+                return null;
+            }
+            for (var i = 0; i < this.framework.level.length; i++) {
+                var level = EcLevel.getBlocking(this.framework.level[i]);
+                var comp = level.competency;
+                if (!EcArray.isArray(levels[comp])) {
+                    levels[comp] = [];
+                }
+                levels[comp].push(level);
+            }
+            return levels;
+        },
+        relations: function() {
+            var relations = {};
+            for (var i = 0; i < this.framework.relation.length; i++) {
+                var a = EcAlignment.getBlocking(this.framework.relation[i]);
+                if (!relations[a.relationType]) {
+                    relations[a.relationType] = {};
+                }
+                if (!relations[a.relationType][a.source]) {
+                    relations[a.relationType][a.source] = [];
+                }
+                relations[a.relationType][a.source].push(a.target);
+                if (a.relationType === "narrows") {
+                    if (!relations["broadens"]) {
+                        relations["broadens"] = {};
+                    }
+                    if (!relations["broadens"][a.target]) {
+                        relations["broadens"][a.target] = [];
+                    }
+                    relations["broadens"][a.target].push(a.source);
+                }
+            }
+            return relations;
         }
     },
     components: {Hierarchy, Thing},
@@ -243,18 +276,6 @@ export default {
         }
     },
     methods: {
-        getLevel: function() {
-            var levels = {};
-            if (!this.framework.level) {
-                return null;
-            }
-            for (var i = 0; i < this.framework.level.length; i++) {
-                var level = EcLevel.getBlocking(this.framework.level[i]);
-                var comp = level.competency;
-                levels[comp] = level;
-            }
-            return levels;
-        },
         refreshPage: function() {
             if (EcRepository.shouldTryUrl(this.framework.id) === false) {
                 this.frameworkExportGuid = EcCrypto.md5(this.framework.id);
@@ -462,6 +483,36 @@ export default {
                 }
                 me.repo.saveTo(framework, function() {}, console.error);
             });
+        },
+        addLevel: function(selectedCompetency) {
+            var c = new EcLevel();
+            if (this.queryParams.newObjectEndpoint != null) {
+                c.generateShortId(this.queryParams.newObjectEndpoint);
+            } else {
+                c.generateId(this.repo.selectedServer);
+            }
+            c["schema:dateCreated"] = new Date().toISOString();
+            this.framework.addLevel(c.id);
+            if (EcIdentityManager.ids.length > 0) {
+                c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            }
+            c.name = "New Level";
+            c.competency = selectedCompetency;
+            if (this.queryParams.private === "true") {
+                c = EcEncryptedValue.toEncryptedValue(c);
+                if (EcEncryptedValue.encryptOnSaveMap[this.framework.id] !== true) {
+                    framework = EcEncryptedValue.toEncryptedValue(framework);
+                }
+            }
+            this.repo.saveTo(c, function() {}, console.error);
+        },
+        saveFramework: function() {
+            this.framework["schema:dateModified"] = new Date().toISOString();
+            var framework = this.framework;
+            if (this.queryParams.private === "true" && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                framework = EcEncryptedValue.toEncryptedValue(framework);
+            }
+            this.repo.saveTo(framework, function() {}, console.error);
         }
     }
 };
