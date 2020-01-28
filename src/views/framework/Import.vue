@@ -878,8 +878,41 @@ export default {
                      schema used to store the CTDL-ASN frameworks in CaSS, but does not change any of the data.
                      Please note that the Technology Skills framework below is very large and will take a long time to import.`
                 }
-            ],
-            postImportProfile: {
+            ]
+        };
+    },
+    computed: {
+        isUrl: function() {
+            if (this.method === 'url') {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        isFile: function() {
+            if (this.method === 'file') {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        isText: function() {
+            if (this.method === 'text') {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        isServer: function() {
+            if (this.method === 'server') {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        postImportProfile: function() {
+            var me = this;
+            return {
                 "@id": {
                     "@id": "https://schema.cassproject.org/0.4/Competency/id",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -921,37 +954,22 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The context of the competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Context"}]
+                },
+                "https://schema.cassproject.org/0.4/Level": {
+                    ...this.$store.state.lode.schemataLookup["https://schema.cassproject.org/0.4/"]["https://schema.cassproject.org/0.4/Level"],
+                    "valuesIndexed": function() {
+                        var levels = {};
+                        if (!me.framework.level) {
+                            return null;
+                        }
+                        for (var i = 0; i < me.framework.level.length; i++) {
+                            var level = EcLevel.getBlocking(me.framework.level[i]);
+                            var comp = level.competency;
+                            levels[comp] = level;
+                        }
+                        return levels;
+                    }
                 }
-            }
-        };
-    },
-    computed: {
-        isUrl: function() {
-            if (this.method === 'url') {
-                return true;
-            } else {
-                return false;
-            }
-        },
-        isFile: function() {
-            if (this.method === 'file') {
-                return true;
-            } else {
-                return false;
-            }
-        },
-        isText: function() {
-            if (this.method === 'text') {
-                return true;
-            } else {
-                return false;
-            }
-        },
-        isServer: function() {
-            if (this.method === 'server') {
-                return true;
-            } else {
-                return false;
             }
         }
     },
