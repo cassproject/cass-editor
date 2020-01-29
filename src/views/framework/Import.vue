@@ -348,6 +348,7 @@
                                     v-if="framework"
                                     :container="framework"
                                     containerType="Framework"
+                                    viewType="importPreview"
                                     containerNodeProperty="competency"
                                     containerEdgeProperty="relation"
                                     nodeType="EcCompetency"
@@ -356,7 +357,7 @@
                                     edgeRelationLiteral="narrows"
                                     edgeSourceProperty="source"
                                     edgeTargetProperty="target"
-                                    editable="true"
+                                    :editable=true
                                     :repo="repo" />
                             </div>
                         </div>

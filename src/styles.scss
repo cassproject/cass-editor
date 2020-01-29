@@ -62,12 +62,7 @@ p {
 .e-HierarchyNode-ul
 {
     li:before{
-         content: '';
-         height: 3rem;
-         width: 2rem;
-         border-bottom: 2px solid black;
-         top: 0rem;
-         bottom: 0;
+      
      }
     >li{
         //border-left: 2px solid black;
@@ -105,6 +100,7 @@ p {
         background-color: transparent;
 }
 .e-Property {
+  
     .fa {
         font-size: $size-7;
         color: $dark;
@@ -372,16 +368,46 @@ iframe {
 
 
 
-.e-Thing-always-ul .e-description{
-    label{
-        display:none;
+.e-Thing-always-ul {
+    li {
+        width: 100%;
+        label {
+            width: 100%;
+        }
+    }
+    .e-description{
+        label{
+        }
     }
     font-size:.8rem;
+    
 }
 
 .e-Competency{
         transform: translateX(0);
         cursor: pointer;
+        .e-Property {
+            padding: .5rem 0rem;
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: row-reverse;
+            label {
+                display: flex;
+                width: 100%;
+                flex-direction: row-reverse;
+                .thing-label {
+                    font-weight: 500;
+                    color: rgba($dark, .3);
+                    width: 95%;
+                }
+            }
+            ul {
+                width: 90%;
+            }
+            label {
+                width: 100%;
+            }
+        }
         .clickable-hierarchy {
             height: 100%;
             position: fixed;
@@ -402,11 +428,11 @@ iframe {
             left: 0;
             bottom: 0;
             background-color: rgba(grey, 1);
-            .action {
+            .action, .info, .view {
                 display: block;
                 width: 100%;
             }
-        }
+            }
     a {
         display:none;
     }
@@ -419,18 +445,6 @@ iframe {
     }
 }
 
-.e-Think.e-Competency {
-        .confirm-delete-dialog {
-        position: fixed;
-        width: 100%;
-        height: 100%;
-        top:0;
-        right: 0;
-        left: 0;
-        z-index: 100;
-        background-color: $dark;
-    }
-}
 /* On Hover show Toolset on Competency card in Editor view */
 .e-Thing.e-Competency.showHoverItems {
     background-color: rgba($dark, .1);
@@ -445,8 +459,7 @@ iframe {
          display: flex;
          flex-direction: row;
          justify-content: flex-end;
-         
-         .action {
+         .action, .info, .view {
              width: 33%;
          }
     }
