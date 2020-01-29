@@ -137,6 +137,7 @@ export default {
                         name = name[langs[0]];
                     }
                 }
+                return name;
             }, function(error) {
                 console.log(error);
             });

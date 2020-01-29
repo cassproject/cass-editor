@@ -189,7 +189,7 @@ export default {
                         "iframePath": me.iframeCompetencyPathInterframework,
                         "iframeText": "Select levels to align...",
                         "add": function(selectedCompetency) { me.addLevel(selectedCompetency); },
-                        "remove": function() {},
+                        "remove": function(competency, levelId) { me.removeLevelFromFramework(levelId); },
                         "save": function() { me.saveFramework(); }
                     },
                     "narrows": {
@@ -199,7 +199,11 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Narrows"}],
                         "iframePath": this.iframeCompetencyPathInterframework,
                         "iframeText": "Select competencies to align...",
-                        "valuesIndexed": function() { return me.relations["narrows"]; }
+                        "valuesIndexed": function() { return me.relations["narrows"]; },
+                        "noTextEditing": true,
+                        "add": "unsaved",
+                        "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "narrows", values); },
+                        "remove": function(source, target) { me.removeRelationFromFramework(source, "narrows", target); }
                     }
                 };
             }
@@ -461,10 +465,10 @@ export default {
                 EcArray.setRemove(this.selectedArray, id);
             }
         },
-        handleSaveSpecialProperty: function(selectedCompetency, property, values) {
+        addRelationsToFramework: function(selectedCompetency, property, values) {
             this.$parent.addAlignments(values, selectedCompetency, property);
         },
-        handleRemoveSpecialProperty: function(source, property, target) {
+        removeRelationFromFramework: function(source, property, target) {
             var me = this;
             new EcAsyncHelper().each(this.framework.relation, function(relation, callback) {
                 EcAlignment.get(relation, function(r) {
@@ -513,6 +517,11 @@ export default {
                 framework = EcEncryptedValue.toEncryptedValue(framework);
             }
             this.repo.saveTo(framework, function() {}, console.error);
+        },
+        removeLevelFromFramework: function(levelId) {
+            this.framework.removeLevel(levelId);
+            this.conditionalDelete(levelId);
+            this.saveFramework();
         }
     }
 };

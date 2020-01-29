@@ -505,6 +505,10 @@ export default {
                 if (EcIdentityManager.ids.length > 0) {
                     r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                 }
+                if (this.$store.state.editor.private === true) {
+                    r = EcEncryptedValue.toEncryptedValue(r);
+                }
+                this.repo.saveTo(r, function() {}, console.error);
                 var framework = this.$store.state.editor.framework;
                 if (thing.type === 'Concept') {
                     if (framework.relation == null) {
@@ -524,10 +528,6 @@ export default {
                 } else {
                     framework.addRelation(r.id);
                 }
-                if (this.$store.state.editor.private === true) {
-                    r = EcEncryptedValue.toEncryptedValue(r);
-                }
-                this.repo.saveTo(r, function() {}, console.error);
             }
             this.$store.commit('framework', framework);
             if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
@@ -594,9 +594,8 @@ export default {
             if (data != null && data !== "" && !EcObject.isObject(data)) {
                 try {
                     data = JSON.parse(data);
-                } catch (e) {
-                    console.log(e);
-                }
+                // eslint-disable-next-line no-empty
+                } catch (e) {}
             }
             if (data != null && data !== "") {
                 if (data.action === "template") {
