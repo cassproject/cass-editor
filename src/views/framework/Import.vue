@@ -563,8 +563,9 @@
                                     edgeRelationLiteral="narrows"
                                     edgeSourceProperty="source"
                                     edgeTargetProperty="target"
-                                    editable="false"
-                                    :repo="repo" />
+                                    :editable="false"
+                                    :repo="repo"
+                                    :profile="postImportProfile" />
                             </div>
                         </div>
                         <div class="section">
@@ -924,7 +925,11 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "ID"}]
                 },
                 "http://schema.org/name": {
-                    ...this.$store.state.lode.schemataLookup["https://schema.cassproject.org/0.4/"]["http://schema.org/name"],
+                    "@id": "http://schema.org/name",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Name of the competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}]
@@ -940,7 +945,11 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Type"}]
                 },
                 "https://schema.cassproject.org/0.4/Competency/scope": {
-                    ...this.$store.state.lode.schemataLookup["https://schema.cassproject.org/0.4/"]["https://schema.cassproject.org/0.4/Competency/scope"],
+                    "@id": "https://schema.cassproject.org/0.4/Competency/scope",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Scope in which the competency may be applied. e.g. Underwater."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Scope"}]
@@ -956,7 +965,11 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Context"}]
                 },
                 "https://schema.cassproject.org/0.4/Level": {
-                    ...this.$store.state.lode.schemataLookup["https://schema.cassproject.org/0.4/"]["https://schema.cassproject.org/0.4/Level"],
+                    "@id": "https://schema.cassproject.org/0.4/Level",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Level"}],
                     "valuesIndexed": function() {
                         var levels = {};
                         if (!me.framework.level) {
@@ -970,7 +983,7 @@ export default {
                         return levels;
                     }
                 }
-            }
+            };
         }
     },
     watch: {
