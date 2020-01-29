@@ -1,5 +1,5 @@
 <template>
-    <div class="container is-fluid is-marginless is-paddingless">
+    <div class="page-import container is-fluid is-marginless is-paddingless">
         <div class="columns is-multiline is-marginless is-gapless is-mobile">
             <div class="column is-narrow is-hidden-mobile">
                 <!--- side bar -->
@@ -340,7 +340,7 @@
                             </div>
                         </div>
                         <div
-                            v-if="framework"
+                            v-if="framework && importPreviewView"
                             class="section"
                             id="framework-container">
                             <div class="tile is-vertical">
@@ -352,21 +352,61 @@
                                     containerNodeProperty="competency"
                                     containerEdgeProperty="relation"
                                     nodeType="EcCompetency"
+                                    :profile="previewProfile"
+                                    :editable="true"
                                     edgeType="EcAlignment"
                                     edgeRelationProperty="relationType"
                                     edgeRelationLiteral="narrows"
                                     edgeSourceProperty="source"
                                     edgeTargetProperty="target"
-                                    :editable=true
+                                    :repo="repo" />
+                            </div>
+                        </div>
+                        <div
+                            v-else-if="framework && importLightView"
+                            class="section"
+                            id="framework-container">
+                            <div class="tile is-vertical">
+                                <Hierarchy
+                                    v-if="framework"
+                                    :container="framework"
+                                    containerType="Framework"
+                                    viewType="importPreview"
+                                    containerNodeProperty="competency"
+                                    containerEdgeProperty="relation"
+                                    nodeType="EcCompetency"
+                                    :profile="postImportProfile"
+                                    :editable="true"
+                                    edgeType="EcAlignment"
+                                    edgeRelationProperty="relationType"
+                                    edgeRelationLiteral="narrows"
+                                    edgeSourceProperty="source"
+                                    edgeTargetProperty="target"
                                     :repo="repo" />
                             </div>
                         </div>
                         <div class="section">
                             <div class="columns is-mobile">
                                 <div class="column is-12">
-                                    <div class="buttons is-right">
+                                    <div
+                                        v-if="importDetailsView"
+                                        class="buttons is-right">
                                         <div
-                                            @click="cancelCase"
+                                            @click="cancel"
+                                            class="button is-light is-pulled-right">
+                                            Cancel
+                                        </div>
+                                        <div
+                                            @click="approveImportDetails"
+                                            class="button is-light is-pulled-right">
+                                            Approve
+                                        </div>
+                                    </div>
+                                    <div
+                                        v-else-if="importPreviewView"
+                                        class="buttons is-right">
+                                        <div
+                                            @click="cancelImport"
                                             class="button is-light is-pulled-right">
                                             <span class="icon">
                                                 <i class="fas fa-undo-alt" />
@@ -374,21 +414,32 @@
                                             <span>cancel</span>
                                         </div>
                                         <div
-                                            @click="resetImport"
+                                            @click="approveImportPreview"
                                             class="button is-light is-pulled-right">
-                                            <span class="icon">
-                                                <i class="fas fa-undo-alt" />
-                                            </span>
-                                            <span>start over</span>
+                                            Approve
+                                        </div>
+                                    </div>
+                                    <div
+                                        v-else-if="importLightView"
+                                        class="buttons is-right">
+                                        <div
+                                            @click="cancel"
+                                            class="button is-light is-pulled-right">
+                                            Cancel
+                                        </div>
+                                        <div
+                                            @click="exportFramework"
+                                            class="button is-light is-pulled-right">
+                                            Export
                                         </div>
                                         <div
                                             v-if="framework"
-                                            @click="openFramework"
+                                            @click="alert('start new import')"
                                             class="button is-primary is-pulled-right">
                                             <span class="icon">
                                                 <i class="fa fa-edit" />
                                             </span>
-                                            <span>open editor</span>
+                                            <span>import new framework</span>
                                         </div>
                                         <div
                                             v-if="framework"
@@ -400,6 +451,9 @@
                                             <span>open editor</span>
                                         </div>
                                     </div>
+                                    <div
+                                        v-else
+                                        class />
                                 </div>
                             </div>
                         </div>
@@ -437,6 +491,9 @@ export default {
     components: {Hierarchy, dragAndDrop, sideBar},
     data: function() {
         return {
+            importPreviewView: false,
+            importLightView: false,
+            importDetailsView: false,
             processingFile: false,
             processingSuccess: false,
             showCassCsv: false,
@@ -696,6 +753,19 @@ export default {
         };
     },
     computed: {
+        /*
+         * depending on where we are in the import cycle,
+         * utilize a different profile
+         */
+        importProfile: function() {
+            let profile;
+            if (this.importPreviewView === true) {
+                profile = this.previewProfile;
+            } else {
+                profile = this.postImportProfile;
+            }
+            return profile;
+        },
         isUrl: function() {
             if (this.method === 'url') {
                 return true;
@@ -738,10 +808,24 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "ID"}]
                 },
                 "http://schema.org/name": {
-                    ...this.$store.state.lode.schemataLookup["https://schema.cassproject.org/0.4/"]["http://schema.org/name"],
+                    "@id": "http://schema.org/name",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Name of the competency."}],
+                        [{"@language": "en", "@value": "Name of the competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}]
+                },
+                "http://schema.org/description": {
+                    "@id": "http://schema.org/description",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "Description of the competency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}]
                 },
                 "@type": {
                     "@id": "https://schema.cassproject.org/0.4/Competency/type",
@@ -754,7 +838,11 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Type"}]
                 },
                 "https://schema.cassproject.org/0.4/Competency/scope": {
-                    ...this.$store.state.lode.schemataLookup["https://schema.cassproject.org/0.4/"]["https://schema.cassproject.org/0.4/Competency/scope"],
+                    "@id": "https://schema.cassproject.org/0.4/Competency/scope",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Scope in which the competency may be applied. e.g. Underwater."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Scope"}]
@@ -770,7 +858,11 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Context"}]
                 },
                 "https://schema.cassproject.org/0.4/Level": {
-                    ...this.$store.state.lode.schemataLookup["https://schema.cassproject.org/0.4/"]["https://schema.cassproject.org/0.4/Level"],
+                    "@id": "https://schema.cassproject.org/0.4/Level",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Level"}],
                     "valuesIndexed": function() {
                         var levels = {};
                         if (!me.framework.level) {
@@ -784,10 +876,40 @@ export default {
                         return levels;
                     }
                 }
-            }
+            };
+        },
+        previewProfile: function() {
+            var me = this;
+            return {
+                "http://schema.org/name": {
+                    "@id": "http://schema.org/name",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "Name of the competency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}]
+                },
+                "http://schema.org/description": {
+                    "@id": "http://schema.org/description",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "Description of the competency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}]
+                }
+            };
         }
     },
     watch: {
+        framework: function(val) {
+            if (val) {
+                this.importPreviewView = true;
+            }
+        },
         text: function(newText, oldText) {
             var me = this;
             TabStructuredImport.importCompetencies(
@@ -816,6 +938,18 @@ export default {
         }
     },
     methods: {
+        importSuccess: function() {
+            this.status = "Import Finished.";
+            // change to importDetailsView = true;
+            this.importPreviewView = true;
+        },
+        approveImportPreview: function() {
+            this.importLightView = true;
+            this.importPreviewView = false;
+        },
+        cancelImport: function() {
+            // cancel import
+        },
         resetImport: function(value) {
             this.framework = null;
             this.file = null;
@@ -1068,7 +1202,7 @@ export default {
                 me.repo.multiput(all, function() {
                     for (var i = 0; i < frameworks.length; i++) {
                         me.framework = frameworks[i];
-                        me.status = "Import Finished.";
+                        me.importSuccess();
                         me.spitEvent("importFinished", frameworks[i].shortId(), "importPage");
                     }
                     me.file.splice(0, 1);
@@ -1128,6 +1262,7 @@ export default {
                     me.repo.multiput(toSave, function() {
                         me.framework = f;
                         me.status = "";
+                        me.importSuccess();
                     }, console.error);
                     me.status = "Writing Framework to CaSS...";
                 }, console.error);
@@ -1178,7 +1313,7 @@ export default {
                             me.analyzeImportFile();
                         } else {
                             me.framework = f;
-                            me.status = "Import Finished.";
+                            me.importSuccess();
                             me.spitEvent("importFinished", f.shortId(), "importPage");
                         }
                     }, function(failure) {
@@ -1220,7 +1355,7 @@ export default {
                 if (me.framework == null) {
                     me.framework = EcConceptScheme.getBlocking(data);
                 }
-                me.status = "Import Finished.";
+                me.importSuccess();
                 me.spitEvent("importFinished", me.framework.shortId(), "importPage");
                 if (me.file != null) {
                     me.file.splice(0, 1);

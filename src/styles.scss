@@ -23,13 +23,6 @@ body{
     height: 100%;
 }
 
-#hierarchy-page {
-    .column.icon {
-        height: 100%;
-        
-    }
-}
-
 p {
     font-style: normal;
 }
@@ -39,11 +32,11 @@ p {
 
 }
 
-
+/*
 .e-HierarchyNode {
     transform: translateX(0);
     .icon{
-        padding: 0rem;
+        padding: 23rem;
         margin: 0rem;
         height: 100%;
         font-size: .8rem;
@@ -56,13 +49,11 @@ p {
         border-radius: 0px 5px 5px 0px !important;
     }
     
-}
+}*/
 
-
-.e-HierarchyNode-ul
-{
+/*
+.e-HierarchyNode-ul {
     li:before{
-      
      }
     >li{
         //border-left: 2px solid black;
@@ -79,26 +70,25 @@ p {
          width: calc(3rem - 16px);
          bottom: 0;
      }
-}
+}*/
 
-.page-framework.e-Thing-ul {
-    margin-top: .5rem;
-}
+
 .e-Thing-ul{
     background-color:$light;
     border-radius: .25rem;
     margin-top:.5rem;
     padding: .25rem;
-  
     .edit{
     }
     .save{
     }
 }
 
+
 .e-Thing-ul::first {
-        background-color: transparent;
+    background-color: transparent;
 }
+
 .e-Property {
   
     .fa {
@@ -114,9 +104,11 @@ p {
         font-weight: 600;
     }
 }
+
 .e-Property-text{
     border-radius: .25rem;
 }
+
 .e-Property-ul{
     border-radius: .25rem;
     padding: .25rem;
@@ -132,13 +124,12 @@ p {
     margin: .125em .5em;
 }
 
-input{
-}
 .page {
     margin-top: 2rem;
 }
-.page-open,
-.page-framework {
+.page-framework-list,
+.page-framework,
+.page-import {
     overflow-y: scroll;
     height: 95vh;
 }
@@ -163,70 +154,6 @@ iframe {
     border: 1px solid black;
 }
 
-.List input{
-}
-
-.info-tag {
-    border-radius: 1rem;
-    background-color: $info;
-    font-size: .7rem;
-    font-weight: 400;
-    padding: .25rem;
-    margin-bottom:.1rem;
-}
-
-.type-tag {
-    border-radius: 1rem;
-    background-color: $link;
-    font-size: .7rem;
-    font-weight: 400;
-    padding: .25rem;
-    margin-bottom:.1rem; 
-}
-
-.thing-tag {
-    border-radius: 1rem;
-    background-color: $light;
-    font-size: 1rem;
-    font-weight: 400;
-    padding: .25rem;
-}
-
-.navigation-tag {
-    border: 1px solid $info;
-    border-radius: 1rem;
-    background-color: none;
-    font-size: .7rem;
-    font-weight: 400;
-    padding: .25rem;
-    min-width: 1.75rem;
-    text-align:center;
-    .tag-copy {
-        margin-right: .25rem;
-        font-weight: 500;
-    }
-    .icon .fas {
-        color: $info;
-    }
-}
-
-.is-disabled .navigation-tag {
-    border: 1px solid $black;
-    .tag-copy {
-        color: $black;
-    }
-    .icon .fas {
-        color: $black;
-    }
-}
-.to-do {
-    .icon .fas {
-        color: $black !important;
-    }
-    color: $black !important;
-    background-color: $info;
-}
-
 .navigation-title__wrapper {
     display:inline-block;
     width: 70%;
@@ -236,46 +163,12 @@ iframe {
     display: inline-block;
     width: 30%;
     vertical-align: middle;
-
 }
 
 
-.success-tag {
-    border: 1px solid $success;
-    border-radius: 1.25rem;
-    background-color: none;
-    font-size: 1rem;
-    font-weight: 400;
-    color: $success;
-    padding: .5rem .75rem;
-    .icon {
-        color: $success;
-        font-size: 1rem;
-    }
-
-}
-
-
-.e-Thing-always-ul .e-name{
-    label {
-        display: none;
-    }
-}
-
-.page-framework {
-    .e-Thing-always-ul:first-of-type {
-        background-color: transparent;
-        .e-Property-text {
-            label {
-                font-size: $size-3;
-                font-weight: 600 !important;
-            }
-        }
-    }
-}
-
-
-/***** framework ********/
+/*******************************
+        framework page
+*********************************/
 .page-framework{
     .e-Thing-ul{
         margin-top:0px;
@@ -366,23 +259,76 @@ iframe {
     }
 }
 
+.page-framework {
+    .e-Thing-always-ul, .e-Thing-view-ul { 
+        li .e-Property {
+            display: flex;
+            flex-direction: row-reverse;
+            label {
+                width: 100%;
+                display: flex;
 
-
-.e-Thing-always-ul {
-    li {
-        width: 100%;
-        label {
-            width: 100%;
+            }
+            span .button {
+                width: 5%;
+            }
         }
     }
-    .e-description{
-        label{
+    .e-Thing-always-ul:first-of-type {
+        background-color: transparent;
+        .e-Property-text {
+            label {
+                font-size: $size-3;
+                font-weight: 600 !important;
+            }
         }
     }
-    font-size:.8rem;
-    
 }
-
+.page-framework {
+    .e-Thing-ul {
+        margin-top: .5rem;
+    }
+    .e-Thing-always-ul {
+        li {
+            width: 100%;
+            label {
+                width: 100%;
+            }
+        }
+        .e-description{
+            label{
+            }
+        }
+        font-size:.8rem;
+        
+    }
+     .e-Thing.e-Framework {
+        display: flex;
+        flex-direction: column;
+        flex-flow: column-reverse;
+        .e-Thing-always-ul {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            
+        }
+        .thing-actions {
+            display: flex;
+            position: relative;
+            flex-direction: row;
+            width: 100%;
+            height: 48px;
+            background-color: white;
+             .action, .info, .view {
+                display: block;
+                width: 30%;
+            }
+        }
+    }
+}
+/*******************************
+        e-Competency
+*********************************/
 .e-Competency{
         transform: translateX(0);
         cursor: pointer;
@@ -504,56 +450,91 @@ iframe {
     }
 }
 
-/* Framework details at the top of framework page  */
- .page-framework {
-     .e-Thing.e-Framework {
-        display: flex;
-        flex-direction: column;
-        flex-flow: column-reverse;
-        .e-Thing-always-ul {
+/*******************************
+        import page
+*********************************/
+.page-import {
+    ul.e-Thing-ul {
+        li.e-Property {
             width: 100%;
-            height: 100%;
-            position: relative;
-        }
-        .thing-actions {
             display: flex;
-            position: relative;
             flex-direction: row;
-            width: 100%;
-            height: 48px;
-            background-color: white;
-             .action, .info, .view {
-                display: block;
-                width: 30%;
+            label {
+                padding: 0px .5rem;
+                display: flex;
+                width: 95%;
+                flex-direction: row-reverse;
+                justify-content: flex-end;
+                justify-items: start;
+                align-items: center;
+                span {
+                    padding: 0rem .25rem;
+                    width: auto;
+                }
+                i {
+                    padding: 0rem .25rem;
+                    width: 5%;
+                }
+            }
+            span {
+                width: 5%;
+            }
+            ul.e-Property-ul {
+                width: 100%;
+                padding: 0rem 0rem 0rem .25rem;
+                margin-top: 0rem;
+                margin-right: 0rem;
+                
+                
+                li {
+                    width: 100%;
+                    display:flex;
+                    padding-top: .25rem;
+                    flex-direction: row-reverse;
+                    .e-Property-text {
+                        width: 100%;
+                    }
+                    span {
+                        padding: 0rem;
+                        width: 95%;
+                        textarea {
+                            width: 100%;
+                            border-radius: 5px;
+                            border: solid .5px $black;
+                            padding: 6px;
+                        }
+                    }
+                    .button {
+                        width: 5%;
+                    }
+                }
             }
         }
     }
 }
 
+/*******************************
+        framework page
+*********************************/
 
 
-.page-open .e-name, .page-open .e-title{
-    label{
-        display:none;
-    }
-    ul{
-        margin-left:0px;
-        display:inline;
-        li{
-            display:inline;
-            margin-right:.5rem;
-        }
+/*******************************
+        framework list page
+*********************************/
+.page-framework-list {
+    .button {
+        display: none;
     }
 }
 
-.page-open .e-description{
+.page-framework-list .e-description{
     label{
         display:none;
     }
     font-size:.8rem;
 }
 
-.page-open .e-Framework, .page-open .e-ConceptScheme{
+.page-framework-list .e-Framework, .page-framework-list .e-ConceptScheme{
     a {
         display:none;
     }
@@ -567,3 +548,24 @@ iframe {
         display:inline;
     }
 }
+.page-framework-list .e-property .e-name {
+    li .e-Property {
+        label, span.button {
+            display: none !important;
+        }
+    }
+    label{
+        display:none;
+    }
+    ul{
+        margin-left:0px;
+        display:inline;
+        li{
+            display:inline;
+            margin-right:.5rem;
+        }
+    }
+}
+
+
+

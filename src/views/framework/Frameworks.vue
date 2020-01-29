@@ -1,5 +1,5 @@
 <template>
-    <div class="page-open">
+    <div class="page-framework-list">
         <div class="container">
             <div class="section">
                 <div class="control">
