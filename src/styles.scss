@@ -422,6 +422,10 @@ iframe {
         a {
             display:none;
         }
+        // no add on import view 
+        .add {
+            display: none;
+        }
         .icon {
             padding: .5rem;
         }
@@ -603,6 +607,9 @@ iframe {
         overflow-y: scroll;
         border: 2px solid rgba($black, .5);
         border-radius: 1rem;
+        .thing-actions {
+            display: none;
+        }
     }
 }
 
