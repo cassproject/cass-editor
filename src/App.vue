@@ -41,6 +41,7 @@
                     <div class="navbar-item">
                         <router-link
                             class="has-text-light"
+                            :class="{'is-active': currentRoute === '/'}"
                             to="/">
                             Open
                         </router-link>
@@ -48,6 +49,7 @@
                     <div class="navbar-item">
                         <router-link
                             class="has-text-light"
+                            :class="{'is-active': currentRoute === '/import'}"
                             to="/import">
                             Import
                         </router-link>
@@ -112,22 +114,28 @@
                         :class="{ 'is-active': navBarActive}">
                         <div>
                             <div class="navbar-item">
-                                <router-link to="/new">
+                                <a @click="createNew">
                                     New
-                                </router-link>
+                                </a>
                             </div>
                             <div class="navbar-item">
-                                <router-link to="/">
+                                <router-link
+                                    to="/"
+                                    :class="{'is-active': currentRoute === '/'}">
                                     Open
                                 </router-link>
                             </div>
                             <div class="navbar-item">
-                                <router-link to="/import">
+                                <router-link
+                                    to="/import"
+                                    :class="{'is-active': currentRoute === '/import'}">
                                     Import
                                 </router-link>
                             </div>
                             <div class="navbar-item">
-                                <router-link to="/help">
+                                <router-link
+                                    to="/help"
+                                    :class="{'is-active': currentRoute === '/help'}">
                                     Help
                                 </router-link>
                             </div>
@@ -811,6 +819,19 @@ export default {
                 }
             }
             return entity;
+        }
+    },
+    computed: {
+        currentRoute: function() {
+            return this.$route.path;
+        }
+    },
+    watch: {
+        $route(to, from) {
+            let navigationTo = to;
+            if (navigationTo) {
+                this.navBarActive = false;
+            }
         }
     }
 };

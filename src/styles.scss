@@ -23,6 +23,18 @@ body{
     height: 100%;
 }
 
+.navbar-menu {
+    // override active links
+    .is-active{
+        color: rgba($light, .8) !important;
+
+    }
+}
+#mainDropDown {
+    .is-active{
+        color: rgba($dark, .7) !important;
+    }
+}
 p {
     font-style: normal;
 }
