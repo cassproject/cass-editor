@@ -93,29 +93,7 @@ input, textarea{
 }*/
 
 
-.e-Thing-ul{
-    background-color:$light;
-    border-radius: .25rem;
-    margin-top:.5rem;
-    padding: .25rem;
-    
-    .edit{
-        i {
-            color: $link;
-        }
-    }
-    .save {
-        i {
-            color: $secondary;
-        }
-    }
-    .remove {
-        i {
-            color: $warning;
-        }
-    }
 
-}
 
 .showHoverImportItems {
     background-color: rgba($dark, .1);
@@ -219,6 +197,7 @@ iframe {
             color: $link;
         }
         .e-Property {
+            padding-top: .5rem;
             display: flex;
             flex-wrap: wrap;
             flex-direction: row-reverse;
@@ -226,6 +205,10 @@ iframe {
                 display: flex;
                 width: 100%;
                 flex-direction: row-reverse;
+            }
+            .thing-label {
+                width: 100%;
+                padding-left: .5rem;
             }
         }
         .clickable-hierarchy {
@@ -344,7 +327,7 @@ iframe {
     }
     /* On Hover show Toolset on Competency card in Editor view */
     .e-Thing.e-Competency.showHoverItems {
-        background-color: rgba($dark, .1);
+        background-color: rgba($dark, .05);
         padding-bottom: 44px !important;
     .e-Thing-ul {
         background-color: rgba($dark, .1);
@@ -362,12 +345,6 @@ iframe {
     }
 }
     .e-HierarchyNode{
-        >ul{
-            padding-left:1rem;
-            >div{
-                border:1px dashed whitesmoke;
-            }
-        }
         >.icon{
             width:0px;
             height:0px;
@@ -392,6 +369,9 @@ iframe {
             .drag-footer{
             }
         }
+    }
+    .e-HierarchyNode-ul {
+        //margin-left: .5rem;
     }
 }
 
@@ -450,6 +430,24 @@ iframe {
         margin-left: .5rem;
     }
     ul.e-Thing-ul {
+        background-color:$light;
+        border-radius: .25rem;
+        padding: .25rem;
+        .edit{
+            i {
+                color: $link;
+            }
+        }
+        .save {
+            i {
+                color: $secondary;
+            }
+        }
+        .remove {
+            i {
+                color: $warning;
+            }
+        }        
         li.e-Property {
             width: 100%;
             display: flex;
@@ -615,6 +613,28 @@ iframe {
     .button {
         display: none;
     }
+    .e-Thing-ul{
+        background-color:$light;
+        border-radius: .25rem;
+        padding: .25rem;
+        margin-top: .5rem;
+        .edit{
+            i {
+                color: $link;
+            }
+        }
+        .save {
+            i {
+                color: $secondary;
+            }
+        }
+        .remove {
+            i {
+                color: $warning;
+            }
+        }
+    
+    }
     /******* "Actions" on framework list fiew (page open)  ********/
     .e-Thing.e-Framework {
         transform: translateX(0);
@@ -683,8 +703,6 @@ iframe {
         }
     }
 }
-
-
 
 
 

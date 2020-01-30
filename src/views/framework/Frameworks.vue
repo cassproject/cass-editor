@@ -55,6 +55,7 @@
                     :searchOptions="searchOptions"
                     :paramObj="paramObj"
                     :disallowEdits="queryParams.view==='true'">
+                    <!-- TO DO move these template items to the "actions" right side area -->
                     <template
                         v-slot:frameworkTags="slotProps">
                         <span v-if="queryParams.concepts!=='true'">{{ slotProps.item.competency.length }} items </span>
