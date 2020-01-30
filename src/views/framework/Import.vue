@@ -381,7 +381,6 @@
                                     v-if="framework"
                                     :container="framework"
                                     containerType="Framework"
-                                    viewType="importPreview"
                                     containerNodeProperty="competency"
                                     containerEdgeProperty="relation"
                                     nodeType="EcCompetency"
@@ -403,7 +402,6 @@
                                     v-if="framework"
                                     :container="framework"
                                     containerType="Framework"
-                                    viewType="importPreview"
                                     containerNodeProperty="competency"
                                     containerEdgeProperty="relation"
                                     nodeType="EcCompetency"
@@ -455,7 +453,6 @@
                                         v-else-if="importLightView"
                                         class="buttons is-right">
                                         <div
-                                            @click="exportFramework"
                                             class="button is-light is-pulled-right">
                                             Export
                                         </div>
