@@ -792,17 +792,12 @@ export default {
             this.fileChange(this.file);
         },
         openFramework: function() {
-            var me = this;
             if (this.queryParams.concepts === "true") {
-                EcConceptScheme.get(me.framework.id, function(success) {
-                    me.$store.commit('framework', success);
-                    me.$router.push({name: "conceptScheme", params: {frameworkId: me.framework.id}});
-                }, console.error);
+                this.$store.commit('framework', this.framework);
+                this.$router.push({name: "conceptScheme", params: {frameworkId: this.framework.shortId()}});
             } else {
-                EcFramework.get(me.framework.id, function(success) {
-                    me.$store.commit('framework', success);
-                    me.$router.push({name: "framework", params: {frameworkId: me.framework.id}});
-                }, console.error);
+                this.$store.commit('framework', this.framework);
+                this.$router.push({name: "framework", params: {frameworkId: this.framework.shortId()}});
             }
         },
         fileChange: function(e) {
