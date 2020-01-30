@@ -32,7 +32,7 @@ $warning: $cass-error;
 $danger: $cass-error;
 
 $dark:$cass-black;
-$text: $dark;
+$text: rgba($dark, .8);
 
 
 $weight-normal: 400;
