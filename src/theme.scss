@@ -104,10 +104,9 @@ $button-text-hover-background-color: transparent;
         align-content: center;
         align-items: center;
     }
-    input {
-        display: block;
-        width: auto;
-        margin: auto;
+ }
 
-    }
+
+ .button.is-text {
+     text-decoration: none;
  }
