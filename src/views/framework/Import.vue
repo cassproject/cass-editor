@@ -665,6 +665,13 @@ export default {
                     "http://schema.org/domainIncludes":
                     [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
                     "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Level"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [
+                        {"@language": "en",
+                            "@value":
+                        "When an individual's performance in a competency can be measured, a level specifies milestones that an individual can reach, creating fine-grained distinction between the proficient and the adept."}
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Level"}],
                     "valuesIndexed": function() {
                         var levels = {};
                         if (!me.framework.level) {
@@ -677,7 +684,8 @@ export default {
                         }
                         return levels;
                     }
-                }
+                },
+                "alwaysProperties": ["@id", "http://schema.org/name", "@type", "https://schema.cassproject.org/0.4/Competency/scope", "@context", "https://schema.cassproject.org/0.4/Level"]
             };
         },
         previewProfile: function() {
@@ -1054,7 +1062,7 @@ export default {
                     var f = new EcFramework();
                     f.setName(d.name);
                     f.setDescription(d.description);
-                    f.assignId(me.repo.selectedServer, me.file.name);
+                    f.assignId(me.repo.selectedServer, me.file[0].name);
                     f.competency = [];
                     f.relation = [];
                     toSave.push(f);
