@@ -22,7 +22,7 @@
                                 </div>
                                 <div class="column">
                                     <p class="is-primary is-size-7">
-                                        {{ status }}
+                                        
                                     </p>
                                 </div>
                             </div>
@@ -135,6 +135,10 @@
                                             <span class="icon is-large">
                                                 <i class="fa fa-spinner fa-pulse fa-2x" />
                                             </span>
+                                            <div class="section">
+                                                <p class="is-size-7"> {{ status }}
+                                                    </p>
+                                            </div>
                                         </div>
                                         <!-- import errors -->
                                         <div
@@ -169,7 +173,7 @@
                                     </div>
                                     <!-- appears to be part of an interstitial screen -->
                                     <div
-                                        class="is-hidden section">
+                                        class="section is-hidden">
                                         <div v-if="importType=='csv'">
                                             <div>
                                                 <label>Step 1: Name the framework.</label>
@@ -542,6 +546,7 @@ export default {
                 columns: 0,
                 headers: false,
                 competencies: 0,
+                format: 'Department of Labor',
                 fileType: ''
             },
             errors: [],
@@ -778,6 +783,9 @@ export default {
             let fileType = val;
             this.statusType = "error";
             this.status = "File type " + fileType + " is unsupported in this workflow";
+            this.errors.push(this.status);
+            this.showErrors = true;
+            this.processingFile = false;
         },
         /* Event from Sidebar component */
         updateUrl(url) {
@@ -824,7 +832,7 @@ export default {
              * clear all files and framework states
              * this does not completely work
              */
-            this.errors = null;
+            this.errors = [];
             this.showErrors = false;
             this.framework = null;
             this.file = null;
@@ -856,6 +864,8 @@ export default {
             var me = this;
             var file = this.file[0];
             if (file.name.endsWith(".csv")) {
+                this.unsupportedFile('csv');
+                return;
                 CTDLASNCSVImport.analyzeFile(file, function(frameworkCount, competencyCount) {
                     me.importType = "ctdlasncsv";
                     me.status = "Import " + frameworkCount + " frameworks and " + competencyCount + " competencies.";
@@ -881,6 +891,7 @@ export default {
                                 me.importCsvColumnId = column;
                             }
                         }
+                        me.processingFile = false;
                         me.status = (me.competencyCount = (data.length - 1)) + " Competencies Detected.";
                     }, function(error) {
                         me.statusType = "error";
@@ -928,13 +939,13 @@ export default {
             } else if (file.name.endsWith(".pdf")) {
                 me.importType = "pdf";
                 me.firstImport = false;
-                me.status = "File selected.";
                 me.detailsDetected.fileType = "pdf";
+                me.status = "File selected.";
             } else if (file.name.endsWith(".docx")) {
                 me.importType = "pdf";
+                me.detailsDetected.fileType = "docx";
                 me.firstImport = false;
                 me.status = "File selected.";
-                me.detailsDetected.fileType = "docx";
             }
             if (!me.firstImport) {
                 me.importFromFile();
