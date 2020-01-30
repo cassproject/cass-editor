@@ -390,7 +390,7 @@
                                         <b>{{ detailsDetected.rows }}</b> rows
                                     </li>
                                     <li>
-                                        <b>{{ detailsDetected.format }}</b> framework format
+                                        <b>{{ detailsDetected.competencies }}</b> competencies
                                     </li>
                                     <li>
                                         <b>{{ detailsDetected.fileType }}</b> file type
@@ -538,11 +538,11 @@ export default {
     data: function() {
         return {
             detailsDetected: {
-                rows: 22,
-                columns: 12,
-                headers: true,
-                format: 'Department of Labor',
-                fileType: 'docx'
+                rows: 0,
+                columns: 0,
+                headers: false,
+                competencies: 0,
+                fileType: ''
             },
             errors: [],
             showErrors: false,
@@ -929,10 +929,12 @@ export default {
                 me.importType = "pdf";
                 me.firstImport = false;
                 me.status = "File selected.";
+                me.detailsDetected.fileType = "pdf";
             } else if (file.name.endsWith(".docx")) {
                 me.importType = "pdf";
                 me.firstImport = false;
                 me.status = "File selected.";
+                me.detailsDetected.fileType = "docx";
             }
             if (!me.firstImport) {
                 me.importFromFile();
@@ -1120,12 +1122,13 @@ export default {
                     var cs = {};
                     if (!d.competencies) {
                         me.showErrors = true;
-                        me.status = "Error importing competencis.";
+                        me.status = "Error importing competencies.";
                         me.statusType = "error";
                         me.errors.push("Error importing competencies, no competencies found in file.");
                         me.processingFile = false;
                         return;
                     }
+                    me.detailsDetected.competencies = d.competencies.length;
                     for (var i = 0; i < d.competencies.length; i++) {
                         var c = new EcCompetency();
                         c.assignId(me.repo.selectedServer, d.competencies[i].id);
