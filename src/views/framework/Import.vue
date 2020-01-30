@@ -21,9 +21,7 @@
                                     </h1>
                                 </div>
                                 <div class="column">
-                                    <p class="is-primary is-size-7">
-                                        
-                                    </p>
+                                    <p class="is-primary is-size-7" />
                                 </div>
                             </div>
                             <p class="is-size-7">
@@ -136,8 +134,9 @@
                                                 <i class="fa fa-spinner fa-pulse fa-2x" />
                                             </span>
                                             <div class="section">
-                                                <p class="is-size-7"> {{ status }}
-                                                    </p>
+                                                <p class="is-size-7">
+                                                    {{ status }}
+                                                </p>
                                             </div>
                                         </div>
                                         <!-- import errors -->
@@ -379,27 +378,42 @@
                             v-if="framework && importDetailsView">
                             <!-- interstitial screen will go here -->
                             <div class="import-details__section">
-                                <h3 class="is-size-4 has-text-weight-bold has-text-dark">
+                                <h3 class="subtitle is-size-3 has-text-weight-normal">
                                     The following details were detected.
                                 </h3>
-                                <p class="is-size-6 has-text-dark">
+                                <p class="is-size-6 has-text-weight-light">
                                     If these details don't look correct, please verify your file
                                     is correct and reimport
                                 </p>
-                                <ul class="detected-import-details has-text-dark">
+                                <ul class="is-size-6 detected-import-details">
                                     <li>
-                                        <b>{{ detailsDetected.columns }}</b> columns
+                                        <span class="icon has-text-success">
+                                            <i class="fa fa-check-circle" />
+                                        </span>
+                                        CaSS detected <b>{{ detailsDetected.columns }}</b> columns
                                     </li>
                                     <li>
-                                        <b>{{ detailsDetected.rows }}</b> rows
+                                        <span class="icon has-text-success">
+                                            <i class="fa fa-check-circle" />
+                                        </span>
+                                        CaSS detected <b>{{ detailsDetected.rows }}</b> rows
                                     </li>
                                     <li>
-                                        <b>{{ detailsDetected.competencies }}</b> competencies
+                                        <span class="icon has-text-success">
+                                            <i class="fa fa-check-circle" />
+                                        </span>
+                                        CaSS detected <b>{{ detailsDetected.competencies }}</b> competencies in the imported framework
                                     </li>
                                     <li>
-                                        <b>{{ detailsDetected.fileType }}</b> file type
+                                        <span class="icon has-text-success">
+                                            <i class="fa fa-check-circle" />
+                                        </span>
+                                        CaSS detected a <b>{{ detailsDetected.fileType }}</b> file type
                                     </li>
                                     <li v-if="detailsDetected.headers">
+                                        <span class="icon has-text-success">
+                                            <i class="fa fa-check-circle" />
+                                        </span>
                                         <b>Header rows detected</b>
                                     </li>
                                     <li class="is-size-7">
@@ -463,8 +477,13 @@
                                         </div>
                                         <div
                                             @click="importDetailsAccept"
-                                            class="button is-light is-pulled-right is-primary">
-                                            Approve
+                                            class="button is-info is-pulled-right">
+                                            <span>
+                                                Accept & parse
+                                            </span>
+                                            <span class="icon">
+                                                <i class="far fa-caret-square-right" />
+                                            </span>
                                         </div>
                                     </div>
                                     <div
@@ -486,6 +505,7 @@
                                     </div>
                                     <div
                                         v-else-if="importLightView"
+                                        @click="showModal('export')"
                                         class="buttons is-right">
                                         <div
                                             class="button is-light is-pulled-right">
@@ -585,7 +605,16 @@ export default {
             csvRelationColumns: [],
             relationCount: 0,
             caseDocs: [],
-            caseCancel: false
+            caseCancel: false,
+            competencyExportOptions: [
+                {name: "CASS (JSON-LD)", value: "jsonld"},
+                {name: "CASS (RDF Quads)", value: "rdfQuads"},
+                {name: "CASS (RDF+JSON)", value: "rdfJson"},
+                {name: "CASS (RDF+XML)", value: "rdfXml"},
+                {name: "CASS (Turtle)", value: "turtle"},
+                {name: "Credential Engine ASN (JSON-LD)", value: "ctdlasnJsonld"},
+                {name: "IMS Global CASE (JSON)", value: "case"}
+            ]
         };
     },
     computed: {
@@ -779,29 +808,56 @@ export default {
         }
     },
     methods: {
+        showModal(val) {
+            let params = {};
+            if (val === 'export') {
+                params = {
+                    type: val,
+                    selectedExportOption: '',
+                    title: "Export framework",
+                    exportOptions: this.competencyExportOptions,
+                    text: "Select a file format to export your framework. Files download locally.",
+                    onConfirm: (e) => {
+                    /*
+                     * this should be changed to accomodate exporting the
+                     * framework rather than the competency
+                     */
+                        return this.exportObject(e);
+                    }
+                };
+            }
+            // reveal modal
+            this.$modal.show(params);
+        },
+        // pulled over from Thing.vue in LODE - should be different for this case
+        exportObject: function(type) {
+            var parent = this.$parent;
+            while (parent.exportObject == null) { parent = parent.$parent; }
+            parent.exportObject(this.thing, type);
+        },
         switchToRemoteServerTab: function() {
-            return;
-            /* 
-            this.method = 'server';
-            this.framework = null;
-            this.status='';
-            */
+
+            /*
+             * this.method = 'server';
+             * this.framework = null;
+             * this.status='';
+             */
         },
         switchToPasteTextTab: function() {
-            return;
-            /* 
-            this.method = 'text';
-            this.framework = null;
-            thi.status='';
-            */
+
+            /*
+             * this.method = 'text';
+             * this.framework = null;
+             * thi.status='';
+             */
         },
         switchToUrlSourceTab: function() {
-            return;
-            /* 
-            this.method = 'url';
-            this.framework = null;
-            thi.status='';
-            */
+
+            /*
+             * this.method = 'url';
+             * this.framework = null;
+             * thi.status='';
+             */
         },
         unsupportedFile: function(val) {
             let fileType = val;
@@ -889,7 +945,7 @@ export default {
             var file = this.file[0];
             if (file.name.endsWith(".csv")) {
                 this.unsupportedFile('csv');
-                return;
+            } else if (file.name.endsWith(".csv")) {
                 CTDLASNCSVImport.analyzeFile(file, function(frameworkCount, competencyCount) {
                     me.importType = "ctdlasncsv";
                     me.status = "Import " + frameworkCount + " frameworks and " + competencyCount + " competencies.";
