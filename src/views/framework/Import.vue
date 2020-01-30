@@ -138,7 +138,7 @@
                                     </div>
                                     <!-- appears to be part of an interstitial screen -->
                                     <div
-                                        class="section">
+                                        class="is-hidden section">
                                         <div v-if="importType=='csv'">
                                             <div>
                                                 <label>Step 1: Name the framework.</label>
@@ -261,7 +261,7 @@
                                     </div>
                                     <!-- sever input -->
                                     <div
-                                        class="section has-dashed-border"
+                                        class="section is-hidden has-dashed-border"
                                         v-if="method=='server'">
                                         <center>
                                             <h1>Paste URL endpoint of server</h1>
@@ -340,9 +340,42 @@
                             </div>
                         </div>
                         <div
+                            class="section import-details"
+                            v-if="framework && importDetailsView">
+                            <!-- interstitial screen will go here -->
+                            <div class="import-details__section">
+                                <h3 class="is-size-4 has-text-weight-bold has-text-dark">
+                                    The following details were detected.
+                                </h3>
+                                <p class="is-size-6 has-text-dark">
+                                    If these details don't look correct, please verify your file
+                                    is correct and reimport
+                                </p>
+                                <ul class="detected-import-details has-text-dark">
+                                    <li>
+                                        <b>{{ detailsDetected.columns }}</b> columns
+                                    </li>
+                                    <li>
+                                        <b>{{ detailsDetected.rows }}</b> rows
+                                    </li>
+                                    <li>
+                                        <b>{{ detailsDetected.format }}</b> framework format
+                                    </li>
+                                    <li>
+                                        <b>{{ detailsDetected.fileType }}</b> file type
+                                    </li>
+                                    <li v-if="detailsDetected.headers">
+                                        <b>Header rows detected</b>
+                                    </li>
+                                    <li class="is-size-7">
+                                        If this information looks correct, hit "approve" to continue.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div
                             v-if="framework && importPreviewView"
-                            class="section"
-                            id="framework-container">
+                            class="section import-preview">
                             <div class="tile is-vertical">
                                 <Hierarchy
                                     v-if="framework"
@@ -364,8 +397,7 @@
                         </div>
                         <div
                             v-else-if="framework && importLightView"
-                            class="section"
-                            id="framework-container">
+                            class="section import-light">
                             <div class="tile is-vertical">
                                 <Hierarchy
                                     v-if="framework"
@@ -376,7 +408,7 @@
                                     containerEdgeProperty="relation"
                                     nodeType="EcCompetency"
                                     :profile="postImportProfile"
-                                    :editable="true"
+                                    :editable="false"
                                     edgeType="EcAlignment"
                                     edgeRelationProperty="relationType"
                                     edgeRelationLiteral="narrows"
@@ -392,13 +424,13 @@
                                         v-if="importDetailsView"
                                         class="buttons is-right">
                                         <div
-                                            @click="cancel"
-                                            class="button is-light is-pulled-right">
+                                            @click="cancelImport"
+                                            class="button is-light is-pulled-right is-dark">
                                             Cancel
                                         </div>
                                         <div
-                                            @click="approveImportDetails"
-                                            class="button is-light is-pulled-right">
+                                            @click="importDetailsAccept"
+                                            class="button is-light is-pulled-right is-primary">
                                             Approve
                                         </div>
                                     </div>
@@ -407,14 +439,14 @@
                                         class="buttons is-right">
                                         <div
                                             @click="cancelImport"
-                                            class="button is-light is-pulled-right">
+                                            class="button is-light is-pulled-right is-dark">
                                             <span class="icon">
                                                 <i class="fas fa-undo-alt" />
                                             </span>
                                             <span>cancel</span>
                                         </div>
                                         <div
-                                            @click="approveImportPreview"
+                                            @click="importPreviewAccept"
                                             class="button is-light is-pulled-right">
                                             Approve
                                         </div>
@@ -422,11 +454,6 @@
                                     <div
                                         v-else-if="importLightView"
                                         class="buttons is-right">
-                                        <div
-                                            @click="cancel"
-                                            class="button is-light is-pulled-right">
-                                            Cancel
-                                        </div>
                                         <div
                                             @click="exportFramework"
                                             class="button is-light is-pulled-right">
@@ -491,6 +518,13 @@ export default {
     components: {Hierarchy, dragAndDrop, sideBar},
     data: function() {
         return {
+            detailsDetected: {
+                rows: 22,
+                columns: 12,
+                headers: true,
+                format: 'Department of Labor',
+                fileType: 'docx'
+            },
             importPreviewView: false,
             importLightView: false,
             importDetailsView: false,
@@ -755,7 +789,8 @@ export default {
     computed: {
         /*
          * depending on where we are in the import cycle,
-         * utilize a different profile
+         * utilize a different profile to display required
+         * fields to the user
          */
         importProfile: function() {
             let profile;
@@ -905,11 +940,6 @@ export default {
         }
     },
     watch: {
-        framework: function(val) {
-            if (val) {
-                this.importPreviewView = true;
-            }
-        },
         text: function(newText, oldText) {
             var me = this;
             TabStructuredImport.importCompetencies(
@@ -938,19 +968,43 @@ export default {
         }
     },
     methods: {
+        /* When an import is "successful" */
         importSuccess: function() {
-            this.status = "Import Finished.";
-            // change to importDetailsView = true;
+            this.status = "Competency detected";
+            this.importDetailsView = true;
+            this.importPreviewView = false;
+            this.importLightView = false;
+        },
+        /*
+         * from the interstital screen the user accepts
+         * the displayed details
+         */
+        importDetailsAccept: function() {
+            this.status = "Edit and approve";
+            this.importDetailsView = false;
             this.importPreviewView = true;
         },
-        approveImportPreview: function() {
+        /*
+         * after editing preview the user can accept the preview
+         * displaying the uneditable framework for review
+         * displays the appropriate profile of information requested by client
+         */
+        importPreviewAccept: function() {
+            this.status = "Import complete!";
             this.importLightView = true;
             this.importPreviewView = false;
+            /*
+             * TO DO: Make sure all competency properties are in a non-editable state
+             * or ensure state does not crossover from here
+             */
         },
         cancelImport: function() {
-            // cancel import
-        },
-        resetImport: function(value) {
+            /*
+             * TO DO: properly cancel import, leaving the screen in a state
+             * in which they are capable of importing a new framwork
+             * clear all files and framework states
+             * this does not completely work
+             */
             this.framework = null;
             this.file = null;
             this.processingFile = false;
@@ -1521,104 +1575,4 @@ export default {
 
 <style lang="scss">
     @import './../../variables.scss';
-#drop-area {
-    height: auto;
-    margin: 0px;
-    padding: 0px;
-    width: auto;
-    .column {
-        height: auto;
-    }
-}
-.menu {
-    overflow-y: scroll;
-    height: 100vh;
-    padding: 1rem;
-    width: 300px;
-}
-.scrollable-section {
-    overflow-y: scroll;
-    height: 100vh;
-}
-.menu-list_list-item {
-    list-style-type: none;
-    padding: .5rem 0em;
-}
-.menu-list_list-subitem {
-    list-style-type: none;
-    padding: .25rem 0em;
-}
-.buttons {
-    margin-right: 0em !important;
-    margin: 0em !important;
-    :not(:last-child) {
-    }
-    a:first {
-        padding-left: 0em !important;
-        margin-left: 0em !important;
-    }
-}
-.content-body-wrapper {
-    padding: .5em 0em;
-    .content-body {
-        padding-top: .25rem;
-        :last {
-            padding-bottom: 1em;
-        }
-    }
-}
-.menu-list a {
-    padding: .5em .5em .5em 0em;
-}
-
- .drag-file-area {
-    width:100%;
-    display:block;
-    border:2px dashed $black;
-    border-radius:1rem;
-    padding:100px;
-    margin: auto;
-
-}
-.import-tab {
-    margin-top: -40px;
-    height: 100px;
-    color: $dark;
-    width: 100%;
-    max-width: 100px;
-    display: flex;
-    flex-direction: column;
-    justify-items: center;
-    justify-content: center;
-    align-items: center;
-    font-size: .7rem;
-    border-radius: 100px;
-    background-color: transparent;
-   i {
-     color: $dark;
-   }
-   div {
-       color: $dark;
-   }
-}
-.is-active-tab{
-  background-color: $light;
-  color: $secondary;
-  i {
-      color: $secondary;
-  }
-  div {
-      color: $secondary;
-  }
-}
-.tile {
-    border-radius: 1rem;
-}
-#framework-container {
-    min-height: 400px;
-    max-height:68vh;
-    overflow-y: scroll;
-    border: 2px solid $black;
-    border-radius: 1rem;
-}
 </style>
