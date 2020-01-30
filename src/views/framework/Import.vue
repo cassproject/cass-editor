@@ -505,10 +505,10 @@
                                     </div>
                                     <div
                                         v-else-if="importLightView"
-                                        @click="showModal('export')"
                                         class="buttons is-right">
                                         <div
-                                            class="button is-light is-pulled-right">
+                                            class="button is-light is-pulled-right"
+                                            @click="showModal('export')">
                                             Export
                                         </div>
                                         <div
@@ -551,13 +551,14 @@ import ctdlAsnJsonldConcepts from 'file-loader!../../../files/ConnectingCredenti
 import common from '@/mixins/common.js';
 import dragAndDrop from './../../components/DragAndDrop.vue';
 import sideBar from './../../components/SideBar.vue';
+import exports from '@/mixins/exports.js';
 
 export default {
     name: "Import",
     props: {
         queryParams: Object
     },
-    mixins: [common],
+    mixins: [common, exports],
     components: {Hierarchy, dragAndDrop, sideBar},
     data: function() {
         return {
@@ -606,13 +607,16 @@ export default {
             relationCount: 0,
             caseDocs: [],
             caseCancel: false,
-            competencyExportOptions: [
+            frameworkExportOptions: [
+                {name: "Achievement Standards Network (RDF+JSON)", value: "asn"},
                 {name: "CASS (JSON-LD)", value: "jsonld"},
                 {name: "CASS (RDF Quads)", value: "rdfQuads"},
                 {name: "CASS (RDF+JSON)", value: "rdfJson"},
                 {name: "CASS (RDF+XML)", value: "rdfXml"},
                 {name: "CASS (Turtle)", value: "turtle"},
                 {name: "Credential Engine ASN (JSON-LD)", value: "ctdlasnJsonld"},
+                {name: "Credential Engine ASN (CSV)", value: "ctdlasnCsv"},
+                {name: "Table (CSV)", value: "csv"},
                 {name: "IMS Global CASE (JSON)", value: "case"}
             ]
         };
@@ -815,13 +819,9 @@ export default {
                     type: val,
                     selectedExportOption: '',
                     title: "Export framework",
-                    exportOptions: this.competencyExportOptions,
+                    exportOptions: this.frameworkExportOptions,
                     text: "Select a file format to export your framework. Files download locally.",
                     onConfirm: (e) => {
-                    /*
-                     * this should be changed to accomodate exporting the
-                     * framework rather than the competency
-                     */
                         return this.exportObject(e);
                     }
                 };
@@ -831,9 +831,34 @@ export default {
         },
         // pulled over from Thing.vue in LODE - should be different for this case
         exportObject: function(type) {
-            var parent = this.$parent;
-            while (parent.exportObject == null) { parent = parent.$parent; }
-            parent.exportObject(this.thing, type);
+            var guid;
+            if (EcRepository.shouldTryUrl(this.framework.id) === false) {
+                guid = EcCrypto.md5(this.framework.id);
+            } else {
+                guid = this.framework.getGuid();
+            }
+            var link = this.repo.selectedServer + "data/" + guid;
+            if (type === "asn") {
+                this.exportAsn(link);
+            } else if (type === "jsonld") {
+                this.exportJsonld(link);
+            } else if (type === "rdfQuads") {
+                this.exportRdfQuads(link);
+            } else if (type === "rdfJson") {
+                this.exportRdfJson(link);
+            } else if (type === "rdfXml") {
+                this.exportRdfXml(link);
+            } else if (type === "turtle") {
+                this.exportTurtle(link);
+            } else if (type === "ctdlasnJsonld") {
+                this.exportCtdlasnJsonld(link);
+            } else if (type === "ctdlasnCsv") {
+                this.exportCtdlasnCsv(link);
+            } else if (type === "csv") {
+                this.exportCsv();
+            } else if (type === "case") {
+                this.exportCasePackages(guid);
+            }
         },
         switchToRemoteServerTab: function() {
 

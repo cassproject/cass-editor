@@ -82,6 +82,7 @@ import Thing from '@/lode/components/lode/Thing.vue';
 import Hierarchy from '@/lode/components/lode/Hierarchy.vue';
 import saveAs from 'file-saver';
 import common from '@/mixins/common.js';
+import exports from '@/mixins/exports.js';
 export default {
     name: "Framework",
     props: {
@@ -90,7 +91,7 @@ export default {
         disallowEdits: Boolean,
         profileOverride: Object
     },
-    mixins: [common],
+    mixins: [common, exports],
     data: function() {
         return {
             repo: window.repo,
@@ -260,7 +261,7 @@ export default {
     watch: {
         exportType: function() {
             if (this.exportType === "asn") {
-                this.exportAsn();
+                this.exportAsn(this.frameworkExportLink);
             } else if (this.exportType === "jsonld") {
                 this.exportJsonld(this.frameworkExportLink);
             } else if (this.exportType === "rdfQuads") {
@@ -274,11 +275,11 @@ export default {
             } else if (this.exportType === "ctdlasnJsonld") {
                 this.exportCtdlasnJsonld(this.frameworkExportLink);
             } else if (this.exportType === "ctdlasnCsv") {
-                this.exportCtdlasnCsv();
+                this.exportCtdlasnCsv(this.frameworkExportLink);
             } else if (this.exportType === "csv") {
                 this.exportCsv();
             } else if (this.exportType === "case") {
-                this.exportCasePackages();
+                this.exportCasePackages(guid);
             }
         },
         shortId: function() {
@@ -323,72 +324,6 @@ export default {
                 }
                 this.selectAllButton = true;
             }
-        },
-        download: function(fileName, data) {
-            var blob = new Blob([data], {type: "text/plain;charset=utf-8"});
-            saveAs(blob, fileName);
-        },
-        exportAsn: function() {
-            window.open(this.frameworkExportLink.replace("/data/", "/asn/"), '_blank');
-        },
-        exportJsonld: function(link) {
-            window.open(link, '_blank');
-        },
-        exportRdfQuads: function(link) {
-            var fileName = this.framework.getName();
-            var me = this;
-            this.get(link, null, {"Accept": "text/n4"}, function(success) {
-                me.download(fileName + ".n4", success);
-            }, function(failure) {
-                console.log(failure);
-            });
-        },
-        exportRdfJson: function(link) {
-            var fileName = this.framework.getName();
-            var me = this;
-            this.get(link, null, {"Accept": "application/rdf+json"}, function(success) {
-                me.download(fileName + ".rdf.json", success);
-            }, function(failure) {
-                console.log(failure);
-            });
-        },
-        exportRdfXml: function(link) {
-            var fileName = this.framework.getName();
-            var me = this;
-            this.get(link, null, {"Accept": "application/rdf+xml"}, function(success) {
-                me.download(fileName + ".rdf.xml", success);
-            }, function(failure) {
-                console.log(failure);
-            });
-        },
-        exportTurtle: function(link) {
-            var fileName = this.framework.getName();
-            var me = this;
-            this.get(link, null, {"Accept": "text/turtle"}, function(success) {
-                me.download(fileName + ".turtle", success);
-            }, function(failure) {
-                console.log(failure);
-            });
-        },
-        exportCtdlasnJsonld: function(link) {
-            window.open(link.replace("/data/", "/ceasn/"), '_blank');
-        },
-        exportCtdlasnCsv: function() {
-            var me = this;
-            EcRemote.getExpectingString(this.frameworkExportLink.replace("/data/", "/ceasn/"), null, function(success) {
-                CSVExport.exportCTDLASN(JSON.parse(success), me.framework.getName());
-            }, function(error) {
-                console.log(error);
-            });
-        },
-        exportCsv: function() {
-            CSVExport.exportFramework(this.framework.id, console.log, console.log);
-        },
-        exportCasePackages: function() {
-            window.open(this.repo.selectedServer + "ims/case/v1p0/CFPackages/" + this.frameworkExportGuid, '_blank');
-        },
-        exportCaseItems: function(guid) {
-            window.open(this.repo.selectedServer + "ims/case/v1p0/CFItems/" + guid, '_blank');
         },
         removeObject: function(thing) {
             // Remove from container but don't delete

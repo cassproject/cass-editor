@@ -56,39 +56,63 @@
                     </div>
                     <div
                         class="navbar-item has-dropdown is-hoverable"
-                        v-if="$route.name=='framework'">
+                        v-if="$route.name=='framework'||$route.name=='conceptScheme'">
                         <a class="navbar-link is-primary">
                             Export
                         </a>
                         <div class="navbar-dropdown">
-                            <a class="navbar-item">
-                                Achivement Standards Network (RDF+JSON)
+                            <a
+                                class="navbar-item"
+                                @click="exportType='asn'"
+                                v-if="queryParams.concepts!=='true'">
+                                Achievement Standards Network (RDF+JSON)
                             </a>
-                            <a class="navbar-item">
+                            <a
+                                class="navbar-item"
+                                @click="exportType='jsonld'">
                                 CaSS (JSON-LD)
                             </a>
-                            <a class="navbar-item">
+                            <a
+                                class="navbar-item"
+                                @click="exportType='rdfQuads'">
                                 CaSS (RDF Quads)
                             </a>
-                            <a class="navbar-item">
+                            <a
+                                class="navbar-item"
+                                @click="exportType='rdfJson'">
                                 CaSS (RDF+JSON)
                             </a>
-                            <a class="navbar-item">
+                            <a
+                                class="navbar-item"
+                                @click="exportType='rdfXml'">
                                 CaSS (RDF+XML)
                             </a>
-                            <a class="navbar-item">
+                            <a
+                                class="navbar-item"
+                                @click="exportType='turtle'">
                                 CaSS (Turtle)
                             </a>
-                            <a class="navbar-item">
+                            <a
+                                class="navbar-item"
+                                @click="exportType='ctdlasnJsonld'">
                                 Credential Engine ASN (JSON-LD)
                             </a>
-                            <a class="navbar-item">
+                            <a
+                                class="navbar-item"
+                                @click="exportType='ctdlasnCsv'"
+                                v-if="queryParams.concepts!=='true'">
                                 Credential Engine ASN (CSV)
                             </a>
-                            <a class="navbar-item">
+                            <a
+                                class="navbar-item"
+                                @click="exportType='csv'"
+                                v-if="queryParams.concepts!=='true'">
                                 Table (CSV)
                             </a>
-                            <a class="navbar-item">
+                            <a
+                                class="navbar-item"
+                                @click="exportType='case'"
+                                v-if="queryParams.concepts!=='true'">
                                 IMS Global CASE (JSON)
                             </a>
                         </div>
