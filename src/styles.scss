@@ -593,11 +593,24 @@ iframe {
         font-size: .7rem;
         border-radius: 100px;
         background-color: transparent;
+        
         i {
             color: $dark;
         }
         div {
             color: $dark;
+        }
+        
+    }
+    .disabled {
+        >* {
+            cursor: not-allowed;
+        }
+        i {
+            color: rgba($dark, .5);
+        }
+        div {
+            color: rgba($dark, .5);
         }
     }
     .is-active-tab{

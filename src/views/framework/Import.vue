@@ -79,9 +79,9 @@
                                         </div>
                                         <div class="column">
                                             <div
-                                                class="import-tab"
+                                                class="import-tab disabled"
                                                 :class="{ 'is-active-tab': method === 'server'}">
-                                                <a @click="method = 'server';framework = null;status='';">
+                                                <a @click="switchToRemoteServerTab()">
                                                     <i
                                                         class="fa fa-2x fa-server is-block has-text-centered"
                                                         aria-hidden="true" />
@@ -93,9 +93,9 @@
                                         </div>
                                         <div class="column">
                                             <div
-                                                class="import-tab"
+                                                class="import-tab disabled"
                                                 :class="{ 'is-active-tab': method === 'text'}">
-                                                <a @click="method = 'text';framework = null;status='';">
+                                                <a @click="switchToPasteTextTab()">
                                                     <i
                                                         class="fa fa-2x fa-paste has-text-centered is-block"
                                                         aria-hidden="true" />
@@ -107,9 +107,9 @@
                                         </div>
                                         <div class="column">
                                             <div
-                                                class="import-tab"
+                                                class="import-tab disabled"
                                                 :class="{ 'is-active-tab': method === 'url'}">
-                                                <a @click="method = 'url';framework = null;status='';">
+                                                <a @click="switchToUrlSourceTab()">
                                                     <i
                                                         class="fa fa-link has-text-centered is-block fa-2x"
                                                         aria-hidden="true" />
@@ -779,6 +779,30 @@ export default {
         }
     },
     methods: {
+        switchToRemoteServerTab: function() {
+            return;
+            /* 
+            this.method = 'server';
+            this.framework = null;
+            this.status='';
+            */
+        },
+        switchToPasteTextTab: function() {
+            return;
+            /* 
+            this.method = 'text';
+            this.framework = null;
+            thi.status='';
+            */
+        },
+        switchToUrlSourceTab: function() {
+            return;
+            /* 
+            this.method = 'url';
+            this.framework = null;
+            thi.status='';
+            */
+        },
         unsupportedFile: function(val) {
             let fileType = val;
             this.statusType = "error";
