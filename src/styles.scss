@@ -32,6 +32,26 @@ p {
 
 }
 
+
+input, textarea{
+    color: rgba($dark, .7);
+    font-family: $family-primary;
+    font-size: .8rem;
+    z-index: 5;
+}
+
+.thing-label {
+    font-weight: 500;
+    color: rgba($dark, .3);
+    width: 95%;
+    i {
+        color: rgba($dark, .3);
+    }
+}
+.e-Property {
+    padding: 0rem .5rem .5rem .5rem;
+}
+
 /*
 .e-HierarchyNode {
     transform: translateX(0);
@@ -78,9 +98,29 @@ p {
     border-radius: .25rem;
     margin-top:.5rem;
     padding: .25rem;
+    
     .edit{
+        i {
+            color: $link;
+        }
     }
-    .save{
+    .save {
+        i {
+            color: $secondary;
+        }
+    }
+    .remove {
+        i {
+            color: $warning;
+        }
+    }
+
+}
+
+.showHoverImportItems {
+    background-color: rgba($dark, .1);
+    .e-Thing-ul {
+        background-color: rgba($dark, .2);
     }
 }
 
@@ -111,10 +151,12 @@ p {
 
 .e-Property-ul{
     border-radius: .25rem;
-    padding: .25rem;
+    padding: 0rem .25rem;
+    font-size: .8rem;
+    color: rgba($dark, .9);
     .e-description {
         font-weight: 400;
-        font-size: $size-6;
+        font-size: $size-7;
     }
     .e-name {
         font-weight: 600;
@@ -151,7 +193,7 @@ hr {
 
 iframe {
     min-height: 800px;
-    border: 1px solid black;
+    border:1px solid rgba($black, .5);
 }
 
 .navigation-title__wrapper {
@@ -170,61 +212,155 @@ iframe {
         framework page
 *********************************/
 .page-framework{
+    .e-Competency{
+        transform: translateX(0);
+        cursor: pointer;
+        .active {
+            color: $link;
+        }
+        .e-Property {
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: row-reverse;
+            label {
+                display: flex;
+                width: 100%;
+                flex-direction: row-reverse;
+            }
+        }
+        .clickable-hierarchy {
+            height: 100%;
+            position: fixed;
+            top: 0;
+            right: 0;
+            z-index: 1;
+            bottom: 32;
+            left: 0;
+        }
+        .thing-actions {
+            position: fixed;
+            visibility: hidden;
+            width: 100%;
+            padding: 6px;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            background-color: rgba(grey, 1);
+            .action, .info, .view {
+                display: block;
+                width: 100%;
+            }
+        }
+        a {
+            display:none;
+        }
+        .icon {
+            padding: .5rem;
+        }
+    }
     .e-Thing-ul{
-        margin-top:0px;
+        margin-top: .5rem;
+    }
+    .e-Thing-always-ul {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        
     }
     .e-Thing-always-ul .e-name{
         label{
             display:none;
         }
     }
-
-    .e-Thing-always-ul .e-description{
-        label{
-            display:none;
-        }
-        font-size:.8rem;
+    .e-Thing-always-ul,
+    .e-Thing-ul {
+            .input-field {
+                display: flex;
+            }
+            .textarea-input {
+                width: 70%;
+            }
+            .text-input {
+                width: 30%;
+            }
+            .text-input, .textarea-input {
+                border:1px solid rgba($black, .25);
+                border-radius: 5px;
+            }
     }
+    .e-Thing-always-ul, .e-Thing-view-ul { 
+        width: 100%;
+        li .e-Property {
+            width: 100%;
+            display: flex;
+            flex-direction: row-reverse;
+            label {
+                width: 100%;
+                display: flex;
 
+            }
+            span .button {
+                width: 5%;
+            }
+        }
+    }
+    .e-Thing-always-ul:first-of-type {
+        background-color: transparent;
+        .e-Property-text {
+            label {
+                font-size: $size-3;
+                font-weight: 600 !important;
+            }
+        }
+    }
+    .e-Property-ul {
+        width: 95%;
+    }
     .e-Framework{
+        display: flex;
+        flex-direction: column;
+        flex-flow: column-reverse;
         ul{
             margin-left:0px;
         }
         a {
             display:none;
         }
-        >.expand {
-        }
-        >.compact {
-        }
-        >.editable {
-        }
-        >.delete-thing{
-        }
         .e-Property-text{
             font-size:larger;
         }
-    }
-
-    .e-Competency{
-        a {
-        }
-        >.expand{
-        }
-        >.compact{
-        }
-        >.editable {
-        }
-        >.delete-thing {
-        }
-        >.remove {
-        }
-        >.export {
-        }
-        .active {
-            color: $link;
+        .thing-actions {
+            display: flex;
+            position: relative;
+            flex-direction: row;
+            width: 100%;
+            height: 48px;
+            background-color: white;
+             .action, .info, .view {
+                display: block;
+                width: 30%;
+            }
         }
     }
+    /* On Hover show Toolset on Competency card in Editor view */
+    .e-Thing.e-Competency.showHoverItems {
+        background-color: rgba($dark, .1);
+        padding-bottom: 44px !important;
+    .e-Thing-ul {
+        background-color: rgba($dark, .1);
+    }
+    .thing-actions {
+         visibility: visible !important;
+         background: rgba($white, .2);
+         height: 44px;
+         display: flex;
+         flex-direction: row;
+         justify-content: flex-end;
+         .action, .info, .view {
+             width: 33%;
+         }
+    }
+}
     .e-HierarchyNode{
         >ul{
             padding-left:1rem;
@@ -249,7 +385,7 @@ iframe {
     }
     .dragging{
         div{
-            border:1px dashed gray !important;
+            //border:1px dashed gray !important;
             .drag-footer::before{
                 content:'' !important
             }
@@ -259,106 +395,30 @@ iframe {
     }
 }
 
-.page-framework {
-    .e-Thing-always-ul, .e-Thing-view-ul { 
-        li .e-Property {
-            display: flex;
-            flex-direction: row-reverse;
-            label {
-                width: 100%;
-                display: flex;
-
-            }
-            span .button {
-                width: 5%;
-            }
-        }
-    }
-    .e-Thing-always-ul:first-of-type {
-        background-color: transparent;
-        .e-Property-text {
-            label {
-                font-size: $size-3;
-                font-weight: 600 !important;
-            }
-        }
-    }
-}
-.page-framework {
-    .e-Thing-ul {
+.e-HierarchyNode {
+    ul {
         margin-top: .5rem;
-    }
-    .e-Thing-always-ul {
-        li {
-            width: 100%;
-            label {
-                width: 100%;
-            }
-        }
-        .e-description{
-            label{
-            }
-        }
-        font-size:.8rem;
-        
-    }
-     .e-Thing.e-Framework {
-        display: flex;
-        flex-direction: column;
-        flex-flow: column-reverse;
-        .e-Thing-always-ul {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            
-        }
-        .thing-actions {
-            display: flex;
-            position: relative;
-            flex-direction: row;
-            width: 100%;
-            height: 48px;
-            background-color: white;
-             .action, .info, .view {
-                display: block;
-                width: 30%;
-            }
-        }
+        padding-left:0rem;
     }
 }
+
+.far.fa-circle {
+    font-size: .5rem;
+}
+
 /*******************************
-        e-Competency
+        import page
 *********************************/
-.e-Competency{
+.page-import {
+    .e-Competency{
         transform: translateX(0);
         cursor: pointer;
-        .e-Property {
-            padding: .5rem 0rem;
-            display: flex;
-            flex-wrap: wrap;
-            flex-direction: row-reverse;
-            label {
-                display: flex;
-                width: 100%;
-                flex-direction: row-reverse;
-                .thing-label {
-                    font-weight: 500;
-                    color: rgba($dark, .3);
-                    width: 95%;
-                }
-            }
-            ul {
-                width: 90%;
-            }
-            label {
-                width: 100%;
-            }
-        }
         .clickable-hierarchy {
             height: 100%;
             position: fixed;
             top: 0;
             right: 0;
+            z-index: 1;
             bottom: 32;
             left: 0;
         }
@@ -378,87 +438,24 @@ iframe {
                 display: block;
                 width: 100%;
             }
-            }
-    a {
-        display:none;
-    }
-    >.expand{
-    }
-    >.compact{
-    }
-    .icon {
-        padding: .5rem;
-    }
-}
-
-/* On Hover show Toolset on Competency card in Editor view */
-.e-Thing.e-Competency.showHoverItems {
-    background-color: rgba($dark, .1);
-    padding-bottom: 44px !important;
-    .e-Thing-ul {
-        background-color: rgba($dark, .1);
-    }
-    .thing-actions {
-         visibility: visible !important;
-         background: rgba($white, .2);
-         height: 44px;
-         display: flex;
-         flex-direction: row;
-         justify-content: flex-end;
-         .action, .info, .view {
-             width: 33%;
-         }
-    }
-}
-
-
-.e-HierarchyNode {
-    ul {
-        margin-top: .25rem;
-        padding-left:.375rem;
-    }
-}
-
-.far.fa-circle {
-    font-size: .5rem;
-}
-
-
-/******* Actions on framework list fiew (page open)  ********/
-.e-Thing.e-Framework {
-    transform: translateX(0);
-    cursor: pointer;
-    .e-Thing-always-ul {
-        width: 80%;
-    }
-    .thing-actions {
-        position: fixed;
-        width: 20%;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        background-color: rgba(grey, .3);
-        .action {
-            display: none;
         }
-        .info {
-
+        a {
+            display:none;
         }
-        .view {
-            display: none;
+        .icon {
+            padding: .5rem;
         }
     }
-}
-
-/*******************************
-        import page
-*********************************/
-.page-import {
+    ul.e-HierarchyNode-ul {
+        margin-left: .5rem;
+    }
     ul.e-Thing-ul {
         li.e-Property {
             width: 100%;
             display: flex;
             flex-direction: row;
+            display: flex;
+            flex-wrap: wrap;
             label {
                 padding: 0px .5rem;
                 display: flex;
@@ -484,8 +481,6 @@ iframe {
                 padding: 0rem 0rem 0rem .25rem;
                 margin-top: 0rem;
                 margin-right: 0rem;
-                
-                
                 li {
                     width: 100%;
                     display:flex;
@@ -500,7 +495,7 @@ iframe {
                         textarea {
                             width: 100%;
                             border-radius: 5px;
-                            border: solid .5px $black;
+                            border: 1px solid rgba($black, .25);
                             padding: 6px;
                         }
                     }
@@ -511,12 +506,107 @@ iframe {
             }
         }
     }
+    #drop-area {
+        height: auto;
+        margin: 0px;
+        padding: 0px;
+        width: auto;
+        .column {
+            height: auto;
+        }
+    }
+    .menu {
+        overflow-y: scroll;
+        height: 100vh;
+        padding: 1rem;
+        width: 300px;
+    }
+    .scrollable-section {
+        overflow-y: scroll;
+        height: 100vh;
+    }
+    .menu-list_list-item {
+        list-style-type: none;
+        padding: .5rem 0em;
+    }
+    .menu-list_list-subitem {
+        list-style-type: none;
+        padding: .25rem 0em;
+    }
+    .buttons {
+        margin-right: 0em !important;
+        margin: 0em !important;
+        :not(:last-child) {
+        }
+        a:first {
+            padding-left: 0em !important;
+            margin-left: 0em !important;
+        }
+    }
+    .content-body-wrapper {
+        padding: .5em 0em;
+        .content-body {
+            padding-top: .25rem;
+            :last {
+                padding-bottom: 1em;
+            }
+        }
+    }
+    .menu-list a {
+        padding: .5em .5em .5em 0em;
+    }
+
+    .drag-file-area {
+        width:100%;
+        display:block;
+        border: 2px dashed rgba($black, .25);
+        border-radius:1rem;
+        padding:100px;
+        margin: auto;
+
+    }
+    .import-tab {
+        margin-top: -40px;
+        height: 100px;
+        color: $dark;
+        width: 100%;
+        max-width: 100px;
+        display: flex;
+        flex-direction: column;
+        justify-items: center;
+        justify-content: center;
+        align-items: center;
+        font-size: .7rem;
+        border-radius: 100px;
+        background-color: transparent;
+        i {
+            color: $dark;
+        }
+        div {
+            color: $dark;
+        }
+    }
+    .is-active-tab{
+        background-color: $light;
+        color: $secondary;
+    i {
+        color: $secondary;
+    }
+    div {
+        color: $secondary;
+    }
 }
-
-/*******************************
-        framework page
-*********************************/
-
+    .tile {
+        border-radius: 1rem;
+    }
+    .import-details, .import-preview, .import-light{
+        min-height: 400px;
+        max-height:68vh;
+        overflow-y: scroll;
+        border: 2px solid rgba($black, .5);
+        border-radius: 1rem;
+    }
+}
 
 /*******************************
         framework list page
@@ -524,6 +614,33 @@ iframe {
 .page-framework-list {
     .button {
         display: none;
+    }
+    /******* "Actions" on framework list fiew (page open)  ********/
+    .e-Thing.e-Framework {
+        transform: translateX(0);
+        cursor: pointer;
+        .e-Thing-ul {
+            padding: 12px;
+            width: 80%;
+
+        }
+        .thing-actions {
+            position: fixed;
+            width: 20%;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(grey, .3);
+            .action {
+                display: none;
+            }
+            .info {
+
+            }
+            .view {
+                display: none;
+            }
+        }
     }
 }
 
@@ -569,3 +686,14 @@ iframe {
 
 
 
+
+
+.import-details__section {
+    padding: 1rem;
+}
+.detected-import-details {
+    padding: 1rem .5rem 0rem .5rem;
+    li {
+        padding: .5rem 0rem;
+    }
+}
