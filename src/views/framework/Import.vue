@@ -459,7 +459,7 @@
                                         </div>
                                         <div
                                             v-if="framework"
-                                            @click="alert('start new import')"
+                                            @click="cancelImport"
                                             class="button is-primary is-pulled-right">
                                             <span class="icon">
                                                 <i class="fa fa-edit" />
@@ -789,7 +789,6 @@ export default {
             this.file = null;
             this.processingFile = false;
             this.processingSuccess = false;
-            this.$refs.dragAndDrop.fileChange();
             this.status = "Ready.";
         },
         onUploadFiles: function(value) {
@@ -885,9 +884,11 @@ export default {
                 });
             } else if (file.name.endsWith(".pdf")) {
                 me.importType = "pdf";
+                me.firstImport = false;
                 me.status = "File selected.";
             } else if (file.name.endsWith(".docx")) {
                 me.importType = "pdf";
+                me.firstImport = false;
                 me.status = "File selected.";
             }
             if (!me.firstImport) {
