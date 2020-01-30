@@ -127,14 +127,44 @@
                                         v-if="method=='file'">
                                         <drag-and-drop
                                             class="column is-12"
-                                            v-if="!processingFile"
+                                            v-if="!processingFile && !showErrors"
                                             @dragAndDropEmitFiles="onUploadFiles" />
                                         <div
-                                            v-if="processingFile"
+                                            v-else-if="processingFile && !showErrors"
                                             class="column is-12">
                                             <span class="icon is-large">
                                                 <i class="fa fa-spinner fa-pulse fa-2x" />
                                             </span>
+                                        </div>
+                                        <!-- import errors -->
+                                        <div
+                                            v-else-if="showErrors"
+                                            class="column is-12 has-text-warning">
+                                            <ul>
+                                                <li
+                                                    class="is-size-7"
+                                                    v-for="(error, index) in errors"
+                                                    :key="index">
+                                                    <span class="">
+                                                        <span class="icon">
+                                                            <i class="fa fa-times" />
+                                                        </span>
+                                                        {{ error }}
+                                                    </span>
+                                                </li>
+                                                <li />
+                                            </ul>
+                                            <div class="section">
+                                                <div class="columns">
+                                                    <div class="column is-4">
+                                                        <div
+                                                            @click="cancelImport"
+                                                            class="button is-primary">
+                                                            Start over
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <!-- appears to be part of an interstitial screen -->
@@ -514,6 +544,8 @@ export default {
                 format: 'Department of Labor',
                 fileType: 'docx'
             },
+            errors: [],
+            showErrors: false,
             importPreviewView: false,
             importLightView: false,
             importDetailsView: false,
@@ -528,6 +560,7 @@ export default {
             url: null,
             repo: window.repo,
             status: "Ready.",
+            statusType: 'info',
             csvConceptExampleFile: csvConceptExample,
             csvConceptTemplateFile: csvConceptTemplate,
             ctdlAsnJsonldConceptsFile: ctdlAsnJsonldConcepts,
@@ -720,6 +753,7 @@ export default {
                 EcIdentityManager.ids[0],
                 function(competencies, relations) {
                     me.status = competencies.length + " competencies and " + relations.length + " relations.";
+                    me.status = "info";
                     var f = new EcFramework();
                     me.framework = null;
                     for (var i = 0; i < competencies.length; i++) {
@@ -740,6 +774,11 @@ export default {
         }
     },
     methods: {
+        unsupportedFile: function(val) {
+            let fileType = val;
+            this.statusType = "error";
+            this.status = "File type " + fileType + " is unsupported in this workflow";
+        },
         /* Event from Sidebar component */
         updateUrl(url) {
             if (this.method === "url") {
@@ -785,6 +824,8 @@ export default {
              * clear all files and framework states
              * this does not completely work
              */
+            this.errors = null;
+            this.showErrors = false;
             this.framework = null;
             this.file = null;
             this.processingFile = false;
@@ -842,6 +883,7 @@ export default {
                         }
                         me.status = (me.competencyCount = (data.length - 1)) + " Competencies Detected.";
                     }, function(error) {
+                        me.statusType = "error";
                         me.status = error;
                     });
                 });
@@ -880,6 +922,7 @@ export default {
                     me.status = "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.";
                     me.competencyCount = EcObject.keys(data).length;
                 }, function(error) {
+                    me.statusType = "error";
                     me.status = error;
                 });
             } else if (file.name.endsWith(".pdf")) {
@@ -922,6 +965,7 @@ export default {
                 }
                 me.relationCount = (data.length - 1);
             }, function(error) {
+                me.statusType = "error";
                 me.status = error;
             });
         },
@@ -982,10 +1026,12 @@ export default {
                         me.spitEvent("importFinished", f.shortId(), "importPage");
                     }
                 }, function(failure) {
+                    me.statusType = "error";
                     me.status = failure;
                 });
             },
             function(failure) {
+                me.statusType = "error";
                 me.status = failure;
             },
             function(increment) {
@@ -1006,9 +1052,11 @@ export default {
                 }
             },
             function(failure) {
+                me.statusType = "error";
                 me.status = failure;
             },
             function(increment) {
+                me.statusType = "info";
                 me.status = increment.competencies + "/" + me.competencyCount + " competencies imported.";
             }, me.repo);
         },
@@ -1028,6 +1076,7 @@ export default {
                     }
                 }
                 var all = frameworks.concat(competencies).concat(relations);
+                me.statusType = "info";
                 me.status = "Saving " + all.length + " objects.";
                 me.repo.multiput(all, function() {
                     for (var i = 0; i < frameworks.length; i++) {
@@ -1041,9 +1090,11 @@ export default {
                         me.analyzeImportFile();
                     }
                 }, function(failure) {
+                    me.statusType = "error";
                     me.status = failure;
                 });
             }, function(failure) {
+                me.statusType = "error";
                 me.status = failure;
             }, ceo);
         },
@@ -1067,6 +1118,14 @@ export default {
                     console.log(d);
                     console.log(JSON.parse(f.toJson()));
                     var cs = {};
+                    if (!d.competencies) {
+                        me.showErrors = true;
+                        me.status = "Error importing competencis.";
+                        me.statusType = "error";
+                        me.errors.push("Error importing competencies, no competencies found in file.");
+                        me.processingFile = false;
+                        return;
+                    }
                     for (var i = 0; i < d.competencies.length; i++) {
                         var c = new EcCompetency();
                         c.assignId(me.repo.selectedServer, d.competencies[i].id);
@@ -1094,8 +1153,10 @@ export default {
                         me.status = "";
                         me.importSuccess();
                     }, console.error);
+                    me.statusType = "info";
                     me.status = "Writing Framework to CaSS...";
                 }, console.error);
+            me.statusType = "info";
             me.status = "Importing Framework...";
         },
         importCsv: function() {
@@ -1147,18 +1208,23 @@ export default {
                             me.spitEvent("importFinished", f.shortId(), "importPage");
                         }
                     }, function(failure) {
+                        me.statusType = "error";
                         me.status = failure;
                     });
                 },
                 function(failure) {
+                    me.statusType = "error";
                     me.status = failure;
                 },
                 function(increment) {
                     if (increment.relations != null && increment.relations !== undefined) {
+                        me.statusType = "info";
                         me.status = (increment.relations + "/" + me.relationCount + " relations imported.");
                     } else if (increment.competencies != null && increment.competencies !== undefined) {
+                        me.statusType = "info";
                         me.status = (increment.competencies + "/" + me.competencyCount + " competencies imported.");
                     } else {
+                        me.statusType = "info";
                         me.status = "Importing...";
                     }
                 }, false, me.repo);
@@ -1195,24 +1261,32 @@ export default {
                     me.analyzeImportFile();
                 }
             }, function(failure) {
+                me.statusType = "error";
                 me.status = "Import failed. Check your import file for any errors.";
                 console.log(failure.statusText);
             });
+            me.statusType = "info";
             me.status = "Importing Framework";
         },
         importFromFile: function() {
             if (this.importType === "csv") {
-                this.importCsv();
+                // temporarily fail on csv
+                this.unsupportedFile('csv');
+                // this.importCsv();
             } else if (this.importType === "ctdlasncsv") {
-                this.importCtdlAsnCsv();
+                this.unsupportedFile('ctdlasncsv');
+                // this.importCtdlAsnCsv();
             } else if (this.importType === "ctdlasnjsonld") {
-                this.importJsonLd();
+                this.unsupportedFile('ctdlasnjsonld');
+                // this.importJsonLd();
             } else if (this.importType === "asn") {
-                this.importAsn();
+                this.unsupportedFile('asn');
+                // this.importAsn();
             } else if (this.importType === "pdf") {
                 this.importPdf();
             } else if (this.importType === "medbiq") {
-                this.importMedbiq();
+                this.unsupportedFile('medbiq');
+                // this.importMedbiq();
             }
         },
         connectToServer: function() {
@@ -1233,7 +1307,10 @@ export default {
         },
         caseGetDocsSuccess: function(result) {
             result = JSON.parse(result);
-            if (result.CFDocuments == null) { this.status = "No frameworks found. Please check the URL and try again."; } else {
+            if (result.CFDocuments == null) {
+                me.statusType = "error";
+                this.status = "No frameworks found. Please check the URL and try again.";
+            } else {
                 this.status = result.CFDocuments.length + " frameworks detected.";
                 for (var i = 0; i < result.CFDocuments.length; i++) {
                     var doc = result.CFDocuments[i];
@@ -1255,6 +1332,7 @@ export default {
             EcRemote.getExpectingString(this.repo.selectedServer, "ims/case/getDocs?url=" + this.serverUrl, function(success) {
                 me.caseGetDocsSuccess(success);
             }, function(failure) {
+                me.statusType = "error";
                 me.status = "No frameworks found. Please check the URL and try again.";
             });
         },
@@ -1278,6 +1356,7 @@ export default {
                     }
                 }
                 if (lis === 0) {
+                    this.statusType = "success";
                     this.status = "Import finished.";
                 } else {
                     var me = this;
@@ -1328,6 +1407,7 @@ export default {
                 if (graph != null) {
                     me.importJsonLd(result);
                 } else {
+                    me.statusType = "error";
                     me.status = "URL must have an '@graph' field at the top level.";
                     return;
                 }
@@ -1336,8 +1416,10 @@ export default {
                 }
             }, function(failure) {
                 if (!failure) {
+                    me.statusType = "error";
                     me.status = "Import Error";
                 } else {
+                    me.statusType = "error";
                     me.status = failure;
                 }
             });
