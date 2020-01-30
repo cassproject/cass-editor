@@ -5,7 +5,8 @@
                 <!--- side bar -->
                 <side-bar
                     type="import"
-                    :method="method" />
+                    :method="method"
+                    @updateUrl="updateUrl" />
                 <!--- end side bar -->
             </div>
             <!--- main body section -->
@@ -259,9 +260,9 @@
                                             Import
                                         </button>-->
                                     </div>
-                                    <!-- sever input -->
+                                    <!-- server input -->
                                     <div
-                                        class="section is-hidden has-dashed-border"
+                                        class="section has-dashed-border"
                                         v-if="method=='server'">
                                         <center>
                                             <h1>Paste URL endpoint of server</h1>
@@ -490,18 +491,9 @@
 
 <script>
 import Hierarchy from '@/lode/components/lode/Hierarchy.vue';
-import ctdlAsnCsvExample from 'file-loader!../../../files/CTDL-ASN.ONET.example.csv';
-import ctdlAsnCsvTemplate from 'file-loader!../../../files/CTDL-ASN.ONET.template.csv';
-import csvExampleCompetencies from 'file-loader!../../../files/CAP Software Engineering - Competencies.csv';
-import csvExampleRelations from 'file-loader!../../../files/CAP Software Engineering - Relations.csv';
-import csvTemplateCompetencies from 'file-loader!../../../files/Template - Competencies.csv';
-import csvTemplateRelations from 'file-loader!../../../files/Template - Relations.csv';
 import csvConceptExample from 'file-loader!../../../files/Concept Scheme Example.csv';
 import csvConceptTemplate from 'file-loader!../../../files/Concept Scheme Template.csv';
 import ctdlAsnJsonldConcepts from 'file-loader!../../../files/ConnectingCredentialsLevels.jsonld';
-import ctdlAsnJsonld from 'file-loader!../../../files/DQP.jsonld';
-import asnRdfJson from 'file-loader!../../../files/D2695955';
-import medbiquitous from 'file-loader!../../../files/educational_achievement_sample_1June2012.xml';
 import common from '@/mixins/common.js';
 import dragAndDrop from './../../components/DragAndDrop.vue';
 import sideBar from './../../components/SideBar.vue';
@@ -555,232 +547,7 @@ export default {
             csvRelationColumns: [],
             relationCount: 0,
             caseDocs: [],
-            caseCancel: false,
-            supportedFileTypes: [
-                {
-                    type: 'CaSS formatted CSV',
-                    examples: [
-                        {
-                            name: 'Competencies',
-                            id: 'cassCsvExComp',
-                            location: csvExampleCompetencies,
-                            download: 'CAP Software Engineering - Competencies.csv'
-                        },
-                        {
-                            name: 'Relations',
-                            id: 'cassCsvExRel',
-                            location: csvExampleRelations,
-                            download: 'CAP Software Engineering - Relations.csv'
-                        }
-                    ],
-                    templates: [
-                        {
-                            name: 'Competencies',
-                            id: 'cassCsvTemlComp',
-                            location: csvTemplateCompetencies,
-                            download: 'Template - Competencies.csv'
-                        },
-                        {
-                            name: 'Relations',
-                            id: 'cassCsvTempRel',
-                            location: csvTemplateRelations,
-                            download: 'Template - Relations.csv'
-                        }
-                    ],
-                    showDescription: false,
-                    description: `
-                            For this import, you can use one or two CSVs.
-                            The first (required) CSV describes the competencies to include in a new framework.
-                            The second (optional) CSV describes the relations between the competencies found in the first framework.
-                            </p><p class="content-body">
-                            Each row in the first CSV will represent one competency,
-                            and each row in the second CSV will represent one relation between two competencies.
-                            The relations can be between competencies found in the first CSV,
-                            competencies found in other frameworks, or a mixture of the two.
-                            </p><p class="content-body">
-                            You can select the columns to use to describe the id, name,
-                            description, and other fields.`
-                },
-                {
-                    type: 'CTDL-ASN formatted CSV',
-                    examples: [
-                        {
-                            name: 'Example',
-                            id: 'ctdlEx',
-                            location: ctdlAsnCsvExample,
-                            download: 'CTDL-ASN.ONET.example.csv'
-                        }
-                    ],
-                    templates: [
-                        {
-                            name: 'Template',
-                            id: 'ctdTempl',
-                            location: ctdlAsnCsvTemplate,
-                            download: 'CTDL-ASN.ONET.template.csv'
-                        }
-                    ],
-                    showDescription: false,
-                    description: `
-                        For this import, you use one CSV.
-                        Each row in the CSV will represent one object, whether
-                        that be a competency, or a competency framework.
-                        Particular fields will be used to determine hierarchy.
-                        </p><p class="content-body">
-                        Using this format, you can import several frameworks,
-                        each with their own competencies.
-                        </p><p>Competencies may not be shared across frameworks, and
-                        each competency may only have one parent.
-                        </p><p class="content-body">
-                        It is also important that the rows be sequenced correctly,
-                        with competency frameworks appearing before the competencies
-                        inside of them,and for a parent to be in a row above
-                        a child of that parent.
-                        </p><p class="content-body">
-                        Any field with multiple values must be formatted as entry
-                        1|entry 2.`
-                },
-                {
-                    type: 'Medbiquitous XML',
-                    examples: [
-                        {
-                            name: 'example',
-                            id: 'medXmlEx',
-                            location: medbiquitous,
-                            download: 'educational_achievement_sample_1June2012.xml'
-                        }
-                    ],
-                    templates: [],
-                    showDescription: false,
-                    description: `
-                        Medbiquitous is a standards body that includes medical
-                        competencies as one of their XML based formats.
-                        </p><p class="content-body">
-                        Using this format, you can import competencies exported
-                        from a system that exports Medbiquitous formatted XML.`
-                },
-                {
-                    type: 'Achievement Standards Network RDF+JSON',
-                    examples: [
-                        {
-                            name: 'Example',
-                            id: 'asnrdEx',
-                            location: asnRdfJson,
-                            download: 'D2695955.json'
-                        }
-                    ],
-                    templates: [],
-                    showDescription: false,
-                    description: `
-                        The Achievement Standards Network set of standards, or ASN
-                        standard for short, is a legacy standard used primarily by
-                        achievementstandards.org to transmit state standards and
-                        other national and organizational standards.
-                        </p><p class="content-body">
-                        Using this format,you can import competencies exported from
-                        achievementstandards.org and other systems in an RDF JSON
-                        format.`
-                },
-                {
-                    type: 'CTDL-ASN formatted JSON-LD',
-                    examples: [
-                        {
-                            name: 'Example',
-                            id: 'ctdlJsonTemp',
-                            location: ctdlAsnJsonld,
-                            download: 'DQP.jsonld'
-                        }
-                    ],
-                    templates: [],
-                    showDescription: false,
-                    description: `
-                        For this import, you use one JSON-LD file that includes a
-                        graph of the framework and all of its competencies.
-                        </p><p class="content-body">
-                        Using this format, you can import a framework and
-                        competencies from a system that exports CTDL-ASN formatted
-                        JSON-LD.`
-                }
-            ],
-            supportedServer: [
-                {
-                    type: 'CaSS Server',
-                    examples: [
-                        {
-                            name: 'Example: CaSS Sandbox',
-                            id: 'cassSandbox',
-                            location: "https://sandbox.cassproject.org/"
-                        }
-                    ],
-                    showDescription: false,
-                    description: `
-                     If you know the URL of a CaSS Repository,
-                    you can import frameworks from that repository.
-                    </p><p class="content-body">
-                    This import maintains the URLs of the Competency Frameworks
-                    and does not change any of the data.
-                    </p><p class="content-body">
-                    After entering the endpoint below, you can select which
-                    frameworks you would like to import.`
-                },
-                {
-                    type: 'IMS CASE Server',
-                    examples: [
-                        {
-                            name: 'Example: OpenSalt.net',
-                            id: 'imsCaseServer',
-                            location: "https://opensalt.net"
-                        }
-                    ],
-                    showDescription: false,
-                    description: `
-                     If you know the URL of a IMS CASE Repository, such as OpenSalt, 
-                     you can import published frameworks from that repository.
-                     <br>
-                     This import maintains the URLs of the CASE frameworks and changes both the format 
-                     and schema used to store the CASE frameworks in CaSS, but does not change any of the data.
-                     <br>
-                     After entering the endpoint below, you can select which frameworks you would like to import.`
-                }
-            ],
-            supportedUrl: [
-                {
-                    type: 'CTDL-ASN JSON-LD Graphs',
-                    examples: [
-                        {
-                            name: 'Example: O*NET Abilities',
-                            id: 'onetAbilities',
-                            location: "https://www.onetcenter.org/ctdlasn/graph/ce-07c257d6-9119-11e8-b852-782bcb5df6ac"
-                        },
-                        {
-                            name: 'Example: O*NET Basic Skills',
-                            id: 'onetBasicSkills',
-                            location: "https://www.onetcenter.org/ctdlasn/graph/ce-07c25f74-9119-11e8-b852-782bcb5df6ac"
-                        },
-                        {
-                            name: 'Example: O*NET Cross-Functional Skills',
-                            id: 'onetCrossFunctionalSkills',
-                            location: "https://www.onetcenter.org/ctdlasn/graph/ce-07c264d7-9119-11e8-b852-782bcb5df6ac"
-                        },
-                        {
-                            name: 'Example: O*NET Knowledge',
-                            id: 'onetKnowledge',
-                            location: "https://www.onetcenter.org/ctdlasn/graph/ce-07c27a0f-9119-11e8-b852-782bcb5df6ac"
-                        },
-                        {
-                            name: 'Example: O*NET Technology Skills',
-                            id: 'onetTechnologySkills',
-                            location: "https://www.onetcenter.org/ctdlasn/graph/ce-9fab4187-d8e7-11e9-8250-782bcb5df6ac"
-                        }
-                    ],
-                    showDescription: false,
-                    description: `
-                     If you know the URL of a CTDL-ASN JSON-LD graph, you can import published frameworks by URL.
-                     <br>
-                     This import maintains the URLs of the original frameworks and changes both the format and
-                     schema used to store the CTDL-ASN frameworks in CaSS, but does not change any of the data.
-                     Please note that the Technology Skills framework below is very large and will take a long time to import.`
-                }
-            ]
+            caseCancel: false
         };
     },
     computed: {
@@ -965,6 +732,14 @@ export default {
         }
     },
     methods: {
+        /* Event from Sidebar component */
+        updateUrl(url) {
+            if (this.method === "url") {
+                this.url = url;
+            } else if (this.method === "server") {
+                this.serverUrl = url;
+            }
+        },
         /* When an import is "successful" */
         importSuccess: function() {
             this.status = "Competency detected";
@@ -1014,17 +789,12 @@ export default {
             this.fileChange(this.file);
         },
         openFramework: function() {
-            var me = this;
             if (this.queryParams.concepts === "true") {
-                EcConceptScheme.get(me.framework.id, function(success) {
-                    me.$store.commit('framework', success);
-                    me.$router.push({name: "conceptScheme", params: {frameworkId: me.framework.id}});
-                }, console.error);
+                this.$store.commit('framework', this.framework);
+                this.$router.push({name: "conceptScheme", params: {frameworkId: this.framework.shortId()}});
             } else {
-                EcFramework.get(me.framework.id, function(success) {
-                    me.$store.commit('framework', success);
-                    me.$router.push({name: "framework", params: {frameworkId: me.framework.id}});
-                }, console.error);
+                this.$store.commit('framework', this.framework);
+                this.$router.push({name: "framework", params: {frameworkId: this.framework.shortId()}});
             }
         },
         fileChange: function(e) {
