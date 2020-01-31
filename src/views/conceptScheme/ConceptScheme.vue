@@ -319,22 +319,38 @@ export default {
     }
 
     .e-ConceptScheme{
-        ul{margin-left:0px;}
-        a {display:none;}
-        >.expand{float:right;position:relative;top:.5rem;}
-        >.compact{float:right;position:relative;top:.5rem;}
-        >.editable{float:right;position:relative;top:.5rem;}
-        >.delete-thing{float:right;position:relative;top:.5rem;}
-        .e-Property-text{font-size:larger;}
+        ul{
+            margin-left:0px;
+        }
+        a {
+            display:none;
+        }
+        >.expand{
+
+            }
+        >.compact{
+        }
+        >.editable{
+        }
+        >.delete-thing{
+        }
+        .e-Property-text{
+            font-size:larger;
+        }
     }
 
     .e-Concept{
         a {display:none;}
-        >.expand{float:right;}
-        >.compact{float:right;}
-        >.editable {float:right;}
-        >.delete-thing {float:right;}
-        >.export {float:right;}
+        >.expand{
+        }
+        >.compact{
+        }
+        >.editable {
+        }
+        >.delete-thing {
+        }
+        >.export {
+        }
     }
     .e-HierarchyNode{
         >ul{

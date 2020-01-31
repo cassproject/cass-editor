@@ -8,6 +8,7 @@ $section-padding-basic: .25rem .75rem;
 $section-padding: 1rem 1rem;
 $section-padding-medium: 1.5rem 1.5rem;
 $section-padding-large: 3rem 1.5rem;
+$section-padding-tb: .125rem 0rem;
 
 $menu-item-color:$black;
 $menu-item-hover-color: $black;
@@ -23,6 +24,7 @@ $menu-list-link-padding: .5em 1em;
     font-family: $family-secondary;
     color: $black;
 }
+$subtitle-weight: 300;
 
 /* side bad menu theme*/ 
 $menu-label-color: $white;
@@ -76,6 +78,9 @@ $button-text-hover-background-color: transparent;
 .section.is-basic {
     padding: $section-padding-basic !important;
 }
+.section.is-tb {
+    padding: $section-padding-tb !important;
+}
 .section.is-small {
     padding: $section-padding-small !important;
 }
@@ -100,10 +105,9 @@ $button-text-hover-background-color: transparent;
         align-content: center;
         align-items: center;
     }
-    input {
-        display: block;
-        width: auto;
-        margin: auto;
+ }
 
-    }
+
+ .button.is-text {
+     text-decoration: none;
  }

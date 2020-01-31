@@ -29,21 +29,35 @@
                     <ul>
                         <li
                             class="is-size-7"
-                            v-for="file in files">
-                            {{ file.name }} ({{ file.size | kb }} kb)
-                            <button
-                                @click="removeFile(file)"
-                                title="Remove">
-                                X
-                            </button>
+                            v-for="file in files"
+                            style="display: inline; vertical-align: middle;">
+                            <span>
+                                {{ file.name }} ({{ file.size | kb }} kb)
+                                <button
+                                    title="Remove"
+                                    @click="removeFile(file)"
+                                    class="button is-small is-text">
+                                    <span class="icon">
+                                        <i class="fa fa-times" />
+                                    </span>
+                                </button>
+                            </span>
                         </li>
                     </ul>
                 </div><div class="column is-12">
                     <button
-                        class="button is-primary is-small"
+                        class="button is-info is-medium"
                         :disabled="uploadDisabled"
                         @click="upload">
-                        Process Files
+                        <span>
+                            Process Files
+                        </span>
+                        <span class="icon">
+                            <span class="fa-stack">
+                                <i class="fas fa-circle fa-stack-1x" />
+                                <i class="fas has-text-secondary fa-caret-right fa-stack-1x caret-icon-overlay-fix" />
+                            </span>
+                        </span>
                     </button>
                 </div>
             </div>
@@ -98,7 +112,11 @@ export default {
             }
         },
         fileChange(e) {
-            this.files = e.target.files || e.dataTransfer.files;
+            if (e) {
+                this.files = e.target.files || e.dataTransfer.files;
+            } else {
+                this.files = [];
+            }
         },
         addFile(e) {
             let droppedFiles = e.dataTransfer.files;
