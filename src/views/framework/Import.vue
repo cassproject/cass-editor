@@ -11,7 +11,7 @@
             </div>
             <!--- main body section -->
             <div class="column has-background-white is-scrollable">
-                <section class="section">
+                <section class="section page-import-body">
                     <div class="container">
                         <div class="section">
                             <div class="columns is-mobile">
@@ -24,30 +24,51 @@
                                     <p class="is-primary is-size-7" />
                                 </div>
                             </div>
-                            <p class="is-size-7">
-                                Below is a preview of your Competency Framework, from this screen
-                                you can edit names and descriptions, rearrange hierarchy. After
-                                accepting the preview, you will gain access to the full editor to further
-                                modify the imported competency framework.
+                            <p
+                                v-if="status === 'Ready' && !file"
+                                class="is-size-7">
+                                Upload documents to transform into CaSS Competency Frameworks.
+                            </p>
+                            <p
+                                v-if="importDetailsView"
+                                class="is-size-7">
+                                Success!  Your file competencies.  CaSS has detected details
+                                about your framework and file.  Please review.
+                                <br><br>
+                                If these details look incorrect, please review your file, and
+                                start over.
+                            </p>
+                            <p
+                                v-if="importPreviewView"
+                                class="is-size-7">
+                                We've successfully imported a competency framework into the CaSS world.
+                                Please review the name and descriptions of the imported competencies.
+                                <br><br>
+                                Here you can make edits to the names and descriptions, as well as drag
+                                competencies to a different place in the hierarchy if there are discrepencies.
+                                <br><br>
+                                After making edits, "approve" the changes to view the imported competency details.
                             </p>
                         </div>
-                        <div class="is-hidden section">
+                        <div
+                            v-if="framework && importPreviewView"
+                            class="section">
                             <div class="columns is-mobile">
-                                <div class="column is-6">
+                                <div class="column is-6 has-text-centered">
                                     <span class="icon">
-                                        <i class="fas fa-hand has-text-black" />
+                                        <i class="far fa-hand-rock has-text-dark" />
                                     </span>
-                                    <span class="is-size-7">
+                                    <span class="is-size-7 has-text-weight-bold">
                                         Use your mouse to drag competencies
                                     </span>
                                 </div>
-                                <div class="column is-6">
+                                <div class="column is-6 has-text-centered">
                                     <span>
                                         <span class="icon">
-                                            <i class="far fa-pencil has-text-black" />
+                                            <i class="far fa-edit has-text-black" />
                                         </span>
-                                        <span class="is-size-7">
-                                            Click the pencil button to edit
+                                        <span class="is-size-7 has-text-weight-bold">
+                                            Click the pencil icon to edit the basic details.
                                         </span>
                                     </span>
                                 </div>
@@ -383,7 +404,7 @@
                                 </h3>
                                 <p class="is-size-6 has-text-weight-light">
                                     If these details don't look correct, please verify your file
-                                    is correct and reimport
+                                    is correct and import again.
                                 </p>
                                 <ul class="is-size-6 detected-import-details">
                                     <li>
@@ -417,7 +438,7 @@
                                         <b>Header rows detected</b>
                                     </li>
                                     <li class="is-size-7">
-                                        If this information looks correct, hit "approve" to continue.
+                                        If this information looks correct, "approve" to continue.
                                     </li>
                                 </ul>
                             </div>
@@ -465,74 +486,113 @@
                             </div>
                         </div>
                         <div class="section">
-                            <div class="columns is-mobile">
+                            <div class="columns is-gapless is-marginless is-mobile is-multiline">
                                 <div class="column is-12">
+                                    <!-- import details options -->
                                     <div
                                         v-if="importDetailsView"
                                         class="buttons is-right">
                                         <div
                                             @click="cancelImport"
-                                            class="button is-light is-pulled-right is-dark">
-                                            Cancel
+                                            class="button is-light is-pulled-right is-light">
+                                            <span>
+                                                Cancel
+                                            </span>
+                                            <span class="icon">
+                                                <i class="fa fa-times-circle" />
+                                            </span>
                                         </div>
                                         <div
                                             @click="importDetailsAccept"
                                             class="button is-info is-pulled-right">
                                             <span>
-                                                Accept & parse
+                                                Accept Details & Edit
                                             </span>
-                                            <span class="icon">
-                                                <i class="far fa-caret-square-right" />
+                                            <span class="icon is-smalls">
+                                                <span class="fa-stack">
+                                                    <i class="fas fa-circle fa-stack-1x" />
+                                                    <i class="fas has-text-info fa-caret-right fa-stack-1x caret-icon-overlay-fix" />
+                                                </span>
                                             </span>
                                         </div>
                                     </div>
+                                    <!-- import preview options -->
                                     <div
                                         v-else-if="importPreviewView"
                                         class="buttons is-right">
                                         <div
                                             @click="cancelImport"
-                                            class="button is-light is-pulled-right is-dark">
-                                            <span class="icon">
-                                                <i class="fas fa-undo-alt" />
-                                            </span>
+                                            class="button is-light is-pulled-right">
                                             <span>cancel</span>
+                                            <span class="icon">
+                                                <i class="fa fa-times-circle" />
+                                            </span>
                                         </div>
                                         <div
                                             @click="importPreviewAccept"
-                                            class="button is-light is-pulled-right">
-                                            Approve
+                                            class="button is-info is-pulled-right">
+                                            <span>
+                                                Approve Import & View
+                                            </span>
+                                            <span class="icon">
+                                                <span class="fa-stack">
+                                                    <i class="fas fa-circle fa-stack-1x" />
+                                                    <i class="fas has-text-info fa-caret-right fa-stack-1x caret-icon-overlay-fix" />
+                                                </span>
+                                            </span>
                                         </div>
                                     </div>
-                                    <div
-                                        v-else-if="importLightView"
-                                        class="buttons is-right">
+                                </div>
+                                <div
+                                    v-if="importLightView"
+                                    class="column is-6">
+                                    <div class="buttons is-left">
                                         <div
                                             class="button is-light is-pulled-right"
                                             @click="showModal('export')">
-                                            Export
+                                            <span>
+                                                Export
+                                            </span>
+                                            <span class="icon">
+                                                <i class="fa fa-download" />
+                                            </span>
                                         </div>
+                                        <router-link
+                                            class="button is-light is-pulled-right"
+                                            to="/">
+                                            <span>
+                                                Done
+                                            </span>
+                                            <span class="icon">
+                                                <i class="fa fa-home" />
+                                            </span>
+                                        </router-link>
+                                    </div>
+                                </div>
+                                <div
+                                    v-if="importLightView"
+                                    class="column is-6">
+                                    <div
+                                        class="buttons is-right">
                                         <div
                                             v-if="framework"
                                             @click="cancelImport"
-                                            class="button is-primary is-pulled-right">
-                                            <span class="icon">
-                                                <i class="fa fa-edit" />
-                                            </span>
+                                            class="button is-info is-pulled-right">
                                             <span>import new framework</span>
+                                            <span class="icon">
+                                                <i class="fa fa-redo-alt" />
+                                            </span>
                                         </div>
                                         <div
                                             v-if="framework"
                                             @click="openFramework"
-                                            class="button is-primary is-pulled-right">
+                                            class="button is-info is-pulled-right">
+                                            <span>open editor</span>
                                             <span class="icon">
                                                 <i class="fa fa-edit" />
                                             </span>
-                                            <span>open editor</span>
                                         </div>
                                     </div>
-                                    <div
-                                        v-else
-                                        class />
                                 </div>
                             </div>
                         </div>
@@ -585,7 +645,7 @@ export default {
             framework: null,
             url: null,
             repo: window.repo,
-            status: "Ready.",
+            status: "Ready",
             statusType: 'info',
             csvConceptExampleFile: csvConceptExample,
             csvConceptTemplateFile: csvConceptTemplate,
@@ -943,7 +1003,7 @@ export default {
             this.file = null;
             this.processingFile = false;
             this.processingSuccess = false;
-            this.status = "Ready.";
+            this.status = "Ready";
         },
         onUploadFiles: function(value) {
             this.file = value;

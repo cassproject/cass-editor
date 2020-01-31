@@ -24,6 +24,7 @@ $menu-list-link-padding: .5em 1em;
     font-family: $family-secondary;
     color: $black;
 }
+$subtitle-weight: 300;
 
 /* side bad menu theme*/ 
 $menu-label-color: $white;
@@ -110,7 +111,3 @@ $button-text-hover-background-color: transparent;
  .button.is-text {
      text-decoration: none;
  }
-
- .container {
-     max-width: 800px;  
-    }

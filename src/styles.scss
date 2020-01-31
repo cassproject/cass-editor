@@ -161,7 +161,7 @@ input, textarea{
 }
 .page-framework-list,
 .page-framework,
-.page-import {
+ {
     overflow-y: scroll;
     height: 95vh;
 }
@@ -354,8 +354,8 @@ iframe {
          .action, .info, .view {
              width: 33%;
          }
+        }
     }
-}
     .e-HierarchyNode{
         >.icon{
             width:0px;
@@ -402,9 +402,31 @@ iframe {
         import page
 *********************************/
 .page-import {
+    .page-import-body {
+        max-width: 900px;
+        display: block;
+        margin: auto;
+    }
+    .grabbing {
+        .e-Competency > *{
+            background:blue !important;
+            cursor: grabbing !important;
+        }
+    }
+    .dragging {
+        cursor: grabbing !important;
+        .e-Competency, .e-Competency > * {
+            cursor: grabbing !important;
+        }
+        cursor: grabbing !important;
+        > * {
+            cursor: grabbing !important;
+
+        }
+    }
     .e-Competency{
         transform: translateX(0);
-        cursor: pointer;
+        cursor: grab;
         .clickable-hierarchy {
             height: 100%;
             position: fixed;
@@ -412,6 +434,7 @@ iframe {
             right: 0;
             z-index: 1;
             bottom: 32;
+            cursor: grab;
             left: 0;
         }
         .e-Thing-always-ul {
@@ -746,4 +769,10 @@ iframe {
     li {
         padding: .5rem 0rem;
     }
+}
+
+
+// fixes 
+.caret-icon-overlay-fix {
+    padding-left: .125rem;
 }

@@ -1,22 +1,29 @@
 <template>
     <div
-        class="modal"
-        :class="{'is-active': visible}">
+        class="modal is-small"
+        :class="[{'is-active': visible}, modalClass]">
         <div class="modal-background" />
         <div class="modal-card">
-            <header class="modal-card-head">
-                <p class="modal-card-title has-text-dark">
+            <header
+                class="modal-card-head"
+                :class="modalHeaderBackground">
+                <p
+                    class="subtitle is-size-3 modal-card-title"
+                    :class="modalHeaderFontColor">
                     {{ title }}
+
+                    <button
+                        class="delete is-pulled-right"
+                        aria-label="close"
+                        @click="hide()" />
                 </p>
-                <button
-                    class="delete"
-                    aria-label="close"
-                    @click="hide()" />
             </header>
-            <section class="modal-card-body has-text-dark">
+            <div class="modal-card-body has-text-dark">
                 {{ text }}
-            </section>
-            <section class="modal-card-body has-text-dark">
+            </div>
+            <section
+                v-if="type==='export'"
+                class="modal-card-body has-text-dark">
                 <div
                     v-if="type === 'export'"
                     class="field">
@@ -39,24 +46,46 @@
                     </div>
                 </div>
             </section>
-            <footer class="modal-card-foot">
-                <button
-                    v-if="type==='export'"
-                    class="button is-success"
-                    @click="confirm">
-                    Export file
-                </button>
-                <button
-                    v-else
-                    class="button is-success"
-                    @click="confirm">
-                    Save changes
-                </button>
-                <button
-                    class="button"
-                    @click="hide()">
-                    Cancel
-                </button>
+            <footer class="modal-card-foot has-background-white">
+                <div
+                    class="buttons is-right"
+                    style="width: 100%;">
+                    <button
+                        class="button is-light"
+                        @click="hide()">
+                        <span>
+                            Cancel
+                        </span>
+                        <span class="icon">
+                            <i class="fa fa-times-circle" />
+                        </span>
+                    </button>
+                    <button
+                        v-if="type==='export'"
+                        class="button is-info"
+                        @click="confirm">
+                        <span>
+                            Export file
+                        </span>
+                        <span class="icon">
+                            <i class="fa fa-download" />
+                        </span>
+                    </button>
+                    <button
+                        v-else
+                        class="button"
+                        :class="modalConfirmButton"
+                        @click="confirm">
+                        <span>
+                            Confirm
+                        </span>
+                        <span
+                            class="icon"
+                            :class="modalButtonIcons">
+                            <i class="fa fa-check-circle" />
+                        </span>
+                    </button>
+                </div>
             </footer>
         </div>
     </div>
@@ -80,6 +109,64 @@ export default {
             // adding callback function variable
             onConfirm: {}
         };
+    },
+    computed: {
+        modalButtonIcons: function() {
+            let modalClass = '';
+            if (this.type === 'removeObject') {
+                modalClass = 'has-text-white';
+            } else if (this.type === 'deleteObject') {
+                modalClass = 'has-text-white';
+            } else {
+                modalClass = 'has-text-white';
+            }
+            return modalClass;
+        },
+        modalClass: function() {
+            let modalClass = '';
+            if (this.type === 'removeObject') {
+                modalClass = 'alert-modal';
+            } else if (this.type === 'deleteObject') {
+                modalClass = 'warning-modal';
+            } else {
+                modalClass = 'info-modal';
+            }
+            return modalClass;
+        },
+        modalHeaderFontColor: function() {
+            let modalClass = '';
+            if (this.type === 'removeObject') {
+                modalClass = 'has-text-warning';
+            } else if (this.type === 'deleteObject') {
+                modalClass = 'has-text-danger';
+            } else {
+                modalClass = 'has-text-dark';
+            }
+            return modalClass;
+        },
+        modalConfirmButton: function() {
+            let modalClass = '';
+            if (this.type === 'removeObject') {
+                modalClass = 'is-warning has-text-white';
+            } else if (this.type === 'deleteObject') {
+                modalClass = 'is-danger has-text-white';
+            } else {
+                modalClass = 'is-info has-text-white';
+            }
+            return modalClass;
+        },
+        modalHeaderBackground: function() {
+            let modalClass = '';
+            if (this.type === 'removeObject') {
+                modalClass = 'has-background-light';
+            } else if (this.type === 'deleteObject') {
+                modalClass = 'has-background-light';
+            } else {
+                modalClass = 'has-background-light';
+            }
+            return modalClass;
+        }
+
     },
     methods: {
         hide() {
@@ -122,4 +209,8 @@ export default {
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.warning-modal {
+
+}
+</style>
