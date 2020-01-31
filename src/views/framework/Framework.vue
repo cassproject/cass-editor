@@ -204,6 +204,84 @@ export default {
                         "add": "unsaved",
                         "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "narrows", values); },
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "narrows", target); }
+                    },
+                    "broadens": {
+                        "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                        "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "Covers other relevant competencies not found in this competency."}],
+                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Broadens"}],
+                        "iframePath": this.iframeCompetencyPathInterframework,
+                        "iframeText": "Select competencies to align...",
+                        "valuesIndexed": function() { return me.relations["broadens"]; },
+                        "noTextEditing": true,
+                        "add": "unsaved",
+                        "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "broadens", values); },
+                        "remove": function(source, target) { me.removeRelationFromFramework(source, "broadens", target); }
+                    },
+                    "isEquivalentTo": {
+                        "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                        "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "Represents same capability in all aspects to another competency."}],
+                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Equivalent To"}],
+                        "iframePath": this.iframeCompetencyPathInterframework,
+                        "iframeText": "Select competencies to align...",
+                        "valuesIndexed": function() { return me.relations["isEquivalentTo"]; },
+                        "noTextEditing": true,
+                        "add": "unsaved",
+                        "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEquivalentTo", values); },
+                        "remove": function(source, target) { me.removeRelationFromFramework(source, "isEquivalentTo", target); }
+                    },
+                    "requires": {
+                        "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                        "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "Another competency is prerequisite for this."}],
+                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Requires"}],
+                        "iframePath": this.iframeCompetencyPathInterframework,
+                        "iframeText": "Select competencies to align...",
+                        "valuesIndexed": function() { return me.relations["requires"]; },
+                        "noTextEditing": true,
+                        "add": "unsaved",
+                        "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "requires", values); },
+                        "remove": function(source, target) { me.removeRelationFromFramework(source, "requires", target); }
+                    },
+                    "isEnabledBy": {
+                        "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                        "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "A recommended option that speeds up acquisition of this competency."}],
+                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Enabled By"}],
+                        "iframePath": this.iframeCompetencyPathInterframework,
+                        "iframeText": "Select competencies to align...",
+                        "valuesIndexed": function() { return me.relations["isEnabledBy"]; },
+                        "noTextEditing": true,
+                        "add": "unsaved",
+                        "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEnabledBy", values); },
+                        "remove": function(source, target) { me.removeRelationFromFramework(source, "isEnabledBy", target); }
+                    },
+                    "isRelatedTo": {
+                        "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                        "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "This competency has some degree of overlap with another."}],
+                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Related To"}],
+                        "iframePath": this.iframeCompetencyPathInterframework,
+                        "iframeText": "Select competencies to align...",
+                        "valuesIndexed": function() { return me.relations["isRelatedTo"]; },
+                        "noTextEditing": true,
+                        "add": "unsaved",
+                        "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isRelatedTo", values); },
+                        "remove": function(source, target) { me.removeRelationFromFramework(source, "isRelatedTo", target); }
+                    },
+                    "desires": {
+                        "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                        "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "Recommended, assumed, or expected competency not essential to acquisition of this competency."}],
+                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Desires"}],
+                        "iframePath": this.iframeCompetencyPathInterframework,
+                        "iframeText": "Select competencies to align...",
+                        "valuesIndexed": function() { return me.relations["desires"]; },
+                        "noTextEditing": true,
+                        "add": "unsaved",
+                        "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "desires", values); },
+                        "remove": function(source, target) { me.removeRelationFromFramework(source, "desires", target); }
                     }
                 };
             }
@@ -472,12 +550,21 @@ export default {
             var me = this;
             new EcAsyncHelper().each(this.framework.relation, function(relation, callback) {
                 EcAlignment.get(relation, function(r) {
-                    if (r.source === source && r.target === target && r.relationType === property) {
+                    if (property === "broadens") {
+                        if (r.target === source && r.source === target && r.relationType === "narrows") {
+                            me.framework.removeRelation(r.shortId());
+                            me.conditionalDelete(r.shortId());
+                            callback();
+                        } else {
+                            callback();
+                        }
+                    } else if (r.source === source && r.target === target && r.relationType === property) {
                         me.framework.removeRelation(r.shortId());
                         me.conditionalDelete(r.shortId());
                         callback();
+                    } else {
+                        callback();
                     }
-                    callback();
                 }, callback);
             }, function() {
                 var framework = me.framework;
