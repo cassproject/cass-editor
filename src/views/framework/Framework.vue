@@ -174,7 +174,7 @@ export default {
         },
         iframeCompetencyPathInterframework: function() {
             var path = this.queryParams.editorRoot ? this.queryParams.editorRoot : "";
-            path += "/?select=Align with...&view=true&back=true";
+            path += "cass-editor/?select=Align with...&view=true&back=true";
             path += this.commonPathIframe;
             return path;
         },
@@ -521,7 +521,9 @@ export default {
             }
         },
         addRelationsToFramework: function(selectedCompetency, property, values) {
-            this.$parent.addAlignments(values, selectedCompetency, property);
+            if (values.length > 0) {
+                this.$parent.addAlignments(values, selectedCompetency, property);
+            }
         },
         removeRelationFromFramework: function(source, property, target) {
             var me = this;
