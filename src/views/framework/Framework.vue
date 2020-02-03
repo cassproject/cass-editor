@@ -7,38 +7,50 @@
                     :repo="repo"
                     :parentNotEditable="queryParams.view==='true'"
                     :profile="frameworkProfile" />
-                <span
-                    class="tag is-info has-text-white"
-                    v-if="framework.competency && framework.competency.length == 1">{{ framework.competency.length }} item</span>
-                <span
-                    class="tag is-info has-text-white"
-                    v-else-if="framework.competency && framework.competency.length > 1">{{ framework.competency.length }} items</span>
-                <span
-                    class="tag is-info has-text-white"
-                    v-if="timestamp"
-                    :title="new Date(timestamp)">Last modified {{ lastModified }}</span>
-                <span
-                    class="tag is-info has-text-white"
-                    v-if="framework['schema:dateCreated']"
-                    :title="new Date(framework['schema:dateCreated'])">Created {{ $moment(framework['schema:dateCreated']).fromNow() }}</span>
-                <span
-                    class="tag is-info has-text-white"
-                    v-if="framework['Approved']"
-                    :title="framework['Approved']">Approved</span>
-                <span
-                    class="tag is-info has-text-white"
-                    v-if="framework['Published']"
-                    :title="framework['Published']">Published</span>
-                <button
-                    v-if="selectAllButton"
-                    @click="selectAll=!selectAll">
-                    Select All
-                </button>
-                <button
-                    v-if="selectButtonText"
-                    @click="selectButton">
-                    {{ selectButtonText }}
-                </button>
+                <span class="actions">
+                    <span
+                        class="tag is-info has-text-white"
+                        v-if="framework.competency && framework.competency.length == 1">
+                        {{ framework.competency.length }} item
+                    </span>
+                    <span
+                        class="tag is-info has-text-white"
+                        v-else-if="framework.competency && framework.competency.length > 1">
+                        {{ framework.competency.length }} items
+                    </span>
+                    <span
+                        class="tag is-info has-text-white"
+                        v-if="timestamp"
+                        :title="new Date(timestamp)">
+                        Last modified {{ lastModified }}
+                    </span>
+                    <span
+                        class="tag is-info has-text-white"
+                        v-if="framework['schema:dateCreated']"
+                        :title="new Date(framework['schema:dateCreated'])">
+                        Created {{ $moment(framework['schema:dateCreated']).fromNow() }}
+                    </span>
+                    <span
+                        class="tag is-info has-text-white"
+                        v-if="framework['Approved']"
+                        :title="framework['Approved']">
+                        Approved
+                    </span>
+                    <span
+                        class="tag is-info has-text-white"
+                        v-if="framework['Published']"
+                        :title="framework['Published']">Published</span>
+                    <button
+                        v-if="selectAllButton"
+                        @click="selectAll=!selectAll">
+                        Select All
+                    </button>
+                    <button
+                        v-if="selectButtonText"
+                        @click="selectButton">
+                        {{ selectButtonText }}
+                    </button>
+                </span>
                 <hr>
                 <Hierarchy
                     :container="framework"
@@ -69,6 +81,7 @@ import Thing from '@/lode/components/lode/Thing.vue';
 import Hierarchy from '@/lode/components/lode/Hierarchy.vue';
 import saveAs from 'file-saver';
 import common from '@/mixins/common.js';
+import exports from '@/mixins/exports.js';
 export default {
     name: "Framework",
     props: {
@@ -77,7 +90,7 @@ export default {
         disallowEdits: Boolean,
         profileOverride: Object
     },
-    mixins: [common],
+    mixins: [common, exports],
     data: function() {
         return {
             repo: window.repo,
@@ -99,13 +112,21 @@ export default {
             selectedArray: [],
             frameworkProfile: {
                 "http://schema.org/name": {
-                    ...this.$store.state.lode.schemataLookup["https://schema.cassproject.org/0.4/"]["http://schema.org/name"],
+                    "@id": "http://schema.org/name",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Name of the competency framework."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "name"}]
                 },
                 "http://schema.org/description": {
-                    ...this.$store.state.lode.schemataLookup["https://schema.cassproject.org/0.4/"]["http://schema.org/description"],
+                    "@id": "http://schema.org/description",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Description of the framework."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "description"}]
@@ -164,25 +185,47 @@ export default {
                 var me = this;
                 return {
                     "http://schema.org/name": {
-                        ...this.$store.state.lode.schemataLookup["https://schema.cassproject.org/0.4/"]["http://schema.org/name"],
+                        "@id": "http://schema.org/name",
+                        "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                        "http://schema.org/domainIncludes":
+                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                        "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "Name of the competency."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}]
                     },
                     "http://schema.org/description": {
-                        ...this.$store.state.lode.schemataLookup["https://schema.cassproject.org/0.4/"]["http://schema.org/description"],
+                        "@id": "http://schema.org/description",
+                        "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                        "http://schema.org/domainIncludes":
+                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                        "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "Description of the competency."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}]
                     },
                     "https://schema.cassproject.org/0.4/Competency/scope": {
-                        ...this.$store.state.lode.schemataLookup["https://schema.cassproject.org/0.4/"]["https://schema.cassproject.org/0.4/Competency/scope"],
+                        "@id": "https://schema.cassproject.org/0.4/Competency/scope",
+                        "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                        "http://schema.org/domainIncludes":
+                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                        "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "Scope in which the competency may be applied. e.g. Underwater."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Scope"}]
                     },
                     "https://schema.cassproject.org/0.4/Level": {
-                        ...this.$store.state.lode.schemataLookup["https://schema.cassproject.org/0.4/"]["https://schema.cassproject.org/0.4/Level"],
+                        "@id": "https://schema.cassproject.org/0.4/Level",
+                        "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                        "http://schema.org/domainIncludes":
+                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                        "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [
+                            {"@language": "en",
+                                "@value":
+                        "When an individual's performance in a competency can be measured, a level specifies milestones that an individual can reach, creating fine-grained distinction between the proficient and the adept."}
+                        ],
+                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Level"}],
                         "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Level"}],
                         "valuesIndexed": function() { return me.levels; },
                         "noTextEditing": true,
@@ -332,7 +375,7 @@ export default {
     watch: {
         exportType: function() {
             if (this.exportType === "asn") {
-                this.exportAsn();
+                this.exportAsn(this.frameworkExportLink);
             } else if (this.exportType === "jsonld") {
                 this.exportJsonld(this.frameworkExportLink);
             } else if (this.exportType === "rdfQuads") {
@@ -346,11 +389,11 @@ export default {
             } else if (this.exportType === "ctdlasnJsonld") {
                 this.exportCtdlasnJsonld(this.frameworkExportLink);
             } else if (this.exportType === "ctdlasnCsv") {
-                this.exportCtdlasnCsv();
+                this.exportCtdlasnCsv(this.frameworkExportLink);
             } else if (this.exportType === "csv") {
                 this.exportCsv();
             } else if (this.exportType === "case") {
-                this.exportCasePackages();
+                this.exportCasePackages(guid);
             }
         },
         shortId: function() {
@@ -383,72 +426,6 @@ export default {
                 }
                 this.selectAllButton = true;
             }
-        },
-        download: function(fileName, data) {
-            var blob = new Blob([data], {type: "text/plain;charset=utf-8"});
-            saveAs(blob, fileName);
-        },
-        exportAsn: function() {
-            window.open(this.frameworkExportLink.replace("/data/", "/asn/"), '_blank');
-        },
-        exportJsonld: function(link) {
-            window.open(link, '_blank');
-        },
-        exportRdfQuads: function(link) {
-            var fileName = this.framework.getName();
-            var me = this;
-            this.get(link, null, {"Accept": "text/n4"}, function(success) {
-                me.download(fileName + ".n4", success);
-            }, function(failure) {
-                console.log(failure);
-            });
-        },
-        exportRdfJson: function(link) {
-            var fileName = this.framework.getName();
-            var me = this;
-            this.get(link, null, {"Accept": "application/rdf+json"}, function(success) {
-                me.download(fileName + ".rdf.json", success);
-            }, function(failure) {
-                console.log(failure);
-            });
-        },
-        exportRdfXml: function(link) {
-            var fileName = this.framework.getName();
-            var me = this;
-            this.get(link, null, {"Accept": "application/rdf+xml"}, function(success) {
-                me.download(fileName + ".rdf.xml", success);
-            }, function(failure) {
-                console.log(failure);
-            });
-        },
-        exportTurtle: function(link) {
-            var fileName = this.framework.getName();
-            var me = this;
-            this.get(link, null, {"Accept": "text/turtle"}, function(success) {
-                me.download(fileName + ".turtle", success);
-            }, function(failure) {
-                console.log(failure);
-            });
-        },
-        exportCtdlasnJsonld: function(link) {
-            window.open(link.replace("/data/", "/ceasn/"), '_blank');
-        },
-        exportCtdlasnCsv: function() {
-            var me = this;
-            EcRemote.getExpectingString(this.frameworkExportLink.replace("/data/", "/ceasn/"), null, function(success) {
-                CSVExport.exportCTDLASN(JSON.parse(success), me.framework.getName());
-            }, function(error) {
-                console.log(error);
-            });
-        },
-        exportCsv: function() {
-            CSVExport.exportFramework(this.framework.id, console.log, console.log);
-        },
-        exportCasePackages: function() {
-            window.open(this.repo.selectedServer + "ims/case/v1p0/CFPackages/" + this.frameworkExportGuid, '_blank');
-        },
-        exportCaseItems: function(guid) {
-            window.open(this.repo.selectedServer + "ims/case/v1p0/CFItems/" + guid, '_blank');
         },
         removeObject: function(thing) {
             // Remove from container but don't delete
@@ -616,77 +593,5 @@ export default {
 
 <style lang="scss">
 
-.page-framework{
-    .e-Thing-ul{
-
-        margin-top:0px;
-    }
-    .e-Thing-always-ul .e-name{
-        label{
-            display:none;
-        }
-    }
-
-    .e-Thing-always-ul .e-description{
-        label{
-            display:none;
-        }
-        font-size:.8rem;
-    }
-
-    .e-Framework{
-        ul{margin-left:0px;}
-        a {display:none;}
-        >.expand{float:right;position:relative;top:.5rem;}
-        >.compact{float:right;position:relative;top:.5rem;}
-        >.editable{float:right;position:relative;top:.5rem;}
-        >.delete-thing{float:right;position:relative;top:.5rem;}
-        .e-Property-text{
-            font-size:larger;
-        }
-    }
-
-    .e-Competency{
-        a {display:none;}
-        >.expand{float:right;}
-        >.compact{float:right;}
-        >.editable {float:right;}
-        >.delete-thing {float:right;}
-        >.remove {float:right;}
-        >.export {float:right;}
-    }
-    .e-HierarchyNode{
-        >ul{
-            padding-left:1rem;
-            >div{
-                border:1px dashed whitesmoke;
-            }
-        }
-        >.icon{
-            width:0px;
-            height:0px;
-            margin:0px;
-            line-height:0px;
-            display:block;
-            position:relative;
-            left:-.5rem;
-            top:-2rem;
-        }
-        .highlighted{
-            background-color:yellow;
-        }
-        padding-left:1rem;
-    }
-    .dragging{
-        div{
-            border:1px dashed gray !important;
-            .drag-footer::before{
-                content:'' !important
-            }
-            .drag-footer{
-            }
-        }
-    }
-}
 
 </style>

@@ -1,207 +1,17 @@
 <template>
-    <div class="container is-fluid is-marginless is-paddingless">
+    <div class="page-import container is-fluid is-marginless is-paddingless">
         <div class="columns is-multiline is-marginless is-gapless is-mobile">
             <div class="column is-narrow is-hidden-mobile">
                 <!--- side bar -->
-                <aside
-                    class="menu has-background-primary has-text-white">
-                    <div
-                        class="menu-label is-size-3"
-                        v-if="method=='file'">
-                        Supported File Types
-                    </div>
-                    <div
-                        class="menu-label"
-                        v-if="method=='server'">
-                        Supported Servers
-                    </div>
-                    <div
-                        class="menu-label"
-                        v-if="method=='text'">
-                        How to format text
-                    </div>
-                    <div
-                        class="menu-header"
-                        v-if="method=='url'">
-                        Supported URL Imports
-                    </div>
-                    <div
-                        v-if="method=='file'"
-                        class="menu-list">
-                        <li
-                            class="menu-list_list-item"
-                            v-for="(supportedType, index) in supportedFileTypes"
-                            :key="index">
-                            <h1 class="is-size-6 has-text-weight-medium">
-                                {{ supportedType.type }}
-                                <span
-                                    @click="supportedType.showDescription = !supportedType.showDescription"
-                                    class="icon is-pulled-right">
-                                    <i class="fa fa-info-circle" />
-                                </span>
-                            </h1>
-                            <p
-                                class="is-size-7 content-body-wrapper"
-                                v-if="supportedType.showDescription"
-                                v-html="supportedType.description" />
-                            <div class="menu-list_list-subitem">
-                                <h5
-                                    class="is-size-7 has-text-weight-bold"
-                                    v-if="supportedType.examples.length > 0">
-                                    Examples
-                                </h5>
-                                <div class="buttons is-left">
-                                    <a
-                                        class="button has-text-link is-size-7 is-small is-text"
-                                        v-for="(example) in supportedType.examples"
-                                        :key="example.id"
-                                        :href="example.location"
-                                        :download="example.download">
-                                        <span>
-                                            {{ example.name }}
-                                        </span>
-                                        <span class="icon">
-                                            <i class="fa fa-download" />
-                                        </span>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="menu-list_list-subitem">
-                                <h5
-                                    class="is-size-7 has-text-weight-bold"
-                                    v-if="supportedType.templates.length > 0">
-                                    Templates
-                                </h5>
-                                <div class="buttons is-left">
-                                    <a
-                                        class="button has-text-link is-size-7 is-small is-text"
-                                        v-for="(template) in supportedType.templates"
-                                        :key="template.id"
-                                        :href="template.location"
-                                        :download="template.download">
-                                        <span>
-                                            {{ template.name }}
-                                        </span>
-                                        <span class="icon">
-                                            <i class="fa fa-download" />
-                                        </span>
-                                    </a>
-                                </div>
-                            </div>
-                        </li>
-                    </div>
-                    <div
-                        v-else-if="method=='server'"
-                        class="menu-list">
-                        <li
-                            class="menu-list_list-item"
-                            v-for="(supportedType, index) in supportedServer"
-                            :key="index">
-                            <h1 class="is-size-6 has-text-weight-medium">
-                                {{ supportedType.type }}
-                                <span
-                                    @click="supportedType.showDescription = !supportedType.showDescription"
-                                    class="icon is-pulled-right">
-                                    <i class="fa fa-info-circle" />
-                                </span>
-                            </h1>
-                            <p
-                                class="is-size-7 content-body-wrapper"
-                                v-if="supportedType.showDescription"
-                                v-html="supportedType.description" />
-                            <div class="menu-list_list-subitem">
-                                <h5
-                                    class="is-size-7 has-text-weight-bold"
-                                    v-if="supportedType.examples.length > 0">
-                                    Examples
-                                </h5>
-                                <div class="buttons is-left">
-                                    <a
-                                        class="button has-text-link is-size-7 is-small is-text"
-                                        v-for="(example) in supportedType.examples"
-                                        :key="example.id"
-                                        @click="serverUrl=example.location">
-                                        <span>
-                                            {{ example.name }}
-                                        </span>
-                                    </a>
-                                </div>
-                            </div>
-                        </li>
-                    </div>
-                    <div
-                        v-else-if="method=='url'"
-                        class="menu-list">
-                        <li
-                            class="menu-list_list-item"
-                            v-for="(supportedType, index) in supportedUrl"
-                            :key="index">
-                            <h1 class="is-size-6 has-text-weight-medium">
-                                {{ supportedType.type }}
-                                <span
-                                    @click="supportedType.showDescription = !supportedType.showDescription"
-                                    class="icon is-pulled-right">
-                                    <i class="fa fa-info-circle" />
-                                </span>
-                            </h1>
-                            <p
-                                class="is-size-7 content-body-wrapper"
-                                v-if="supportedType.showDescription"
-                                v-html="supportedType.description" />
-                            <div class="menu-list_list-subitem">
-                                <h5
-                                    class="is-size-7 has-text-weight-bold"
-                                    v-if="supportedType.examples.length > 0">
-                                    Examples
-                                </h5>
-                                <div class="buttons is-left">
-                                    <a
-                                        class="button has-text-link is-size-7 is-small is-text"
-                                        v-for="(example) in supportedType.examples"
-                                        :key="example.id"
-                                        @click="url=example.location">
-                                        <span>
-                                            {{ example.name }}
-                                        </span>
-                                    </a>
-                                </div>
-                            </div>
-                        </li>
-                    </div>
-                    <div
-                        v-else-if="method=='text'"
-                        class="menu-list">
-                        <li
-                            class="menu-list_list-item">
-                            <p
-                                class="is-size-7 content-body-wrapper">
-                                To enter a framework using text: Copy and paste or start writing in the box here. Use spaces to indicate indenture.
-                                <br>
-                                eg:
-                                <pre>
-                                    First Level
-                                      Second Level
-                                        Third Level
-                                      Second Level
-                                </pre>
-                            </p>
-                            <div class="buttons is-left">
-                                <a
-                                    class="button has-text-link is-size-7 is-small is-text"
-                                    @click="text='First Level\n Second Level\n  Third Level\n Second Level'">
-                                    <span>
-                                        Example
-                                    </span>
-                                </a>
-                            </div>
-                        </li>
-                    </div>
-                </aside>
+                <side-bar
+                    type="import"
+                    :method="method"
+                    @updateUrl="updateUrl" />
                 <!--- end side bar -->
             </div>
             <!--- main body section -->
             <div class="column has-background-white is-scrollable">
-                <section class="section">
+                <section class="section page-import-body">
                     <div class="container">
                         <div class="section">
                             <div class="columns is-mobile">
@@ -211,40 +21,54 @@
                                     </h1>
                                 </div>
                                 <div class="column">
-                                    <div
-                                        v-if="framework !== null"
-                                        class="successful-import has-text-right has-text-success">
-                                        <i class="fa fa-check" />
-                                        <span class="is-size-6">
-                                            framework imported
-                                        </span>
-                                    </div>
+                                    <p class="is-primary is-size-7" />
                                 </div>
                             </div>
-                            <p class="is-size-6">
-                                Below is a preview of your Competency Framework, from this screen
-                                you can edit names and descriptions, rearrange hierarchy. After
-                                accepting the preview, you will gain access to the full editor to further
-                                modify the imported competency framework.
+                            <p
+                                v-if="status === 'Ready' && !file"
+                                class="is-size-7">
+                                Upload documents to transform into CaSS Competency Frameworks.
+                            </p>
+                            <p
+                                v-if="importDetailsView"
+                                class="is-size-7">
+                                Success!  Your file competencies.  CaSS has detected details
+                                about your framework and file.  Please review.
+                                <br><br>
+                                If these details look incorrect, please review your file, and
+                                start over.
+                            </p>
+                            <p
+                                v-if="importPreviewView"
+                                class="is-size-7">
+                                We've successfully imported a competency framework into the CaSS world.
+                                Please review the name and descriptions of the imported competencies.
+                                <br><br>
+                                Here you can make edits to the names and descriptions, as well as drag
+                                competencies to a different place in the hierarchy if there are discrepencies.
+                                <br><br>
+                                After making edits, "approve" the changes to view the imported competency details.
                             </p>
                         </div>
-                        <div class="is-hidden section">
+                        <div
+                            v-if="framework && importPreviewView"
+                            class="section">
                             <div class="columns is-mobile">
-                                <div class="column is-6">
+                                <div class="column is-6 has-text-centered">
                                     <span class="icon">
-                                        <i class="fas fa-hand has-text-black" />
+                                        <i class="far fa-hand-rock has-text-dark" />
                                     </span>
-                                    <span class="is-size-7">
+                                    <span class="is-size-7 has-text-weight-bold">
                                         Use your mouse to drag competencies
                                     </span>
                                 </div>
-                                <div class="column is-6">
+                                <div class="column is-6 has-text-centered">
                                     <span>
                                         <span class="icon">
-                                            <i class="far fa-pencil has-text-black" />
+                                            <i class="far fa-edit has-text-black" />
                                         </span>
-                                        <span class="is-size-7">
-                                            Click the pencil button to edit
+                                        <span class="is-size-7 has-text-weight-bold">
+                                            Click the pencil icon to edit the basic details.
                                         </span>
                                     </span>
                                 </div>
@@ -256,6 +80,7 @@
                             class="section is-large">
                             <div class="tile is-vertical has-background-light">
                                 <div class="section is-medium">
+                                    <!-- columns for tabs -->
                                     <div class="columns is-mobile">
                                         <div class="column">
                                             <div
@@ -273,9 +98,9 @@
                                         </div>
                                         <div class="column">
                                             <div
-                                                class="import-tab"
+                                                class="import-tab disabled"
                                                 :class="{ 'is-active-tab': method === 'server'}">
-                                                <a @click="method = 'server';framework = null;status='';">
+                                                <a @click="switchToRemoteServerTab()">
                                                     <i
                                                         class="fa fa-2x fa-server is-block has-text-centered"
                                                         aria-hidden="true" />
@@ -287,9 +112,9 @@
                                         </div>
                                         <div class="column">
                                             <div
-                                                class="import-tab"
+                                                class="import-tab disabled"
                                                 :class="{ 'is-active-tab': method === 'text'}">
-                                                <a @click="method = 'text';framework = null;status='';">
+                                                <a @click="switchToPasteTextTab()">
                                                     <i
                                                         class="fa fa-2x fa-paste has-text-centered is-block"
                                                         aria-hidden="true" />
@@ -301,9 +126,9 @@
                                         </div>
                                         <div class="column">
                                             <div
-                                                class="import-tab"
+                                                class="import-tab disabled"
                                                 :class="{ 'is-active-tab': method === 'url'}">
-                                                <a @click="method = 'url';framework = null;status='';">
+                                                <a @click="switchToUrlSourceTab()">
                                                     <i
                                                         class="fa fa-link has-text-centered is-block fa-2x"
                                                         aria-hidden="true" />
@@ -321,26 +146,54 @@
                                         v-if="method=='file'">
                                         <drag-and-drop
                                             class="column is-12"
-                                            v-if="!processingFile"
+                                            v-if="!processingFile && !showErrors"
                                             @dragAndDropEmitFiles="onUploadFiles" />
                                         <div
-                                            v-if="processingFile"
+                                            v-else-if="processingFile && !showErrors"
                                             class="column is-12">
                                             <span class="icon is-large">
                                                 <i class="fa fa-spinner fa-pulse fa-2x" />
                                             </span>
+                                            <div class="section">
+                                                <p class="is-size-7">
+                                                    {{ status }}
+                                                </p>
+                                            </div>
                                         </div>
-                                        <!--<div v-if="file === null">
-                                            <input
-                                                type="file"
-                                                ref="fileInput"
-                                                placeholder=""
-                                                @change="fileChange"
-                                                multiple>
-                                        </div>-->
+                                        <!-- import errors -->
+                                        <div
+                                            v-else-if="showErrors"
+                                            class="column is-12 has-text-warning">
+                                            <ul>
+                                                <li
+                                                    class="is-size-7"
+                                                    v-for="(error, index) in errors"
+                                                    :key="index">
+                                                    <span class="">
+                                                        <span class="icon">
+                                                            <i class="fa fa-times" />
+                                                        </span>
+                                                        {{ error }}
+                                                    </span>
+                                                </li>
+                                                <li />
+                                            </ul>
+                                            <div class="section">
+                                                <div class="columns">
+                                                    <div class="column is-4">
+                                                        <div
+                                                            @click="cancelImport"
+                                                            class="button is-primary">
+                                                            Start over
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
+                                    <!-- appears to be part of an interstitial screen -->
                                     <div
-                                        class="section">
+                                        class="section is-hidden">
                                         <div v-if="importType=='csv'">
                                             <div>
                                                 <label>Step 1: Name the framework.</label>
@@ -461,12 +314,7 @@
                                             Import
                                         </button>-->
                                     </div>
-                                    <div class="section">
-                                        <div class="is-size-7 has-text-weight-bold has-text-info has-text-right">
-                                            {{ status }}
-                                        </div>
-                                    </div>
-                                    <!-- sever input -->
+                                    <!-- server input -->
                                     <div
                                         class="section has-dashed-border"
                                         v-if="method=='server'">
@@ -547,9 +395,57 @@
                             </div>
                         </div>
                         <div
-                            v-if="framework"
-                            class="section"
-                            id="framework-container">
+                            class="section import-details"
+                            v-if="framework && importDetailsView">
+                            <!-- interstitial screen will go here -->
+                            <div class="import-details__section">
+                                <h3 class="subtitle is-size-3 has-text-weight-normal">
+                                    The following details were detected.
+                                </h3>
+                                <p class="is-size-6 has-text-weight-light">
+                                    If these details don't look correct, please verify your file
+                                    is correct and import again.
+                                </p>
+                                <ul class="is-size-6 detected-import-details">
+                                    <li>
+                                        <span class="icon has-text-success">
+                                            <i class="fa fa-check-circle" />
+                                        </span>
+                                        CaSS detected <b>{{ detailsDetected.columns }}</b> columns
+                                    </li>
+                                    <li>
+                                        <span class="icon has-text-success">
+                                            <i class="fa fa-check-circle" />
+                                        </span>
+                                        CaSS detected <b>{{ detailsDetected.rows }}</b> rows
+                                    </li>
+                                    <li>
+                                        <span class="icon has-text-success">
+                                            <i class="fa fa-check-circle" />
+                                        </span>
+                                        CaSS detected <b>{{ detailsDetected.competencies }}</b> competencies in the imported framework
+                                    </li>
+                                    <li>
+                                        <span class="icon has-text-success">
+                                            <i class="fa fa-check-circle" />
+                                        </span>
+                                        CaSS detected a <b>{{ detailsDetected.fileType }}</b> file type
+                                    </li>
+                                    <li v-if="detailsDetected.headers">
+                                        <span class="icon has-text-success">
+                                            <i class="fa fa-check-circle" />
+                                        </span>
+                                        <b>Header rows detected</b>
+                                    </li>
+                                    <li class="is-size-7">
+                                        If this information looks correct, "approve" to continue.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div
+                            v-if="framework && importPreviewView"
+                            class="section import-preview">
                             <div class="tile is-vertical">
                                 <Hierarchy
                                     v-if="framework"
@@ -558,33 +454,143 @@
                                     containerNodeProperty="competency"
                                     containerEdgeProperty="relation"
                                     nodeType="EcCompetency"
+                                    :profile="previewProfile"
+                                    :editable="true"
                                     edgeType="EcAlignment"
                                     edgeRelationProperty="relationType"
                                     edgeRelationLiteral="narrows"
                                     edgeSourceProperty="source"
                                     edgeTargetProperty="target"
-                                    editable="false"
+                                    :repo="repo" />
+                            </div>
+                        </div>
+                        <div
+                            v-else-if="framework && importLightView"
+                            class="section import-light">
+                            <div class="tile is-vertical">
+                                <Hierarchy
+                                    v-if="framework"
+                                    :container="framework"
+                                    containerType="Framework"
+                                    containerNodeProperty="competency"
+                                    containerEdgeProperty="relation"
+                                    nodeType="EcCompetency"
+                                    :profile="postImportProfile"
+                                    :editable="false"
+                                    edgeType="EcAlignment"
+                                    edgeRelationProperty="relationType"
+                                    edgeRelationLiteral="narrows"
+                                    edgeSourceProperty="source"
+                                    edgeTargetProperty="target"
                                     :repo="repo" />
                             </div>
                         </div>
                         <div class="section">
-                            <div class="columns is-mobile">
+                            <div class="columns is-gapless is-marginless is-mobile is-multiline">
                                 <div class="column is-12">
-                                    <div class="buttons is-right">
-                                        <!--<div class="button is-light is-pulled-right">
-                                            <span class="icon">
-                                                <i class="fas fa-undo-alt"/>
+                                    <!-- import details options -->
+                                    <div
+                                        v-if="importDetailsView"
+                                        class="buttons is-right">
+                                        <div
+                                            @click="cancelImport"
+                                            class="button is-light is-pulled-right is-light">
+                                            <span>
+                                                Cancel
                                             </span>
-                                            <span>start over</span>
-                                        </div>-->
+                                            <span class="icon">
+                                                <i class="fa fa-times-circle" />
+                                            </span>
+                                        </div>
+                                        <div
+                                            @click="importDetailsAccept"
+                                            class="button is-info is-pulled-right">
+                                            <span>
+                                                Accept Details & Edit
+                                            </span>
+                                            <span class="icon is-smalls">
+                                                <span class="fa-stack">
+                                                    <i class="fas fa-circle fa-stack-1x" />
+                                                    <i class="fas has-text-info fa-caret-right fa-stack-1x caret-icon-overlay-fix" />
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <!-- import preview options -->
+                                    <div
+                                        v-else-if="importPreviewView"
+                                        class="buttons is-right">
+                                        <div
+                                            @click="cancelImport"
+                                            class="button is-light is-pulled-right">
+                                            <span>cancel</span>
+                                            <span class="icon">
+                                                <i class="fa fa-times-circle" />
+                                            </span>
+                                        </div>
+                                        <div
+                                            @click="importPreviewAccept"
+                                            class="button is-info is-pulled-right">
+                                            <span>
+                                                Approve Import & View
+                                            </span>
+                                            <span class="icon">
+                                                <span class="fa-stack">
+                                                    <i class="fas fa-circle fa-stack-1x" />
+                                                    <i class="fas has-text-info fa-caret-right fa-stack-1x caret-icon-overlay-fix" />
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div
+                                    v-if="importLightView"
+                                    class="column is-6">
+                                    <div class="buttons is-left">
+                                        <div
+                                            class="button is-light is-pulled-right"
+                                            @click="showModal('export')">
+                                            <span>
+                                                Export
+                                            </span>
+                                            <span class="icon">
+                                                <i class="fa fa-download" />
+                                            </span>
+                                        </div>
+                                        <router-link
+                                            class="button is-light is-pulled-right"
+                                            to="/">
+                                            <span>
+                                                Done
+                                            </span>
+                                            <span class="icon">
+                                                <i class="fa fa-home" />
+                                            </span>
+                                        </router-link>
+                                    </div>
+                                </div>
+                                <div
+                                    v-if="importLightView"
+                                    class="column is-6">
+                                    <div
+                                        class="buttons is-right">
+                                        <div
+                                            v-if="framework"
+                                            @click="cancelImport"
+                                            class="button is-info is-pulled-right">
+                                            <span>import new framework</span>
+                                            <span class="icon">
+                                                <i class="fa fa-redo-alt" />
+                                            </span>
+                                        </div>
                                         <div
                                             v-if="framework"
                                             @click="openFramework"
-                                            class="button is-primary is-pulled-right">
+                                            class="button is-info is-pulled-right">
+                                            <span>open editor</span>
                                             <span class="icon">
                                                 <i class="fa fa-edit" />
                                             </span>
-                                            <span>open editor</span>
                                         </div>
                                     </div>
                                 </div>
@@ -599,30 +605,36 @@
 
 <script>
 import Hierarchy from '@/lode/components/lode/Hierarchy.vue';
-import ctdlAsnCsvExample from 'file-loader!../../../files/CTDL-ASN.ONET.example.csv';
-import ctdlAsnCsvTemplate from 'file-loader!../../../files/CTDL-ASN.ONET.template.csv';
-import csvExampleCompetencies from 'file-loader!../../../files/CAP Software Engineering - Competencies.csv';
-import csvExampleRelations from 'file-loader!../../../files/CAP Software Engineering - Relations.csv';
-import csvTemplateCompetencies from 'file-loader!../../../files/Template - Competencies.csv';
-import csvTemplateRelations from 'file-loader!../../../files/Template - Relations.csv';
 import csvConceptExample from 'file-loader!../../../files/Concept Scheme Example.csv';
 import csvConceptTemplate from 'file-loader!../../../files/Concept Scheme Template.csv';
 import ctdlAsnJsonldConcepts from 'file-loader!../../../files/ConnectingCredentialsLevels.jsonld';
-import ctdlAsnJsonld from 'file-loader!../../../files/DQP.jsonld';
-import asnRdfJson from 'file-loader!../../../files/D2695955';
-import medbiquitous from 'file-loader!../../../files/educational_achievement_sample_1June2012.xml';
 import common from '@/mixins/common.js';
 import dragAndDrop from './../../components/DragAndDrop.vue';
+import sideBar from './../../components/SideBar.vue';
+import exports from '@/mixins/exports.js';
 
 export default {
     name: "Import",
     props: {
         queryParams: Object
     },
-    mixins: [common],
-    components: {Hierarchy, dragAndDrop},
+    mixins: [common, exports],
+    components: {Hierarchy, dragAndDrop, sideBar},
     data: function() {
         return {
+            detailsDetected: {
+                rows: 0,
+                columns: 0,
+                headers: false,
+                competencies: 0,
+                format: 'Department of Labor',
+                fileType: ''
+            },
+            errors: [],
+            showErrors: false,
+            importPreviewView: false,
+            importLightView: false,
+            importDetailsView: false,
             processingFile: false,
             processingSuccess: false,
             showCassCsv: false,
@@ -633,7 +645,8 @@ export default {
             framework: null,
             url: null,
             repo: window.repo,
-            status: "Ready.",
+            status: "Ready",
+            statusType: 'info',
             csvConceptExampleFile: csvConceptExample,
             csvConceptTemplateFile: csvConceptTemplate,
             ctdlAsnJsonldConceptsFile: ctdlAsnJsonldConcepts,
@@ -654,234 +667,35 @@ export default {
             relationCount: 0,
             caseDocs: [],
             caseCancel: false,
-            supportedFileTypes: [
-                {
-                    type: 'CaSS formatted CSV',
-                    examples: [
-                        {
-                            name: 'Competencies',
-                            id: 'cassCsvExComp',
-                            location: csvExampleCompetencies,
-                            download: 'CAP Software Engineering - Competencies.csv'
-                        },
-                        {
-                            name: 'Relations',
-                            id: 'cassCsvExRel',
-                            location: csvExampleRelations,
-                            download: 'CAP Software Engineering - Relations.csv'
-                        }
-                    ],
-                    templates: [
-                        {
-                            name: 'Competencies',
-                            id: 'cassCsvTemlComp',
-                            location: csvTemplateCompetencies,
-                            download: 'Template - Competencies.csv'
-                        },
-                        {
-                            name: 'Relations',
-                            id: 'cassCsvTempRel',
-                            location: csvTemplateRelations,
-                            download: 'Template - Relations.csv'
-                        }
-                    ],
-                    showDescription: false,
-                    description: `
-                            For this import, you can use one or two CSVs.
-                            The first (required) CSV describes the competencies to include in a new framework.
-                            The second (optional) CSV describes the relations between the competencies found in the first framework.
-                            </p><p class="content-body">
-                            Each row in the first CSV will represent one competency,
-                            and each row in the second CSV will represent one relation between two competencies.
-                            The relations can be between competencies found in the first CSV,
-                            competencies found in other frameworks, or a mixture of the two.
-                            </p><p class="content-body">
-                            You can select the columns to use to describe the id, name,
-                            description, and other fields.`
-                },
-                {
-                    type: 'CTDL-ASN formatted CSV',
-                    examples: [
-                        {
-                            name: 'Example',
-                            id: 'ctdlEx',
-                            location: ctdlAsnCsvExample,
-                            download: 'CTDL-ASN.ONET.example.csv'
-                        }
-                    ],
-                    templates: [
-                        {
-                            name: 'Template',
-                            id: 'ctdTempl',
-                            location: ctdlAsnCsvTemplate,
-                            download: 'CTDL-ASN.ONET.template.csv'
-                        }
-                    ],
-                    showDescription: false,
-                    description: `
-                        For this import, you use one CSV.
-                        Each row in the CSV will represent one object, whether
-                        that be a competency, or a competency framework.
-                        Particular fields will be used to determine hierarchy.
-                        </p><p class="content-body">
-                        Using this format, you can import several frameworks,
-                        each with their own competencies.
-                        </p><p>Competencies may not be shared across frameworks, and
-                        each competency may only have one parent.
-                        </p><p class="content-body">
-                        It is also important that the rows be sequenced correctly,
-                        with competency frameworks appearing before the competencies
-                        inside of them,and for a parent to be in a row above
-                        a child of that parent.
-                        </p><p class="content-body">
-                        Any field with multiple values must be formatted as entry
-                        1|entry 2.`
-                },
-                {
-                    type: 'Medbiquitous XML',
-                    examples: [
-                        {
-                            name: 'example',
-                            id: 'medXmlEx',
-                            location: medbiquitous,
-                            download: 'educational_achievement_sample_1June2012.xml'
-                        }
-                    ],
-                    templates: [],
-                    showDescription: false,
-                    description: `
-                        Medbiquitous is a standards body that includes medical
-                        competencies as one of their XML based formats.
-                        </p><p class="content-body">
-                        Using this format, you can import competencies exported
-                        from a system that exports Medbiquitous formatted XML.`
-                },
-                {
-                    type: 'Achievement Standards Network RDF+JSON',
-                    examples: [
-                        {
-                            name: 'Example',
-                            id: 'asnrdEx',
-                            location: asnRdfJson,
-                            download: 'D2695955.json'
-                        }
-                    ],
-                    templates: [],
-                    showDescription: false,
-                    description: `
-                        The Achievement Standards Network set of standards, or ASN
-                        standard for short, is a legacy standard used primarily by
-                        achievementstandards.org to transmit state standards and
-                        other national and organizational standards.
-                        </p><p class="content-body">
-                        Using this format,you can import competencies exported from
-                        achievementstandards.org and other systems in an RDF JSON
-                        format.`
-                },
-                {
-                    type: 'CTDL-ASN formatted JSON-LD',
-                    examples: [
-                        {
-                            name: 'Example',
-                            id: 'ctdlJsonTemp',
-                            location: ctdlAsnJsonld,
-                            download: 'DQP.jsonld'
-                        }
-                    ],
-                    templates: [],
-                    showDescription: false,
-                    description: `
-                        For this import, you use one JSON-LD file that includes a
-                        graph of the framework and all of its competencies.
-                        </p><p class="content-body">
-                        Using this format, you can import a framework and
-                        competencies from a system that exports CTDL-ASN formatted
-                        JSON-LD.`
-                }
-            ],
-            supportedServer: [
-                {
-                    type: 'CaSS Server',
-                    examples: [
-                        {
-                            name: 'Example: CaSS Sandbox',
-                            id: 'cassSandbox',
-                            location: "https://sandbox.cassproject.org/"
-                        }
-                    ],
-                    showDescription: false,
-                    description: `
-                     If you know the URL of a CaSS Repository,
-                    you can import frameworks from that repository.
-                    </p><p class="content-body">
-                    This import maintains the URLs of the Competency Frameworks
-                    and does not change any of the data.
-                    </p><p class="content-body">
-                    After entering the endpoint below, you can select which
-                    frameworks you would like to import.`
-                },
-                {
-                    type: 'IMS CASE Server',
-                    examples: [
-                        {
-                            name: 'Example: OpenSalt.net',
-                            id: 'imsCaseServer',
-                            location: "https://opensalt.net"
-                        }
-                    ],
-                    showDescription: false,
-                    description: `
-                     If you know the URL of a IMS CASE Repository, such as OpenSalt, 
-                     you can import published frameworks from that repository.
-                     <br>
-                     This import maintains the URLs of the CASE frameworks and changes both the format 
-                     and schema used to store the CASE frameworks in CaSS, but does not change any of the data.
-                     <br>
-                     After entering the endpoint below, you can select which frameworks you would like to import.`
-                }
-            ],
-            supportedUrl: [
-                {
-                    type: 'CTDL-ASN JSON-LD Graphs',
-                    examples: [
-                        {
-                            name: 'Example: O*NET Abilities',
-                            id: 'onetAbilities',
-                            location: "https://www.onetcenter.org/ctdlasn/graph/ce-07c257d6-9119-11e8-b852-782bcb5df6ac"
-                        },
-                        {
-                            name: 'Example: O*NET Basic Skills',
-                            id: 'onetBasicSkills',
-                            location: "https://www.onetcenter.org/ctdlasn/graph/ce-07c25f74-9119-11e8-b852-782bcb5df6ac"
-                        },
-                        {
-                            name: 'Example: O*NET Cross-Functional Skills',
-                            id: 'onetCrossFunctionalSkills',
-                            location: "https://www.onetcenter.org/ctdlasn/graph/ce-07c264d7-9119-11e8-b852-782bcb5df6ac"
-                        },
-                        {
-                            name: 'Example: O*NET Knowledge',
-                            id: 'onetKnowledge',
-                            location: "https://www.onetcenter.org/ctdlasn/graph/ce-07c27a0f-9119-11e8-b852-782bcb5df6ac"
-                        },
-                        {
-                            name: 'Example: O*NET Technology Skills',
-                            id: 'onetTechnologySkills',
-                            location: "https://www.onetcenter.org/ctdlasn/graph/ce-9fab4187-d8e7-11e9-8250-782bcb5df6ac"
-                        }
-                    ],
-                    showDescription: false,
-                    description: `
-                     If you know the URL of a CTDL-ASN JSON-LD graph, you can import published frameworks by URL.
-                     <br>
-                     This import maintains the URLs of the original frameworks and changes both the format and
-                     schema used to store the CTDL-ASN frameworks in CaSS, but does not change any of the data.
-                     Please note that the Technology Skills framework below is very large and will take a long time to import.`
-                }
+            frameworkExportOptions: [
+                {name: "Achievement Standards Network (RDF+JSON)", value: "asn"},
+                {name: "CASS (JSON-LD)", value: "jsonld"},
+                {name: "CASS (RDF Quads)", value: "rdfQuads"},
+                {name: "CASS (RDF+JSON)", value: "rdfJson"},
+                {name: "CASS (RDF+XML)", value: "rdfXml"},
+                {name: "CASS (Turtle)", value: "turtle"},
+                {name: "Credential Engine ASN (JSON-LD)", value: "ctdlasnJsonld"},
+                {name: "Credential Engine ASN (CSV)", value: "ctdlasnCsv"},
+                {name: "Table (CSV)", value: "csv"},
+                {name: "IMS Global CASE (JSON)", value: "case"}
             ]
         };
     },
     computed: {
+        /*
+         * depending on where we are in the import cycle,
+         * utilize a different profile to display required
+         * fields to the user
+         */
+        importProfile: function() {
+            let profile;
+            if (this.importPreviewView === true) {
+                profile = this.previewProfile;
+            } else {
+                profile = this.postImportProfile;
+            }
+            return profile;
+        },
         isUrl: function() {
             if (this.method === 'url') {
                 return true;
@@ -924,10 +738,24 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "ID"}]
                 },
                 "http://schema.org/name": {
-                    ...this.$store.state.lode.schemataLookup["https://schema.cassproject.org/0.4/"]["http://schema.org/name"],
+                    "@id": "http://schema.org/name",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Name of the competency."}],
+                        [{"@language": "en", "@value": "Name of the competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}]
+                },
+                "http://schema.org/description": {
+                    "@id": "http://schema.org/description",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "Description of the competency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}]
                 },
                 "@type": {
                     "@id": "https://schema.cassproject.org/0.4/Competency/type",
@@ -940,7 +768,11 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Type"}]
                 },
                 "https://schema.cassproject.org/0.4/Competency/scope": {
-                    ...this.$store.state.lode.schemataLookup["https://schema.cassproject.org/0.4/"]["https://schema.cassproject.org/0.4/Competency/scope"],
+                    "@id": "https://schema.cassproject.org/0.4/Competency/scope",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Scope in which the competency may be applied. e.g. Underwater."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Scope"}]
@@ -956,7 +788,18 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Context"}]
                 },
                 "https://schema.cassproject.org/0.4/Level": {
-                    ...this.$store.state.lode.schemataLookup["https://schema.cassproject.org/0.4/"]["https://schema.cassproject.org/0.4/Level"],
+                    "@id": "https://schema.cassproject.org/0.4/Level",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Level"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [
+                        {"@language": "en",
+                            "@value":
+                        "When an individual's performance in a competency can be measured, a level specifies milestones that an individual can reach, creating fine-grained distinction between the proficient and the adept."}
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Level"}],
                     "valuesIndexed": function() {
                         var levels = {};
                         if (!me.framework.level) {
@@ -969,8 +812,34 @@ export default {
                         }
                         return levels;
                     }
+                },
+                "alwaysProperties": ["@id", "http://schema.org/name", "@type", "https://schema.cassproject.org/0.4/Competency/scope", "@context", "https://schema.cassproject.org/0.4/Level"]
+            };
+        },
+        previewProfile: function() {
+            var me = this;
+            return {
+                "http://schema.org/name": {
+                    "@id": "http://schema.org/name",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "Name of the competency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}]
+                },
+                "http://schema.org/description": {
+                    "@id": "http://schema.org/description",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "Description of the competency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}]
                 }
-            }
+            };
         }
     },
     watch: {
@@ -982,6 +851,7 @@ export default {
                 EcIdentityManager.ids[0],
                 function(competencies, relations) {
                     me.status = competencies.length + " competencies and " + relations.length + " relations.";
+                    me.status = "info";
                     var f = new EcFramework();
                     me.framework = null;
                     for (var i = 0; i < competencies.length; i++) {
@@ -1002,22 +872,150 @@ export default {
         }
     },
     methods: {
+        showModal(val) {
+            let params = {};
+            if (val === 'export') {
+                params = {
+                    type: val,
+                    selectedExportOption: '',
+                    title: "Export framework",
+                    exportOptions: this.frameworkExportOptions,
+                    text: "Select a file format to export your framework. Files download locally.",
+                    onConfirm: (e) => {
+                        return this.exportObject(e);
+                    }
+                };
+            }
+            // reveal modal
+            this.$modal.show(params);
+        },
+        // pulled over from Thing.vue in LODE - should be different for this case
+        exportObject: function(type) {
+            var guid;
+            if (EcRepository.shouldTryUrl(this.framework.id) === false) {
+                guid = EcCrypto.md5(this.framework.id);
+            } else {
+                guid = this.framework.getGuid();
+            }
+            var link = this.repo.selectedServer + "data/" + guid;
+            if (type === "asn") {
+                this.exportAsn(link);
+            } else if (type === "jsonld") {
+                this.exportJsonld(link);
+            } else if (type === "rdfQuads") {
+                this.exportRdfQuads(link);
+            } else if (type === "rdfJson") {
+                this.exportRdfJson(link);
+            } else if (type === "rdfXml") {
+                this.exportRdfXml(link);
+            } else if (type === "turtle") {
+                this.exportTurtle(link);
+            } else if (type === "ctdlasnJsonld") {
+                this.exportCtdlasnJsonld(link);
+            } else if (type === "ctdlasnCsv") {
+                this.exportCtdlasnCsv(link);
+            } else if (type === "csv") {
+                this.exportCsv();
+            } else if (type === "case") {
+                this.exportCasePackages(guid);
+            }
+        },
+        switchToRemoteServerTab: function() {
+
+            /*
+             * this.method = 'server';
+             * this.framework = null;
+             * this.status='';
+             */
+        },
+        switchToPasteTextTab: function() {
+
+            /*
+             * this.method = 'text';
+             * this.framework = null;
+             * thi.status='';
+             */
+        },
+        switchToUrlSourceTab: function() {
+
+            /*
+             * this.method = 'url';
+             * this.framework = null;
+             * thi.status='';
+             */
+        },
+        unsupportedFile: function(val) {
+            let fileType = val;
+            this.statusType = "error";
+            this.status = "File type " + fileType + " is unsupported in this workflow";
+            this.errors.push(this.status);
+            this.showErrors = true;
+            this.processingFile = false;
+        },
+        /* Event from Sidebar component */
+        updateUrl(url) {
+            if (this.method === "url") {
+                this.url = url;
+            } else if (this.method === "server") {
+                this.serverUrl = url;
+            }
+        },
+        /* When an import is "successful" */
+        importSuccess: function() {
+            this.status = "Competency detected";
+            this.importDetailsView = true;
+            this.importPreviewView = false;
+            this.importLightView = false;
+        },
+        /*
+         * from the interstital screen the user accepts
+         * the displayed details
+         */
+        importDetailsAccept: function() {
+            this.status = "Edit and approve";
+            this.importDetailsView = false;
+            this.importPreviewView = true;
+        },
+        /*
+         * after editing preview the user can accept the preview
+         * displaying the uneditable framework for review
+         * displays the appropriate profile of information requested by client
+         */
+        importPreviewAccept: function() {
+            this.status = "Import complete!";
+            this.importLightView = true;
+            this.importPreviewView = false;
+            /*
+             * TO DO: Make sure all competency properties are in a non-editable state
+             * or ensure state does not crossover from here
+             */
+        },
+        cancelImport: function() {
+            /*
+             * TO DO: properly cancel import, leaving the screen in a state
+             * in which they are capable of importing a new framwork
+             * clear all files and framework states
+             * this does not completely work
+             */
+            this.errors = [];
+            this.showErrors = false;
+            this.framework = null;
+            this.file = null;
+            this.processingFile = false;
+            this.processingSuccess = false;
+            this.status = "Ready";
+        },
         onUploadFiles: function(value) {
             this.file = value;
             this.fileChange(this.file);
         },
         openFramework: function() {
-            var me = this;
             if (this.queryParams.concepts === "true") {
-                EcConceptScheme.get(me.framework.id, function(success) {
-                    me.$store.commit('framework', success);
-                    me.$router.push({name: "conceptScheme", params: {frameworkId: me.framework.id}});
-                }, console.error);
+                this.$store.commit('framework', this.framework);
+                this.$router.push({name: "conceptScheme", params: {frameworkId: this.framework.shortId()}});
             } else {
-                EcFramework.get(me.framework.id, function(success) {
-                    me.$store.commit('framework', success);
-                    me.$router.push({name: "framework", params: {frameworkId: me.framework.id}});
-                }, console.error);
+                this.$store.commit('framework', this.framework);
+                this.$router.push({name: "framework", params: {frameworkId: this.framework.shortId()}});
             }
         },
         fileChange: function(e) {
@@ -1031,6 +1029,8 @@ export default {
             var me = this;
             var file = this.file[0];
             if (file.name.endsWith(".csv")) {
+                this.unsupportedFile('csv');
+            } else if (file.name.endsWith(".csv")) {
                 CTDLASNCSVImport.analyzeFile(file, function(frameworkCount, competencyCount) {
                     me.importType = "ctdlasncsv";
                     me.status = "Import " + frameworkCount + " frameworks and " + competencyCount + " competencies.";
@@ -1056,8 +1056,10 @@ export default {
                                 me.importCsvColumnId = column;
                             }
                         }
+                        me.processingFile = false;
                         me.status = (me.competencyCount = (data.length - 1)) + " Competencies Detected.";
                     }, function(error) {
+                        me.statusType = "error";
                         me.status = error;
                     });
                 });
@@ -1096,13 +1098,18 @@ export default {
                     me.status = "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.";
                     me.competencyCount = EcObject.keys(data).length;
                 }, function(error) {
+                    me.statusType = "error";
                     me.status = error;
                 });
             } else if (file.name.endsWith(".pdf")) {
                 me.importType = "pdf";
+                me.firstImport = false;
+                me.detailsDetected.fileType = "pdf";
                 me.status = "File selected.";
             } else if (file.name.endsWith(".docx")) {
                 me.importType = "pdf";
+                me.detailsDetected.fileType = "docx";
+                me.firstImport = false;
                 me.status = "File selected.";
             }
             if (!me.firstImport) {
@@ -1136,6 +1143,7 @@ export default {
                 }
                 me.relationCount = (data.length - 1);
             }, function(error) {
+                me.statusType = "error";
                 me.status = error;
             });
         },
@@ -1196,10 +1204,12 @@ export default {
                         me.spitEvent("importFinished", f.shortId(), "importPage");
                     }
                 }, function(failure) {
+                    me.statusType = "error";
                     me.status = failure;
                 });
             },
             function(failure) {
+                me.statusType = "error";
                 me.status = failure;
             },
             function(increment) {
@@ -1220,9 +1230,11 @@ export default {
                 }
             },
             function(failure) {
+                me.statusType = "error";
                 me.status = failure;
             },
             function(increment) {
+                me.statusType = "info";
                 me.status = increment.competencies + "/" + me.competencyCount + " competencies imported.";
             }, me.repo);
         },
@@ -1242,11 +1254,12 @@ export default {
                     }
                 }
                 var all = frameworks.concat(competencies).concat(relations);
+                me.statusType = "info";
                 me.status = "Saving " + all.length + " objects.";
                 me.repo.multiput(all, function() {
                     for (var i = 0; i < frameworks.length; i++) {
                         me.framework = frameworks[i];
-                        me.status = "Import Finished.";
+                        me.importSuccess();
                         me.spitEvent("importFinished", frameworks[i].shortId(), "importPage");
                     }
                     me.file.splice(0, 1);
@@ -1255,9 +1268,11 @@ export default {
                         me.analyzeImportFile();
                     }
                 }, function(failure) {
+                    me.statusType = "error";
                     me.status = failure;
                 });
             }, function(failure) {
+                me.statusType = "error";
                 me.status = failure;
             }, ceo);
         },
@@ -1274,19 +1289,28 @@ export default {
                     var f = new EcFramework();
                     f.setName(d.name);
                     f.setDescription(d.description);
-                    f.assignId(me.repo.selectedServer, me.file.name);
+                    f.assignId(me.repo.selectedServer, me.file[0].name);
                     f.competency = [];
                     f.relation = [];
                     toSave.push(f);
                     console.log(d);
                     console.log(JSON.parse(f.toJson()));
                     var cs = {};
+                    if (!d.competencies) {
+                        me.showErrors = true;
+                        me.status = "Error importing competencies.";
+                        me.statusType = "error";
+                        me.errors.push("Error importing competencies, no competencies found in file.");
+                        me.processingFile = false;
+                        return;
+                    }
+                    me.detailsDetected.competencies = d.competencies.length;
                     for (var i = 0; i < d.competencies.length; i++) {
                         var c = new EcCompetency();
                         c.assignId(me.repo.selectedServer, d.competencies[i].id);
                         cs[d.competencies[i].id] = c.shortId();
                         if (d.competencies[i].name != null) { c.setName(d.competencies[i].name.trim()); }
-                        if (d.competencies[i].name !== d.competencies[i].description) { c.setDescription(d.competencies[i].description.trim()); }
+                        if (d.competencies[i].name !== d.competencies[i].description && d.competencies[i].description) { c.setDescription(d.competencies[i].description.trim()); }
                         f.competency.push(c.shortId());
                         toSave.push(c);
                     }
@@ -1306,9 +1330,12 @@ export default {
                     me.repo.multiput(toSave, function() {
                         me.framework = f;
                         me.status = "";
+                        me.importSuccess();
                     }, console.error);
+                    me.statusType = "info";
                     me.status = "Writing Framework to CaSS...";
                 }, console.error);
+            me.statusType = "info";
             me.status = "Importing Framework...";
         },
         importCsv: function() {
@@ -1356,22 +1383,27 @@ export default {
                             me.analyzeImportFile();
                         } else {
                             me.framework = f;
-                            me.status = "Import Finished.";
+                            me.importSuccess();
                             me.spitEvent("importFinished", f.shortId(), "importPage");
                         }
                     }, function(failure) {
+                        me.statusType = "error";
                         me.status = failure;
                     });
                 },
                 function(failure) {
+                    me.statusType = "error";
                     me.status = failure;
                 },
                 function(increment) {
                     if (increment.relations != null && increment.relations !== undefined) {
+                        me.statusType = "info";
                         me.status = (increment.relations + "/" + me.relationCount + " relations imported.");
                     } else if (increment.competencies != null && increment.competencies !== undefined) {
+                        me.statusType = "info";
                         me.status = (increment.competencies + "/" + me.competencyCount + " competencies imported.");
                     } else {
+                        me.statusType = "info";
                         me.status = "Importing...";
                     }
                 }, false, me.repo);
@@ -1398,7 +1430,7 @@ export default {
                 if (me.framework == null) {
                     me.framework = EcConceptScheme.getBlocking(data);
                 }
-                me.status = "Import Finished.";
+                me.importSuccess();
                 me.spitEvent("importFinished", me.framework.shortId(), "importPage");
                 if (me.file != null) {
                     me.file.splice(0, 1);
@@ -1408,24 +1440,32 @@ export default {
                     me.analyzeImportFile();
                 }
             }, function(failure) {
+                me.statusType = "error";
                 me.status = "Import failed. Check your import file for any errors.";
                 console.log(failure.statusText);
             });
+            me.statusType = "info";
             me.status = "Importing Framework";
         },
         importFromFile: function() {
             if (this.importType === "csv") {
-                this.importCsv();
+                // temporarily fail on csv
+                this.unsupportedFile('csv');
+                // this.importCsv();
             } else if (this.importType === "ctdlasncsv") {
-                this.importCtdlAsnCsv();
+                this.unsupportedFile('ctdlasncsv');
+                // this.importCtdlAsnCsv();
             } else if (this.importType === "ctdlasnjsonld") {
-                this.importJsonLd();
+                this.unsupportedFile('ctdlasnjsonld');
+                // this.importJsonLd();
             } else if (this.importType === "asn") {
-                this.importAsn();
+                this.unsupportedFile('asn');
+                // this.importAsn();
             } else if (this.importType === "pdf") {
                 this.importPdf();
             } else if (this.importType === "medbiq") {
-                this.importMedbiq();
+                this.unsupportedFile('medbiq');
+                // this.importMedbiq();
             }
         },
         connectToServer: function() {
@@ -1446,7 +1486,10 @@ export default {
         },
         caseGetDocsSuccess: function(result) {
             result = JSON.parse(result);
-            if (result.CFDocuments == null) { this.status = "No frameworks found. Please check the URL and try again."; } else {
+            if (result.CFDocuments == null) {
+                me.statusType = "error";
+                this.status = "No frameworks found. Please check the URL and try again.";
+            } else {
                 this.status = result.CFDocuments.length + " frameworks detected.";
                 for (var i = 0; i < result.CFDocuments.length; i++) {
                     var doc = result.CFDocuments[i];
@@ -1468,6 +1511,7 @@ export default {
             EcRemote.getExpectingString(this.repo.selectedServer, "ims/case/getDocs?url=" + this.serverUrl, function(success) {
                 me.caseGetDocsSuccess(success);
             }, function(failure) {
+                me.statusType = "error";
                 me.status = "No frameworks found. Please check the URL and try again.";
             });
         },
@@ -1491,6 +1535,7 @@ export default {
                     }
                 }
                 if (lis === 0) {
+                    this.statusType = "success";
                     this.status = "Import finished.";
                 } else {
                     var me = this;
@@ -1541,6 +1586,7 @@ export default {
                 if (graph != null) {
                     me.importJsonLd(result);
                 } else {
+                    me.statusType = "error";
                     me.status = "URL must have an '@graph' field at the top level.";
                     return;
                 }
@@ -1549,8 +1595,10 @@ export default {
                 }
             }, function(failure) {
                 if (!failure) {
+                    me.statusType = "error";
                     me.status = "Import Error";
                 } else {
+                    me.statusType = "error";
                     me.status = failure;
                 }
             });
@@ -1564,104 +1612,4 @@ export default {
 
 <style lang="scss">
     @import './../../variables.scss';
-#drop-area {
-    height: auto;
-    margin: 0px;
-    padding: 0px;
-    width: auto;
-    .column {
-        height: auto;
-    }
-}
-.menu {
-    overflow-y: scroll;
-    height: 100vh;
-    padding: 1rem;
-    width: 300px;
-}
-.scrollable-section {
-    overflow-y: scroll;
-    height: 100vh;
-}
-.menu-list_list-item {
-    list-style-type: none;
-    padding: .5rem 0em;
-}
-.menu-list_list-subitem {
-    list-style-type: none;
-    padding: .25rem 0em;
-}
-.buttons {
-    margin-right: 0em !important;
-    margin: 0em !important;
-    :not(:last-child) {
-    }
-    a:first {
-        padding-left: 0em !important;
-        margin-left: 0em !important;
-    }
-}
-.content-body-wrapper {
-    padding: .5em 0em;
-    .content-body {
-        padding-top: .25rem;
-        :last {
-            padding-bottom: 1em;
-        }
-    }
-}
-.menu-list a {
-    padding: .5em .5em .5em 0em;
-}
-
- .drag-file-area {
-    width:100%;
-    display:block;
-    border:2px dashed $black;
-    border-radius:1rem;
-    padding:100px;
-    margin: auto;
-
-}
-.import-tab {
-    margin-top: -40px;
-    height: 100px;
-    color: $dark;
-    width: 100%;
-    max-width: 100px;
-    display: flex;
-    flex-direction: column;
-    justify-items: center;
-    justify-content: center;
-    align-items: center;
-    font-size: .7rem;
-    border-radius: 100px;
-    background-color: transparent;
-   i {
-     color: $dark;
-   }
-   div {
-       color: $dark;
-   }
-}
-.is-active-tab{
-  background-color: $light;
-  color: $secondary;
-  i {
-      color: $secondary;
-  }
-  div {
-      color: $secondary;
-  }
-}
-.tile {
-    border-radius: 1rem;
-}
-#framework-container {
-    min-height: 400px;
-    max-height:68vh;
-    overflow-y: scroll;
-    border: 2px solid $black;
-    border-radius: 1rem;
-}
 </style>

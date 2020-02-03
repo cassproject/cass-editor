@@ -1,5 +1,5 @@
 <template>
-    <div class="page-open">
+    <div class="page-framework-list">
         <div class="container">
             <div class="section">
                 <div class="control">
@@ -55,6 +55,7 @@
                     :searchOptions="searchOptions"
                     :paramObj="paramObj"
                     :disallowEdits="queryParams.view==='true'">
+                    <!-- TO DO move these template items to the "actions" right side area -->
                     <template
                         v-slot:frameworkTags="slotProps">
                         <span v-if="queryParams.concepts!=='true'">{{ slotProps.item.competency.length }} items </span>
@@ -194,31 +195,5 @@ export default {
 
 <style lang="scss">
 
-.page-open .e-name, .page-open .e-title{
-    label{
-        display:none;
-    }
-    ul{
-        margin-left:0px;
-        display:inline;
-        li{
-            display:inline;
-            margin-right:.5rem;
-        }
-    }
-}
-
-.page-open .e-description{
-    label{
-        display:none;
-    }
-    font-size:.8rem;
-}
-
-.page-open .e-Framework, .page-open .e-ConceptScheme{
-    a {display:none;}
-    .icon {display:none;}
-    .editable {display:block;float:right;}
-}
 
 </style>

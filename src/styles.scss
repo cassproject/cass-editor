@@ -23,13 +23,18 @@ body{
     height: 100%;
 }
 
-#hierarchy-page {
-    .column.icon {
-        height: 100%;
-        
+.navbar-menu {
+    // override active links
+    .is-active{
+        color: rgba($light, .8) !important;
+
     }
 }
-
+#mainDropDown {
+    .is-active{
+        color: rgba($dark, .7) !important;
+    }
+}
 p {
     font-style: normal;
 }
@@ -40,9 +45,30 @@ p {
 }
 
 
+input, textarea{
+    color: rgba($dark, .7);
+    font-family: $family-primary;
+    font-size: .8rem;
+    z-index: 5;
+}
+
+.thing-label {
+    font-weight: 500;
+    color: rgba($dark, .3);
+    width: 95%;
+    i {
+        color: rgba($dark, .3);
+    }
+}
+.e-Property {
+    padding: 0rem .5rem .5rem .5rem;
+}
+
+/*
 .e-HierarchyNode {
+    transform: translateX(0);
     .icon{
-        padding: 0rem;
+        padding: 23rem;
         margin: 0rem;
         height: 100%;
         font-size: .8rem;
@@ -55,18 +81,11 @@ p {
         border-radius: 0px 5px 5px 0px !important;
     }
     
-}
+}*/
 
-
-.e-HierarchyNode-ul
-{
+/*
+.e-HierarchyNode-ul {
     li:before{
-         content: '';
-         height: 3rem;
-         width: 2rem;
-         border-bottom: 2px solid black;
-         top: 0rem;
-         bottom: 0;
      }
     >li{
         //border-left: 2px solid black;
@@ -83,29 +102,25 @@ p {
          width: calc(3rem - 16px);
          bottom: 0;
      }
-}
+}*/
 
-.page-framework.e-Thing-ul {
-    margin-top: .5rem;
-}
-.e-Thing-ul{
-    background-color:$light;
-    border-radius: .25rem;
-    margin-top:.5rem;
-    padding: .25rem;
 
-    .edit{
-        float:left;
-    }
-    .save{
-        float:left;
+
+
+.showHoverImportItems {
+    background-color: rgba($dark, .1);
+    .e-Thing-ul {
+        background-color: rgba($dark, .2);
     }
 }
+
 
 .e-Thing-ul::first {
-        background-color: transparent;
+    background-color: transparent;
 }
+
 .e-Property {
+  
     .fa {
         font-size: $size-7;
         color: $dark;
@@ -114,23 +129,39 @@ p {
         font-size: $size-7;
         font-weight: 500;
     }
+    .e-name {
+        font-size: $size-4;
+        font-weight: 600;
+    }
 }
+
 .e-Property-text{
     border-radius: .25rem;
 }
+
 .e-Property-ul{
     border-radius: .25rem;
-    padding: .25rem;
+    padding: 0rem .25rem;
+    font-size: .8rem;
+    color: rgba($dark, .9);
+    .e-description {
+        font-weight: 400;
+        font-size: $size-7;
+    }
+    .e-name {
+        font-weight: 600;
+        font-size: $size-4;
+    }
+    
     margin: .125em .5em;
 }
 
-input{
-}
 .page {
     margin-top: 2rem;
 }
-.page-open,
-.page-framework {
+.page-framework-list,
+.page-framework,
+ {
     overflow-y: scroll;
     height: 95vh;
 }
@@ -152,71 +183,7 @@ hr {
 
 iframe {
     min-height: 800px;
-    border: 1px solid black;
-}
-
-.List input{
-}
-
-.info-tag {
-    border-radius: 1rem;
-    background-color: $info;
-    font-size: .7rem;
-    font-weight: 400;
-    padding: .25rem;
-    margin-bottom:.1rem;
-}
-
-.type-tag {
-    border-radius: 1rem;
-    background-color: $link;
-    font-size: .7rem;
-    font-weight: 400;
-    padding: .25rem;
-    margin-bottom:.1rem; 
-}
-
-.thing-tag {
-    border-radius: 1rem;
-    background-color: $light;
-    font-size: 1rem;
-    font-weight: 400;
-    padding: .25rem;
-}
-
-.navigation-tag {
-    border: 1px solid $info;
-    border-radius: 1rem;
-    background-color: none;
-    font-size: .7rem;
-    font-weight: 400;
-    padding: .25rem;
-    min-width: 1.75rem;
-    text-align:center;
-    .tag-copy {
-        margin-right: .25rem;
-        font-weight: 500;
-    }
-    .icon .fas {
-        color: $info;
-    }
-}
-
-.is-disabled .navigation-tag {
-    border: 1px solid $black;
-    .tag-copy {
-        color: $black;
-    }
-    .icon .fas {
-        color: $black;
-    }
-}
-.to-do {
-    .icon .fas {
-        color: $black !important;
-    }
-    color: $black !important;
-    background-color: $info;
+    border:1px solid rgba($black, .5);
 }
 
 .navigation-title__wrapper {
@@ -228,33 +195,110 @@ iframe {
     display: inline-block;
     width: 30%;
     vertical-align: middle;
-
 }
 
 
-.success-tag {
-    border: 1px solid $success;
-    border-radius: 1.25rem;
-    background-color: none;
-    font-size: 1rem;
-    font-weight: 400;
-    color: $success;
-    padding: .5rem .75rem;
-    .icon {
-        color: $success;
-        font-size: 1rem;
+/*******************************
+        framework page
+*********************************/
+.page-framework{
+    .e-Competency{
+        transform: translateX(0);
+        cursor: pointer;
+        .active {
+            color: $link;
+        }
+        .e-Property {
+            padding-top: .5rem;
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: row-reverse;
+            label {
+                display: flex;
+                width: 100%;
+                flex-direction: row-reverse;
+            }
+            .thing-label {
+                width: 100%;
+                padding-left: .5rem;
+            }
+        }
+        .clickable-hierarchy {
+            height: 100%;
+            position: fixed;
+            top: 0;
+            right: 0;
+            z-index: 1;
+            bottom: 32;
+            left: 0;
+        }
+        .thing-actions {
+            position: fixed;
+            visibility: hidden;
+            width: 100%;
+            padding: 6px;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            background-color: rgba(grey, 1);
+            .action, .info, .view {
+                display: block;
+                width: 100%;
+            }
+        }
+        a {
+            display:none;
+        }
+        .icon {
+            padding: .5rem;
+        }
     }
-
-}
-
-
-.e-Thing-always-ul .e-name{
-    label {
-        display: none;
+    .e-Thing-ul{
+        margin-top: .5rem;
     }
-}
+    .e-Thing-always-ul {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        
+    }
+    .e-Thing-always-ul .e-name{
+        label{
+            display:none;
+        }
+    }
+    .e-Thing-always-ul,
+    .e-Thing-ul {
+            .input-field {
+                display: flex;
+            }
+            .textarea-input {
+                width: 70%;
+            }
+            .text-input {
+                width: 30%;
+            }
+            .text-input, .textarea-input {
+                border:1px solid rgba($black, .25);
+                border-radius: 5px;
+            }
+    }
+    .e-Thing-always-ul, .e-Thing-view-ul { 
+        width: 100%;
+        li .e-Property {
+            width: 100%;
+            display: flex;
+            flex-direction: row-reverse;
+            label {
+                width: 100%;
+                display: flex;
 
-.page-framework {
+            }
+            span .button {
+                width: 5%;
+            }
+        }
+    }
     .e-Thing-always-ul:first-of-type {
         background-color: transparent;
         .e-Property-text {
@@ -264,37 +308,89 @@ iframe {
             }
         }
     }
+    .e-Property-ul {
+        width: 95%;
+    }
+    .e-Framework{
+        display: flex;
+        flex-direction: column;
+        flex-flow: column-reverse;
+        ul{
+            margin-left:0px;
+        }
+        a {
+            display:none;
+        }
+        .e-Property-text{
+            font-size:larger;
+        }
+        .thing-actions {
+            display: flex;
+            position: relative;
+            flex-direction: row;
+            width: 100%;
+            height: 48px;
+            background-color: white;
+             .action, .info, .view {
+                display: block;
+                width: 30%;
+            }
+        }
+    }
+    /* On Hover show Toolset on Competency card in Editor view */
+    .e-Thing.e-Competency.showHoverItems {
+        background-color: rgba($dark, .05);
+        padding-bottom: 44px !important;
+    .e-Thing-ul {
+        background-color: rgba($dark, .1);
+    }
+    .thing-actions {
+         visibility: visible !important;
+         background: rgba($white, .2);
+         height: 44px;
+         display: flex;
+         flex-direction: row;
+         justify-content: flex-end;
+         .action, .info, .view {
+             width: 33%;
+         }
+        }
+    }
+    .e-HierarchyNode{
+        >.icon{
+            width:0px;
+            height:0px;
+            margin:0px;
+            line-height:0px;
+            display:block;
+            position:relative;
+            left:-.5rem;
+            top:-2rem;
+        }
+        .highlighted{
+            background-color:yellow;
+        }
+        padding-left:1rem;
+    }
+    .dragging{
+        div{
+            //border:1px dashed gray !important;
+            .drag-footer::before{
+                content:'' !important
+            }
+            .drag-footer{
+            }
+        }
+    }
+    .e-HierarchyNode-ul {
+        //margin-left: .5rem;
+    }
 }
 
-
-
-
-.e-Thing-always-ul .e-description{
-    label{
-        display:none;
-    }
-    font-size:.8rem;
-}
-
-.e-Competency{
-    a {
-        display:none;
-    }
-    >.expand{
-        float:right;
-    }
-    >.compact{
-        float:right;
-    }
-    .icon {
-        padding: .5rem;
-    }
-}
 .e-HierarchyNode {
     ul {
-        margin-top: .25rem;
-        padding-left:.375rem;
-    
+        margin-top: .5rem;
+        padding-left:0rem;
     }
 }
 
@@ -302,7 +398,381 @@ iframe {
     font-size: .5rem;
 }
 
+/*******************************
+        import page
+*********************************/
+.page-import {
+    .page-import-body {
+        max-width: 900px;
+        display: block;
+        margin: auto;
+    }
+    .grabbing {
+        .e-Competency > *{
+            background:blue !important;
+            cursor: grabbing !important;
+        }
+    }
+    .dragging {
+        cursor: grabbing !important;
+        .e-Competency, .e-Competency > * {
+            cursor: grabbing !important;
+        }
+        cursor: grabbing !important;
+        > * {
+            cursor: grabbing !important;
 
-.page-open {
-   
+        }
+    }
+    .e-Competency{
+        transform: translateX(0);
+        cursor: grab;
+        .clickable-hierarchy {
+            height: 100%;
+            position: fixed;
+            top: 0;
+            right: 0;
+            z-index: 1;
+            bottom: 32;
+            cursor: grab;
+            left: 0;
+        }
+        .e-Thing-always-ul {
+            width: 100%;
+        }
+        .thing-actions {
+            position: fixed;
+            visibility: hidden;
+            width: 100%;
+            padding: 6px;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            background-color: rgba(grey, 1);
+            .action, .info, .view {
+                display: block;
+                width: 100%;
+            }
+        }
+        a {
+            display:none;
+        }
+        // no add on import view 
+        .add {
+            display: none;
+        }
+        .icon {
+            padding: .5rem;
+        }
+    }
+    ul.e-HierarchyNode-ul {
+        margin-left: .5rem;
+    }
+    ul.e-Thing-ul {
+        background-color:$light;
+        border-radius: .25rem;
+        padding: .25rem;
+        .edit{
+            i {
+                color: $link;
+            }
+        }
+        .save {
+            i {
+                color: $secondary;
+            }
+        }
+        .remove {
+            i {
+                color: $warning;
+            }
+        }        
+        li.e-Property {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            display: flex;
+            flex-wrap: wrap;
+            label {
+                padding: 0px .5rem;
+                display: flex;
+                width: 95%;
+                flex-direction: row-reverse;
+                justify-content: flex-end;
+                justify-items: start;
+                align-items: center;
+                span {
+                    padding: 0rem .25rem;
+                    width: auto;
+                }
+                i {
+                    padding: 0rem .25rem;
+                    width: 5%;
+                }
+            }
+            span {
+                width: 5%;
+            }
+            ul.e-Property-ul {
+                width: 100%;
+                padding: 0rem 0rem 0rem .25rem;
+                margin-top: 0rem;
+                margin-right: 0rem;
+                li {
+                    width: 100%;
+                    display:flex;
+                    padding-top: .25rem;
+                    flex-direction: row-reverse;
+                    .e-Property-text {
+                        width: 100%;
+                    }
+                    span {
+                        padding: 0rem;
+                        width: 95%;
+                        textarea {
+                            width: 100%;
+                            border-radius: 5px;
+                            border: 1px solid rgba($black, .25);
+                            padding: 6px;
+                        }
+                    }
+                    .button {
+                        width: 5%;
+                    }
+                }
+            }
+        }
+    }
+    #drop-area {
+        height: auto;
+        margin: 0px;
+        padding: 0px;
+        width: auto;
+        .column {
+            height: auto;
+        }
+    }
+    .menu {
+        overflow-y: scroll;
+        height: 100vh;
+        padding: 1rem;
+        width: 300px;
+    }
+    .scrollable-section {
+        overflow-y: scroll;
+        height: 100vh;
+    }
+    .menu-list_list-item {
+        list-style-type: none;
+        padding: .5rem 0em;
+    }
+    .menu-list_list-subitem {
+        list-style-type: none;
+        padding: .25rem 0em;
+    }
+    .buttons {
+        margin-right: 0em !important;
+        margin: 0em !important;
+        :not(:last-child) {
+        }
+        a:first {
+            padding-left: 0em !important;
+            margin-left: 0em !important;
+        }
+    }
+    .content-body-wrapper {
+        padding: .5em 0em;
+        .content-body {
+            padding-top: .25rem;
+            :last {
+                padding-bottom: 1em;
+            }
+        }
+    }
+    .menu-list a {
+        padding: .5em .5em .5em 0em;
+    }
+
+    .drag-file-area {
+        width:100%;
+        display:block;
+        border: 2px dashed rgba($black, .25);
+        border-radius:1rem;
+        padding:100px;
+        margin: auto;
+
+    }
+    .import-tab {
+        margin-top: -40px;
+        height: 100px;
+        color: $dark;
+        width: 100%;
+        max-width: 100px;
+        display: flex;
+        flex-direction: column;
+        justify-items: center;
+        justify-content: center;
+        align-items: center;
+        font-size: .7rem;
+        border-radius: 100px;
+        background-color: transparent;
+        
+        i {
+            color: $dark;
+        }
+        div {
+            color: $dark;
+        }
+        
+    }
+    .disabled {
+        >* {
+            cursor: not-allowed;
+        }
+        i {
+            color: rgba($dark, .5);
+        }
+        div {
+            color: rgba($dark, .5);
+        }
+    }
+    .is-active-tab{
+        background-color: $light;
+        color: $secondary;
+    i {
+        color: $secondary;
+    }
+    div {
+        color: $secondary;
+    }
+}
+    .tile {
+        border-radius: 1rem;
+    }
+    .import-details, .import-preview, .import-light{
+        min-height: 400px;
+        max-height:68vh;
+        overflow-y: scroll;
+        border: 2px solid rgba($black, .5);
+        border-radius: 1rem;
+        .thing-actions {
+            display: none;
+        }
+    }
+}
+
+/*******************************
+        framework list page
+*********************************/
+.page-framework-list {
+    .button {
+        display: none;
+    }
+    .e-Thing-ul{
+        background-color:$light;
+        border-radius: .25rem;
+        padding: .25rem;
+        margin-top: .5rem;
+        .edit{
+            i {
+                color: $link;
+            }
+        }
+        .save {
+            i {
+                color: $secondary;
+            }
+        }
+        .remove {
+            i {
+                color: $warning;
+            }
+        }
+    
+    }
+    /******* "Actions" on framework list fiew (page open)  ********/
+    .e-Thing.e-Framework {
+        transform: translateX(0);
+        cursor: pointer;
+        .e-Thing-ul {
+            padding: 12px;
+            width: 80%;
+
+        }
+        .thing-actions {
+            position: fixed;
+            width: 20%;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(grey, .3);
+            .action {
+                display: none;
+            }
+            .info {
+
+            }
+            .view {
+                display: none;
+            }
+        }
+    }
+}
+
+.page-framework-list .e-description{
+    label{
+        display:none;
+    }
+    font-size:.8rem;
+}
+
+.page-framework-list .e-Framework, .page-framework-list .e-ConceptScheme{
+    a {
+        display:none;
+    }
+    .icon {
+        display:none;
+    }
+    .editable {
+        display:inline;
+    }
+    .not-editable {
+        display:inline;
+    }
+}
+.page-framework-list .e-property .e-name {
+    li .e-Property {
+        label, span.button {
+            display: none !important;
+        }
+    }
+    label{
+        display:none;
+    }
+    ul{
+        margin-left:0px;
+        display:inline;
+        li{
+            display:inline;
+            margin-right:.5rem;
+        }
+    }
+}
+
+
+
+.import-details__section {
+    padding: 1rem;
+}
+.detected-import-details {
+    padding: 1rem .5rem 0rem .5rem;
+    li {
+        padding: .5rem 0rem;
+    }
+}
+
+
+// fixes 
+.caret-icon-overlay-fix {
+    padding-left: .125rem;
 }
