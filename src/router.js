@@ -18,7 +18,8 @@ export default new Router({
         {
             path: '/',
             name: 'frameworks',
-            component: Frameworks
+            component: Frameworks,
+            alias: '/cass-editor/'
         },
         {
             path: '/about',

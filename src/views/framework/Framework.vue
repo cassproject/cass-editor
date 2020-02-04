@@ -158,24 +158,18 @@ export default {
         shortId: function() {
             return this.$store.state.editor.framework.shortId();
         },
-        commonPathIframe: function() {
-            var path = "&iframeRoot=" + (this.queryParams.editorRoot ? this.queryParams.editorRoot : "");
-            path += "&origin=" + window.location.origin;
-            path += this.queryParams.server ? "&server=" + this.queryParams.server : "";
-            path += this.queryParams.newObjectEndpoint ? "&newObjectEndpoint=" + this.queryParams.newObjectEndpoint : "";
-            path += this.queryParams.ceasnDataFields ? "&ceasnDataFields=" + this.queryParams.ceasnDataFields : "";
-            path += this.queryParams.webSocketOverride ? "&webSocketOverride=" + this.queryParams.webSocketOverride : "";
-            path += this.queryParams.inherit ? "&inherit=" + this.queryParams.inherit : "";
-            path += this.queryParams.css ? "&css=" + this.queryParams.css : "";
-            path += this.queryParams.selectVerbose ? "&selectVerbose=" + this.queryParams.selectVerbose : "";
-            path += this.queryParams.selectExport ? "&selectExport=" + this.queryParams.selectExport : "";
-            path += this.queryParams.user ? "&user=" + this.queryParams.user : "";
-            return path;
-        },
         iframeCompetencyPathInterframework: function() {
             var path = this.queryParams.editorRoot ? this.queryParams.editorRoot : "";
             path += "cass-editor/?select=Align with...&view=true&back=true";
-            path += this.commonPathIframe;
+            path += this.$store.state.editor.commonPathIframe;
+            return path;
+        },
+        iframeConceptPath: function() {
+            var path = this.queryParams.editorRoot ? this.queryParams.editorRoot : "";
+            path += "cass-editor/?select=Add&concepts=true";
+            path += this.queryParams.conceptShow ? "&conceptShow=" + this.queryParams.conceptShow : "";
+            path += this.queryParams.editIframe !== "true" ? "&view=true" : "";
+            path += this.$store.state.editor.commonPathIframe;
             return path;
         },
         competencyProfile: function() {
@@ -337,10 +331,15 @@ export default {
             for (var i = 0; i < this.framework.level.length; i++) {
                 var level = EcLevel.getBlocking(this.framework.level[i]);
                 var comp = level.competency;
-                if (!EcArray.isArray(levels[comp])) {
-                    levels[comp] = [];
+                if (!EcArray.isArray(comp)) {
+                    comp = [comp];
                 }
-                levels[comp].push(level);
+                for (var j = 0; j < comp.length; j++) {
+                    if (!EcArray.isArray(levels[comp[j]])) {
+                        levels[comp[j]] = [];
+                    }
+                    levels[comp[j]].push(level);
+                }
             }
             return levels;
         },

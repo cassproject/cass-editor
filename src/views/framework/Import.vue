@@ -819,6 +819,17 @@ export default {
         previewProfile: function() {
             var me = this;
             return {
+                "@id": {
+                    "@id": "https://schema.cassproject.org/0.4/Competency/id",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "The URL of the competency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "ID"}],
+                    "noTextEditing": true
+                },
                 "http://schema.org/name": {
                     "@id": "http://schema.org/name",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -829,6 +840,17 @@ export default {
                         [{"@language": "en", "@value": "Name of the competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}]
                 },
+                "https://purl.org/ctdlasn/terms/codedNotation": {
+                    "@id": "https://purl.org/ctdlasn/terms/codedNotation",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "An alphanumeric notation or ID code as defined by the promulgating body to identify this resource."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Code"}],
+                    "thingKey": "ceasn:codedNotation"
+                },
                 "http://schema.org/description": {
                     "@id": "http://schema.org/description",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -838,8 +860,81 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "Description of the competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}]
-                }
+                },
+                "https://purl.org/ctdlasn/terms/competencyCategory": {
+                    "@id": "http://schema.org/description",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "Description of the competency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Type"}],
+                    "thingKey": "ceasn:competencyCategory"
+                },
+                "https://schema.cassproject.org/0.4/Competency/scope": {
+                    "@id": "https://schema.cassproject.org/0.4/Competency/scope",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Scope in which the competency may be applied. e.g. Underwater."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Scope"}]
+                },
+                "https://purl.org/ctdlasn/terms/conceptTerm": {
+                    "@id": "https://purl.org/ctdlasn/terms/conceptTerm",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual resources contextually."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Context"}],
+                    "thingKey": "ceasn:conceptTerm",
+                    "noTextEditing": true,
+                    "iframePath": me.iframeConceptPath,
+                    "iframeText": "Select concepts to attach..."
+                },
+                "https://schema.cassproject.org/0.4/Level": {
+                    "@id": "https://schema.cassproject.org/0.4/Level",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Level"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [
+                        {"@language": "en",
+                            "@value":
+                        "When an individual's performance in a competency can be measured, a level specifies milestones that an individual can reach, creating fine-grained distinction between the proficient and the adept."}
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Rubric Cell"}],
+                    "valuesIndexed": function() {
+                        var levels = {};
+                        if (!me.framework.level) {
+                            return null;
+                        }
+                        for (var i = 0; i < me.framework.level.length; i++) {
+                            var level = EcLevel.getBlocking(me.framework.level[i]);
+                            var comp = level.competency;
+                            levels[comp] = level;
+                        }
+                        return levels;
+                    }
+                },
+                "alwaysProperties": [
+                    "@id", "http://schema.org/name", "https://purl.org/ctdlasn/terms/codedNotation", "http://schema.org/description", "https://purl.org/ctdlasn/terms/competencyCategory",
+                    "https://schema.cassproject.org/0.4/Competency/scope", "https://purl.org/ctdlasn/terms/conceptTerm", "https://schema.cassproject.org/0.4/Level"
+                ]
             };
+        },
+        iframeConceptPath: function() {
+            var path = this.queryParams.editorRoot ? this.queryParams.editorRoot : "";
+            path += "cass-editor/?select=Add&concepts=true";
+            path += this.queryParams.conceptShow ? "&conceptShow=" + this.queryParams.conceptShow : "";
+            path += this.queryParams.editIframe !== "true" ? "&view=true" : "";
+            path += this.$store.state.editor.commonPathIframe;
+            return path;
         }
     },
     watch: {

@@ -11,10 +11,10 @@ const editor = {
         selectedCompetency: null,
         defaultLanguage: null,
         webSocketBackoff: 100,
-        selectConceptRelation: null,
         selectCompetencyRelation: null,
         selectingCompetencies: false,
-        private: false
+        private: false,
+        commonPathIframe: null
     },
     mutations: {
         framework(state, f) {
@@ -40,6 +40,9 @@ const editor = {
         },
         selectingCompetencies(state, bool) {
             state.selectingCompetencies = bool;
+        },
+        commonPathIframe(state, path) {
+            state.commonPathIframe = path;
         }
     },
     actions: {
