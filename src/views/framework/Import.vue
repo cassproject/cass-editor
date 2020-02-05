@@ -1318,55 +1318,64 @@ export default {
                 "docx",
                 formData,
                 function(d) {
-                    var toSave = [];
-                    var f = new EcFramework();
-                    f.setName(d.name);
-                    f.setDescription(d.description);
-                    f.assignId(me.repo.selectedServer, me.file[0].name);
-                    f.competency = [];
-                    f.relation = [];
-                    toSave.push(f);
-                    console.log(d);
-                    console.log(JSON.parse(f.toJson()));
-                    var cs = {};
-                    if (!d.competencies) {
-                        me.showErrors = true;
-                        me.status = "Error importing competencies.";
-                        me.statusType = "error";
-                        me.errors.push("Error importing competencies, no competencies found in file.");
-                        me.processingFile = false;
-                        return;
-                    }
-                    me.detailsDetected.competencies = d.competencies.length;
-                    for (var i = 0; i < d.competencies.length; i++) {
-                        var c = new EcCompetency();
-                        c.assignId(me.repo.selectedServer, d.competencies[i].id);
-                        cs[d.competencies[i].id] = c.shortId();
-                        if (d.competencies[i].name != null) { c.setName(d.competencies[i].name.trim()); }
-                        if (d.competencies[i].name !== d.competencies[i].description && d.competencies[i].description) { c.setDescription(d.competencies[i].description.trim()); }
-                        f.competency.push(c.shortId());
-                        toSave.push(c);
-                    }
-                    for (var i = 0; i < d.relation.length; i++) {
-                        var c = new EcAlignment();
-                        c.assignId(me.repo.selectedServer, d.relation[i].source + "_" + d.relation[i].relationType + "_" + d.relation[i].target);
-                        c.source = cs[d.relation[i].source];
-                        c.target = cs[d.relation[i].target];
-                        c.relationType = d.relation[i].relationType;
-                        if (c.source !== undefined && c.target !== undefined) {
-                            f.relation.push(c.shortId());
-                            toSave.push(c);
+                    me.repo.search("(name:\"" + d.name + "\") AND (@type:Framework)", function() {}, function(frameworks) {
+                        if (frameworks.length > 0) {
+                            alert("A framework already exists under this name.");
+                            me.cancelImport();
                         } else {
-                            console.log(JSON.parse(c.toJson()));
+                            var toSave = [];
+                            var f = new EcFramework();
+                            f.setName(d.name);
+                            f.setDescription(d.description);
+                            f.assignId(me.repo.selectedServer, me.file[0].name);
+                            f.competency = [];
+                            f.relation = [];
+                            toSave.push(f);
+                            console.log(d);
+                            console.log(JSON.parse(f.toJson()));
+                            var cs = {};
+                            if (!d.competencies) {
+                                me.showErrors = true;
+                                me.status = "Error importing competencies.";
+                                me.statusType = "error";
+                                me.errors.push("Error importing competencies, no competencies found in file.");
+                                me.processingFile = false;
+                                return;
+                            }
+                            me.detailsDetected.competencies = d.competencies.length;
+                            for (var i = 0; i < d.competencies.length; i++) {
+                                var c = new EcCompetency();
+                                c.assignId(me.repo.selectedServer, d.competencies[i].id);
+                                cs[d.competencies[i].id] = c.shortId();
+                                if (d.competencies[i].name != null) { c.setName(d.competencies[i].name.trim()); }
+                                if (d.competencies[i].name !== d.competencies[i].description && d.competencies[i].description) { c.setDescription(d.competencies[i].description.trim()); }
+                                f.competency.push(c.shortId());
+                                toSave.push(c);
+                            }
+                            for (var i = 0; i < d.relation.length; i++) {
+                                var c = new EcAlignment();
+                                c.assignId(me.repo.selectedServer, d.relation[i].source + "_" + d.relation[i].relationType + "_" + d.relation[i].target);
+                                c.source = cs[d.relation[i].source];
+                                c.target = cs[d.relation[i].target];
+                                c.relationType = d.relation[i].relationType;
+                                if (c.source !== undefined && c.target !== undefined) {
+                                    f.relation.push(c.shortId());
+                                    toSave.push(c);
+                                } else {
+                                    console.log(JSON.parse(c.toJson()));
+                                }
+                            }
+                            me.repo.multiput(toSave, function() {
+                                me.framework = f;
+                                me.status = "";
+                                me.importSuccess();
+                            }, console.error);
+                            me.statusType = "info";
+                            me.status = "Writing Framework to CaSS...";
                         }
-                    }
-                    me.repo.multiput(toSave, function() {
-                        me.framework = f;
-                        me.status = "";
-                        me.importSuccess();
-                    }, console.error);
-                    me.statusType = "info";
-                    me.status = "Writing Framework to CaSS...";
+                    }, function(error) {
+                        console.error(error);
+                    });
                 }, console.error);
             me.statusType = "info";
             me.status = "Importing Framework...";
