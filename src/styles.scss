@@ -202,6 +202,9 @@ iframe {
         framework page
 *********************************/
 .page-framework{
+    .special-property {
+        width: 100% !important;
+    }
     .e-Competency{
         transform: translateX(0);
         cursor: pointer;
@@ -661,6 +664,9 @@ iframe {
         framework list page
 *********************************/
 .page-framework-list {
+    .special-property {
+        width: 100% !important;
+    }
     .button {
         display: none;
     }

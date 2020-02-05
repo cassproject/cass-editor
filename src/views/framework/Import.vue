@@ -407,13 +407,13 @@
                                     is correct and import again.
                                 </p>
                                 <ul class="is-size-6 detected-import-details">
-                                    <li>
+                                    <li v-if="detailsDetected.columns > 0">
                                         <span class="icon has-text-success">
                                             <i class="fa fa-check-circle" />
                                         </span>
                                         CaSS detected <b>{{ detailsDetected.columns }}</b> columns
                                     </li>
-                                    <li>
+                                    <li v-if="detailsDetected.rows > 0">
                                         <span class="icon has-text-success">
                                             <i class="fa fa-check-circle" />
                                         </span>
@@ -1028,6 +1028,8 @@ export default {
              * clear all files and framework states
              * this does not completely work
              */
+            this.importDetailsView = false;
+            this.importLightView = false;
             this.errors = [];
             this.showErrors = false;
             this.framework = null;
