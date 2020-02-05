@@ -475,7 +475,6 @@
                                     containerNodeProperty="competency"
                                     containerEdgeProperty="relation"
                                     nodeType="EcCompetency"
-                                    :profile="postImportProfile"
                                     :editable="false"
                                     edgeType="EcAlignment"
                                     edgeRelationProperty="relationType"
@@ -724,98 +723,6 @@ export default {
                 return false;
             }
         },
-        postImportProfile: function() {
-            var me = this;
-            return {
-                "@id": {
-                    "@id": "https://schema.cassproject.org/0.4/Competency/id",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "The URL of the competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "ID"}]
-                },
-                "http://schema.org/name": {
-                    "@id": "http://schema.org/name",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                        [{"@language": "en", "@value": "Name of the competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}]
-                },
-                "http://schema.org/description": {
-                    "@id": "http://schema.org/description",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                        [{"@language": "en", "@value": "Description of the competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}]
-                },
-                "@type": {
-                    "@id": "https://schema.cassproject.org/0.4/Competency/type",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "The type of the object."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Type"}]
-                },
-                "https://schema.cassproject.org/0.4/Competency/scope": {
-                    "@id": "https://schema.cassproject.org/0.4/Competency/scope",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Scope in which the competency may be applied. e.g. Underwater."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Scope"}]
-                },
-                "@context": {
-                    "@id": "https://schema.cassproject.org/0.4/Competency/context",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "The context of the competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Context"}]
-                },
-                "https://schema.cassproject.org/0.4/Level": {
-                    "@id": "https://schema.cassproject.org/0.4/Level",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Level"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [
-                        {"@language": "en",
-                            "@value":
-                        "When an individual's performance in a competency can be measured, a level specifies milestones that an individual can reach, creating fine-grained distinction between the proficient and the adept."}
-                    ],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Level"}],
-                    "valuesIndexed": function() {
-                        var levels = {};
-                        if (!me.framework.level) {
-                            return null;
-                        }
-                        for (var i = 0; i < me.framework.level.length; i++) {
-                            var level = EcLevel.getBlocking(me.framework.level[i]);
-                            var comp = level.competency;
-                            levels[comp] = level;
-                        }
-                        return levels;
-                    }
-                },
-                "alwaysProperties": ["@id", "http://schema.org/name", "@type", "https://schema.cassproject.org/0.4/Competency/scope", "@context", "https://schema.cassproject.org/0.4/Level"]
-            };
-        },
         previewProfile: function() {
             var me = this;
             return {
@@ -861,7 +768,7 @@ export default {
                         [{"@language": "en", "@value": "Description of the competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}]
                 },
-                "https://purl.org/ctdlasn/terms/competencyCategory": {
+                "http://purl.org/dc/terms/type": {
                     "@id": "http://schema.org/description",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
@@ -870,7 +777,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "Description of the competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Type"}],
-                    "thingKey": "ceasn:competencyCategory"
+                    "thingKey": "dcterms:type"
                 },
                 "https://schema.cassproject.org/0.4/Competency/scope": {
                     "@id": "https://schema.cassproject.org/0.4/Competency/scope",
@@ -892,8 +799,7 @@ export default {
                         [{"@language": "en", "@value": "A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual resources contextually."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Context"}],
                     "thingKey": "ceasn:conceptTerm",
-                    "noTextEditing": true,
-                    "iframePath": me.iframeConceptPath,
+                    "iframePath": me.$store.state.editor.iframeConceptPath,
                     "iframeText": "Select concepts to attach..."
                 },
                 "https://schema.cassproject.org/0.4/Level": {
@@ -909,32 +815,62 @@ export default {
                         "When an individual's performance in a competency can be measured, a level specifies milestones that an individual can reach, creating fine-grained distinction between the proficient and the adept."}
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Rubric Cell"}],
-                    "valuesIndexed": function() {
-                        var levels = {};
-                        if (!me.framework.level) {
-                            return null;
-                        }
-                        for (var i = 0; i < me.framework.level.length; i++) {
-                            var level = EcLevel.getBlocking(me.framework.level[i]);
-                            var comp = level.competency;
-                            levels[comp] = level;
-                        }
-                        return levels;
+                    "valuesIndexed": function() { return me.levels; },
+                    "noTextEditing": true,
+                    "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
+                    "iframeText": "Select levels to align...",
+                    "add": function(selectedCompetency) { me.addLevel(selectedCompetency); },
+                    "remove": function(competency, levelId) { me.removeLevelFromFramework(levelId); },
+                    "save": function() { me.saveFramework(); },
+                    profile: {
+                        "https://schema.cassproject.org/0.4/Level/title": {
+                            "@id": "https://schema.cassproject.org/0.4/Level/title",
+                            "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                            "http://schema.org/domainIncludes":
+                                [{"@id": "https://schema.cassproject.org/0.4/Level"}],
+                            "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                            "http://www.w3.org/2000/01/rdf-schema#comment":
+                                [{"@language": "en", "@value": "The title that one who holds this performance level may assume. e.g. \"Fast\""}],
+                            "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Rubric Column Header"}]
+                        },
+                        "https://schema.cassproject.org/0.4/Level/competency": {
+                            "@id": "https://schema.cassproject.org/0.4/Level/competency",
+                            "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                            "http://schema.org/domainIncludes":
+                                [{"@id": "https://schema.cassproject.org/0.4/Level"}],
+                            "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                            "http://www.w3.org/2000/01/rdf-schema#comment":
+                                [{"@language": "en", "@value": "Specifies the URL of the competency the level relates to."}],
+                            "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Rubric Row Header"}]
+                        },
+                        "alwaysProperties": ["https://schema.cassproject.org/0.4/Level/title", "https://schema.cassproject.org/0.4/Level/competency"]
                     }
                 },
                 "alwaysProperties": [
-                    "@id", "http://schema.org/name", "https://purl.org/ctdlasn/terms/codedNotation", "http://schema.org/description", "https://purl.org/ctdlasn/terms/competencyCategory",
+                    "@id", "http://schema.org/name", "https://purl.org/ctdlasn/terms/codedNotation", "http://schema.org/description", "http://purl.org/dc/terms/type",
                     "https://schema.cassproject.org/0.4/Competency/scope", "https://purl.org/ctdlasn/terms/conceptTerm", "https://schema.cassproject.org/0.4/Level"
                 ]
             };
         },
-        iframeConceptPath: function() {
-            var path = this.queryParams.editorRoot ? this.queryParams.editorRoot : "";
-            path += "cass-editor/?select=Add&concepts=true";
-            path += this.queryParams.conceptShow ? "&conceptShow=" + this.queryParams.conceptShow : "";
-            path += this.queryParams.editIframe !== "true" ? "&view=true" : "";
-            path += this.$store.state.editor.commonPathIframe;
-            return path;
+        levels: function() {
+            var levels = {};
+            if (!this.framework.level) {
+                return null;
+            }
+            for (var i = 0; i < this.framework.level.length; i++) {
+                var level = EcLevel.getBlocking(this.framework.level[i]);
+                var comp = level.competency;
+                if (!EcArray.isArray(comp)) {
+                    comp = [comp];
+                }
+                for (var j = 0; j < comp.length; j++) {
+                    if (!EcArray.isArray(levels[comp[j]])) {
+                        levels[comp[j]] = [];
+                    }
+                    levels[comp[j]].push(level);
+                }
+            }
+            return levels;
         }
     },
     watch: {
