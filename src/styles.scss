@@ -49,7 +49,7 @@ input, textarea{
     color: rgba($dark, .7);
     font-family: $family-primary;
     font-size: .8rem;
-    z-index: 5;
+//    z-index: 5;
 }
 
 .thing-label {
@@ -231,7 +231,7 @@ iframe {
             position: fixed;
             top: 0;
             right: 0;
-            z-index: 1;
+           //z-index: 1;
             bottom: 32;
             left: 0;
         }
@@ -435,9 +435,8 @@ iframe {
             position: fixed;
             top: 0;
             right: 0;
-            z-index: 1;
+            //z-index: 1;
             bottom: 32;
-            cursor: grab;
             left: 0;
         }
         .e-Thing-always-ul {
@@ -654,8 +653,44 @@ iframe {
         overflow-y: scroll;
         border: 2px solid rgba($black, .5);
         border-radius: 1rem;
+        
+    }
+    .import-details, .import-preview {
         .thing-actions {
             display: none;
+        }
+    }
+    .import-light {
+     
+        .e-Thing.e-Competency.showHoverItems {
+            background-color: rgba($dark, .05);
+            padding-bottom: 44px !important;
+            cursor: pointer;
+            .thing-actions {
+                position: fixed;
+                visibility: visible;
+            }
+        }
+        .thing-actions {
+            position: fixed;
+            visibility: hidden;
+            width: 100%;
+            padding: 6px;
+            height: 44px;
+            right: 0;
+            left: 0;
+            display: flex;
+            justify-content: space-between;
+            flex-direction: row;
+            bottom: 0;
+            background-color: rgba($dark, .3);
+            .info, .view {
+                display: block;
+                width: 30%;
+            }
+            .action{ 
+                display: none;
+            }
         }
     }
 }
