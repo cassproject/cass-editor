@@ -46,6 +46,25 @@
                     </div>
                 </div>
             </section>
+            <section
+                v-else-if="options"
+                class="modal-card-body has-text-dark">
+                <div
+                    class="field">
+                    <div class="control">
+                        <div class="select is-primary is-fullwidth">
+                            <select v-model="selectedOption">
+                                <option
+                                    v-for="(option, index) in options"
+                                    :value="option"
+                                    :key="index">
+                                    {{ option }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </section>
             <footer class="modal-card-foot has-background-white">
                 <div
                     class="buttons is-right"
@@ -107,7 +126,9 @@ export default {
             type: '',
             text: '',
             // adding callback function variable
-            onConfirm: {}
+            onConfirm: {},
+            options: [],
+            selectedOption: null
         };
     },
     computed: {
@@ -177,6 +198,8 @@ export default {
                 // perform call back and then handle hide
                 if (this.type === 'export') {
                     this.onConfirm(this.selectedExportOption);
+                } else if (this.options) {
+                    this.onConfirm(this.selectedOption);
                 } else {
                     this.onConfirm();
                 }
@@ -192,6 +215,7 @@ export default {
             this.title = params.title;
             this.text = params.text;
             this.exportOptions = params.exportOptions;
+            this.options = params.options;
             // callback
             this.onConfirm = params.onConfirm;
         },

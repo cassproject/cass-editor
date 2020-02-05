@@ -158,26 +158,6 @@ export default {
         shortId: function() {
             return this.$store.state.editor.framework.shortId();
         },
-        commonPathIframe: function() {
-            var path = "&iframeRoot=" + (this.queryParams.editorRoot ? this.queryParams.editorRoot : "");
-            path += "&origin=" + window.location.origin;
-            path += this.queryParams.server ? "&server=" + this.queryParams.server : "";
-            path += this.queryParams.newObjectEndpoint ? "&newObjectEndpoint=" + this.queryParams.newObjectEndpoint : "";
-            path += this.queryParams.ceasnDataFields ? "&ceasnDataFields=" + this.queryParams.ceasnDataFields : "";
-            path += this.queryParams.webSocketOverride ? "&webSocketOverride=" + this.queryParams.webSocketOverride : "";
-            path += this.queryParams.inherit ? "&inherit=" + this.queryParams.inherit : "";
-            path += this.queryParams.css ? "&css=" + this.queryParams.css : "";
-            path += this.queryParams.selectVerbose ? "&selectVerbose=" + this.queryParams.selectVerbose : "";
-            path += this.queryParams.selectExport ? "&selectExport=" + this.queryParams.selectExport : "";
-            path += this.queryParams.user ? "&user=" + this.queryParams.user : "";
-            return path;
-        },
-        iframeCompetencyPathInterframework: function() {
-            var path = this.queryParams.editorRoot ? this.queryParams.editorRoot : "";
-            path += "cass-editor/?select=Align with...&view=true&back=true";
-            path += this.commonPathIframe;
-            return path;
-        },
         competencyProfile: function() {
             if (this.profileOverride) {
                 return this.profileOverride;
@@ -229,7 +209,7 @@ export default {
                         "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Level"}],
                         "valuesIndexed": function() { return me.levels; },
                         "noTextEditing": true,
-                        "iframePath": me.iframeCompetencyPathInterframework,
+                        "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
                         "iframeText": "Select levels to align...",
                         "add": function(selectedCompetency) { me.addLevel(selectedCompetency); },
                         "remove": function(competency, levelId) { me.removeLevelFromFramework(levelId); },
@@ -240,7 +220,7 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "A sub-competency relationship which has relevance to this competency."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Narrows"}],
-                        "iframePath": this.iframeCompetencyPathInterframework,
+                        "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
                         "iframeText": "Select competencies to align...",
                         "valuesIndexed": function() { return me.relations["narrows"]; },
                         "noTextEditing": true,
@@ -253,7 +233,7 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "Covers other relevant competencies not found in this competency."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Broadens"}],
-                        "iframePath": this.iframeCompetencyPathInterframework,
+                        "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
                         "iframeText": "Select competencies to align...",
                         "valuesIndexed": function() { return me.relations["broadens"]; },
                         "noTextEditing": true,
@@ -266,7 +246,7 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "Represents same capability in all aspects to another competency."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Equivalent To"}],
-                        "iframePath": this.iframeCompetencyPathInterframework,
+                        "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
                         "iframeText": "Select competencies to align...",
                         "valuesIndexed": function() { return me.relations["isEquivalentTo"]; },
                         "noTextEditing": true,
@@ -279,7 +259,7 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "Another competency is prerequisite for this."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Requires"}],
-                        "iframePath": this.iframeCompetencyPathInterframework,
+                        "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
                         "iframeText": "Select competencies to align...",
                         "valuesIndexed": function() { return me.relations["requires"]; },
                         "noTextEditing": true,
@@ -292,7 +272,7 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "A recommended option that speeds up acquisition of this competency."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Enabled By"}],
-                        "iframePath": this.iframeCompetencyPathInterframework,
+                        "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
                         "iframeText": "Select competencies to align...",
                         "valuesIndexed": function() { return me.relations["isEnabledBy"]; },
                         "noTextEditing": true,
@@ -305,7 +285,7 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "This competency has some degree of overlap with another."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Related To"}],
-                        "iframePath": this.iframeCompetencyPathInterframework,
+                        "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
                         "iframeText": "Select competencies to align...",
                         "valuesIndexed": function() { return me.relations["isRelatedTo"]; },
                         "noTextEditing": true,
@@ -318,7 +298,7 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "Recommended, assumed, or expected competency not essential to acquisition of this competency."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Desires"}],
-                        "iframePath": this.iframeCompetencyPathInterframework,
+                        "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
                         "iframeText": "Select competencies to align...",
                         "valuesIndexed": function() { return me.relations["desires"]; },
                         "noTextEditing": true,
@@ -337,10 +317,15 @@ export default {
             for (var i = 0; i < this.framework.level.length; i++) {
                 var level = EcLevel.getBlocking(this.framework.level[i]);
                 var comp = level.competency;
-                if (!EcArray.isArray(levels[comp])) {
-                    levels[comp] = [];
+                if (!EcArray.isArray(comp)) {
+                    comp = [comp];
                 }
-                levels[comp].push(level);
+                for (var j = 0; j < comp.length; j++) {
+                    if (!EcArray.isArray(levels[comp[j]])) {
+                        levels[comp[j]] = [];
+                    }
+                    levels[comp[j]].push(level);
+                }
             }
             return levels;
         },
@@ -553,41 +538,6 @@ export default {
                 }
                 me.repo.saveTo(framework, function() {}, console.error);
             });
-        },
-        addLevel: function(selectedCompetency) {
-            var c = new EcLevel();
-            if (this.queryParams.newObjectEndpoint != null) {
-                c.generateShortId(this.queryParams.newObjectEndpoint);
-            } else {
-                c.generateId(this.repo.selectedServer);
-            }
-            c["schema:dateCreated"] = new Date().toISOString();
-            this.framework.addLevel(c.id);
-            if (EcIdentityManager.ids.length > 0) {
-                c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-            }
-            c.name = "New Level";
-            c.competency = selectedCompetency;
-            if (this.queryParams.private === "true") {
-                c = EcEncryptedValue.toEncryptedValue(c);
-                if (EcEncryptedValue.encryptOnSaveMap[this.framework.id] !== true) {
-                    framework = EcEncryptedValue.toEncryptedValue(framework);
-                }
-            }
-            this.repo.saveTo(c, function() {}, console.error);
-        },
-        saveFramework: function() {
-            this.framework["schema:dateModified"] = new Date().toISOString();
-            var framework = this.framework;
-            if (this.queryParams.private === "true" && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
-                framework = EcEncryptedValue.toEncryptedValue(framework);
-            }
-            this.repo.saveTo(framework, function() {}, console.error);
-        },
-        removeLevelFromFramework: function(levelId) {
-            this.framework.removeLevel(levelId);
-            this.conditionalDelete(levelId);
-            this.saveFramework();
         }
     }
 };

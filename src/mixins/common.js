@@ -242,6 +242,44 @@ export default {
             console.log(message);
             parent.postMessage(message, this.queryParams.origin);
             EcRemote.async = async;
+        },
+        addLevel: function(selectedCompetency) {
+            var c = new EcLevel();
+            var me = this;
+            if (this.queryParams.newObjectEndpoint != null) {
+                c.generateShortId(this.queryParams.newObjectEndpoint);
+            } else {
+                c.generateId(this.repo.selectedServer);
+            }
+            c["schema:dateCreated"] = new Date().toISOString();
+            if (EcIdentityManager.ids.length > 0) {
+                c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            }
+            c.name = "New Level";
+            c.competency = selectedCompetency;
+            if (this.queryParams.private === "true") {
+                c = EcEncryptedValue.toEncryptedValue(c);
+                if (EcEncryptedValue.encryptOnSaveMap[this.framework.id] !== true) {
+                    framework = EcEncryptedValue.toEncryptedValue(framework);
+                }
+            }
+            this.repo.saveTo(c, function() {
+                me.framework.addLevel(c.id);
+            }, console.error);
+        },
+        saveFramework: function() {
+            this.framework["schema:dateModified"] = new Date().toISOString();
+            var framework = this.framework;
+            this.$store.comnmit('framework', framework);
+            if (this.queryParams.private === "true" && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                framework = EcEncryptedValue.toEncryptedValue(framework);
+            }
+            this.repo.saveTo(framework, function() {}, console.error);
+        },
+        removeLevelFromFramework: function(levelId) {
+            this.framework.removeLevel(levelId);
+            this.conditionalDelete(levelId);
+            this.saveFramework();
         }
     }
 };
