@@ -655,13 +655,12 @@ iframe {
         border-radius: 1rem;
         
     }
-    .import-details, .import-preview {
+    .import-details {
         .thing-actions {
             display: none;
         }
     }
-    .import-light {
-     
+    .import-light, .import-preview {
         .e-Thing.e-Competency.showHoverItems {
             background-color: rgba($dark, .05);
             padding-bottom: 44px !important;
