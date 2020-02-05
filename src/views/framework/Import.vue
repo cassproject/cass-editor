@@ -26,14 +26,14 @@
                             </div>
                             <p
                                 v-if="status === 'Ready' && !file"
-                                class="is-size-7">
+                                class="is-size-5">
                                 Upload documents to transform into CaSS Competency Frameworks.
                             </p>
                             <p
                                 v-if="importDetailsView"
-                                class="is-size-7">
-                                Success!  Your file competencies.  CaSS has detected details
-                                about your framework and file.  Please review.
+                                class="is-size-5">
+                                Success! CaSS has detected details
+                                about your competency framework and file.  Please review.
                                 <br><br>
                                 If these details look incorrect, please review your file, and
                                 start over.
