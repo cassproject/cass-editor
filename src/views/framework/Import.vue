@@ -726,6 +726,16 @@ export default {
         previewProfile: function() {
             var me = this;
             return {
+                "http://schema.org/name": {
+                    "@id": "http://schema.org/name",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "Name of the competency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}]
+                },
                 "@id": {
                     "@id": "https://schema.cassproject.org/0.4/Competency/id",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -737,16 +747,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "ID"}],
                     "noTextEditing": true
                 },
-                "http://schema.org/name": {
-                    "@id": "http://schema.org/name",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                        [{"@language": "en", "@value": "Name of the competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}]
-                },
+
                 "https://purl.org/ctdlasn/terms/codedNotation": {
                     "@id": "https://purl.org/ctdlasn/terms/codedNotation",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -847,8 +848,8 @@ export default {
                     }
                 },
                 "alwaysProperties": [
-                    "@id", "http://schema.org/name", "https://purl.org/ctdlasn/terms/codedNotation", "http://schema.org/description", "http://purl.org/dc/terms/type",
-                    "https://schema.cassproject.org/0.4/Competency/scope", "https://purl.org/ctdlasn/terms/conceptTerm", "https://schema.cassproject.org/0.4/Level"
+                    "http://schema.org/name",
+                    "http://schema.org/description"
                 ]
             };
         },
