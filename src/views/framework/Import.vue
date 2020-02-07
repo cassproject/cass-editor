@@ -1046,9 +1046,11 @@ export default {
                 params = {
                     type: val,
                     title: "Duplicate framework",
-                    text: "A framework has already been imported under this name. Do you want to overwrite it?",
-                    onConfirm: () => {
-                        return this.savePdfImport(data);
+                    text: "A framework has already been imported under the name " + data.name + ". Do you want to overwrite it?",
+                    options: ["Overwrite framework", "Choose another name"],
+                    currentName: data.name,
+                    onConfirm: (newName) => {
+                        return this.savePdfImport(data, newName);
                     },
                     onCancel: () => {
                         return this.cancelImport();
@@ -1473,13 +1475,14 @@ export default {
             me.statusType = "info";
             me.status = "Importing Framework...";
         },
-        savePdfImport: function(d) {
+        savePdfImport: function(d, newName) {
             var me = this;
             var toSave = [];
             var f = new EcFramework();
-            f.setName(d.name);
+            var name = newName || d.name;
+            f.setName(name);
             f.setDescription(d.description);
-            var uuid = new UUID(3, "nil", d.name).format();
+            var uuid = new UUID(3, "nil", name).format();
             f.assignId(me.repo.selectedServer, uuid);
             f.competency = [];
             f.relation = [];

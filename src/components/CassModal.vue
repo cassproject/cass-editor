@@ -64,6 +64,12 @@
                         </div>
                     </div>
                 </div>
+                <input
+                    v-if="selectedOption==='Choose another name'"
+                    v-model="newName">
+                <div v-if="invalid">
+                    The name you chose is already in the system. Please try a different name.
+                </div>
             </section>
             <footer class="modal-card-foot has-background-white">
                 <div
@@ -129,7 +135,11 @@ export default {
             onConfirm: {},
             options: [],
             selectedOption: null,
-            onCancel: {}
+            onCancel: {},
+            newName: '',
+            currentName: '',
+            invalid: false,
+            repo: window.repo
         };
     },
     computed: {
@@ -193,18 +203,44 @@ export default {
     methods: {
         hide() {
             this.visible = false;
+            this.selectedOption = null;
+            this.newName = '';
+            this.currentName = '';
+            this.invalid = false;
         },
         confirm() {
+            var me = this;
             if (typeof this.onConfirm === 'function') {
                 // perform call back and then handle hide
                 if (this.type === 'export') {
                     this.onConfirm(this.selectedExportOption);
-                } else if (this.options) {
+                    this.hide();
+                } else if (this.newName) {
+                    if (this.newName === this.currentName) {
+                        this.invalid = true;
+                    } else {
+                        var uuid = new UUID(3, "nil", this.newName).format();
+                        var f = new EcFramework();
+                        f.assignId(this.repo.selectedServer, uuid);
+                        this.repo.search("(@id:\"" + f.shortId() + "\") AND (@type:Framework)", function() {}, function(frameworks) {
+                            if (frameworks.length > 0) {
+                                me.invalid = true;
+                            } else {
+                                me.onConfirm(me.newName);
+                                me.hide();
+                            }
+                        }, function(error) {
+                            console.error(error);
+                            me.hide();
+                        });
+                    }
+                } else if (this.options && this.type !== "duplicate") {
                     this.onConfirm(this.selectedOption);
+                    this.hide();
                 } else {
                     this.onConfirm();
+                    this.hide();
                 }
-                this.hide();
             } else {
                 this.hide();
             }
@@ -229,6 +265,7 @@ export default {
             // callback
             this.onConfirm = params.onConfirm;
             this.onCancel = params.onCancel;
+            this.currentName = params.currentName;
         },
         setSelectedExportOption: function(e) {
             alert(e.target);
