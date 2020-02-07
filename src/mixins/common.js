@@ -270,7 +270,7 @@ export default {
         saveFramework: function() {
             this.framework["schema:dateModified"] = new Date().toISOString();
             var framework = this.framework;
-            this.$store.comnmit('framework', framework);
+            this.$store.commit('framework', framework);
             if (this.queryParams.private === "true" && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                 framework = EcEncryptedValue.toEncryptedValue(framework);
             }
