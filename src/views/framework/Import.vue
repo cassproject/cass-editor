@@ -1483,6 +1483,7 @@ export default {
             f.assignId(me.repo.selectedServer, uuid);
             f.competency = [];
             f.relation = [];
+            f.level = [];
             toSave.push(f);
             console.log(d);
             console.log(JSON.parse(f.toJson()));

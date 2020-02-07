@@ -264,7 +264,7 @@ export default {
                 }
             }
             this.repo.saveTo(c, function() {
-                me.framework.addLevel(c.id);
+                me.framework.addLevel(c.shortId());
             }, console.error);
         },
         saveFramework: function() {
