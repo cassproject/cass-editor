@@ -747,7 +747,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "ID"}],
                     "noTextEditing": true
                 },
-
                 "https://purl.org/ctdlasn/terms/codedNotation": {
                     "@id": "https://purl.org/ctdlasn/terms/codedNotation",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -904,7 +903,7 @@ export default {
         }
     },
     methods: {
-        showModal(val) {
+        showModal(val, data) {
             let params = {};
             if (val === 'export') {
                 params = {
@@ -915,6 +914,18 @@ export default {
                     text: "Select a file format to export your framework. Files download locally.",
                     onConfirm: (e) => {
                         return this.exportObject(e);
+                    }
+                };
+            } else if (val === 'duplicate') {
+                params = {
+                    type: val,
+                    title: "Duplicate framework",
+                    text: "A framework has already been imported under this name. Do you want to overwrite it?",
+                    onConfirm: () => {
+                        return this.savePdfImport(data);
+                    },
+                    onCancel: () => {
+                        return this.cancelImport();
                     }
                 };
             }
@@ -1319,60 +1330,15 @@ export default {
                 "docx",
                 formData,
                 function(d) {
-                    me.repo.search("(name:\"" + d.name + "\") AND (@type:Framework)", function() {}, function(frameworks) {
+                    var uuid = new UUID(3, "nil", d.name).format();
+                    var f = new EcFramework();
+                    f.assignId(me.repo.selectedServer, uuid);
+                    me.repo.search("(@id:\"" + f.shortId() + "\") AND (@type:Framework)", function() {}, function(frameworks) {
+                        console.log(frameworks);
                         if (frameworks.length > 0) {
-                            alert("A framework already exists under this name.");
-                            me.cancelImport();
+                            me.showModal('duplicate', d);
                         } else {
-                            var toSave = [];
-                            var f = new EcFramework();
-                            f.setName(d.name);
-                            f.setDescription(d.description);
-                            f.assignId(me.repo.selectedServer, me.file[0].name);
-                            f.competency = [];
-                            f.relation = [];
-                            toSave.push(f);
-                            console.log(d);
-                            console.log(JSON.parse(f.toJson()));
-                            var cs = {};
-                            if (!d.competencies) {
-                                me.showErrors = true;
-                                me.status = "Error importing competencies.";
-                                me.statusType = "error";
-                                me.errors.push("Error importing competencies, no competencies found in file.");
-                                me.processingFile = false;
-                                return;
-                            }
-                            me.detailsDetected.competencies = d.competencies.length;
-                            for (var i = 0; i < d.competencies.length; i++) {
-                                var c = new EcCompetency();
-                                c.assignId(me.repo.selectedServer, d.competencies[i].id);
-                                cs[d.competencies[i].id] = c.shortId();
-                                if (d.competencies[i].name != null) { c.setName(d.competencies[i].name.trim()); }
-                                if (d.competencies[i].name !== d.competencies[i].description && d.competencies[i].description) { c.setDescription(d.competencies[i].description.trim()); }
-                                f.competency.push(c.shortId());
-                                toSave.push(c);
-                            }
-                            for (var i = 0; i < d.relation.length; i++) {
-                                var c = new EcAlignment();
-                                c.assignId(me.repo.selectedServer, d.relation[i].source + "_" + d.relation[i].relationType + "_" + d.relation[i].target);
-                                c.source = cs[d.relation[i].source];
-                                c.target = cs[d.relation[i].target];
-                                c.relationType = d.relation[i].relationType;
-                                if (c.source !== undefined && c.target !== undefined) {
-                                    f.relation.push(c.shortId());
-                                    toSave.push(c);
-                                } else {
-                                    console.log(JSON.parse(c.toJson()));
-                                }
-                            }
-                            me.repo.multiput(toSave, function() {
-                                me.framework = f;
-                                me.status = "";
-                                me.importSuccess();
-                            }, console.error);
-                            me.statusType = "info";
-                            me.status = "Writing Framework to CaSS...";
+                            me.savePdfImport(d);
                         }
                     }, function(error) {
                         console.error(error);
@@ -1380,6 +1346,59 @@ export default {
                 }, console.error);
             me.statusType = "info";
             me.status = "Importing Framework...";
+        },
+        savePdfImport: function(d) {
+            var me = this;
+            var toSave = [];
+            var f = new EcFramework();
+            f.setName(d.name);
+            f.setDescription(d.description);
+            var uuid = new UUID(3, "nil", d.name).format();
+            f.assignId(me.repo.selectedServer, uuid);
+            f.competency = [];
+            f.relation = [];
+            toSave.push(f);
+            console.log(d);
+            console.log(JSON.parse(f.toJson()));
+            var cs = {};
+            if (!d.competencies) {
+                me.showErrors = true;
+                me.status = "Error importing competencies.";
+                me.statusType = "error";
+                me.errors.push("Error importing competencies, no competencies found in file.");
+                me.processingFile = false;
+                return;
+            }
+            me.detailsDetected.competencies = d.competencies.length;
+            for (var i = 0; i < d.competencies.length; i++) {
+                var c = new EcCompetency();
+                c.assignId(me.repo.selectedServer, d.competencies[i].id);
+                cs[d.competencies[i].id] = c.shortId();
+                if (d.competencies[i].name != null) { c.setName(d.competencies[i].name.trim()); }
+                if (d.competencies[i].name !== d.competencies[i].description && d.competencies[i].description) { c.setDescription(d.competencies[i].description.trim()); }
+                f.competency.push(c.shortId());
+                toSave.push(c);
+            }
+            for (var i = 0; i < d.relation.length; i++) {
+                var c = new EcAlignment();
+                c.assignId(me.repo.selectedServer, d.relation[i].source + "_" + d.relation[i].relationType + "_" + d.relation[i].target);
+                c.source = cs[d.relation[i].source];
+                c.target = cs[d.relation[i].target];
+                c.relationType = d.relation[i].relationType;
+                if (c.source !== undefined && c.target !== undefined) {
+                    f.relation.push(c.shortId());
+                    toSave.push(c);
+                } else {
+                    console.log(JSON.parse(c.toJson()));
+                }
+            }
+            me.repo.multiput(toSave, function() {
+                me.framework = f;
+                me.status = "";
+                me.importSuccess();
+            }, console.error);
+            me.statusType = "info";
+            me.status = "Writing Framework to CaSS...";
         },
         importCsv: function() {
             var file = this.file[0];

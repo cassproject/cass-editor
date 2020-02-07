@@ -15,7 +15,7 @@
                     <button
                         class="delete is-pulled-right"
                         aria-label="close"
-                        @click="hide()" />
+                        @click="cancel()" />
                 </p>
             </header>
             <div class="modal-card-body has-text-dark">
@@ -71,7 +71,7 @@
                     style="width: 100%;">
                     <button
                         class="button is-light"
-                        @click="hide()">
+                        @click="cancel()">
                         <span>
                             Cancel
                         </span>
@@ -128,7 +128,8 @@ export default {
             // adding callback function variable
             onConfirm: {},
             options: [],
-            selectedOption: null
+            selectedOption: null,
+            onCancel: {}
         };
     },
     computed: {
@@ -208,6 +209,15 @@ export default {
                 this.hide();
             }
         },
+        cancel() {
+            if (typeof this.onCancel === 'function') {
+                // perform call back and then handle hide
+                this.onCancel();
+                this.hide();
+            } else {
+                this.hide();
+            }
+        },
         show(params) {
             this.type = params.type;
             this.visible = true;
@@ -218,6 +228,7 @@ export default {
             this.options = params.options;
             // callback
             this.onConfirm = params.onConfirm;
+            this.onCancel = params.onCancel;
         },
         setSelectedExportOption: function(e) {
             alert(e.target);
