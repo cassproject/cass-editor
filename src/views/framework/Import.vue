@@ -26,28 +26,37 @@
                             </div>
                             <p
                                 v-if="status === 'Ready' && !file"
-                                class="is-size-5">
+                                class="is-size-6">
                                 Upload documents to transform into CaSS Competency Frameworks.
                             </p>
                             <p
                                 v-if="importDetailsView"
-                                class="is-size-5">
-                                Success! CaSS has detected details
-                                about your competency framework and file.  Please review.
+                                class="is-size-6">
+                                <span class="has-text-success has-text-weight-bold">
+                                    CaSS has detected a framework!
+                                </span>
                                 <br><br>
-                                If these details look incorrect, please review your file, and
-                                start over.
+                                We've gathered details about your competency framework and file.  Please review. Accept and approve to continue, cancel to review your file and re-import.
                             </p>
                             <p
                                 v-if="importPreviewView"
-                                class="is-size-7">
-                                We've successfully imported a competency framework into the CaSS world.
-                                Please review the name and descriptions of the imported competencies.
+                                class="is-size-6">
+                                <span class="has-text-success has-text-weight-bold">
+                                    Framework successfully imported, ready to edit.
+                                </span>
                                 <br><br>
-                                Here you can make edits to the names and descriptions, as well as drag
-                                competencies to a different place in the hierarchy if there are discrepencies.
+                                Please review the name and descriptions of the imported competencies. After making edits, "approve" the changes to view the imported competency details.
+                            </p>
+                            <p
+                                v-if="importLightView"
+                                class="is-size-6">
+                                <span class="has-text-success has-text-weight-bold">
+                                    Your import is complete!
+                                </span>
                                 <br><br>
-                                After making edits, "approve" the changes to view the imported competency details.
+                                To view your framework in the full editor, select "open in editor" at the
+                                bottom of the screen.
+                                <br><br>
                             </p>
                         </div>
                         <div
@@ -447,6 +456,7 @@
                             v-if="framework && importPreviewView"
                             class="section import-preview">
                             <div class="tile is-vertical">
+                                <!-- loading section -->
                                 <Hierarchy
                                     v-if="framework"
                                     :container="framework"
@@ -622,6 +632,7 @@ export default {
     components: {Hierarchy, dragAndDrop, sideBar},
     data: function() {
         return {
+            frameworkBusy: true,
             detailsDetected: {
                 rows: 0,
                 columns: 0,
