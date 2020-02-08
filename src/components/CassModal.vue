@@ -31,9 +31,9 @@
                         <div class="select is-primary is-fullwidth">
                             <select v-model="selectedExportOption">
                                 <option
-                                    value
-                                    selected>
-                                    Select an export format
+                                    selected
+                                    value>
+                                    Select an option
                                 </option>
                                 <option
                                     v-for="(option, index) in exportOptions"
@@ -55,6 +55,12 @@
                         <div class="select is-primary is-fullwidth">
                             <select v-model="selectedOption">
                                 <option
+                                    selected
+                                    disabled
+                                    value="">
+                                    Select an option
+                                </option>
+                                <option
                                     v-for="(option, index) in options"
                                     :value="option"
                                     :key="index">
@@ -65,6 +71,8 @@
                     </div>
                 </div>
                 <input
+                    class="input"
+                    placeholder="Enter a new name"
                     v-if="selectedOption==='Choose another name'"
                     v-model="newName">
                 <div v-if="invalid">
@@ -134,7 +142,7 @@ export default {
             // adding callback function variable
             onConfirm: {},
             options: [],
-            selectedOption: null,
+            selectedOption: "",
             onCancel: {},
             newName: '',
             currentName: '',
