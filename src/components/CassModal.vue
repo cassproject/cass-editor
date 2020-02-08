@@ -211,7 +211,7 @@ export default {
     methods: {
         hide() {
             this.visible = false;
-            this.selectedOption = null;
+            this.selectedOption = "";
             this.newName = '';
             this.currentName = '';
             this.invalid = false;
