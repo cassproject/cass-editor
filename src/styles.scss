@@ -251,6 +251,7 @@ iframe {
                 position: fixed;
                 flex-direction: row;
                 width: 100%;
+                justify-content: space-between;
                 bottom:-56px;
                 height: 48px;
                 background-color: white;
@@ -349,13 +350,17 @@ iframe {
                 visibility: hidden;
                 width: 100%;
                 padding: 6px;
+                display: flex;
+                justify-content: space-between;
                 right: 0;
                 left: 0;
                 bottom: 0;
                 background-color: rgba(grey, 1);
-                .action, .info, .view {
-                    display: block;
-                    width: 100%;
+                .info {
+                    width: 50%;
+                }
+                .action, .view {
+                    width: 25%;
                 }
             }
             // hidden element for clicking
@@ -490,35 +495,23 @@ iframe {
                 height: auto;
             }
         }
-        .import-tab {
-            margin-top: -40px;
-            height: 100px;
-            color: $dark;
-            width: 100%;
-            max-width: 100px;
-            display: flex;
-            flex-direction: column;
-            justify-items: center;
-            justify-content: center;
-            align-items: center;
-            font-size: .7rem;
-            border-radius: 100px;
-            background-color: transparent;
-            
-            i {
-                color: $dark;
-            }
-            div {
-                color: $dark;
-            }
-            
-        }
         .e-Hierarchy {
+            .e-HierarchyNode {
+                .e-thing-ul {
+                    width: calc(100% - 16px);
+                    margin-left: 16px;
+                }
+            }
+            .editing-thing {
+                .property-buttons {
+                    display: none;
+                }
+            }
             .e-Hierarchy-ul {
                 ul.e-Thing-ul, .e-Thing-always-ul {
                     background-color:$light;
                     border-radius: .25rem;
-                    padding: .25rem;                    
+                    padding: .75rem .25rem;                    
                     // non editing state - normal view 
                     li.e-Property {
                         width: 100%;
@@ -532,12 +525,16 @@ iframe {
                             align-items: flex-end;
                             padding-bottom: .5rem;
                             flex-wrap: nowrap;
-                            width: auto;
+                            width: 120px;
                             align-content: flex-end;
+                            .icon.add-new, .edit {
+                                padding-right: 0;
+                            }
                             .button-text {
                                 display: none;
                             }
                             .button {
+                                margin: 0rem .25rem;
                                 width: 32px;
                             }
                         }
@@ -549,7 +546,7 @@ iframe {
                             justify-content: flex-start;
                         }
                         ul.e-Property-ul {
-                            width: calc(100% - 108px);
+                            width: calc(100% - 128px);
                             margin-top: 0rem;
                             margin-right: 0rem;
                             label {
@@ -576,6 +573,8 @@ iframe {
                                 }
                                 .e-Property-text {
                                     width: 100%;
+                                    word-wrap: break-word;
+                                    width: calc(100% - 124px);
                                 }
                                 span {
                                     padding: .25rem;
@@ -618,10 +617,14 @@ iframe {
                             justify-content: space-between;
                             width: auto;
                             .button {
+                                width: auto;
                                 margin: 0rem .5rem;
                             }
                             span.button-text {
                                 display: inline;
+                            }
+                            .icon {
+                                padding-right: .5rem;
                             }
                         }
                         ul.e-Property-ul {
@@ -667,7 +670,8 @@ iframe {
                                     align-items: center;
                                 }
                                 .button {
-                                    height: auto;
+                                    padding: .25rem;
+                                    cursor: pointer;
                                     .button-text {
                                         display: none;
                                     }
@@ -711,7 +715,7 @@ iframe {
                     }
                     
                 
-                ul.e-Thing-ul.e-Thing-always-ul {
+                ul.e-Thing-ul, .e-Thing-view .e-Thing-always-ul {
                     width: 100%;
                 }
                 .e-HierarchyNode {
@@ -749,9 +753,10 @@ iframe {
         .thing {
             .e-Thing.e-Competency {
                 transform: translateX(0);
-                cursor: grab;
+                
                 .clickable-hierarchy {
                     height: 100%;
+                    cursor: grab;
                     position: fixed;
                     top: 0;
                     right: 0;
@@ -765,13 +770,17 @@ iframe {
                     visibility: hidden;
                     width: 100%;
                     padding: 6px;
+                    display:flex;
                     right: 0;
                     left: 0;
                     bottom: 0;
                     background-color: rgba(grey, 1);
-                    .action, .info, .view {
+                    .info {
+                        width: 50%;
+                    }
+                    .action, .view {
                         display: block;
-                        width: 100%;
+                        width: 25%;
                     }
                 }
                 a {
@@ -782,6 +791,29 @@ iframe {
                 }
             }
         }
+    }
+    .import-tab {
+        margin-top: -40px;
+        height: 100px;
+        color: $dark;
+        width: 100%;
+        max-width: 100px;
+        display: flex;
+        flex-direction: column;
+        justify-items: center;
+        justify-content: center;
+        align-items: center;
+        font-size: .7rem;
+        border-radius: 100px;
+        background-color: transparent;
+        
+        i {
+            color: $dark;
+        }
+        div {
+            color: $dark;
+        }
+        
     }
     .menu-list_list-item {
         list-style-type: none;
@@ -853,8 +885,7 @@ iframe {
     .import-light, .import-preview {
         .e-Thing.e-Competency.showHoverItems {
             background-color: rgba($dark, .05);
-            padding-bottom: 44px !important;
-            cursor: pointer;
+            padding-bottom: 36px !important;
             .thing-actions {
                 position: fixed;
                 visibility: visible;
@@ -865,7 +896,7 @@ iframe {
             visibility: hidden;
             width: 100%;
             padding: 6px;
-            height: 44px;
+            height: 36px;
             right: 0;
             left: 0;
             display: flex;
@@ -873,11 +904,14 @@ iframe {
             flex-direction: row;
             bottom: 0;
             background-color: rgba($dark, .3);
-            .info, .view {
-                display: block;
-                width: 30%;
+            .info {
+                width: 50%;
+            }
+            .view {
+                width: 25%;
             }
             .action{ 
+                width: 25%;
                 display: none;
             }
         }
