@@ -539,7 +539,7 @@
                                             </span>
                                         </div>
                                         <div
-                                            @click="importPreviewAccept"
+                                            @click="importPreviewAccept && framework"
                                             class="button is-info is-pulled-right">
                                             <span>
                                                 Approve Import & View
@@ -1179,8 +1179,10 @@ export default {
              * clear all files and framework states
              * this does not completely work
              */
+            this.importPreviewView = false;
             this.importDetailsView = false;
             this.importLightView = false;
+            this.importPreviewAccept = false;
             this.errors = [];
             this.showErrors = false;
             this.framework = null;
@@ -1777,6 +1779,7 @@ export default {
                     }
                 }
             }
+            this.cancelImport();
             this.status = "Import Canceled.";
         },
         parseText: function() {
