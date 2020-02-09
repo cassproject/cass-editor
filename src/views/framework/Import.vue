@@ -539,7 +539,7 @@
                                             </span>
                                         </div>
                                         <div
-                                            @click="importPreviewAccept && framework"
+                                            @click="importPreviewAccept"
                                             class="button is-info is-pulled-right">
                                             <span>
                                                 Approve Import & View
