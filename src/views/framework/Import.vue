@@ -156,6 +156,7 @@
                                         <drag-and-drop
                                             class="column is-12"
                                             v-if="!processingFile && !showErrors"
+                                            @clearFiles="onClearFiles"
                                             @dragAndDropEmitFiles="onUploadFiles" />
                                         <div
                                             v-else-if="processingFile && !showErrors"
@@ -1258,6 +1259,9 @@ export default {
         onUploadFiles: function(value) {
             this.file = value;
             this.fileChange(this.file);
+        },
+        onClearFiles: function() {
+            this.file = null;
         },
         openFramework: function() {
             if (this.queryParams.concepts === "true") {

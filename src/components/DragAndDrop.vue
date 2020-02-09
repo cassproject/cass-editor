@@ -130,6 +130,7 @@ export default {
             this.files = this.files.filter(f => {
                 return f !== file;
             });
+            this.$emit('clearFiles');
         },
         upload() {
             this.$emit('dragAndDropEmitFiles', this.files);
