@@ -30,6 +30,7 @@
                         <li
                             class="is-size-7"
                             v-for="file in files"
+                            :key="file"
                             style="display: inline; vertical-align: middle;">
                             <span>
                                 {{ file.name }} ({{ file.size | kb }} kb)
@@ -112,14 +113,18 @@ export default {
             }
         },
         fileChange(e) {
-            if (e) {
-                this.files = e.target.files || e.dataTransfer.files;
+            console.log(e);
+            let selectedFiles = e.target.files;
+            if (selectedFiles) {
+                ([...selectedFiles]).forEach(f => {
+                    this.files.push(f);
+                });
             } else {
                 this.files = [];
             }
         },
         addFile(e) {
-            let droppedFiles = e.dataTransfer.files;
+            let droppedFiles = e.dataTransfer.files || e.target.files;
             if (!droppedFiles) return;
             ([...droppedFiles]).forEach(f => {
                 this.files.push(f);
