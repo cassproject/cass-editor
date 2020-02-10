@@ -30,7 +30,7 @@
                                 Upload documents to transform into CaSS Competency Frameworks.
                             </p>
                             <p
-                                v-if="importDetailsView"
+                                v-if="showImportDetailsView"
                                 class="is-size-6">
                                 <span class="has-text-success has-text-weight-bold">
                                     CaSS has detected a framework!
@@ -39,7 +39,7 @@
                                 We've gathered details about your competency framework and file.  Please review. Accept and approve to continue, cancel to review your file and re-import.
                             </p>
                             <p
-                                v-if="importPreviewView"
+                                v-if="showImportPreviewView"
                                 class="is-size-6">
                                 <span class="has-text-success has-text-weight-bold">
                                     Framework successfully imported, ready to edit.
@@ -48,7 +48,7 @@
                                 Please review the name and descriptions of the imported competencies. After making edits, "approve" the changes to view the imported competency details.
                             </p>
                             <p
-                                v-if="importLightView"
+                                v-if="showImportLightView"
                                 class="is-size-6">
                                 <span class="has-text-success has-text-weight-bold">
                                     Your import is complete!
@@ -60,7 +60,7 @@
                             </p>
                         </div>
                         <div
-                            v-if="framework && importPreviewView"
+                            v-if="framework && showImportPreviewView"
                             class="section">
                             <div class="columns is-mobile">
                                 <div class="column is-6 has-text-centered">
@@ -192,7 +192,7 @@
                                                 <div class="columns">
                                                     <div class="column is-4">
                                                         <div
-                                                            @click="cancelImport"
+                                                            @click="cancelImport()"
                                                             class="button is-primary">
                                                             Start over
                                                         </div>
@@ -406,7 +406,7 @@
                         </div>
                         <div
                             class="section import-details"
-                            v-if="framework && importDetailsView">
+                            v-if="framework && showImportDetailsView">
                             <!-- interstitial screen will go here -->
                             <div class="import-details__section">
                                 <h3 class="subtitle is-size-3 has-text-weight-normal">
@@ -454,7 +454,7 @@
                             </div>
                         </div>
                         <div
-                            v-if="framework && importPreviewView"
+                            v-if="framework && showImportPreviewView"
                             class="section import-preview">
                             <div class="tile is-vertical">
                                 <!-- loading section -->
@@ -476,7 +476,7 @@
                             </div>
                         </div>
                         <div
-                            v-else-if="framework && importLightView"
+                            v-else-if="framework && showImportLightView"
                             class="section import-light">
                             <div class="tile is-vertical">
                                 <Hierarchy
@@ -501,7 +501,7 @@
                                 <div class="column is-12">
                                     <!-- import details options -->
                                     <div
-                                        v-if="importDetailsView"
+                                        v-if="showImportDetailsView"
                                         class="buttons is-right">
                                         <div
                                             @click="cancelImport"
@@ -529,7 +529,7 @@
                                     </div>
                                     <!-- import preview options -->
                                     <div
-                                        v-else-if="importPreviewView"
+                                        v-else-if="showImportPreviewView"
                                         class="buttons is-right">
                                         <div
                                             @click="cancelImport"
@@ -540,7 +540,7 @@
                                             </span>
                                         </div>
                                         <div
-                                            @click="importPreviewAccept"
+                                            @click="importPreviewAccept()"
                                             class="button is-info is-pulled-right">
                                             <span>
                                                 Approve Import & View
@@ -555,7 +555,7 @@
                                     </div>
                                 </div>
                                 <div
-                                    v-if="importLightView"
+                                    v-if="showImportLightView"
                                     class="column is-6">
                                     <div class="buttons is-left">
                                         <div
@@ -581,7 +581,7 @@
                                     </div>
                                 </div>
                                 <div
-                                    v-if="importLightView"
+                                    v-if="showImportLightView"
                                     class="column is-6">
                                     <div
                                         class="buttons is-right">
@@ -644,9 +644,9 @@ export default {
             },
             errors: [],
             showErrors: false,
-            importPreviewView: false,
-            importLightView: false,
-            importDetailsView: false,
+            showImportPreviewView: false,
+            showImportLightView: false,
+            showImportDetailsView: false,
             processingFile: false,
             processingSuccess: false,
             showCassCsv: false,
@@ -701,7 +701,7 @@ export default {
          */
         importProfile: function() {
             let profile;
-            if (this.importPreviewView === true) {
+            if (this.showImportPreviewView === true) {
                 profile = this.previewProfile;
             } else {
                 profile = this.postImportProfile;
@@ -1210,9 +1210,9 @@ export default {
         /* When an import is "successful" */
         importSuccess: function() {
             this.status = "Competency detected";
-            this.importDetailsView = true;
-            this.importPreviewView = false;
-            this.importLightView = false;
+            this.showImportDetailsView = true;
+            this.showImportPreviewView = false;
+            this.showImportLightView = false;
         },
         /*
          * from the interstital screen the user accepts
@@ -1220,8 +1220,8 @@ export default {
          */
         importDetailsAccept: function() {
             this.status = "Edit and approve";
-            this.importDetailsView = false;
-            this.importPreviewView = true;
+            this.showImportDetailsView = false;
+            this.showImportPreviewView = true;
         },
         /*
          * after editing preview the user can accept the preview
@@ -1230,8 +1230,8 @@ export default {
          */
         importPreviewAccept: function() {
             this.status = "Import complete!";
-            this.importLightView = true;
-            this.importPreviewView = false;
+            this.showImportLightView = true;
+            this.showImportPreviewView = false;
             /*
              * TO DO: Make sure all competency properties are in a non-editable state
              * or ensure state does not crossover from here
@@ -1244,10 +1244,9 @@ export default {
              * clear all files and framework states
              * this does not completely work
              */
-            this.importPreviewView = false;
-            this.importDetailsView = false;
-            this.importLightView = false;
-            this.importPreviewAccept = false;
+            this.showImportPreviewView = false;
+            this.showImportDetailsView = false;
+            this.showImportLightView = false;
             this.errors = [];
             this.showErrors = false;
             this.framework = null;
