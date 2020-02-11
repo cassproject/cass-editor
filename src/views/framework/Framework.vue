@@ -6,7 +6,9 @@
                     :obj="framework"
                     :repo="repo"
                     :parentNotEditable="queryParams.view==='true'"
-                    :profile="frameworkProfile" />
+                    :profile="frameworkProfile"
+                    :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
+                    iframeText="Attach subitems from other sources to the selected item." />
                 <span class="actions">
                     <span
                         class="tag is-info has-text-white"
@@ -71,7 +73,9 @@
                     :highlightList="highlightCompetency"
                     :selectMode="selectButtonText != null"
                     :selectAll="selectAll"
-                    :profile="competencyProfile" />
+                    :profile="competencyProfile"
+                    :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
+                    iframeText="Attach subitems from other sources to the selected item." />
             </div>
         </div>
     </div>
@@ -79,7 +83,6 @@
 <script>
 import Thing from '@/lode/components/lode/Thing.vue';
 import Hierarchy from '@/lode/components/lode/Hierarchy.vue';
-import saveAs from 'file-saver';
 import common from '@/mixins/common.js';
 import exports from '@/mixins/exports.js';
 export default {
