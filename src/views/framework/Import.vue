@@ -6,6 +6,7 @@
                 <side-bar
                     type="import"
                     :method="method"
+                    :queryParams="queryParams"
                     @updateUrl="updateUrl" />
                 <!--- end side bar -->
             </div>
@@ -16,7 +17,14 @@
                         <div class="section">
                             <div class="columns is-mobile">
                                 <div class="column is-narrow">
-                                    <h1 class="title is-size-2">
+                                    <h1
+                                        class="title is-size-2"
+                                        v-if="queryParams.concepts === 'true'">
+                                        Import a concept scheme
+                                    </h1>
+                                    <h1
+                                        class="title is-size-2"
+                                        v-else>
                                         Import a framework
                                     </h1>
                                 </div>
@@ -25,7 +33,12 @@
                                 </div>
                             </div>
                             <p
-                                v-if="status === 'Ready' && !file"
+                                v-if="status === 'Ready' && !file && queryParams.concepts === 'true'"
+                                class="is-size-6">
+                                Upload documents to transform into CaSS Concept Schemes.
+                            </p>
+                            <p
+                                v-else-if="status === 'Ready' && !file"
                                 class="is-size-6">
                                 Upload documents to transform into CaSS Competency Frameworks.
                             </p>
@@ -105,7 +118,9 @@
                                                 </a>
                                             </div>
                                         </div>
-                                        <div class="column">
+                                        <div
+                                            class="column"
+                                            v-if="queryParams.concepts !== 'true'">
                                             <div
                                                 class="import-tab disabled"
                                                 :class="{ 'is-active-tab': method === 'server'}">
@@ -119,7 +134,9 @@
                                                 </a>
                                             </div>
                                         </div>
-                                        <div class="column">
+                                        <div
+                                            class="column"
+                                            v-if="queryParams.concepts !== 'true'">
                                             <div
                                                 class="import-tab disabled"
                                                 :class="{ 'is-active-tab': method === 'text'}">
@@ -133,7 +150,9 @@
                                                 </a>
                                             </div>
                                         </div>
-                                        <div class="column">
+                                        <div
+                                            class="column"
+                                            v-if="queryParams.concepts !== 'true'">
                                             <div
                                                 class="import-tab disabled"
                                                 :class="{ 'is-active-tab': method === 'url'}">
@@ -161,7 +180,9 @@
                                         <div
                                             v-else-if="processingFile && !showErrors"
                                             class="column is-12">
-                                            <span class="icon is-large">
+                                            <span
+                                                class="icon is-large"
+                                                v-if="spin">
                                                 <i class="fa fa-spinner fa-pulse fa-2x" />
                                             </span>
                                             <div class="section">
@@ -203,7 +224,7 @@
                                     </div>
                                     <!-- appears to be part of an interstitial screen -->
                                     <div
-                                        class="section is-hidden">
+                                        class="section">
                                         <div v-if="importType=='csv'">
                                             <div>
                                                 <label>Step 1: Name the framework.</label>
@@ -320,9 +341,11 @@
                                                 <input v-model="importFrameworkDescription">
                                             </div>
                                         </div>
-                                        <!--<button @click="importFromFile">
+                                        <button
+                                            v-if="file && importType!=='pdf'"
+                                            @click="importFromFile">
                                             Import
-                                        </button>-->
+                                        </button>
                                     </div>
                                     <!-- server input -->
                                     <div
@@ -616,9 +639,6 @@
 
 <script>
 import Hierarchy from '@/lode/components/lode/Hierarchy.vue';
-import csvConceptExample from 'file-loader!../../../files/Concept Scheme Example.csv';
-import csvConceptTemplate from 'file-loader!../../../files/Concept Scheme Template.csv';
-import ctdlAsnJsonldConcepts from 'file-loader!../../../files/ConnectingCredentialsLevels.jsonld';
 import common from '@/mixins/common.js';
 import dragAndDrop from './../../components/DragAndDrop.vue';
 import sideBar from './../../components/SideBar.vue';
@@ -659,9 +679,6 @@ export default {
             repo: window.repo,
             status: "Ready",
             statusType: 'info',
-            csvConceptExampleFile: csvConceptExample,
-            csvConceptTemplateFile: csvConceptTemplate,
-            ctdlAsnJsonldConceptsFile: ctdlAsnJsonldConcepts,
             competencyCount: 0,
             importType: null,
             importFrameworkName: null,
@@ -690,7 +707,8 @@ export default {
                 {name: "Credential Engine ASN (CSV)", value: "ctdlasnCsv"},
                 {name: "Table (CSV)", value: "csv"},
                 {name: "IMS Global CASE (JSON)", value: "case"}
-            ]
+            ],
+            spin: true
         };
     },
     computed: {
@@ -1209,10 +1227,15 @@ export default {
         },
         /* When an import is "successful" */
         importSuccess: function() {
-            this.status = "Competency detected";
-            this.showImportDetailsView = true;
-            this.showImportPreviewView = false;
-            this.showImportLightView = false;
+            if (this.queryParams.concepts !== "true") {
+                this.status = "Competency detected";
+                this.showImportDetailsView = true;
+                this.showImportPreviewView = false;
+                this.showImportLightView = false;
+            } else {
+                this.status = "Concept Scheme Imported.";
+                this.spin = false;
+            }
         },
         /*
          * from the interstital screen the user accepts
@@ -1254,6 +1277,7 @@ export default {
             this.processingFile = false;
             this.processingSuccess = false;
             this.status = "Ready";
+            this.spin = true;
         },
         onUploadFiles: function(value) {
             this.file = value;
@@ -1272,60 +1296,83 @@ export default {
             }
         },
         fileChange: function(e) {
+            console.log(e);
             this.processingFile = true;
             this.processingSuccess = false;
             this.analyzeImportFile();
-            this.importType = null;
             this.firstImport = true;
+            this.spin = true;
         },
         analyzeImportFile: function() {
             var me = this;
             var file = this.file[0];
             if (file.name.endsWith(".csv")) {
-                this.unsupportedFile('csv');
-            } else if (file.name.endsWith(".csv")) {
-                CTDLASNCSVImport.analyzeFile(file, function(frameworkCount, competencyCount) {
-                    me.importType = "ctdlasncsv";
-                    me.status = "Import " + frameworkCount + " frameworks and " + competencyCount + " competencies.";
-                }, function(errorMsg) {
-                    CSVImport.analyzeFile(file, function(data) {
-                        me.importType = "csv";
-                        me.importFrameworkName = file.name.replace(".csv", "");
-                        for (var i = 0; i < data[0].length; i++) {
-                            let column = {};
-                            column.name = data[0][i];
-                            column.index = i;
-                            me.csvColumns.push(column);
-                            if (column.name.toLowerCase().indexOf("name") !== -1) {
-                                me.importCsvColumnName = column;
-                            }
-                            if (column.name.toLowerCase().indexOf("description") !== -1) {
-                                me.importCsvColumnDescription = column;
-                            }
-                            if (column.name.toLowerCase().indexOf("scope") !== -1) {
-                                me.importCsvColumnScope = column;
-                            }
-                            if (column.name.toLowerCase().indexOf("id") !== -1) {
-                                me.importCsvColumnId = column;
-                            }
-                        }
-                        me.processingFile = false;
-                        me.status = (me.competencyCount = (data.length - 1)) + " Competencies Detected.";
-                    }, function(error) {
+                if (this.queryParams.concepts === 'true') {
+                    CTDLASNCSVConceptImport.analyzeFile(file, function(frameworkCount, competencyCount) {
+                        me.importType = "conceptcsv";
+                        me.status = "Import " + frameworkCount + " concept schemes and " + competencyCount + " concepts.";
+                        me.spin = false;
+                    }, function(errorMsg) {
                         me.statusType = "error";
-                        me.status = error;
+                        me.status = errorMsg;
                     });
-                });
+                } else {
+                    CTDLASNCSVImport.analyzeFile(file, function(frameworkCount, competencyCount) {
+                        me.importType = "ctdlasncsv";
+                        me.status = "Import " + frameworkCount + " frameworks and " + competencyCount + " competencies.";
+                        me.spin = false;
+                    }, function(errorMsg) {
+                        CSVImport.analyzeFile(file, function(data) {
+                            me.importType = "csv";
+                            me.importFrameworkName = file.name.replace(".csv", "");
+                            for (var i = 0; i < data[0].length; i++) {
+                                let column = {};
+                                column.name = data[0][i];
+                                column.index = i;
+                                me.csvColumns.push(column);
+                                if (column.name.toLowerCase().indexOf("name") !== -1) {
+                                    me.importCsvColumnName = column;
+                                }
+                                if (column.name.toLowerCase().indexOf("description") !== -1) {
+                                    me.importCsvColumnDescription = column;
+                                }
+                                if (column.name.toLowerCase().indexOf("scope") !== -1) {
+                                    me.importCsvColumnScope = column;
+                                }
+                                if (column.name.toLowerCase().indexOf("id") !== -1) {
+                                    me.importCsvColumnId = column;
+                                }
+                            }
+                            me.processingFile = false;
+                            me.status = (me.competencyCount = (data.length - 1)) + " Competencies Detected.";
+                        }, function(error) {
+                            me.statusType = "error";
+                            me.status = error;
+                        });
+                    });
+                }
             } else if (file.name.endsWith(".json") || file.name.endsWith(".jsonld")) {
                 // Try JSON-LD first, checks for @graph
                 this.analyzeJsonLdFramework(file, function(data, ctdlasn) {
                     var invalid = false;
                     if (ctdlasn === "ctdlasnConcept") {
-                        me.status = "Concept Schemes must be imported in the concept scheme editor.";
-                        invalid = true;
+                        if (me.queryParams.concepts === 'true') {
+                            me.status = "1 Concept Scheme Detected.";
+                            me.importType = "ctdlasnjsonld";
+                            me.spin = false;
+                        } else {
+                            me.status = "Concept Schemes must be imported in the concept scheme editor.";
+                            invalid = true;
+                        }
                     } else {
-                        me.importType = "ctdlasnjsonld";
-                        me.status = "1 Framework and " + (EcObject.keys(data).length - 1) + " Competencies Detected.";
+                        if (me.queryParams.concepts !== 'true') {
+                            me.importType = "ctdlasnjsonld";
+                            me.status = "1 Framework and " + (EcObject.keys(data).length - 1) + " Competencies Detected.";
+                            me.spin = false;
+                        } else {
+                            me.status = "Frameworks must be imported in the competency editor.";
+                            invalid = true;
+                        }
                     }
                     me.competencyCount = EcObject.keys(data).length;
                     if (!invalid && (ctdlasn === "ctdlasn" || ctdlasn === "ctdlasnConcept")) {
@@ -1340,6 +1387,7 @@ export default {
                         me.importType = "asn";
                         me.status = "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.";
                         me.competencyCount = EcObject.keys(data).length;
+                        me.spin = false;
                     }, function(error) {
                         me.status = error;
                     });
@@ -1350,6 +1398,7 @@ export default {
                     me.importFrameworkName = file.name.replace(".xml", "");
                     me.status = "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.";
                     me.competencyCount = EcObject.keys(data).length;
+                    me.spin = false;
                 }, function(error) {
                     me.statusType = "error";
                     me.status = error;
@@ -1698,12 +1747,14 @@ export default {
                     var data2 = data.substring(data.indexOf("ctdlasn") + 7);
                     data = data1 + "data" + data2;
                 }
-                me.framework = EcFramework.getBlocking(data);
-                if (me.framework == null) {
-                    me.framework = EcConceptScheme.getBlocking(data);
+                var framework;
+                if (me.queryParams.concepts === 'true') {
+                    framework = EcConceptScheme.getBlocking(data);
+                } else {
+                    framework = EcFramework.getBlocking(data);
                 }
                 me.importSuccess();
-                me.spitEvent("importFinished", me.framework.shortId(), "importPage");
+                me.spitEvent("importFinished", framework.shortId(), "importPage");
                 if (me.file != null) {
                     me.file.splice(0, 1);
                 }
@@ -1717,27 +1768,60 @@ export default {
                 console.log(failure.statusText);
             });
             me.statusType = "info";
-            me.status = "Importing Framework";
+            if (me.queryParams.concepts === 'true') {
+                me.status = "Importing Concept Scheme";
+            } else {
+                me.status = "Importing Framework";
+            }
+        },
+        importCtdlAsnConceptCsv: function() {
+            var me = this;
+            var ceo = null;
+            if (EcIdentityManager.ids.length > 0) {
+                ceo = EcIdentityManager.ids[0];
+            }
+            CTDLASNCSVConceptImport.importFrameworksAndCompetencies(me.repo, me.file[0], function(frameworks, competencies) {
+                if (me.queryParams.ceasnDataFields === 'true') {
+                    for (var i = 0; i < frameworks.length; i++) {
+                        if (frameworks[i]["dcterms:language"] == null || frameworks[i]["dcterms:language"] === undefined) {
+                            me.setDefaultLanguage();
+                            frameworks[i]["dcterms:language"] = defaultLanguage;
+                        }
+                    }
+                }
+                var all = frameworks.concat(competencies);
+                me.status = "Saving " + all.length + " objects.";
+                me.repo.multiput(all, function() {
+                    for (var i = 0; i < frameworks.length; i++) {
+                        me.spitEvent("importFinished", frameworks[i].shortId(), "importPage");
+                        me.importSuccess();
+                    }
+                }, function(failure) {
+                    me.statusType = "error";
+                    me.status = "Failed to save: " + failure;
+                    console.error(failure);
+                });
+            }, function(failure) {
+                me.statusType = "error";
+                console.error(failure);
+            }, ceo);
         },
         importFromFile: function() {
+            this.spin = true;
             if (this.importType === "csv") {
-                // temporarily fail on csv
-                this.unsupportedFile('csv');
-                // this.importCsv();
+                this.importCsv();
             } else if (this.importType === "ctdlasncsv") {
-                this.unsupportedFile('ctdlasncsv');
-                // this.importCtdlAsnCsv();
+                this.importCtdlAsnCsv();
+            } else if (this.importType === "conceptcsv") {
+                this.importCtdlAsnConceptCsv();
             } else if (this.importType === "ctdlasnjsonld") {
-                this.unsupportedFile('ctdlasnjsonld');
-                // this.importJsonLd();
+                this.importJsonLd();
             } else if (this.importType === "asn") {
-                this.unsupportedFile('asn');
-                // this.importAsn();
+                this.importAsn();
             } else if (this.importType === "pdf") {
                 this.importPdf();
             } else if (this.importType === "medbiq") {
-                this.unsupportedFile('medbiq');
-                // this.importMedbiq();
+                this.importMedbiq();
             }
         },
         connectToServer: function() {
