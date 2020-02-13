@@ -277,11 +277,11 @@ export default {
         path += this.queryParams.selectExport ? "&selectExport=" + this.queryParams.selectExport : "";
         path += this.queryParams.user ? "&user=" + this.queryParams.user : "";
         this.$store.commit('commonPathIframe', path);
-        path = this.queryParams.editorRoot ? this.queryParams.editorRoot : "";
+        path = this.queryParams.editorRoot ? this.queryParams.editorRoot : "/";
         path += "cass-editor/?select=Align with...&view=true&back=true";
         path += this.$store.state.editor.commonPathIframe;
         this.$store.commit('iframeCompetencyPathInterframework', path);
-        path = this.queryParams.editorRoot ? this.queryParams.editorRoot : "";
+        path = this.queryParams.editorRoot ? this.queryParams.editorRoot : "/";
         path += "cass-editor/?select=Add&concepts=true";
         path += this.queryParams.conceptShow ? "&conceptShow=" + this.queryParams.conceptShow : "";
         path += this.queryParams.editIframe !== "true" ? "&view=true" : "";
