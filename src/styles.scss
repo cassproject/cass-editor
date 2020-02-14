@@ -298,7 +298,9 @@ iframe {
         a {
             display:none;
         }
+        
     }
+    // top level items outside of Hierarchy
     .thing {
         .e-Thing.e-Framework {
             transform: translateX(0);
@@ -313,6 +315,7 @@ iframe {
                 display:none;
             }
             .thing-actions {
+                transition: opacity 0.2s 0s ease;
                 opacity: 0;
                 display: flex;
                 position: fixed;
@@ -392,27 +395,27 @@ iframe {
             
         }
     }
-    .e-HierarchyNode {
-        ul.e-HierarchyNode-ul {
-            margin-top: 0rem;
-            padding-left:.5rem;
-            padding-top: .25rem
-        }
-    }
     // list of competencies 
     .e-Hierarchy {
         .highlighted{
             background-color:yellow;
         } 
-        .e-HierarchyNode {
+        ul.e-HierarchyNode-ul {
+            margin-top: 0rem;
+            padding-left:.5rem;
+            padding-top: .25rem
         }
         .e-Competency {
             transform: translateX(0);
+            padding-bottom: 0;
+            border-left: solid 1px rgba($dark, .5);
+            transition: padding 0.2s 0s ease;
             a {
                 display:none;
             }
             cursor: pointer;
             .thing-actions {
+                transition: opacity 0.2s 0s ease;
                 position: fixed;
                 opacity: 0;
                 visibility: hidden;
@@ -512,18 +515,16 @@ iframe {
             }
         }
         .e-Competency.showHoverItems {
+            padding-bottom: 24px;
+            transition: padding 0.2s 1s ease;
             background-color: rgba($dark, .05);
-            padding-bottom: 44px !important;
+            padding-bottom: 36px !important;
             .thing-actions {
+                transition: opacity 0.2s 1s ease;
                 visibility: visible !important;
                 background: rgba($white, .2);
-                height: 44px;
-                display: flex;
-                flex-direction: row;
-                justify-content: flex-end;
-                .action, .info, .view {
-                    width: 33%;
-                }
+                height: 36px;
+                opacity: 1;
             }
         }
        
