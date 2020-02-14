@@ -12,66 +12,68 @@
             </div>
             <!--- main body section -->
             <div class="column has-background-white is-scrollable">
-                <section class="section page-import-body">
-                    <div class="container">
-                        <div class="section">
-                            <div class="columns is-mobile">
-                                <div class="column is-narrow">
-                                    <h1
-                                        class="title is-size-2"
-                                        v-if="queryParams.concepts === 'true'">
-                                        Import a concept scheme
-                                    </h1>
-                                    <h1
-                                        class="title is-size-2"
-                                        v-else>
-                                        Import a framework
-                                    </h1>
-                                </div>
-                                <div class="column">
-                                    <p class="is-primary is-size-7" />
-                                </div>
+                <section class=" page-import-body">
+                    <!-- top section import impormation -->
+                    <div
+                        class="section has-background-white"
+                        id="import-top-section">
+                        <div class="columns is-mobile">
+                            <div class="column is-narrow">
+                                <h1
+                                    class="title is-size-2"
+                                    v-if="queryParams.concepts === 'true'">
+                                    Import a concept scheme
+                                </h1>
+                                <h1
+                                    class="title is-size-2"
+                                    v-else>
+                                    Import a framework
+                                </h1>
                             </div>
-                            <p
-                                v-if="status === 'Ready' && !file && queryParams.concepts === 'true'"
-                                class="is-size-6">
-                                Upload documents to transform into CaSS Concept Schemes.
-                            </p>
-                            <p
-                                v-else-if="status === 'Ready' && !file"
-                                class="is-size-6">
-                                Upload documents to transform into CaSS Competency Frameworks.
-                            </p>
-                            <p
-                                v-if="showImportDetailsView"
-                                class="is-size-6">
-                                <span class="has-text-success has-text-weight-bold">
-                                    CaSS has detected a framework!
-                                </span>
-                                <br><br>
-                                We've gathered details about your competency framework and file.  Please review. Accept and approve to continue, cancel to review your file and re-import.
-                            </p>
-                            <p
-                                v-if="showImportPreviewView"
-                                class="is-size-6">
-                                <span class="has-text-success has-text-weight-bold">
-                                    Framework successfully imported, ready to edit.
-                                </span>
-                                <br><br>
-                                Please review the name and descriptions of the imported competencies. After making edits, "approve" the changes to view the imported competency details.
-                            </p>
-                            <p
-                                v-if="showImportLightView"
-                                class="is-size-6">
-                                <span class="has-text-success has-text-weight-bold">
-                                    Your import is complete!
-                                </span>
-                                <br><br>
-                                To view your framework in the full editor, select "open in editor" at the
-                                bottom of the screen.
-                                <br><br>
-                            </p>
+                            <div class="column">
+                                <p class="is-primary is-size-7" />
+                            </div>
                         </div>
+                        <p
+                            v-if="status === 'Ready' && !file && queryParams.concepts === 'true'"
+                            class="is-size-6">
+                            Upload documents to transform into CaSS Concept Schemes.
+                        </p>
+                        <p
+                            v-else-if="status === 'Ready' && !file"
+                            class="is-size-6">
+                            Upload documents to transform into CaSS Competency Frameworks.
+                        </p>
+                        <p
+                            v-if="showImportDetailsView"
+                            class="is-size-6">
+                            <span class="has-text-success has-text-weight-bold">
+                                CaSS has detected a framework!
+                            </span>
+                            <br><br>
+                            We've gathered details about your competency framework and file.  Please review. Accept and approve to continue, cancel to review your file and re-import.
+                        </p>
+                        <p
+                            v-if="showImportPreviewView"
+                            class="is-size-6">
+                            <span class="has-text-success has-text-weight-bold">
+                                Framework successfully imported, ready to edit.
+                            </span>
+                            <br><br>
+                            Please review the name and descriptions of the imported competencies. After making edits, "approve" the changes to view the imported competency details.
+                        </p>
+                        <p
+                            v-if="showImportLightView"
+                            class="is-size-6">
+                            <span class="has-text-success has-text-weight-bold">
+                                Your import is complete!
+                            </span>
+                            <br><br>
+                            To view your framework in the full editor, select "open in editor" at the
+                            bottom of the screen.
+                            <br><br>
+                        </p>
+                        <!-- import details after selecting file -->
                         <div
                             v-if="framework && showImportPreviewView"
                             class="section">
@@ -96,6 +98,10 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div
+                        id="import-bottom-section"
+                        class="section">
                         <!-- types of import for tabs -->
                         <div
                             v-if="!framework"
@@ -427,6 +433,7 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- import details -->
                         <div
                             class="section import-details"
                             v-if="framework && showImportDetailsView">
@@ -476,13 +483,35 @@
                                 </ul>
                             </div>
                         </div>
+                        <!-- import preview -->
                         <div
                             v-if="framework && showImportPreviewView"
-                            class="section import-preview">
+                            class="import-preview">
                             <div class="tile is-vertical">
-                                <!-- loading section -->
+                                <!-- loading section -- dummy content to show while loading dome elemnts -->
+                                <div
+                                    class="section"
+                                    v-if="!hierarchyIsdoneLoading">
+                                    <ul class="processing-list">
+                                        <li />
+                                        <li />
+                                        <ul>
+                                            <li />
+                                            <li />
+                                            <li />
+                                        </ul>
+                                        <li />
+                                        <li />
+                                        <ul>
+                                            <li />
+                                            <li />
+                                        </ul>
+                                    </ul>
+                                </div>
                                 <Hierarchy
+                                    :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                     v-if="framework"
+                                    @doneLoadingNodes="handleDoneLoading"
                                     :container="framework"
                                     containerType="Framework"
                                     containerNodeProperty="competency"
@@ -498,9 +527,10 @@
                                     :repo="repo" />
                             </div>
                         </div>
+                        <!-- import light view -->
                         <div
                             v-else-if="framework && showImportLightView"
-                            class="section import-light">
+                            class="import-light">
                             <div class="tile is-vertical">
                                 <Hierarchy
                                     v-if="framework"
@@ -519,113 +549,113 @@
                                     :repo="repo" />
                             </div>
                         </div>
-                        <div class="section">
-                            <div class="columns is-gapless is-marginless is-mobile is-multiline">
-                                <div class="column is-12">
-                                    <!-- import details options -->
+                    </div>
+                    <div class="section">
+                        <div class="columns is-gapless is-marginless is-mobile is-multiline">
+                            <div class="column is-12">
+                                <!-- import details options -->
+                                <div
+                                    v-if="showImportDetailsView"
+                                    class="buttons is-right">
                                     <div
-                                        v-if="showImportDetailsView"
-                                        class="buttons is-right">
-                                        <div
-                                            @click="cancelImport"
-                                            class="button is-light is-pulled-right is-light">
-                                            <span>
-                                                Cancel
-                                            </span>
-                                            <span class="icon">
-                                                <i class="fa fa-times-circle" />
-                                            </span>
-                                        </div>
-                                        <div
-                                            @click="importDetailsAccept"
-                                            class="button is-info is-pulled-right">
-                                            <span>
-                                                Accept Details & Edit
-                                            </span>
-                                            <span class="icon is-smalls">
-                                                <span class="fa-stack">
-                                                    <i class="fas fa-circle fa-stack-1x" />
-                                                    <i class="fas has-text-info fa-caret-right fa-stack-1x caret-icon-overlay-fix" />
-                                                </span>
-                                            </span>
-                                        </div>
+                                        @click="cancelImport"
+                                        class="button is-light is-pulled-right is-light">
+                                        <span>
+                                            Cancel
+                                        </span>
+                                        <span class="icon">
+                                            <i class="fa fa-times-circle" />
+                                        </span>
                                     </div>
-                                    <!-- import preview options -->
                                     <div
-                                        v-else-if="showImportPreviewView"
-                                        class="buttons is-right">
-                                        <div
-                                            @click="cancelImport"
-                                            class="button is-light is-pulled-right">
-                                            <span>cancel</span>
-                                            <span class="icon">
-                                                <i class="fa fa-times-circle" />
+                                        @click="importDetailsAccept"
+                                        class="button is-info is-pulled-right">
+                                        <span>
+                                            Accept Details & Edit
+                                        </span>
+                                        <span class="icon is-smalls">
+                                            <span class="fa-stack">
+                                                <i class="fas fa-circle fa-stack-1x" />
+                                                <i class="fas has-text-info fa-caret-right fa-stack-1x caret-icon-overlay-fix" />
                                             </span>
-                                        </div>
-                                        <div
-                                            @click="importPreviewAccept()"
-                                            class="button is-info is-pulled-right">
-                                            <span>
-                                                Approve Import & View
-                                            </span>
-                                            <span class="icon">
-                                                <span class="fa-stack">
-                                                    <i class="fas fa-circle fa-stack-1x" />
-                                                    <i class="fas has-text-info fa-caret-right fa-stack-1x caret-icon-overlay-fix" />
-                                                </span>
-                                            </span>
-                                        </div>
+                                        </span>
                                     </div>
                                 </div>
+                                <!-- import preview options -->
                                 <div
-                                    v-if="showImportLightView"
-                                    class="column is-6">
-                                    <div class="buttons is-left">
-                                        <div
-                                            class="button is-light is-pulled-right"
-                                            @click="showModal('export')">
-                                            <span>
-                                                Export
+                                    v-else-if="showImportPreviewView"
+                                    class="buttons is-right">
+                                    <div
+                                        @click="cancelImport"
+                                        class="button is-light is-pulled-right">
+                                        <span>cancel</span>
+                                        <span class="icon">
+                                            <i class="fa fa-times-circle" />
+                                        </span>
+                                    </div>
+                                    <div
+                                        @click="importPreviewAccept()"
+                                        class="button is-info is-pulled-right">
+                                        <span>
+                                            Approve Import & View
+                                        </span>
+                                        <span class="icon">
+                                            <span class="fa-stack">
+                                                <i class="fas fa-circle fa-stack-1x" />
+                                                <i class="fas has-text-info fa-caret-right fa-stack-1x caret-icon-overlay-fix" />
                                             </span>
-                                            <span class="icon">
-                                                <i class="fa fa-download" />
-                                            </span>
-                                        </div>
-                                        <router-link
-                                            class="button is-light is-pulled-right"
-                                            to="/">
-                                            <span>
-                                                Done
-                                            </span>
-                                            <span class="icon">
-                                                <i class="fa fa-home" />
-                                            </span>
-                                        </router-link>
+                                        </span>
                                     </div>
                                 </div>
-                                <div
-                                    v-if="showImportLightView"
-                                    class="column is-6">
+                            </div>
+                            <div
+                                v-if="showImportLightView"
+                                class="column is-6">
+                                <div class="buttons is-left">
                                     <div
-                                        class="buttons is-right">
-                                        <div
-                                            v-if="framework"
-                                            @click="cancelImport"
-                                            class="button is-info is-pulled-right">
-                                            <span>import new framework</span>
-                                            <span class="icon">
-                                                <i class="fa fa-redo-alt" />
-                                            </span>
-                                        </div>
-                                        <div
-                                            v-if="framework"
-                                            @click="openFramework"
-                                            class="button is-info is-pulled-right">
-                                            <span>open editor</span>
-                                            <span class="icon">
-                                                <i class="fa fa-edit" />
-                                            </span>
-                                        </div>
+                                        class="button is-light is-pulled-right"
+                                        @click="showModal('export')">
+                                        <span>
+                                            Export
+                                        </span>
+                                        <span class="icon">
+                                            <i class="fa fa-download" />
+                                        </span>
+                                    </div>
+                                    <router-link
+                                        class="button is-light is-pulled-right"
+                                        to="/">
+                                        <span>
+                                            Done
+                                        </span>
+                                        <span class="icon">
+                                            <i class="fa fa-home" />
+                                        </span>
+                                    </router-link>
+                                </div>
+                            </div>
+                            <div
+                                v-if="showImportLightView"
+                                class="column is-6">
+                                <div
+                                    class="buttons is-right">
+                                    <div
+                                        v-if="framework"
+                                        @click="cancelImport"
+                                        class="button is-info is-pulled-right">
+                                        <span>import new framework</span>
+                                        <span class="icon">
+                                            <i class="fa fa-redo-alt" />
+                                        </span>
+                                    </div>
+                                    <div
+                                        v-if="framework"
+                                        @click="openFramework"
+                                        class="button is-info is-pulled-right">
+                                        <span>open editor</span>
+                                        <span class="icon">
+                                            <i class="fa fa-edit" />
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -654,6 +684,7 @@ export default {
     components: {Hierarchy, dragAndDrop, sideBar},
     data: function() {
         return {
+            hierarchyIsdoneLoading: false,
             frameworkBusy: true,
             detailsDetected: {
                 rows: 0,
@@ -1060,6 +1091,10 @@ export default {
         }
     },
     methods: {
+        handleDoneLoading: function() {
+            console.log("done loading");
+            this.hierarchyIsdoneLoading = true;
+        },
         showModal(val, data) {
             let params = {};
             if (val === 'export') {
