@@ -27,7 +27,7 @@ buildDev:
   - npm run build
   artifacts:
     paths:
-      ./dist
+    - ./dist
 
 ### DEPLOYMENTS
 
