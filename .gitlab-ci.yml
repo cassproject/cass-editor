@@ -1,0 +1,54 @@
+variables:
+   DEV_USERNAME: deployment
+
+image: node:11
+
+cache:
+    paths:
+    - node_modules/
+
+stages:
+   - build
+   - deploy
+
+### BUILDS
+
+buildDev:
+  stage: build
+  only:
+    - Dev
+  before_script:
+    - git submodule sync --recursive
+    - git submodule update --init --recursive
+  script:
+  # - LAST_TAG=$(git describe --tags)
+  - npm install
+  - npm run lint
+  - npm run build
+  artifacts:
+    paths:
+      ./dist
+
+### DEPLOYMENTS
+
+deployDev:
+  stage: deploy
+  only:
+    - Dev
+  script:
+   - apt-get update -y
+   - apt-get install openssh-client -y
+   - 'which ssh-agent || apt-get install openssh-client -y'
+
+   - eval $(ssh-agent -s)
+
+   - mkdir -p ~/.ssh
+   - chmod 700 ~/.ssh
+   - echo "$T3_DEV_SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+   - chmod 644 ~/.ssh/known_hosts
+
+   - echo "$T3_DEV_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+
+   ## Build commands
+   - ssh -p22 $DEV_USERNAME@$T3_DEV_SERVER_IP "rm -rf /var/www/dev.t3.cassproject.org/*"
+   - scp -P22 -r dist/* $DEV_USERNAME@$T3_DEV_SERVER_IP:/var/www/dev.t3.cassproject.org/
