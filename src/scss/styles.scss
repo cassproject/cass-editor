@@ -103,48 +103,6 @@ iframe {
 
 
 
-.page-framework-list .e-description{
-    label{
-        display:none;
-    }
-    font-size:.8rem;
-}
-
-.page-framework-list .e-Framework, .page-framework-list .e-ConceptScheme{
-    a {
-        display:none;
-    }
-    .icon {
-        display:none;
-    }
-    .editable {
-        display:inline;
-    }
-    .not-editable {
-        display:inline;
-    }
-}
-.page-framework-list .e-property .e-name {
-    li .e-Property {
-        label, span.button {
-            display: none !important;
-        }
-    }
-    label{
-        display:none;
-    }
-    ul{
-        margin-left:0px;
-        display:inline;
-        li{
-            display:inline;
-            margin-right:.5rem;
-        }
-    }
-}
-
-
-
 .import-details__section {
     padding: 1rem;
 }

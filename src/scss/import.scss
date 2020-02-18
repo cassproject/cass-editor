@@ -72,10 +72,6 @@ ul.processing-list {
         width: 100%;
         display: block;
         margin: auto;
-        .scrollable-section {
-            overflow-y: scroll;
-            height: 100vh;
-        }
         .drag-file-area {
             width:100%;
             display:block;
@@ -500,6 +496,13 @@ ul.processing-list {
         overflow-y: scroll;
         border: 2px solid rgba($black, .5);
         border-radius: 1rem;
+    }
+    #import-actions {
+        position: sticky;
+        background-color: white;
+        bottom: 0;
+        left: 0;
+        right: 0;
     }
     .import-light, .import-preview {
         .top-actions {

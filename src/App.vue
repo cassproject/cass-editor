@@ -194,14 +194,15 @@ html {
     font-family: $family-primary;
     max-width: 100vw !important;
     margin: 0px;
-    font-size: 15px;
     height: 100%;
     padding: 0px;
     overflow: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-size: 16px;
 }
 body{
+    overflow-y: hidden;
     height: 100%;
     background: $light;
     background-repeat: no-repeat;
