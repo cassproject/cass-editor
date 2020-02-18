@@ -17,7 +17,8 @@ const editor = {
         commonPathIframe: null,
         iframeCompetencyPathInterframework: null,
         iframeCompetencyPathIntraframework: null,
-        iframeConceptPath: null
+        iframeConceptPath: null,
+        newCompetency: null
     },
     mutations: {
         framework(state, f) {
@@ -55,6 +56,9 @@ const editor = {
         },
         iframeConceptPath(state, path) {
             state.iframeConceptPath = path;
+        },
+        newCompetency(state, id) {
+            state.newCompetency = id;
         }
     },
     actions: {
