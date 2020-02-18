@@ -72,6 +72,7 @@ deployDev:
    - echo "$T3_DEV_SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
    - chmod 644 ~/.ssh/known_hosts
 
+   - chmod 600 "$T3_DEV_PRIVATE_KEY"
    - ssh-add "$T3_DEV_PRIVATE_KEY" > /dev/null
 
    ## Build commands
@@ -99,6 +100,7 @@ deployQA:
    - echo "$T3_DEV_SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
    - chmod 644 ~/.ssh/known_hosts
 
+   - chmod 600 "$T3_DEV_PRIVATE_KEY"
    - ssh-add "$T3_DEV_PRIVATE_KEY" > /dev/null
 
    ## Build commands
