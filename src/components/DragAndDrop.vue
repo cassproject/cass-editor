@@ -146,7 +146,7 @@ export default {
 </script>
 
 <style lang="scss">
-    @import './../variables.scss';
+    @import './../scss/variables.scss';
 
 #drag-and-drop {
     min-height: 100%;

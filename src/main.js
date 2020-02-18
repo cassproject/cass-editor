@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import App from './App.vue';
-import './theme.scss';
-import './styles.scss';
+import './scss/theme.scss';
+import './scss/styles.scss';
 import router from './router';
 import Vuex from 'vuex';
 import Modal from './plugins/modalPlugin.js';

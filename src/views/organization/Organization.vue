@@ -111,7 +111,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 
 .page-organization{
     .e-Thing-ul{

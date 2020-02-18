@@ -1,0 +1,162 @@
+@import './variables.scss';
+
+.page-framework-list {
+    .special-property {
+        width: 100% !important;
+    }
+    .List {
+        .button {
+            display: none;
+        }
+        .list-ul {
+            .e-Thing-ul{
+                background-color:$light;
+                border-radius: .25rem;
+                padding: .25rem;
+                margin-top: .5rem;
+                .edit{
+                    i {
+                        color: $link;
+                    }
+                }
+                .save {
+                    i {
+                        color: $secondary;
+                    }
+                }
+                .remove {
+                    i {
+                        color: $warning;
+                    }
+                }
+            
+            }
+            .thing {
+                .bottom-actions, .top-actions {
+                    display: none !important;
+                }
+                .e-Thing.e-Framework {
+                    transform: translateX(0);
+                    cursor: pointer;
+                    .e-Framework {
+                       
+                    }
+                    .e-Thing-ul {
+                        padding: 12px;
+                        width: 100%;
+
+                    }
+                    
+                }
+            }
+        }
+        
+    }
+    
+   
+   
+}
+
+
+.page-framework-list .e-description{
+    label{
+        display:none;
+    }
+    font-size:.8rem;
+}
+
+.page-framework-list .e-Framework, .page-framework-list .e-ConceptScheme{
+    a {
+        display:none;
+    }
+    .icon {
+        display:none;
+    }
+    .editable {
+        display:inline;
+    }
+    .not-editable {
+        display:inline;
+    }
+}
+.page-framework-list .e-property .e-name {
+    li .e-Property {
+        label, span.button {
+            display: none !important;
+        }
+    }
+    label{
+        display:none;
+    }
+    ul{
+        margin-left:0px;
+        display:inline;
+        li{
+            display:inline;
+            margin-right:.5rem;
+        }
+    }
+}
+
+
+.thing-label {	
+    font-weight: 500;	
+    color: rgba($dark, .3);	
+    width: 95%;	
+    i {	
+        color: rgba($dark, .3);	
+    }	
+}	
+.e-Property {	
+    padding: 0rem .5rem .5rem .5rem;	
+}
+
+
+.e-Thing-ul::first {	
+    background-color: transparent;	
+}	
+
+.e-Property {	
+
+    .fa {	
+        font-size: $size-7;	
+        color: $dark;	
+    }	
+    label {	
+        font-size: $size-7;	
+        font-weight: 500;	
+    }	
+    .e-name {	
+        font-size: $size-4;	
+        font-weight: 600;	
+    }	
+}	
+
+.e-Property-text{	
+    border-radius: .25rem;	
+}	
+
+.e-Property-ul{	
+    border-radius: .25rem;	
+    padding: 0rem .25rem;	
+    font-size: .8rem;	
+    color: rgba($dark, .9);	
+    .button {	
+
+    }	
+    .e-description {	
+        font-weight: 400;	
+        font-size: $size-7;	
+    }	
+    .e-name {	
+        font-weight: 600;	
+        font-size: $size-4;	
+    }	
+
+    margin: .125em .5em;	
+}	
+
+.page {	
+    margin-top: 2rem;	
+}
+
