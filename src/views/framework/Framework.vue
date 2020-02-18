@@ -86,6 +86,7 @@ import Hierarchy from '@/lode/components/lode/Hierarchy.vue';
 import common from '@/mixins/common.js';
 import exports from '@/mixins/exports.js';
 import competencyEdits from '@/mixins/competencyEdits.js';
+import ctdlasnProfile from '@/mixins/ctdlasnProfile.js';
 export default {
     name: "Framework",
     props: {
@@ -94,7 +95,7 @@ export default {
         disallowEdits: Boolean,
         profileOverride: Object
     },
-    mixins: [common, exports, competencyEdits],
+    mixins: [common, exports, competencyEdits, ctdlasnProfile],
     data: function() {
         return {
             repo: window.repo,
@@ -113,29 +114,7 @@ export default {
             selectButtonText: null,
             selectAllButton: false,
             selectAll: false,
-            selectedArray: [],
-            frameworkProfile: {
-                "http://schema.org/name": {
-                    "@id": "http://schema.org/name",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Name of the competency framework."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "name"}]
-                },
-                "http://schema.org/description": {
-                    "@id": "http://schema.org/description",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Description of the framework."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "description"}]
-                }
-            }
+            selectedArray: []
         };
     },
     computed: {
@@ -162,9 +141,38 @@ export default {
         shortId: function() {
             return this.$store.state.editor.framework.shortId();
         },
+        frameworkProfile: function() {
+            if (this.queryParams.ceasnDataFields === "true") {
+                return this.ctdlAsnFrameworkProfile;
+            }
+            return {
+                "http://schema.org/name": {
+                    "@id": "http://schema.org/name",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Name of the competency framework."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "name"}]
+                },
+                "http://schema.org/description": {
+                    "@id": "http://schema.org/description",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Description of the framework."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "description"}]
+                }
+            };
+        },
         competencyProfile: function() {
             if (this.profileOverride) {
                 return this.profileOverride;
+            } else if (this.queryParams.ceasnDataFields === "true") {
+                return this.ctdlAsnCompetencyProfile;
             } else {
                 var me = this;
                 return {
@@ -337,21 +345,32 @@ export default {
             var relations = {};
             for (var i = 0; i < this.framework.relation.length; i++) {
                 var a = EcAlignment.getBlocking(this.framework.relation[i]);
-                if (!relations[a.relationType]) {
-                    relations[a.relationType] = {};
-                }
-                if (!relations[a.relationType][a.source]) {
-                    relations[a.relationType][a.source] = [];
-                }
-                relations[a.relationType][a.source].push(a.target);
-                if (a.relationType === "narrows") {
-                    if (!relations["broadens"]) {
-                        relations["broadens"] = {};
+                var relationType = a.relationType;
+                var reciprocalRelation = null;
+                if (this.queryParams.ceasnDataFields === "true" && relationType === "narrows") {
+                    if (this.framework.competency.indexOf(a.target) !== -1) {
+                        relationType = "isChildOf";
+                        reciprocalRelation = "hasChild";
                     }
-                    if (!relations["broadens"][a.target]) {
-                        relations["broadens"][a.target] = [];
+                }
+                if (relationType === "narrows") {
+                    reciprocalRelation = "broadens";
+                }
+                if (!relations[relationType]) {
+                    relations[relationType] = {};
+                }
+                if (!relations[relationType][a.source]) {
+                    relations[relationType][a.source] = [];
+                }
+                relations[relationType][a.source].push(a.target);
+                if (reciprocalRelation) {
+                    if (!relations[reciprocalRelation]) {
+                        relations[reciprocalRelation] = {};
                     }
-                    relations["broadens"][a.target].push(a.source);
+                    if (!relations[reciprocalRelation][a.target]) {
+                        relations[reciprocalRelation][a.target] = [];
+                    }
+                    relations[reciprocalRelation][a.target].push(a.source);
                 }
             }
             return relations;
@@ -415,6 +434,10 @@ export default {
                 }
                 this.selectAllButton = true;
             }
+            var path = this.queryParams.editorRoot ? this.queryParams.editorRoot : "/";
+            path += "cass-editor/?select=Align with...&view=true&back=true&frameworkId=" + this.framework.shortId();
+            path += this.$store.state.editor.commonPathIframe;
+            this.$store.commit('iframeCompetencyPathIntraframework', path);
         },
         exportObject: function(selectedCompetency, exportType) {
             var guid;

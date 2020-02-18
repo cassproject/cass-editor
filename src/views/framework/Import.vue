@@ -834,7 +834,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}]
                 },
                 "http://purl.org/dc/terms/type": {
-                    "@id": "http://schema.org/description",
+                    "@id": "http://purl.org/dc/terms/type",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
                         [{"@id": "http://schema.cassproject.org/0.3/Competency"}],

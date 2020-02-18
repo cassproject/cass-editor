@@ -1192,6 +1192,27 @@ export default {
             this.repo.saveTo(framework, function() {
                 me.$store.commit('framework', EcFramework.getBlocking(framework.id));
             }, console.error);
+        },
+        addRelationAsCompetencyField: function(targets, thing, relationType, allowSave) {
+            var me = this;
+            var framework = this.$store.state.editor.framework;
+            for (var i = 0; i < targets.length; i++) {
+                if (thing[relationType] == null) {
+                    thing[relationType] = [];
+                }
+                thing[relationType].push(targets[i]);
+            }
+            if (this.queryParams.private === "true") {
+                if (EcEncryptedValue.encryptOnSaveMap[thing.id] !== true) {
+                    thing = EcEncryptedValue.toEncryptedValue(thing);
+                }
+                if (EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                    framework = EcEncryptedValue.toEncryptedValue(framework);
+                }
+            }
+            me.repo.saveTo(thing, function() {
+                me.repo.saveTo(framework, function() {}, console.error);
+            }, console.error);
         }
     },
     computed: {
