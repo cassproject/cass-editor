@@ -89,17 +89,17 @@
                         </span>
                         <span
                             class="tag"
-                            v-if="slotProps.item['ceasn:publisherName']">
+                            v-if="slotProps.item['ceasn:publisherName'] && getName(slotProps.item['ceasn:publisherName'])">
                             {{ getName(slotProps.item['ceasn:publisherName']) }}
                         </span>
                         <span
                             class="tag"
-                            v-else-if="slotProps.item['schema:publisher']">
+                            v-else-if="slotProps.item['schema:publisher'] && getName(slotProps.item['schema:publisher'])">
                             {{ getName(slotProps.item['schema:publisher']) }}
                         </span>
                         <span
                             class="tag"
-                            v-else-if="slotProps.item['schema:creator']">
+                            v-else-if="slotProps.item['schema:creator'] && getName(slotProps.item['schema:creator'])">
                             {{ getName(slotProps.item['schema:creator']) }}
                         </span>
                     </template>
