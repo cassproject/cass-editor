@@ -15,7 +15,7 @@
                 <section class=" page-import-body">
                     <!-- top section import impormation -->
                     <div
-                        class="section has-background-white"
+                        class="has-background-white"
                         id="import-top-section">
                         <div class="columns is-mobile">
                             <div class="column is-narrow">
@@ -76,14 +76,14 @@
                         <!-- import details after selecting file -->
                         <div
                             v-if="framework && showImportPreviewView"
-                            class="section">
+                            class="import-instructions">
                             <div class="columns is-mobile">
                                 <div class="column is-6 has-text-centered">
                                     <span class="icon">
                                         <i class="far fa-hand-rock has-text-dark" />
                                     </span>
                                     <span class="is-size-7 has-text-weight-bold">
-                                        Use your mouse to drag competencies
+                                        Drag to change hierarchy
                                     </span>
                                 </div>
                                 <div class="column is-6 has-text-centered">
@@ -92,7 +92,7 @@
                                             <i class="far fa-edit has-text-black" />
                                         </span>
                                         <span class="is-size-7 has-text-weight-bold">
-                                            Click the pencil icon to edit the basic details.
+                                            Click descriptions to edit
                                         </span>
                                     </span>
                                 </div>
@@ -1940,5 +1940,6 @@ export default {
 </script>
 
 <style lang="scss">
-    @import './../../variables.scss';
+    @import './../../scss/import.scss';
+
 </style>

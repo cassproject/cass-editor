@@ -34,12 +34,11 @@ $danger: $cass-error;
 $dark:$cass-black;
 $text: rgba($dark, .8);
 
-
 $weight-normal: 400;
 $family-code: $family-primary;
 $has-background-white: $white;
-$has-background-white: $light;
-$has-background-primary: $primary;
+$background-light: $light;
+$background-medium: rgba($dark, .3);
 $background: $white;
 $text-strong: $black;
 $weight-bold: 600;

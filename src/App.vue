@@ -188,7 +188,51 @@
 
 </style>
 <style lang="scss">
-    @import './styles.scss';
+    @import './scss/variables.scss';
+    html {
+    font-family: $family-primary;
+    max-width: 100vw !important;
+    margin: 0px;
+    height: 100%;
+    padding: 0px;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 16px;
+}
+body{
+    height: 100%;
+    background: $light;
+    background-repeat: no-repeat;
+    background-size: cover;
+    min-height: 100vh;
+}
+#app {
+    height: 100%;
+}
+
+
+.menu {
+    overflow-y: scroll;
+    height: 100vh;
+    padding: 1rem;
+    width: 300px;
+}
+
+.navbar-menu {
+    // override active links
+    .is-active{
+        color: rgba($light, .8) !important;
+
+    }
+}
+
+#mainDropDown {
+    .is-active{
+        color: rgba($dark, .7) !important;
+    }
+}
+
 </style>
 <script>
 import common from '@/mixins/common.js';

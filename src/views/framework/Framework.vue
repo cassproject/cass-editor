@@ -1,7 +1,7 @@
 <template>
     <div class="page-framework">
         <div class="container">
-            <div class="section">
+            <div class="section is-paddingless">
                 <Thing
                     :obj="framework"
                     :repo="repo"
@@ -486,6 +486,7 @@ export default {
 </script>
 
 <style lang="scss">
+    @import './../../scss/framework.scss';
 
 
 </style>
