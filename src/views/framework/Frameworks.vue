@@ -58,35 +58,48 @@
                     <!-- TO DO move these template items to the "actions" right side area -->
                     <template
                         v-slot:frameworkTags="slotProps">
-                        <span v-if="queryParams.concepts!=='true'">{{ slotProps.item.competency.length }} items </span>
                         <span
+                            class="tag"
+                            v-if="queryParams.concepts!=='true'">{{ slotProps.item.competency.length }} items </span>
+                        <span
+                            class="tag"
                             v-if="slotProps.item.Published"
                             :title="slotProps.item.Published">Published </span>
                         <span
+                            class="tag"
                             v-if="slotProps.item.Approved"
                             :title="slotProps.item.Approved">Approved </span>
                         <span
+                            class="tag"
                             v-if="slotProps.item['schema:dateCreated']"
                             :title="new Date(slotProps.item['schema:dateCreated'])">
                             Created {{ $moment(slotProps.item['schema:dateCreated']).fromNow() }}
                         </span>
                         <span
+                            class="tag"
                             v-if="slotProps.item.getTimestamp()"
                             :title="new Date(slotProps.item.getTimestamp())">
                             Last modified {{ $moment(slotProps.item.getTimestamp()).fromNow() }}
                         </span>
                         <span
+                            class="tag"
                             v-else-if="slotProps.item['schema:dateModified']"
                             :title="new Date(slotProps.item['schema:dateModified'])">
                             Last modified {{ $moment(slotProps.item['schema:dateModified']).fromNow() }}
                         </span>
-                        <span v-if="slotProps.item['ceasn:publisherName']">
+                        <span
+                            class="tag"
+                            v-if="slotProps.item['ceasn:publisherName']">
                             {{ getName(slotProps.item['ceasn:publisherName']) }}
                         </span>
-                        <span v-else-if="slotProps.item['schema:publisher']">
+                        <span
+                            class="tag"
+                            v-else-if="slotProps.item['schema:publisher']">
                             {{ getName(slotProps.item['schema:publisher']) }}
                         </span>
-                        <span v-else-if="slotProps.item['schema:creator']">
+                        <span
+                            class="tag"
+                            v-else-if="slotProps.item['schema:creator']">
                             {{ getName(slotProps.item['schema:creator']) }}
                         </span>
                     </template>
@@ -195,5 +208,6 @@ export default {
 
 <style lang="scss">
     @import './../../scss/frameworks.scss';
+    @import './../../scss/framework.scss';
 
 </style>

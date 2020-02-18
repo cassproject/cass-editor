@@ -12,7 +12,7 @@
             </div>
             <!--- main body section -->
             <div class="column has-background-white is-scrollable">
-                <section class=" page-import-body">
+                <section class="page-import-body">
                     <!-- top section import impormation -->
                     <div
                         class="has-background-white"
@@ -550,7 +550,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="section">
+                    <div
+                        class="section"
+                        id="import-actions">
                         <div class="columns is-gapless is-marginless is-mobile is-multiline">
                             <div class="column is-12">
                                 <!-- import details options -->
