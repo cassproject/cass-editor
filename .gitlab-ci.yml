@@ -25,11 +25,13 @@ buildDev:
   # - LAST_TAG=$(git describe --tags)
   - npm install
   - npm run lint
-  - npm run build
+  - npm run buildDev
   artifacts:
     paths:
     - ./dist
 
+
+    
 buildQA:
   stage: build
   only:
@@ -41,7 +43,7 @@ buildQA:
   # - LAST_TAG=$(git describe --tags)
   - npm install
   - npm run lint
-  - npm run build
+  - npm run buildDev
   artifacts:
     paths:
     - ./dist
@@ -49,10 +51,15 @@ buildQA:
     
 ### DEPLOYMENTS
 
+
+
 deployDev:
   stage: deploy
   only:
     - dev
+  environment:
+    name: dev
+    url: https://dev.t3.cassproject.org
   script:
    - apt-get update -y
    - apt-get install openssh-client -y
@@ -76,7 +83,10 @@ deployDev:
 deployQA:
   stage: deploy
   only:
-    - dev
+    - qa
+  environment:
+    name: qa
+    url: https://qa.t3.cassproject.org
   script:
    - apt-get update -y
    - apt-get install openssh-client -y
