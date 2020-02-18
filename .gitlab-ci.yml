@@ -72,7 +72,7 @@ deployDev:
    - echo "$T3_DEV_SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
    - chmod 644 ~/.ssh/known_hosts
 
-   - echo "$T3_DEV_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+   - ssh-add "$T3_DEV_PRIVATE_KEY" > /dev/null
 
    ## Build commands
    - ssh -p22 $DEV_USERNAME@$T3_DEV_SERVER_IP "rm -rf /var/www/dev.t3.cassproject.org/*"
@@ -99,7 +99,7 @@ deployQA:
    - echo "$T3_DEV_SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
    - chmod 644 ~/.ssh/known_hosts
 
-   - echo "$T3_DEV_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+   - ssh-add "$T3_DEV_PRIVATE_KEY" > /dev/null
 
    ## Build commands
    - ssh -p22 $DEV_USERNAME@$T3_DEV_SERVER_IP "rm -rf /var/www/qa.t3.cassproject.org/*"
