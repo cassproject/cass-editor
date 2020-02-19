@@ -256,6 +256,10 @@ export default {
             this.navBarActive = false;
         }
     },
+    beforeDestroy: function() {
+        window.removeEventListener('message', this.cappend);
+        window.removeEventListener("message", this.messageListener);
+    },
     created: function() {
         var servers = ["https://dev.cassproject.org/api/"];
         var me = this;

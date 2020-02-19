@@ -327,60 +327,6 @@ export default {
                     }
                 };
             }
-        },
-        levels: function() {
-            var levels = {};
-            if (!this.framework.level) {
-                return null;
-            }
-            for (var i = 0; i < this.framework.level.length; i++) {
-                var level = EcLevel.getBlocking(this.framework.level[i]);
-                var comp = level.competency;
-                if (!EcArray.isArray(comp)) {
-                    comp = [comp];
-                }
-                for (var j = 0; j < comp.length; j++) {
-                    if (!EcArray.isArray(levels[comp[j]])) {
-                        levels[comp[j]] = [];
-                    }
-                    levels[comp[j]].push(level);
-                }
-            }
-            return levels;
-        },
-        relations: function() {
-            var relations = {};
-            for (var i = 0; i < this.framework.relation.length; i++) {
-                var a = EcAlignment.getBlocking(this.framework.relation[i]);
-                var relationType = a.relationType;
-                var reciprocalRelation = null;
-                if (this.queryParams.ceasnDataFields === "true" && relationType === "narrows") {
-                    if (this.framework.competency.indexOf(a.target) !== -1) {
-                        relationType = "isChildOf";
-                        reciprocalRelation = "hasChild";
-                    }
-                }
-                if (relationType === "narrows") {
-                    reciprocalRelation = "broadens";
-                }
-                if (!relations[relationType]) {
-                    relations[relationType] = {};
-                }
-                if (!relations[relationType][a.source]) {
-                    relations[relationType][a.source] = [];
-                }
-                relations[relationType][a.source].push(a.target);
-                if (reciprocalRelation) {
-                    if (!relations[reciprocalRelation]) {
-                        relations[reciprocalRelation] = {};
-                    }
-                    if (!relations[reciprocalRelation][a.target]) {
-                        relations[reciprocalRelation][a.target] = [];
-                    }
-                    relations[reciprocalRelation][a.target].push(a.source);
-                }
-            }
-            return relations;
         }
     },
     components: {Hierarchy, Thing},
@@ -476,40 +422,6 @@ export default {
             } else {
                 EcArray.setRemove(this.selectedArray, id);
             }
-        },
-        addRelationsToFramework: function(selectedCompetency, property, values) {
-            if (values.length > 0) {
-                this.$parent.addAlignments(values, selectedCompetency, property);
-            }
-        },
-        removeRelationFromFramework: function(source, property, target) {
-            var me = this;
-            new EcAsyncHelper().each(this.framework.relation, function(relation, callback) {
-                EcAlignment.get(relation, function(r) {
-                    if (property === "broadens") {
-                        if (r.target === source && r.source === target && r.relationType === "narrows") {
-                            me.framework.removeRelation(r.shortId());
-                            me.conditionalDelete(r.shortId());
-                            callback();
-                        } else {
-                            callback();
-                        }
-                    } else if (r.source === source && r.target === target && r.relationType === property) {
-                        me.framework.removeRelation(r.shortId());
-                        me.conditionalDelete(r.shortId());
-                        callback();
-                    } else {
-                        callback();
-                    }
-                }, callback);
-            }, function() {
-                var framework = me.framework;
-                me.$store.commit('framework', framework);
-                if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
-                    framework = EcEncryptedValue.toEncryptedValue(framework);
-                }
-                me.repo.saveTo(framework, function() {}, console.error);
-            });
         }
     }
 };
