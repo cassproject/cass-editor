@@ -1,6 +1,7 @@
 export default {
     computed: {
         ctdlAsnFrameworkProfile: function() {
+            var me = this;
             return {
                 "http://schema.org/name": {
                     "@id": "http://schema.org/name",
@@ -9,7 +10,7 @@ export default {
                     [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
                     "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Name of the competency framework."}],
+                    [{"@language": "en", "@value": "The name or title of this competency framework. One name or title per language."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "name"}]
                 },
                 "http://schema.org/description": {
@@ -19,8 +20,202 @@ export default {
                     [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
                     "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Description of the framework."}],
+                    [{"@language": "en", "@value": "A short description of this framework. One description per language."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "description"}]
+                },
+                "http://schema.org/creator": {
+                    "@id": "http://schema.org/creator",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "The primary entity responsible for making this competency or competency framework. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. One entity per line."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Creator"}]
+                },
+                "https://purl.org/ctdlasn/terms/publisherName": {
+                    "@id": "https://purl.org/ctdlasn/terms/publisherName",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Name of the agent responsible for making this entity available."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Publisher Name"}],
+                    "thingKey": "ceasn:publisherName"
+                },
+                "http://schema.org/publisher": {
+                    "@id": "http://schema.org/publisher",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "The entity responsible for making this competency framework available. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Publisher"}]
+                },
+                "http://schema.org/inLanguage": {
+                    "@id": "http://schema.org/publisher",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "The primary language used in or by this competency framework or competency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "In Language"}]
+                },
+                "http://schema.org/keywords": {
+                    "@id": "https://purl.org/ctdlasn/terms/conceptKeyword",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "A word or phrase used by the promulgating agency to refine and differentiate individual frameworks contextually. One concept per line."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Concept Keyword"}]
+                },
+                "https://purl.org/ctdlasn/terms/conceptTerm": {
+                    "@id": "https://purl.org/ctdlasn/terms/conceptTerm",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual resources contextually."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Concept Term"}],
+                    "thingKey": "ceasn:conceptTerm",
+                    "iframePath": me.$store.state.editor.iframeConceptPath,
+                    "iframeText": "Select concepts to attach..."
+                },
+                "https://purl.org/ctdlasn/terms/derivedFrom": {
+                    "@id": "https://purl.org/ctdlasn/terms/derivedFrom",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "A third party version of the entity being referenced that has been modified in meaning through editing, extension, or refinement. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Derived From"}],
+                    "thingKey": "ceasn:derivedFrom"
+                },
+                "https://purl.org/ctdlasn/terms/isVersionOf": {
+                    "@id": "https://purl.org/ctdlasn/terms/isVersionOf",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "A related competency framework of which this competency framework is a version, edition, or adaptation."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Version Of"}],
+                    "thingKey": "ceasn:isVersionOf"
+                },
+                "http://purl.org/dc/elements/1.1/source": {
+                    "@id": "http://purl.org/dc/elements/1.1/source",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "A URI to the original competency framework which this competency framework is based on or derived from. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Source Framework"}]
+                },
+                "https://purl.org/ctdlasn/terms/educationLevelType": {
+                    "@id": "https://purl.org/ctdlasn/terms/educationLevelType",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "A general statement describing the education or training context. Alternatively, a more specific statement of the location of the audience in terms of its progression through an education or training context."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Education Level Type"}],
+                    "thingKey": "ceasn:educationLevelType",
+                    "iframePath": me.$store.state.editor.iframeConceptPath,
+                    "iframeText": "Select concepts to attach..."
+                },
+                "http://schema.org/validFrom": {
+                    "@id": "https://purl.org/ctdlasn/terms/validFrom",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2001/XMLSchema#dateTime"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Beginning date of validity of this competency framework."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Date Valid From"}]
+                },
+                "http://schema.org/validThrough": {
+                    "@id": "https://purl.org/ctdlasn/terms/validThrough",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2001/XMLSchema#dateTime"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "End date of validity of this competency framework."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Date Valid Until"}]
+                },
+                "https://purl.org/ctdlasn/terms/publicationStatusType": {
+                    "@id": "https://purl.org/ctdlasn/terms/publicationStatusType",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Publication status of the source competency framework. The original framework may be drafted, published, or depreciated outside of this system."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Source Publication Status"}],
+                    "thingKey": "ceasn:publicationStatusType",
+                    "options": {"Draft": "http://credreg.net/ctdlasn/vocabs/publicationStatus/Draft",
+                        "Published": "http://credreg.net/ctdlasn/vocabs/publicationStatus/Published",
+                        "Deprecated": "http://credreg.net/ctdlasn/vocabs/publicationStatus/Deprecated"}
+                },
+                "http://schema.org/identifier": {
+                    "@id": "http://schema.org/identifier",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "An alternative URI by which this competency or competency framework is identified. For example, https://sandbox.credentialengineregistry.org/."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Identifier"}]
+                },
+                "http://schema.org/copyrightYear": {
+                    "@id": "http://schema.org/copyrightYear",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://purl.org/dc/terms/date"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Year of a statement of copyright for this competency framework, such as 2017."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Year Copyrighted"}]
+                },
+                "http://schema.org/license": {
+                    "@id": "http://schema.org/license",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "A legal document giving official permission to do something with this competency framework. For example, https://sandbox.credentialengineregistry.org/"}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "License"}]
+                },
+                "http://purl.org/dc/elements/1.1/rights": {
+                    "@id": "http://purl.org/dc/elements/1.1/rights",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Information about rights held in and over this competency framework."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Rights"}],
+                    "thingKey": "dc:rights"
+                },
+                "http://schema.org/copyrightHolder": {
+                    "@id": "http://schema.org/copyrightHolder",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "The agent owning or managing rights over this competency framework. For example, https://credentialengineregistry.org/"}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Rights Holder"}]
                 }
             };
         },
