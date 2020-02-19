@@ -58,6 +58,28 @@ export default {
                 }
             }
             return relations;
+        },
+        ctids: function() {
+            if (this.queryParams.ceasnDataFields !== "true") {
+                return null;
+            }
+            var obj = {};
+            obj[this.framework.shortId()] = [this.getCTID(this.framework.shortId())];
+            for (var i = 0; i < this.framework.competency.length; i++) {
+                obj[this.framework.competency[i]] = [this.getCTID(this.framework.competency[i])];
+            }
+            return obj;
+        },
+        registryURLs: function() {
+            if (this.queryParams.ceasnDataFields !== "true") {
+                return null;
+            }
+            var obj = {};
+            obj[this.framework.shortId()] = [this.ceasnRegistryUriTransform(this.framework.shortId())];
+            for (var i = 0; i < this.framework.competency.length; i++) {
+                obj[this.framework.competency[i]] = [this.ceasnRegistryUriTransform(this.framework.competency[i])];
+            }
+            return obj;
         }
     },
     methods: {
@@ -375,6 +397,33 @@ export default {
                 }
                 me.repo.saveTo(framework, function() {}, console.error);
             });
+        },
+        ceasnRegistryUriTransform: function(uri) {
+            var endpoint = this.queryParams.newObjectEndpoint;
+            if (endpoint == null) {
+                return uri;
+            }
+            if (uri.startsWith(endpoint)) {
+                return uri;
+            }
+            var ctid = this.getCTID(uri);
+            if (endpoint.indexOf("ce-") !== -1) {
+                ctid = ctid.substring(3);
+            }
+            return endpoint + ctid;
+        },
+        getCTID: function(uri) {
+            var uuid = null;
+            var parts = EcRemoteLinkedData.trimVersionFromUrl(uri).split("/");
+            uuid = parts[parts.length - 1];
+            uri = EcRemoteLinkedData.trimVersionFromUrl(uri);
+            if (!uuid.matches("^(ce-)?[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")) {
+                uuid = new UUID(3, "nil", uri).format();
+            }
+            if (uuid.indexOf("ce-") === -1) {
+                uuid = "ce-" + uuid;
+            }
+            return uuid;
         }
     }
 };

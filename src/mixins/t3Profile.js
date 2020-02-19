@@ -288,7 +288,8 @@ export default {
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "A URI to the original competency framework which this competency framework is based on or derived from."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Extracted From"}]
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Extracted From"}],
+                    "thingKey": "dc:source"
                 },
                 "http://schema.org/dateCreated": {
                     "@id": "http://schema.org/dateCreated",
