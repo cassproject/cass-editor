@@ -127,6 +127,7 @@ export default {
     },
     created: function() {
         this.sortBy = this.queryParams.concepts === 'true' ? "dcterms:title.keyword" : "name.keyword";
+        this.$store.commit("t3Profile", false);
     },
     computed: {
         type: function() {

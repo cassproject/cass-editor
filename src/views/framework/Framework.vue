@@ -87,6 +87,7 @@ import common from '@/mixins/common.js';
 import exports from '@/mixins/exports.js';
 import competencyEdits from '@/mixins/competencyEdits.js';
 import ctdlasnProfile from '@/mixins/ctdlasnProfile.js';
+import t3Profile from '@/mixins/t3Profile.js';
 export default {
     name: "Framework",
     props: {
@@ -95,7 +96,7 @@ export default {
         disallowEdits: Boolean,
         profileOverride: Object
     },
-    mixins: [common, exports, competencyEdits, ctdlasnProfile],
+    mixins: [common, exports, competencyEdits, ctdlasnProfile, t3Profile],
     data: function() {
         return {
             repo: window.repo,
@@ -142,6 +143,9 @@ export default {
             return this.$store.state.editor.framework.shortId();
         },
         frameworkProfile: function() {
+            if (this.$store.state.editor.t3Profile === true) {
+                return this.t3FrameworkProfile;
+            }
             if (this.queryParams.ceasnDataFields === "true") {
                 return this.ctdlAsnFrameworkProfile;
             }
@@ -169,6 +173,9 @@ export default {
             };
         },
         competencyProfile: function() {
+            if (this.$store.state.editor.t3Profile === true) {
+                return this.t3CompetencyProfile;
+            }
             if (this.profileOverride) {
                 return this.profileOverride;
             } else if (this.queryParams.ceasnDataFields === "true") {
