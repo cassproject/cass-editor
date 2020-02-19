@@ -1648,6 +1648,7 @@ export default {
             }
             me.repo.multiput(toSave, function() {
                 me.framework = f;
+                me.$store.commit('framework', f);
                 me.status = "";
                 me.importSuccess();
             }, console.error);
