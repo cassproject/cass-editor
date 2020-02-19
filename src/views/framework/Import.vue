@@ -192,8 +192,15 @@
                                                 <i class="fa fa-spinner fa-pulse fa-2x" />
                                             </span>
                                             <div class="section">
-                                                <p class="is-size-7">
+                                                <p
+                                                    v-if="status !== 'processing'"
+                                                    class="is-size-7">
                                                     {{ status }}
+                                                </p>
+                                                <p
+                                                    v-if="status === 'processing'"
+                                                    class="is-size-7">
+                                                    {{ processingStatus }}
                                                 </p>
                                             </div>
                                         </div>
@@ -712,6 +719,7 @@ export default {
             url: null,
             repo: window.repo,
             status: "Ready",
+            processingStatus: '',
             statusType: 'info',
             competencyCount: 0,
             importType: null,
@@ -1064,6 +1072,19 @@ export default {
         }
     },
     watch: {
+        status: function(val) {
+            let me = this;
+            if (val === 'processing') {
+                console.log("hello");
+                me.processingStatus = "Preparing competencies...";
+                setTimeout(() => {
+                    me.processingStatus = "Building competency hierarchy...";
+                    setTimeout(() => {
+                        me.processingStatus = "Preparing for editing...";
+                    }, 1000);
+                }, 1000);
+            }
+        },
         text: function(newText, oldText) {
             var me = this;
             TabStructuredImport.importCompetencies(
@@ -1631,7 +1652,7 @@ export default {
                 me.importSuccess();
             }, console.error);
             me.statusType = "info";
-            me.status = "Writing Framework to CaSS...";
+            me.status = 'processing';
         },
         importCsv: function() {
             var file = this.file[0];
@@ -1745,7 +1766,7 @@ export default {
             if (me.queryParams.concepts === 'true') {
                 me.status = "Importing Concept Scheme";
             } else {
-                me.status = "Importing Framework";
+                me.status = 'processing';
             }
         },
         importCtdlAsnConceptCsv: function() {
