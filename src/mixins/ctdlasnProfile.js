@@ -73,7 +73,8 @@ export default {
                             "@value": `The primary entity responsible for making this competency or competency framework. For example: 
                             https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. One entity per line.`}
                     ],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Creator"}]
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Creator"}],
+                    "thingKey": "schema:creator"
                 },
                 "https://purl.org/ctdlasn/terms/publisherName": {
                     "@id": "https://purl.org/ctdlasn/terms/publisherName",
@@ -94,7 +95,8 @@ export default {
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The entity responsible for making this competency framework available. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Publisher"}]
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Publisher"}],
+                    "thingKey": "schema:publisher"
                 },
                 "http://schema.org/inLanguage": {
                     "@id": "http://schema.org/publisher",
@@ -104,7 +106,9 @@ export default {
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The primary language used in or by this competency framework or competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "In Language"}]
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "In Language*"}],
+                    "required": true,
+                    "thingKey": "schema:inLanguage"
                 },
                 "http://schema.org/keywords": {
                     "@id": "https://purl.org/ctdlasn/terms/conceptKeyword",
@@ -114,7 +118,8 @@ export default {
                     "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "A word or phrase used by the promulgating agency to refine and differentiate individual frameworks contextually. One concept per line."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Concept Keyword"}]
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Concept Keyword"}],
+                    "thingKey": "schema:keywords"
                 },
                 "https://purl.org/ctdlasn/terms/conceptTerm": {
                     "@id": "https://purl.org/ctdlasn/terms/conceptTerm",
@@ -229,7 +234,8 @@ export default {
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "An alternative URI by which this competency or competency framework is identified. For example, https://sandbox.credentialengineregistry.org/."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Identifier"}]
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Identifier"}],
+                    "thingKey": "schema:identifier"
                 },
                 "http://schema.org/copyrightYear": {
                     "@id": "http://schema.org/copyrightYear",
@@ -239,7 +245,8 @@ export default {
                     "http://schema.org/rangeIncludes": [{"@id": "http://purl.org/dc/terms/date"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Year of a statement of copyright for this competency framework, such as 2017."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Year Copyrighted"}]
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Year Copyrighted"}],
+                    "thingKey": "schema:copyrightYear"
                 },
                 "http://schema.org/license": {
                     "@id": "http://schema.org/license",
@@ -249,7 +256,8 @@ export default {
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "A legal document giving official permission to do something with this competency framework. For example, https://sandbox.credentialengineregistry.org/"}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "License"}]
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "License"}],
+                    "thingKey": "schema:license"
                 },
                 "http://purl.org/dc/elements/1.1/rights": {
                     "@id": "http://purl.org/dc/elements/1.1/rights",
@@ -270,7 +278,8 @@ export default {
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The agent owning or managing rights over this competency framework. For example, https://credentialengineregistry.org/"}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Rights Holder"}]
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Rights Holder"}],
+                    "thingKey": "schema:copyrightHolder"
                 }
             };
         },
@@ -420,7 +429,8 @@ export default {
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "An alternative URI by which this competency framework or competency is identified. For example, https://sandbox.credentialengineregistry.org/. One URI per line."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Identifier"}]
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Identifier"}],
+                    "thingKey": "schema:identifier"
                 },
                 "http://schema.org/keywords": {
                     "@id": "https://purl.org/ctdlasn/terms/conceptKeyword",
@@ -430,7 +440,8 @@ export default {
                     "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "A word or phrase used by the promulgating agency to refine and differentiate individual competencies contextually. One concept per line."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Concept Keyword"}]
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Concept Keyword"}],
+                    "thingKey": "schema:keywords"
                 },
                 "https://purl.org/ctdlasn/terms/conceptTerm": {
                     "@id": "https://purl.org/ctdlasn/terms/conceptTerm",
