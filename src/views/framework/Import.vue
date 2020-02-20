@@ -531,7 +531,8 @@
                                     edgeRelationLiteral="narrows"
                                     edgeSourceProperty="source"
                                     edgeTargetProperty="target"
-                                    :repo="repo" />
+                                    :repo="repo"
+                                    :newFramework="true" />
                             </div>
                         </div>
                         <!-- import light view -->
@@ -553,7 +554,8 @@
                                     edgeRelationLiteral="narrows"
                                     edgeSourceProperty="source"
                                     edgeTargetProperty="target"
-                                    :repo="repo" />
+                                    :repo="repo"
+                                    :newFramework="true" />
                             </div>
                         </div>
                     </div>
