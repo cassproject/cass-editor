@@ -65,8 +65,10 @@ export default {
             }
             var obj = {};
             obj[this.framework.shortId()] = [this.getCTID(this.framework.shortId())];
-            for (var i = 0; i < this.framework.competency.length; i++) {
-                obj[this.framework.competency[i]] = [this.getCTID(this.framework.competency[i])];
+            if (this.framework.competency) {
+                for (var i = 0; i < this.framework.competency.length; i++) {
+                    obj[this.framework.competency[i]] = [this.getCTID(this.framework.competency[i])];
+                }
             }
             return obj;
         },
@@ -76,8 +78,10 @@ export default {
             }
             var obj = {};
             obj[this.framework.shortId()] = [this.ceasnRegistryUriTransform(this.framework.shortId())];
-            for (var i = 0; i < this.framework.competency.length; i++) {
-                obj[this.framework.competency[i]] = [this.ceasnRegistryUriTransform(this.framework.competency[i])];
+            if (this.framework.competency) {
+                for (var i = 0; i < this.framework.competency.length; i++) {
+                    obj[this.framework.competency[i]] = [this.ceasnRegistryUriTransform(this.framework.competency[i])];
+                }
             }
             return obj;
         }

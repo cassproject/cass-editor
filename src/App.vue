@@ -541,6 +541,9 @@ export default {
                     framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                 }
                 framework.name = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Framework"};
+                if (this.queryParams.ceasnDataFields === "true") {
+                    framework["schema:inLanguage"] = [this.$store.state.editor.defaultLanguage];
+                }
                 var saveFramework = framework;
                 if (this.queryParams.private === "true") {
                     saveFramework = EcEncryptedValue.toEncryptedValue(framework);
