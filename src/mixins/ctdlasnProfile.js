@@ -52,7 +52,8 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The name or title of this competency framework. One name or title per language."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name*"}],
-                    "required": true
+                    "required": true,
+                    "onePerLanguage": true
                 },
                 "http://schema.org/description": {
                     "@id": "http://schema.org/description",
@@ -62,7 +63,8 @@ export default {
                     "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "A short description of this framework. One description per language."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}]
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}],
+                    "onePerLanguage": true
                 },
                 "http://schema.org/creator": {
                     "@id": "http://schema.org/creator",
@@ -347,7 +349,8 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Short identifying phrase or name applied to a competency by the creator of the competency framework."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Competency Label"}],
-                    "thingKey": "ceasn:competencyLabel"
+                    "thingKey": "ceasn:competencyLabel",
+                    "onePerLanguage": true
                 },
                 "http://schema.org/name": {
                     "@id": "https://purl.org/ctdlasn/terms/competencyText",
@@ -358,7 +361,8 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The text of the competency. One per language."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Competency Text*"}],
-                    "required": true
+                    "required": true,
+                    "onePerLanguage": true
                 },
                 "http://schema.org/description": {
                     "@id": "https://purl.org/ctdlasn/terms/comment",
@@ -379,7 +383,8 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The textual label identifying the category of the competency as designated by the promulgating body. One label per line. One label per language."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Competency Category"}],
-                    "thingKey": "dcterms:type"
+                    "thingKey": "dcterms:type",
+                    "onePerLanguage": true
                 },
                 "https://purl.org/ctdlasn/terms/educationLevelType": {
                     "@id": "https://purl.org/ctdlasn/terms/educationLevelType",
