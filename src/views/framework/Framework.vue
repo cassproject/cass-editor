@@ -150,6 +150,19 @@ export default {
                 return this.ctdlAsnFrameworkProfile;
             }
             return {
+                "@id": {
+                    "@id": "https://schema.cassproject.org/0.4/Framework/id",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "The URL of the competency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "URL"}],
+                    "noTextEditing": true,
+                    "max": 1,
+                    "heading": "Keys"
+                },
                 "http://schema.org/name": {
                     "@id": "http://schema.org/name",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -158,7 +171,8 @@ export default {
                     "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Name of the competency framework."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "name"}]
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "name"}],
+                    "heading": "General"
                 },
                 "http://schema.org/description": {
                     "@id": "http://schema.org/description",
@@ -168,8 +182,10 @@ export default {
                     "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Description of the framework."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "description"}]
-                }
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "description"}],
+                    "heading": "General"
+                },
+                "headings": ["Keys", "General"]
             };
         },
         competencyProfile: function() {
@@ -183,6 +199,19 @@ export default {
             } else {
                 var me = this;
                 return {
+                    "@id": {
+                        "@id": "https://schema.cassproject.org/0.4/Competency/id",
+                        "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                        "http://schema.org/domainIncludes":
+                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                        "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                        "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "The URL of the competency."}],
+                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "URL"}],
+                        "noTextEditing": true,
+                        "max": 1,
+                        "heading": "Keys"
+                    },
                     "http://schema.org/name": {
                         "@id": "http://schema.org/name",
                         "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -191,7 +220,8 @@ export default {
                         "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "Name of the competency."}],
-                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}]
+                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}],
+                        "heading": "General"
                     },
                     "http://schema.org/description": {
                         "@id": "http://schema.org/description",
@@ -201,7 +231,8 @@ export default {
                         "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "Description of the competency."}],
-                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}]
+                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}],
+                        "heading": "General"
                     },
                     "https://schema.cassproject.org/0.4/Competency/scope": {
                         "@id": "https://schema.cassproject.org/0.4/Competency/scope",
@@ -211,7 +242,8 @@ export default {
                         "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "Scope in which the competency may be applied. e.g. Underwater."}],
-                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Scope"}]
+                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Scope"}],
+                        "heading": "General"
                     },
                     "https://schema.cassproject.org/0.4/Level": {
                         "@id": "https://schema.cassproject.org/0.4/Level",
@@ -232,7 +264,8 @@ export default {
                         "iframeText": "Select levels to align...",
                         "add": function(selectedCompetency) { me.addLevel(selectedCompetency); },
                         "remove": function(competency, levelId) { me.removeLevelFromFramework(levelId); },
-                        "save": function() { me.saveFramework(); }
+                        "save": function() { me.saveFramework(); },
+                        "heading": "Connections"
                     },
                     "narrows": {
                         "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
@@ -245,7 +278,8 @@ export default {
                         "noTextEditing": true,
                         "add": "unsaved",
                         "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "narrows", values); },
-                        "remove": function(source, target) { me.removeRelationFromFramework(source, "narrows", target); }
+                        "remove": function(source, target) { me.removeRelationFromFramework(source, "narrows", target); },
+                        "heading": "Connections"
                     },
                     "broadens": {
                         "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
@@ -258,7 +292,8 @@ export default {
                         "noTextEditing": true,
                         "add": "unsaved",
                         "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "broadens", values); },
-                        "remove": function(source, target) { me.removeRelationFromFramework(source, "broadens", target); }
+                        "remove": function(source, target) { me.removeRelationFromFramework(source, "broadens", target); },
+                        "heading": "Connections"
                     },
                     "isEquivalentTo": {
                         "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
@@ -271,7 +306,8 @@ export default {
                         "noTextEditing": true,
                         "add": "unsaved",
                         "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEquivalentTo", values); },
-                        "remove": function(source, target) { me.removeRelationFromFramework(source, "isEquivalentTo", target); }
+                        "remove": function(source, target) { me.removeRelationFromFramework(source, "isEquivalentTo", target); },
+                        "heading": "Connections"
                     },
                     "requires": {
                         "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
@@ -284,7 +320,8 @@ export default {
                         "noTextEditing": true,
                         "add": "unsaved",
                         "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "requires", values); },
-                        "remove": function(source, target) { me.removeRelationFromFramework(source, "requires", target); }
+                        "remove": function(source, target) { me.removeRelationFromFramework(source, "requires", target); },
+                        "heading": "Connections"
                     },
                     "isEnabledBy": {
                         "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
@@ -297,7 +334,8 @@ export default {
                         "noTextEditing": true,
                         "add": "unsaved",
                         "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEnabledBy", values); },
-                        "remove": function(source, target) { me.removeRelationFromFramework(source, "isEnabledBy", target); }
+                        "remove": function(source, target) { me.removeRelationFromFramework(source, "isEnabledBy", target); },
+                        "heading": "Connections"
                     },
                     "isRelatedTo": {
                         "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
@@ -310,7 +348,8 @@ export default {
                         "noTextEditing": true,
                         "add": "unsaved",
                         "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isRelatedTo", values); },
-                        "remove": function(source, target) { me.removeRelationFromFramework(source, "isRelatedTo", target); }
+                        "remove": function(source, target) { me.removeRelationFromFramework(source, "isRelatedTo", target); },
+                        "heading": "Connections"
                     },
                     "desires": {
                         "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
@@ -323,8 +362,10 @@ export default {
                         "noTextEditing": true,
                         "add": "unsaved",
                         "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "desires", values); },
-                        "remove": function(source, target) { me.removeRelationFromFramework(source, "desires", target); }
-                    }
+                        "remove": function(source, target) { me.removeRelationFromFramework(source, "desires", target); },
+                        "heading": "Connections"
+                    },
+                    "headings": ["Keys", "General", "Connections"]
                 };
             }
         }
