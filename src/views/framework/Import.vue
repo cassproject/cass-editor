@@ -494,6 +494,12 @@
                         <div
                             v-if="framework && showImportPreviewView"
                             class="import-preview">
+                            <Thing
+                                :obj="framework"
+                                :repo="repo"
+                                :profile="t3FrameworkProfile"
+                                :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
+                                iframeText="Attach subitems from other sources to the selected item." />
                             <div class="tile is-vertical">
                                 <!-- loading section -- dummy content to show while loading dome elemnts -->
                                 <div
@@ -532,7 +538,8 @@
                                     edgeSourceProperty="source"
                                     edgeTargetProperty="target"
                                     :repo="repo"
-                                    :newFramework="true" />
+                                    :newFramework="true"
+                                    @deleteObject="deleteObject" />
                             </div>
                         </div>
                         <!-- import light view -->
@@ -555,7 +562,8 @@
                                     edgeSourceProperty="source"
                                     edgeTargetProperty="target"
                                     :repo="repo"
-                                    :newFramework="true" />
+                                    :newFramework="true"
+                                    @deleteObject="deleteObject" />
                             </div>
                         </div>
                     </div>
@@ -686,6 +694,7 @@ import sideBar from './../../components/SideBar.vue';
 import exports from '@/mixins/exports.js';
 import competencyEdits from '@/mixins/competencyEdits.js';
 import t3Profile from '@/mixins/t3Profile.js';
+import Thing from '@/lode/components/lode/Thing.vue';
 
 export default {
     name: "Import",
@@ -693,7 +702,7 @@ export default {
         queryParams: Object
     },
     mixins: [common, exports, competencyEdits, t3Profile],
-    components: {Hierarchy, dragAndDrop, sideBar},
+    components: {Hierarchy, dragAndDrop, sideBar, Thing},
     data: function() {
         return {
             hierarchyIsdoneLoading: false,
