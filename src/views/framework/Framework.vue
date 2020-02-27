@@ -8,7 +8,11 @@
                     :parentNotEditable="queryParams.view==='true'"
                     :profile="frameworkProfile"
                     :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
-                    iframeText="Attach subitems from other sources to the selected item." />
+                    iframeText="Attach subitems from other sources to the selected item."
+                    @select="select"
+                    @deleteObject="deleteObject"
+                    @removeObject="removeObject"
+                    @exportObject="exportObject" />
                 <span class="actions">
                     <span
                         class="tag is-info has-text-white"
@@ -75,7 +79,11 @@
                     :selectAll="selectAll"
                     :profile="competencyProfile"
                     :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
-                    iframeText="Attach subitems from other sources to the selected item." />
+                    iframeText="Attach subitems from other sources to the selected item."
+                    @select="select"
+                    @deleteObject="deleteObject"
+                    @removeObject="removeObject"
+                    @exportObject="exportObject" />
             </div>
         </div>
     </div>
