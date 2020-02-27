@@ -88,6 +88,7 @@ import exports from '@/mixins/exports.js';
 import competencyEdits from '@/mixins/competencyEdits.js';
 import ctdlasnProfile from '@/mixins/ctdlasnProfile.js';
 import t3Profile from '@/mixins/t3Profile.js';
+import tlaProfile from '@/mixins/tlaProfile.js';
 export default {
     name: "Framework",
     props: {
@@ -96,7 +97,7 @@ export default {
         disallowEdits: Boolean,
         profileOverride: Object
     },
-    mixins: [common, exports, competencyEdits, ctdlasnProfile, t3Profile],
+    mixins: [common, exports, competencyEdits, ctdlasnProfile, t3Profile, tlaProfile],
     data: function() {
         return {
             repo: window.repo,
@@ -149,6 +150,9 @@ export default {
             if (this.queryParams.ceasnDataFields === "true") {
                 return this.ctdlAsnFrameworkProfile;
             }
+            if (this.queryParams.tlaProfile === "true") {
+                return this.tlaFrameworkProfile;
+            }
             return {
                 "@id": {
                     "@id": "https://schema.cassproject.org/0.4/Framework/id",
@@ -157,8 +161,8 @@ export default {
                     [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "The URL of the competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "URL"}],
+                    [{"@language": "en", "@value": "The URL of the framework."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Framework URL"}],
                     "readOnly": true,
                     "max": 1,
                     "heading": "Keys"
@@ -170,9 +174,10 @@ export default {
                     [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
                     "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Name of the competency framework."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "name"}],
-                    "heading": "General"
+                    [{"@language": "en", "@value": "The name of the framework. One name per language."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Framework Name"}],
+                    "heading": "General",
+                    "onePerLanguage": true
                 },
                 "http://schema.org/description": {
                     "@id": "http://schema.org/description",
@@ -181,9 +186,10 @@ export default {
                     [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
                     "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Description of the framework."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "description"}],
-                    "heading": "General"
+                    [{"@language": "en", "@value": "The description of the framework. One description per language"}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}],
+                    "heading": "General",
+                    "onePerLanguage": true
                 },
                 "headings": ["Keys", "General"]
             };
@@ -196,6 +202,8 @@ export default {
                 return this.profileOverride;
             } else if (this.queryParams.ceasnDataFields === "true") {
                 return this.ctdlAsnCompetencyProfile;
+            } else if (this.queryParams.tlaProfile === "true") {
+                return this.tlaCompetencyProfile;
             } else {
                 var me = this;
                 return {
@@ -219,9 +227,10 @@ export default {
                         [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                         "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
                         "http://www.w3.org/2000/01/rdf-schema#comment":
-                        [{"@language": "en", "@value": "Name of the competency."}],
+                        [{"@language": "en", "@value": "The name of the competency. One name per language."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}],
-                        "heading": "General"
+                        "heading": "General",
+                        "onePerLanguage": true
                     },
                     "http://schema.org/description": {
                         "@id": "http://schema.org/description",
@@ -230,7 +239,7 @@ export default {
                         [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                         "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
                         "http://www.w3.org/2000/01/rdf-schema#comment":
-                        [{"@language": "en", "@value": "Description of the competency."}],
+                        [{"@language": "en", "@value": "The description of the competency."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}],
                         "heading": "General"
                     },
@@ -241,7 +250,7 @@ export default {
                         [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                         "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
                         "http://www.w3.org/2000/01/rdf-schema#comment":
-                        [{"@language": "en", "@value": "Scope in which the competency may be applied. e.g. Underwater."}],
+                        [{"@language": "en", "@value": "The scope of the competency."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Scope"}],
                         "heading": "General"
                     },

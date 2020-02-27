@@ -1,6 +1,6 @@
 export default {
     computed: {
-        ctdlAsnFrameworkProfile: function() {
+        tlaFrameworkProfile: function() {
             var me = this;
             return {
                 "@id": {
@@ -10,37 +10,9 @@ export default {
                     [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "The URL of the framework. If imported from another source, the URL of the framework from which this one originates."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Canonical URL"}],
+                    [{"@language": "en", "@value": "The URL of the framework."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Framework URL"}],
                     "readOnly": true,
-                    "max": 1,
-                    "heading": "Keys"
-                },
-                "registryURL": {
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "The Credential Registry URL of the framework."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Credential Registry URL"}],
-                    "readOnly": true,
-                    "valuesIndexed": function() { return me.registryURLs; },
-                    "thingKey": "registryURL",
-                    "max": 1,
-                    "heading": "Keys"
-                },
-                "ctid": {
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "The CTID of the framework."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "CTID"}],
-                    "readOnly": true,
-                    "valuesIndexed": function() { return me.ctids; },
-                    "thingKey": "ctid",
                     "max": 1,
                     "heading": "Keys"
                 },
@@ -51,11 +23,10 @@ export default {
                     [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
                     "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "The name or title of this competency framework. One name or title per language."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name*"}],
-                    "required": true,
-                    "onePerLanguage": true,
-                    "heading": "General"
+                    [{"@language": "en", "@value": "The name of the framework. One name per language."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Framework Name"}],
+                    "heading": "General",
+                    "onePerLanguage": true
                 },
                 "http://schema.org/description": {
                     "@id": "http://schema.org/description",
@@ -64,10 +35,10 @@ export default {
                     [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
                     "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "A short description of this framework. One description per language."}],
+                    [{"@language": "en", "@value": "The description of the framework. One description per language"}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}],
-                    "onePerLanguage": true,
-                    "heading": "General"
+                    "heading": "General",
+                    "onePerLanguage": true
                 },
                 "http://schema.org/creator": {
                     "@id": "http://schema.org/creator",
@@ -117,20 +88,19 @@ export default {
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The primary language used in or by this competency framework or competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "In Language*"}],
-                    "required": true,
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "In Language"}],
                     "thingKey": "schema:inLanguage",
                     "heading": "General"
                 },
                 "http://schema.org/keywords": {
-                    "@id": "https://purl.org/ctdlasn/terms/conceptKeyword",
+                    "@id": "http://schema.org/keywords",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
                     [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
                     "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "A word or phrase used by the promulgating agency to refine and differentiate individual frameworks contextually. One concept per line."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Concept Keyword"}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Keywords"}],
                     "thingKey": "schema:keywords",
                     "heading": "Tagging"
                 },
@@ -142,7 +112,7 @@ export default {
                     "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/skos/Concept"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual resources contextually."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Concept Term"}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Concept Terms"}],
                     "thingKey": "ceasn:conceptTerm",
                     "iframePath": me.$store.state.editor.iframeConceptPath,
                     "iframeText": "Select concepts to attach...",
@@ -173,7 +143,7 @@ export default {
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "A related competency framework of which this competency framework is a version, edition, or adaptation."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Version Of"}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Version Of"}],
                     "thingKey": "ceasn:isVersionOf",
                     "max": 1,
                     "heading": "Connections"
@@ -190,7 +160,7 @@ export default {
                             "@value": `A URI to the original competency framework which this competency framework is based on or derived from.
                             For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.`}
                     ],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Source Framework"}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Source"}],
                     "thingKey": "dc:source",
                     "heading": "Connections"
                 },
@@ -213,26 +183,26 @@ export default {
                     "heading": "Context"
                 },
                 "http://schema.org/validFrom": {
-                    "@id": "https://purl.org/ctdlasn/terms/validFrom",
+                    "@id": "http://schema.org/validFrom",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
                     [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
                     "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2001/XMLSchema#dateTime"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Beginning date of validity of this competency framework."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Date Valid From"}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Valid From"}],
                     "max": 1,
                     "heading": "Context"
                 },
                 "http://schema.org/validThrough": {
-                    "@id": "https://purl.org/ctdlasn/terms/validThrough",
+                    "@id": "http://schema.org/validThrough",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
                     [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
                     "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2001/XMLSchema#dateTime"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "End date of validity of this competency framework."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Date Valid Until"}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Valid Until"}],
                     "max": 1,
                     "heading": "Context"
                 },
@@ -244,7 +214,7 @@ export default {
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Publication status of the source competency framework. The original framework may be drafted, published, or depreciated outside of this system."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Source Publication Status"}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Publication Status"}],
                     "thingKey": "ceasn:publicationStatusType",
                     "options": [
                         {display: "Draft", val: "http://credreg.net/ctdlasn/vocabs/publicationStatus/Draft"},
@@ -321,7 +291,7 @@ export default {
                 "headings": ["Keys", "General", "Tagging", "Connections", "Context", "Rights"]
             };
         },
-        ctdlAsnCompetencyProfile: function() {
+        tlaCompetencyProfile: function() {
             var me = this;
             return {
                 "@id": {
@@ -331,88 +301,77 @@ export default {
                     [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "The URL of the competency. If imported from another source, the URL of the competency from which this one originates."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Canonical URL"}],
+                    [{"@language": "en", "@value": "The URL of the competency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "URL"}],
                     "readOnly": true,
                     "max": 1,
                     "heading": "Keys"
                 },
-                "registryURL": {
-                    "@id": "https://schema.cassproject.org/0.4/Competency/id",
+                "http://schema.org/name": {
+                    "@id": "http://schema.org/name",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
                     [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "The Credential Registry URL of the competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Credential Registry URL"}],
-                    "readOnly": true,
-                    "valuesIndexed": function() { return me.registryURLs; },
-                    "thingKey": "registryURL",
-                    "max": 1,
-                    "heading": "Keys"
+                    [{"@language": "en", "@value": "The name of the competency. One name per language."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}],
+                    "heading": "General",
+                    "onePerLanguage": true
                 },
-                "ctid": {
-                    "@id": "https://schema.cassproject.org/0.4/Competency/id",
+                "http://schema.org/description": {
+                    "@id": "http://schema.org/description",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "The description of the competency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}],
+                    "heading": "General"
+                },
+                "https://schema.cassproject.org/0.4/Competency/scope": {
+                    "@id": "https://schema.cassproject.org/0.4/Competency/scope",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
                     [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "The CTID of the competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "CTID"}],
-                    "readOnly": true,
-                    "valuesIndexed": function() { return me.ctids; },
-                    "thingKey": "ctid",
-                    "max": 1,
-                    "heading": "Keys"
-                },
-                "https://purl.org/ctdlasn/terms/competencyLabel": {
-                    "@id": "https://purl.org/ctdlasn/terms/competencyLabel",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Short identifying phrase or name applied to a competency by the creator of the competency framework."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Competency Label"}],
-                    "thingKey": "ceasn:competencyLabel",
-                    "onePerLanguage": true,
+                    [{"@language": "en", "@value": "The scope of the competency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Scope"}],
                     "heading": "General"
                 },
-                "http://schema.org/name": {
-                    "@id": "https://purl.org/ctdlasn/terms/competencyText",
+                "https://schema.cassproject.org/0.4/Level": {
+                    "@id": "https://schema.cassproject.org/0.4/Level",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
                     [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "The text of the competency. One per language."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Competency Text*"}],
-                    "required": true,
-                    "onePerLanguage": true,
-                    "heading": "General"
-                },
-                "http://schema.org/description": {
-                    "@id": "https://purl.org/ctdlasn/terms/comment",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Supplemental text provided by the promulgating body that clarifies the nature, scope or use of this competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Comment"}],
+                    [
+                        {"@language": "en",
+                            "@value":
+                    "When an individual's performance in a competency can be measured, a level specifies milestones that an individual can reach, creating fine-grained distinction between the proficient and the adept."}
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Level"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Level"}],
+                    "valuesIndexed": function() { return me.levels; },
+                    "noTextEditing": true,
+                    "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
+                    "iframeText": "Select levels to align...",
+                    "add": function(selectedCompetency) { me.addLevel(selectedCompetency); },
+                    "remove": function(competency, levelId) { me.removeLevelFromFramework(levelId); },
+                    "save": function() { me.saveFramework(); },
                     "heading": "General"
                 },
                 "http://purl.org/dc/terms/type": {
-                    "@id": "https://purl.org/ctdlasn/terms/competencyCategory",
+                    "@id": "http://purl.org/dc/terms/type",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
                     [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                     "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The textual label identifying the category of the competency as designated by the promulgating body. One label per line. One label per language."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Competency Category"}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Type"}],
                     "thingKey": "dcterms:type",
                     "onePerLanguage": true,
                     "heading": "General"
@@ -474,13 +433,13 @@ export default {
                             "@value":
                             "The URI of a competency from which this competency has been derived. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.  One entity per line."}
                     ],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Derivative Of"}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Derived From"}],
                     "thingKey": "ceasn:derivedFrom",
                     "max": 1,
                     "heading": "Context"
                 },
                 "http://schema.org/identifier": {
-                    "@id": "https://purl.org/ctdlasn/terms/identifier",
+                    "@id": "http://schema.org/identifier",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
                     [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
@@ -492,14 +451,14 @@ export default {
                     "heading": "Context"
                 },
                 "http://schema.org/keywords": {
-                    "@id": "https://purl.org/ctdlasn/terms/conceptKeyword",
+                    "@id": "http://schema.org/keywords",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
                     [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                     "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "A word or phrase used by the promulgating agency to refine and differentiate individual competencies contextually. One concept per line."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Concept Keyword"}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Keywords"}],
                     "thingKey": "schema:keywords",
                     "heading": "Tagging"
                 },
@@ -511,7 +470,7 @@ export default {
                     "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/skos/Concept"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual resources contextually."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Concept Term"}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Concept Terms"}],
                     "thingKey": "ceasn:conceptTerm",
                     "iframePath": me.$store.state.editor.iframeConceptPath,
                     "iframeText": "Select concepts to attach...",
@@ -544,31 +503,11 @@ export default {
                     "max": 1,
                     "heading": "Scales"
                 },
-                "hasChild": {
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "The referenced competency is lower in some arbitrary hierarchy than this competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Has Child"}],
-                    "valuesIndexed": function() { return me.relations["hasChild"]; },
-                    "noTextEditing": true,
-                    "readOnly": true,
-                    "heading": "Connections"
-                },
-                "isChildOf": {
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "The referenced competency is higher in some arbitrary hierarchy than this competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Child Of"}],
-                    "valuesIndexed": function() { return me.relations["isChildOf"]; },
-                    "noTextEditing": true,
-                    "readOnly": true,
-                    "heading": "Connections"
-                },
                 "narrows": {
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Covers all of the relevant concepts in the referenced competency as well as relevant concepts not found in the referenced competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Broad Alignment"}],
+                    [{"@language": "en", "@value": "A sub-competency relationship which has relevance to this competency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Narrows"}],
                     "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
                     "iframeText": "Select competencies to align...",
                     "valuesIndexed": function() { return me.relations["narrows"]; },
@@ -581,8 +520,8 @@ export default {
                 "broadens": {
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Covers all of the relevant concepts in this competency as well as relevant concepts not found in this competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Narrow Alignment"}],
+                    [{"@language": "en", "@value": "Covers other relevant competencies not found in this competency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Broadens"}],
                     "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
                     "iframeText": "Select competencies to align...",
                     "valuesIndexed": function() { return me.relations["broadens"]; },
@@ -595,8 +534,8 @@ export default {
                 "isEquivalentTo": {
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Relevant concepts in this competency and the referenced competency are coextensive."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Exact Alignment"}],
+                    [{"@language": "en", "@value": "Represents same capability in all aspects to another competency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Equivalent To"}],
                     "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
                     "iframeText": "Select competencies to align...",
                     "valuesIndexed": function() { return me.relations["isEquivalentTo"]; },
@@ -606,39 +545,11 @@ export default {
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isEquivalentTo", target); },
                     "heading": "Connections"
                 },
-                "majorRelated": {
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Major overlap of relevant concepts between this competency and the referenced competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Major Alignment"}],
-                    "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
-                    "iframeText": "Select competencies to align...",
-                    "valuesIndexed": function() { return me.relations["majorRelated"]; },
-                    "noTextEditing": true,
-                    "add": "unsaved",
-                    "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "majorRelated", values); },
-                    "remove": function(source, target) { me.removeRelationFromFramework(source, "majorRelated", target); },
-                    "heading": "Connections"
-                },
-                "minorRelated": {
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Minor overlap of relevant concepts between this competency and the referenced competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Minor Alignment"}],
-                    "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
-                    "iframeText": "Select competencies to align...",
-                    "valuesIndexed": function() { return me.relations["minorRelated"]; },
-                    "noTextEditing": true,
-                    "add": "unsaved",
-                    "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "minorRelated", values); },
-                    "remove": function(source, target) { me.removeRelationFromFramework(source, "minorRelated", target); },
-                    "heading": "Connections"
-                },
                 "requires": {
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "This competency is a prerequisite to the referenced competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Prerequisite Alignment"}],
+                    [{"@language": "en", "@value": "Another competency is prerequisite for this."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Requires"}],
                     "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
                     "iframeText": "Select competencies to align...",
                     "valuesIndexed": function() { return me.relations["requires"]; },
@@ -648,60 +559,46 @@ export default {
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "requires", target); },
                     "heading": "Connections"
                 },
-                "https://purl.org/ctdlasn/terms/abilityEmbodied": {
-                    "@id": "https://purl.org/ctdlasn/terms/abilityEmbodied",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                "isEnabledBy": {
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Enduring attributes of the individual that influence performance are embodied either directly or indirectly in this competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Ability Embodied"}],
-                    "iframePath": me.$store.state.editor.iframeCompetencyPathIntraframework,
+                    [{"@language": "en", "@value": "A recommended option that speeds up acquisition of this competency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Enabled By"}],
+                    "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
                     "iframeText": "Select competencies to align...",
-                    "thingKey": "ceasn:abilityEmbodied",
+                    "valuesIndexed": function() { return me.relations["isEnabledBy"]; },
+                    "noTextEditing": true,
+                    "add": "unsaved",
+                    "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEnabledBy", values); },
+                    "remove": function(source, target) { me.removeRelationFromFramework(source, "isEnabledBy", target); },
                     "heading": "Connections"
                 },
-                "https://purl.org/ctdlasn/terms/knowledgeEmbodied": {
-                    "@id": "https://purl.org/ctdlasn/terms/knowledgeEmbodied",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                "isRelatedTo": {
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Body of information embodied either directly or indirectly in this competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Knowledge Embodied"}],
-                    "iframePath": me.$store.state.editor.iframeCompetencyPathIntraframework,
+                    [{"@language": "en", "@value": "This competency has some degree of overlap with another."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Related To"}],
+                    "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
                     "iframeText": "Select competencies to align...",
-                    "thingKey": "ceasn:knowledgeEmbodied",
+                    "valuesIndexed": function() { return me.relations["isRelatedTo"]; },
+                    "noTextEditing": true,
+                    "add": "unsaved",
+                    "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isRelatedTo", values); },
+                    "remove": function(source, target) { me.removeRelationFromFramework(source, "isRelatedTo", target); },
                     "heading": "Connections"
                 },
-                "https://purl.org/ctdlasn/terms/skillEmbodied": {
-                    "@id": "https://purl.org/ctdlasn/terms/skillEmbodied",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                "desires": {
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Cognitive, affective, and psychomotor skills directly or indirectly embodied in this competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Skill Embodied"}],
-                    "iframePath": me.$store.state.editor.iframeCompetencyPathIntraframework,
+                    [{"@language": "en", "@value": "Recommended, assumed, or expected competency not essential to acquisition of this competency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Desires"}],
+                    "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
                     "iframeText": "Select competencies to align...",
-                    "thingKey": "ceasn:skillEmbodied",
-                    "heading": "Connections"
-                },
-                "https://purl.org/ctdlasn/terms/taskEmbodied": {
-                    "@id": "https://purl.org/ctdlasn/terms/taskEmbodied",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Specifically defined piece of work embodied either directly or indirectly in this competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Task Embodied"}],
-                    "iframePath": me.$store.state.editor.iframeCompetencyPathIntraframework,
-                    "iframeText": "Select competencies to align...",
-                    "thingKey": "ceasn:taskEmbodied",
+                    "valuesIndexed": function() { return me.relations["desires"]; },
+                    "noTextEditing": true,
+                    "add": "unsaved",
+                    "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "desires", values); },
+                    "remove": function(source, target) { me.removeRelationFromFramework(source, "desires", target); },
                     "heading": "Connections"
                 },
                 "headings": ["Keys", "General", "Context", "Tagging", "Scales", "Connections"]
