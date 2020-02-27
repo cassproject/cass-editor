@@ -159,7 +159,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The URL of the competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "URL"}],
-                    "noTextEditing": true,
+                    "readOnly": true,
                     "max": 1,
                     "heading": "Keys"
                 },
@@ -208,7 +208,7 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "The URL of the competency."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "URL"}],
-                        "noTextEditing": true,
+                        "readOnly": true,
                         "max": 1,
                         "heading": "Keys"
                     },

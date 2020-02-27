@@ -12,7 +12,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The URL of the competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "ID"}],
-                    "noTextEditing": true
+                    "readOnly": true
                 },
                 "http://schema.org/name": {
                     "@id": "http://schema.org/name",
@@ -239,7 +239,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The URL of the framework."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "ID"}],
-                    "noTextEditing": true
+                    "readOnly": true
                 },
                 "http://schema.org/name": {
                     "@id": "http://schema.org/name",

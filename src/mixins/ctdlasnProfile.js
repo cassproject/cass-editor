@@ -12,7 +12,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The URL of the framework. If imported from another source, the URL of the framework from which this one originates."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Canonical URL"}],
-                    "noTextEditing": true,
+                    "readOnly": true,
                     "max": 1,
                     "heading": "Keys"
                 },
@@ -24,7 +24,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The Credential Registry URL of the framework."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Credential Registry URL"}],
-                    "noTextEditing": true,
+                    "readOnly": true,
                     "valuesIndexed": function() { return me.registryURLs; },
                     "thingKey": "registryURL",
                     "max": 1,
@@ -38,7 +38,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The CTID of the framework."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "CTID"}],
-                    "noTextEditing": true,
+                    "readOnly": true,
                     "valuesIndexed": function() { return me.ctids; },
                     "thingKey": "ctid",
                     "max": 1,
@@ -333,7 +333,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The URL of the competency. If imported from another source, the URL of the competency from which this one originates."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Canonical URL"}],
-                    "noTextEditing": true,
+                    "readOnly": true,
                     "max": 1,
                     "heading": "Keys"
                 },
@@ -346,7 +346,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The Credential Registry URL of the competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Credential Registry URL"}],
-                    "noTextEditing": true,
+                    "readOnly": true,
                     "valuesIndexed": function() { return me.registryURLs; },
                     "thingKey": "registryURL",
                     "max": 1,
@@ -361,7 +361,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The CTID of the competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "CTID"}],
-                    "noTextEditing": true,
+                    "readOnly": true,
                     "valuesIndexed": function() { return me.ctids; },
                     "thingKey": "ctid",
                     "max": 1,
@@ -551,7 +551,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Has Child"}],
                     "valuesIndexed": function() { return me.relations["hasChild"]; },
                     "noTextEditing": true,
-                    "noEditing": true,
+                    "readOnly": true,
                     "heading": "Connections"
                 },
                 "isChildOf": {
@@ -561,7 +561,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Child Of"}],
                     "valuesIndexed": function() { return me.relations["isChildOf"]; },
                     "noTextEditing": true,
-                    "noEditing": true,
+                    "readOnly": true,
                     "heading": "Connections"
                 },
                 "narrows": {
