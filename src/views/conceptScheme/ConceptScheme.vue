@@ -3,7 +3,10 @@
         <Thing
             :obj="framework"
             :repo="repo"
-            :parentNotEditable="queryParams.view==='true'" />
+            :parentNotEditable="queryParams.view==='true'"
+            @deleteObject="deleteObject"
+            @exportObject="exportObject"
+            @select="select" />
         <span
             class="info-tag"
             v-if="timestamp"
@@ -40,7 +43,10 @@
             :exportOptions="conceptExportOptions"
             :highlightList="highlightCompetency"
             :selectMode="selectButtonText != null"
-            :selectAll="selectAll" />
+            :selectAll="selectAll"
+            @deleteObject="deleteObject"
+            @exportObject="exportObject"
+            @select="select" />
     </div>
 </template>
 <script>
