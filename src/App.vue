@@ -337,6 +337,28 @@ export default {
         path += this.queryParams.editIframe !== "true" ? "&view=true" : "";
         path += this.$store.state.editor.commonPathIframe;
         this.$store.commit('iframeConceptPath', path);
+        if (parent !== window) {
+            var oHead = document.getElementsByTagName("head")[0];
+            var arrStyleSheets = parent.document.getElementsByTagName("*");
+            for (var i = 0; i < arrStyleSheets.length; i++) {
+                if (arrStyleSheets[i].tagName.toLowerCase() === "link" || arrStyleSheets[i].tagName.toLowerCase() === "style") {
+                    if (arrStyleSheets[i].attributes.inherit != null) {
+                        oHead.appendChild(arrStyleSheets[i].cloneNode(true));
+                    }
+                }
+            }
+            try {
+                this.importParentStyles();
+            // eslint-disable-next-line no-empty
+            } catch (e) {}
+        }
+        if (this.queryParams.css != null) {
+            var ss = document.createElement("link");
+            ss.type = "text/css";
+            ss.rel = "stylesheet";
+            ss.href = this.queryParams.css;
+            document.getElementsByTagName("head")[0].appendChild(ss);
+        }
     },
     methods: {
         cappend: function(event) {
@@ -1220,6 +1242,29 @@ export default {
             me.repo.saveTo(thing, function() {
                 me.repo.saveTo(framework, function() {}, console.error);
             }, console.error);
+        },
+        importParentStyles: function() {
+            var parentStyleSheets = parent.document.styleSheets;
+            var cssString = "";
+            for (var i = 0, count = parentStyleSheets.length; i < count; ++i) {
+                if (parentStyleSheets[i].cssRules) {
+                    if (parentStyleSheets[i].ownerNode.attributes.inherit != null) {
+                        var cssRules = parentStyleSheets[i].cssRules;
+                        for (var j = 0, countJ = cssRules.length; j < countJ; ++j) {
+                            cssString += cssRules[j].cssText;
+                        }
+                    } // else
+                // cssString += parentStyleSheets[i].cssText; // IE8 and earlier
+                }
+            }
+            var style = document.createElement("style");
+            style.type = "text/css";
+            try {
+                style.innerHTML = cssString;
+            } catch (ex) {
+                // style.styleSheet.cssText = cssString; // IE8 and earlier
+            }
+            document.getElementsByTagName("head")[0].appendChild(style);
         }
     },
     computed: {
