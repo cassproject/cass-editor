@@ -7,7 +7,7 @@ export default {
                     "@id": "https://schema.cassproject.org/0.4/Competency/id",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The URL of the competency."}],
@@ -18,7 +18,7 @@ export default {
                     "@id": "http://schema.org/name",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
-                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "Name of the competency."}],
@@ -29,7 +29,7 @@ export default {
                     "@id": "https://purl.org/ctdlasn/terms/codedNotation",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
-                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "An alphanumeric notation or ID code as defined by the promulgating body to identify this resource."}],
@@ -40,7 +40,7 @@ export default {
                     "@id": "http://schema.org/description",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
-                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "Description of the competency."}],
@@ -50,7 +50,7 @@ export default {
                     "@id": "http://purl.org/dc/terms/type",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
-                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "The textual label identifying the category of the competency as designated by the promulgating body."}],
@@ -61,7 +61,7 @@ export default {
                     "@id": "https://schema.cassproject.org/0.4/Competency/scope",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Scope in which the competency may be applied. e.g. Underwater."}],
@@ -71,8 +71,8 @@ export default {
                     "@id": "https://purl.org/ctdlasn/terms/conceptTerm",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
-                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/skos/Concept"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual resources contextually."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Context"}],
@@ -84,7 +84,7 @@ export default {
                     "@id": "https://schema.cassproject.org/0.4/Level",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                     "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Level"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [
@@ -231,13 +231,13 @@ export default {
         t3FrameworkProfile: function() {
             return {
                 "@id": {
-                    "@id": "https://schema.cassproject.org/0.4/Competency/id",
+                    "@id": "https://schema.cassproject.org/0.4/Framework/id",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "The URL of the competency."}],
+                    [{"@language": "en", "@value": "The URL of the framework."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "ID"}],
                     "noTextEditing": true
                 },
@@ -245,7 +245,7 @@ export default {
                     "@id": "http://schema.org/name",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
                     "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Name of the competency framework."}],
@@ -256,7 +256,7 @@ export default {
                     "@id": "http://schema.org/description",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
                     "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Description of the framework."}],
@@ -266,7 +266,7 @@ export default {
                     "@id": "https://schema.cassproject.org/0.4/level",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
                     "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/level"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The title that one who holds this performance level may assume. e.g. \"Fast\""}],
@@ -276,7 +276,7 @@ export default {
                     "@id": "http://schema.org/publisher",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The entity responsible for making this competency framework available."}],
@@ -287,7 +287,7 @@ export default {
                     "@id": "http://purl.org/dc/elements/1.1/source",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "A URI to the original competency framework which this competency framework is based on or derived from."}],
@@ -298,7 +298,7 @@ export default {
                     "@id": "http://schema.org/dateCreated",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
                     "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2001/XMLSchema#date"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Date of creation of this resource."}],
