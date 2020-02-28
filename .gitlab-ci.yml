@@ -31,7 +31,7 @@ buildDev:
     - ./dist
 
 
-    
+
 buildQA:
   stage: build
   only:
@@ -48,7 +48,7 @@ buildQA:
     paths:
     - ./dist
 
-    
+
 ### DEPLOYMENTS
 
 
@@ -59,7 +59,7 @@ deployDev:
     - dev
   environment:
     name: dev
-    url: https://dev.t3.cassproject.org
+    url: https://dev.editor.cassproject.org
   script:
    - apt-get update -y
    - apt-get install openssh-client -y
@@ -69,25 +69,25 @@ deployDev:
 
    - mkdir -p ~/.ssh
    - chmod 700 ~/.ssh
-   - echo "$T3_DEV_SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+   - echo "$DEV_SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
    - chmod 644 ~/.ssh/known_hosts
 
-   - chmod 600 "$T3_DEV_PRIVATE_KEY"
-   - ssh-add "$T3_DEV_PRIVATE_KEY" > /dev/null
+   - chmod 600 "$DEV_PRIVATE_KEY"
+   - ssh-add "$DEV_PRIVATE_KEY" > /dev/null
 
    ## Build commands
-   - ssh -p22 $DEV_USERNAME@$T3_DEV_SERVER_IP "rm -rf /var/www/dev.t3.cassproject.org/*"
-   - scp -P22 -r dist/* $DEV_USERNAME@$T3_DEV_SERVER_IP:/var/www/dev.t3.cassproject.org/
+   - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "rm -rf /var/www/dev.editor.cassproject.org/*"
+   - scp -P22 -r dist/* $DEV_USERNAME@$DEV_SERVER_IP:/var/www/dev.editor.cassproject.org/
 
 
-   
+
 deployQA:
   stage: deploy
   only:
     - qa
   environment:
     name: qa
-    url: https://qa.t3.cassproject.org
+    url: https://qa.editor.cassproject.org
   script:
    - apt-get update -y
    - apt-get install openssh-client -y
@@ -97,13 +97,12 @@ deployQA:
 
    - mkdir -p ~/.ssh
    - chmod 700 ~/.ssh
-   - echo "$T3_DEV_SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+   - echo "$DEV_SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
    - chmod 644 ~/.ssh/known_hosts
 
-   - chmod 600 "$T3_DEV_PRIVATE_KEY"
-   - ssh-add "$T3_DEV_PRIVATE_KEY" > /dev/null
+   - chmod 600 "$DEV_PRIVATE_KEY"
+   - ssh-add "$DEV_PRIVATE_KEY" > /dev/null
 
    ## Build commands
-   - ssh -p22 $DEV_USERNAME@$T3_DEV_SERVER_IP "rm -rf /var/www/qa.t3.cassproject.org/*"
-   - scp -P22 -r dist/* $DEV_USERNAME@$T3_DEV_SERVER_IP:/var/www/qa.t3.cassproject.org/
-   
+   - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "rm -rf /var/www/qa.editor.cassproject.org/*"
+   - scp -P22 -r dist/* $DEV_USERNAME@$DEV_SERVER_IP:/var/www/qa.editor.cassproject.org/
