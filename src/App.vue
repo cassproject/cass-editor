@@ -188,7 +188,53 @@
 
 </style>
 <style lang="scss">
-    @import './styles.scss';
+    @import './scss/variables.scss';
+
+html {
+    font-family: $family-primary;
+    max-width: 100vw !important;
+    margin: 0px;
+    height: 100%;
+    padding: 0px;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 16px;
+}
+body{
+    overflow-y: hidden;
+    height: 100%;
+    background: $light;
+    background-repeat: no-repeat;
+    background-size: cover;
+    min-height: 100vh;
+}
+#app {
+    height: 100%;
+}
+
+
+.menu {
+    overflow-y: scroll;
+    height: 100vh;
+    padding: 1rem;
+    width: 300px;
+}
+
+.navbar-menu {
+    // override active links
+    .is-active{
+        color: rgba($light, .8) !important;
+
+    }
+}
+
+#mainDropDown {
+    .is-active{
+        color: rgba($dark, .7) !important;
+    }
+}
+
 </style>
 <script>
 import common from '@/mixins/common.js';
@@ -209,6 +255,10 @@ export default {
         if (to.path !== from.path) {
             this.navBarActive = false;
         }
+    },
+    beforeDestroy: function() {
+        window.removeEventListener('message', this.cappend);
+        window.removeEventListener("message", this.messageListener);
     },
     created: function() {
         var servers = ["https://dev.api.cassproject.org/api/"];
@@ -277,16 +327,38 @@ export default {
         path += this.queryParams.selectExport ? "&selectExport=" + this.queryParams.selectExport : "";
         path += this.queryParams.user ? "&user=" + this.queryParams.user : "";
         this.$store.commit('commonPathIframe', path);
-        path = this.queryParams.editorRoot ? this.queryParams.editorRoot : "";
+        path = this.queryParams.editorRoot ? this.queryParams.editorRoot : "/";
         path += "cass-editor/?select=Align with...&view=true&back=true";
         path += this.$store.state.editor.commonPathIframe;
         this.$store.commit('iframeCompetencyPathInterframework', path);
-        path = this.queryParams.editorRoot ? this.queryParams.editorRoot : "";
+        path = this.queryParams.editorRoot ? this.queryParams.editorRoot : "/";
         path += "cass-editor/?select=Add&concepts=true";
         path += this.queryParams.conceptShow ? "&conceptShow=" + this.queryParams.conceptShow : "";
         path += this.queryParams.editIframe !== "true" ? "&view=true" : "";
         path += this.$store.state.editor.commonPathIframe;
         this.$store.commit('iframeConceptPath', path);
+        if (parent !== window) {
+            var oHead = document.getElementsByTagName("head")[0];
+            var arrStyleSheets = parent.document.getElementsByTagName("*");
+            for (var i = 0; i < arrStyleSheets.length; i++) {
+                if (arrStyleSheets[i].tagName.toLowerCase() === "link" || arrStyleSheets[i].tagName.toLowerCase() === "style") {
+                    if (arrStyleSheets[i].attributes.inherit != null) {
+                        oHead.appendChild(arrStyleSheets[i].cloneNode(true));
+                    }
+                }
+            }
+            try {
+                this.importParentStyles();
+            // eslint-disable-next-line no-empty
+            } catch (e) {}
+        }
+        if (this.queryParams.css != null) {
+            var ss = document.createElement("link");
+            ss.type = "text/css";
+            ss.rel = "stylesheet";
+            ss.href = this.queryParams.css;
+            document.getElementsByTagName("head")[0].appendChild(ss);
+        }
     },
     methods: {
         cappend: function(event) {
@@ -491,6 +563,9 @@ export default {
                     framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                 }
                 framework.name = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Framework"};
+                if (this.queryParams.ceasnDataFields === "true") {
+                    framework["schema:inLanguage"] = [this.$store.state.editor.defaultLanguage];
+                }
                 var saveFramework = framework;
                 if (this.queryParams.private === "true") {
                     saveFramework = EcEncryptedValue.toEncryptedValue(framework);
@@ -1146,6 +1221,50 @@ export default {
             this.repo.saveTo(framework, function() {
                 me.$store.commit('framework', EcFramework.getBlocking(framework.id));
             }, console.error);
+        },
+        addRelationAsCompetencyField: function(targets, thing, relationType, allowSave) {
+            var me = this;
+            var framework = this.$store.state.editor.framework;
+            for (var i = 0; i < targets.length; i++) {
+                if (thing[relationType] == null) {
+                    thing[relationType] = [];
+                }
+                thing[relationType].push(targets[i]);
+            }
+            if (this.queryParams.private === "true") {
+                if (EcEncryptedValue.encryptOnSaveMap[thing.id] !== true) {
+                    thing = EcEncryptedValue.toEncryptedValue(thing);
+                }
+                if (EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                    framework = EcEncryptedValue.toEncryptedValue(framework);
+                }
+            }
+            me.repo.saveTo(thing, function() {
+                me.repo.saveTo(framework, function() {}, console.error);
+            }, console.error);
+        },
+        importParentStyles: function() {
+            var parentStyleSheets = parent.document.styleSheets;
+            var cssString = "";
+            for (var i = 0, count = parentStyleSheets.length; i < count; ++i) {
+                if (parentStyleSheets[i].cssRules) {
+                    if (parentStyleSheets[i].ownerNode.attributes.inherit != null) {
+                        var cssRules = parentStyleSheets[i].cssRules;
+                        for (var j = 0, countJ = cssRules.length; j < countJ; ++j) {
+                            cssString += cssRules[j].cssText;
+                        }
+                    } // else
+                // cssString += parentStyleSheets[i].cssText; // IE8 and earlier
+                }
+            }
+            var style = document.createElement("style");
+            style.type = "text/css";
+            try {
+                style.innerHTML = cssString;
+            } catch (ex) {
+                // style.styleSheet.cssText = cssString; // IE8 and earlier
+            }
+            document.getElementsByTagName("head")[0].appendChild(style);
         }
     },
     computed: {

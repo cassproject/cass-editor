@@ -20,7 +20,13 @@
                     :exportOptions="exportOptions"
                     :highlightList="highlightList"
                     :selectMode="selectMode"
-                    :selectAll="selectAll">
+                    :selectAll="selectAll"
+                    @add="add"
+                    @beginDrag="beginDrag"
+                    @move="move"
+                    @deleteObject="deleteObject"
+                    @exportObject="exportObject"
+                    @select="select">
                     <slot />
                 </HierarchyNode>
             </draggable>
@@ -285,6 +291,15 @@ export default {
                 }, console.error);
             }
             console.log("Added node: ", JSON.parse(c.toJson()));
+        },
+        select: function(objId, checked) {
+            this.$emit('select', objId, checked);
+        },
+        deleteObject: function(thing) {
+            this.$emit('deleteObject', thing);
+        },
+        exportObject: function(thing, type) {
+            this.$emit('exportObject', thing, type);
         }
     }
 };

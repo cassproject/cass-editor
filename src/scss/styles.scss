@@ -1,0 +1,122 @@
+@import './theme.scss';
+@import './../assets/fonts/webfonts/all.css';
+
+
+
+p {
+    font-style: normal;
+    padding: .25rem;
+}
+
+// scrollable area minus top bar size
+.is-scrollable{
+    overflow-y: scroll;
+    height: calc(100vh - 3.25em);
+}
+
+// base styles for text inputs
+input, textarea{
+    color: rgba($dark, .7);
+    font-family: $family-primary;
+    font-size: .8rem;
+}
+
+label {
+    font-weight: 600;
+    color: rgba($dark, .5);
+    width: 95%;
+    font-size: .7rem;
+    i {
+        color: rgba($dark, .3);
+    }
+}
+
+
+.e-Property-text{
+    border-radius: .25rem;
+}
+
+.e-Property-ul{
+    border-radius: .25rem;
+    padding: 0rem .25rem;
+    font-size: .8rem;
+    color: rgba($dark, .9);
+    .button {
+        
+    }
+    .e-description {
+        font-weight: 400;
+        font-size: $size-7;
+    }
+    .e-name {
+        font-weight: 600;
+        font-size: $size-4;
+    }
+    
+    margin: .125em .5em;
+}
+
+.page {
+    margin-top: 2rem;
+}
+.page-framework-list,
+.page-framework,
+ {
+    overflow-y: scroll;
+    height: 95vh;
+}
+
+progress,
+select {
+    margin-right: .25rem;
+    width: 10rem;
+}
+
+hr {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    height:2px;
+    background-color: $black !important;
+}
+
+iframe {
+    min-height: 800px;
+    border:1px solid rgba($black, .5);
+}
+
+.navigation-title__wrapper {
+    display:inline-block;
+    width: 70%;
+    vertical-align: middle;
+}
+.navigation-tag__wrapper {
+    display: inline-block;
+    width: 30%;
+    vertical-align: middle;
+}
+
+.special-property {
+    width: 100% !important;
+}
+
+
+
+.import-details__section {
+    padding: 1rem;
+}
+.detected-import-details {
+    padding: 1rem .5rem 0rem .5rem;
+    li {
+        padding: .5rem 0rem;
+    }
+}
+
+
+// fixes 
+.caret-icon-overlay-fix {
+    padding-left: .125rem;
+}
+
+

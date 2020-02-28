@@ -37,14 +37,14 @@ $button-text-hover-background-color: transparent;
 
 
 // utilities
-@import "../node_modules/bulma/sass/utilities/_all.sass";
-@import "../node_modules/bulma/sass/base/_all.sass";
+@import "./../../node_modules/bulma/sass/utilities/_all.sass";
+@import "./../../node_modules/bulma/sass/base/_all.sass";
 
-@import "../node_modules/bulma/sass/components/_all.sass";
-@import "../node_modules/bulma/sass/elements/_all.sass";
-@import "../node_modules/bulma/sass/form/_all.sass";
-@import "../node_modules/bulma/sass/grid/_all.sass";
-@import "../node_modules/bulma/sass/layout/_all.sass";
+@import "./../../node_modules/bulma/sass/components/_all.sass";
+@import "./../../node_modules/bulma/sass/elements/_all.sass";
+@import "./../../node_modules/bulma/sass/form/_all.sass";
+@import "./../../node_modules/bulma/sass/grid/_all.sass";
+@import "./../../node_modules/bulma/sass/layout/_all.sass";
 
 @include desktop {
     .pagesRight {
@@ -110,4 +110,48 @@ $button-text-hover-background-color: transparent;
 
  .button.is-text {
      text-decoration: none;
+     font-weight: medium;
  }
+
+
+
+
+.e-Property {
+  
+    .fa {
+        font-size: $size-7;
+        color: $dark;
+    }
+    label {
+        font-size: $size-7;
+        font-weight: 500;
+    }
+    .e-name {
+        font-size: $size-4;
+        font-weight: 600;
+    }
+}
+
+.e-Property-text{
+    border-radius: .25rem;
+}
+
+.e-Property-ul{
+    border-radius: .25rem;
+    padding: 0rem .25rem;
+    font-size: .8rem;
+    color: rgba($dark, .9);
+    .button {
+        
+    }
+    .e-description {
+        font-weight: 400;
+        font-size: $size-7;
+    }
+    .e-name {
+        font-weight: 600;
+        font-size: $size-4;
+    }
+    
+    margin: .125em .5em;
+}

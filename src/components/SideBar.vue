@@ -26,7 +26,7 @@
             class="menu-list">
             <li
                 class="menu-list_list-item"
-                v-for="(supportedType, index) in supportedFileTypes"
+                v-for="(supportedType, index) in supportedFiles"
                 :key="index">
                 <h1 class="is-size-6 has-text-weight-medium">
                     {{ supportedType.type }}
@@ -74,7 +74,7 @@
                             v-for="(template) in supportedType.templates"
                             :key="template.id"
                             :href="template.location"
-                            download="example.download">
+                            :download="template.download">
                             <span>
                                 {{ template.name }}
                             </span>
@@ -206,12 +206,16 @@ import csvTemplateRelations from 'file-loader!../../files/Template - Relations.c
 import ctdlAsnJsonld from 'file-loader!../../files/DQP.jsonld';
 import asnRdfJson from 'file-loader!../../files/D2695955';
 import medbiquitous from 'file-loader!../../files/educational_achievement_sample_1June2012.xml';
+import csvConceptExample from 'file-loader!../../files/Concept Scheme Example.csv';
+import csvConceptTemplate from 'file-loader!../../files/Concept Scheme Template.csv';
+import ctdlAsnJsonldConcepts from 'file-loader!../../files/ConnectingCredentialsLevels.jsonld';
 export default {
     name: 'SideBar',
     props: {
         method: {
             default: ''
-        }
+        },
+        queryParams: Object
     },
     data() {
         return {
@@ -360,6 +364,58 @@ export default {
                         JSON-LD.`
                 }
             ],
+            supportedConceptFileTypes: [
+                {
+                    type: 'CTDL-ASN formatted CSV',
+                    examples: [
+                        {
+                            name: 'Example',
+                            id: 'ctdlConceptEx',
+                            location: csvConceptExample,
+                            download: 'Concept Scheme Example.csv'
+                        }
+                    ],
+                    templates: [
+                        {
+                            name: 'Template',
+                            id: 'ctdlConceptTempl',
+                            location: csvConceptTemplate,
+                            download: 'Concept Scheme Template.csv'
+                        }
+                    ],
+                    showDescription: false,
+                    description: `
+                        For this import, you use one CSV. Each row in the CSV
+                        will represent one object, whether that be a concept, or
+                        a concept scheme. Particular fields will be used to determine hierarchy.
+                        </p><p class="content-body">
+                        Using this format, you can import several concept schemes, each with
+                        their own concepts. Concepts may not be shared across schemes, and each
+                        concept may only have one parent.
+                        </p><p class="content-body">
+                        It is also important that any field with multiple values be formatted
+                        exactly as in the sample file, e.g. entry 1|entry 2.`
+                },
+                {
+                    type: 'CTDL-ASN formatted JSON-LD',
+                    examples: [
+                        {
+                            name: 'Example',
+                            id: 'ctdlJsonConceptTemp',
+                            location: ctdlAsnJsonldConcepts,
+                            download: 'ConnectingCredentialsLevels.json'
+                        }
+                    ],
+                    templates: [],
+                    showDescription: false,
+                    description: `
+                        For this import, you use one JSON-LD file that includes a graph of the
+                        concept scheme and all of its concepts.
+                        </p><p class="content-body">
+                        Using this format, you can import a concept scheme and concepts from a
+                        system that exports CTDL-ASN formatted JSON-LD.`
+                }
+            ],
             supportedServer: [
                 {
                     type: 'CaSS Server',
@@ -450,6 +506,11 @@ export default {
         },
         url: function() {
             this.$emit('updateUrl', this.url);
+        }
+    },
+    computed: {
+        supportedFiles: function() {
+            return this.queryParams.concepts === 'true' ? this.supportedConceptFileTypes : this.supportedFileTypes;
         }
     }
 };
