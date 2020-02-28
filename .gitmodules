@@ -1,4 +1,4 @@
 [submodule "src/lode"]
 path = src/lode
 #url = https://github.com/eduworks/vue-common
-url = https://git.eduworks.us/cass/vue-common
+url = ../vue-common
