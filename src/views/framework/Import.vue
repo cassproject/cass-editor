@@ -73,7 +73,7 @@
                             bottom of the screen.
                             <br><br>
                         </p>
-                        <!-- import details after selecting file -->
+                        <!-- import details after selecting file
                         <div
                             v-if="framework && showImportPreviewView"
                             class="import-instructions">
@@ -97,7 +97,7 @@
                                     </span>
                                 </div>
                             </div>
-                        </div>
+                        </div>-->
                     </div>
                     <div
                         id="import-bottom-section"
@@ -497,6 +497,7 @@
                             <Thing
                                 :obj="framework"
                                 :repo="repo"
+                                class="framework-title"
                                 :profile="t3FrameworkProfile"
                                 :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
                                 iframeText="Attach subitems from other sources to the selected item." />

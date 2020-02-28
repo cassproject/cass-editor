@@ -67,6 +67,7 @@ ul.processing-list {
   }
 
 .page-import {
+   
     .page-import-body {
         max-width: 900px;
         width: 100%;
@@ -229,7 +230,7 @@ ul.processing-list {
                             display: flex;
                             flex-wrap: wrap;
                             margin-right: 0rem;
-                            li.add-property-button {
+                            li.add-button {
                                 display: flex;
                                 justify-content: flex-end;
                             }
@@ -629,6 +630,48 @@ ul.processing-list {
                 align-content: flex-end;
                 justify-content: flex-end;
                 width: 50%;
+            }
+        }
+        .thing.framework-title {
+            padding-top: 24px;
+            background-color: white;
+            z-index: 20;
+            .e-type, .top-actions, .bottom-actions, label {
+                display: none;
+            }
+            .e-Property-ul {
+                font-size: 1.2rem;
+            }
+            .e-property {
+                
+            }
+            .e-Property.editing {
+                label {
+                    display: flex;
+                }
+                .e-Property-ul {
+                    display: flex;
+                    .property-value {
+                        width: 100%;
+                        .property-string-span {
+                            width: 100%;
+                            .input-field {
+                                width: 100%;
+                                textarea {
+                                    height: 48px;
+                                    padding: 5px;
+                                    width: 100%;
+                                    border-radius: 2px;
+                                    margin-right: 8px;
+                                }
+                            }
+                        }
+                    }
+                    .is-add-button {
+                        display: none;
+                    }
+                }
+                
             }
         }
     }
