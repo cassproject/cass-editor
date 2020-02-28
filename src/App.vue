@@ -211,7 +211,7 @@ export default {
         }
     },
     created: function() {
-        var servers = ["https://dev.cassproject.org/api/"];
+        var servers = ["https://dev.api.cassproject.org/api/"];
         var me = this;
         if (this.$route.query) {
             this.queryParams = this.$route.query;
