@@ -23,6 +23,9 @@ buildDev:
     - git submodule update --init --recursive
   script:
   # - LAST_TAG=$(git describe --tags)
+  - sed -i 's/cass-editor//g' ./src/App.vue
+  - sed -i 's/cass-editor\///g' vue.config.js
+  - sed -i 's/cass-editor//g' vue.config.js
   - npm install
   - npm run lint
   - npm run buildDev
@@ -41,6 +44,9 @@ buildQA:
     - git submodule update --init --recursive
   script:
   # - LAST_TAG=$(git describe --tags)
+  - sed -i 's/cass-editor//g' ./src/App.vue
+  - sed -i 's/cass-editor\///g' vue.config.js
+  - sed -i 's/cass-editor//g' vue.config.js
   - npm install
   - npm run lint
   - npm run buildDev
