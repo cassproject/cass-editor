@@ -60,7 +60,7 @@
                         v-slot:frameworkTags="slotProps">
                         <span
                             class="tag"
-                            v-if="queryParams.concepts!=='true'">{{ slotProps.item.competency.length }} items </span>
+                            v-if="queryParams.concepts!=='true'">{{ slotProps.item.competency ? slotProps.item.competency.length : 0 }} items </span>
                         <span
                             class="tag"
                             v-if="slotProps.item.Published"
