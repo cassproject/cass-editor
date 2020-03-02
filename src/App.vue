@@ -297,12 +297,12 @@ export default {
                 if (me.queryParams.frameworkId) {
                     if (me.queryParams.concepts === "true") {
                         EcConceptScheme.get(me.queryParams.frameworkId, function(success) {
-                            me.$store.commit('framework', success);
+                            me.$store.commit('editor/framework', success);
                             me.$router.push({name: "conceptScheme", params: {frameworkId: me.queryParams.frameworkId}});
                         }, console.error);
                     } else {
                         EcFramework.get(me.queryParams.frameworkId, function(success) {
-                            me.$store.commit('framework', success);
+                            me.$store.commit('editor/framework', success);
                             me.$router.push({name: "framework", params: {frameworkId: me.queryParams.frameworkId}});
                         }, console.error);
                     }
@@ -326,17 +326,17 @@ export default {
         path += this.queryParams.selectVerbose ? "&selectVerbose=" + this.queryParams.selectVerbose : "";
         path += this.queryParams.selectExport ? "&selectExport=" + this.queryParams.selectExport : "";
         path += this.queryParams.user ? "&user=" + this.queryParams.user : "";
-        this.$store.commit('commonPathIframe', path);
+        this.$store.commit('editor/commonPathIframe', path);
         path = this.queryParams.editorRoot ? this.queryParams.editorRoot : "/";
         path += "cass-editor/?select=Align with...&view=true&back=true";
         path += this.$store.state.editor.commonPathIframe;
-        this.$store.commit('iframeCompetencyPathInterframework', path);
+        this.$store.commit('editor/iframeCompetencyPathInterframework', path);
         path = this.queryParams.editorRoot ? this.queryParams.editorRoot : "/";
         path += "cass-editor/?select=Add&concepts=true";
         path += this.queryParams.conceptShow ? "&conceptShow=" + this.queryParams.conceptShow : "";
         path += this.queryParams.editIframe !== "true" ? "&view=true" : "";
         path += this.$store.state.editor.commonPathIframe;
-        this.$store.commit('iframeConceptPath', path);
+        this.$store.commit('editor/iframeConceptPath', path);
         if (parent !== window) {
             var oHead = document.getElementsByTagName("head")[0];
             var arrStyleSheets = parent.document.getElementsByTagName("*");
@@ -423,14 +423,14 @@ export default {
             // Re-establish connection on close.
             connection.onclose = function(evt) {
                 console.log(evt);
-                me.$store.commit('webSocketBackoffIncrease');
+                me.$store.commit('editor/webSocketBackoffIncrease');
                 setTimeout(function() {
                     me.openWebSocket(r);
                 }, webSocketBackoff);
             };
 
             connection.changedObject = function(wut) {
-                me.$store.commit('changedObject', wut.shortId());
+                me.$store.commit('editor/changedObject', wut.shortId());
                 if (me.$route.name !== 'framework') {
                     return;
                 }
@@ -446,7 +446,7 @@ export default {
                             } else {
                                 f.copyFrom(wut);
                             }
-                            me.$store.commit('framework', f);
+                            me.$store.commit('editor/framework', f);
                             me.spitEvent("frameworkChanged", f.shortId());
                         }
                     }
@@ -461,7 +461,7 @@ export default {
                             } else {
                                 f.copyFrom(wut);
                             }
-                            me.$store.commit('framework', f);
+                            me.$store.commit('editor/framework', f);
                             me.spitEvent("frameworkChanged", f.shortId());
                         }
                     }
@@ -477,7 +477,7 @@ export default {
                                 } else {
                                     com.copyFrom(wut);
                                 }
-                                me.$store.commit('selectedCompetency', com);
+                                me.$store.commit('editor/selectedCompetency', com);
                             }
                             me.spitEvent("competencyChanged", me.$store.state.editor.selectedCompetency.shortId());
                         }
@@ -493,7 +493,7 @@ export default {
                                 } else {
                                     com.copyFrom(wut);
                                 }
-                                me.$store.commit('selectedCompetency', com);
+                                me.$store.commit('editor/selectedCompetency', com);
                             }
                             me.spitEvent("competencyChanged", me.$store.state.editor.selectedCompetency.shortId());
                         }
@@ -510,7 +510,7 @@ export default {
                                 } else {
                                     com.copyFrom(wut);
                                 }
-                                me.$store.commit('selectedCompetency', com);
+                                me.$store.commit('editor/selectedCompetency', com);
                             }
                             me.spitEvent("competencyChanged", me.$store.state.editor.selectedCompetency.shortId());
                         }
@@ -571,7 +571,7 @@ export default {
                     saveFramework = EcEncryptedValue.toEncryptedValue(framework);
                 }
                 this.repo.saveTo(saveFramework, function() {
-                    me.$store.commit('framework', framework);
+                    me.$store.commit('editor/framework', framework);
                     if (me.$route.name !== 'framework') {
                         me.$router.push({name: "framework"});
                     }
@@ -593,7 +593,7 @@ export default {
                     saveFramework = EcEncryptedValue.toEncryptedValue(framework);
                 }
                 this.repo.saveTo(saveFramework, function() {
-                    me.$store.commit('framework', framework);
+                    me.$store.commit('editor/framework', framework);
                     if (me.$route.name !== 'conceptScheme') {
                         me.$router.push({name: "conceptScheme"});
                     }
@@ -655,7 +655,7 @@ export default {
                     framework.addRelation(r.id);
                 }
             }
-            this.$store.commit('framework', framework);
+            this.$store.commit('editor/framework', framework);
             if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                 framework = EcEncryptedValue.toEncryptedValue(framework);
             }
@@ -1006,7 +1006,7 @@ export default {
                         Task.asyncImmediate(function(callback) {
                             me.repo.saveTo(c, function() {
                                 framework.addCompetency(c.id);
-                                me.$store.commit('framework', framework);
+                                me.$store.commit('editor/framework', framework);
                                 me.afterCopy();
                                 callback();
                             }, function(error) {
@@ -1040,7 +1040,7 @@ export default {
                         Task.asyncImmediate(function(callback) {
                             me.repo.saveTo(level, function() {
                                 framework.addLevel(level.id);
-                                me.$store.commit('framework', framework);
+                                me.$store.commit('editor/framework', framework);
                                 me.afterCopy();
                                 callback();
                             }, function(error) {
@@ -1085,7 +1085,7 @@ export default {
                                 Task.asyncImmediate(function(callback) {
                                     me.repo.saveTo(r, function() {
                                         framework.addRelation(r.id);
-                                        me.$store.commit('framework', framework);
+                                        me.$store.commit('editor/framework', framework);
                                         me.afterCopy();
                                         callback();
                                     },
@@ -1219,7 +1219,7 @@ export default {
                 framework = EcEncryptedValue.toEncryptedValue(framework);
             }
             this.repo.saveTo(framework, function() {
-                me.$store.commit('framework', EcFramework.getBlocking(framework.id));
+                me.$store.commit('editor/framework', EcFramework.getBlocking(framework.id));
             }, console.error);
         },
         addRelationAsCompetencyField: function(targets, thing, relationType, allowSave) {

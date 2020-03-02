@@ -104,7 +104,7 @@ export default {
         organizationClick: function(organization) {
             var me = this;
             EcOrganization.get(organization.id, function(success) {
-                me.$store.commit('organization', success);
+                me.$store.commit('editor/organization', success);
                 me.$router.push({name: "organization", params: {organizationId: organization.id}});
             }, console.error);
         },

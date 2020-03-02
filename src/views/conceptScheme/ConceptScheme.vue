@@ -225,7 +225,7 @@ export default {
                             me.repo.deleteRegistered(concepts[i], console.log, console.error);
                         }
                     }, console.error);
-                    me.$store.commit('framework', null);
+                    me.$store.commit('editor/framework', null);
                     me.$router.push({name: "frameworks"});
                 }, console.log);
             } else {
@@ -234,7 +234,7 @@ export default {
                 this.spitEvent("conceptDeleted", thing.shortId(), "editFrameworkPage");
 
                 this.framework["schema:dateModified"] = new Date().toISOString();
-                this.$store.commit('selectedCompetency', null);
+                this.$store.commit('editor/selectedCompetency', null);
             }
         },
         deleteConceptInner: function(c) {
@@ -247,7 +247,7 @@ export default {
                             concept = EcEncryptedValue.toEncryptedValue(concept);
                         }
                         repo.saveTo(concept, function() {
-                            me.$store.commit('framework', me.framework);
+                            me.$store.commit('editor/framework', me.framework);
                         }, console.error);
                     }, console.error);
                 }
@@ -266,11 +266,11 @@ export default {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
                 }
                 repo.saveTo(framework, function() {
-                    me.$store.commit('framework', me.framework);
+                    me.$store.commit('editor/framework', me.framework);
                 }, console.error);
             }
             repo.deleteRegistered(c, function() {
-                me.$store.commit('framework', me.framework);
+                me.$store.commit('editor/framework', me.framework);
             }, console.error);
         },
         exportObject: function(concept, exportType) {
