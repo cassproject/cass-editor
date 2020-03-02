@@ -21,6 +21,7 @@ buildDev:
   before_script:
     - git submodule sync --recursive
     - git submodule update --init --recursive
+    - git fetch --tags
   script:
   - LAST_TAG=$(git describe --tags)
   - sed -i "s/VERSION/$LAST_TAG/" public/index.html
@@ -43,6 +44,7 @@ buildQA:
   before_script:
     - git submodule sync --recursive
     - git submodule update --init --recursive
+    - git fetch --tags
   script:
   - LAST_TAG=$(git describe --tags | cut -d- -f1)
   - sed -i "s/VERSION/$LAST_TAG/" public/index.html
