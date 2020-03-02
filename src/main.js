@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import App from './App.vue';
-import './theme.scss';
-import './styles.scss';
+import './scss/theme.scss';
+import './scss/styles.scss';
 import router from './router';
 import Vuex from 'vuex';
 import Modal from './plugins/modalPlugin.js';
@@ -16,7 +16,7 @@ Vue.use(Vuex);
 
 EcRepository.caching = true;
 window.repo = new EcRepository();
-window.repo.selectedServer = "https://dev.cassproject.org/api/";
+window.repo.selectedServer = "https://dev.api.cassproject.org/api/";
 
 global.jsonld = require('jsonld');
 global.base64 = require('base64-arraybuffer');

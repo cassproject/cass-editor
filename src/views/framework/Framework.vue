@@ -1,12 +1,18 @@
 <template>
     <div class="page-framework">
         <div class="container">
-            <div class="section">
+            <div class="section is-paddingless">
                 <Thing
                     :obj="framework"
                     :repo="repo"
                     :parentNotEditable="queryParams.view==='true'"
-                    :profile="frameworkProfile" />
+                    :profile="frameworkProfile"
+                    :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
+                    iframeText="Attach subitems from other sources to the selected item."
+                    @select="select"
+                    @deleteObject="deleteObject"
+                    @removeObject="removeObject"
+                    @exportObject="exportObject" />
                 <span class="actions">
                     <span
                         class="tag is-info has-text-white"
@@ -71,7 +77,13 @@
                     :highlightList="highlightCompetency"
                     :selectMode="selectButtonText != null"
                     :selectAll="selectAll"
-                    :profile="competencyProfile" />
+                    :profile="competencyProfile"
+                    :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
+                    iframeText="Attach subitems from other sources to the selected item."
+                    @select="select"
+                    @deleteObject="deleteObject"
+                    @removeObject="removeObject"
+                    @exportObject="exportObject" />
             </div>
         </div>
     </div>
@@ -79,9 +91,12 @@
 <script>
 import Thing from '@/lode/components/lode/Thing.vue';
 import Hierarchy from '@/lode/components/lode/Hierarchy.vue';
-import saveAs from 'file-saver';
 import common from '@/mixins/common.js';
 import exports from '@/mixins/exports.js';
+import competencyEdits from '@/mixins/competencyEdits.js';
+import ctdlasnProfile from '@/mixins/ctdlasnProfile.js';
+import t3Profile from '@/mixins/t3Profile.js';
+import tlaProfile from '@/mixins/tlaProfile.js';
 export default {
     name: "Framework",
     props: {
@@ -90,7 +105,7 @@ export default {
         disallowEdits: Boolean,
         profileOverride: Object
     },
-    mixins: [common, exports],
+    mixins: [common, exports, competencyEdits, ctdlasnProfile, t3Profile, tlaProfile],
     data: function() {
         return {
             repo: window.repo,
@@ -109,29 +124,7 @@ export default {
             selectButtonText: null,
             selectAllButton: false,
             selectAll: false,
-            selectedArray: [],
-            frameworkProfile: {
-                "http://schema.org/name": {
-                    "@id": "http://schema.org/name",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Name of the competency framework."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "name"}]
-                },
-                "http://schema.org/description": {
-                    "@id": "http://schema.org/description",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Framework"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Description of the framework."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "description"}]
-                }
-            }
+            selectedArray: []
         };
     },
     computed: {
@@ -158,47 +151,122 @@ export default {
         shortId: function() {
             return this.$store.state.editor.framework.shortId();
         },
+        frameworkProfile: function() {
+            if (this.$store.state.editor.t3Profile === true) {
+                return this.t3FrameworkProfile;
+            }
+            if (this.queryParams.ceasnDataFields === "true") {
+                return this.ctdlAsnFrameworkProfile;
+            }
+            if (this.queryParams.tlaProfile === "true") {
+                return this.tlaFrameworkProfile;
+            }
+            return {
+                "@id": {
+                    "@id": "https://schema.cassproject.org/0.4/Framework/id",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "The URL of the framework."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Framework URL"}],
+                    "readOnly": true,
+                    "max": 1,
+                    "heading": "Keys"
+                },
+                "http://schema.org/name": {
+                    "@id": "http://schema.org/name",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "The name of the framework. One name per language."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Framework Name"}],
+                    "heading": "General",
+                    "onePerLanguage": true
+                },
+                "http://schema.org/description": {
+                    "@id": "http://schema.org/description",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "The description of the framework. One description per language"}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}],
+                    "heading": "General",
+                    "onePerLanguage": true
+                },
+                "headings": ["Keys", "General"]
+            };
+        },
         competencyProfile: function() {
+            if (this.$store.state.editor.t3Profile === true) {
+                return this.t3CompetencyProfile;
+            }
             if (this.profileOverride) {
                 return this.profileOverride;
+            } else if (this.queryParams.ceasnDataFields === "true") {
+                return this.ctdlAsnCompetencyProfile;
+            } else if (this.queryParams.tlaProfile === "true") {
+                return this.tlaCompetencyProfile;
             } else {
                 var me = this;
                 return {
+                    "@id": {
+                        "@id": "https://schema.cassproject.org/0.4/Competency/id",
+                        "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                        "http://schema.org/domainIncludes":
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                        "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                        "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "The URL of the competency."}],
+                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "URL"}],
+                        "readOnly": true,
+                        "max": 1,
+                        "heading": "Keys"
+                    },
                     "http://schema.org/name": {
                         "@id": "http://schema.org/name",
                         "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                         "http://schema.org/domainIncludes":
-                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                        "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                        "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
                         "http://www.w3.org/2000/01/rdf-schema#comment":
-                        [{"@language": "en", "@value": "Name of the competency."}],
-                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}]
+                        [{"@language": "en", "@value": "The name of the competency. One name per language."}],
+                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}],
+                        "heading": "General",
+                        "onePerLanguage": true
                     },
                     "http://schema.org/description": {
                         "@id": "http://schema.org/description",
                         "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                         "http://schema.org/domainIncludes":
-                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                        "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                        "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
                         "http://www.w3.org/2000/01/rdf-schema#comment":
-                        [{"@language": "en", "@value": "Description of the competency."}],
-                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}]
+                        [{"@language": "en", "@value": "The description of the competency."}],
+                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}],
+                        "heading": "General"
                     },
                     "https://schema.cassproject.org/0.4/Competency/scope": {
                         "@id": "https://schema.cassproject.org/0.4/Competency/scope",
                         "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                         "http://schema.org/domainIncludes":
-                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                         "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
                         "http://www.w3.org/2000/01/rdf-schema#comment":
-                        [{"@language": "en", "@value": "Scope in which the competency may be applied. e.g. Underwater."}],
-                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Scope"}]
+                        [{"@language": "en", "@value": "The scope of the competency."}],
+                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Scope"}],
+                        "heading": "General"
                     },
                     "https://schema.cassproject.org/0.4/Level": {
                         "@id": "https://schema.cassproject.org/0.4/Level",
                         "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                         "http://schema.org/domainIncludes":
-                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [
                             {"@language": "en",
@@ -213,7 +281,8 @@ export default {
                         "iframeText": "Select levels to align...",
                         "add": function(selectedCompetency) { me.addLevel(selectedCompetency); },
                         "remove": function(competency, levelId) { me.removeLevelFromFramework(levelId); },
-                        "save": function() { me.saveFramework(); }
+                        "save": function() { me.saveFramework(); },
+                        "heading": "Connections"
                     },
                     "narrows": {
                         "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
@@ -226,7 +295,8 @@ export default {
                         "noTextEditing": true,
                         "add": "unsaved",
                         "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "narrows", values); },
-                        "remove": function(source, target) { me.removeRelationFromFramework(source, "narrows", target); }
+                        "remove": function(source, target) { me.removeRelationFromFramework(source, "narrows", target); },
+                        "heading": "Connections"
                     },
                     "broadens": {
                         "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
@@ -239,7 +309,8 @@ export default {
                         "noTextEditing": true,
                         "add": "unsaved",
                         "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "broadens", values); },
-                        "remove": function(source, target) { me.removeRelationFromFramework(source, "broadens", target); }
+                        "remove": function(source, target) { me.removeRelationFromFramework(source, "broadens", target); },
+                        "heading": "Connections"
                     },
                     "isEquivalentTo": {
                         "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
@@ -252,7 +323,8 @@ export default {
                         "noTextEditing": true,
                         "add": "unsaved",
                         "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEquivalentTo", values); },
-                        "remove": function(source, target) { me.removeRelationFromFramework(source, "isEquivalentTo", target); }
+                        "remove": function(source, target) { me.removeRelationFromFramework(source, "isEquivalentTo", target); },
+                        "heading": "Connections"
                     },
                     "requires": {
                         "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
@@ -265,7 +337,8 @@ export default {
                         "noTextEditing": true,
                         "add": "unsaved",
                         "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "requires", values); },
-                        "remove": function(source, target) { me.removeRelationFromFramework(source, "requires", target); }
+                        "remove": function(source, target) { me.removeRelationFromFramework(source, "requires", target); },
+                        "heading": "Connections"
                     },
                     "isEnabledBy": {
                         "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
@@ -278,7 +351,8 @@ export default {
                         "noTextEditing": true,
                         "add": "unsaved",
                         "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEnabledBy", values); },
-                        "remove": function(source, target) { me.removeRelationFromFramework(source, "isEnabledBy", target); }
+                        "remove": function(source, target) { me.removeRelationFromFramework(source, "isEnabledBy", target); },
+                        "heading": "Connections"
                     },
                     "isRelatedTo": {
                         "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
@@ -291,7 +365,8 @@ export default {
                         "noTextEditing": true,
                         "add": "unsaved",
                         "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isRelatedTo", values); },
-                        "remove": function(source, target) { me.removeRelationFromFramework(source, "isRelatedTo", target); }
+                        "remove": function(source, target) { me.removeRelationFromFramework(source, "isRelatedTo", target); },
+                        "heading": "Connections"
                     },
                     "desires": {
                         "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
@@ -304,53 +379,12 @@ export default {
                         "noTextEditing": true,
                         "add": "unsaved",
                         "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "desires", values); },
-                        "remove": function(source, target) { me.removeRelationFromFramework(source, "desires", target); }
-                    }
+                        "remove": function(source, target) { me.removeRelationFromFramework(source, "desires", target); },
+                        "heading": "Connections"
+                    },
+                    "headings": ["Keys", "General", "Connections"]
                 };
             }
-        },
-        levels: function() {
-            var levels = {};
-            if (!this.framework.level) {
-                return null;
-            }
-            for (var i = 0; i < this.framework.level.length; i++) {
-                var level = EcLevel.getBlocking(this.framework.level[i]);
-                var comp = level.competency;
-                if (!EcArray.isArray(comp)) {
-                    comp = [comp];
-                }
-                for (var j = 0; j < comp.length; j++) {
-                    if (!EcArray.isArray(levels[comp[j]])) {
-                        levels[comp[j]] = [];
-                    }
-                    levels[comp[j]].push(level);
-                }
-            }
-            return levels;
-        },
-        relations: function() {
-            var relations = {};
-            for (var i = 0; i < this.framework.relation.length; i++) {
-                var a = EcAlignment.getBlocking(this.framework.relation[i]);
-                if (!relations[a.relationType]) {
-                    relations[a.relationType] = {};
-                }
-                if (!relations[a.relationType][a.source]) {
-                    relations[a.relationType][a.source] = [];
-                }
-                relations[a.relationType][a.source].push(a.target);
-                if (a.relationType === "narrows") {
-                    if (!relations["broadens"]) {
-                        relations["broadens"] = {};
-                    }
-                    if (!relations["broadens"][a.target]) {
-                        relations["broadens"][a.target] = [];
-                    }
-                    relations["broadens"][a.target].push(a.source);
-                }
-            }
-            return relations;
         }
     },
     components: {Hierarchy, Thing},
@@ -411,68 +445,10 @@ export default {
                 }
                 this.selectAllButton = true;
             }
-        },
-        removeObject: function(thing) {
-            // Remove from container but don't delete
-            console.log("removing " + thing.id);
-            var me = this;
-            this.framework["schema:dateModified"] = new Date().toISOString();
-            this.framework.removeCompetency(thing.shortId(), function() {
-                var framework = me.framework;
-                if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[f.id] !== true) {
-                    framework = EcEncryptedValue.toEncryptedValue(framework);
-                }
-                repo.saveTo(framework, function() {
-                    me.confirmDialog = false;
-                    me.$store.commit('framework', me.framework);
-                }, console.error);
-            }, console.log);
-        },
-        deleteObject: function(thing) {
-            console.log("deleting " + thing.id);
-            var me = this;
-            if (thing.shortId() === this.framework.shortId()) {
-                // delete framework
-                var framework = this.framework;
-                this.repo.deleteRegistered(framework, function(success) {
-                    me.spitEvent("frameworkDeleted", framework.shortId(), "editFrameworkSection");
-                    // Delete the framework, delete all non-used stuff.
-                    if (framework.competency != null) {
-                        for (var i = 0; i < framework.competency.length; i++) {
-                            me.conditionalDelete(framework.competency[i]);
-                        }
-                    }
-                    if (framework.relation != null) {
-                        for (var i = 0; i < framework.relation.length; i++) {
-                            me.conditionalDelete(framework.relation[i]);
-                        }
-                    }
-                    if (framework.level != null) {
-                        for (var i = 0; i < framework.level.length; i++) {
-                            me.conditionalDelete(framework.level[i]);
-                        }
-                    }
-                    me.$store.commit('framework', null);
-                    me.$router.push({name: "frameworks"});
-                }, console.log);
-            } else {
-                // Delete competency and relations
-                this.$store.commit('selectedCompetency', thing);
-                this.framework["schema:dateModified"] = new Date().toISOString();
-                this.framework.removeCompetency(thing.shortId(), function() {
-                    me.framework.removeLevel(thing.shortId());
-                    me.conditionalDelete(thing.shortId());
-                    me.spitEvent("competencyDeleted", thing.shortId(), "editFrameworkSection");
-                    me.$store.commit('selectedCompetency', null);
-                    var framework = me.framework;
-                    if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[me.framework.id] !== true) {
-                        framework = EcEncryptedValue.toEncryptedValue(framework);
-                    }
-                    me.repo.saveTo(framework, function() {
-                        me.$store.commit('framework', me.framework);
-                    }, console.error);
-                }, console.log);
-            }
+            var path = this.queryParams.editorRoot ? this.queryParams.editorRoot : "/";
+            path += "cass-editor/?select=Align with...&view=true&back=true&frameworkId=" + this.framework.shortId();
+            path += this.$store.state.editor.commonPathIframe;
+            this.$store.commit('iframeCompetencyPathIntraframework', path);
         },
         exportObject: function(selectedCompetency, exportType) {
             var guid;
@@ -504,46 +480,13 @@ export default {
             } else {
                 EcArray.setRemove(this.selectedArray, id);
             }
-        },
-        addRelationsToFramework: function(selectedCompetency, property, values) {
-            if (values.length > 0) {
-                this.$parent.addAlignments(values, selectedCompetency, property);
-            }
-        },
-        removeRelationFromFramework: function(source, property, target) {
-            var me = this;
-            new EcAsyncHelper().each(this.framework.relation, function(relation, callback) {
-                EcAlignment.get(relation, function(r) {
-                    if (property === "broadens") {
-                        if (r.target === source && r.source === target && r.relationType === "narrows") {
-                            me.framework.removeRelation(r.shortId());
-                            me.conditionalDelete(r.shortId());
-                            callback();
-                        } else {
-                            callback();
-                        }
-                    } else if (r.source === source && r.target === target && r.relationType === property) {
-                        me.framework.removeRelation(r.shortId());
-                        me.conditionalDelete(r.shortId());
-                        callback();
-                    } else {
-                        callback();
-                    }
-                }, callback);
-            }, function() {
-                var framework = me.framework;
-                me.$store.commit('framework', framework);
-                if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
-                    framework = EcEncryptedValue.toEncryptedValue(framework);
-                }
-                me.repo.saveTo(framework, function() {}, console.error);
-            });
         }
     }
 };
 </script>
 
 <style lang="scss">
+    @import './../../scss/framework.scss';
 
 
 </style>

@@ -1,0 +1,118 @@
+variables:
+   DEV_USERNAME: deployment
+
+image: node:11
+
+cache:
+    paths:
+    - node_modules/
+
+stages:
+   - build
+   - deploy
+
+### BUILDS
+
+
+buildDev:
+  stage: build
+  only:
+    - dev
+  before_script:
+    - git submodule sync --recursive
+    - git submodule update --init --recursive
+  script:
+  # - LAST_TAG=$(git describe --tags)
+  - sed -i 's/cass-editor//g' ./src/App.vue
+  - sed -i 's/cass-editor\///g' vue.config.js
+  - sed -i 's/cass-editor//g' vue.config.js
+  - npm install
+  - npm run lint
+  - npm run buildDev
+  artifacts:
+    paths:
+    - ./dist
+
+
+
+buildQA:
+  stage: build
+  only:
+    - qa
+  before_script:
+    - git submodule sync --recursive
+    - git submodule update --init --recursive
+  script:
+  # - LAST_TAG=$(git describe --tags)
+  - sed -i 's/cass-editor//g' ./src/App.vue
+  - sed -i 's/cass-editor\///g' vue.config.js
+  - sed -i 's/cass-editor//g' vue.config.js
+
+  - sed -i 's/https:\/\/dev.api.cassproject.org\/api\//https:\/\/qa.api.cassproject.org\/api\//g' ./src/main.js
+  - sed -i 's/https:\/\/dev.api.cassproject.org\/api\//https:\/\/qa.api.cassproject.org\/api\//g' ./src/App.vue
+
+  - npm install
+  - npm run lint
+  - npm run buildDev
+  artifacts:
+    paths:
+    - ./dist
+
+
+### DEPLOYMENTS
+
+
+
+deployDev:
+  stage: deploy
+  only:
+    - dev
+  environment:
+    name: dev
+    url: https://dev.editor.cassproject.org
+  script:
+   - apt-get update -y
+   - apt-get install openssh-client -y
+   - 'which ssh-agent || apt-get install openssh-client -y'
+
+   - eval $(ssh-agent -s)
+
+   - mkdir -p ~/.ssh
+   - chmod 700 ~/.ssh
+   - echo "$DEV_SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+   - chmod 644 ~/.ssh/known_hosts
+
+   - chmod 600 "$DEV_PRIVATE_KEY"
+   - ssh-add "$DEV_PRIVATE_KEY" > /dev/null
+
+   ## Build commands
+   - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "rm -rf /var/www/dev.editor.cassproject.org/*"
+   - scp -P22 -r dist/* $DEV_USERNAME@$DEV_SERVER_IP:/var/www/dev.editor.cassproject.org/
+
+
+
+deployQA:
+  stage: deploy
+  only:
+    - qa
+  environment:
+    name: qa
+    url: https://qa.editor.cassproject.org
+  script:
+   - apt-get update -y
+   - apt-get install openssh-client -y
+   - 'which ssh-agent || apt-get install openssh-client -y'
+
+   - eval $(ssh-agent -s)
+
+   - mkdir -p ~/.ssh
+   - chmod 700 ~/.ssh
+   - echo "$DEV_SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+   - chmod 644 ~/.ssh/known_hosts
+
+   - chmod 600 "$DEV_PRIVATE_KEY"
+   - ssh-add "$DEV_PRIVATE_KEY" > /dev/null
+
+   ## Build commands
+   - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "rm -rf /var/www/qa.editor.cassproject.org/*"
+   - scp -P22 -r dist/* $DEV_USERNAME@$DEV_SERVER_IP:/var/www/qa.editor.cassproject.org/

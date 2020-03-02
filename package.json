@@ -1,62 +1,64 @@
 {
-  "name": "cass-editor",
-  "version": "1.2.28",
-  "private": true,
-  "main": "/theme.scss",
-  "scripts": {
-    "serve": "vue-cli-service serve --port=8082",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
-  },
-  "dependencies": {
-    "bulma": "^0.7.5",
-    "cassproject": "^2.11.2",
-    "core-js": "^2.6.5",
-    "file-saver": "^2.0.2",
-    "jsonld": "^1.8.1",
-    "pure-uuid": "^1.6.0",
-    "vue": "^2.6.10",
-    "vue-infinite-scroll": "^2.0.2",
-    "vue-moment": "^4.0.0",
-    "vue-router": "^3.0.3",
-    "vuedraggable": "^2.23.2",
-    "vuex": "^3.0.1"
-  },
-  "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.12.1",
-    "@vue/cli-plugin-eslint": "^3.12.1",
-    "@vue/cli-service": "^3.12.1",
-    "@vue/eslint-config-standard": "^4.0.0",
-    "babel-eslint": "^10.0.3",
-    "eslint": "^5.16.0",
-    "eslint-plugin-vue": "^5.2.3",
-    "file-loader": "^4.3.0",
-    "node-sass": "^4.13.0",
-    "sass": "^1.23.2",
-    "sass-loader": "^7.3.1",
-    "vue-template-compiler": "^2.6.10"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
+    "name": "cass-editor",
+    "version": "1.2.28",
+    "private": true,
+    "main": "/theme.scss",
+    "scripts": {
+        "serve": "vue-cli-service serve --port=8082 --fix",
+        "serveDev": "vue-cli-service serve --port=8082 --mode development",
+        "build": "vue-cli-service build --mode production",
+        "buildDev": "vue-cli-service build --mode development",
+        "lint": "vue-cli-service lint"
     },
-    "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
-    ],
-    "rules": {},
-    "parserOptions": {
-      "parser": "babel-eslint"
-    }
-  },
-  "postcss": {
-    "plugins": {
-      "autoprefixer": {}
-    }
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions"
-  ]
+    "dependencies": {
+        "bulma": "^0.7.5",
+        "cassproject": "^2.11.2",
+        "core-js": "^2.6.5",
+        "file-saver": "^2.0.2",
+        "jsonld": "^1.8.1",
+        "pure-uuid": "^1.6.0",
+        "vue": "^2.6.10",
+        "vue-infinite-scroll": "^2.0.2",
+        "vue-moment": "^4.0.0",
+        "vue-router": "^3.0.3",
+        "vuedraggable": "^2.23.2",
+        "vuex": "^3.0.1"
+    },
+    "devDependencies": {
+        "@vue/cli-plugin-babel": "^3.12.1",
+        "@vue/cli-plugin-eslint": "^3.12.1",
+        "@vue/cli-service": "^3.12.1",
+        "@vue/eslint-config-standard": "^4.0.0",
+        "babel-eslint": "^10.0.3",
+        "eslint": "^5.16.0",
+        "eslint-plugin-vue": "^5.2.3",
+        "file-loader": "^4.3.0",
+        "node-sass": "^4.13.0",
+        "sass": "^1.23.2",
+        "sass-loader": "^7.3.1",
+        "vue-template-compiler": "^2.6.10"
+    },
+    "eslintConfig": {
+        "root": true,
+        "env": {
+            "node": true
+        },
+        "extends": [
+            "plugin:vue/essential",
+            "eslint:recommended"
+        ],
+        "rules": {},
+        "parserOptions": {
+            "parser": "babel-eslint"
+        }
+    },
+    "postcss": {
+        "plugins": {
+            "autoprefixer": {}
+        }
+    },
+    "browserslist": [
+        "> 1%",
+        "last 2 versions"
+    ]
 }

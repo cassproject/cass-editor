@@ -16,7 +16,11 @@ const editor = {
         private: false,
         commonPathIframe: null,
         iframeCompetencyPathInterframework: null,
-        iframeConceptPath: null
+        iframeCompetencyPathIntraframework: null,
+        iframeConceptPath: null,
+        newCompetency: null,
+        t3Profile: false,
+        changedObject: null
     },
     mutations: {
         framework(state, f) {
@@ -49,8 +53,20 @@ const editor = {
         iframeCompetencyPathInterframework(state, path) {
             state.iframeCompetencyPathInterframework = path;
         },
+        iframeCompetencyPathIntraframework(state, path) {
+            state.iframeCompetencyPathIntraframework = path;
+        },
         iframeConceptPath(state, path) {
             state.iframeConceptPath = path;
+        },
+        newCompetency(state, id) {
+            state.newCompetency = id;
+        },
+        t3Profile(state, bool) {
+            state.t3Profile = bool;
+        },
+        changedObject(state, id) {
+            state.changedObject = id;
         }
     },
     actions: {

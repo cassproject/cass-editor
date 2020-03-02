@@ -6,69 +6,84 @@
                 <side-bar
                     type="import"
                     :method="method"
+                    :queryParams="queryParams"
                     @updateUrl="updateUrl" />
                 <!--- end side bar -->
             </div>
             <!--- main body section -->
             <div class="column has-background-white is-scrollable">
-                <section class="section page-import-body">
-                    <div class="container">
-                        <div class="section">
-                            <div class="columns is-mobile">
-                                <div class="column is-narrow">
-                                    <h1 class="title is-size-2">
-                                        Import a framework
-                                    </h1>
-                                </div>
-                                <div class="column">
-                                    <p class="is-primary is-size-7" />
-                                </div>
+                <section class="page-import-body">
+                    <!-- top section import impormation -->
+                    <div
+                        class="has-background-white"
+                        id="import-top-section">
+                        <div class="columns is-mobile">
+                            <div class="column is-narrow">
+                                <h1
+                                    class="title is-size-2"
+                                    v-if="queryParams.concepts === 'true'">
+                                    Import a concept scheme
+                                </h1>
+                                <h1
+                                    class="title is-size-2"
+                                    v-else>
+                                    Import a framework
+                                </h1>
                             </div>
-                            <p
-                                v-if="status === 'Ready' && !file"
-                                class="is-size-6">
-                                Upload documents to transform into CaSS Competency Frameworks.
-                            </p>
-                            <p
-                                v-if="showImportDetailsView"
-                                class="is-size-6">
-                                <span class="has-text-success has-text-weight-bold">
-                                    CaSS has detected a framework!
-                                </span>
-                                <br><br>
-                                We've gathered details about your competency framework and file.  Please review. Accept and approve to continue, cancel to review your file and re-import.
-                            </p>
-                            <p
-                                v-if="showImportPreviewView"
-                                class="is-size-6">
-                                <span class="has-text-success has-text-weight-bold">
-                                    Framework successfully imported, ready to edit.
-                                </span>
-                                <br><br>
-                                Please review the name and descriptions of the imported competencies. After making edits, "approve" the changes to view the imported competency details.
-                            </p>
-                            <p
-                                v-if="showImportLightView"
-                                class="is-size-6">
-                                <span class="has-text-success has-text-weight-bold">
-                                    Your import is complete!
-                                </span>
-                                <br><br>
-                                To view your framework in the full editor, select "open in editor" at the
-                                bottom of the screen.
-                                <br><br>
-                            </p>
+                            <div class="column">
+                                <p class="is-primary is-size-7" />
+                            </div>
                         </div>
+                        <p
+                            v-if="status === 'Ready' && !file && queryParams.concepts === 'true'"
+                            class="is-size-6">
+                            Upload documents to transform into CaSS Concept Schemes.
+                        </p>
+                        <p
+                            v-else-if="status === 'Ready' && !file"
+                            class="is-size-6">
+                            Upload documents to transform into CaSS Competency Frameworks.
+                        </p>
+                        <p
+                            v-if="showImportDetailsView"
+                            class="is-size-6">
+                            <span class="has-text-success has-text-weight-bold">
+                                CaSS has detected a framework!
+                            </span>
+                            <br><br>
+                            We've gathered details about your competency framework and file.  Please review. Accept and approve to continue, cancel to review your file and re-import.
+                        </p>
+                        <p
+                            v-if="showImportPreviewView"
+                            class="is-size-6">
+                            <span class="has-text-success has-text-weight-bold">
+                                Framework successfully imported, ready to edit.
+                            </span>
+                            <br><br>
+                            Please review the name and descriptions of the imported competencies. After making edits, "approve" the changes to view the imported competency details.
+                        </p>
+                        <p
+                            v-if="showImportLightView"
+                            class="is-size-6">
+                            <span class="has-text-success has-text-weight-bold">
+                                Your import is complete!
+                            </span>
+                            <br><br>
+                            To view your framework in the full editor, select "open in editor" at the
+                            bottom of the screen.
+                            <br><br>
+                        </p>
+                        <!-- import details after selecting file
                         <div
                             v-if="framework && showImportPreviewView"
-                            class="section">
+                            class="import-instructions">
                             <div class="columns is-mobile">
                                 <div class="column is-6 has-text-centered">
                                     <span class="icon">
                                         <i class="far fa-hand-rock has-text-dark" />
                                     </span>
                                     <span class="is-size-7 has-text-weight-bold">
-                                        Use your mouse to drag competencies
+                                        Drag to change hierarchy
                                     </span>
                                 </div>
                                 <div class="column is-6 has-text-centered">
@@ -77,12 +92,16 @@
                                             <i class="far fa-edit has-text-black" />
                                         </span>
                                         <span class="is-size-7 has-text-weight-bold">
-                                            Click the pencil icon to edit the basic details.
+                                            Click descriptions to edit
                                         </span>
                                     </span>
                                 </div>
                             </div>
-                        </div>
+                        </div>-->
+                    </div>
+                    <div
+                        id="import-bottom-section"
+                        class="section">
                         <!-- types of import for tabs -->
                         <div
                             v-if="!framework"
@@ -105,7 +124,9 @@
                                                 </a>
                                             </div>
                                         </div>
-                                        <div class="column">
+                                        <div
+                                            class="column"
+                                            v-if="queryParams.concepts !== 'true'">
                                             <div
                                                 class="import-tab disabled"
                                                 :class="{ 'is-active-tab': method === 'server'}">
@@ -119,7 +140,9 @@
                                                 </a>
                                             </div>
                                         </div>
-                                        <div class="column">
+                                        <div
+                                            class="column"
+                                            v-if="queryParams.concepts !== 'true'">
                                             <div
                                                 class="import-tab disabled"
                                                 :class="{ 'is-active-tab': method === 'text'}">
@@ -133,7 +156,9 @@
                                                 </a>
                                             </div>
                                         </div>
-                                        <div class="column">
+                                        <div
+                                            class="column"
+                                            v-if="queryParams.concepts !== 'true'">
                                             <div
                                                 class="import-tab disabled"
                                                 :class="{ 'is-active-tab': method === 'url'}">
@@ -161,12 +186,21 @@
                                         <div
                                             v-else-if="processingFile && !showErrors"
                                             class="column is-12">
-                                            <span class="icon is-large">
+                                            <span
+                                                class="icon is-large"
+                                                v-if="spin">
                                                 <i class="fa fa-spinner fa-pulse fa-2x" />
                                             </span>
                                             <div class="section">
-                                                <p class="is-size-7">
+                                                <p
+                                                    v-if="status !== 'processing'"
+                                                    class="is-size-7">
                                                     {{ status }}
+                                                </p>
+                                                <p
+                                                    v-if="status === 'processing'"
+                                                    class="is-size-7">
+                                                    {{ processingStatus }}
                                                 </p>
                                             </div>
                                         </div>
@@ -203,7 +237,7 @@
                                     </div>
                                     <!-- appears to be part of an interstitial screen -->
                                     <div
-                                        class="section is-hidden">
+                                        class="section">
                                         <div v-if="importType=='csv'">
                                             <div>
                                                 <label>Step 1: Name the framework.</label>
@@ -320,9 +354,11 @@
                                                 <input v-model="importFrameworkDescription">
                                             </div>
                                         </div>
-                                        <!--<button @click="importFromFile">
+                                        <button
+                                            v-if="file && importType!=='pdf'"
+                                            @click="importFromFile">
                                             Import
-                                        </button>-->
+                                        </button>
                                     </div>
                                     <!-- server input -->
                                     <div
@@ -404,6 +440,7 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- import details -->
                         <div
                             class="section import-details"
                             v-if="framework && showImportDetailsView">
@@ -453,31 +490,63 @@
                                 </ul>
                             </div>
                         </div>
+                        <!-- import preview -->
                         <div
                             v-if="framework && showImportPreviewView"
-                            class="section import-preview">
+                            class="import-preview">
+                            <Thing
+                                :obj="framework"
+                                :repo="repo"
+                                class="framework-title"
+                                :profile="t3FrameworkProfile"
+                                :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
+                                iframeText="Attach subitems from other sources to the selected item." />
                             <div class="tile is-vertical">
-                                <!-- loading section -->
+                                <!-- loading section -- dummy content to show while loading dome elemnts -->
+                                <div
+                                    class="section"
+                                    v-if="!hierarchyIsdoneLoading">
+                                    <ul class="processing-list">
+                                        <li />
+                                        <li />
+                                        <ul>
+                                            <li />
+                                            <li />
+                                            <li />
+                                        </ul>
+                                        <li />
+                                        <li />
+                                        <ul>
+                                            <li />
+                                            <li />
+                                        </ul>
+                                    </ul>
+                                </div>
                                 <Hierarchy
+                                    :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                     v-if="framework"
+                                    @doneLoadingNodes="handleDoneLoading"
                                     :container="framework"
                                     containerType="Framework"
                                     containerNodeProperty="competency"
                                     containerEdgeProperty="relation"
                                     nodeType="EcCompetency"
-                                    :profile="previewProfile"
+                                    :profile="t3CompetencyProfile"
                                     :editable="true"
                                     edgeType="EcAlignment"
                                     edgeRelationProperty="relationType"
                                     edgeRelationLiteral="narrows"
                                     edgeSourceProperty="source"
                                     edgeTargetProperty="target"
-                                    :repo="repo" />
+                                    :repo="repo"
+                                    :newFramework="true"
+                                    @deleteObject="deleteObject" />
                             </div>
                         </div>
+                        <!-- import light view -->
                         <div
                             v-else-if="framework && showImportLightView"
-                            class="section import-light">
+                            class="import-light">
                             <div class="tile is-vertical">
                                 <Hierarchy
                                     v-if="framework"
@@ -486,123 +555,127 @@
                                     containerNodeProperty="competency"
                                     containerEdgeProperty="relation"
                                     nodeType="EcCompetency"
-                                    :profile="lightViewProfile"
+                                    :profile="t3CompetencyProfile"
                                     :editable="false"
                                     edgeType="EcAlignment"
                                     edgeRelationProperty="relationType"
                                     edgeRelationLiteral="narrows"
                                     edgeSourceProperty="source"
                                     edgeTargetProperty="target"
-                                    :repo="repo" />
+                                    :repo="repo"
+                                    :newFramework="true"
+                                    @deleteObject="deleteObject" />
                             </div>
                         </div>
-                        <div class="section">
-                            <div class="columns is-gapless is-marginless is-mobile is-multiline">
-                                <div class="column is-12">
-                                    <!-- import details options -->
+                    </div>
+                    <div
+                        class="section"
+                        id="import-actions">
+                        <div class="columns is-gapless is-marginless is-mobile is-multiline">
+                            <div class="column is-12">
+                                <!-- import details options -->
+                                <div
+                                    v-if="showImportDetailsView"
+                                    class="buttons is-right">
                                     <div
-                                        v-if="showImportDetailsView"
-                                        class="buttons is-right">
-                                        <div
-                                            @click="cancelImport"
-                                            class="button is-light is-pulled-right is-light">
-                                            <span>
-                                                Cancel
-                                            </span>
-                                            <span class="icon">
-                                                <i class="fa fa-times-circle" />
-                                            </span>
-                                        </div>
-                                        <div
-                                            @click="importDetailsAccept"
-                                            class="button is-info is-pulled-right">
-                                            <span>
-                                                Accept Details & Edit
-                                            </span>
-                                            <span class="icon is-smalls">
-                                                <span class="fa-stack">
-                                                    <i class="fas fa-circle fa-stack-1x" />
-                                                    <i class="fas has-text-info fa-caret-right fa-stack-1x caret-icon-overlay-fix" />
-                                                </span>
-                                            </span>
-                                        </div>
+                                        @click="cancelImport"
+                                        class="button is-light is-pulled-right is-light">
+                                        <span>
+                                            Cancel
+                                        </span>
+                                        <span class="icon">
+                                            <i class="fa fa-times-circle" />
+                                        </span>
                                     </div>
-                                    <!-- import preview options -->
                                     <div
-                                        v-else-if="showImportPreviewView"
-                                        class="buttons is-right">
-                                        <div
-                                            @click="cancelImport"
-                                            class="button is-light is-pulled-right">
-                                            <span>cancel</span>
-                                            <span class="icon">
-                                                <i class="fa fa-times-circle" />
+                                        @click="importDetailsAccept"
+                                        class="button is-info is-pulled-right">
+                                        <span>
+                                            Accept Details & Edit
+                                        </span>
+                                        <span class="icon is-smalls">
+                                            <span class="fa-stack">
+                                                <i class="fas fa-circle fa-stack-1x" />
+                                                <i class="fas has-text-info fa-caret-right fa-stack-1x caret-icon-overlay-fix" />
                                             </span>
-                                        </div>
-                                        <div
-                                            @click="importPreviewAccept()"
-                                            class="button is-info is-pulled-right">
-                                            <span>
-                                                Approve Import & View
-                                            </span>
-                                            <span class="icon">
-                                                <span class="fa-stack">
-                                                    <i class="fas fa-circle fa-stack-1x" />
-                                                    <i class="fas has-text-info fa-caret-right fa-stack-1x caret-icon-overlay-fix" />
-                                                </span>
-                                            </span>
-                                        </div>
+                                        </span>
                                     </div>
                                 </div>
+                                <!-- import preview options -->
                                 <div
-                                    v-if="showImportLightView"
-                                    class="column is-6">
-                                    <div class="buttons is-left">
-                                        <div
-                                            class="button is-light is-pulled-right"
-                                            @click="showModal('export')">
-                                            <span>
-                                                Export
+                                    v-else-if="showImportPreviewView"
+                                    class="buttons is-right">
+                                    <div
+                                        @click="cancelImport"
+                                        class="button is-light is-pulled-right">
+                                        <span>cancel</span>
+                                        <span class="icon">
+                                            <i class="fa fa-times-circle" />
+                                        </span>
+                                    </div>
+                                    <div
+                                        @click="importPreviewAccept()"
+                                        class="button is-info is-pulled-right">
+                                        <span>
+                                            Approve Import & View
+                                        </span>
+                                        <span class="icon">
+                                            <span class="fa-stack">
+                                                <i class="fas fa-circle fa-stack-1x" />
+                                                <i class="fas has-text-info fa-caret-right fa-stack-1x caret-icon-overlay-fix" />
                                             </span>
-                                            <span class="icon">
-                                                <i class="fa fa-download" />
-                                            </span>
-                                        </div>
-                                        <router-link
-                                            class="button is-light is-pulled-right"
-                                            to="/">
-                                            <span>
-                                                Done
-                                            </span>
-                                            <span class="icon">
-                                                <i class="fa fa-home" />
-                                            </span>
-                                        </router-link>
+                                        </span>
                                     </div>
                                 </div>
-                                <div
-                                    v-if="showImportLightView"
-                                    class="column is-6">
+                            </div>
+                            <div
+                                v-if="showImportLightView"
+                                class="column is-6">
+                                <div class="buttons is-left">
                                     <div
-                                        class="buttons is-right">
-                                        <div
-                                            v-if="framework"
-                                            @click="cancelImport"
-                                            class="button is-info is-pulled-right">
-                                            <span>import new framework</span>
-                                            <span class="icon">
-                                                <i class="fa fa-redo-alt" />
-                                            </span>
-                                        </div>
-                                        <div
-                                            v-if="framework"
-                                            @click="openFramework"
-                                            class="button is-info is-pulled-right">
-                                            <span>open editor</span>
-                                            <span class="icon">
-                                                <i class="fa fa-edit" />
-                                            </span>
-                                        </div>
+                                        class="button is-light is-pulled-right"
+                                        @click="showModal('export')">
+                                        <span>
+                                            Export
+                                        </span>
+                                        <span class="icon">
+                                            <i class="fa fa-download" />
+                                        </span>
+                                    </div>
+                                    <router-link
+                                        class="button is-light is-pulled-right"
+                                        to="/">
+                                        <span>
+                                            Done
+                                        </span>
+                                        <span class="icon">
+                                            <i class="fa fa-home" />
+                                        </span>
+                                    </router-link>
+                                </div>
+                            </div>
+                            <div
+                                v-if="showImportLightView"
+                                class="column is-6">
+                                <div
+                                    class="buttons is-right">
+                                    <div
+                                        v-if="framework"
+                                        @click="cancelImport"
+                                        class="button is-info is-pulled-right">
+                                        <span>import new framework</span>
+                                        <span class="icon">
+                                            <i class="fa fa-redo-alt" />
+                                        </span>
+                                    </div>
+                                    <div
+                                        v-if="framework"
+                                        @click="openFramework"
+                                        class="button is-info is-pulled-right">
+                                        <span>open editor</span>
+                                        <span class="icon">
+                                            <i class="fa fa-edit" />
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -616,23 +689,24 @@
 
 <script>
 import Hierarchy from '@/lode/components/lode/Hierarchy.vue';
-import csvConceptExample from 'file-loader!../../../files/Concept Scheme Example.csv';
-import csvConceptTemplate from 'file-loader!../../../files/Concept Scheme Template.csv';
-import ctdlAsnJsonldConcepts from 'file-loader!../../../files/ConnectingCredentialsLevels.jsonld';
 import common from '@/mixins/common.js';
 import dragAndDrop from './../../components/DragAndDrop.vue';
 import sideBar from './../../components/SideBar.vue';
 import exports from '@/mixins/exports.js';
+import competencyEdits from '@/mixins/competencyEdits.js';
+import t3Profile from '@/mixins/t3Profile.js';
+import Thing from '@/lode/components/lode/Thing.vue';
 
 export default {
     name: "Import",
     props: {
         queryParams: Object
     },
-    mixins: [common, exports],
-    components: {Hierarchy, dragAndDrop, sideBar},
+    mixins: [common, exports, competencyEdits, t3Profile],
+    components: {Hierarchy, dragAndDrop, sideBar, Thing},
     data: function() {
         return {
+            hierarchyIsdoneLoading: false,
             frameworkBusy: true,
             detailsDetected: {
                 rows: 0,
@@ -658,10 +732,8 @@ export default {
             url: null,
             repo: window.repo,
             status: "Ready",
+            processingStatus: '',
             statusType: 'info',
-            csvConceptExampleFile: csvConceptExample,
-            csvConceptTemplateFile: csvConceptTemplate,
-            ctdlAsnJsonldConceptsFile: ctdlAsnJsonldConcepts,
             competencyCount: 0,
             importType: null,
             importFrameworkName: null,
@@ -690,24 +762,11 @@ export default {
                 {name: "Credential Engine ASN (CSV)", value: "ctdlasnCsv"},
                 {name: "Table (CSV)", value: "csv"},
                 {name: "IMS Global CASE (JSON)", value: "case"}
-            ]
+            ],
+            spin: true
         };
     },
     computed: {
-        /*
-         * depending on where we are in the import cycle,
-         * utilize a different profile to display required
-         * fields to the user
-         */
-        importProfile: function() {
-            let profile;
-            if (this.showImportPreviewView === true) {
-                profile = this.previewProfile;
-            } else {
-                profile = this.postImportProfile;
-            }
-            return profile;
-        },
         isUrl: function() {
             if (this.method === 'url') {
                 return true;
@@ -736,260 +795,6 @@ export default {
                 return false;
             }
         },
-        previewProfile: function() {
-            var me = this;
-            return {
-                "http://schema.org/name": {
-                    "@id": "http://schema.org/name",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                        [{"@language": "en", "@value": "Name of the competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}]
-                },
-                "@id": {
-                    "@id": "https://schema.cassproject.org/0.4/Competency/id",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "The URL of the competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "ID"}],
-                    "noTextEditing": true
-                },
-                "https://purl.org/ctdlasn/terms/codedNotation": {
-                    "@id": "https://purl.org/ctdlasn/terms/codedNotation",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                        [{"@language": "en", "@value": "An alphanumeric notation or ID code as defined by the promulgating body to identify this resource."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Code"}],
-                    "thingKey": "ceasn:codedNotation"
-                },
-                "http://schema.org/description": {
-                    "@id": "http://schema.org/description",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                        [{"@language": "en", "@value": "Description of the competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}]
-                },
-                "http://purl.org/dc/terms/type": {
-                    "@id": "http://schema.org/description",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                        [{"@language": "en", "@value": "The textual label identifying the category of the competency as designated by the promulgating body."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Type"}],
-                    "thingKey": "dcterms:type"
-                },
-                "https://schema.cassproject.org/0.4/Competency/scope": {
-                    "@id": "https://schema.cassproject.org/0.4/Competency/scope",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Scope in which the competency may be applied. e.g. Underwater."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Scope"}]
-                },
-                "https://purl.org/ctdlasn/terms/conceptTerm": {
-                    "@id": "https://purl.org/ctdlasn/terms/conceptTerm",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                        [{"@language": "en", "@value": "A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual resources contextually."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Context"}],
-                    "thingKey": "ceasn:conceptTerm",
-                    "iframePath": me.$store.state.editor.iframeConceptPath,
-                    "iframeText": "Select concepts to attach..."
-                },
-                "https://schema.cassproject.org/0.4/Level": {
-                    "@id": "https://schema.cassproject.org/0.4/Level",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Level"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [
-                        {"@language": "en",
-                            "@value":
-                        "When an individual's performance in a competency can be measured, a level specifies milestones that an individual can reach, creating fine-grained distinction between the proficient and the adept."}
-                    ],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Rubric Cell"}],
-                    "valuesIndexed": function() { return me.levels; },
-                    "noTextEditing": true,
-                    "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
-                    "iframeText": "Select levels to align...",
-                    "add": function(selectedCompetency) { me.addLevel(selectedCompetency); },
-                    "remove": function(competency, levelId) { me.removeLevelFromFramework(levelId); },
-                    "save": function() { me.saveFramework(); },
-                    profile: {
-                        "https://schema.cassproject.org/0.4/Level/title": {
-                            "@id": "https://schema.cassproject.org/0.4/Level/title",
-                            "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                            "http://schema.org/domainIncludes":
-                                [{"@id": "https://schema.cassproject.org/0.4/Level"}],
-                            "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
-                            "http://www.w3.org/2000/01/rdf-schema#comment":
-                                [{"@language": "en", "@value": "The title that one who holds this performance level may assume. e.g. \"Fast\""}],
-                            "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Rubric Column Header"}]
-                        },
-                        "https://schema.cassproject.org/0.4/Level/competency": {
-                            "@id": "https://schema.cassproject.org/0.4/Level/competency",
-                            "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                            "http://schema.org/domainIncludes":
-                                [{"@id": "https://schema.cassproject.org/0.4/Level"}],
-                            "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
-                            "http://www.w3.org/2000/01/rdf-schema#comment":
-                                [{"@language": "en", "@value": "Specifies the URL of the competency the level relates to."}],
-                            "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Rubric Row Header"}]
-                        },
-                        "alwaysProperties": ["https://schema.cassproject.org/0.4/Level/title", "https://schema.cassproject.org/0.4/Level/competency"]
-                    }
-                },
-                "alwaysProperties": [
-                    "http://schema.org/name",
-                    "http://schema.org/description"
-                ]
-            };
-        },
-        lightViewProfile: function() {
-            var me = this;
-            return {
-                "http://schema.org/name": {
-                    "@id": "http://schema.org/name",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                        [{"@language": "en", "@value": "Name of the competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}]
-                },
-                "@id": {
-                    "@id": "https://schema.cassproject.org/0.4/Competency/id",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "The URL of the competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "ID"}],
-                    "noTextEditing": true
-                },
-                "https://purl.org/ctdlasn/terms/codedNotation": {
-                    "@id": "https://purl.org/ctdlasn/terms/codedNotation",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                        [{"@language": "en", "@value": "An alphanumeric notation or ID code as defined by the promulgating body to identify this resource."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Code"}],
-                    "thingKey": "ceasn:codedNotation"
-                },
-                "http://schema.org/description": {
-                    "@id": "http://schema.org/description",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                        [{"@language": "en", "@value": "Description of the competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}]
-                },
-                "http://purl.org/dc/terms/type": {
-                    "@id": "http://schema.org/description",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                        [{"@language": "en", "@value": "The textual label identifying the category of the competency as designated by the promulgating body."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Type"}],
-                    "thingKey": "dcterms:type"
-                },
-                "https://schema.cassproject.org/0.4/Competency/scope": {
-                    "@id": "https://schema.cassproject.org/0.4/Competency/scope",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Scope in which the competency may be applied. e.g. Underwater."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Scope"}]
-                },
-                "https://purl.org/ctdlasn/terms/conceptTerm": {
-                    "@id": "https://purl.org/ctdlasn/terms/conceptTerm",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                        [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                        [{"@language": "en", "@value": "A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual resources contextually."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Context"}],
-                    "thingKey": "ceasn:conceptTerm",
-                    "iframePath": me.$store.state.editor.iframeConceptPath,
-                    "iframeText": "Select concepts to attach..."
-                },
-                "https://schema.cassproject.org/0.4/Level": {
-                    "@id": "https://schema.cassproject.org/0.4/Level",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "http://schema.cassproject.org/0.3/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Level"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [
-                        {"@language": "en",
-                            "@value":
-                        "When an individual's performance in a competency can be measured, a level specifies milestones that an individual can reach, creating fine-grained distinction between the proficient and the adept."}
-                    ],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Rubric Cell"}],
-                    "valuesIndexed": function() { return me.levels; },
-                    "noTextEditing": true,
-                    "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
-                    "iframeText": "Select levels to align...",
-                    "add": function(selectedCompetency) { me.addLevel(selectedCompetency); },
-                    "remove": function(competency, levelId) { me.removeLevelFromFramework(levelId); },
-                    "save": function() { me.saveFramework(); },
-                    profile: {
-                        "https://schema.cassproject.org/0.4/Level/title": {
-                            "@id": "https://schema.cassproject.org/0.4/Level/title",
-                            "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                            "http://schema.org/domainIncludes":
-                                [{"@id": "https://schema.cassproject.org/0.4/Level"}],
-                            "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
-                            "http://www.w3.org/2000/01/rdf-schema#comment":
-                                [{"@language": "en", "@value": "The title that one who holds this performance level may assume. e.g. \"Fast\""}],
-                            "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Rubric Column Header"}]
-                        },
-                        "https://schema.cassproject.org/0.4/Level/competency": {
-                            "@id": "https://schema.cassproject.org/0.4/Level/competency",
-                            "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                            "http://schema.org/domainIncludes":
-                                [{"@id": "https://schema.cassproject.org/0.4/Level"}],
-                            "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
-                            "http://www.w3.org/2000/01/rdf-schema#comment":
-                                [{"@language": "en", "@value": "Specifies the URL of the competency the level relates to."}],
-                            "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Rubric Row Header"}]
-                        },
-                        "alwaysProperties": ["https://schema.cassproject.org/0.4/Level/title", "https://schema.cassproject.org/0.4/Level/competency"]
-                    }
-                }
-            };
-        },
         levels: function() {
             var levels = {};
             if (!this.framework.level) {
@@ -1012,6 +817,19 @@ export default {
         }
     },
     watch: {
+        status: function(val) {
+            let me = this;
+            if (val === 'processing') {
+                console.log("hello");
+                me.processingStatus = "Preparing competencies...";
+                setTimeout(() => {
+                    me.processingStatus = "Building competency hierarchy...";
+                    setTimeout(() => {
+                        me.processingStatus = "Preparing for editing...";
+                    }, 1000);
+                }, 1000);
+            }
+        },
         text: function(newText, oldText) {
             var me = this;
             TabStructuredImport.importCompetencies(
@@ -1041,6 +859,10 @@ export default {
         }
     },
     methods: {
+        handleDoneLoading: function() {
+            console.log("done loading");
+            this.hierarchyIsdoneLoading = true;
+        },
         showModal(val, data) {
             let params = {};
             if (val === 'export') {
@@ -1071,70 +893,6 @@ export default {
             }
             // reveal modal
             this.$modal.show(params);
-        },
-
-        // moving over from framework since this is now the parent
-        removeObject: function(thing) {
-            // Remove from container but don't delete
-            console.log("removing " + thing.id);
-            var me = this;
-            this.framework["schema:dateModified"] = new Date().toISOString();
-            this.framework.removeCompetency(thing.shortId(), function() {
-                var framework = me.framework;
-                if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[f.id] !== true) {
-                    framework = EcEncryptedValue.toEncryptedValue(framework);
-                }
-                repo.saveTo(framework, function() {
-                    me.confirmDialog = false;
-                    me.$store.commit('framework', me.framework);
-                }, console.error);
-            }, console.log);
-        },
-        deleteObject: function(thing) {
-            console.log("deleting " + thing.id);
-            var me = this;
-            if (thing.shortId() === this.framework.shortId()) {
-                // delete framework
-                var framework = this.framework;
-                this.repo.deleteRegistered(framework, function(success) {
-                    me.spitEvent("frameworkDeleted", framework.shortId(), "editFrameworkSection");
-                    // Delete the framework, delete all non-used stuff.
-                    if (framework.competency != null) {
-                        for (var i = 0; i < framework.competency.length; i++) {
-                            me.conditionalDelete(framework.competency[i]);
-                        }
-                    }
-                    if (framework.relation != null) {
-                        for (var i = 0; i < framework.relation.length; i++) {
-                            me.conditionalDelete(framework.relation[i]);
-                        }
-                    }
-                    if (framework.level != null) {
-                        for (var i = 0; i < framework.level.length; i++) {
-                            me.conditionalDelete(framework.level[i]);
-                        }
-                    }
-                    me.$store.commit('framework', null);
-                    me.$router.push({name: "frameworks"});
-                }, console.log);
-            } else {
-                // Delete competency and relations
-                this.$store.commit('selectedCompetency', thing);
-                this.framework["schema:dateModified"] = new Date().toISOString();
-                this.framework.removeCompetency(thing.shortId(), function() {
-                    me.framework.removeLevel(thing.shortId());
-                    me.conditionalDelete(thing.shortId());
-                    me.spitEvent("competencyDeleted", thing.shortId(), "editFrameworkSection");
-                    me.$store.commit('selectedCompetency', null);
-                    var framework = me.framework;
-                    if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[me.framework.id] !== true) {
-                        framework = EcEncryptedValue.toEncryptedValue(framework);
-                    }
-                    me.repo.saveTo(framework, function() {
-                        me.$store.commit('framework', me.framework);
-                    }, console.error);
-                }, console.log);
-            }
         },
         // pulled over from Thing.vue in LODE - should be different for this case
         exportObject: function(type) {
@@ -1209,10 +967,15 @@ export default {
         },
         /* When an import is "successful" */
         importSuccess: function() {
-            this.status = "Competency detected";
-            this.showImportDetailsView = true;
-            this.showImportPreviewView = false;
-            this.showImportLightView = false;
+            if (this.queryParams.concepts !== "true") {
+                this.status = "Competency detected";
+                this.showImportDetailsView = true;
+                this.showImportPreviewView = false;
+                this.showImportLightView = false;
+            } else {
+                this.status = "Concept Scheme Imported.";
+                this.spin = false;
+            }
         },
         /*
          * from the interstital screen the user accepts
@@ -1254,6 +1017,7 @@ export default {
             this.processingFile = false;
             this.processingSuccess = false;
             this.status = "Ready";
+            this.spin = true;
         },
         onUploadFiles: function(value) {
             this.file = value;
@@ -1272,60 +1036,83 @@ export default {
             }
         },
         fileChange: function(e) {
+            console.log(e);
             this.processingFile = true;
             this.processingSuccess = false;
             this.analyzeImportFile();
-            this.importType = null;
             this.firstImport = true;
+            this.spin = true;
         },
         analyzeImportFile: function() {
             var me = this;
             var file = this.file[0];
             if (file.name.endsWith(".csv")) {
-                this.unsupportedFile('csv');
-            } else if (file.name.endsWith(".csv")) {
-                CTDLASNCSVImport.analyzeFile(file, function(frameworkCount, competencyCount) {
-                    me.importType = "ctdlasncsv";
-                    me.status = "Import " + frameworkCount + " frameworks and " + competencyCount + " competencies.";
-                }, function(errorMsg) {
-                    CSVImport.analyzeFile(file, function(data) {
-                        me.importType = "csv";
-                        me.importFrameworkName = file.name.replace(".csv", "");
-                        for (var i = 0; i < data[0].length; i++) {
-                            let column = {};
-                            column.name = data[0][i];
-                            column.index = i;
-                            me.csvColumns.push(column);
-                            if (column.name.toLowerCase().indexOf("name") !== -1) {
-                                me.importCsvColumnName = column;
-                            }
-                            if (column.name.toLowerCase().indexOf("description") !== -1) {
-                                me.importCsvColumnDescription = column;
-                            }
-                            if (column.name.toLowerCase().indexOf("scope") !== -1) {
-                                me.importCsvColumnScope = column;
-                            }
-                            if (column.name.toLowerCase().indexOf("id") !== -1) {
-                                me.importCsvColumnId = column;
-                            }
-                        }
-                        me.processingFile = false;
-                        me.status = (me.competencyCount = (data.length - 1)) + " Competencies Detected.";
-                    }, function(error) {
+                if (this.queryParams.concepts === 'true') {
+                    CTDLASNCSVConceptImport.analyzeFile(file, function(frameworkCount, competencyCount) {
+                        me.importType = "conceptcsv";
+                        me.status = "Import " + frameworkCount + " concept schemes and " + competencyCount + " concepts.";
+                        me.spin = false;
+                    }, function(errorMsg) {
                         me.statusType = "error";
-                        me.status = error;
+                        me.status = errorMsg;
                     });
-                });
+                } else {
+                    CTDLASNCSVImport.analyzeFile(file, function(frameworkCount, competencyCount) {
+                        me.importType = "ctdlasncsv";
+                        me.status = "Import " + frameworkCount + " frameworks and " + competencyCount + " competencies.";
+                        me.spin = false;
+                    }, function(errorMsg) {
+                        CSVImport.analyzeFile(file, function(data) {
+                            me.importType = "csv";
+                            me.importFrameworkName = file.name.replace(".csv", "");
+                            for (var i = 0; i < data[0].length; i++) {
+                                let column = {};
+                                column.name = data[0][i];
+                                column.index = i;
+                                me.csvColumns.push(column);
+                                if (column.name.toLowerCase().indexOf("name") !== -1) {
+                                    me.importCsvColumnName = column;
+                                }
+                                if (column.name.toLowerCase().indexOf("description") !== -1) {
+                                    me.importCsvColumnDescription = column;
+                                }
+                                if (column.name.toLowerCase().indexOf("scope") !== -1) {
+                                    me.importCsvColumnScope = column;
+                                }
+                                if (column.name.toLowerCase().indexOf("id") !== -1) {
+                                    me.importCsvColumnId = column;
+                                }
+                            }
+                            me.processingFile = false;
+                            me.status = (me.competencyCount = (data.length - 1)) + " Competencies Detected.";
+                        }, function(error) {
+                            me.statusType = "error";
+                            me.status = error;
+                        });
+                    });
+                }
             } else if (file.name.endsWith(".json") || file.name.endsWith(".jsonld")) {
                 // Try JSON-LD first, checks for @graph
                 this.analyzeJsonLdFramework(file, function(data, ctdlasn) {
                     var invalid = false;
                     if (ctdlasn === "ctdlasnConcept") {
-                        me.status = "Concept Schemes must be imported in the concept scheme editor.";
-                        invalid = true;
+                        if (me.queryParams.concepts === 'true') {
+                            me.status = "1 Concept Scheme Detected.";
+                            me.importType = "ctdlasnjsonld";
+                            me.spin = false;
+                        } else {
+                            me.status = "Concept Schemes must be imported in the concept scheme editor.";
+                            invalid = true;
+                        }
                     } else {
-                        me.importType = "ctdlasnjsonld";
-                        me.status = "1 Framework and " + (EcObject.keys(data).length - 1) + " Competencies Detected.";
+                        if (me.queryParams.concepts !== 'true') {
+                            me.importType = "ctdlasnjsonld";
+                            me.status = "1 Framework and " + (EcObject.keys(data).length - 1) + " Competencies Detected.";
+                            me.spin = false;
+                        } else {
+                            me.status = "Frameworks must be imported in the competency editor.";
+                            invalid = true;
+                        }
                     }
                     me.competencyCount = EcObject.keys(data).length;
                     if (!invalid && (ctdlasn === "ctdlasn" || ctdlasn === "ctdlasnConcept")) {
@@ -1340,6 +1127,7 @@ export default {
                         me.importType = "asn";
                         me.status = "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.";
                         me.competencyCount = EcObject.keys(data).length;
+                        me.spin = false;
                     }, function(error) {
                         me.status = error;
                     });
@@ -1350,6 +1138,7 @@ export default {
                     me.importFrameworkName = file.name.replace(".xml", "");
                     me.status = "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.";
                     me.competencyCount = EcObject.keys(data).length;
+                    me.spin = false;
                 }, function(error) {
                     me.statusType = "error";
                     me.status = error;
@@ -1567,6 +1356,7 @@ export default {
             f.competency = [];
             f.relation = [];
             f.level = [];
+            f["schema:dateCreated"] = new Date().toISOString();
             toSave.push(f);
             console.log(d);
             console.log(JSON.parse(f.toJson()));
@@ -1604,11 +1394,13 @@ export default {
             }
             me.repo.multiput(toSave, function() {
                 me.framework = f;
+                me.$store.commit('framework', f);
+                me.$store.commit('t3Profile', true);
                 me.status = "";
                 me.importSuccess();
             }, console.error);
             me.statusType = "info";
-            me.status = "Writing Framework to CaSS...";
+            me.status = 'processing';
         },
         importCsv: function() {
             var file = this.file[0];
@@ -1698,12 +1490,14 @@ export default {
                     var data2 = data.substring(data.indexOf("ctdlasn") + 7);
                     data = data1 + "data" + data2;
                 }
-                me.framework = EcFramework.getBlocking(data);
-                if (me.framework == null) {
-                    me.framework = EcConceptScheme.getBlocking(data);
+                var framework;
+                if (me.queryParams.concepts === 'true') {
+                    framework = EcConceptScheme.getBlocking(data);
+                } else {
+                    framework = EcFramework.getBlocking(data);
                 }
                 me.importSuccess();
-                me.spitEvent("importFinished", me.framework.shortId(), "importPage");
+                me.spitEvent("importFinished", framework.shortId(), "importPage");
                 if (me.file != null) {
                     me.file.splice(0, 1);
                 }
@@ -1717,27 +1511,60 @@ export default {
                 console.log(failure.statusText);
             });
             me.statusType = "info";
-            me.status = "Importing Framework";
+            if (me.queryParams.concepts === 'true') {
+                me.status = "Importing Concept Scheme";
+            } else {
+                me.status = 'processing';
+            }
+        },
+        importCtdlAsnConceptCsv: function() {
+            var me = this;
+            var ceo = null;
+            if (EcIdentityManager.ids.length > 0) {
+                ceo = EcIdentityManager.ids[0];
+            }
+            CTDLASNCSVConceptImport.importFrameworksAndCompetencies(me.repo, me.file[0], function(frameworks, competencies) {
+                if (me.queryParams.ceasnDataFields === 'true') {
+                    for (var i = 0; i < frameworks.length; i++) {
+                        if (frameworks[i]["dcterms:language"] == null || frameworks[i]["dcterms:language"] === undefined) {
+                            me.setDefaultLanguage();
+                            frameworks[i]["dcterms:language"] = defaultLanguage;
+                        }
+                    }
+                }
+                var all = frameworks.concat(competencies);
+                me.status = "Saving " + all.length + " objects.";
+                me.repo.multiput(all, function() {
+                    for (var i = 0; i < frameworks.length; i++) {
+                        me.spitEvent("importFinished", frameworks[i].shortId(), "importPage");
+                        me.importSuccess();
+                    }
+                }, function(failure) {
+                    me.statusType = "error";
+                    me.status = "Failed to save: " + failure;
+                    console.error(failure);
+                });
+            }, function(failure) {
+                me.statusType = "error";
+                console.error(failure);
+            }, ceo);
         },
         importFromFile: function() {
+            this.spin = true;
             if (this.importType === "csv") {
-                // temporarily fail on csv
-                this.unsupportedFile('csv');
-                // this.importCsv();
+                this.importCsv();
             } else if (this.importType === "ctdlasncsv") {
-                this.unsupportedFile('ctdlasncsv');
-                // this.importCtdlAsnCsv();
+                this.importCtdlAsnCsv();
+            } else if (this.importType === "conceptcsv") {
+                this.importCtdlAsnConceptCsv();
             } else if (this.importType === "ctdlasnjsonld") {
-                this.unsupportedFile('ctdlasnjsonld');
-                // this.importJsonLd();
+                this.importJsonLd();
             } else if (this.importType === "asn") {
-                this.unsupportedFile('asn');
-                // this.importAsn();
+                this.importAsn();
             } else if (this.importType === "pdf") {
                 this.importPdf();
             } else if (this.importType === "medbiq") {
-                this.unsupportedFile('medbiq');
-                // this.importMedbiq();
+                this.importMedbiq();
             }
         },
         connectToServer: function() {
@@ -1884,5 +1711,6 @@ export default {
 </script>
 
 <style lang="scss">
-    @import './../../variables.scss';
+    @import './../../scss/import.scss';
+
 </style>
