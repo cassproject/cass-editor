@@ -145,7 +145,7 @@ export default {
             } else {
                 defaultLanguage = "en";
             }
-            this.$store.commit('defaultLanguage', defaultLanguage);
+            this.$store.commit('editor/defaultLanguage', defaultLanguage);
         },
         get: function(server, service, headers, success, failure) {
             var url = EcRemote.urlAppend(server, service);
@@ -357,7 +357,7 @@ export default {
         saveFramework: function() {
             this.framework["schema:dateModified"] = new Date().toISOString();
             var framework = this.framework;
-            this.$store.commit('framework', framework);
+            this.$store.commit('editor/framework', framework);
             if (this.queryParams.private === "true" && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                 framework = EcEncryptedValue.toEncryptedValue(framework);
             }
@@ -395,7 +395,7 @@ export default {
                 }, callback);
             }, function() {
                 var framework = me.framework;
-                me.$store.commit('framework', framework);
+                me.$store.commit('editor/framework', framework);
                 if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
                 }

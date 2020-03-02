@@ -12,7 +12,7 @@ export default {
                 }
                 repo.saveTo(framework, function() {
                     me.confirmDialog = false;
-                    me.$store.commit('framework', me.framework);
+                    me.$store.commit('editor/framework', me.framework);
                 }, console.error);
             }, console.log);
         },
@@ -40,24 +40,24 @@ export default {
                             me.conditionalDelete(framework.level[i]);
                         }
                     }
-                    me.$store.commit('framework', null);
+                    me.$store.commit('editor/framework', null);
                     me.$router.push({name: "frameworks"});
                 }, console.log);
             } else {
                 // Delete competency and relations
-                this.$store.commit('selectedCompetency', thing);
+                this.$store.commit('editor/selectedCompetency', thing);
                 this.framework["schema:dateModified"] = new Date().toISOString();
                 this.framework.removeCompetency(thing.shortId(), function() {
                     me.framework.removeLevel(thing.shortId());
                     me.conditionalDelete(thing.shortId());
                     me.spitEvent("competencyDeleted", thing.shortId(), "editFrameworkSection");
-                    me.$store.commit('selectedCompetency', null);
+                    me.$store.commit('editor/selectedCompetency', null);
                     var framework = me.framework;
                     if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[me.framework.id] !== true) {
                         framework = EcEncryptedValue.toEncryptedValue(framework);
                     }
                     me.repo.saveTo(framework, function() {
-                        me.$store.commit('framework', me.framework);
+                        me.$store.commit('editor/framework', me.framework);
                     }, console.error);
                 }, console.log);
             }

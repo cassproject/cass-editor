@@ -127,7 +127,7 @@ export default {
     },
     created: function() {
         this.sortBy = this.queryParams.concepts === 'true' ? "dcterms:title.keyword" : "name.keyword";
-        this.$store.commit("t3Profile", false);
+        this.$store.commit("editor/t3Profile", false);
     },
     computed: {
         type: function() {
@@ -171,12 +171,12 @@ export default {
             var me = this;
             if (this.queryParams.concepts === "true") {
                 EcConceptScheme.get(framework.id, function(success) {
-                    me.$store.commit('framework', success);
+                    me.$store.commit('editor/framework', success);
                     me.$router.push({name: "conceptScheme", params: {frameworkId: framework.id}});
                 }, console.error);
             } else {
                 EcFramework.get(framework.id, function(success) {
-                    me.$store.commit('framework', success);
+                    me.$store.commit('editor/framework', success);
                     me.$router.push({name: "framework", params: {frameworkId: framework.id}});
                 }, console.error);
             }

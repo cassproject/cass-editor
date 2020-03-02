@@ -5,6 +5,7 @@ import lode from './lode/store.js';
 Vue.use(Vuex);
 
 const editor = {
+    namespaced: true,
     state: {
         framework: null,
         organization: null,

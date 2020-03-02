@@ -448,7 +448,7 @@ export default {
             var path = this.queryParams.editorRoot ? this.queryParams.editorRoot : "/";
             path += "cass-editor/?select=Align with...&view=true&back=true&frameworkId=" + this.framework.shortId();
             path += this.$store.state.editor.commonPathIframe;
-            this.$store.commit('iframeCompetencyPathIntraframework', path);
+            this.$store.commit('editor/iframeCompetencyPathIntraframework', path);
         },
         exportObject: function(selectedCompetency, exportType) {
             var guid;

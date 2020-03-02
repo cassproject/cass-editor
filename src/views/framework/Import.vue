@@ -1028,10 +1028,10 @@ export default {
         },
         openFramework: function() {
             if (this.queryParams.concepts === "true") {
-                this.$store.commit('framework', this.framework);
+                this.$store.commit('editor/framework', this.framework);
                 this.$router.push({name: "conceptScheme", params: {frameworkId: this.framework.shortId()}});
             } else {
-                this.$store.commit('framework', this.framework);
+                this.$store.commit('editor/framework', this.framework);
                 this.$router.push({name: "framework", params: {frameworkId: this.framework.shortId()}});
             }
         },
@@ -1394,8 +1394,8 @@ export default {
             }
             me.repo.multiput(toSave, function() {
                 me.framework = f;
-                me.$store.commit('framework', f);
-                me.$store.commit('t3Profile', true);
+                me.$store.commit('editor/framework', f);
+                me.$store.commit('editor/t3Profile', true);
                 me.status = "";
                 me.importSuccess();
             }, console.error);
