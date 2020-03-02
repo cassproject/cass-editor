@@ -430,6 +430,7 @@ export default {
             };
 
             connection.changedObject = function(wut) {
+                me.$store.commit('changedObject', wut.shortId());
                 if (me.$route.name !== 'framework') {
                     return;
                 }
@@ -537,7 +538,6 @@ export default {
                 } else {
                     delete EcRepository.cache[resp];
                     delete EcRepository.cache[EcRemoteLinkedData.trimVersionFromUrl(resp)];
-                    if (me.$store.state.editor.framework == null) return;
                     EcRepository.get(resp, connection.changedObject, console.error);
                 }
             };
