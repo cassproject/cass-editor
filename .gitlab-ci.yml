@@ -47,6 +47,10 @@ buildQA:
   - sed -i 's/cass-editor//g' ./src/App.vue
   - sed -i 's/cass-editor\///g' vue.config.js
   - sed -i 's/cass-editor//g' vue.config.js
+
+  - sed -i 's/https:\/\/dev.api.cassproject.org\/api\//https:\/\/qa.api.cassproject.org\/api\//g' ./src/main.js
+  - sed -i 's/https:\/\/dev.api.cassproject.org\/api\//https:\/\/qa.api.cassproject.org\/api\//g' ./src/App.vue
+
   - npm install
   - npm run lint
   - npm run buildDev
