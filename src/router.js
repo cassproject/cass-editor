@@ -70,7 +70,7 @@ export default new Router({
             component: InternalError
         },
         {
-            path: '/404',
+            path: '/*',
             name: '404',
             component: NotFound
         }
