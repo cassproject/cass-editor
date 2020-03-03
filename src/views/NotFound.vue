@@ -1,16 +1,20 @@
 <template>
-    <div id="internal-error">
+    <div
+        id="not-found"
+        class="container">
         <div class="section">
-            <h2 class="title is-size-3">
-                Forbidden
+            <h2 class="title  is-size-3">
+                Not found
             </h2>
             <p>
-                You do not have permission to perform this operation. Please check that you are properly logged in.
+                We’re terribly sorry but the CaSS server does not appear to be online. Please try again later or check the server configuration parameters.
             </p>
         </div>
-         <div class="section">
+        <div class="section">
             <div class="buttons is-centered">
-                <router-link to="/" class="button is-primary is-centered">
+                <router-link
+                    to="/"
+                    class="button is-primary is-centered">
                     return home
                 </router-link>
             </div>
@@ -20,12 +24,11 @@
 
 <script>
 export default {
-    name: '403'
+    name: 'NotFound'
 };
 </script>
-
 <style scoped>
-#internal-error {
+#not-found {
     max-width: 800px;
     display: block;
     margin: auto;

@@ -9,9 +9,9 @@ import Organizations from './views/organization/Organizations.vue';
 import Organization from './views/organization/Organization.vue';
 import Import from './views/framework/Import.vue';
 import ConceptScheme from './views/conceptScheme/ConceptScheme.vue';
-import NotFound from './views/404.vue';
-import InternalError from './views/500.vue';
-import Forbidden from './views/403.vue';
+import NotFound from './views/NotFound.vue';
+import InternalError from './views/InternalError.vue';
+import Forbidden from './views/Forbidden.vue';
 
 Vue.use(Router);
 export default new Router({
@@ -61,17 +61,17 @@ export default new Router({
         },
         {
             path: '/403',
-            name: '403',
+            name: 'Forbidden',
             component: Forbidden
         },
         {
             path: '/500',
-            name: '500',
+            name: 'InternalError',
             component: InternalError
         },
         {
             path: '/*',
-            name: '404',
+            name: 'NotFound',
             component: NotFound
         }
     ]
