@@ -53,7 +53,6 @@ export default {
                             https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. One entity per line.`}
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Creator"}],
-                    "thingKey": "schema:creator",
                     "heading": "General"
                 },
                 "https://purl.org/ctdlasn/terms/publisherName": {
@@ -65,7 +64,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Name of the agent responsible for making this entity available."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Publisher Name"}],
-                    "thingKey": "ceasn:publisherName",
                     "heading": "General"
                 },
                 "http://schema.org/publisher": {
@@ -77,7 +75,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The entity responsible for making this competency framework available. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Publisher"}],
-                    "thingKey": "schema:publisher",
                     "heading": "General"
                 },
                 "http://schema.org/inLanguage": {
@@ -89,7 +86,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The primary language used in or by this competency framework or competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "In Language"}],
-                    "thingKey": "schema:inLanguage",
                     "heading": "General"
                 },
                 "http://schema.org/keywords": {
@@ -101,7 +97,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "A word or phrase used by the promulgating agency to refine and differentiate individual frameworks contextually. One concept per line."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Keywords"}],
-                    "thingKey": "schema:keywords",
                     "heading": "Tagging"
                 },
                 "https://purl.org/ctdlasn/terms/conceptTerm": {
@@ -113,7 +108,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual resources contextually."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Concept Terms"}],
-                    "thingKey": "ceasn:conceptTerm",
                     "iframePath": me.$store.state.editor.iframeConceptPath,
                     "iframeText": "Select concepts to attach...",
                     "heading": "Tagging"
@@ -131,7 +125,6 @@ export default {
                             For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.`}
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Derived From"}],
-                    "thingKey": "ceasn:derivedFrom",
                     "max": 1,
                     "heading": "Connections"
                 },
@@ -144,7 +137,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "A related competency framework of which this competency framework is a version, edition, or adaptation."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Version Of"}],
-                    "thingKey": "ceasn:isVersionOf",
                     "max": 1,
                     "heading": "Connections"
                 },
@@ -161,7 +153,6 @@ export default {
                             For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.`}
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Source"}],
-                    "thingKey": "dc:source",
                     "heading": "Connections"
                 },
                 "https://purl.org/ctdlasn/terms/educationLevelType": {
@@ -177,7 +168,6 @@ export default {
                                 Alternatively, a more specific statement of the location of the audience in terms of its progression through an education or training context.`}
                         ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Education Level Type"}],
-                    "thingKey": "ceasn:educationLevelType",
                     "iframePath": me.$store.state.editor.iframeConceptPath,
                     "iframeText": "Select concepts to attach...",
                     "heading": "Context"
@@ -215,7 +205,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Publication status of the source competency framework. The original framework may be drafted, published, or depreciated outside of this system."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Publication Status"}],
-                    "thingKey": "ceasn:publicationStatusType",
                     "options": [
                         {display: "Draft", val: "http://credreg.net/ctdlasn/vocabs/publicationStatus/Draft"},
                         {display: "Published", val: "http://credreg.net/ctdlasn/vocabs/publicationStatus/Published"},
@@ -233,7 +222,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "An alternative URI by which this competency or competency framework is identified. For example, https://sandbox.credentialengineregistry.org/."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Identifier"}],
-                    "thingKey": "schema:identifier",
                     "heading": "Context"
                 },
                 "http://schema.org/copyrightYear": {
@@ -245,7 +233,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Year of a statement of copyright for this competency framework, such as 2017."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Year Copyrighted"}],
-                    "thingKey": "schema:copyrightYear",
                     "max": 1,
                     "heading": "Rights"
                 },
@@ -258,7 +245,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "A legal document giving official permission to do something with this competency framework. For example, https://sandbox.credentialengineregistry.org/"}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "License"}],
-                    "thingKey": "schema:license",
                     "max": 1,
                     "heading": "Rights"
                 },
@@ -271,7 +257,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Information about rights held in and over this competency framework."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Rights"}],
-                    "thingKey": "dc:rights",
                     "max": 1,
                     "heading": "Rights"
                 },
@@ -284,7 +269,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The agent owning or managing rights over this competency framework. For example, https://credentialengineregistry.org/"}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Rights Holder"}],
-                    "thingKey": "schema:copyrightHolder",
                     "max": 1,
                     "heading": "Rights"
                 },
@@ -372,7 +356,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The textual label identifying the category of the competency as designated by the promulgating body. One label per line. One label per language."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Type"}],
-                    "thingKey": "dcterms:type",
                     "onePerLanguage": true,
                     "heading": "General"
                 },
@@ -390,7 +373,6 @@ export default {
                                 through an education or training context.`}
                         ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Education Level"}],
-                    "thingKey": "ceasn:educationLevelType",
                     "iframePath": me.$store.state.editor.iframeConceptPath,
                     "iframeText": "Select concepts to attach...",
                     "heading": "General"
@@ -404,7 +386,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "An alphanumeric string indicating this competency's position in a list of competencies at the same level in some arbitrary hierarchy."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "List ID"}],
-                    "thingKey": "ceasn:listID",
                     "max": 1,
                     "heading": "General"
                 },
@@ -417,7 +398,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "An alphanumeric notation or ID code identifying this competency in common use among end-users."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Coded Notation"}],
-                    "thingKey": "ceasn:codedNotation",
                     "max": 1,
                     "heading": "Context"
                 },
@@ -434,7 +414,6 @@ export default {
                             "The URI of a competency from which this competency has been derived. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.  One entity per line."}
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Derived From"}],
-                    "thingKey": "ceasn:derivedFrom",
                     "max": 1,
                     "heading": "Context"
                 },
@@ -447,7 +426,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "An alternative URI by which this competency framework or competency is identified. For example, https://sandbox.credentialengineregistry.org/. One URI per line."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Identifier"}],
-                    "thingKey": "schema:identifier",
                     "heading": "Context"
                 },
                 "http://schema.org/keywords": {
@@ -459,7 +437,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "A word or phrase used by the promulgating agency to refine and differentiate individual competencies contextually. One concept per line."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Keywords"}],
-                    "thingKey": "schema:keywords",
                     "heading": "Tagging"
                 },
                 "https://purl.org/ctdlasn/terms/conceptTerm": {
@@ -471,7 +448,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual resources contextually."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Concept Terms"}],
-                    "thingKey": "ceasn:conceptTerm",
                     "iframePath": me.$store.state.editor.iframeConceptPath,
                     "iframeText": "Select concepts to attach...",
                     "heading": "Tagging"
@@ -485,7 +461,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "The expected performance level of a learner or professional as defined by a competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Complexity Level"}],
-                    "thingKey": "ceasn:complexityLevel",
                     "iframePath": me.$store.state.editor.iframeConceptPath,
                     "iframeText": "Select concepts to attach...",
                     "heading": "Scales"
@@ -499,7 +474,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "An asserted measurement of the weight, degree, percent, or strength of a recommendation, requirement, or comparison."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Weight"}],
-                    "thingKey": "ceasn:weight",
                     "max": 1,
                     "heading": "Scales"
                 },
