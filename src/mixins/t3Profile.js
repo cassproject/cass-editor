@@ -101,8 +101,8 @@ export default {
                     "remove": function(competency, levelId) { me.removeLevelFromFramework(levelId); },
                     "save": function() { me.saveFramework(); },
                     profile: {
-                        "https://schema.cassproject.org/0.4/Level/title": {
-                            "@id": "https://schema.cassproject.org/0.4/Level/title",
+                        "http://schema.org/name": {
+                            "@id": "http://schema.org/name",
                             "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                             "http://schema.org/domainIncludes":
                                 [{"@id": "https://schema.cassproject.org/0.4/Level"}],
@@ -111,8 +111,8 @@ export default {
                                 [{"@language": "en", "@value": "The title that one who holds this performance level may assume. e.g. \"Fast\""}],
                             "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Rubric Column Header"}]
                         },
-                        "https://schema.cassproject.org/0.4/Level/competency": {
-                            "@id": "https://schema.cassproject.org/0.4/Level/competency",
+                        "https://schema.cassproject.org/0.4/competency": {
+                            "@id": "https://schema.cassproject.org/0.4/competency",
                             "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                             "http://schema.org/domainIncludes":
                                 [{"@id": "https://schema.cassproject.org/0.4/Level"}],
@@ -121,7 +121,7 @@ export default {
                                 [{"@language": "en", "@value": "Specifies the URL of the competency the level relates to."}],
                             "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Rubric Row Header"}]
                         },
-                        "alwaysProperties": ["https://schema.cassproject.org/0.4/Level/title", "https://schema.cassproject.org/0.4/Level/competency"]
+                        "alwaysProperties": ["http://schema.org/name", "https://schema.cassproject.org/0.4/competency"]
                     }
                 },
                 "narrows": {
