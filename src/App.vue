@@ -644,7 +644,11 @@ export default {
                 }
                 r["schema:dateCreated"] = new Date().toISOString();
                 r.target = EcRemoteLinkedData.trimVersionFromUrl(targets[i]);
-                r.source = thing.shortId();
+                if (thing.id) {
+                    r.source = thing.shortId();
+                } else {
+                    r.source = EcRemoteLinkedData.trimVersionFromUrl(thing["@id"]);
+                }
                 if (r.target === r.source) {
                     return;
                 }
