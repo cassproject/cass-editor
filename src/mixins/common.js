@@ -15,7 +15,7 @@ export default {
                     if (!EcArray.isArray(levels[comp[j]])) {
                         levels[comp[j]] = [];
                     }
-                    levels[comp[j]].push(level);
+                    levels[comp[j]].push({"@id": level.shortId()});
                 }
             }
             return levels;
@@ -45,7 +45,7 @@ export default {
                     if (!relations[relationType][a.source]) {
                         relations[relationType][a.source] = [];
                     }
-                    relations[relationType][a.source].push(a.target);
+                    relations[relationType][a.source].push({"@id": a.target});
                     if (reciprocalRelation) {
                         if (!relations[reciprocalRelation]) {
                             relations[reciprocalRelation] = {};
@@ -53,7 +53,7 @@ export default {
                         if (!relations[reciprocalRelation][a.target]) {
                             relations[reciprocalRelation][a.target] = [];
                         }
-                        relations[reciprocalRelation][a.target].push(a.source);
+                        relations[reciprocalRelation][a.target].push({"@id": a.source});
                     }
                 }
             }
@@ -64,10 +64,10 @@ export default {
                 return null;
             }
             var obj = {};
-            obj[this.framework.shortId()] = [this.getCTID(this.framework.shortId())];
+            obj[this.framework.shortId()] = [{"@value": this.getCTID(this.framework.shortId())}];
             if (this.framework.competency) {
                 for (var i = 0; i < this.framework.competency.length; i++) {
-                    obj[this.framework.competency[i]] = [this.getCTID(this.framework.competency[i])];
+                    obj[this.framework.competency[i]] = [{"@value": this.getCTID(this.framework.competency[i])}];
                 }
             }
             return obj;
@@ -77,10 +77,10 @@ export default {
                 return null;
             }
             var obj = {};
-            obj[this.framework.shortId()] = [this.ceasnRegistryUriTransform(this.framework.shortId())];
+            obj[this.framework.shortId()] = [{"@id": this.ceasnRegistryUriTransform(this.framework.shortId())}];
             if (this.framework.competency) {
                 for (var i = 0; i < this.framework.competency.length; i++) {
-                    obj[this.framework.competency[i]] = [this.ceasnRegistryUriTransform(this.framework.competency[i])];
+                    obj[this.framework.competency[i]] = [{"@id": this.ceasnRegistryUriTransform(this.framework.competency[i])}];
                 }
             }
             return obj;
