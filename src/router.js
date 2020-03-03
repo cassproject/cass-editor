@@ -9,6 +9,10 @@ import Organizations from './views/organization/Organizations.vue';
 import Organization from './views/organization/Organization.vue';
 import Import from './views/framework/Import.vue';
 import ConceptScheme from './views/conceptScheme/ConceptScheme.vue';
+import Login from './views/login/Login.vue';
+import ConfigurationEditor from './views/configuration/ConfigurationEditor';
+import UserGroupEditor from './views/usersGroups/UserGroupEditor';
+import FrameworkCrosswalk from './views/framework/Crosswalk';
 
 Vue.use(Router);
 export default new Router({
@@ -20,6 +24,26 @@ export default new Router({
             name: 'frameworks',
             component: Frameworks,
             alias: '/cass-editor/'
+        },
+        {
+            path: '/login',
+            name: 'login',
+            component: Login
+        },
+        {
+            path: '/config',
+            name: 'configuration',
+            component: ConfigurationEditor
+        },
+        {
+            path: '/userGroup',
+            name: 'usergroup',
+            component: UserGroupEditor
+        },
+        {
+            path: '/crosswalk',
+            name: 'crosswalk',
+            component: FrameworkCrosswalk
         },
         {
             path: '/about',

@@ -5,6 +5,7 @@
         <!-- nav bar navigation -->
         <cass-modal />
         <nav
+            :class="{'is-hidden': this.currentPathIsLogin}"
             class="navbar is-black is-fixed-top"
             role="navigation"
             aria-label="main navigation">
@@ -44,6 +45,14 @@
                             :class="{'is-active': currentRoute === '/'}"
                             to="/">
                             Open
+                        </router-link>
+                    </div>
+                    <div class="navbar-item">
+                        <router-link
+                            class="has-text-light"
+                            :class="{'is-active': currentRoute === '/crosswalk'}"
+                            to="/crosswalk">
+                            Crosswalk
                         </router-link>
                     </div>
                     <div class="navbar-item">
@@ -116,6 +125,22 @@
                                 IMS Global CASE (JSON)
                             </a>
                         </div>
+                    </div>
+                    <div class="navbar-item">
+                        <router-link
+                            class="has-text-light"
+                            :class="{'is-active': currentRoute === '/config'}"
+                            to="/config">
+                            Configure
+                        </router-link>
+                    </div>
+                    <div class="navbar-item">
+                        <router-link
+                            class="has-text-light"
+                            :class="{'is-active': currentRoute === '/userGroup'}"
+                            to="/userGroup">
+                            Users/Groups
+                        </router-link>
                     </div>
                     <!--<div class="navbar-item">
                         <router-link
@@ -241,13 +266,15 @@ import common from '@/mixins/common.js';
 import cassModal from './components/CassModal.vue';
 
 export default {
+    name: "App",
     data: function() {
         return {
             navBarActive: false,
             exportType: null,
             queryParams: null,
             repo: window.repo,
-            itemsSaving: 0
+            itemsSaving: 0,
+            showNav: true
         };
     },
     mixins: [common],
@@ -1270,10 +1297,14 @@ export default {
     computed: {
         currentRoute: function() {
             return this.$route.path;
+        },
+        currentPathIsLogin: function() {
+            if (this.$route.name === 'login') return true;
+            else return false;
         }
     },
     watch: {
-        $route(to, from) {
+        '$route'(to, from) {
             let navigationTo = to;
             if (navigationTo) {
                 this.navBarActive = false;
