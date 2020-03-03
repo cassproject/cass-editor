@@ -95,8 +95,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Rubric Cell"}],
                     "valuesIndexed": function() { return me.levels; },
                     "noTextEditing": true,
-                    "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
-                    "iframeText": "Select levels to align...",
                     "add": function(selectedCompetency) { me.addLevel(selectedCompetency); },
                     "remove": function(competency, levelId) { me.removeLevelFromFramework(levelId); },
                     "save": function() { me.saveFramework(); },
