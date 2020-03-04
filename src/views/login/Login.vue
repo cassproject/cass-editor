@@ -3,7 +3,7 @@
         <div v-if="!loginBusy">
             <h3>CAT Login</h3>
             <p><input type="text" v-model="username" placeholder="username"></p>
-            <p><input type="text" v-model="password" placeholder="password"></p>
+            <p><input type="password" v-model="password" placeholder="password"></p>
             <p><button @click="attemptCassLogin">Login</button></p>
             <div v-if="identityFetchFailed">
                 <p><b>Login failed: {{identityFailMsg}}</b></p>

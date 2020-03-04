@@ -227,7 +227,8 @@ html {
     font-size: 16px;
 }
 body{
-    overflow-y: hidden;
+    // Tom B.  Taking this out for now as it screws up the configuration editor and needing scrolling
+    //overflow-y: hidden;
     height: 100%;
     background: $light;
     background-repeat: no-repeat;
