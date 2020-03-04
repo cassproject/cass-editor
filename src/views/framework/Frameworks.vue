@@ -54,7 +54,7 @@
                     :click="frameworkClick"
                     :searchOptions="searchOptions"
                     :paramObj="paramObj"
-                    :disallowEdits="queryParams.view==='true'">
+                    :disallowEdits="true">
                     <!-- TO DO move these template items to the "actions" right side area -->
                     <template
                         v-slot:frameworkTags="slotProps">

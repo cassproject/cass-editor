@@ -167,7 +167,7 @@ export default {
                             success(xhrx.responseText);
                         } else if (xhrx.readyState === 4) {
                             if (failure != null) {
-                                failure(xhrx.responseText);
+                                failure(xhrx.status + " " + xhrx.responseText);
                             }
                         }
                     }

@@ -13,6 +13,9 @@ import Login from './views/login/Login.vue';
 import ConfigurationEditor from './views/configuration/ConfigurationEditor';
 import UserGroupEditor from './views/usersGroups/UserGroupEditor';
 import FrameworkCrosswalk from './views/framework/Crosswalk';
+import NotFound from './views/NotFound.vue';
+import InternalError from './views/InternalError.vue';
+import Forbidden from './views/Forbidden.vue';
 
 Vue.use(Router);
 export default new Router({
@@ -79,6 +82,21 @@ export default new Router({
             path: '/conceptScheme',
             name: 'conceptScheme',
             component: ConceptScheme
+        },
+        {
+            path: '/403',
+            name: 'Forbidden',
+            component: Forbidden
+        },
+        {
+            path: '/500',
+            name: 'InternalError',
+            component: InternalError
+        },
+        {
+            path: '/*',
+            name: 'NotFound',
+            component: NotFound
         }
     ]
 });

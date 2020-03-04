@@ -34,7 +34,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "An alphanumeric notation or ID code as defined by the promulgating body to identify this resource."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Code"}],
-                    "thingKey": "ceasn:codedNotation"
                 },
                 "http://schema.org/description": {
                     "@id": "http://schema.org/description",
@@ -55,7 +54,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "The textual label identifying the category of the competency as designated by the promulgating body."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Type"}],
-                    "thingKey": "dcterms:type"
                 },
                 "https://schema.cassproject.org/0.4/Competency/scope": {
                     "@id": "https://schema.cassproject.org/0.4/Competency/scope",
@@ -76,7 +74,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual resources contextually."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Context"}],
-                    "thingKey": "ceasn:conceptTerm",
                     "iframePath": me.$store.state.editor.iframeConceptPath,
                     "iframeText": "Select concepts to attach..."
                 },
@@ -95,8 +92,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Rubric Cell"}],
                     "valuesIndexed": function() { return me.levels; },
                     "noTextEditing": true,
-                    "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
-                    "iframeText": "Select levels to align...",
                     "add": function(selectedCompetency) { me.addLevel(selectedCompetency); },
                     "remove": function(competency, levelId) { me.removeLevelFromFramework(levelId); },
                     "save": function() { me.saveFramework(); },
@@ -281,7 +276,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The entity responsible for making this competency framework available."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Publisher"}],
-                    "thingKey": "schema:publisher"
                 },
                 "http://purl.org/dc/elements/1.1/source": {
                     "@id": "http://purl.org/dc/elements/1.1/source",
@@ -292,7 +286,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "A URI to the original competency framework which this competency framework is based on or derived from."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Extracted From"}],
-                    "thingKey": "dc:source"
                 },
                 "http://schema.org/dateCreated": {
                     "@id": "http://schema.org/dateCreated",
