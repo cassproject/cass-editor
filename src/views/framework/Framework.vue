@@ -12,7 +12,9 @@
                     @select="select"
                     @deleteObject="deleteObject"
                     @removeObject="removeObject"
-                    @exportObject="exportObject" />
+                    @exportObject="exportObject"
+                    :isEditingContainer="isEditingContainer"
+                    @editingThing="handleEditingContainer($event)" />
                 <span class="actions">
                     <span
                         class="tag is-info has-text-white"
@@ -83,7 +85,9 @@
                     @select="select"
                     @deleteObject="deleteObject"
                     @removeObject="removeObject"
-                    @exportObject="exportObject" />
+                    @exportObject="exportObject"
+                    :isEditingContainer="isEditingContainer"
+                    @editingContainer="handleEditingContainer($event)" />
             </div>
         </div>
     </div>
@@ -124,7 +128,8 @@ export default {
             selectButtonText: null,
             selectAllButton: false,
             selectAll: false,
-            selectedArray: []
+            selectedArray: [],
+            isEditingContainer: false
         };
     },
     computed: {
@@ -477,6 +482,13 @@ export default {
                 EcArray.setAdd(this.selectedArray, id);
             } else {
                 EcArray.setRemove(this.selectedArray, id);
+            }
+        },
+        handleEditingContainer: function(e) {
+            if (e) {
+                this.isEditingContainer = true;
+            } else {
+                this.isEditingContainer = false;
             }
         }
     }

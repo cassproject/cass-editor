@@ -6,7 +6,9 @@
             :parentNotEditable="queryParams.view==='true'"
             @deleteObject="deleteObject"
             @exportObject="exportObject"
-            @select="select" />
+            @select="select"
+            :isEditingContainer="isEditingContainer"
+            @editingThing="handleEditingContainer($event)" />
         <span
             class="info-tag"
             v-if="timestamp"
@@ -46,7 +48,9 @@
             :selectAll="selectAll"
             @deleteObject="deleteObject"
             @exportObject="exportObject"
-            @select="select" />
+            @select="select"
+            :isEditingContainer="isEditingContainer"
+            @editingContainer="handleEditingContainer($event)" />
     </div>
 </template>
 <script>
@@ -78,7 +82,8 @@ export default {
             selectButtonText: null,
             selectAllButton: false,
             selectAll: false,
-            selectedArray: []
+            selectedArray: [],
+            isEditingContainer: false
         };
     },
     computed: {
@@ -298,6 +303,13 @@ export default {
                 EcArray.setAdd(this.selectedArray, id);
             } else {
                 EcArray.setRemove(this.selectedArray, id);
+            }
+        },
+        handleEditingContainer: function(e) {
+            if (e) {
+                this.isEditingContainer = true;
+            } else {
+                this.isEditingContainer = false;
             }
         }
     }
