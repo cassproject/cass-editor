@@ -1,5 +1,17 @@
 <template>
     <div>
+        <!-- busy modal-->
+        <div
+            class="modal"
+            :class="[{'is-active': loginBusy}]">
+            <div class="modal-background"></div>
+            <div class="modal-content has-text-centered">
+                <span class="icon is-large has-text-center has-text-link">
+                    <i class="fas fa-3x fa-spinner is-info fa-pulse" />
+                </span>
+            </div>
+        </div>
+        <!-- login content-->
         <div v-if="!loginBusy">
             <h3>CAT Login</h3>
             <p><input type="text" v-model="username" placeholder="username"></p>
@@ -14,9 +26,6 @@
             <div v-if="loginParamsInvalid">
                 <p><b>Login failed: Invalid Username/Password</b></p>
             </div>
-        </div>
-        <div v-if="loginBusy">
-            LOGGING IN!!!! //TODO Replace me with something pretty
         </div>
         <div v-if="loginSuccess">
             I THINK THE LOGIN SUCCEEDED!!!!!!!!!!!!!

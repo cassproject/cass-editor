@@ -1,22 +1,25 @@
 <template>
     <div>
-        <h3>Configuration</h3>
-        <div v-if="configBusy">
-            CONFIG BUSY!!!! //TODO Replace me with something pretty
+        <!-- busy modal-->
+        <div
+            class="modal"
+            :class="[{'is-active': configBusy}]">
+            <div class="modal-background"></div>
+            <div class="modal-content has-text-centered">
+                <span class="icon is-large has-text-center has-text-link">
+                    <i class="fas fa-3x fa-spinner is-info fa-pulse" />
+                </span>
+            </div>
         </div>
+        <!-- configuration editor content-->
         <div v-if="!configBusy">
-            <div v-if="configViewMode === 'list'">
+            <h3>Configuration</h3>
+            <div v-if="configViewMode.equals('list')">
                 <h4>Configurations</h4>
                 <div class="columns">
-                    <div class="column is-3 listHdr">
-                        name
-                    </div>
-                    <div class="column is-5 listHdr">
-                        description
-                    </div>
-                    <div class="column is-2 listHdr">
-                        default
-                    </div>
+                    <div class="column is-3 listHdr">name</div>
+                    <div class="column is-5 listHdr">description</div>
+                    <div class="column is-2 listHdr">default</div>
                     <div class="column is-2 listHdr"></div>
                 </div>
                 <configuration-list-item
@@ -31,7 +34,7 @@
                 <br>
                 <button @click="createNewConfig">create new configuration</button>
             </div>
-            <div v-if="configViewMode === 'detail'">
+            <div v-if="configViewMode.equals('detail')">
                 <h4>Configuration Details</h4>
                 <configuration-details
                     :config="currentConfig"
@@ -103,7 +106,7 @@ export default {
         },
         setCurrentConfig(configId) {
             for (let c of this.configList) {
-                if (c.id === configId) {
+                if (c.id.equals(configId)) {
                     this.currentConfig = c;
                     break;
                 }
@@ -152,22 +155,24 @@ export default {
             a.fwkDescLabel = "FWK DESC LBL 1";
             a.fwkDescDescription = "FWK DESC DESC 1";
             a.fwkDescPriority = "primary";
-            a.fwkDescIsRequired = true;
+            a.fwkDescRequired = true;
             a.compAllowLevels = true;
             a.compIdLabel = "COMP ID LABEL 1";
             a.compIdDescription = "COMP ID DESC 1";
             a.compIdPriorty = "secondary";
-            a.compNameLabel = "COMP DESC LABEL 1";
+            a.compNameLabel = "COMP NAME LABEL 1";
             a.compNameDescription = "COMP NAME DESC 1";
             a.compDescLabel = "COMP DESC LABEL 1";
             a.compDescDescription = "COMP DESC DESC 1";
             a.compDescPriority = "primary";
-            a.compDescIsRequired = false;
+            a.compDescRequired = false;
             a.compTypeLabel = "COMP TYPE LABEL 1";
             a.compTypeDescription = "COMP TYPE DESC 1";
             a.compTypePriority = "secondary";
-            a.compTypeIsRequired = false;
+            a.compTypeRequired = false;
             a.compEnforcedTypes = [];
+            a.fwkCustomProperties = [];
+            a.compCustomProperties = [];
             ca.push(a);
             let b = {};
             b.id = "testNotOwnedConfig_1";
@@ -184,7 +189,7 @@ export default {
             b.fwkDescLabel = "framework description";
             b.fwkDescDescription = "description of the framework";
             b.fwkDescPriority = "primary";
-            b.fwkDescIsRequired = true;
+            b.fwkDescRequired = true;
             b.compAllowLevels = false;
             b.compIdLabel = "competency id";
             b.compIdDescription = "id of the competency";
@@ -194,12 +199,14 @@ export default {
             b.compDescLabel = "competency description";
             b.compDescDescription = "description of the competency";
             b.compDescPriority = "primary";
-            b.compDescIsRequired = false;
+            b.compDescRequired = false;
             b.compTypeLabel = "competency type";
             b.compTypeDescription = "type of the competency";
             b.compTypePriority = "secondary";
-            b.compTypeIsRequired = true;
+            b.compTypeRequired = true;
             b.compEnforcedTypes = [];
+            b.fwkCustomProperties = [];
+            b.compCustomProperties = [];
             ca.push(b);
             let c = {};
             c.id = "testOwnedConfig_2";
@@ -216,22 +223,24 @@ export default {
             c.fwkDescLabel = "FWK DESC LBL 2";
             c.fwkDescDescription = "FWK DESC DESC 2";
             c.fwkDescPriority = "primary";
-            c.fwkDescIsRequired = true;
+            c.fwkDescRequired = true;
             c.compAllowLevels = true;
             c.compIdLabel = "COMP ID LABEL 2";
             c.compIdDescription = "COMP ID DESC 2";
             c.compIdPriorty = "secondary";
-            c.compNameLabel = "COMP DESC LABEL 2";
+            c.compNameLabel = "COMP NAME LABEL 2";
             c.compNameDescription = "COMP NAME DESC 2";
             c.compDescLabel = "COMP DESC LABEL 2";
             c.compDescDescription = "COMP DESC DESC 2";
             c.compDescPriority = "primary";
-            c.compDescIsRequired = false;
+            c.compDescRequired = false;
             c.compTypeLabel = "COMP TYPE LABEL 2";
             c.compTypeDescription = "COMP TYPE DESC 2";
             c.compTypePriority = "secondary";
-            c.compTypeIsRequired = true;
+            c.compTypeRequired = true;
             c.compEnforcedTypes = [];
+            c.fwkCustomProperties = [];
+            c.compCustomProperties = [];
             ca.push(c);
             return ca;
         }

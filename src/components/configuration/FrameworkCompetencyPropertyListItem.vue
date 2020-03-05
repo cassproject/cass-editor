@@ -5,57 +5,43 @@
                 {{ property }}
             </div>
             <div class="column is-2">
-                <div v-if="readOnly">
-                    {{ localLabel }}
-                </div>
+                <div v-if="readOnly">{{ localLabel }}</div>
                 <div v-if="!readOnly">
                     <input type="text" v-model="localLabel" @input="changeLabel">
                 </div>
             </div>
             <div class="column is-4">
-                <div v-if="readOnly">
-                    {{ localDescription }}
-                </div>
+                <div v-if="readOnly">{{ localDescription }}</div>
                 <div v-if="!readOnly">
                     <input type="text" v-model="localDescription" @input="changeDescription">
                 </div>
             </div>
             <div class="column is-1">
-                <div v-if="readOnly || enforceRequired">
-                    {{ localRequired }}
-                </div>
+                <div v-if="readOnly || enforceRequired">{{ localRequired }}</div>
                 <div v-if="!readOnly && !enforceRequired">
                     <select v-model="localRequired" @input="changeRequired">
-                        <option :value="true">
-                            true
-                        </option>
-                        <option :value="false">
-                            false
-                        </option>
+                        <option :value="true">true</option>
+                        <option :value="false">false</option>
                     </select>
                 </div>
             </div>
             <div class="column is-2">
-                <div v-if="readOnly">
-                    {{ localPriority }}
-                </div>
+                <div v-if="readOnly">{{ localPriority }}</div>
                 <div v-if="!readOnly">
                     <select v-model="localPriority" @input="changePriority">
-                        <option value="primary">
-                            primary
-                        </option>
-                        <option value="secondary">
-                            secondary
-                        </option>
-                        <option value="tertiary">
-                            tertiary
-                        </option>
+                        <option value="primary">primary</option>
+                        <option value="secondary">secondary</option>
+                        <option value="tertiary">tertiary</option>
                     </select>
                 </div>
             </div>
             <div class="column is-1">
-                <div v-if="custom">
-                    <button>Delete</button>
+                <div v-if="custom && readOnly">
+                    <button @click="$emit('manage', propertyParent, property)">View</button>
+                </div>
+                <div v-if="custom && !readOnly">
+                    <button @click="$emit('manage', propertyParent, property)">Edit</button>
+                    <button @click="$emit('delete', propertyParent, property)">Delete</button>
                 </div>
             </div>
         </div>
@@ -119,13 +105,11 @@ export default {
             this.$emit('change', this.propertyParent, this.property, 'description', evt.srcElement.value);
         },
         changeRequired: function(evt) {
-            console.log(evt);
             let retVal = false;
-            if (evt.srcElement.value === 'true') retVal = true;
+            if (evt.srcElement.value.equals('true')) retVal = true;
             this.$emit('change', this.propertyParent, this.property, 'required', retVal);
         },
         changePriority: function(evt) {
-            console.log(evt);
             this.$emit('change', this.propertyParent, this.property, 'priority', evt.srcElement.value);
         }
     }
