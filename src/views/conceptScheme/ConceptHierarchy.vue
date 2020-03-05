@@ -26,7 +26,9 @@
                     @move="move"
                     @deleteObject="deleteObject"
                     @exportObject="exportObject"
-                    @select="select">
+                    @select="select"
+                    :isEditingContainer="isEditingContainer"
+                    @editingThing="handleEditingContainer($event)">
                     <slot />
                 </HierarchyNode>
             </draggable>
@@ -53,7 +55,8 @@ export default {
         exportOptions: Array,
         highlightList: Array,
         selectMode: Boolean,
-        selectAll: Boolean
+        selectAll: Boolean,
+        isEditingContainer: Boolean
     },
     data: function() {
         return {
@@ -99,6 +102,13 @@ export default {
         }
     },
     methods: {
+        handleEditingContainer: function(e) {
+            if (e) {
+                this.$emit('editingContainer', true);
+            } else {
+                this.$emit('editingContainer', false);
+            }
+        },
         computeHierarchy: function() {
             this.structure.splice(0, this.structure.length);
             if (this.container == null) { return r; }
