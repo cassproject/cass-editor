@@ -2,30 +2,30 @@
     <div>
         <div class="columns">
             <div class="column is-2">
-                {{ name }}
+                {{ property }}
             </div>
             <div class="column is-2">
                 <div v-if="readOnly">
-                    {{ label }}
+                    {{ localLabel }}
                 </div>
                 <div v-if="!readOnly">
-                    <input type="text" v-model="label">
+                    <input type="text" v-model="localLabel" @input="changeLabel">
                 </div>
             </div>
             <div class="column is-4">
                 <div v-if="readOnly">
-                    {{ description }}
+                    {{ localDescription }}
                 </div>
                 <div v-if="!readOnly">
-                    <input type="text" v-model="description">
+                    <input type="text" v-model="localDescription" @input="changeDescription">
                 </div>
             </div>
             <div class="column is-1">
                 <div v-if="readOnly || enforceRequired">
-                    {{ required }}
+                    {{ localRequired }}
                 </div>
                 <div v-if="!readOnly && !enforceRequired">
-                    <select v-model="required">
+                    <select v-model="localRequired" @input="changeRequired">
                         <option :value="true">
                             true
                         </option>
@@ -37,10 +37,10 @@
             </div>
             <div class="column is-2">
                 <div v-if="readOnly">
-                    {{ priority }}
+                    {{ localPriority }}
                 </div>
                 <div v-if="!readOnly">
-                    <select v-model="priority">
+                    <select v-model="localPriority" @input="changePriority">
                         <option value="primary">
                             primary
                         </option>
@@ -55,7 +55,6 @@
             </div>
             <div class="column is-1">
                 <div v-if="custom">
-                    <button>Modify</button>
                     <button>Delete</button>
                 </div>
             </div>
@@ -67,7 +66,11 @@
 export default {
     name: 'frameworkCompetencyPropertyListItem',
     props: {
-        name: {
+        propertyParent: {
+            type: String,
+            default: ''
+        },
+        property: {
             type: String,
             default: ''
         },
@@ -98,6 +101,32 @@ export default {
         enforceRequired: {
             type: Boolean,
             default: true
+        }
+    },
+    data: function() {
+        return {
+            localLabel: this.label,
+            localDescription: this.description,
+            localRequired: this.required,
+            localPriority: this.priority
+        };
+    },
+    methods: {
+        changeLabel: function(evt) {
+            this.$emit('change', this.propertyParent, this.property, 'label', evt.srcElement.value);
+        },
+        changeDescription: function(evt) {
+            this.$emit('change', this.propertyParent, this.property, 'description', evt.srcElement.value);
+        },
+        changeRequired: function(evt) {
+            console.log(evt);
+            let retVal = false;
+            if (evt.srcElement.value === 'true') retVal = true;
+            this.$emit('change', this.propertyParent, this.property, 'required', retVal);
+        },
+        changePriority: function(evt) {
+            console.log(evt);
+            this.$emit('change', this.propertyParent, this.property, 'priority', evt.srcElement.value);
         }
     }
 };

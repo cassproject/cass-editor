@@ -35,34 +35,40 @@
             </div>
         </div>
         <FrameworkCompetencyPropertyListItem
-            name="id"
+            propertyParent="framework"
+            property="id"
             :label="config.fwkIdLabel"
             :description="config.fwkIdDescription"
             :required="true"
             :priority="config.fwkIdPriorty"
             :custom="false"
             :readOnly="readOnly"
-            :enforceRequired="true">
+            :enforceRequired="true"
+            @change="updateFrameworkCompetencyProperty">
         </FrameworkCompetencyPropertyListItem>
         <FrameworkCompetencyPropertyListItem
-            name="name"
+            propertyParent="framework"
+            property="name"
             :label="config.fwkNameLabel"
             :description="config.fwkNameDescription"
             :required="true"
             priority="primary"
             :custom="false"
             :readOnly="readOnly"
-            :enforceRequired="true">
+            :enforceRequired="true"
+            @change="updateFrameworkCompetencyProperty">
         </FrameworkCompetencyPropertyListItem>
         <FrameworkCompetencyPropertyListItem
-            name="description"
+            propertyParent="framework"
+            property="description"
             :label="config.fwkDescLabel"
             :description="config.fwkDescDescription"
             :required="config.fwkDescIsRequired"
             :priority="config.fwkDescPriority"
             :custom="false"
             :readOnly="readOnly"
-            :enforceRequired="false">
+            :enforceRequired="false"
+            @change="updateFrameworkCompetencyProperty">
         </FrameworkCompetencyPropertyListItem>
         <p>TODO custom framework properties</p>
         <br>
@@ -89,17 +95,20 @@
             </div>
         </div>
         <FrameworkCompetencyPropertyListItem
-            name="id"
+            propertyParent="competency"
+            property="id"
             :label="config.compIdLabel"
             :description="config.compIdDescription"
             :required="true"
             :priority="config.compIdPriorty"
             :custom="false"
             :readOnly="readOnly"
-            :enforceRequired="true">
+            :enforceRequired="true"
+            @change="updateFrameworkCompetencyProperty">
         </FrameworkCompetencyPropertyListItem>
         <FrameworkCompetencyPropertyListItem
-            name="name"
+            propertyParent="competency"
+            property="name"
             :label="config.compNameLabel"
             :description="config.compNameDescription"
             :required="true"
@@ -109,24 +118,28 @@
             :enforceRequired="true">
         </FrameworkCompetencyPropertyListItem>
         <FrameworkCompetencyPropertyListItem
-            name="description"
+            propertyParent="competency"
+            property="description"
             :label="config.compDescLabel"
             :description="config.compDescDescription"
             :required="config.compDescIsRequired"
             :priority="config.compDescPriority"
             :custom="false"
             :readOnly="readOnly"
-            :enforceRequired="false">
+            :enforceRequired="false"
+            @change="updateFrameworkCompetencyProperty">
         </FrameworkCompetencyPropertyListItem>
         <FrameworkCompetencyPropertyListItem
-            name="type"
+            propertyParent="competency"
+            property="type"
             :label="config.compTypeLabel"
             :description="config.compTypeDescription"
             :required="config.compTypeIsRequired"
             :priority="config.compTypePriority"
             :custom="false"
             :readOnly="readOnly"
-            :enforceRequired="false">
+            :enforceRequired="false"
+            @change="updateFrameworkCompetencyProperty">
         </FrameworkCompetencyPropertyListItem>
         <p>TODO custom competency properties</p>
         <br>
@@ -215,6 +228,16 @@ export default {
     },
     components: {
         FrameworkCompetencyPropertyListItem
+    },
+    methods: {
+        updateFrameworkCompetencyProperty: function(propertyParent, property, field, newValue) {
+            // TODO further implement this
+            console.log("updateFrameworkCompetencyProperty");
+            console.log("propertyParent: " + propertyParent);
+            console.log("property: " + property);
+            console.log("field: " + field);
+            console.log("newValue: " + newValue);
+        }
     }
 };
 </script>
