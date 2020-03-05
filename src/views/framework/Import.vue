@@ -1356,6 +1356,9 @@ export default {
                 cs[d.competencies[i].id] = c.shortId();
                 if (d.competencies[i].name != null) { c.setName(d.competencies[i].name.trim()); }
                 if (d.competencies[i].name !== d.competencies[i].description && d.competencies[i].description) { c.setDescription(d.competencies[i].description.trim()); }
+                if (d.competencies[i]["ceasn:codedNotation"] != null) {
+                    c["ceasn:codedNotation"] = d.competencies[i]["ceasn:codedNotation"];
+                }
                 f.competency.push(c.shortId());
                 toSave.push(c);
             }
