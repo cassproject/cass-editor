@@ -93,7 +93,7 @@ export default {
             this.currentConfig = {};
         },
         saveCurrentConfig() {
-            // TODO implement
+            // TODO implement DONT FORGET TO TRIM!!!!
             this.validateCurrentConfig();
         },
         cancelEditCurrentConfig() {

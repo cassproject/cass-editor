@@ -458,9 +458,21 @@ export default {
                 else propToUpdate.permittedValues = [];
             }
         },
+        trimCustomPropertyPermittedValues() {
+            let trimmedPermittedValues = [];
+            for (let pv of this.customPropertyPermittedValues) {
+                if ((pv.display && (pv.display.trim().length > 0)) && (pv.value && (pv.value.trim().length > 0))) {
+                    pv.display = pv.display.trim();
+                    pv.value = pv.value.trim();
+                    trimmedPermittedValues.push(pv);
+                }
+            }
+            this.customPropertyPermittedValues = trimmedPermittedValues;
+        },
         applyCustomPropertyEdits() {
             this.validateCustomPropertyFields();
             if (!this.customPropertyInvalid) {
+                this.trimCustomPropertyPermittedValues();
                 if (this.customPropertyIsNew) this.addNewCustomPropertyToConfig();
                 else this.updateExistingConfigCustomProperty();
                 this.closeCustomPropertyModal();
@@ -471,10 +483,10 @@ export default {
                 this.customPropertyPermittedValues.slice(0, idx).concat(this.customPropertyPermittedValues.slice(idx + 1, this.customPropertyPermittedValues.length));
         },
         addCustomPropertyPermittedValue() {
-            let ev = {};
-            ev.display = '';
-            ev.value = '';
-            this.customPropertyPermittedValues.push(ev);
+            let pv = {};
+            pv.display = '';
+            pv.value = '';
+            this.customPropertyPermittedValues.push(pv);
         },
         simplifyCustomPropertyName() {
             this.customPropertyPropertyName = this.customPropertyPropertyName.replace(/[^0-9a-z]/gi, '');
