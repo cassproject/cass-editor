@@ -235,7 +235,9 @@ export default {
                         moveComp[toProperty2].push(me.container.shortId());
                     }
                     me.repo.saveTo(toContainer, function() {
-                        me.repo.saveTo(moveComp, console.log, console.error);
+                        me.repo.saveTo(moveComp, function() {
+                            me.$emit('moveComplete');
+                        }, console.error);
                         me.computeHierarchy();
                     }, console.log);
                 }, console.error);
