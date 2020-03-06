@@ -55,12 +55,19 @@
                         </p>
                         <p
                             v-if="showImportPreviewView"
-                            class="is-size-6">
-                            <span class="has-text-success has-text-weight-bold">
-                                Framework successfully imported, ready to edit.
+                            class="">
+                            <span class=" is-size-6 has-text-success has-text-weight-bold">
+                                Framework successfully imported {{ frameworkSize }} ready to edit.
                             </span>
                             <br><br>
-                            Please review the name and descriptions of the imported competencies. After making edits, "approve" the changes to view the imported competency details.
+                            <!-- Please review the name and descriptions of the imported competencies. After making edits, "approve" the changes to view the imported competency details.-->
+                            <Thing
+                                :obj="framework"
+                                :repo="repo"
+                                class="framework-title"
+                                :profile="t3FrameworkProfile"
+                                :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
+                                iframeText="Attach subitems from other sources to the selected item." />
                         </p>
                         <p
                             v-if="showImportLightView"
@@ -494,13 +501,6 @@
                         <div
                             v-if="framework && showImportPreviewView"
                             class="import-preview">
-                            <Thing
-                                :obj="framework"
-                                :repo="repo"
-                                class="framework-title"
-                                :profile="t3FrameworkProfile"
-                                :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
-                                iframeText="Attach subitems from other sources to the selected item." />
                             <div class="tile is-vertical">
                                 <!-- loading section -- dummy content to show while loading dome elemnts -->
                                 <div
@@ -767,6 +767,13 @@ export default {
         };
     },
     computed: {
+        frameworkSize: function() {
+            if (this.framework) {
+                return this.framework.competency.length;
+            } else {
+                return 0;
+            }
+        },
         isUrl: function() {
             if (this.method === 'url') {
                 return true;

@@ -561,9 +561,48 @@ ul.processing-list {
         .import-instructions {
             padding-top: .5rem;
         }
+        .thing.framework-title {
+            background-color: white;
+            .e-type, .top-actions, .bottom-actions, label {
+                display: none;
+            }
+            .e-Property-ul {
+                font-size: 1.2rem;
+            }
+            .e-property {
+                
+            }
+            .e-Property.editing {
+                label {
+                    display: flex;
+                }
+                .e-Property-ul {
+                    display: flex;
+                    .property-value {
+                        width: 100%;
+                        .property-string-span {
+                            width: 100%;
+                            .input-field {
+                                width: 100%;
+                                textarea {
+                                    height: 48px;
+                                    padding: 5px;
+                                    width: 100%;
+                                    border-radius: 2px;
+                                    margin-right: 8px;
+                                }
+                            }
+                        }
+                    }
+                    .is-add-button {
+                        display: none;
+                    }
+                }
+                
+            }
+        }
     }
     .import-details {
-        min-height: 400px;
         max-height:68vh;
         overflow-y: scroll;
         border: 2px solid rgba($black, .5);
@@ -632,48 +671,7 @@ ul.processing-list {
                 width: 50%;
             }
         }
-        .thing.framework-title {
-            padding-top: 24px;
-            background-color: white;
-            z-index: 20;
-            .e-type, .top-actions, .bottom-actions, label {
-                display: none;
-            }
-            .e-Property-ul {
-                font-size: 1.2rem;
-            }
-            .e-property {
-                
-            }
-            .e-Property.editing {
-                label {
-                    display: flex;
-                }
-                .e-Property-ul {
-                    display: flex;
-                    .property-value {
-                        width: 100%;
-                        .property-string-span {
-                            width: 100%;
-                            .input-field {
-                                width: 100%;
-                                textarea {
-                                    height: 48px;
-                                    padding: 5px;
-                                    width: 100%;
-                                    border-radius: 2px;
-                                    margin-right: 8px;
-                                }
-                            }
-                        }
-                    }
-                    .is-add-button {
-                        display: none;
-                    }
-                }
-                
-            }
-        }
+
     }
 }
 
