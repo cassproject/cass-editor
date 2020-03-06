@@ -1707,5 +1707,14 @@ export default {
 
 <style lang="scss">
     @import './../../scss/import.scss';
-
+.list-item {
+  transition: all 1s;
+}
+.list-enter, .list-leave-to
+/* .list-complete-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+.list-leave-active {
+  position: absolute;
+}
 </style>
