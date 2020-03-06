@@ -76,9 +76,14 @@
                                 Your import is complete!
                             </span>
                             <br><br>
-                            To view your framework in the full editor, select "open in editor" at the
-                            bottom of the screen.
-                            <br><br>
+                            <Thing
+                                :obj="framework"
+                                :repo="repo"
+                                :parentNotEditable="!canEdit"
+                                class="framework-title"
+                                :profile="t3FrameworkProfile"
+                                :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
+                                iframeText="Attach subitems from other sources to the selected item." />
                         </p>
                         <!-- import details after selecting file
                         <div
@@ -663,7 +668,7 @@
                                         v-if="framework"
                                         @click="cancelImport"
                                         class="button is-info is-pulled-right">
-                                        <span>import new framework</span>
+                                        <span>import again</span>
                                         <span class="icon">
                                             <i class="fa fa-redo-alt" />
                                         </span>
@@ -672,7 +677,7 @@
                                         v-if="framework"
                                         @click="openFramework"
                                         class="button is-info is-pulled-right">
-                                        <span>open editor</span>
+                                        <span>open in editor</span>
                                         <span class="icon">
                                             <i class="fa fa-edit" />
                                         </span>
