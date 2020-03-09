@@ -569,23 +569,11 @@ ul.processing-list {
     }
     #import-bottom-section {
     }
-    #import-top-section {
-        position: sticky;
-        padding: 1rem 1rem;
-        width: auto;
-        max-width: 100%;
-        top: 0rem;
-        z-index: 10;
-        .columns {
-            max-width: 900px;
-        }
-        .import-instructions {
-            padding-top: .5rem;
-        }
-        .thing.framework-title {
-            background-color: white;
+    .framework-title {
+            background-color: $light;
+            padding: .5rem 0rem;
             .e-type, .top-actions, .bottom-actions, label {
-                display: none;
+                display: none !important;
             }
             .e-Property-ul {
                 font-size: 1.2rem;
@@ -628,12 +616,24 @@ ul.processing-list {
                 
             }
         }
+    #import-top-section {
+        position: sticky;
+        padding: 1rem 1rem;
+        width: auto;
+        max-width: 100%;
+        top: 0rem;
+        z-index: 10;
+        .columns {
+            max-width: 900px;
+        }
+        .import-instructions {
+            padding-top: .5rem;
+        }
     }
     .import-details {
-        max-height:68vh;
-        overflow-y: scroll;
         border: 2px solid rgba($black, .5);
         border-radius: 1rem;
+        margin: 0rem 1rem;
     }
     #import-actions {
         position: sticky;

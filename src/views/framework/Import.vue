@@ -25,13 +25,13 @@
                                     Import a concept scheme
                                 </h1>
                                 <h1
-                                    class="title is-size-2"
+                                    class="title is-2"
                                     v-else>
                                     Import a framework
                                 </h1>
                             </div>
                             <!-- import buttons -->
-                            <div class="column is-12-touch">
+                            <div class="column">
                                 <div
                                     class="section"
                                     id="import-actions">
@@ -39,11 +39,13 @@
                                         <div class="column is-12">
                                             <!-- import details options -->
                                             <div
-                                                v-if="showImportDetailsView"
+                                                v-if="showImportDetailsView || showImportPreviewView || showImportLightView"
                                                 class="buttons is-small is-right">
+                                                <!-- desktop friendly cancel button -->
                                                 <div
                                                     @click="cancelImport"
-                                                    class="button is-light is-pulled-right is-light">
+                                                    v-if="showImportPreviewView || showImportDetailsView"
+                                                    class="is-hidden-touch button is-light is-small is-pulled-right is-light">
                                                     <span>
                                                         Cancel
                                                     </span>
@@ -51,63 +53,19 @@
                                                         <i class="fa fa-times-circle" />
                                                     </span>
                                                 </div>
-                                                <div
-                                                    @click="importDetailsAccept"
-                                                    class="button is-small is-info is-pulled-right">
-                                                    <span>
-                                                        Accept Details & Edit
-                                                    </span>
-                                                    <span class="icon is-smalls">
-                                                        <span class="fa-stack">
-                                                            <i class="fas fa-circle fa-stack-1x" />
-                                                            <i class="fas has-text-info fa-caret-right fa-stack-1x caret-icon-overlay-fix" />
-                                                        </span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <!-- import preview options -->
-                                            <div
-                                                v-else-if="showImportPreviewView"
-                                                class="buttons is-small is-right">
+                                                <!-- mobile friendly cancel button -->
                                                 <div
                                                     @click="cancelImport"
-                                                    class="button is-light is-pulled-right">
-                                                    <span>cancel import</span>
+                                                    v-if="showImportPreviewView || showImportDetailsView"
+                                                    class="is-hidden-desktop button is-light is-pulled-right is-small is-light">
                                                     <span class="icon">
                                                         <i class="fa fa-times-circle" />
                                                     </span>
                                                 </div>
-                                                <div
-                                                    @click="importPreviewAccept()"
-                                                    class="button is-small is-info is-pulled-right">
-                                                    <span>
-                                                        Done Editing
-                                                    </span>
-                                                    <span class="icon">
-                                                        <span class="fa-stack">
-                                                            <i class="fas fa-circle fa-stack-1x" />
-                                                            <i class="fas has-text-info fa-caret-right fa-stack-1x caret-icon-overlay-fix" />
-                                                        </span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div
-                                            v-if="showImportLightView"
-                                            class="column is-narrow">
-                                            <div class="buttons is-left">
-                                                <div
-                                                    class="button is-small is-light is-pulled-right"
-                                                    @click="showModal('export')">
-                                                    <span>
-                                                        Export
-                                                    </span>
-                                                    <span class="icon">
-                                                        <i class="fa fa-download" />
-                                                    </span>
-                                                </div>
+                                                <!-- desktop friendly home -->
                                                 <router-link
-                                                    class="button is-small is-light is-pulled-right"
+                                                    v-if="showImportLightView"
+                                                    class="button is-hidden-touch is-small is-light is -pulled-right"
                                                     to="/">
                                                     <span>
                                                         Done
@@ -116,29 +74,116 @@
                                                         <i class="fa fa-home" />
                                                     </span>
                                                 </router-link>
-                                            </div>
-                                        </div>
-                                        <div
-                                            v-if="showImportLightView"
-                                            class="column">
-                                            <div
-                                                class="buttons is-right">
+                                                <!-- mobile friendly home -->
+                                                <router-link
+                                                    v-if="showImportLightView"
+                                                    class="button is-hidden-desktop is-small is-light is-pulled-right"
+                                                    to="/">
+                                                    <span class="icon">
+                                                        <i class="fa fa-home" />
+                                                    </span>
+                                                </router-link>
+                                                <!-- desktop friendly export -->
                                                 <div
-                                                    v-if="framework"
+                                                    v-if="showImportLightView"
+                                                    class="button is-hidden-touch is-small is-light is-pulled-right"
+                                                    @click="showModal('export')">
+                                                    <span>
+                                                        Export
+                                                    </span>
+                                                    <span class="icon">
+                                                        <i class="fa fa-download" />
+                                                    </span>
+                                                </div>
+                                                <!-- mobile friendly export -->
+                                                <div
+                                                    v-if="showImportLightView"
+                                                    class="button is-hidden-desktop is-small is-light is-pulled-right"
+                                                    @click="showModal('export')">
+                                                    <span class="icon">
+                                                        <i class="fa fa-download" />
+                                                    </span>
+                                                </div>
+                                                <!-- mobile friendly start over -->
+                                                <div
+                                                    v-if="framework && showImportLightView"
                                                     @click="cancelImport"
-                                                    class="button is-small is-info is-pulled-right">
-                                                    <span>import again</span>
+                                                    class="button is-hidden-touch is-small is-info is-pulled-right">
+                                                    <span>
+                                                        import again
+                                                    </span>
                                                     <span class="icon">
                                                         <i class="fa fa-redo-alt" />
                                                     </span>
                                                 </div>
+                                                <!-- mobile friendly start over -->
                                                 <div
-                                                    v-if="framework"
+                                                    v-if="framework && showImportLightView"
+                                                    @click="cancelImport"
+                                                    class="button is-hidden-desktop is-small is-info is-pulled-right">
+                                                    <span class="icon">
+                                                        <i class="fa fa-redo-alt" />
+                                                    </span>
+                                                </div>
+                                                <!-- desktop friendly open in editor -->
+                                                <div
+                                                    v-if="framework && showImportLightView"
                                                     @click="openFramework"
-                                                    class="button is-small is-info is-pulled-right">
+                                                    class="button is-hidden-touch is-small is-info is-pulled-right">
                                                     <span>view in editor</span>
                                                     <span class="icon">
                                                         <i class="fa fa-edit" />
+                                                    </span>
+                                                </div>
+                                                <!-- mobile friendly open in editor -->
+                                                <div
+                                                    v-if="framework && showImportLightView"
+                                                    @click="openFramework"
+                                                    class="button is-hidden-desktop is-small is-info is-pulled-right">
+                                                    <span class="icon">
+                                                        <i class="fa fa-edit" />
+                                                    </span>
+                                                </div>
+                                                <!-- desktop friendly accept details -->
+                                                <div
+                                                    @click="importDetailsAccept"
+                                                    v-if="showImportDetailsView"
+                                                    class="button is-hidden-touch is-small is-info is-pulled-right">
+                                                    <span>
+                                                        Accept Details & Review
+                                                    </span>
+                                                    <span class="icon is-small">
+                                                        <i class="fas has-text-white fa-arrow-right" />
+                                                    </span>
+                                                </div>
+                                                <!-- mobile friendly accept details and edit -->
+                                                <div
+                                                    @click="importDetailsAccept"
+                                                    v-if="showImportDetailsView"
+                                                    class="button is-hidden-desktop is-small is-info is-pulled-right">
+                                                    <span class="icon is-small">
+                                                        <i class="fas has-text-white fa-arrow-right" />
+                                                    </span>
+                                                </div>
+                                                <!-- desktop friendly accept preview -->
+                                                <div
+                                                    @click="importPreviewAccept()"
+                                                    v-if="showImportPreviewView"
+                                                    class="button is-hidden-touch is-small is-info is-pulled-right">
+                                                    <span>
+                                                        done editing
+                                                    </span>
+                                                    <span class="icon">
+                                                        <i class="fa has-text-white fa-arrow-right" />
+                                                    </span>
+                                                </div>
+                                                <!-- mobile friendly accept preview -->
+                                                <div
+                                                    @click="importPreviewAccept()"
+                                                    v-if="showImportPreviewView"
+                                                    class="button is-hidden-desktop is-small is-info is-pulled-right">
+                                                    <span class="icon">
+                                                        <i class="fa has-text-white fa-arrow-right" />
                                                     </span>
                                                 </div>
                                             </div>
@@ -174,13 +219,6 @@
                                     </span>
                                     <br><br>
                                     <!-- Please review the name and descriptions of the imported competencies. After making edits, "approve" the changes to view the imported competency details.-->
-                                    <Thing
-                                        :obj="framework"
-                                        :repo="repo"
-                                        class="framework-title"
-                                        :profile="t3FrameworkProfile"
-                                        :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
-                                        iframeText="Attach subitems from other sources to the selected item." />
                                 </p>
                                 <p
                                     v-if="showImportLightView"
@@ -189,14 +227,6 @@
                                         Your import is complete!
                                     </span>
                                     <br><br>
-                                    <Thing
-                                        :obj="framework"
-                                        :repo="repo"
-                                        :parentNotEditable="!canEdit"
-                                        class="framework-title"
-                                        :profile="t3FrameworkProfile"
-                                        :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
-                                        iframeText="Attach subitems from other sources to the selected item." />
                                 </p>
                             </div>
                             <!-- import details after selecting file
@@ -642,6 +672,14 @@
                                         </ul>
                                     </ul>
                                 </div>
+                                <Thing
+                                    :obj="framework"
+                                    :repo="repo"
+                                    class="framework-title"
+                                    :profile="t3FrameworkProfile"
+                                    :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
+                                    iframeText="Attach subitems from other sources to the selected item." />
+
                                 <Hierarchy
                                     :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                     v-if="framework"
@@ -668,6 +706,14 @@
                             v-else-if="framework && showImportLightView"
                             class="import-light">
                             <div class="tile is-vertical">
+                                <Thing
+                                    :obj="framework"
+                                    :repo="repo"
+                                    :parentNotEditable="!canEdit"
+                                    class="framework-title"
+                                    :profile="t3FrameworkProfile"
+                                    :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
+                                    iframeText="Attach subitems from other sources to the selected item." />
                                 <Hierarchy
                                     v-if="framework"
                                     :container="framework"
