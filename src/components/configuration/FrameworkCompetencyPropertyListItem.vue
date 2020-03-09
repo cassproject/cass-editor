@@ -37,11 +37,11 @@
             </div>
             <div class="column is-1">
                 <div v-if="custom && readOnly">
-                    <button @click="$emit('manage', propertyParent, property)">View</button>
+                    <button @click="$emit('manage', propertyParent, propertyIndex)">View</button>
                 </div>
                 <div v-if="custom && !readOnly">
-                    <button @click="$emit('manage', propertyParent, property)">Edit</button>
-                    <button @click="$emit('delete', propertyParent, property)">Delete</button>
+                    <button @click="$emit('manage', propertyParent, propertyIndex)">Edit</button>
+                    <button @click="$emit('delete', propertyParent, propertyIndex)">Delete</button>
                 </div>
             </div>
         </div>
@@ -87,6 +87,9 @@ export default {
         enforceRequired: {
             type: Boolean,
             default: true
+        },
+        propertyIndex: {
+            type: Number
         }
     },
     data: function() {

@@ -39,6 +39,20 @@
                             <option value="http://www.w3.org/2004/02/skos/core#">http://www.w3.org/2004/02/skos/core#</option>
                         </select>
                     </div>
+                    <label>Range/Type: </label>
+                    <div v-if="readOnly || !customPropertyIsNew">
+                        {{ customPropertyRangeReadable }}
+                    </div>
+                    <div v-if="!readOnly && customPropertyIsNew">
+                        <select v-model="customPropertyRange">
+                            <option value="http://www.w3.org/2000/01/rdf-schema#langString">Lang-String</option>
+                            <option value="http://schema.org/URL">URL</option>
+                            <option value="http://schema.org/Text">Text</option>
+                            <option value="http://www.w3.org/2001/XMLSchema#dateTime">Date-Time</option>
+                            <option value="http://purl.org/dc/terms/date">Date</option>
+                            <option value="https://schema.cassproject.org/0.4/skos/Concept">SKOS Concept</option>
+                        </select>
+                    </div>
                     <label>Property Name (only alphanumerics permitted): </label>
                     <div v-if="readOnly || !customPropertyIsNew">
                         {{ customPropertyPropertyName }}
@@ -59,20 +73,6 @@
                     </div>
                     <div v-if="!readOnly">
                         <input type="text" v-model="customPropertyDescription">
-                    </div>
-                    <label>Range/Type: </label>
-                    <div v-if="readOnly || !customPropertyIsNew">
-                        {{ customPropertyRangeReadable }}
-                    </div>
-                    <div v-if="!readOnly && customPropertyIsNew">
-                        <select v-model="customPropertyRange">
-                            <option value="http://www.w3.org/2000/01/rdf-schema#langString">Lang-String</option>
-                            <option value="http://schema.org/URL">URL</option>
-                            <option value="http://schema.org/Text">Text</option>
-                            <option value="http://www.w3.org/2001/XMLSchema#dateTime">Date-Time</option>
-                            <option value="http://purl.org/dc/terms/date">Date</option>
-                            <option value="https://schema.cassproject.org/0.4/skos/Concept">SKOS Concept</option>
-                        </select>
                     </div>
                     <label>Is Required: </label>
                     <div v-if="readOnly">
@@ -198,7 +198,7 @@
             @change="updateFrameworkCompetencyProperty">
         </FrameworkCompetencyPropertyListItem>
         <FrameworkCompetencyPropertyListItem
-            v-for="prop in config.fwkCustomProperties"
+            v-for="(prop,idx) in frameworkCustomPropertyList"
             propertyParent="framework"
             :property="prop.propertyName"
             :label="prop.label"
@@ -208,6 +208,7 @@
             :custom="true"
             :readOnly="readOnly"
             :enforceRequired="false"
+            :propertyIndex="idx"
             @change="updateFrameworkCompetencyProperty"
             @manage="manageCustomFrameworkCompetencyProperty"
             @delete="deleteCustomFrameworkCompetencyProperty">
@@ -276,7 +277,7 @@
             @change="updateFrameworkCompetencyProperty">
         </FrameworkCompetencyPropertyListItem>
         <FrameworkCompetencyPropertyListItem
-            v-for="prop in config.compCustomProperties"
+            v-for="(prop,idx) in competencyCustomPropertyList"
             propertyParent="competency"
             :property="prop.propertyName"
             :label="prop.label"
@@ -286,6 +287,7 @@
             :custom="true"
             :readOnly="readOnly"
             :enforceRequired="false"
+            :propertyIndex="idx"
             @change="updateFrameworkCompetencyProperty"
             @manage="manageCustomFrameworkCompetencyProperty"
             @delete="deleteCustomFrameworkCompetencyProperty">
@@ -469,12 +471,21 @@ export default {
             }
             this.customPropertyPermittedValues = trimmedPermittedValues;
         },
+        resyncConfigCustomPropertyLists() {
+            let tempFwkCustomProperties = this.config.fwkCustomProperties.slice();
+            let tempCompCustomProperties = this.config.compCustomProperties.slice();
+            this.config.fwkCustomProperties = [];
+            this.config.compCustomProperties = [];
+            this.config.fwkCustomProperties = tempFwkCustomProperties.slice();
+            this.config.compCustomProperties = tempCompCustomProperties.slice();
+        },
         applyCustomPropertyEdits() {
             this.validateCustomPropertyFields();
             if (!this.customPropertyInvalid) {
                 this.trimCustomPropertyPermittedValues();
                 if (this.customPropertyIsNew) this.addNewCustomPropertyToConfig();
                 else this.updateExistingConfigCustomProperty();
+                this.resyncConfigCustomPropertyLists();
                 this.closeCustomPropertyModal();
             }
         },
@@ -532,13 +543,52 @@ export default {
             this.customPropertyParent = "competency";
             this.showCustomPropertyDetails = true;
         },
-        manageCustomFrameworkCompetencyProperty: function(propertyParent, propertyName) {
-            // TODO implement
-            alert('manageCustomFrameworkCompetencyProperty: ' + propertyParent + "|" + propertyName);
+        generateCopyOfCustomPropertyPermittedValues(prop) {
+            let permittedValuesCopy = [];
+            if (prop.permittedValues && prop.permittedValues.length > 0) {
+                for (let pv of prop.permittedValues) {
+                    let cpv = {};
+                    cpv.display = pv.display;
+                    cpv.value = pv.value;
+                    permittedValuesCopy.push(cpv);
+                }
+            }
+            return permittedValuesCopy;
         },
-        deleteCustomFrameworkCompetencyProperty: function(propertyParent, propertyName) {
-            // TODO implement
-            alert('deleteCustomFrameworkCompetencyProperty: ' + propertyParent + "|" + propertyName);
+        initCustomPropertyDataHoldersAsExistingProperty(propertyParent, prop) {
+            this.reInitCustomPropertyDataHolders();
+            this.customPropertyParent = propertyParent;
+            this.customPropertyIsNew = false;
+            this.customPropertyContext = prop.context;
+            this.customPropertyPropertyName = prop.propertyName;
+            this.customPropertyRange = prop.range;
+            this.customPropertyDescription = prop.description;
+            this.customPropertyLabel = prop.label;
+            this.customPropertyPriority = prop.priority;
+            this.customPropertyRequired = prop.required;
+            this.customPropertyPermittedValues = this.generateCopyOfCustomPropertyPermittedValues(prop);
+        },
+        manageCustomFrameworkProperty: function(propertyIdx) {
+            this.initCustomPropertyDataHoldersAsExistingProperty('framework', this.config.fwkCustomProperties[propertyIdx]);
+            this.customPropertyModalTitle = "Manage Framework Property";
+            this.showCustomPropertyDetails = true;
+        },
+        manageCustomCompetencyProperty: function(propertyIdx) {
+            this.initCustomPropertyDataHoldersAsExistingProperty('competency', this.config.compCustomProperties[propertyIdx]);
+            this.customPropertyModalTitle = "Manage Competency Property";
+            this.showCustomPropertyDetails = true;
+        },
+        manageCustomFrameworkCompetencyProperty: function(propertyParent, propertyIdx) {
+            if (propertyParent.equals('framework')) this.manageCustomFrameworkProperty(propertyIdx);
+            else if (propertyParent.equals('competency')) this.manageCustomCompetencyProperty(propertyIdx);
+        },
+        deleteCustomFrameworkCompetencyProperty: function(propertyParent, propertyIdx) {
+            let customPropertyList;
+            if (propertyParent.equals('framework')) customPropertyList = this.config.fwkCustomProperties;
+            else if (propertyParent.equals('competency')) customPropertyList = this.config.compCustomProperties;
+            customPropertyList = customPropertyList.slice(0, propertyIdx).concat(customPropertyList.slice(propertyIdx + 1, customPropertyList.length));
+            if (propertyParent.equals('framework')) this.config.fwkCustomProperties = customPropertyList;
+            else if (propertyParent.equals('competency')) this.config.compCustomProperties = customPropertyList;
         },
         updateFrameworkIdProperty: function(field, newValue) {
             if (field.equals("label")) this.config.fwkIdLabel = newValue;
@@ -621,6 +671,12 @@ export default {
         shouldAllowCustomPropertyPermittedValues: function() {
             if (this.customPropertyRange.equals('http://schema.org/Text')) return true;
             else return false;
+        },
+        frameworkCustomPropertyList: function() {
+            return this.config.fwkCustomProperties;
+        },
+        competencyCustomPropertyList: function() {
+            return this.config.compCustomProperties;
         }
     }
 
