@@ -55,12 +55,19 @@
                         </p>
                         <p
                             v-if="showImportPreviewView"
-                            class="is-size-6">
-                            <span class="has-text-success has-text-weight-bold">
-                                Framework successfully imported, ready to edit.
+                            class="">
+                            <span class=" is-size-6 has-text-success has-text-weight-bold">
+                                Framework successfully imported {{ frameworkSize }} ready to edit.
                             </span>
                             <br><br>
-                            Please review the name and descriptions of the imported competencies. After making edits, "approve" the changes to view the imported competency details.
+                            <!-- Please review the name and descriptions of the imported competencies. After making edits, "approve" the changes to view the imported competency details.-->
+                            <Thing
+                                :obj="framework"
+                                :repo="repo"
+                                class="framework-title"
+                                :profile="t3FrameworkProfile"
+                                :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
+                                iframeText="Attach subitems from other sources to the selected item." />
                         </p>
                         <p
                             v-if="showImportLightView"
@@ -69,9 +76,14 @@
                                 Your import is complete!
                             </span>
                             <br><br>
-                            To view your framework in the full editor, select "open in editor" at the
-                            bottom of the screen.
-                            <br><br>
+                            <Thing
+                                :obj="framework"
+                                :repo="repo"
+                                :parentNotEditable="!canEdit"
+                                class="framework-title"
+                                :profile="t3FrameworkProfile"
+                                :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
+                                iframeText="Attach subitems from other sources to the selected item." />
                         </p>
                         <!-- import details after selecting file
                         <div
@@ -494,13 +506,6 @@
                         <div
                             v-if="framework && showImportPreviewView"
                             class="import-preview">
-                            <Thing
-                                :obj="framework"
-                                :repo="repo"
-                                class="framework-title"
-                                :profile="t3FrameworkProfile"
-                                :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
-                                iframeText="Attach subitems from other sources to the selected item." />
                             <div class="tile is-vertical">
                                 <!-- loading section -- dummy content to show while loading dome elemnts -->
                                 <div
@@ -663,7 +668,7 @@
                                         v-if="framework"
                                         @click="cancelImport"
                                         class="button is-info is-pulled-right">
-                                        <span>import new framework</span>
+                                        <span>import again</span>
                                         <span class="icon">
                                             <i class="fa fa-redo-alt" />
                                         </span>
@@ -672,7 +677,7 @@
                                         v-if="framework"
                                         @click="openFramework"
                                         class="button is-info is-pulled-right">
-                                        <span>open editor</span>
+                                        <span>open in editor</span>
                                         <span class="icon">
                                             <i class="fa fa-edit" />
                                         </span>
@@ -767,6 +772,13 @@ export default {
         };
     },
     computed: {
+        frameworkSize: function() {
+            if (this.framework) {
+                return this.framework.competency.length;
+            } else {
+                return 0;
+            }
+        },
         isUrl: function() {
             if (this.method === 'url') {
                 return true;
@@ -1695,5 +1707,19 @@ export default {
 
 <style lang="scss">
     @import './../../scss/import.scss';
-
+.list-complete-item {
+  transition: all 1s;
+  display: block;
+}
+.list-complete-enter, .list-complete-leave-to
+/* .list-complete-leave-active below version 2.1.8 */ {
+  opacity: 0;
+  transform: translateY(0);
+}
+.list-complete-leave-active {
+  position: absolute;
+}
+.list-complete-move {
+  transition: transform 1s;
+}
 </style>
