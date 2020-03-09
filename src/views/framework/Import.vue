@@ -1147,6 +1147,12 @@ export default {
                 me.detailsDetected.fileType = "docx";
                 me.firstImport = false;
                 me.status = "File selected.";
+            } else {
+                me.showErrors = true;
+                me.status = "CaSS cannot read the file " + file.name + ". Please check that the file has the correct file extension.";
+                me.statusType = "error";
+                me.errors.push("CaSS cannot read the file " + file.name + ". Please check that the file has the correct file extension.");
+                me.processingFile = false;
             }
             if (!me.firstImport) {
                 me.importFromFile();
