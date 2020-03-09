@@ -13,6 +13,14 @@ $section-padding-tb: .125rem 0rem;
 $menu-item-color:$black;
 $menu-item-hover-color: $black;
 
+$is-size-1: 2rem;
+$is-size-2: 1.8rem;
+$is-size-3: 1.6rem;
+$is-size-4: 1.4rem;
+$is-size-5: 1.2rem;
+$is-size-6: 1rem;
+$is-size-7: .8rem;
+
 
 $tag-radius: 1rem;
 $navbar-padding-vertical: 2rem;
@@ -24,8 +32,8 @@ $menu-list-link-padding: .5em 1em;
     font-family: $family-secondary;
     color: $black;
 }
+$title-size: $size-3;
 $subtitle-weight: 300;
-
 /* side bad menu theme*/ 
 $menu-label-color: $white;
 $menu-label-font-size:1em;
@@ -39,7 +47,6 @@ $button-text-hover-background-color: transparent;
 // utilities
 @import "./../../node_modules/bulma/sass/utilities/_all.sass";
 @import "./../../node_modules/bulma/sass/base/_all.sass";
-
 @import "./../../node_modules/bulma/sass/components/_all.sass";
 @import "./../../node_modules/bulma/sass/elements/_all.sass";
 @import "./../../node_modules/bulma/sass/form/_all.sass";
@@ -59,9 +66,6 @@ $button-text-hover-background-color: transparent;
         padding-right: 1.75rem !important;
     }
 }
-
-
-
 
 .tag {
     border: 1px solid $background;
