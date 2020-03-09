@@ -296,7 +296,11 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Date of creation of this resource."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Extraction Date"}]
-                }
+                },
+                "alwaysProperties": [
+                    "http://schema.org/name",
+                    "http://schema.org/description"
+                ]
             };
         }
     }

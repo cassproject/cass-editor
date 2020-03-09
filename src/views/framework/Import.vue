@@ -1342,7 +1342,9 @@ export default {
             var f = new EcFramework();
             var name = newName || d.name;
             f.setName(name);
-            f.setDescription(d.description);
+            if (d.description && d.description !== "") {
+                f.setDescription(d.description);
+            }
             var uuid = new UUID(3, "nil", name).format();
             f.assignId(me.repo.selectedServer, uuid);
             f.competency = [];
