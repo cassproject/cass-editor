@@ -98,23 +98,23 @@
                     <div v-if="shouldAllowCustomPropertyPermittedValues">
                         <br>
                         <label>Permitted Values (Optional): </label>
-                        <p>Leave this section empty to allow any values for this property</p>
+                        <p v-if="!readOnly">Leave this section empty to allow any values for this property</p>
                         <button v-if="!readOnly" @click="addCustomPropertyPermittedValue">Add</button>
                         <div class="columns" v-if="customPropertyPermittedValues.length > 0">
-                            <div class="column is-5">display</div>
-                            <div class="column is-5">value</div>
+                            <div class="column is-5 listHdr">display</div>
+                            <div class="column is-5 listHdr">value</div>
                             <div class="column is-2"></div>
                         </div>
                         <div class="columns is-multiline" v-for="(ev,idx) in customPropertyPermittedValues">
-                            <div class="column is-5 listHdr">
-                                <div v-if="readOnly">{{ ev.display }}</div>
+                            <div class="column is-5">
+                                <p v-if="readOnly">{{ ev.display }}</p>
                                 <input v-if="!readOnly" type="text" v-model="ev.display">
                             </div>
-                            <div class="column is-5 listHdr">
-                                <div v-if="readOnly">{{ ev.value }}</div>
+                            <div class="column is-5">
+                                <p v-if="readOnly">{{ ev.value }}</p>
                                 <input v-if="!readOnly" type="text" v-model="ev.value">
                             </div>
-                            <div class="column is-2 listHdr">
+                            <div class="column is-2">
                                 <button v-if="!readOnly" @click="deleteCustomPropertyPermittedValue(idx)">delete</button>
                             </div>
                         </div>
@@ -198,7 +198,8 @@
             @change="updateFrameworkCompetencyProperty">
         </FrameworkCompetencyPropertyListItem>
         <FrameworkCompetencyPropertyListItem
-            v-for="(prop,idx) in frameworkCustomPropertyList"
+            v-for="(prop,idx) in config.fwkCustomProperties"
+            :key="prop.propertyName + '_' + prop.label + '_' + prop.description + '_' + prop.required + '_' + prop.priority"
             propertyParent="framework"
             :property="prop.propertyName"
             :label="prop.label"
@@ -277,7 +278,8 @@
             @change="updateFrameworkCompetencyProperty">
         </FrameworkCompetencyPropertyListItem>
         <FrameworkCompetencyPropertyListItem
-            v-for="(prop,idx) in competencyCustomPropertyList"
+            v-for="(prop,idx) in config.compCustomProperties"
+            :key="prop.propertyName + '_' + prop.label + '_' + prop.description + '_' + prop.required + '_' + prop.priority"
             propertyParent="competency"
             :property="prop.propertyName"
             :label="prop.label"
@@ -299,14 +301,37 @@
         <br>
         <!-- ************************************** Competency Type Enforcement ************************************************ -->
         <h5>Competency Type Enforcement (optional)</h5>
-        <p>Leave this section empty to allow competencies of any type</p>
-        <p>TODO...fill this in</p>
-        <div class="columns">
-            <div class="column is-2 listHdr">
-                label
+        <p v-if="!readOnly">Leave this section empty to allow competencies of any type</p>
+        <div v-if="readOnly">
+            {{ config.compEnforceTypes }}
+        </div>
+        <div v-if="!readOnly ">
+            <select v-model="config.compEnforceTypes" @change="checkEnforceTypesChange">
+                <option :value="true">true</option>
+                <option :value="false">false</option>
+            </select>
+        </div>
+        <div v-if="config.compEnforceTypes">
+            <button v-if="!readOnly" @click="addCompetencyEnforcedTypeDataHolder">add enforced type</button>
+            <div class="columns">
+                <div class="column is-2 listHdr">type</div>
+                <div class="column is-4 listHdr">description</div>
+                <div class="column is-2"></div>
             </div>
-            <div class="column is-4 listHdr">
-                value
+            <div
+                class="columns"
+                v-for="(et,idx) in config.compEnforcedTypes">
+                <div class="column is-2">
+                    <p v-if="readOnly">{{ et.typeName }}</p>
+                    <input v-if="!readOnly" type="text" v-model="et.typeName">
+                </div>
+                <div class="column is-4">
+                    <p v-if="readOnly">{{ et.description }}</p>
+                    <input v-if="!readOnly" type="text" v-model="et.description">
+                </div>
+                <div class="column is-2">
+                    <button v-if="!readOnly" @click="deleteCompetencyEnforcedType(idx)">delete</button>
+                </div>
             </div>
         </div>
         <br>
@@ -331,19 +356,63 @@
             <div class="column is-2 listHdr">label</div>
             <div class="column is-2 listHdr">enabled</div>
         </div>
+        <RelationshipListItem
+            v-for="(relObj, relKey) in this.config.relationships"
+            :relationship="relKey"
+            :label="relObj.label"
+            :enabled="relObj.enabled"
+            :readOnly="readOnly"
+            @change="updateRelationshipProperty">
+        </RelationshipListItem>
         <br>
         <br>
         <!-- ************************************** Resource Alignments ************************************************ -->
         <h5>Resource Alignment</h5>
         <div class="columns">
-            <div class="column is-2 listHdr">type</div>
+            <div class="column is-2 listHdr">alignment</div>
             <div class="column is-2 listHdr">enabled</div>
+        </div>
+        <div class="columns">
+            <div class="column is-2">teaches</div>
+            <div class="column is-2">
+                <div v-if="readOnly">{{ config.alignments.teaches }}</div>
+                <div v-if="!readOnly">
+                    <select v-model="config.alignments.teaches">
+                        <option :value="true">true</option>
+                        <option :value="false">false</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="column is-2">assesses</div>
+            <div class="column is-2">
+                <div v-if="readOnly">{{ config.alignments.assesses }}</div>
+                <div v-if="!readOnly">
+                    <select v-model="config.alignments.assesses">
+                        <option :value="true">true</option>
+                        <option :value="false">false</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="column is-2">requires</div>
+            <div class="column is-2">
+                <div v-if="readOnly">{{ config.alignments.requires }}</div>
+                <div v-if="!readOnly">
+                    <select v-model="config.alignments.requires">
+                        <option :value="true">true</option>
+                        <option :value="false">false</option>
+                    </select>
+                </div>
+            </div>
         </div>
         <br>
         <br>
         <!-- ************************************** Actions ************************************************ -->
         <div v-if="!readOnly">
-            <button @click="$emit('save')">save</button><button @click="$emit('cancel')">cancel</button>
+            <button @click="validateCurrentConfigAndEmitSave">save</button><button @click="$emit('cancel')">cancel</button>
         </div>
         <div v-if="readOnly">
             <button @click="$emit('back')">back</button>
@@ -353,6 +422,7 @@
 
 <script>
 import FrameworkCompetencyPropertyListItem from "./FrameworkCompetencyPropertyListItem";
+import RelationshipListItem from "./RelationshipListItem";
 
 export default {
     name: 'configurationDetails',
@@ -387,9 +457,32 @@ export default {
         customPropertyDescriptionInvalid: false
     }),
     components: {
-        FrameworkCompetencyPropertyListItem
+        FrameworkCompetencyPropertyListItem,
+        RelationshipListItem
     },
     methods: {
+        validateCurrentConfigAndEmitSave() {
+            // TODO validate name and description
+            // TODO validate enforced type values
+            // TODO validate relationship values
+            this.$emit('save');
+        },
+        deleteCompetencyEnforcedType(etIndex) {
+            this.config.compEnforcedTypes =
+                this.config.compEnforcedTypes.slice(0, etIndex).concat(this.config.compEnforcedTypes.slice(etIndex + 1, this.config.compEnforcedTypes.length));
+        },
+        addCompetencyEnforcedTypeDataHolder() {
+            let cef = {};
+            cef.typeName = '';
+            cef.description = '';
+            this.config.compEnforcedTypes.push(cef);
+        },
+        checkEnforceTypesChange() {
+            if (this.config.compEnforceTypes) {
+                if (!this.config.compEnforcedTypes) this.config.compEnforcedTypes = [];
+                if (this.config.compEnforcedTypes.length <= 0) this.addCompetencyEnforcedTypeDataHolder();
+            }
+        },
         getCustomProperty(propertyParent, propertyName) {
             let customProperties = [];
             if (propertyParent.equals('framework')) customProperties = this.config.fwkCustomProperties;
@@ -471,21 +564,12 @@ export default {
             }
             this.customPropertyPermittedValues = trimmedPermittedValues;
         },
-        resyncConfigCustomPropertyLists() {
-            let tempFwkCustomProperties = this.config.fwkCustomProperties.slice();
-            let tempCompCustomProperties = this.config.compCustomProperties.slice();
-            this.config.fwkCustomProperties = [];
-            this.config.compCustomProperties = [];
-            this.config.fwkCustomProperties = tempFwkCustomProperties.slice();
-            this.config.compCustomProperties = tempCompCustomProperties.slice();
-        },
         applyCustomPropertyEdits() {
             this.validateCustomPropertyFields();
             if (!this.customPropertyInvalid) {
                 this.trimCustomPropertyPermittedValues();
                 if (this.customPropertyIsNew) this.addNewCustomPropertyToConfig();
                 else this.updateExistingConfigCustomProperty();
-                this.resyncConfigCustomPropertyLists();
                 this.closeCustomPropertyModal();
             }
         },
@@ -656,6 +740,9 @@ export default {
         updateFrameworkCompetencyProperty: function(propertyParent, propertyName, field, newValue) {
             if (propertyParent.equals('framework')) this.updateFrameworkProperty(propertyName, field, newValue);
             else if (propertyParent.equals('competency')) this.updateCompetencyProperty(propertyName, field, newValue);
+        },
+        updateRelationshipProperty: function(relationship, field, newValue) {
+            this.config.relationships[relationship][field] = newValue;
         }
     },
     computed: {
@@ -671,15 +758,8 @@ export default {
         shouldAllowCustomPropertyPermittedValues: function() {
             if (this.customPropertyRange.equals('http://schema.org/Text')) return true;
             else return false;
-        },
-        frameworkCustomPropertyList: function() {
-            return this.config.fwkCustomProperties;
-        },
-        competencyCustomPropertyList: function() {
-            return this.config.compCustomProperties;
         }
     }
-
 };
 </script>
 

@@ -7,19 +7,19 @@
             <div class="column is-2">
                 <div v-if="readOnly">{{ localLabel }}</div>
                 <div v-if="!readOnly">
-                    <input type="text" v-model="localLabel" @input="changeLabel">
+                    <input type="text" v-model="localLabel" @change="changeLabel">
                 </div>
             </div>
             <div class="column is-4">
                 <div v-if="readOnly">{{ localDescription }}</div>
                 <div v-if="!readOnly">
-                    <input type="text" v-model="localDescription" @input="changeDescription">
+                    <input type="text" v-model="localDescription" @change="changeDescription">
                 </div>
             </div>
             <div class="column is-1">
                 <div v-if="readOnly || enforceRequired">{{ localRequired }}</div>
                 <div v-if="!readOnly && !enforceRequired">
-                    <select v-model="localRequired" @input="changeRequired">
+                    <select v-model="localRequired" @change="changeRequired">
                         <option :value="true">true</option>
                         <option :value="false">false</option>
                     </select>
@@ -28,7 +28,7 @@
             <div class="column is-2">
                 <div v-if="readOnly">{{ localPriority }}</div>
                 <div v-if="!readOnly">
-                    <select v-model="localPriority" @input="changePriority">
+                    <select v-model="localPriority" @change="changePriority">
                         <option value="primary">primary</option>
                         <option value="secondary">secondary</option>
                         <option value="tertiary">tertiary</option>
