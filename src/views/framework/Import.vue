@@ -55,12 +55,19 @@
                         </p>
                         <p
                             v-if="showImportPreviewView"
-                            class="is-size-6">
-                            <span class="has-text-success has-text-weight-bold">
-                                Framework successfully imported, ready to edit.
+                            class="">
+                            <span class=" is-size-6 has-text-success has-text-weight-bold">
+                                Framework successfully imported {{ frameworkSize }} ready to edit.
                             </span>
                             <br><br>
-                            Please review the name and descriptions of the imported competencies. After making edits, "approve" the changes to view the imported competency details.
+                            <!-- Please review the name and descriptions of the imported competencies. After making edits, "approve" the changes to view the imported competency details.-->
+                            <Thing
+                                :obj="framework"
+                                :repo="repo"
+                                class="framework-title"
+                                :profile="t3FrameworkProfile"
+                                :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
+                                iframeText="Attach subitems from other sources to the selected item." />
                         </p>
                         <p
                             v-if="showImportLightView"
@@ -69,9 +76,14 @@
                                 Your import is complete!
                             </span>
                             <br><br>
-                            To view your framework in the full editor, select "open in editor" at the
-                            bottom of the screen.
-                            <br><br>
+                            <Thing
+                                :obj="framework"
+                                :repo="repo"
+                                :parentNotEditable="!canEdit"
+                                class="framework-title"
+                                :profile="t3FrameworkProfile"
+                                :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
+                                iframeText="Attach subitems from other sources to the selected item." />
                         </p>
                         <!-- import details after selecting file
                         <div
@@ -494,13 +506,6 @@
                         <div
                             v-if="framework && showImportPreviewView"
                             class="import-preview">
-                            <Thing
-                                :obj="framework"
-                                :repo="repo"
-                                class="framework-title"
-                                :profile="t3FrameworkProfile"
-                                :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
-                                iframeText="Attach subitems from other sources to the selected item." />
                             <div class="tile is-vertical">
                                 <!-- loading section -- dummy content to show while loading dome elemnts -->
                                 <div
@@ -663,7 +668,7 @@
                                         v-if="framework"
                                         @click="cancelImport"
                                         class="button is-info is-pulled-right">
-                                        <span>import new framework</span>
+                                        <span>import again</span>
                                         <span class="icon">
                                             <i class="fa fa-redo-alt" />
                                         </span>
@@ -672,7 +677,7 @@
                                         v-if="framework"
                                         @click="openFramework"
                                         class="button is-info is-pulled-right">
-                                        <span>open editor</span>
+                                        <span>open in editor</span>
                                         <span class="icon">
                                             <i class="fa fa-edit" />
                                         </span>
@@ -767,6 +772,13 @@ export default {
         };
     },
     computed: {
+        frameworkSize: function() {
+            if (this.framework) {
+                return this.framework.competency.length;
+            } else {
+                return 0;
+            }
+        },
         isUrl: function() {
             if (this.method === 'url') {
                 return true;
@@ -794,26 +806,6 @@ export default {
             } else {
                 return false;
             }
-        },
-        levels: function() {
-            var levels = {};
-            if (!this.framework.level) {
-                return null;
-            }
-            for (var i = 0; i < this.framework.level.length; i++) {
-                var level = EcLevel.getBlocking(this.framework.level[i]);
-                var comp = level.competency;
-                if (!EcArray.isArray(comp)) {
-                    comp = [comp];
-                }
-                for (var j = 0; j < comp.length; j++) {
-                    if (!EcArray.isArray(levels[comp[j]])) {
-                        levels[comp[j]] = [];
-                    }
-                    levels[comp[j]].push(level);
-                }
-            }
-            return levels;
         }
     },
     watch: {
@@ -1028,10 +1020,10 @@ export default {
         },
         openFramework: function() {
             if (this.queryParams.concepts === "true") {
-                this.$store.commit('framework', this.framework);
+                this.$store.commit('editor/framework', this.framework);
                 this.$router.push({name: "conceptScheme", params: {frameworkId: this.framework.shortId()}});
             } else {
-                this.$store.commit('framework', this.framework);
+                this.$store.commit('editor/framework', this.framework);
                 this.$router.push({name: "framework", params: {frameworkId: this.framework.shortId()}});
             }
         },
@@ -1376,6 +1368,9 @@ export default {
                 cs[d.competencies[i].id] = c.shortId();
                 if (d.competencies[i].name != null) { c.setName(d.competencies[i].name.trim()); }
                 if (d.competencies[i].name !== d.competencies[i].description && d.competencies[i].description) { c.setDescription(d.competencies[i].description.trim()); }
+                if (d.competencies[i]["ceasn:codedNotation"] != null) {
+                    c["ceasn:codedNotation"] = d.competencies[i]["ceasn:codedNotation"];
+                }
                 f.competency.push(c.shortId());
                 toSave.push(c);
             }
@@ -1394,8 +1389,8 @@ export default {
             }
             me.repo.multiput(toSave, function() {
                 me.framework = f;
-                me.$store.commit('framework', f);
-                me.$store.commit('t3Profile', true);
+                me.$store.commit('editor/framework', f);
+                me.$store.commit('editor/t3Profile', true);
                 me.status = "";
                 me.importSuccess();
             }, console.error);
@@ -1712,5 +1707,19 @@ export default {
 
 <style lang="scss">
     @import './../../scss/import.scss';
-
+.list-complete-item {
+  transition: all 1s;
+  display: block;
+}
+.list-complete-enter, .list-complete-leave-to
+/* .list-complete-leave-active below version 2.1.8 */ {
+  opacity: 0;
+  transform: translateY(0);
+}
+.list-complete-leave-active {
+  position: absolute;
+}
+.list-complete-move {
+  transition: transform 1s;
+}
 </style>

@@ -6,7 +6,9 @@
             :parentNotEditable="queryParams.view==='true'"
             @deleteObject="deleteObject"
             @exportObject="exportObject"
-            @select="select" />
+            @select="select"
+            :isEditingContainer="isEditingContainer"
+            @editingThing="handleEditingContainer($event)" />
         <span
             class="info-tag"
             v-if="timestamp"
@@ -46,7 +48,9 @@
             :selectAll="selectAll"
             @deleteObject="deleteObject"
             @exportObject="exportObject"
-            @select="select" />
+            @select="select"
+            :isEditingContainer="isEditingContainer"
+            @editingContainer="handleEditingContainer($event)" />
     </div>
 </template>
 <script>
@@ -78,7 +82,8 @@ export default {
             selectButtonText: null,
             selectAllButton: false,
             selectAll: false,
-            selectedArray: []
+            selectedArray: [],
+            isEditingContainer: false
         };
     },
     computed: {
@@ -225,7 +230,7 @@ export default {
                             me.repo.deleteRegistered(concepts[i], console.log, console.error);
                         }
                     }, console.error);
-                    me.$store.commit('framework', null);
+                    me.$store.commit('editor/framework', null);
                     me.$router.push({name: "frameworks"});
                 }, console.log);
             } else {
@@ -234,7 +239,7 @@ export default {
                 this.spitEvent("conceptDeleted", thing.shortId(), "editFrameworkPage");
 
                 this.framework["schema:dateModified"] = new Date().toISOString();
-                this.$store.commit('selectedCompetency', null);
+                this.$store.commit('editor/selectedCompetency', null);
             }
         },
         deleteConceptInner: function(c) {
@@ -247,7 +252,7 @@ export default {
                             concept = EcEncryptedValue.toEncryptedValue(concept);
                         }
                         repo.saveTo(concept, function() {
-                            me.$store.commit('framework', me.framework);
+                            me.$store.commit('editor/framework', me.framework);
                         }, console.error);
                     }, console.error);
                 }
@@ -266,11 +271,11 @@ export default {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
                 }
                 repo.saveTo(framework, function() {
-                    me.$store.commit('framework', me.framework);
+                    me.$store.commit('editor/framework', me.framework);
                 }, console.error);
             }
             repo.deleteRegistered(c, function() {
-                me.$store.commit('framework', me.framework);
+                me.$store.commit('editor/framework', me.framework);
             }, console.error);
         },
         exportObject: function(concept, exportType) {
@@ -298,6 +303,13 @@ export default {
                 EcArray.setAdd(this.selectedArray, id);
             } else {
                 EcArray.setRemove(this.selectedArray, id);
+            }
+        },
+        handleEditingContainer: function(e) {
+            if (e) {
+                this.isEditingContainer = true;
+            } else {
+                this.isEditingContainer = false;
             }
         }
     }

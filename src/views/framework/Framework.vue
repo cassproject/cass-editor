@@ -12,7 +12,9 @@
                     @select="select"
                     @deleteObject="deleteObject"
                     @removeObject="removeObject"
-                    @exportObject="exportObject" />
+                    @exportObject="exportObject"
+                    :isEditingContainer="isEditingContainer"
+                    @editingThing="handleEditingContainer($event)" />
                 <span class="actions">
                     <span
                         class="tag is-info has-text-white"
@@ -83,7 +85,9 @@
                     @select="select"
                     @deleteObject="deleteObject"
                     @removeObject="removeObject"
-                    @exportObject="exportObject" />
+                    @exportObject="exportObject"
+                    :isEditingContainer="isEditingContainer"
+                    @editingContainer="handleEditingContainer($event)" />
             </div>
         </div>
     </div>
@@ -124,7 +128,8 @@ export default {
             selectButtonText: null,
             selectAllButton: false,
             selectAll: false,
-            selectedArray: []
+            selectedArray: [],
+            isEditingContainer: false
         };
     },
     computed: {
@@ -251,8 +256,8 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}],
                         "heading": "General"
                     },
-                    "https://schema.cassproject.org/0.4/Competency/scope": {
-                        "@id": "https://schema.cassproject.org/0.4/Competency/scope",
+                    "https://schema.cassproject.org/0.4/scope": {
+                        "@id": "https://schema.cassproject.org/0.4/scope",
                         "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                         "http://schema.org/domainIncludes":
                         [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
@@ -277,8 +282,6 @@ export default {
                         "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Level"}],
                         "valuesIndexed": function() { return me.levels; },
                         "noTextEditing": true,
-                        "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
-                        "iframeText": "Select levels to align...",
                         "add": function(selectedCompetency) { me.addLevel(selectedCompetency); },
                         "remove": function(competency, levelId) { me.removeLevelFromFramework(levelId); },
                         "save": function() { me.saveFramework(); },
@@ -448,7 +451,7 @@ export default {
             var path = this.queryParams.editorRoot ? this.queryParams.editorRoot : "/";
             path += "cass-editor/?select=Align with...&view=true&back=true&frameworkId=" + this.framework.shortId();
             path += this.$store.state.editor.commonPathIframe;
-            this.$store.commit('iframeCompetencyPathIntraframework', path);
+            this.$store.commit('editor/iframeCompetencyPathIntraframework', path);
         },
         exportObject: function(selectedCompetency, exportType) {
             var guid;
@@ -479,6 +482,13 @@ export default {
                 EcArray.setAdd(this.selectedArray, id);
             } else {
                 EcArray.setRemove(this.selectedArray, id);
+            }
+        },
+        handleEditingContainer: function(e) {
+            if (e) {
+                this.isEditingContainer = true;
+            } else {
+                this.isEditingContainer = false;
             }
         }
     }
