@@ -53,7 +53,8 @@
                             <option value="https://schema.cassproject.org/0.4/skos/Concept">SKOS Concept</option>
                         </select>
                     </div>
-                    <label>Property Name (only alphanumerics permitted): </label>
+                    <label>Property Name<span v-if="customPropertyIsNew"> (only alphanumerics permitted)</span>:
+                    </label>
                     <div v-if="readOnly || !customPropertyIsNew">
                         {{ customPropertyPropertyName }}
                     </div>
@@ -301,7 +302,7 @@
         <br>
         <!-- ************************************** Competency Type Enforcement ************************************************ -->
         <h5>Competency Type Enforcement (optional)</h5>
-        <p v-if="!readOnly">Leave this section empty to allow competencies of any type</p>
+        <p v-if="!readOnly">Leave this section empty to allow competencies of any type.</p>
         <div v-if="readOnly">
             {{ config.compEnforceTypes }}
         </div>
