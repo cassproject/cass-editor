@@ -121,16 +121,16 @@
                         </div>
                     </div>
                     <br>
-                    <div v-if="!readOnly">
-                        <button @click="applyCustomPropertyEdits">Apply</button>
-                        <button @click="closeCustomPropertyModal">Cancel</button>
-                    </div>
                     <div v-if="customPropertyInvalid">
                         <p>Property is invalid:</p>
                         <p v-if="customPropertyPropertyNameExists">*Property name is already in use</p>
                         <p v-if="customPropertyPropertyNameInvalid">*Property name is required</p>
                         <p v-if="customPropertyLabelInvalid">*Label is required</p>
                         <p v-if="customPropertyPropertyNameInvalid">*Description is required</p>
+                    </div>
+                    <div v-if="!readOnly">
+                        <button @click="applyCustomPropertyEdits">Apply</button>
+                        <button @click="closeCustomPropertyModal">Cancel</button>
                     </div>
                 </div>
             </div>
@@ -172,6 +172,7 @@
             :custom="false"
             :readOnly="readOnly"
             :enforceRequired="true"
+            :enforcePrimary="false"
             @change="updateFrameworkCompetencyProperty">
         </FrameworkCompetencyPropertyListItem>
         <FrameworkCompetencyPropertyListItem
@@ -184,6 +185,7 @@
             :custom="false"
             :readOnly="readOnly"
             :enforceRequired="true"
+            :enforcePrimary="true"
             @change="updateFrameworkCompetencyProperty">
         </FrameworkCompetencyPropertyListItem>
         <FrameworkCompetencyPropertyListItem
@@ -196,6 +198,7 @@
             :custom="false"
             :readOnly="readOnly"
             :enforceRequired="false"
+            :enforcePrimary="false"
             @change="updateFrameworkCompetencyProperty">
         </FrameworkCompetencyPropertyListItem>
         <FrameworkCompetencyPropertyListItem
@@ -210,6 +213,7 @@
             :custom="true"
             :readOnly="readOnly"
             :enforceRequired="false"
+            :enforcePrimary="false"
             :propertyIndex="idx"
             @change="updateFrameworkCompetencyProperty"
             @manage="manageCustomFrameworkCompetencyProperty"
@@ -240,6 +244,7 @@
             :custom="false"
             :readOnly="readOnly"
             :enforceRequired="true"
+            :enforcePrimary="false"
             @change="updateFrameworkCompetencyProperty">
         </FrameworkCompetencyPropertyListItem>
         <FrameworkCompetencyPropertyListItem
@@ -252,6 +257,7 @@
             :custom="false"
             :readOnly="readOnly"
             :enforceRequired="true"
+            :enforcePrimary="true"
             @change="updateFrameworkCompetencyProperty">
         </FrameworkCompetencyPropertyListItem>
         <FrameworkCompetencyPropertyListItem
@@ -264,6 +270,7 @@
             :custom="false"
             :readOnly="readOnly"
             :enforceRequired="false"
+            :enforcePrimary="false"
             @change="updateFrameworkCompetencyProperty">
         </FrameworkCompetencyPropertyListItem>
         <FrameworkCompetencyPropertyListItem
@@ -276,6 +283,7 @@
             :custom="false"
             :readOnly="readOnly"
             :enforceRequired="false"
+            :enforcePrimary="false"
             @change="updateFrameworkCompetencyProperty">
         </FrameworkCompetencyPropertyListItem>
         <FrameworkCompetencyPropertyListItem
@@ -290,6 +298,7 @@
             :custom="true"
             :readOnly="readOnly"
             :enforceRequired="false"
+            :enforcePrimary="false"
             :propertyIndex="idx"
             @change="updateFrameworkCompetencyProperty"
             @manage="manageCustomFrameworkCompetencyProperty"
@@ -315,20 +324,20 @@
         <div v-if="config.compEnforceTypes">
             <button v-if="!readOnly" @click="addCompetencyEnforcedTypeDataHolder">add enforced type</button>
             <div class="columns">
-                <div class="column is-2 listHdr">type</div>
-                <div class="column is-4 listHdr">description</div>
+                <div class="column is-2 listHdr">label</div>
+                <div class="column is-4 listHdr">value</div>
                 <div class="column is-2"></div>
             </div>
             <div
                 class="columns"
                 v-for="(et,idx) in config.compEnforcedTypes">
                 <div class="column is-2">
-                    <p v-if="readOnly">{{ et.typeName }}</p>
-                    <input v-if="!readOnly" type="text" v-model="et.typeName">
+                    <p v-if="readOnly">{{ et.display }}</p>
+                    <input v-if="!readOnly" type="text" v-model="et.display">
                 </div>
                 <div class="column is-4">
-                    <p v-if="readOnly">{{ et.description }}</p>
-                    <input v-if="!readOnly" type="text" v-model="et.description">
+                    <p v-if="readOnly">{{ et.value }}</p>
+                    <input v-if="!readOnly" type="text" v-model="et.value">
                 </div>
                 <div class="column is-2">
                     <button v-if="!readOnly" @click="deleteCompetencyEnforcedType(idx)">delete</button>
@@ -342,11 +351,35 @@
         <div v-if="readOnly">
             {{ config.compAllowLevels }}
         </div>
-        <div v-if="!readOnly ">
+        <div v-if="!readOnly">
             <select v-model="config.compAllowLevels">
                 <option :value="true">true</option>
                 <option :value="false">false</option>
             </select>
+        </div>
+        <div v-if="config.compAllowLevels">
+            <div class="columns">
+                <div class="column is-2">level label:</div>
+                <div class="column is-5">
+                    <div v-if="readOnly">
+                        {{ config.levelLabel }}
+                    </div>
+                    <div v-if="!readOnly">
+                        <input type="text" v-model="config.levelLabel">
+                    </div>
+                </div>
+            </div>
+            <div class="columns">
+                <div class="column is-2">level description:</div>
+                <div class="column is-5">
+                    <div v-if="readOnly">
+                        {{ config.levelDescription }}
+                    </div>
+                    <div v-if="!readOnly">
+                        <input type="text" v-model="config.levelDescription">
+                    </div>
+                </div>
+            </div>
         </div>
         <br>
         <br>
@@ -411,6 +444,28 @@
         </div>
         <br>
         <br>
+        <!-- ************************************** Validation ************************************************ -->
+        <div v-if="configInvalid">
+            <p>Configuration is invalid:</p>
+            <p v-if="configNameInvalid">*Configuration name is required</p>
+            <p v-if="configDescriptionInvalid">*Configuration description is required</p>
+            <p v-if="configEnforcedTypesInvalid">*Enforced types must have a label and value</p>
+            <p v-if="configRelationshipsInvalid">*Enabled relationships must have a label</p>
+            <p v-if="configFrameworkIdLabelInvalid">*Framework ID Label is required</p>
+            <p v-if="configFrameworkIdDescriptionInvalid">*Framework ID Description is required</p>
+            <p v-if="configFrameworkNameLabelInvalid">*Framework Name Label is required</p>
+            <p v-if="configFrameworkNameDescriptionInvalid">*Framework Name Description is required</p>
+            <p v-if="configFrameworkDescLabelInvalid">*Framework Description Label is required</p>
+            <p v-if="configFrameworkDescDescriptionInvalid">*Framework Description Description is required</p>
+            <p v-if="configCompetencyIdLabelInvalid">*Competency ID Label required</p>
+            <p v-if="configCompetencyIdDescriptionInvalid">*Competency ID Description is required</p>
+            <p v-if="configCompetencyNameLabelInvalid">*Competency Name Label is required</p>
+            <p v-if="configCompetencyNameDescriptionInvalid">*Competency Name Description is required</p>
+            <p v-if="configCompetencyDescLabelInvalid">*Competency Description Label is required</p>
+            <p v-if="configCompetencyDescDescriptionInvalid">*Competency Description Description is required</p>
+            <p v-if="configCompetencyTypeLabelInvalid">*Competency Type Label is required</p>
+            <p v-if="configCompetencyTypeDescriptionInvalid">*Competency Type Description is required</p>
+        </div>
         <!-- ************************************** Actions ************************************************ -->
         <div v-if="!readOnly">
             <button @click="validateCurrentConfigAndEmitSave">save</button><button @click="$emit('cancel')">cancel</button>
@@ -439,6 +494,25 @@ export default {
     data: () => ({
         DEFAULT_CUSTOM_PROPERTY_CONTEXT: 'https://schema.cassproject.org/0.4/',
         DEFAULT_CUSTOM_PROPERTY_RANGE: 'http://schema.org/Text',
+        configInvalid: false,
+        configNameInvalid: false,
+        configDescriptionInvalid: false,
+        configEnforcedTypesInvalid: false,
+        configRelationshipsInvalid: false,
+        configFrameworkIdLabelInvalid: false,
+        configFrameworkIdDescriptionInvalid: false,
+        configFrameworkNameLabelInvalid: false,
+        configFrameworkNameDescriptionInvalid: false,
+        configFrameworkDescLabelInvalid: false,
+        configFrameworkDescDescriptionInvalid: false,
+        configCompetencyIdLabelInvalid: false,
+        configCompetencyIdDescriptionInvalid: false,
+        configCompetencyNameLabelInvalid: false,
+        configCompetencyNameDescriptionInvalid: false,
+        configCompetencyDescLabelInvalid: false,
+        configCompetencyDescDescriptionInvalid: false,
+        configCompetencyTypeLabelInvalid: false,
+        configCompetencyTypeDescriptionInvalid: false,
         showCustomPropertyDetails: false,
         customPropertyModalTitle: '',
         customPropertyParent: '',
@@ -462,11 +536,131 @@ export default {
         RelationshipListItem
     },
     methods: {
+        setAllConfigValidationsChecksToValid() {
+            this.configInvalid = false;
+            this.configNameInvalid = false;
+            this.configDescriptionInvalid = false;
+            this.configEnforcedTypesInvalid = false;
+            this.configRelationshipsInvalid = false;
+            this.configFrameworkIdLabelInvalid = false;
+            this.configFrameworkIdDescriptionInvalid = false;
+            this.configFrameworkNameLabelInvalid = false;
+            this.configFrameworkNameDescriptionInvalid = false;
+            this.configFrameworkDescLabelInvalid = false;
+            this.configFrameworkDescDescriptionInvalid = false;
+            this.configCompetencyIdLabelInvalid = false;
+            this.configCompetencyIdDescriptionInvalid = false;
+            this.configCompetencyNameLabelInvalid = false;
+            this.configCompetencyNameDescriptionInvalid = false;
+            this.configCompetencyDescLabelInvalid = false;
+            this.configCompetencyDescDescriptionInvalid = false;
+            this.configCompetencyTypeLabelInvalid = false;
+            this.configCompetencyTypeDescriptionInvalid = false;
+        },
+        validateConfigRelationships() {
+            let configRelationships = Object.keys(this.config.relationships);
+            for (let cr of configRelationships) {
+                let relObj = this.config.relationships[cr];
+                if (relObj.enabled && (!relObj.label || relObj.label.trim().equals(''))) {
+                    this.configInvalid = true;
+                    this.configRelationshipsInvalid = true;
+                    break;
+                }
+            }
+        },
+        validateConfigEnforcedTypes() {
+            if (this.config.compEnforceTypes) {
+                if (!this.config.compEnforcedTypes || this.config.compEnforcedTypes.length <= 0) {
+                    this.configInvalid = true;
+                    this.configEnforcedTypesInvalid = true;
+                    return;
+                }
+                for (let et of this.config.compEnforcedTypes) {
+                    if (!et.display || et.display.trim().equals('') || !et.value || et.value.trim().equals('')) {
+                        this.configInvalid = true;
+                        this.configEnforcedTypesInvalid = true;
+                        break;
+                    }
+                }
+            }
+        },
+        validateStaticPropertyFields() {
+            if (!this.config.fwkIdLabel || this.config.fwkIdLabel.trim().equals('')) {
+                this.configInvalid = true;
+                this.configFrameworkIdLabelInvalid = true;
+            }
+            if (!this.config.fwkIdDescription || this.config.fwkIdDescription.trim().equals('')) {
+                this.configInvalid = true;
+                this.configFrameworkIdDescriptionInvalid = true;
+            }
+            if (!this.config.fwkNameLabel || this.config.fwkNameLabel.trim().equals('')) {
+                this.configInvalid = true;
+                this.configFrameworkNameLabelInvalid = true;
+            }
+            if (!this.config.fwkNameDescription || this.config.fwkNameDescription.trim().equals('')) {
+                this.configInvalid = true;
+                this.configFrameworkNameDescriptionInvalid = true;
+            }
+            if (!this.config.fwkDescLabel || this.config.fwkDescLabel.trim().equals('')) {
+                this.configInvalid = true;
+                this.configFrameworkDescLabelInvalid = true;
+            }
+            if (!this.config.fwkDescDescription || this.config.fwkDescDescription.trim().equals('')) {
+                this.configInvalid = true;
+                this.configFrameworkDescDescriptionInvalid = true;
+            }
+            if (!this.config.compIdLabel || this.config.compIdLabel.trim().equals('')) {
+                this.configInvalid = true;
+                this.configCompetencyIdLabelInvalid = true;
+            }
+            if (!this.config.compIdDescription || this.config.compIdDescription.trim().equals('')) {
+                this.configInvalid = true;
+                this.configCompetencyIdDescriptionInvalid = true;
+            }
+            if (!this.config.compNameLabel || this.config.compNameLabel.trim().equals('')) {
+                this.configInvalid = true;
+                this.configCompetencyNameLabelInvalid = true;
+            }
+            if (!this.config.compNameDescription || this.config.compNameDescription.trim().equals('')) {
+                this.configInvalid = true;
+                this.configCompetencyNameDescriptionInvalid = true;
+            }
+            if (!this.config.compDescLabel || this.config.compDescLabel.trim().equals('')) {
+                this.configInvalid = true;
+                this.configCompetencyDescLabelInvalid = true;
+            }
+            if (!this.config.compDescDescription || this.config.compDescDescription.trim().equals('')) {
+                this.configInvalid = true;
+                this.configCompetencyDescDescriptionInvalid = true;
+            }
+            if (!this.config.compTypeLabel || this.config.compTypeLabel.trim().equals('')) {
+                this.configInvalid = true;
+                this.configCompetencyTypeLabelInvalid = true;
+            }
+            if (!this.config.compTypeDescription || this.config.compTypeDescription.trim().equals('')) {
+                this.configInvalid = true;
+                this.configCompetencyTypeDescriptionInvalid = true;
+            }
+        },
+        validateConfigFields() {
+            this.setAllConfigValidationsChecksToValid();
+            if (!this.config.name || this.config.name.trim().equals('')) {
+                this.configInvalid = true;
+                this.configNameInvalid = true;
+            }
+            if (!this.config.description || this.config.description.trim().equals('')) {
+                this.configInvalid = true;
+                this.configDescriptionInvalid = true;
+            }
+            this.validateConfigEnforcedTypes();
+            this.validateConfigRelationships();
+            this.validateStaticPropertyFields();
+        },
         validateCurrentConfigAndEmitSave() {
-            // TODO validate name and description
-            // TODO validate enforced type values
-            // TODO validate relationship values
-            this.$emit('save');
+            this.validateConfigFields();
+            if (!this.configInvalid) {
+                this.$emit('save');
+            }
         },
         deleteCompetencyEnforcedType(etIndex) {
             this.config.compEnforcedTypes =
@@ -474,8 +668,8 @@ export default {
         },
         addCompetencyEnforcedTypeDataHolder() {
             let cef = {};
-            cef.typeName = '';
-            cef.description = '';
+            cef.display = '';
+            cef.value = '';
             this.config.compEnforcedTypes.push(cef);
         },
         checkEnforceTypesChange() {

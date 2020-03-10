@@ -265,8 +265,8 @@ module.exports = {
          * 'max-params': 0,
          * 'max-statements': 0,
          * 'max-statements-per-line': 0,
-         */
-        'multiline-comment-style': [2, 'starred-block'],
+         * 'multiline-comment-style': [2, 'starred-block'],
+        */
         /*
          * 'multiline-ternary': 0,
          * 'new-cap': 2, // use array declarative instead

@@ -77,6 +77,7 @@ export default {
             // doAfterLoginSuccess();
             this.loginBusy = false;
             this.loginSuccess = true;
+            this.$router.push({path: '/config'});
         },
         handleFetchIdentityFailure: function (failMsg) {
             this.identityFailMsg = failMsg;

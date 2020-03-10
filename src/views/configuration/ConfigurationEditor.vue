@@ -52,10 +52,12 @@
 // @ is an alias to /src
 import ConfigurationListItem from '../../components/configuration/ConfigurationListItem';
 import ConfigurationDetails from "../../components/configuration/ConfigurationDetails";
+import {cassUtil} from '../../mixins/cassUtil';
 
 // TODO Figure out a way to manage the default configuration (potentially multiple owners)
 
 export default {
+    mixins: [cassUtil],
     name: 'ConfigurationEditor',
     components: {
         ConfigurationDetails,
@@ -69,10 +71,13 @@ export default {
         }
     },
     data: () => ({
+        DEFAULT_CONFIGURATION_CONTEXT: 'https://schema.cassproject.org/0.4/',
+        DEFAULT_CONFIGURATION_TYPE: 'Configuration',
         configViewMode: "list",
         configBusy: false,
         currentConfig: {},
-        configList: []
+        configList: [],
+        complexConfigObject: {}
     }),
     methods: {
         showListView() {
@@ -85,24 +90,389 @@ export default {
             this.setCurrentConfig(configId);
             this.showDetailView();
         },
-        validateCurrentConfig() {
-            // TODO implement
-        },
         backFromEditCurrentConfig() {
             this.showListView();
             this.currentConfig = {};
         },
+        generateCustomPropertyNameId(customProp) {
+            return customProp.context + customProp.propertyName;
+        },
+        addCustomPropertiesToPriorityArray(customProperties, priorityArray, priority) {
+            for (let prop of customProperties) {
+                if (prop.priority.equalsIgnoreCase(priority)) {
+                    priorityArray.push(this.generateCustomPropertyNameId(prop));
+                }
+            }
+        },
+        generatePropertyConfigObject(id, domain, range, description, label, priority, required, readOnly, noTextEditing, permittedValues) {
+            let propObj = {};
+            propObj["@id"] = id;
+            propObj["@type"] = [];
+            propObj["@type"].push("http://www.w3.org/2000/01/rdf-schema#Property");
+            propObj["http://schema.org/domainIncludes"] = [];
+            let domainObj = {};
+            domainObj["@id"] = domain.trim();
+            propObj["http://schema.org/domainIncludes"].push(domainObj);
+            propObj["http://schema.org/rangeIncludes"] = [];
+            let rangeObj = {};
+            rangeObj["@id"] = range.trim();
+            propObj["http://schema.org/rangeIncludes"].push(rangeObj);
+            propObj["http://www.w3.org/2000/01/rdf-schema#comment"] = [];
+            let commentObj = {};
+            commentObj["@language"] = "en";
+            commentObj["@value"] = description.trim();
+            propObj["http://www.w3.org/2000/01/rdf-schema#comment"].push(commentObj);
+            propObj["http://www.w3.org/2000/01/rdf-schema#label"] = [];
+            let labelObj = {};
+            labelObj["@language"] = "en";
+            labelObj["@value"] = label.trim();
+            propObj["http://www.w3.org/2000/01/rdf-schema#label"].push(labelObj);
+            propObj.priorty = priority;
+            propObj.isRequired = required;
+            propObj.readOnly = readOnly;
+            propObj.noTextEditing = noTextEditing;
+            propObj.max = 1;
+            if (permittedValues && permittedValues.length > 0) {
+                propObj.options = [];
+                for (let pv of permittedValues) {
+                    let option = {};
+                    option.display = pv.display.trim();
+                    option.val = pv.value.trim();
+                    propObj.options.push(option);
+                }
+            }
+            return propObj;
+        },
+        buildCustomPropertiesConfigObjects(parentConf, domain, customProperties) {
+            for (let prop of customProperties) {
+                let id = this.generateCustomPropertyNameId(prop);
+                parentConf[id] = this.generatePropertyConfigObject(
+                    id,
+                    domain,
+                    prop.range,
+                    prop.description,
+                    prop.label,
+                    prop.priority,
+                    prop.required,
+                    false,
+                    false,
+                    prop.permittedValues);
+            }
+        },
+        buildFrameworkConfigPriorityArrays(fwkConf) {
+            fwkConf.primaryProperties = [];
+            fwkConf.primaryProperties.push("http://schema.org/name");
+            if (this.currentConfig.fwkIdPriorty.equalsIgnoreCase("primary")) fwkConf.primaryProperties.push("@id");
+            if (this.currentConfig.fwkDescPriority.equalsIgnoreCase("primary")) fwkConf.primaryProperties.push("http://schema.org/description");
+            this.addCustomPropertiesToPriorityArray(this.currentConfig.fwkCustomProperties, fwkConf.primaryProperties, "primary");
+            fwkConf.secondaryProperties = [];
+            if (this.currentConfig.fwkIdPriorty.equalsIgnoreCase("secondary")) fwkConf.secondaryProperties.push("@id");
+            if (this.currentConfig.fwkDescPriority.equalsIgnoreCase("secondary")) fwkConf.secondaryProperties.push("http://schema.org/description");
+            this.addCustomPropertiesToPriorityArray(this.currentConfig.fwkCustomProperties, fwkConf.secondaryProperties, "secondary");
+            fwkConf.tertiaryProperties = [];
+            if (this.currentConfig.fwkIdPriorty.equalsIgnoreCase("tertiary")) fwkConf.tertiaryProperties.push("@id");
+            if (this.currentConfig.fwkDescPriority.equalsIgnoreCase("tertiary")) fwkConf.tertiaryProperties.push("http://schema.org/description");
+            this.addCustomPropertiesToPriorityArray(this.currentConfig.fwkCustomProperties, fwkConf.tertiaryProperties, "tertiary");
+        },
+        buildFrameworkIdConfigObject(fwkConf) {
+            fwkConf["@id"] = this.generatePropertyConfigObject(
+                "https://schema.cassproject.org/0.4/Framework/id",
+                "http://schema.cassproject.org/0.3/Framework",
+                "http://schema.org/URL",
+                this.currentConfig.fwkIdDescription,
+                this.currentConfig.fwkIdLabel,
+                this.currentConfig.fwkIdPriorty,
+                true,
+                true,
+                true,
+                null);
+        },
+        buildFrameworkNameConfigObject(fwkConf) {
+            fwkConf["http://schema.org/name"] = this.generatePropertyConfigObject(
+                "http://schema.org/name",
+                "http://schema.cassproject.org/0.3/Framework",
+                "http://www.w3.org/2000/01/rdf-schema#langString",
+                this.currentConfig.fwkNameDescription,
+                this.currentConfig.fwkNameLabel,
+                "primary",
+                true,
+                false,
+                false,
+                null);
+        },
+        buildFrameworkDescConfigObject(fwkConf) {
+            fwkConf["http://schema.org/description"] = this.generatePropertyConfigObject(
+                "http://schema.org/description",
+                "http://schema.cassproject.org/0.3/Framework",
+                "http://www.w3.org/2000/01/rdf-schema#langString",
+                this.currentConfig.fwkDescDescription,
+                this.currentConfig.fwkDescLabel,
+                this.currentConfig.fwkDescPriority,
+                this.currentConfig.fwkDescRequired,
+                false,
+                false,
+                null);
+        },
+        addFrameworkConfigToObject(cco) {
+            let fwkConf = {};
+            fwkConf.headings = [];
+            this.buildFrameworkConfigPriorityArrays(fwkConf);
+            this.buildFrameworkIdConfigObject(fwkConf);
+            this.buildFrameworkNameConfigObject(fwkConf);
+            this.buildFrameworkDescConfigObject(fwkConf);
+            this.buildCustomPropertiesConfigObjects(fwkConf, "http://schema.cassproject.org/0.3/Framework", this.currentConfig.fwkCustomProperties);
+            cco.frameworkConfig = fwkConf;
+        },
+        buildCompetencyConfigPriorityArrays(compConf) {
+            compConf.primaryProperties = [];
+            compConf.primaryProperties.push("http://schema.org/name");
+            if (this.currentConfig.compIdPriorty.equalsIgnoreCase("primary")) compConf.primaryProperties.push("@id");
+            if (this.currentConfig.compDescPriority.equalsIgnoreCase("primary")) compConf.primaryProperties.push("http://schema.org/description");
+            this.addCustomPropertiesToPriorityArray(this.currentConfig.compCustomProperties, compConf.primaryProperties, "primary");
+            compConf.secondaryProperties = [];
+            if (this.currentConfig.compIdPriorty.equalsIgnoreCase("secondary")) compConf.secondaryProperties.push("@id");
+            if (this.currentConfig.compDescPriority.equalsIgnoreCase("secondary")) compConf.secondaryProperties.push("http://schema.org/description");
+            this.addCustomPropertiesToPriorityArray(this.currentConfig.compCustomProperties, compConf.secondaryProperties, "secondary");
+            compConf.tertiaryProperties = [];
+            if (this.currentConfig.compIdPriorty.equalsIgnoreCase("tertiary")) compConf.tertiaryProperties.push("@id");
+            if (this.currentConfig.compDescPriority.equalsIgnoreCase("tertiary")) compConf.tertiaryProperties.push("http://schema.org/description");
+            this.addCustomPropertiesToPriorityArray(this.currentConfig.compCustomProperties, compConf.tertiaryProperties, "tertiary");
+        },
+        buildCompetencyIdConfigObject(compConf) {
+            compConf["@id"] = this.generatePropertyConfigObject(
+                "https://schema.cassproject.org/0.4/Competency/id",
+                "http://schema.cassproject.org/0.3/Competency",
+                "http://schema.org/URL",
+                this.currentConfig.compIdDescription,
+                this.currentConfig.compIdLabel,
+                this.currentConfig.compIdPriorty,
+                true,
+                true,
+                true,
+                null);
+        },
+        buildCompetencyNameConfigObject(compConf) {
+            compConf["http://schema.org/name"] = this.generatePropertyConfigObject(
+                "http://schema.org/name",
+                "http://schema.cassproject.org/0.3/Competency",
+                "http://www.w3.org/2000/01/rdf-schema#langString",
+                this.currentConfig.compNameDescription,
+                this.currentConfig.compNameLabel,
+                "primary",
+                true,
+                false,
+                false,
+                null);
+        },
+        buildCompetencyDescConfigObject(compConf) {
+            compConf["http://schema.org/description"] = this.generatePropertyConfigObject(
+                "http://schema.org/description",
+                "http://schema.cassproject.org/0.3/Competency",
+                "http://www.w3.org/2000/01/rdf-schema#langString",
+                this.currentConfig.compDescDescription,
+                this.currentConfig.compDescLabel,
+                this.currentConfig.compDescPriority,
+                this.currentConfig.compDescRequired,
+                false,
+                false,
+                null);
+        },
+        buildCompetencyTypeConfigObject(compConf) {
+            let compTypeRequired = this.currentConfig.compTypeRequired;
+            if (this.currentConfig.compEnforcedTypes && this.currentConfig.compEnforcedTypes.length > 0) compTypeRequired = true;
+            compConf["http://purl.org/dc/terms/type"] = this.generatePropertyConfigObject(
+                "https://purl.org/ctdlasn/terms/competencyCategory",
+                "http://schema.cassproject.org/0.3/Competency",
+                "http://www.w3.org/2000/01/rdf-schema#langString",
+                this.currentConfig.compTypeDescription,
+                this.currentConfig.compTypeLabel,
+                this.currentConfig.compTypePriority,
+                compTypeRequired,
+                false,
+                false,
+                this.currentConfig.compEnforcedTypes);
+        },
+        addCompetencyConfigToObject(cco) {
+            let compConf = {};
+            compConf.headings = [];
+            this.buildCompetencyConfigPriorityArrays(compConf);
+            this.buildCompetencyIdConfigObject(compConf);
+            this.buildCompetencyNameConfigObject(compConf);
+            this.buildCompetencyDescConfigObject(compConf);
+            this.buildCompetencyTypeConfigObject(compConf);
+            this.buildCustomPropertiesConfigObjects(compConf, "http://schema.cassproject.org/0.3/Competency", this.currentConfig.compCustomProperties);
+            cco.competencyConfig = compConf;
+        },
+        generateRelationshipConfigObject(relObj) {
+            let relConfigObj = {};
+            relConfigObj["http://www.w3.org/2000/01/rdf-schema#comment"] = [];
+            let commentObj = {};
+            commentObj["@language"] = "en";
+            commentObj["@value"] = relObj.label.trim();
+            relConfigObj["http://www.w3.org/2000/01/rdf-schema#comment"].push(commentObj);
+            relConfigObj["http://www.w3.org/2000/01/rdf-schema#label"] = [];
+            let labelObj = {};
+            labelObj["@language"] = "en";
+            labelObj["@value"] = relObj.label.trim();
+            relConfigObj["http://www.w3.org/2000/01/rdf-schema#label"].push(labelObj);
+            return relConfigObj;
+        },
+        addRelationsConfigToObject(cco) {
+            let relConf = {};
+            let configRelationships = Object.keys(this.currentConfig.relationships);
+            for (let cr of configRelationships) {
+                let relObj = this.currentConfig.relationships[cr];
+                if (relObj.enabled) relConf[cr] = this.generateRelationshipConfigObject(relObj);
+            }
+            cco.relationshipConfig = relConf;
+        },
+        generateLevelsConfigObject(levConf) {
+            levConf["https://schema.cassproject.org/0.4/Level"] = {};
+            levConf["https://schema.cassproject.org/0.4/Level"]["http://www.w3.org/2000/01/rdf-schema#comment"] = [];
+            let commentObj = {};
+            commentObj["@language"] = "en";
+            commentObj["@value"] = this.currentConfig.levelLabel.trim();
+            levConf["https://schema.cassproject.org/0.4/Level"]["http://www.w3.org/2000/01/rdf-schema#comment"].push(commentObj);
+            levConf["https://schema.cassproject.org/0.4/Level"]["http://www.w3.org/2000/01/rdf-schema#label"] = [];
+            let labelObj = {};
+            labelObj["@language"] = "en";
+            labelObj["@value"] = this.currentConfig.levelDescription.trim();
+            levConf["https://schema.cassproject.org/0.4/Level"]["http://www.w3.org/2000/01/rdf-schema#label"].push(labelObj);
+        },
+        addLevelsConfigToObject(cco) {
+            if (this.currentConfig.compAllowLevels) {
+                let levConf = {};
+                this.generateLevelsConfigObject(levConf);
+                cco.levelsConfig = levConf;
+            }
+        },
+        addAlignmentConfigToObject(cco) {
+            let algConfig = [];
+            let configAligns = Object.keys(this.currentConfig.alignments);
+            for (let al of configAligns) {
+                if (this.currentConfig.alignments[al]) algConfig.push(al);
+            }
+            cco.alignConfig = algConfig;
+        },
+        generateComplexConfigObjectFromCurrentConfig() {
+            let cco = new Thing();
+            cco.context = this.DEFAULT_CONFIGURATION_CONTEXT;
+            cco.type = this.DEFAULT_CONFIGURATION_TYPE;
+            this.addAllIdentityPksAsOwners(cco);
+            console.log(this.currentConfig);
+            if (this.currentConfig.isNew) cco.generateId(window.repo.selectedServer);
+            else cco.id = this.currentConfig.id;
+            cco.setName(this.currentConfig.name.trim());
+            cco.setDescription(this.currentConfig.description.trim());
+            cco.isDefault = this.currentConfig.isDefault;
+            this.addFrameworkConfigToObject(cco);
+            this.addCompetencyConfigToObject(cco);
+            this.addRelationsConfigToObject(cco);
+            this.addLevelsConfigToObject(cco);
+            this.addAlignmentConfigToObject(cco);
+            this.complexConfigObject = cco;
+        },
         saveCurrentConfig() {
-            // TODO implement DONT FORGET TO TRIM!!!!
-            this.validateCurrentConfig();
+            this.generateComplexConfigObjectFromCurrentConfig();
+            console.log("complexConfigObject: ");
+            console.log(this.complexConfigObject);
+            console.log(JSON.stringify(this.complexConfigObject));
+            alert("Would have executed saveCurrentConfig");
         },
         cancelEditCurrentConfig() {
             this.buildConfigList();
             this.showListView();
             this.currentConfig = {};
         },
+        generateNewConfigObject() {
+            let newConfigObj = {};
+            newConfigObj.id = "newConfigId";
+            newConfigObj.isOwned = true;
+            newConfigObj.isNew = true;
+            newConfigObj.name = "New Configuration";
+            newConfigObj.description = "New configuration";
+            newConfigObj.isDefault = false;
+            newConfigObj.fwkIdLabel = "Framework ID";
+            newConfigObj.fwkIdDescription = "ID of the framework";
+            newConfigObj.fwkIdPriorty = "primary";
+            newConfigObj.fwkNameLabel = "Framework Name";
+            newConfigObj.fwkNameDescription = "Name of the framework";
+            newConfigObj.fwkDescLabel = "Framework Description";
+            newConfigObj.fwkDescDescription = "Description of the framework";
+            newConfigObj.fwkDescPriority = "primary";
+            newConfigObj.fwkDescRequired = true;
+            newConfigObj.compAllowLevels = true;
+            newConfigObj.levelLabel = 'Level';
+            newConfigObj.levelDescription = 'Level of the competency';
+            newConfigObj.compIdLabel = "Competency ID";
+            newConfigObj.compIdDescription = "ID of the competency";
+            newConfigObj.compIdPriorty = "primary";
+            newConfigObj.compNameLabel = "Competency Name";
+            newConfigObj.compNameDescription = "Name of the competency";
+            newConfigObj.compDescLabel = "Competency Description";
+            newConfigObj.compDescDescription = "Description of the competency";
+            newConfigObj.compDescPriority = "primary";
+            newConfigObj.compDescRequired = false;
+            newConfigObj.compTypeLabel = "Competency Type";
+            newConfigObj.compTypeDescription = "Type of the competency";
+            newConfigObj.compTypePriority = "secondary";
+            newConfigObj.compTypeRequired = false;
+            newConfigObj.compEnforceTypes = false;
+            newConfigObj.compEnforcedTypes = [];
+            newConfigObj.fwkCustomProperties = [];
+            newConfigObj.compCustomProperties = [];
+            newConfigObj.relationships = {};
+            newConfigObj.relationships.isEnabledBy = {};
+            newConfigObj.relationships.isEnabledBy.label = 'is enabled by';
+            newConfigObj.relationships.isEnabledBy.enabled = true;
+            newConfigObj.relationships.requires = {};
+            newConfigObj.relationships.requires.label = 'requires';
+            newConfigObj.relationships.requires.enabled = true;
+            newConfigObj.relationships.desires = {};
+            newConfigObj.relationships.desires.label = 'desires';
+            newConfigObj.relationships.desires.enabled = true;
+            newConfigObj.relationships.narrows = {};
+            newConfigObj.relationships.narrows.label = 'narrows';
+            newConfigObj.relationships.narrows.enabled = true;
+            newConfigObj.relationships.isRelatedTo = {};
+            newConfigObj.relationships.isRelatedTo.label = 'is related to';
+            newConfigObj.relationships.isRelatedTo.enabled = true;
+            newConfigObj.relationships.isEquivalentTo = {};
+            newConfigObj.relationships.isEquivalentTo.label = 'is equivalent to';
+            newConfigObj.relationships.isEquivalentTo.enabled = true;
+            newConfigObj.relationships.broadens = {};
+            newConfigObj.relationships.broadens.label = 'broadens';
+            newConfigObj.relationships.broadens.enabled = false;
+            newConfigObj.relationships.majorRelated = {};
+            newConfigObj.relationships.majorRelated.label = 'is majorly related to';
+            newConfigObj.relationships.majorRelated.enabled = false;
+            newConfigObj.relationships.minorRelated = {};
+            newConfigObj.relationships.minorRelated.label = 'is minorly related to';
+            newConfigObj.relationships.minorRelated.enabled = false;
+            newConfigObj.relationships.isSimilarTo = {};
+            newConfigObj.relationships.isSimilarTo.label = 'is similar to';
+            newConfigObj.relationships.isSimilarTo.enabled = false;
+            newConfigObj.relationships.isPartiallySameAs = {};
+            newConfigObj.relationships.isPartiallySameAs.label = 'is partially the same as';
+            newConfigObj.relationships.isPartiallySameAs.enabled = false;
+            newConfigObj.relationships.enables = {};
+            newConfigObj.relationships.enables.label = 'enables';
+            newConfigObj.relationships.enables.enabled = false;
+            newConfigObj.relationships.hasChild = {};
+            newConfigObj.relationships.hasChild.label = 'has child';
+            newConfigObj.relationships.hasChild.enabled = false;
+            newConfigObj.relationships.isChildOf = {};
+            newConfigObj.relationships.isChildOf.label = 'is child of';
+            newConfigObj.relationships.isChildOf.enabled = false;
+            newConfigObj.alignments = {};
+            newConfigObj.alignments.teaches = true;
+            newConfigObj.alignments.assesses = true;
+            newConfigObj.alignments.requires = true;
+            return newConfigObj;
+        },
         createNewConfig() {
-            // TODO implement
+            this.currentConfig = this.generateNewConfigObject();
+            this.showDetailView();
         },
         setCurrentConfig(configId) {
             for (let c of this.configList) {
@@ -131,9 +501,11 @@ export default {
         },
         buildConfigListFromRepository() {
             // TODO implement
+            this.buildConfigListFromTestData();
         },
         buildConfigList() {
             this.configBusy = true;
+            this.complexConfigObject = {};
             if (!EcIdentityManager || !EcIdentityManager.ids || EcIdentityManager.ids.length === 0) {
                 this.buildConfigListFromTestData();
             } else this.buildConfigListFromRepository();
@@ -144,9 +516,9 @@ export default {
             let a = {};
             a.id = "testOwnedConfig_1";
             a.isOwned = true;
+            a.isNew = false;
             a.name = "Test Owned Configuration 1";
             a.description = "Configuration owned by the current user - 1";
-            a.isNew = false;
             a.isDefault = true;
             a.fwkIdLabel = "FWK ID LBL 1";
             a.fwkIdDescription = "FWK ID DESC 1";
@@ -158,6 +530,8 @@ export default {
             a.fwkDescPriority = "primary";
             a.fwkDescRequired = true;
             a.compAllowLevels = true;
+            a.levelLabel = 'Level';
+            a.levelDescription = 'Level of the competency';
             a.compIdLabel = "COMP ID LABEL 1";
             a.compIdDescription = "COMP ID DESC 1";
             a.compIdPriorty = "secondary";
@@ -227,9 +601,9 @@ export default {
             let b = {};
             b.id = "testNotOwnedConfig_1";
             b.isOwned = false;
+            b.isNew = false;
             b.name = "Test Not-Owned Configuration 1";
             b.description = "Configuration NOT owned by the current user - 1";
-            b.isNew = false;
             b.isDefault = false;
             b.fwkIdLabel = "framework id";
             b.fwkIdDescription = "id of the framework";
@@ -241,6 +615,8 @@ export default {
             b.fwkDescPriority = "primary";
             b.fwkDescRequired = true;
             b.compAllowLevels = false;
+            b.levelLabel = 'Level';
+            b.levelDescription = 'Level of the competency';
             b.compIdLabel = "competency id";
             b.compIdDescription = "id of the competency";
             b.compIdPriorty = "secondary";
@@ -366,9 +742,9 @@ export default {
             let c = {};
             c.id = "testOwnedConfig_2";
             c.isOwned = true;
+            c.isNew = false;
             c.name = "Test Owned Configuration 2";
             c.description = "Configuration owned by the current user - 2";
-            c.isNew = false;
             c.isDefault = false;
             c.fwkIdLabel = "FWK ID LBL 2";
             c.fwkIdDescription = "FWK ID DESC 2";
@@ -380,6 +756,8 @@ export default {
             c.fwkDescPriority = "primary";
             c.fwkDescRequired = true;
             c.compAllowLevels = true;
+            c.levelLabel = 'Level';
+            c.levelDescription = 'Level of the competency';
             c.compIdLabel = "COMP ID LABEL 2";
             c.compIdDescription = "COMP ID DESC 2";
             c.compIdPriorty = "secondary";

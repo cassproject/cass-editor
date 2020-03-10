@@ -26,8 +26,8 @@
                 </div>
             </div>
             <div class="column is-2">
-                <div v-if="readOnly">{{ localPriority }}</div>
-                <div v-if="!readOnly">
+                <div v-if="readOnly || enforcePrimary">{{ localPriority }}</div>
+                <div v-if="!readOnly && !enforcePrimary">
                     <select v-model="localPriority" @change="changePriority">
                         <option value="primary">primary</option>
                         <option value="secondary">secondary</option>
@@ -85,6 +85,10 @@ export default {
             default: true
         },
         enforceRequired: {
+            type: Boolean,
+            default: true
+        },
+        enforcePrimary: {
             type: Boolean,
             default: true
         },
