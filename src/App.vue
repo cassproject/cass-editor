@@ -426,7 +426,7 @@ export default {
                 me.$store.commit('editor/webSocketBackoffIncrease');
                 setTimeout(function() {
                     me.openWebSocket(r);
-                }, webSocketBackoff);
+                }, me.$store.state.editor.webSocketBackoff);
             };
 
             connection.changedObject = function(wut) {
