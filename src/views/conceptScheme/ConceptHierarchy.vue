@@ -28,7 +28,9 @@
                     @exportObject="exportObject"
                     @select="select"
                     :isEditingContainer="isEditingContainer"
-                    @editingThing="handleEditingContainer($event)">
+                    @editingThing="handleEditingContainer($event)"
+                    :parentStructure="hierarchy"
+                    :parent="container">
                     <slot />
                 </HierarchyNode>
             </draggable>
@@ -261,7 +263,7 @@ export default {
                 if (!EcArray.isArray(this.container["skos:hasTopConcept"])) {
                     this.container["skos:hasTopConcept"] = [];
                 }
-                this.container["skos:hasTopConcept"].push(c.shortId());
+                this.container["skos:hasTopConcept"].unshift(c.shortId());
                 c["skos:topConceptOf"] = this.container.shortId();
                 this.container["schema:dateModified"] = new Date().toISOString();
                 if (this.$store.state.editor.private === true) {
@@ -281,7 +283,7 @@ export default {
                 if (!EcArray.isArray(parent["skos:narrower"])) {
                     parent["skos:narrower"] = [];
                 }
-                parent["skos:narrower"].push(c.shortId());
+                parent["skos:narrower"].unshift(c.shortId());
                 this.container["schema:dateModified"] = new Date().toISOString();
                 if (this.$store.state.editor.private === true) {
                     c = EcEncryptedValue.toEncryptedValue(c);

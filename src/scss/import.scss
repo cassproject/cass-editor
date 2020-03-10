@@ -111,7 +111,7 @@ ul.processing-list {
                 label {
                     padding: .5rem 0rem .25rem .0rem;
                     display: flex;
-                    width: 90%;
+                    width: 100%;
                     flex-direction: row;
                     justify-content: flex-start;
                     justify-items: start;
@@ -137,7 +137,7 @@ ul.processing-list {
                 label {
                     padding: .5rem 0rem .25rem .0rem;
                     display: flex;
-                    width: 90%;
+                    width: 100%;
                     flex-direction: row;
                     justify-content: flex-start;
                     justify-items: start;
@@ -235,6 +235,7 @@ ul.processing-list {
                                 justify-content: flex-end;
                             }
                             .thing.related-competency {
+                                width: 100%;
                                 .property-value {
                                     div.button {
                                         word-wrap: break-word;
@@ -244,15 +245,26 @@ ul.processing-list {
                                         display: block !important;
                                     }
                                 }
+                                .e-Thing .e-Competency {
+                                    width: 100%;
+                                }
+                                
                             }
                             label {
                                 width: 100%;
                             }
                             .property-value {
                                 width: calc(100% - 56px);
+                                span{
+                                    word-wrap: break-word;
+                                    overflow:hidden;
+                                    max-width: 100%;
+                                    height: auto;
+                                    display: block !important;
+                                }
                             }
                             .add-property-button {
-                                width: 56px;
+                                width: 100%;
                             }
                             .property-action-section {
                                 width: 98%;
@@ -277,11 +289,18 @@ ul.processing-list {
                                     width: 100%;
                                     font-size: .8rem;
                                     word-wrap: break-word;
-                                    width: calc(100% - 124px);
                                 }
                                 .thing.related-competency {
                                     word-wrap: break-word;
                                     max-width: 100%;
+                                    width: 100%;
+                                    // related nested competency 
+                                    .e-Thing .e-Competency {
+                                        width: 100%;
+                                        .top-actions {
+                                            display: none !important;
+                                        }
+                                    }
                                 }
                                 span {
                                     textarea {
@@ -548,23 +567,13 @@ ul.processing-list {
     .tile {
         border-radius: 1rem;
     }
-    #import-top-section {
-        position: sticky;
-        padding: 0rem 1rem;
-        width: auto;
-        max-width: 100%;
-        top: 0rem;
-        z-index: 10;
-        .columns {
-            max-width: 800px;
-        }
-        .import-instructions {
-            padding-top: .5rem;
-        }
-        .thing.framework-title {
-            background-color: white;
+    #import-bottom-section {
+    }
+    .framework-title {
+            background-color: $light;
+            padding: .5rem 0rem;
             .e-type, .top-actions, .bottom-actions, label {
-                display: none;
+                display: none !important;
             }
             .e-Property-ul {
                 font-size: 1.2rem;
@@ -578,20 +587,26 @@ ul.processing-list {
                 }
                 .e-Property-ul {
                     display: flex;
+                    flex-wrap: wrap;
+                    width: 100%;
                     .property-value {
                         width: 100%;
+                        display: flex;
                         .property-string-span {
                             width: 100%;
                             .input-field {
                                 width: 100%;
                                 textarea {
-                                    height: 48px;
-                                    padding: 5px;
-                                    width: 100%;
+                                    height: 30px;
+                                    padding: 4px 8px;
+                                    width: calc(100%);
                                     border-radius: 2px;
                                     margin-right: 8px;
                                 }
                             }
+                        }
+                        .editing-property-buttons {
+                            width: 64px;
                         }
                     }
                     .is-add-button {
@@ -601,12 +616,24 @@ ul.processing-list {
                 
             }
         }
+    #import-top-section {
+        position: sticky;
+        padding: 1rem 1rem;
+        width: auto;
+        max-width: 100%;
+        top: 0rem;
+        z-index: 10;
+        .columns {
+            max-width: 900px;
+        }
+        .import-instructions {
+            padding-top: .5rem;
+        }
     }
     .import-details {
-        max-height:68vh;
-        overflow-y: scroll;
         border: 2px solid rgba($black, .5);
         border-radius: 1rem;
+        margin: 0rem 1rem;
     }
     #import-actions {
         position: sticky;
@@ -616,6 +643,17 @@ ul.processing-list {
         right: 0;
     }
     .import-light, .import-preview {
+        padding: 0rem 1rem;
+        // on related competencies, hide buttons to edit competency
+        .related-competency {
+            border-left: solid 1px black;
+            .top-actions,
+            .bottom-actions,
+            li.add-property-button,
+            .editing-property-buttons {
+                display: none !important;
+            }
+        }
         .top-actions {
             width: 100%;
             padding: .25rem .5rem;
