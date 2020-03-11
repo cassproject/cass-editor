@@ -11,6 +11,7 @@
                 {{ isDefault }}
             </div>
             <div class="column is-2">
+                <button  :disabled="defaultBrowserConfigId && defaultBrowserConfigId.equals(id)" @click="$emit('setBrowserDefault', id)">Set as Browser Default</button>
                 <button @click="$emit('showDetails', id)">
                     <span v-if="isOwned">Manage</span>
                     <span v-if="!isOwned">View</span>
@@ -43,6 +44,10 @@ export default {
         isDefault: {
             type: Boolean,
             default: false
+        },
+        defaultBrowserConfigId: {
+            type: String,
+            default: ''
         }
     }
 };

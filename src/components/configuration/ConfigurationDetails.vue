@@ -151,6 +151,20 @@
             <input type="text" v-model="config.description">
         </div>
         <br>
+        <label>Is Default: </label>
+        <div v-if="readOnly">
+            {{ config.isDefault }}
+        </div>
+        <div v-if="!readOnly">
+            <span v-if="this.defaultConfigId && !this.defaultConfigId.equals(this.config.id)">
+                {{ config.isDefault }}
+            </span>
+            <select v-model="config.isDefault" v-if="!this.defaultConfigId || this.defaultConfigId.equals(this.config.id)">
+                <option :value="true">true</option>
+                <option :value="false">false</option>
+            </select>
+        </div>
+        <br>
         <br>
         <!-- ************************************** Framework Properties ************************************************ -->
         <h5>Framework Properties</h5>
@@ -468,9 +482,12 @@
         </div>
         <!-- ************************************** Actions ************************************************ -->
         <div v-if="!readOnly">
-            <button @click="validateCurrentConfigAndEmitSave">save</button><button @click="$emit('cancel')">cancel</button>
+            <button @click="$emit('setBrowserDefault', config.id)">Set as Browser Default</button>
+            <button @click="validateCurrentConfigAndEmitSave">save</button>
+            <button @click="$emit('cancel')">cancel</button>
         </div>
         <div v-if="readOnly">
+            <button @click="$emit('setBrowserDefault', config.id)">Set as Browser Default</button>
             <button @click="$emit('back')">back</button>
         </div>
     </div>
@@ -489,6 +506,10 @@ export default {
         readOnly: {
             type: Boolean,
             default: true
+        },
+        defaultConfigId: {
+            type: String,
+            default: null
         }
     },
     data: () => ({
