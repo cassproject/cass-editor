@@ -673,6 +673,7 @@
                                     </ul>
                                 </div>
                                 <Thing
+                                    :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                     :obj="framework"
                                     :repo="repo"
                                     class="framework-title"
