@@ -129,7 +129,8 @@ export default {
             selectAllButton: false,
             selectAll: false,
             selectedArray: [],
-            isEditingContainer: false
+            isEditingContainer: false,
+            config: null
         };
     },
     computed: {
@@ -157,6 +158,9 @@ export default {
             return this.$store.state.editor.framework.shortId();
         },
         frameworkProfile: function() {
+            if (this.config) {
+                return this.config.frameworkConfig;
+            }
             if (this.$store.state.editor.t3Profile === true) {
                 return this.t3FrameworkProfile;
             }
@@ -208,6 +212,40 @@ export default {
             };
         },
         competencyProfile: function() {
+            if (this.config) {
+                var profile = this.config.competencyConfig;
+                if (this.config.levelsConfig) {
+                    var me = this;
+                    var key = EcObject.keys(this.config.levelsConfig);
+                    key = key[0];
+                    profile.secondaryProperties.push(key);
+                    profile[key] = this.config.levelsConfig[key];
+                    profile[key]["http://schema.org/rangeIncludes"] = [{"@id": "https://schema.cassproject.org/0.4/Level"}];
+                    profile[key]["valuesIndexed"] = function() { return me.levels; };
+                    profile[key]["noTextEditing"] = true;
+                    profile[key]["add"] = function(selectedCompetency) { me.addLevel(selectedCompetency); };
+                    profile[key]["remove"] = function(competency, levelId) { me.removeLevelFromFramework(levelId); };
+                    profile[key]["save"] = function() { me.saveFramework(); };
+                }
+                if (this.config.relationshipConfig) {
+                    var keys = EcObject.keys(this.config.relationshipConfig);
+                    for (var i = 0; i < keys.length; i++) {
+                        let key = keys[i];
+                        var me = this;
+                        profile.secondaryProperties.push(key);
+                        profile[key] = this.config.relationshipConfig[key];
+                        profile[key]["http://schema.org/rangeIncludes"] = [{"@id": "http://schema.org/URL"}];
+                        profile[key]["valuesIndexed"] = function() { return me.relations[key]; };
+                        profile[key]["noTextEditing"] = true;
+                        profile[key]["add"] = "unsaved";
+                        profile[key]["remove"] = function(source, target) { me.removeRelationFromFramework(source, key, target); };
+                        profile[key]["save"] = function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, key, values); };
+                        profile[key]["iframePath"] = me.$store.state.editor.iframeCompetencyPathInterframework;
+                        profile[key]["iframeText"] = "Select competencies to align...";
+                    }
+                }
+                return profile;
+            }
             if (this.$store.state.editor.t3Profile === true) {
                 return this.t3CompetencyProfile;
             }
