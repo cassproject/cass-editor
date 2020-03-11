@@ -51,7 +51,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The name or title of this competency framework. One name or title per language."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name*"}],
-                    "required": true,
+                    "isRequired": true,
                     "onePerLanguage": true,
                     "heading": "General"
                 },
@@ -113,7 +113,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The primary language used in or by this competency framework or competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "In Language*"}],
-                    "required": true,
+                    "isRequired": true,
                     "heading": "General"
                 },
                 "http://schema.org/keywords": {
@@ -368,7 +368,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The text of the competency. One per language."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Competency Text*"}],
-                    "required": true,
+                    "isRequired": true,
                     "onePerLanguage": true,
                     "heading": "General"
                 },

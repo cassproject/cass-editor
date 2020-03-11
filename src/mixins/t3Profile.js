@@ -33,7 +33,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "Name of the competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}],
-                    "required": true
+                    "isRequired": true
                 },
                 "http://schema.org/description": {
                     "@id": "http://schema.org/description",
@@ -246,7 +246,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Name of the competency framework."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}],
-                    "required": true
+                    "isRequired": true
                 },
                 "http://schema.org/description": {
                     "@id": "http://schema.org/description",
