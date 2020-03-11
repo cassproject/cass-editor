@@ -1,5 +1,8 @@
 @import './variables.scss';
 
+textarea {
+    resize: vertical !important;
+}
 ul.processing-list {
     height: 100%;
     width: 100%;
@@ -106,7 +109,7 @@ ul.processing-list {
                 }
                 
             }
-            .editing-competency {
+            .editing-competency, .framework-title.editing-comepetency {
                 label {
                     padding: .5rem 0rem .25rem .0rem;
                     display: flex;
@@ -543,11 +546,28 @@ ul.processing-list {
         border-radius: 1rem;
     }
     // framework title is a separate component from hierarchy
-    .framework-title {
+    .thing.framework-title {
             background-color: $light;
             padding: .5rem 0rem;
+            ul {
+                padding: .25rem;
+            }
+            label {
+                padding-top: .5rem;
+                padding-left: .25rem;
+                span {
+                    padding: 0rem .25rem;
+                    width: auto;
+                    font-size: $size-7;
+                    font-weight: 600;
+                    color: rgba($dark, .6);
+                }
+            }
+            .thing-label {
+                padding-left: .25rem;
+            }
             .e-type, .top-actions, .bottom-actions, label {
-                display: none !important;
+                display: none;
             }
             .e-Property-ul {
                 font-size: 1.2rem;
@@ -586,6 +606,11 @@ ul.processing-list {
                 }
                 
             }
+    }
+    .framework-title.editing-competency {
+        label {
+            display: flex !important;
+        }
     }
     #import-top-section {
         position: sticky;
