@@ -2,6 +2,7 @@
     <div class="page-framework-list">
         <div class="container">
             <div class="section">
+                <!-- sort options -->
                 <div class="control">
                     <label
                         v-if="queryParams.concepts==='true'"
@@ -33,6 +34,7 @@
                             v-model="sortBy">
                         Sort by last modified</label>
                 </div>
+                <!-- show my frameworks radio -->
                 <div class="control">
                     <div v-if="queryParams.show!=='mine'&&queryParams.conceptShow!=='mine'&&numIdentities">
                         <label
@@ -59,46 +61,80 @@
                     <template
                         v-slot:frameworkTags="slotProps">
                         <span
-                            class="tag"
-                            v-if="queryParams.concepts!=='true'">{{ slotProps.item.competency ? slotProps.item.competency.length : 0 }} items </span>
+                            class="framework-list-item__details is-light"
+                            v-if="queryParams.concepts!=='true'">
+                            <span class="details-label">
+                                Items:
+                            </span>
+                            <span class="details-value">
+                                {{ slotProps.item.competency ? slotProps.item.competency.length : 0 }}
+                            </span>
+                        </span>
                         <span
-                            class="tag"
+                            class="framework-list-item__details"
                             v-if="slotProps.item.Published"
-                            :title="slotProps.item.Published">Published </span>
+                            :title="slotProps.item.Published">
+                            <span class="details-label">
+                                Published:
+                            </span>
+                            <span class="details-value" />
+                        </span>
                         <span
-                            class="tag"
+                            class="framework-list-item__details"
                             v-if="slotProps.item.Approved"
-                            :title="slotProps.item.Approved">Approved </span>
+                            :title="slotProps.item.Approved">
+                            <span class="details-label">
+                                Approved:
+                            </span>
+                            <span class="details-value" />
+                        </span>
                         <span
-                            class="tag"
+                            class="framework-list-item__details"
                             v-if="slotProps.item['schema:dateCreated']"
                             :title="new Date(slotProps.item['schema:dateCreated'])">
-                            Created {{ $moment(slotProps.item['schema:dateCreated']).fromNow() }}
+                            <span class="details-label">
+                                Created:
+                            </span>
+                            <span class="details-value">
+                                {{ $moment(slotProps.item['schema:dateCreated']).fromNow() }}
+                            </span>
                         </span>
                         <span
-                            class="tag"
+                            class="framework-list-item__details"
                             v-if="slotProps.item.getTimestamp()"
                             :title="new Date(slotProps.item.getTimestamp())">
-                            Last modified {{ $moment(slotProps.item.getTimestamp()).fromNow() }}
+                            <span class="details-label">
+                                Last modified:
+                            </span>
+                            <span class="details-value">
+                                {{ $moment(slotProps.item.getTimestamp()).fromNow() }}
+                            </span>
                         </span>
                         <span
-                            class="tag"
+                            class="framework-list-item__details"
                             v-else-if="slotProps.item['schema:dateModified']"
                             :title="new Date(slotProps.item['schema:dateModified'])">
-                            Last modified {{ $moment(slotProps.item['schema:dateModified']).fromNow() }}
+                            <span class="details-label">
+                                Last modified:
+                            </span>
+                            <span class="details-value">
+                                {{ $moment(slotProps.item['schema:dateModified']).fromNow() }}
+                            </span>
                         </span>
                         <span
-                            class="tag"
+                            class="framework-list-item__details"
                             v-if="slotProps.item['ceasn:publisherName'] && getName(slotProps.item['ceasn:publisherName'])">
-                            {{ getName(slotProps.item['ceasn:publisherName']) }}
+                            <span class="details-value">
+                                {{ getName(slotProps.item['ceasn:publisherName']) }}
+                            </span>
                         </span>
                         <span
-                            class="tag"
+                            class="framework-list-item__details"
                             v-else-if="slotProps.item['schema:publisher'] && getName(slotProps.item['schema:publisher'])">
                             {{ getName(slotProps.item['schema:publisher']) }}
                         </span>
                         <span
-                            class="tag"
+                            class="framework-list-item__details"
                             v-else-if="slotProps.item['schema:creator'] && getName(slotProps.item['schema:creator'])">
                             {{ getName(slotProps.item['schema:creator']) }}
                         </span>
@@ -209,6 +245,5 @@ export default {
 
 <style lang="scss">
     @import './../../scss/frameworks.scss';
-    @import './../../scss/framework.scss';
 
 </style>

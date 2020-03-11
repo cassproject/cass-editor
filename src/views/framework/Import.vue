@@ -1366,8 +1366,10 @@ export default {
         },
         importPdf: function() {
             var me = this;
+            me.status = 'importing framework...';
             var formData = new FormData();
             formData.append(me.file[0].name, me.file[0]);
+            me.status = 'importing file...';
             EcRemote.postExpectingObject(
                 "https://t3.cassproject.org/service/parse/",
                 "docx",
@@ -1375,12 +1377,16 @@ export default {
                 function(d) {
                     var uuid = new UUID(3, "nil", d.name).format();
                     var f = new EcFramework();
+                    me.status = 'looking for existing framework...';
                     f.assignId(me.repo.selectedServer, uuid);
                     me.repo.search("(@id:\"" + f.shortId() + "\") AND (@type:Framework)", function() {}, function(frameworks) {
                         console.log(frameworks);
+                        me.status = 'looking for existing framwork...';
                         if (frameworks.length > 0) {
+                            me.status = 'framework found...';
                             me.showModal('duplicate', d);
                         } else {
+                            me.status = 'no match, saving new framework...';
                             me.savePdfImport(d);
                         }
                     }, function(error) {
@@ -1388,10 +1394,11 @@ export default {
                     });
                 }, console.error);
             me.statusType = "info";
-            me.status = "Importing Framework...";
+            me.status = 'processing file...';
         },
         savePdfImport: function(d, newName) {
             var me = this;
+            me.status = 'saving file...';
             var toSave = [];
             var f = new EcFramework();
             var name = newName || d.name;
@@ -1451,7 +1458,7 @@ export default {
                 me.importSuccess();
             }, console.error);
             me.statusType = "info";
-            me.status = 'processing';
+            me.status = 'saving import...';
         },
         importCsv: function() {
             var file = this.file[0];
