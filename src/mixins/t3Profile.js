@@ -14,17 +14,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "ID"}],
                     "readOnly": true
                 },
-                "http://schema.org/name": {
-                    "@id": "http://schema.org/name",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                        [{"@language": "en", "@value": "Name of the competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}],
-                    "required": true
-                },
                 "https://purl.org/ctdlasn/terms/codedNotation": {
                     "@id": "https://purl.org/ctdlasn/terms/codedNotation",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -34,6 +23,17 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "An alphanumeric notation or ID code as defined by the promulgating body to identify this resource."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Code"}]
+                },
+                "http://schema.org/name": {
+                    "@id": "http://schema.org/name",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "Name of the competency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}],
+                    "isRequired": true
                 },
                 "http://schema.org/description": {
                     "@id": "http://schema.org/description",
@@ -218,6 +218,7 @@ export default {
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isEnabledBy", target); }
                 },
                 "alwaysProperties": [
+                    "https://purl.org/ctdlasn/terms/codedNotation",
                     "http://schema.org/name",
                     "http://schema.org/description"
                 ]
@@ -245,7 +246,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Name of the competency framework."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}],
-                    "required": true
+                    "isRequired": true
                 },
                 "http://schema.org/description": {
                     "@id": "http://schema.org/description",

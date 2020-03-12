@@ -1,35 +1,59 @@
 @import './variables.scss';
 
 .page-framework-list {
-    .special-property {
-        width: 100% !important;
+    label{
+        display:none;
+    }
+    .e-Property {	
+    padding: .25rem 0rem;	
+    }
+
+    .page {	
+        margin-top: 2rem;	
     }
     .List {
         .button {
             display: none;
         }
         .list-ul {
-            .e-Thing-ul{
-                background-color:$light;
-                border-radius: .25rem;
-                padding: .25rem;
+             li.list-ul__item {
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    .list-thing {
+                        width: calc(100% - 56px);
+                    }
+                    .icon {
+                        width: 56px;
+                        display: none;
+                        flex-direction: column;
+                    }
+            }
+            .list-ul__item{
+                background-color:$white;
+                border-radius: $border-radius;
+                padding: .0rem .5rem .25rem .125rem;
                 margin-top: .5rem;
-                .edit{
-                    i {
-                        color: $link;
+                .framework-list-item__details {
+                    color: rgba($dark, .6);
+                    padding-right: .5rem;
+                    font-size: $size-7;
+                    .details-value {
+
                     }
-                }
-                .save {
-                    i {
-                        color: $secondary;
-                    }
-                }
-                .remove {
-                    i {
-                        color: $warning;
+                    .details-label {
+                        font-weight: 600;
                     }
                 }
             
+            }
+            .list-ul__item:hover {
+                background-color: rgba($dark, .1);
+                    .icon {
+                        width: 56px;
+                        display: flex;
+                        flex-direction: column;
+                    }
             }
             .thing {
                 .bottom-actions, .top-actions {
@@ -42,7 +66,7 @@
                        
                     }
                     .e-Thing-ul {
-                        padding: 12px;
+                        padding: 0rem .5rem;
                         width: 100%;
 
                     }
@@ -50,113 +74,83 @@
                 }
             }
         }
-        
     }
-    
-   
-   
-}
-
-
-.page-framework-list .e-description{
-    label{
-        display:none;
-    }
-    font-size:.8rem;
-}
-
-.page-framework-list .e-Framework, .page-framework-list .e-ConceptScheme{
-    a {
-        display:none;
-    }
-    .icon {
-        display:none;
-    }
-    .editable {
-        display:inline;
-    }
-    .not-editable {
-        display:inline;
-    }
-}
-.page-framework-list .e-property .e-name {
-    li .e-Property {
-        label, span.button {
-            display: none !important;
+     .e-Framework, .page-framework-list .e-ConceptScheme {
+        a {
+            display:none;
         }
-    }
-    label{
-        display:none;
-    }
-    ul{
-        margin-left:0px;
-        display:inline;
-        li{
+        .icon {
+            display:none;
+        }
+        .editable {
             display:inline;
-            margin-right:.5rem;
+        }
+        .not-editable {
+            display:inline;
+        }
+    }
+    .e-name {
+        .e-Property-ul{
+            .property-value {
+                display: inline-block;
+            }
+            .property-value:nth-of-type(n + 3):not(:last-child) {
+                &::before {
+                    content: ", ";
+                }
+            }
+            .property-value:first-child {
+                display: block;
+                font-weight: 500;
+                font-family: $family-secondary;
+                width: 100%;
+                font-size: $size-3;
+                .e-Property-text {
+                    font-size: $size-3;
+                }
+            }
+        }
+        
+        label {
+            display:none;
+        }
+        .e-Property-ul{	
+            border-radius: .25rem;	
+            padding: 0rem .0rem;	
+            font-size: .8rem;	
+            margin: .125em 0em;	
+
+            color: rgba($dark, .9);	
+            .button {	
+
+            }	
+            .e-description {	
+                font-weight: 400;	
+                font-size: $size-7;	
+            }	
+            .e-name{	
+                font-weight: 600;	
+                font-size: $size-4;	
+            }	
+
+            .fa {	
+                font-size: $size-7;	
+                color: $dark;	
+            }	
+            label {	
+                font-size: $size-7;	
+                font-weight: 500;	
+            }
+        }	
+    }
+    .e-description {
+        .e-Property-text  {
+            font-size: $size-6;
+        }
+        .e-Property-ul {
+            margin: 0rem;
         }
     }
 }
 
-
-.thing-label {	
-    font-weight: 500;	
-    color: $text;	
-    width: 95%;	
-    i {	
-        color: rgba($dark, .3);	
-    }	
-}	
-.e-Property {	
-    padding: 0rem .5rem .5rem .5rem;	
-}
-
-
-.e-Thing-ul::first {	
-    background-color: transparent;	
-}	
-
-.e-Property {	
-
-    .fa {	
-        font-size: $size-7;	
-        color: $dark;	
-    }	
-    label {	
-        font-size: $size-7;	
-        font-weight: 500;	
-    }	
-    .e-name {	
-        font-size: $size-4;	
-        font-weight: 600;	
-    }	
-}	
-
-.e-Property-text{	
-    border-radius: .25rem;	
-}	
-
-.e-Property-ul{	
-    border-radius: .25rem;	
-    padding: 0rem .25rem;	
-    font-size: .8rem;	
-    color: rgba($dark, .9);	
-    .button {	
-
-    }	
-    .e-description {	
-        font-weight: 400;	
-        font-size: $size-7;	
-    }	
-    .e-name {	
-        font-weight: 600;	
-        font-size: $size-4;	
-    }	
-
-    margin: .125em .5em;	
-}	
-
-.page {	
-    margin-top: 2rem;	
-}
 
