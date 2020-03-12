@@ -263,7 +263,7 @@ export default {
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
                     [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/level"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The title that one who holds this performance level may assume. e.g. \"Fast\""}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Available Levels"}]

@@ -673,6 +673,7 @@
                                     </ul>
                                 </div>
                                 <Thing
+                                    :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                     :obj="framework"
                                     :repo="repo"
                                     class="framework-title"
@@ -1069,10 +1070,10 @@ export default {
         openFramework: function() {
             if (this.queryParams.concepts === "true") {
                 this.$store.commit('editor/framework', this.framework);
-                this.$router.push({name: "conceptScheme", params: {frameworkId: this.framework.shortId()}});
+                this.$router.push({name: "conceptScheme", params: {frameworkId: this.framework.id}});
             } else {
                 this.$store.commit('editor/framework', this.framework);
-                this.$router.push({name: "framework", params: {frameworkId: this.framework.shortId()}});
+                this.$router.push({name: "framework", params: {frameworkId: this.framework.id}});
             }
         },
         fileChange: function(e) {
