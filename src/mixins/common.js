@@ -22,7 +22,7 @@ export default {
         },
         relations: function() {
             if (!this.framework.relation) {
-                return null;
+                return {};
             }
             var relations = {};
             for (var i = 0; i < this.framework.relation.length; i++) {
@@ -352,6 +352,7 @@ export default {
             }
             this.repo.saveTo(c, function() {
                 me.framework.addLevel(c.shortId());
+                me.repo.saveTo(me.framework, function() {}, console.error);
             }, console.error);
         },
         saveFramework: function() {
