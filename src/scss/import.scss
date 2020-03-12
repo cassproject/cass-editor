@@ -3,6 +3,7 @@
 textarea {
     resize: vertical !important;
 }
+
 ul.processing-list {
     height: 100%;
     width: 100%;
@@ -70,6 +71,15 @@ ul.processing-list {
 
 
 .page-import {
+    .special-property {
+        iframe {
+            margin-top: .25rem;
+        }
+        .special-property-text {
+            padding-left: .5rem;
+            vertical-align: center;
+        }
+    }
     .page-import-body {
         max-width: 900px;
         width: 100%;
@@ -272,7 +282,7 @@ ul.processing-list {
                                 justify-content: space-between;
                                 flex-direction: row;
                                 flex-wrap: wrap;
-                                .property-string-span {
+                                .property-string-span, .input-span {
                                     width: 100%;
                                 }
                                 .property-buttons {
@@ -296,7 +306,7 @@ ul.processing-list {
                                     }
                                 }
                                 span {
-                                    textarea {
+                                    textarea, input {
                                         width: 100%;
                                         border-radius: 5px;
                                         border: 1px solid rgba($black, .25);
@@ -359,6 +369,9 @@ ul.processing-list {
                                 display: flex;
                                 justify-content: flex-start;
                             }
+                            ul {
+                                width: 100%;
+                            }
                             li {
                                 width: 100%;
                                 display:flex;
@@ -369,19 +382,19 @@ ul.processing-list {
                                 .e-Property-text {
                                     width: 100%;
                                 }
-                                .property-string-span {
+                                .property-string-span, .input-span {
                                     padding: .25rem;
                                     padding: 0rem;
                                     width: 100%;
-                                    textarea {
+                                    textarea, input {
                                         border-radius: 0px;
                                         border:transparent;
-                                        border-bottom: 1px solid rgba($dark, .25);
+                                        border: 1px solid rgba($dark, .25);
                                         padding: 6px;
                                     }
                         
                                     .input-field {
-                                        textarea {
+                                        textarea, input{
                                             border: solid 1px rgba($dark, .3);
                                             border-radius: 2px;
                                             width: 100%;
@@ -583,11 +596,11 @@ ul.processing-list {
                     .property-value {
                         width: 100%;
                         display: flex;
-                        .property-string-span {
+                        .property-string-span, .input-span {
                             width: 100%;
                             .input-field {
                                 width: 100%;
-                                textarea {
+                                textarea, input {
                                     height: 30px;
                                     padding: 4px 8px;
                                     width: calc(100%);
@@ -595,6 +608,9 @@ ul.processing-list {
                                     margin-right: 8px;
                                 }
                             }
+                        }
+                        .input-span {
+                            padding-right: .25rem;
                         }
                         .editing-property-buttons {
                             width: 64px;
@@ -648,17 +664,11 @@ ul.processing-list {
                 display: none !important;
             }
             .e-Thing.e-Competency {
-               
-                .bottom-actions {
-                    
-                }   
+              
                 li.add-property-button {
                     span {
                         display: inline-block;
                     }
-                }
-                .editing-property-buttons {
-                    
                 }
             }
            
