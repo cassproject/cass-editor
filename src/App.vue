@@ -785,13 +785,10 @@ export default {
                     for (var key in data) {
                         d[key] = data[key];
                     }
+                    if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[d.id] !== true) {
+                        d = EcEncryptedValue.toEncryptedValue(d);
+                    }
                     repo.saveTo(d, function(success) {
-                        // Force view framework page to update the framework since changes were made
-                        if (d.isAny(new EcFramework().getTypes()) || d.isAny(new EcConceptScheme().getTypes())) {
-                            if (me.$route.name === 'frameworks') {
-                                // To do: Refresh page
-                            }
-                        }
                         var message = {
                             action: "response",
                             message: "setOk"
