@@ -12,7 +12,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The URL of the competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "ID"}],
-                    "readOnly": true
+                    "readOnly": "true"
                 },
                 "https://purl.org/ctdlasn/terms/codedNotation": {
                     "@id": "https://purl.org/ctdlasn/terms/codedNotation",
@@ -33,7 +33,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "Name of the competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}],
-                    "isRequired": true
+                    "isRequired": "true"
                 },
                 "http://schema.org/description": {
                     "@id": "http://schema.org/description",
@@ -91,7 +91,7 @@ export default {
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Rubric Cell"}],
                     "valuesIndexed": function() { return me.levels; },
-                    "noTextEditing": true,
+                    "noTextEditing": "true",
                     "add": function(selectedCompetency) { me.addLevel(selectedCompetency); },
                     "remove": function(competency, levelId) { me.removeLevelFromFramework(levelId); },
                     "save": function() { me.saveFramework(); },
@@ -127,7 +127,7 @@ export default {
                     "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
                     "iframeText": "Select competencies to align...",
                     "valuesIndexed": function() { return me.relations["narrows"]; },
-                    "noTextEditing": true,
+                    "noTextEditing": "true",
                     "add": "unsaved",
                     "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "narrows", values); },
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "narrows", target); }
@@ -140,7 +140,7 @@ export default {
                     "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
                     "iframeText": "Select competencies to align...",
                     "valuesIndexed": function() { return me.relations["broadens"]; },
-                    "noTextEditing": true,
+                    "noTextEditing": "true",
                     "add": "unsaved",
                     "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "broadens", values); },
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "broadens", target); }
@@ -153,7 +153,7 @@ export default {
                     "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
                     "iframeText": "Select competencies to align...",
                     "valuesIndexed": function() { return me.relations["isEquivalentTo"]; },
-                    "noTextEditing": true,
+                    "noTextEditing": "true",
                     "add": "unsaved",
                     "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEquivalentTo", values); },
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isEquivalentTo", target); }
@@ -164,7 +164,7 @@ export default {
                     "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
                     "iframeText": "Select competencies to align...",
                     "valuesIndexed": function() { return me.relations["isSimilarTo"]; },
-                    "noTextEditing": true,
+                    "noTextEditing": "true",
                     "add": "unsaved",
                     "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isSimilarTo", values); },
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isSimilarTo", target); }
@@ -175,7 +175,7 @@ export default {
                     "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
                     "iframeText": "Select competencies to align...",
                     "valuesIndexed": function() { return me.relations["isPartiallySameAs"]; },
-                    "noTextEditing": true,
+                    "noTextEditing": "true",
                     "add": "unsaved",
                     "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isPartiallySameAs", values); },
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isPartiallySameAs", target); }
@@ -188,7 +188,7 @@ export default {
                     "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
                     "iframeText": "Select competencies to align...",
                     "valuesIndexed": function() { return me.relations["isRelatedTo"]; },
-                    "noTextEditing": true,
+                    "noTextEditing": "true",
                     "add": "unsaved",
                     "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isRelatedTo", values); },
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isRelatedTo", target); }
@@ -199,7 +199,7 @@ export default {
                     "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
                     "iframeText": "Select competencies to align...",
                     "valuesIndexed": function() { return me.relations["enables"]; },
-                    "noTextEditing": true,
+                    "noTextEditing": "true",
                     "add": "unsaved",
                     "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "enables", values); },
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "enables", target); }
@@ -212,7 +212,7 @@ export default {
                     "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
                     "iframeText": "Select competencies to align...",
                     "valuesIndexed": function() { return me.relations["isEnabledBy"]; },
-                    "noTextEditing": true,
+                    "noTextEditing": "true",
                     "add": "unsaved",
                     "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEnabledBy", values); },
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isEnabledBy", target); }
@@ -235,7 +235,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The URL of the framework."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "ID"}],
-                    "readOnly": true
+                    "readOnly": "true"
                 },
                 "http://schema.org/name": {
                     "@id": "http://schema.org/name",
@@ -246,7 +246,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Name of the competency framework."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}],
-                    "isRequired": true
+                    "isRequired": "true"
                 },
                 "http://schema.org/description": {
                     "@id": "http://schema.org/description",
