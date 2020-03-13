@@ -47,7 +47,7 @@
                     <div v-if="createAccountPasswordInvalid">*Password is required</div>
                     <div v-if="createAccountPasswordMismatch">*Passwords do not match</div>
                     <div v-if="createLinkPersonNameInvalid">*Name is required</div>
-                    <div v-if="createLinkPersonEmailInvalid">*Email is required</div>
+                    <div v-if="createLinkPersonEmailInvalid">*Valid email is required</div>
                     <div v-if="createLinkPersonEmailExists">*That email is already in use</div>
                 </div>
                 <div>
@@ -64,6 +64,7 @@
 export default {
     name: 'Login',
     data: () => ({
+        PERSON_SEARCH_SIZE: 10000,
         username: '',
         password: '',
         createAccountUsername: '',
@@ -130,6 +131,20 @@ export default {
             this.amJustLoggingIn = false;
             this.amCreatingLinkedPerson = true;
         },
+        setAllNewAccountValidationsChecksToValid() {
+            this.createAccountDataInvalid = false;
+            this.createAccountUsernameInvalid = false;
+            this.createAccountPasswordInvalid = false;
+            this.createAccountPasswordMismatch = false;
+            this.createLinkPersonNameInvalid = false;
+            this.createLinkPersonEmailInvalid = false;
+            this.createLinkPersonEmailExists = false;
+        },
+        isValidEmail(email) {
+            let re = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/igm;
+            if (re.test(email)) return true;
+            return false;
+        },
         validateNewAccountData() {
             if (!this.createAccountUsername || this.createAccountUsername.trim().equals('')) {
                 this.createAccountDataInvalid = true;
@@ -147,16 +162,49 @@ export default {
                 this.createAccountDataInvalid = true;
                 this.createLinkPersonNameInvalid = true;
             }
-            if (!this.createLinkPersonEmail || this.createLinkPersonEmail.trim().equals('')) {
+            if (!this.createLinkPersonEmail || this.createLinkPersonEmail.trim().equals('') || !this.isValidEmail(this.createLinkPersonEmail)) {
                 this.createAccountDataInvalid = true;
                 this.createLinkPersonEmailInvalid = true;
             }
         },
-        createNewAccount: function() {
-            this.validateNewAccountData();
-            if (!this.createAccountDataInvalid) {
-                // TODO verify email does not exist
+        searchPersonsForNewAccountSuccess(ecRemoteLda) {
+            console.log("New account person search success: ");
+            console.log(ecRemoteLda);
+            let emailExists = false;
+            for (let ecrld of ecRemoteLda) {
+                let ep = new EcPerson();
+                ep.copyFrom(ecrld);
+                console.log("ep.email: " + ep.email);
+                if (this.createLinkPersonEmail.equalsIgnoreCase(ep.email)) {
+                    emailExists = true;
+                    break;
+                }
             }
+            if (emailExists) {
+                this.createAccountDataInvalid = true;
+                this.createLinkPersonEmailExists = true;
+                this.loginBusy = false;
+            }
+            else {
+                // TODO implement
+                this.loginBusy = false;
+                alert('Yay...valid email');
+            }
+        },
+        searchPersonsForNewAccountFailure(msg) {
+            this.loginBusy = false;
+            console.log('New account person search failure: ' + msg);
+        },
+        verifyEmailAddressForNewAccountAndGo() {
+            this.loginBusy = true;
+            let paramObj = {};
+            paramObj.size = this.PERSON_SEARCH_SIZE;
+            window.repo.searchWithParams("@type:Person", paramObj, null, this.searchPersonsForNewAccountSuccess, this.searchPersonsForNewAccountFailure);
+        },
+        createNewAccount: function() {
+            this.setAllNewAccountValidationsChecksToValid();
+            this.validateNewAccountData();
+            if (!this.createAccountDataInvalid) this.verifyEmailAddressForNewAccountAndGo();
         },
         linkPerson: function() {
             // TODO implement
