@@ -14,21 +14,48 @@
         <!-- login content-->
         <div v-if="!loginBusy">
             <h3>CAT Login</h3>
-            <p><input type="text" v-model="username" placeholder="username"></p>
-            <p><input type="password" v-model="password" placeholder="password"></p>
-            <p><button @click="attemptCassLogin">Login</button></p>
-            <div v-if="identityFetchFailed">
-                <p><b>Login failed: {{identityFailMsg}}</b></p>
+            <div v-if="amJustLoggingIn">
+                <p><input type="text" v-model="username" placeholder="username"></p>
+                <p><input type="password" v-model="password" placeholder="password"></p>
+                <div v-if="identityFetchFailed">
+                    <p><b>Login failed: {{identityFailMsg}}</b></p>
+                </div>
+                <div v-if="configRetrieveFailed">
+                    <p><b>Could not retrieve configuration from selected server: {{configFailMsg}}</b></p>
+                </div>
+                <div v-if="loginParamsInvalid">
+                    <p><b>Login failed: Invalid Username/Password</b></p>
+                </div>
+                <div>
+                    <button @click="attemptCassLogin">Login</button>
+                    <button @click="showCreateAccount">Create Account</button>
+                </div>
             </div>
-            <div v-if="configRetrieveFailed">
-                <p><b>Could not retrieve configuration from selected server: {{configFailMsg}}</b></p>
+            <div v-if="amCreatingAccount || amCreatingLinkedPerson">
+                <h4 v-if="amCreatingAccount">New Account</h4>
+                <h4 v-if="amCreatingLinkedPerson">Link User Information</h4>
+                <p v-if="amCreatingLinkedPerson">No matching user record could be found that matched your login information. Please provide the following:</p>
+                <div v-if="amCreatingAccount">
+                    <p><input type="text" v-model="createAccountUsername" placeholder="username"></p>
+                    <p><input type="password" v-model="createAccountPassword" placeholder="password"></p>
+                    <p><input type="password" v-model="createAccountPasswordRetype" placeholder="retype password"></p>
+                </div>
+                <p><input type="text" v-model="createLinkPersonName" placeholder="name"></p>
+                <p><input type="text" v-model="createLinkPersonEmail" placeholder="email"></p>
+                <div v-if="createAccountDataInvalid">
+                    <div v-if="createAccountUsernameInvalid">*Username is required</div>
+                    <div v-if="createAccountPasswordInvalid">*Password is required</div>
+                    <div v-if="createAccountPasswordMismatch">*Passwords do not match</div>
+                    <div v-if="createLinkPersonNameInvalid">*Name is required</div>
+                    <div v-if="createLinkPersonEmailInvalid">*Email is required</div>
+                    <div v-if="createLinkPersonEmailExists">*That email is already in use</div>
+                </div>
+                <div>
+                    <button v-if="amCreatingAccount" @click="createNewAccount">Create</button>
+                    <button v-if="amCreatingLinkedPerson" @click="linkPerson">Update</button>
+                    <button @click="setDataToBaseLogin(true)">Cancel</button>
+                </div>
             </div>
-            <div v-if="loginParamsInvalid">
-                <p><b>Login failed: Invalid Username/Password</b></p>
-            </div>
-        </div>
-        <div v-if="loginSuccess">
-            I THINK THE LOGIN SUCCEEDED!!!!!!!!!!!!!
         </div>
     </div>
 </template>
@@ -37,18 +64,103 @@
 export default {
     name: 'Login',
     data: () => ({
-        username: "",
-        password: "",
+        username: '',
+        password: '',
+        createAccountUsername: '',
+        createAccountPassword: '',
+        createAccountPasswordRetype: '',
+        createLinkPersonName: '',
+        createLinkPersonEmail: '',
         loginParamsInvalid: false,
         identityFetchFailed: false,
         configRetrieveFailed: false,
         loginBusy: false,
         ecRemoteIdentMgr: {},
-        configFailMsg: "",
-        identityFailMsg: "",
-        loginSuccess: false
+        configFailMsg: '',
+        identityFailMsg: '',
+        amJustLoggingIn: true,
+        amCreatingAccount: false,
+        amCreatingLinkedPerson: false,
+        createAccountDataInvalid: false,
+        createAccountUsernameInvalid: false,
+        createAccountPasswordInvalid: false,
+        createAccountPasswordMismatch: false,
+        createLinkPersonNameInvalid: false,
+        createLinkPersonEmailInvalid: false,
+        createLinkPersonEmailExists: false
     }),
     methods: {
+        setDataToBaseLogin: function(clearIdentityManager) {
+            this.username = '';
+            this.password = '';
+            this.createAccountUsername = '';
+            this.createAccountPassword = '';
+            this.createAccountPasswordRetype = '';
+            this.createLinkPersonName = '';
+            this.createLinkPersonEmail = '';
+            this.loginParamsInvalid = false;
+            this.identityFetchFailed = false;
+            this.configRetrieveFailed = false;
+            this.configFailMsg = "";
+            this.identityFailMsg = "";
+            this.amCreatingAccount = false;
+            this.amCreatingLinkedPerson = false;
+            this.createAccountDataInvalid = false;
+            this.createAccountUsernameInvalid = false;
+            this.createAccountPasswordInvalid = false;
+            this.createAccountPasswordMismatch = false;
+            this.createLinkPersonNameInvalid = false;
+            this.createLinkPersonEmailInvalid = false;
+            this.createLinkPersonEmailExists = false;
+            if (clearIdentityManager) {
+                this.ecRemoteIdentMgr = {};
+                EcIdentityManager.clearContacts();
+                EcIdentityManager.clearIdentities();
+            }
+            this.amJustLoggingIn = true;
+            this.loginBusy = false;
+        },
+        showCreateAccount: function() {
+            this.setDataToBaseLogin(true);
+            this.amJustLoggingIn = false;
+            this.amCreatingAccount = true;
+        },
+        showCreateLinkedPerson: function() {
+            this.setDataToBaseLogin(false);
+            this.amJustLoggingIn = false;
+            this.amCreatingLinkedPerson = true;
+        },
+        validateNewAccountData() {
+            if (!this.createAccountUsername || this.createAccountUsername.trim().equals('')) {
+                this.createAccountDataInvalid = true;
+                this.createAccountUsernameInvalid = true;
+            }
+            if (!this.createAccountPassword || this.createAccountPassword.trim().equals('') ||
+                !this.createAccountPasswordRetype || this.createAccountPasswordRetype.trim().equals('')) {
+                this.createAccountDataInvalid = true;
+                this.createAccountPasswordInvalid = true;
+            } else if (!this.createAccountPassword.equals(this.createAccountPasswordRetype)) {
+                this.createAccountDataInvalid = true;
+                this.createAccountPasswordMismatch = true;
+            }
+            if (!this.createLinkPersonName || this.createLinkPersonName.trim().equals('')) {
+                this.createAccountDataInvalid = true;
+                this.createLinkPersonNameInvalid = true;
+            }
+            if (!this.createLinkPersonEmail || this.createLinkPersonEmail.trim().equals('')) {
+                this.createAccountDataInvalid = true;
+                this.createLinkPersonEmailInvalid = true;
+            }
+        },
+        createNewAccount: function() {
+            this.validateNewAccountData();
+            if (!this.createAccountDataInvalid) {
+                // TODO verify email does not exist
+            }
+        },
+        linkPerson: function() {
+            // TODO implement
+        },
         areLoginParamsValid: function() {
             if (this.username == null || this.username.length === 0 || this.password == null || this.password.length === 0) {
                 this.loginParamsInvalid = true;
@@ -57,29 +169,11 @@ export default {
             return true;
         },
         handleFetchIdentitySuccess: function(obj) {
-            // TODO Add new user stuff
-
-            // debugMessage("handleFetchIdentitySuccess: ");
-            // loggedInIdentityName = EcIdentityManager.ids[0].displayName.trim();
-            // debugMessage("Display Name: " + loggedInIdentityName);
-            // var loggedInPkPem = EcIdentityManager.ids[0].ppk.toPk().toPem();
-            // debugMessage("Public Key: " + loggedInPkPem);
-            // loggedInPpkPem = EcIdentityManager.ids[0].ppk.toPem();
-            // sessionStorage.setItem("usernameWithSalt", ecIdentMgr.usernameWithSalt);
-            // sessionStorage.setItem("passwordWithSalt", ecIdentMgr.passwordWithSalt);
-            // sessionStorage.setItem("secretWithSalt", ecIdentMgr.secretWithSalt);
-            // sessionStorage.setItem("pad", ecIdentMgr.pad);
-            // sessionStorage.setItem("token", ecIdentMgr.token);
-            // hideLoginBusy();
-            // hideLoginErrorMessage();
-            // enableAllLoginInputs();
-            // clearLoginInputs();
-            // doAfterLoginSuccess();
+            // TODO Check for person object
             this.loginBusy = false;
-            this.loginSuccess = true;
             this.$router.push({path: '/config'});
         },
-        handleFetchIdentityFailure: function (failMsg) {
+        handleFetchIdentityFailure: function(failMsg) {
             this.identityFailMsg = failMsg;
             this.identityFetchFailed = true;
             this.loginBusy = false;
@@ -97,7 +191,6 @@ export default {
             this.loginParamsInvalid = false;
             this.identityFetchFailed = false;
             this.configRetrieveFailed = false;
-            this.loginSuccess = false;
             if (this.areLoginParamsValid()) {
                 this.loginBusy = true;
                 EcIdentityManager.clearContacts();
@@ -107,6 +200,9 @@ export default {
                 this.ecRemoteIdentMgr.configureFromServer(this.handleConfigureFromServerSuccess, this.handleConfigureFromServerFail); // Retrieves username and password salts from the serve
             }
         }
+    },
+    mounted() {
+        this.setDataToBaseLogin(true);
     }
 };
 </script>
