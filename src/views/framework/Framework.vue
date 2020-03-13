@@ -430,6 +430,20 @@ export default {
     },
     components: {Hierarchy, Thing},
     created: function() {
+        var me = this;
+        // Set configuration
+        if (this.framework.configuration) {
+            var c = EcRepository.getBlocking(this.framework.configuration);
+            if (c) {
+                this.config = c;
+            }
+        }
+        // To do: Check for personal default in browser storage
+        this.repo.searchWithParams("@type:Configuration", {'size': 10000}, function(c) {
+            if (c.isDefault === "true") {
+                me.config = c;
+            }
+        }, function() {}, function() {});
         this.refreshPage();
     },
     watch: {
