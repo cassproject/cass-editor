@@ -5,6 +5,7 @@ import './scss/styles.scss';
 import router from './router';
 import Vuex from 'vuex';
 import Modal from './plugins/modalPlugin.js';
+import Clipboard from 'v-clipboard';
 
 import store from './store.js';
 require("cassproject");
@@ -13,6 +14,7 @@ Vue.use(Modal);
 Vue.use(require('vue-moment'));
 Vue.use(require('vue-infinite-scroll'));
 Vue.use(Vuex);
+Vue.use(Clipboard);
 
 EcRepository.caching = true;
 window.repo = new EcRepository();

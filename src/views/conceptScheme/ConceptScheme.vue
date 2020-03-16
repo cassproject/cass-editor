@@ -8,7 +8,17 @@
             @exportObject="exportObject"
             @select="select"
             :isEditingContainer="isEditingContainer"
-            @editingThing="handleEditingContainer($event)" />
+            @editingThing="handleEditingContainer($event)">
+            <template v-slot:copyURL="slotProps">
+                <span v-if="slotProps.expandedProperty=='@id'">
+                    <button
+                        title="Copy URL to the clipboard."
+                        v-clipboard="slotProps.expandedThing['@id']">
+                        <i class="fa fa-clipboard" />
+                    </button>
+                </span>
+            </template>
+        </Thing>
         <span
             class="info-tag"
             v-if="timestamp"
@@ -50,7 +60,17 @@
             @exportObject="exportObject"
             @select="select"
             :isEditingContainer="isEditingContainer"
-            @editingContainer="handleEditingContainer($event)" />
+            @editingContainer="handleEditingContainer($event)">
+            <template v-slot:copyURL="slotProps">
+                <span v-if="slotProps.expandedProperty=='@id'">
+                    <button
+                        title="Copy URL to the clipboard."
+                        v-clipboard="slotProps.expandedThing['@id']">
+                        <i class="fa fa-clipboard" />
+                    </button>
+                </span>
+            </template>
+        </ConceptHierarchy>
     </div>
 </template>
 <script>

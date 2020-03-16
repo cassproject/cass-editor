@@ -14,7 +14,17 @@
                     @removeObject="removeObject"
                     @exportObject="exportObject"
                     :isEditingContainer="isEditingContainer"
-                    @editingThing="handleEditingContainer($event)" />
+                    @editingThing="handleEditingContainer($event)">
+                    <template v-slot:copyURL="slotProps">
+                        <span v-if="slotProps.expandedProperty=='@id'">
+                            <button
+                                title="Copy URL to the clipboard."
+                                v-clipboard="slotProps.expandedThing['@id']">
+                                <i class="fa fa-clipboard" />
+                            </button>
+                        </span>
+                    </template>
+                </Thing>
                 <span class="actions">
                     <span
                         class="tag is-info has-text-white"
@@ -87,7 +97,17 @@
                     @removeObject="removeObject"
                     @exportObject="exportObject"
                     :isEditingContainer="isEditingContainer"
-                    @editingContainer="handleEditingContainer($event)" />
+                    @editingContainer="handleEditingContainer($event)">
+                    <template v-slot:copyURL="slotProps">
+                        <span v-if="slotProps.expandedProperty=='@id'">
+                            <button
+                                title="Copy URL to the clipboard."
+                                v-clipboard="slotProps.expandedThing['@id']">
+                                <i class="fa fa-clipboard" />
+                            </button>
+                        </span>
+                    </template>
+                </Hierarchy>
             </div>
         </div>
     </div>

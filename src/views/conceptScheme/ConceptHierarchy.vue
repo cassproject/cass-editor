@@ -31,6 +31,12 @@
                     @editingThing="handleEditingContainer($event)"
                     :parentStructure="hierarchy"
                     :parent="container">
+                    <template v-slot:copyURL="slotProps">
+                        <slot
+                            name="copyURL"
+                            :expandedProperty="slotProps.expandedProperty"
+                            :expandedThing="slotProps.expandedThing" />
+                    </template>
                     <slot />
                 </HierarchyNode>
             </draggable>
