@@ -179,9 +179,9 @@ export default {
         },
         handleCreatePersonSuccess() {
             console.log("Person created.");
-            if (this.amCreatingLinkedPerson) {
-                this.addGroupIdentities();
-            } else this.goToAppHome();
+            if (this.amCreatingAccount) {
+                this.goToAppHome();
+            } else this.addGroupIdentities();
         },
         createPersonObjectToLinkToIdentity() {
             console.log("Creating person object for identity...");
