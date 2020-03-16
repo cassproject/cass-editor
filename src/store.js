@@ -21,7 +21,8 @@ const editor = {
         iframeConceptPath: null,
         newCompetency: null,
         t3Profile: false,
-        changedObject: null
+        changedObject: null,
+        loggedOnPerson: {}
     },
     mutations: {
         framework(state, f) {
@@ -68,6 +69,9 @@ const editor = {
         },
         changedObject(state, id) {
             state.changedObject = id;
+        },
+        loggedOnPerson(state, personObj) {
+            state.loggedOnPerson = personObj;
         }
     },
     actions: {

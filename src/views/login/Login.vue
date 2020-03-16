@@ -42,13 +42,19 @@
                 </div>
                 <p><input type="text" v-model="createLinkPersonName" placeholder="name"></p>
                 <p><input type="text" v-model="createLinkPersonEmail" placeholder="email"></p>
-                <div v-if="createAccountDataInvalid">
+                <div v-if="createAccountOrLinkPersonDataInvalid">
                     <div v-if="createAccountUsernameInvalid">*Username is required</div>
                     <div v-if="createAccountPasswordInvalid">*Password is required</div>
                     <div v-if="createAccountPasswordMismatch">*Passwords do not match</div>
                     <div v-if="createLinkPersonNameInvalid">*Name is required</div>
                     <div v-if="createLinkPersonEmailInvalid">*Valid email is required</div>
                     <div v-if="createLinkPersonEmailExists">*That email is already in use</div>
+                </div>
+                <div v-if="identityFetchFailed">
+                    <p><b>Login failed: {{identityFailMsg}}</b></p>
+                </div>
+                <div v-if="configRetrieveFailed">
+                    <p><b>Could not retrieve configuration from selected server: {{configFailMsg}}</b></p>
                 </div>
                 <div>
                     <button v-if="amCreatingAccount" @click="createNewAccount">Create</button>
@@ -82,15 +88,25 @@ export default {
         amJustLoggingIn: true,
         amCreatingAccount: false,
         amCreatingLinkedPerson: false,
-        createAccountDataInvalid: false,
+        createAccountOrLinkPersonDataInvalid: false,
         createAccountUsernameInvalid: false,
         createAccountPasswordInvalid: false,
         createAccountPasswordMismatch: false,
         createLinkPersonNameInvalid: false,
         createLinkPersonEmailInvalid: false,
-        createLinkPersonEmailExists: false
+        createLinkPersonEmailExists: false,
+        identityToLinkToPerson: {}
     }),
     methods: {
+        goToAppHome: function() {
+            this.loginBusy = false;
+            this.$router.push({path: '/config'});
+        },
+        addGroupIdentities: function() {
+            // TODO implement
+            console.log(" TODO adding group identities");
+            this.goToAppHome();
+        },
         setDataToBaseLogin: function(clearIdentityManager) {
             this.username = '';
             this.password = '';
@@ -106,7 +122,7 @@ export default {
             this.identityFailMsg = "";
             this.amCreatingAccount = false;
             this.amCreatingLinkedPerson = false;
-            this.createAccountDataInvalid = false;
+            this.createAccountOrLinkPersonDataInvalid = false;
             this.createAccountUsernameInvalid = false;
             this.createAccountPasswordInvalid = false;
             this.createAccountPasswordMismatch = false;
@@ -117,6 +133,7 @@ export default {
                 this.ecRemoteIdentMgr = {};
                 EcIdentityManager.clearContacts();
                 EcIdentityManager.clearIdentities();
+                this.identityToLinkToPerson = {};
             }
             this.amJustLoggingIn = true;
             this.loginBusy = false;
@@ -132,7 +149,7 @@ export default {
             this.amCreatingLinkedPerson = true;
         },
         setAllNewAccountValidationsChecksToValid() {
-            this.createAccountDataInvalid = false;
+            this.createAccountOrLinkPersonDataInvalid = false;
             this.createAccountUsernameInvalid = false;
             this.createAccountPasswordInvalid = false;
             this.createAccountPasswordMismatch = false;
@@ -147,25 +164,61 @@ export default {
         },
         validateNewAccountData() {
             if (!this.createAccountUsername || this.createAccountUsername.trim().equals('')) {
-                this.createAccountDataInvalid = true;
+                this.createAccountOrLinkPersonDataInvalid = true;
                 this.createAccountUsernameInvalid = true;
             }
             if (!this.createAccountPassword || this.createAccountPassword.trim().equals('') ||
                 !this.createAccountPasswordRetype || this.createAccountPasswordRetype.trim().equals('')) {
-                this.createAccountDataInvalid = true;
+                this.createAccountOrLinkPersonDataInvalid = true;
                 this.createAccountPasswordInvalid = true;
             } else if (!this.createAccountPassword.equals(this.createAccountPasswordRetype)) {
-                this.createAccountDataInvalid = true;
+                this.createAccountOrLinkPersonDataInvalid = true;
                 this.createAccountPasswordMismatch = true;
             }
-            if (!this.createLinkPersonName || this.createLinkPersonName.trim().equals('')) {
-                this.createAccountDataInvalid = true;
-                this.createLinkPersonNameInvalid = true;
-            }
-            if (!this.createLinkPersonEmail || this.createLinkPersonEmail.trim().equals('') || !this.isValidEmail(this.createLinkPersonEmail)) {
-                this.createAccountDataInvalid = true;
-                this.createLinkPersonEmailInvalid = true;
-            }
+            this.validateLinkPersonData();
+        },
+        handleCreatePersonSuccess() {
+            console.log("Person created.");
+            if (this.amCreatingLinkedPerson) {
+                this.addGroupIdentities();
+            } else this.goToAppHome();
+        },
+        createPersonObjectToLinkToIdentity() {
+            console.log("Creating person object for identity...");
+            let p = new Person();
+            p.assignId(window.repo.selectedServer, this.identityToLinkToPerson.ppk.toPk().fingerprint());
+            p.addOwner(this.identityToLinkToPerson.ppk.toPk());
+            p.name = this.createLinkPersonName;
+            p.email = this.createLinkPersonEmail;
+            console.log(p);
+            this.$store.commit('editor/loggedOnPerson', p);
+            EcRepository.save(p, this.handleCreatePersonSuccess, this.handleAttemptLoginFetchIdentityFailure);
+        },
+        handleCreateAccountFetchIdentitySuccess() {
+            console.log("Creating new account identity object...");
+            let ident = new EcIdentity();
+            ident.displayName = this.createLinkPersonName;
+            ident.ppk = EcPpk.generateKey();
+            EcIdentityManager.addIdentity(ident);
+            this.identityToLinkToPerson = ident;
+            this.ecRemoteIdentMgr.commit(this.createPersonObjectToLinkToIdentity, this.handleAttemptLoginFetchIdentityFailure);
+        },
+        handleCreateAccountRemoteIdentityMgrCreateSuccess() {
+            console.log("Creating new account manager fetch...");
+            this.ecRemoteIdentMgr.fetch(this.handleCreateAccountFetchIdentitySuccess, this.handleAttemptLoginFetchIdentityFailure);
+        },
+        handleCreateAccountConfigureFromServerSuccess: function(obj) {
+            console.log("EcRemoteIdentityManager creating...");
+            console.log("Creating new account login...");
+            this.ecRemoteIdentMgr.startLogin(this.createAccountUsername, this.createAccountPassword);
+            this.ecRemoteIdentMgr.create(this.handleCreateAccountRemoteIdentityMgrCreateSuccess, this.handleAttemptLoginFetchIdentityFailure);
+        },
+        createNewAccountIdentityAndPerson() {
+            console.log("Creating new account...");
+            console.log("EcRemoteIdentityManager Configuring from server...");
+            this.ecRemoteIdentMgr = new EcRemoteIdentityManager();
+            this.ecRemoteIdentMgr.server = window.repo.selectedServer;
+            this.ecRemoteIdentMgr.configureFromServer(this.handleCreateAccountConfigureFromServerSuccess, this.handleAttemptLoginConfigureFromServerFail);
         },
         searchPersonsForNewAccountSuccess(ecRemoteLda) {
             console.log("New account person search success: ");
@@ -174,22 +227,16 @@ export default {
             for (let ecrld of ecRemoteLda) {
                 let ep = new EcPerson();
                 ep.copyFrom(ecrld);
-                console.log("ep.email: " + ep.email);
                 if (this.createLinkPersonEmail.equalsIgnoreCase(ep.email)) {
                     emailExists = true;
                     break;
                 }
             }
             if (emailExists) {
-                this.createAccountDataInvalid = true;
+                this.createAccountOrLinkPersonDataInvalid = true;
                 this.createLinkPersonEmailExists = true;
                 this.loginBusy = false;
-            }
-            else {
-                // TODO implement
-                this.loginBusy = false;
-                alert('Yay...valid email');
-            }
+            } else this.createNewAccountIdentityAndPerson();
         },
         searchPersonsForNewAccountFailure(msg) {
             this.loginBusy = false;
@@ -199,15 +246,54 @@ export default {
             this.loginBusy = true;
             let paramObj = {};
             paramObj.size = this.PERSON_SEARCH_SIZE;
-            window.repo.searchWithParams("@type:Person", paramObj, null, this.searchPersonsForNewAccountSuccess, this.searchPersonsForNewAccountFailure);
+            window.repo.searchWithParams("@type:Person AND email:\"" + this.createLinkPersonEmail + "\"", paramObj, null,
+                this.searchPersonsForNewAccountSuccess, this.searchPersonsForNewAccountFailure);
         },
         createNewAccount: function() {
             this.setAllNewAccountValidationsChecksToValid();
             this.validateNewAccountData();
-            if (!this.createAccountDataInvalid) this.verifyEmailAddressForNewAccountAndGo();
+            if (!this.createAccountOrLinkPersonDataInvalid) this.verifyEmailAddressForNewAccountAndGo();
+        },
+        validateLinkPersonData() {
+            if (!this.createLinkPersonName || this.createLinkPersonName.trim().equals('')) {
+                this.createAccountOrLinkPersonDataInvalid = true;
+                this.createLinkPersonNameInvalid = true;
+            }
+            if (!this.createLinkPersonEmail || this.createLinkPersonEmail.trim().equals('') || !this.isValidEmail(this.createLinkPersonEmail)) {
+                this.createAccountOrLinkPersonDataInvalid = true;
+                this.createLinkPersonEmailInvalid = true;
+            }
+        },
+        searchPersonsForLinkPersonSuccess(ecRemoteLda) {
+            this.loginBusy = true;
+            let emailExists = false;
+            for (let ecrld of ecRemoteLda) {
+                let ep = new EcPerson();
+                ep.copyFrom(ecrld);
+                if (this.createLinkPersonEmail.equalsIgnoreCase(ep.email)) {
+                    emailExists = true;
+                    break;
+                }
+            }
+            if (emailExists) {
+                this.createAccountOrLinkPersonDataInvalid = true;
+                this.createLinkPersonEmailExists = true;
+                this.loginBusy = false;
+            } else {
+                this.createPersonObjectToLinkToIdentity();
+            }
+        },
+        verifyEmailAddressForLinkPersonAndGo() {
+            console.log('Validating link person email...');
+            let paramObj = {};
+            paramObj.size = this.PERSON_SEARCH_SIZE;
+            window.repo.searchWithParams("@type:Person AND email:\"" + this.createLinkPersonEmail + "\"", paramObj, null,
+                this.searchPersonsForLinkPersonSuccess, this.searchPersonsForNewAccountFailure);
         },
         linkPerson: function() {
-            // TODO implement
+            this.setAllNewAccountValidationsChecksToValid();
+            this.validateLinkPersonData();
+            if (!this.createAccountOrLinkPersonDataInvalid) this.verifyEmailAddressForLinkPersonAndGo();
         },
         areLoginParamsValid: function() {
             if (this.username == null || this.username.length === 0 || this.password == null || this.password.length === 0) {
@@ -216,21 +302,55 @@ export default {
             }
             return true;
         },
-        handleFetchIdentitySuccess: function(obj) {
-            // TODO Check for person object
-            this.loginBusy = false;
-            this.$router.push({path: '/config'});
+        findLinkedPersonPersonSearchSuccess(ecRemoteLda) {
+            console.log("Linked person person search success: ");
+            console.log(ecRemoteLda);
+            this.identityToLinkToPerson = EcIdentityManager.ids[0];
+            let matchingPersonRecordFound = false;
+            for (let ecrld of ecRemoteLda) {
+                let ep = new EcPerson();
+                ep.copyFrom(ecrld);
+                if (ep.getGuid().equals(this.identityToLinkToPerson.ppk.toPk().fingerprint())) {
+                    matchingPersonRecordFound = true;
+                    this.$store.commit('editor/loggedOnPerson', ep);
+                    console.log('Matching person record found: ');
+                    console.log(ep);
+                }
+            }
+            if (matchingPersonRecordFound) this.addGroupIdentities();
+            else {
+                console.log('Matching person record NOT found');
+                this.showCreateLinkedPerson();
+            }
         },
-        handleFetchIdentityFailure: function(failMsg) {
+        findLinkedPersonPersonSearchFailure() {
+            this.loginBusy = false;
+            console.log('Linked person person search failure: ' + msg);
+        },
+        findLinkedPersonForIdentity: function() {
+            console.log("Finding linked person for identity...");
+            let identFingerprint = EcIdentityManager.ids[0].ppk.toPk().fingerprint();
+            let paramObj = {};
+            paramObj.size = this.PERSON_SEARCH_SIZE;
+            window.repo.searchWithParams("@type:Person AND @id:\"" + identFingerprint + "\"", paramObj, null,
+                this.findLinkedPersonPersonSearchSuccess, this.findLinkedPersonPersonSearchFailure);
+        },
+        handleAttemptLoginFetchIdentitySuccess: function(obj) {
+            if (!EcIdentityManager.ids || EcIdentityManager.ids.length <= 0) {
+                this.handleAttemptLoginFetchIdentityFailure('Login credentials valid but no identity could be found.');
+            } else this.findLinkedPersonForIdentity();
+        },
+        handleAttemptLoginFetchIdentityFailure: function(failMsg) {
             this.identityFailMsg = failMsg;
             this.identityFetchFailed = true;
             this.loginBusy = false;
         },
-        handleConfigureFromServerSuccess: function(obj) {
+        handleAttemptLoginConfigureFromServerSuccess: function(obj) {
+            console.log("Fetching identity...");
             this.ecRemoteIdentMgr.startLogin(this.username, this.password); // Creates the hashes for storage and retrieval of keys.
-            this.ecRemoteIdentMgr.fetch(this.handleFetchIdentitySuccess, this.handleFetchIdentityFailure); // Retrieves the identities and encryption keys from the server.
+            this.ecRemoteIdentMgr.fetch(this.handleAttemptLoginFetchIdentitySuccess, this.handleAttemptLoginFetchIdentityFailure); // Retrieves the identities and encryption keys from the server.
         },
-        handleConfigureFromServerFail: function(failMsg) {
+        handleAttemptLoginConfigureFromServerFail: function(failMsg) {
             this.configFailMsg = failMsg;
             this.configRetrieveFailed = true;
             this.loginBusy = false;
@@ -240,12 +360,13 @@ export default {
             this.identityFetchFailed = false;
             this.configRetrieveFailed = false;
             if (this.areLoginParamsValid()) {
+                console.log("Attempting CaSS login....");
                 this.loginBusy = true;
                 EcIdentityManager.clearContacts();
                 EcIdentityManager.clearIdentities();
                 this.ecRemoteIdentMgr = new EcRemoteIdentityManager();
                 this.ecRemoteIdentMgr.server = window.repo.selectedServer;
-                this.ecRemoteIdentMgr.configureFromServer(this.handleConfigureFromServerSuccess, this.handleConfigureFromServerFail); // Retrieves username and password salts from the serve
+                this.ecRemoteIdentMgr.configureFromServer(this.handleAttemptLoginConfigureFromServerSuccess, this.handleAttemptLoginConfigureFromServerFail); // Retrieves username and password salts from the serve
             }
         }
     },
