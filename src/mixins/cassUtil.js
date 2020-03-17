@@ -3,6 +3,10 @@ export const cassUtil = {
     data() {
     },
     methods: {
+        amLoggedIn() {
+            if (EcIdentityManager && EcIdentityManager.ids && EcIdentityManager.ids.length > 0) return true;
+            return false;
+        },
         setDefaultBrowserConfigId(configId) {
             localStorage.setItem("cassAuthoringToolDefaultBrowserConfigId", configId);
         },
