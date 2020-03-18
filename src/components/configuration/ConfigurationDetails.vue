@@ -3,7 +3,7 @@
         <!-- custom property details modal -->
         <div
             class="modal"
-            :class="[{'is-active': showCustomPropertyDetails}]">
+            :class="[{'is-active': showCustomPropertyDetailsModal}]">
             <div class="modal-background"></div>
             <div class="modal-card">
                 <header class="modal-card-head">
@@ -534,7 +534,7 @@ export default {
         configCompetencyDescDescriptionInvalid: false,
         configCompetencyTypeLabelInvalid: false,
         configCompetencyTypeDescriptionInvalid: false,
-        showCustomPropertyDetails: false,
+        showCustomPropertyDetailsModal: false,
         customPropertyModalTitle: '',
         customPropertyParent: '',
         customPropertyIsNew: true,
@@ -822,7 +822,7 @@ export default {
         closeCustomPropertyModal: function() {
             this.reInitCustomPropertyDataHolders();
             this.customPropertyModalTitle = '';
-            this.showCustomPropertyDetails = false;
+            this.showCustomPropertyDetailsModal = false;
         },
         initCustomPropertyDataHoldersAsNewProperty() {
             this.reInitCustomPropertyDataHolders();
@@ -835,13 +835,13 @@ export default {
             this.initCustomPropertyDataHoldersAsNewProperty();
             this.customPropertyModalTitle = "New Framework Property";
             this.customPropertyParent = "framework";
-            this.showCustomPropertyDetails = true;
+            this.showCustomPropertyDetailsModal = true;
         },
         addCustomCompetencyProperty: function() {
             this.initCustomPropertyDataHoldersAsNewProperty();
             this.customPropertyModalTitle = "New Competency Property";
             this.customPropertyParent = "competency";
-            this.showCustomPropertyDetails = true;
+            this.showCustomPropertyDetailsModal = true;
         },
         generateCopyOfCustomPropertyPermittedValues(prop) {
             let permittedValuesCopy = [];
@@ -871,12 +871,12 @@ export default {
         manageCustomFrameworkProperty: function(propertyIdx) {
             this.initCustomPropertyDataHoldersAsExistingProperty('framework', this.config.fwkCustomProperties[propertyIdx]);
             this.customPropertyModalTitle = "Manage Framework Property";
-            this.showCustomPropertyDetails = true;
+            this.showCustomPropertyDetailsModal = true;
         },
         manageCustomCompetencyProperty: function(propertyIdx) {
             this.initCustomPropertyDataHoldersAsExistingProperty('competency', this.config.compCustomProperties[propertyIdx]);
             this.customPropertyModalTitle = "Manage Competency Property";
-            this.showCustomPropertyDetails = true;
+            this.showCustomPropertyDetailsModal = true;
         },
         manageCustomFrameworkCompetencyProperty: function(propertyParent, propertyIdx) {
             if (propertyParent.equals('framework')) this.manageCustomFrameworkProperty(propertyIdx);

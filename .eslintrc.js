@@ -254,7 +254,7 @@ module.exports = {
          */
         'max-len': [
             2, { // should we ignore urls or anything here?
-                code: 240,
+                code: 2400,
                 tabWidth: 4
             }
         ],
