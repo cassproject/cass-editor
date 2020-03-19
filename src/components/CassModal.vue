@@ -229,7 +229,11 @@ export default {
                     } else {
                         var uuid = new UUID(3, "nil", this.newName).format();
                         var f = new EcFramework();
-                        f.assignId(this.repo.selectedServer, uuid);
+                        if (me.queryParams && me.queryParams.newObjectEndpoint) {
+                            f.id = me.queryParams.newObjectEndpoint + uuid;
+                        } else {
+                            f.assignId(me.repo.selectedServer, uuid);
+                        }
                         this.repo.search("(@id:\"" + f.shortId() + "\") AND (@type:Framework)", function() {}, function(frameworks) {
                             if (frameworks.length > 0) {
                                 me.invalid = true;

@@ -1379,7 +1379,11 @@ export default {
                     var uuid = new UUID(3, "nil", d.name).format();
                     var f = new EcFramework();
                     me.status = 'looking for existing framework...';
-                    f.assignId(me.repo.selectedServer, uuid);
+                    if (me.queryParams && me.queryParams.newObjectEndpoint) {
+                        f.id = me.queryParams.newObjectEndpoint + uuid;
+                    } else {
+                        f.assignId(me.repo.selectedServer, uuid);
+                    }
                     me.repo.search("(@id:\"" + f.shortId() + "\") AND (@type:Framework)", function() {}, function(frameworks) {
                         console.log(frameworks);
                         me.status = 'looking for existing framwork...';
@@ -1408,7 +1412,11 @@ export default {
                 f.setDescription(d.description);
             }
             var uuid = new UUID(3, "nil", name).format();
-            f.assignId(me.repo.selectedServer, uuid);
+            if (me.queryParams && me.queryParams.newObjectEndpoint) {
+                f.id = me.queryParams.newObjectEndpoint + uuid;
+            } else {
+                f.assignId(me.repo.selectedServer, uuid);
+            }
             f.competency = [];
             f.relation = [];
             f.level = [];
@@ -1428,7 +1436,11 @@ export default {
             me.detailsDetected.competencies = d.competencies.length;
             for (var i = 0; i < d.competencies.length; i++) {
                 var c = new EcCompetency();
-                c.assignId(me.repo.selectedServer, d.competencies[i].id);
+                if (me.queryParams && me.queryParams.newObjectEndpoint) {
+                    c.id = me.queryParams.newObjectEndpoint + d.competencies[i].id;
+                } else {
+                    c.assignId(me.repo.selectedServer, d.competencies[i].id);
+                }
                 cs[d.competencies[i].id] = c.shortId();
                 if (d.competencies[i].name != null) { c.setName(d.competencies[i].name.trim()); }
                 if (d.competencies[i].name !== d.competencies[i].description && d.competencies[i].description) { c.setDescription(d.competencies[i].description.trim()); }
@@ -1440,7 +1452,11 @@ export default {
             }
             for (var i = 0; i < d.relation.length; i++) {
                 var c = new EcAlignment();
-                c.assignId(me.repo.selectedServer, d.relation[i].source + "_" + d.relation[i].relationType + "_" + d.relation[i].target);
+                if (me.queryParams && me.queryParams.newObjectEndpoint) {
+                    c.generateShortId(this.queryParams.newObjectEndpoint);
+                } else {
+                    c.assignId(me.repo.selectedServer, d.relation[i].source + "_" + d.relation[i].relationType + "_" + d.relation[i].target);
+                }
                 c.source = cs[d.relation[i].source];
                 c.target = cs[d.relation[i].target];
                 c.relationType = d.relation[i].relationType;
