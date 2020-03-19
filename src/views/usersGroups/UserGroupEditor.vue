@@ -103,6 +103,9 @@ export default {
         },
         saveCurrentUserGroup(groupManagers, groupUsers) {
             // TODO implement
+            console.log("WOULD HAVE TRIGGERED SAVE");
+            console.log(groupManagers);
+            console.log(groupUsers);
         },
         cancelEditCurrentUserGroup() {
             this.buildUserGroupData();

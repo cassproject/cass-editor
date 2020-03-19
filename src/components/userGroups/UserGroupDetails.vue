@@ -49,6 +49,7 @@
                 </div>
             </div>
         </div>
+        <!-- ************************************** Content ************************************************ -->
         <label>Name: </label>
         <div v-if="readOnly">
             {{ group.name }}
@@ -108,6 +109,13 @@
         </div>
         <br>
         <br>
+        <!-- ************************************** Validation ************************************************ -->
+        <div v-if="groupInvalid">
+            <p>User Group is invalid:</p>
+            <p v-if="groupNameInvalid">*User group name is required</p>
+            <p v-if="groupDescriptionInvalid">*User group description is required</p>
+        </div>
+        <!-- ************************************** Actions ************************************************ -->
         <div v-if="!readOnly">
             <button @click="validateCurrentGroupAndEmitSave">save</button>
             <button @click="$emit('cancel')">cancel</button>
@@ -150,12 +158,34 @@ export default {
             selectedPersons: [],
             selectedPersonsFilter: '',
             localGroupManagers: this.groupManagers,
-            localGroupUsers: this.groupUsers
+            localGroupUsers: this.groupUsers,
+            groupInvalid: false,
+            groupNameInvalid: false,
+            groupDescriptionInvalid: false
         };
     },
     methods: {
+        setAllConfigValidationsChecksToValid() {
+            this.groupInvalid = false;
+            this.groupNameInvalid = false;
+            this.groupDescriptionInvalid = false;
+        },
+        validateGroupFields() {
+            if (!this.group.name || this.group.name.trim().equals('')) {
+                this.groupInvalid = true;
+                this.groupNameInvalid = true;
+            }
+            if (!this.group.description || this.group.description.trim().equals('')) {
+                this.groupInvalid = true;
+                this.groupDescriptionInvalid = true;
+            }
+        },
         validateCurrentGroupAndEmitSave() {
-            // TODO implement
+            this.setAllConfigValidationsChecksToValid();
+            this.validateGroupFields();
+            if (!this.groupInvalid) {
+                this.$emit('save', this.localGroupManagers, this.localGroupUsers);
+            }
         },
         closeAddMemberModal() {
             this.selectedPersonsFilter = '';

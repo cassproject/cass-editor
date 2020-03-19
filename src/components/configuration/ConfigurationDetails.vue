@@ -135,6 +135,7 @@
                 </div>
             </div>
         </div>
+        <!-- content -->
         <label>Name: </label>
         <div v-if="readOnly">
             {{ config.name }}
