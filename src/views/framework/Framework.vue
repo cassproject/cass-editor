@@ -19,7 +19,7 @@
                         <span v-if="slotProps.expandedProperty=='@id'">
                             <button
                                 title="Copy URL to the clipboard."
-                                v-clipboard="slotProps.expandedThing['@id']">
+                                v-clipboard="slotProps.expandedValue[0]['@value']">
                                 <i class="fa fa-clipboard" />
                             </button>
                         </span>
@@ -102,7 +102,7 @@
                         <span v-if="slotProps.expandedProperty=='@id'">
                             <button
                                 title="Copy URL to the clipboard."
-                                v-clipboard="slotProps.expandedThing['@id']">
+                                v-clipboard="slotProps.expandedValue[0]['@value']">
                                 <i class="fa fa-clipboard" />
                             </button>
                         </span>
