@@ -12,7 +12,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The URL of the framework. If imported from another source, the URL of the framework from which this one originates."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Canonical URL"}],
-                    "readOnly": true,
+                    "readOnly": "true",
                     "max": 1,
                     "heading": "Keys"
                 },
@@ -24,7 +24,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The Credential Registry URL of the framework."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Credential Registry URL"}],
-                    "readOnly": true,
+                    "readOnly": "true",
                     "valuesIndexed": function() { return me.registryURLs; },
                     "max": 1,
                     "heading": "Keys"
@@ -37,7 +37,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The CTID of the framework."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "CTID"}],
-                    "readOnly": true,
+                    "readOnly": "true",
                     "valuesIndexed": function() { return me.ctids; },
                     "max": 1,
                     "heading": "Keys"
@@ -51,8 +51,8 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The name or title of this competency framework. One name or title per language."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name*"}],
-                    "isRequired": true,
-                    "onePerLanguage": true,
+                    "isRequired": "true",
+                    "onePerLanguage": "true",
                     "heading": "General"
                 },
                 "http://schema.org/description": {
@@ -64,7 +64,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "A short description of this framework. One description per language."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}],
-                    "onePerLanguage": true,
+                    "onePerLanguage": "true",
                     "heading": "General"
                 },
                 "http://schema.org/creator": {
@@ -113,7 +113,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The primary language used in or by this competency framework or competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "In Language*"}],
-                    "isRequired": true,
+                    "isRequired": "true",
                     "heading": "General"
                 },
                 "http://schema.org/keywords": {
@@ -315,7 +315,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The URL of the competency. If imported from another source, the URL of the competency from which this one originates."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Canonical URL"}],
-                    "readOnly": true,
+                    "readOnly": "true",
                     "max": 1,
                     "heading": "Keys"
                 },
@@ -328,7 +328,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The Credential Registry URL of the competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Credential Registry URL"}],
-                    "readOnly": true,
+                    "readOnly": "true",
                     "valuesIndexed": function() { return me.registryURLs; },
                     "max": 1,
                     "heading": "Keys"
@@ -342,7 +342,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The CTID of the competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "CTID"}],
-                    "readOnly": true,
+                    "readOnly": "true",
                     "valuesIndexed": function() { return me.ctids; },
                     "max": 1,
                     "heading": "Keys"
@@ -356,7 +356,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Short identifying phrase or name applied to a competency by the creator of the competency framework."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Competency Label"}],
-                    "onePerLanguage": true,
+                    "onePerLanguage": "true",
                     "heading": "General"
                 },
                 "http://schema.org/name": {
@@ -368,8 +368,8 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The text of the competency. One per language."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Competency Text*"}],
-                    "isRequired": true,
-                    "onePerLanguage": true,
+                    "isRequired": "true",
+                    "onePerLanguage": "true",
                     "heading": "General"
                 },
                 "http://schema.org/description": {
@@ -392,7 +392,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The textual label identifying the category of the competency as designated by the promulgating body. One label per line. One label per language."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Competency Category"}],
-                    "onePerLanguage": true,
+                    "onePerLanguage": "true",
                     "heading": "General"
                 },
                 "https://purl.org/ctdlasn/terms/educationLevelType": {
@@ -519,8 +519,8 @@ export default {
                     [{"@language": "en", "@value": "The referenced competency is lower in some arbitrary hierarchy than this competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Has Child"}],
                     "valuesIndexed": function() { return me.relations["hasChild"]; },
-                    "noTextEditing": true,
-                    "readOnly": true,
+                    "noTextEditing": "true",
+                    "readOnly": "true",
                     "heading": "Connections"
                 },
                 "isChildOf": {
@@ -529,8 +529,8 @@ export default {
                     [{"@language": "en", "@value": "The referenced competency is higher in some arbitrary hierarchy than this competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Child Of"}],
                     "valuesIndexed": function() { return me.relations["isChildOf"]; },
-                    "noTextEditing": true,
-                    "readOnly": true,
+                    "noTextEditing": "true",
+                    "readOnly": "true",
                     "heading": "Connections"
                 },
                 "narrows": {
@@ -541,7 +541,7 @@ export default {
                     "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
                     "iframeText": "Select competencies to align...",
                     "valuesIndexed": function() { return me.relations["narrows"]; },
-                    "noTextEditing": true,
+                    "noTextEditing": "true",
                     "add": "unsaved",
                     "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "narrows", values); },
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "narrows", target); },
@@ -555,7 +555,7 @@ export default {
                     "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
                     "iframeText": "Select competencies to align...",
                     "valuesIndexed": function() { return me.relations["broadens"]; },
-                    "noTextEditing": true,
+                    "noTextEditing": "true",
                     "add": "unsaved",
                     "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "broadens", values); },
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "broadens", target); },
@@ -569,7 +569,7 @@ export default {
                     "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
                     "iframeText": "Select competencies to align...",
                     "valuesIndexed": function() { return me.relations["isEquivalentTo"]; },
-                    "noTextEditing": true,
+                    "noTextEditing": "true",
                     "add": "unsaved",
                     "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEquivalentTo", values); },
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isEquivalentTo", target); },
@@ -583,7 +583,7 @@ export default {
                     "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
                     "iframeText": "Select competencies to align...",
                     "valuesIndexed": function() { return me.relations["majorRelated"]; },
-                    "noTextEditing": true,
+                    "noTextEditing": "true",
                     "add": "unsaved",
                     "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "majorRelated", values); },
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "majorRelated", target); },
@@ -597,7 +597,7 @@ export default {
                     "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
                     "iframeText": "Select competencies to align...",
                     "valuesIndexed": function() { return me.relations["minorRelated"]; },
-                    "noTextEditing": true,
+                    "noTextEditing": "true",
                     "add": "unsaved",
                     "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "minorRelated", values); },
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "minorRelated", target); },
@@ -611,7 +611,7 @@ export default {
                     "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
                     "iframeText": "Select competencies to align...",
                     "valuesIndexed": function() { return me.relations["requires"]; },
-                    "noTextEditing": true,
+                    "noTextEditing": "true",
                     "add": "unsaved",
                     "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "requires", values); },
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "requires", target); },
