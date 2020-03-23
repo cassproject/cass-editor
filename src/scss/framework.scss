@@ -1,7 +1,7 @@
 @import './variables.scss';
 
 .page-framework{
-    
+    padding-top: 52px;
     .far.fa-circle {
         font-size: .5rem;
     }
@@ -28,7 +28,7 @@
             display: flex;
             flex-direction: column;
             flex-flow: column;
-            background-color: $background-light;
+            background-color: white;
             padding: 0rem 0rem;
             ul{
                 margin-left:0.5rem;
@@ -44,7 +44,7 @@
                 justify-content: space-between;
                 bottom: -3rem;
                 padding: .5rem .5rem;
-                background-color:$background-medium;
+                background-color:white;
                     .action {
                         width: 30%;
                     }
@@ -103,7 +103,7 @@
                                 .input-field {
                                     width: 100%;
                                     textarea {
-                                        border: solid 1px rgba($dark, .3);
+                                        border: none;
                                         border-radius: 2px;
                                         width: 100%;
                                     }
@@ -131,13 +131,12 @@
             background-color:yellow;
         } 
         .e-HierarchyNode {
-            border-left: solid 1px $background-medium;
+            border-left: none;
             margin: .5rem;
             .e-thing-ul {
                 width: calc(100% - 16px);
             }
         }
-
         .e-Hierarchy-ul {
             ul.e-Thing-ul, .e-Thing-always-ul {
                 background-color:$light;
@@ -151,7 +150,7 @@
                 }
                 // non editing state - normal view 
                 li.e-Property:not(:last-child) {
-                    border-bottom: solid 1px rgba($dark, .1);  
+                    border-bottom: none;  
                 }
                 li.e-Property {
                     cursor: pointer;
@@ -236,7 +235,7 @@
                                 textarea {
                                     width: 100%;
                                     border-radius: 5px;
-                                    border: 1px solid rgba($black, .25);
+                                    border: none;
                                     padding: 6px;
                                 }
                             }
@@ -318,14 +317,13 @@
                                 textarea {
                                     border-radius: 0px;
                                     border:transparent;
-                                    border-bottom: 1px solid rgba($dark, .25);
+                                    border-bottom: none;
                                     padding: 6px;
                                 }
                     
                                 .input-field {
                                     textarea {
-                                        border: solid 1px rgba($dark, .3);
-                                        border-radius: 2px;
+                                        border: none;
                                         width: 100%;
                                     }
                                 }
@@ -362,7 +360,7 @@
         }
         .e-Competency {
             transform: translateX(0);
-            border-left: solid 1px rgba($dark, .3);
+            border-left: none;
             a {
                 display:none;
             }
@@ -414,7 +412,7 @@
                     width: 30%;
                 }
                 .text-input, .textarea-input {
-                    border:1px solid rgba($black, .25);
+                    border: none;
                     border-radius: 5px;
                 }
             }
