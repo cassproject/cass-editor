@@ -1,54 +1,80 @@
 <template>
-    <div id="framework-editor-toolbar" class="has-background-white">
+    <div
+        id="framework-editor-toolbar"
+        class="has-background-white">
         <!-- property view -->
-        <div class="dropdown" :class="{ 'is-active': showPropertyViewDropDown}" >
+        <div
+            class="dropdown"
+            :class="{ 'is-active': showPropertyViewDropDown}">
             <div class="dropdown-trigger">
-                <button class="button is-text" 
-                @click="showPropertyViewDropDown = !showPropertyViewDropDown"
-                aria-haspopup="true">
-                <span>Property View</span>
-                <span class="icon is-small">
-                    <i class="fas fa-angle-down" aria-hidden="true"></i>
-                </span>
+                <button
+                    class="button is-text"
+                    @click="showPropertyViewDropDown = !showPropertyViewDropDown"
+                    aria-haspopup="true">
+                    <span>Property View</span>
+                    <span class="icon is-small">
+                        <i
+                            class="fas fa-angle-down"
+                            aria-hidden="true" />
+                    </span>
                 </button>
             </div>
-            <div class="dropdown-menu" id="property-dropdown" role="menu">
+            <div
+                class="dropdown-menu"
+                id="property-dropdown"
+                role="menu">
                 <div class="dropdown-content">
-                <a href="#" class="dropdown-item">
-                    Primary Properties
-                </a>
-                <a class="dropdown-item">
-                    Secondary Properties
-                </a>
-                <a href="#" class="dropdown-item is-active">
-                    Tertiary Properties
-                </a>
+                    <a
+                        href="#"
+                        class="dropdown-item">
+                        Primary Properties
+                    </a>
+                    <a class="dropdown-item">
+                        Secondary Properties
+                    </a>
+                    <a
+                        href="#"
+                        class="dropdown-item is-active">
+                        Tertiary Properties
+                    </a>
                 </div>
             </div>
         </div>
         <!-- share: export or manage users -->
-        <div class="dropdown" :class="{ 'is-active': showShareDropdown}" >
+        <div
+            class="dropdown"
+            :class="{ 'is-active': showShareDropdown}">
             <div class="dropdown-trigger">
-                <button class="button is-text" 
-                @click="showShareDropdown = !showShareDropdown"
-                aria-haspopup="true">
-                <span>Property View</span>
-                <span class="icon is-small">
-                    <i class="fas fa-angle-down" aria-hidden="true"></i>
-                </span>
+                <button
+                    class="button is-text"
+                    @click="showShareDropdown = !showShareDropdown"
+                    aria-haspopup="true">
+                    <span>Property View</span>
+                    <span class="icon is-small">
+                        <i
+                            class="fas fa-angle-down"
+                            aria-hidden="true" />
+                    </span>
                 </button>
             </div>
-            <div class="dropdown-menu" id="share-menu" role="menu">
+            <div
+                class="dropdown-menu"
+                id="share-menu"
+                role="menu">
                 <div class="dropdown-content">
-                <a href="#" class="dropdown-item">
-                    Primary Properties
-                </a>
-                <a class="dropdown-item">
-                    Secondary Properties
-                </a>
-                <a href="#" class="dropdown-item is-active">
-                    Tertiary Properties
-                </a>
+                    <a
+                        href="#"
+                        class="dropdown-item">
+                        Primary Properties
+                    </a>
+                    <a class="dropdown-item">
+                        Secondary Properties
+                    </a>
+                    <a
+                        href="#"
+                        class="dropdown-item is-active">
+                        Tertiary Properties
+                    </a>
                 </div>
             </div>
         </div>
@@ -62,26 +88,29 @@
                 <i class="fas fa-undo-alt" />
             </span>
         </div>
-       <div class="button is-text">
+        <div class="button is-text">
             <span class="icon">
                 <i class="fas fa-history" />
             </span>
         </div>
         <div class="framework-search">
-        <input class="input" type="text" placeholder="Text input">
+            <input
+                class="input"
+                type="text"
+                placeholder="Text input">
         </div>
     </div>
 </template>
 <script>
 export default {
-    name: 'framework-editor-toolbar',
-    data () {
+    name: 'FrameworkEditorToolbar',
+    data() {
         return {
-            showPropertyViewDropDown: false, 
-            showShareDropdown: false,
-        }
+            showPropertyViewDropDown: false,
+            showShareDropdown: false
+        };
     }
-}
+};
 </script>
 
 <style lang="scss">
