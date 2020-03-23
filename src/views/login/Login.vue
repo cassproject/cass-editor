@@ -70,7 +70,9 @@
 export default {
     name: 'Login',
     data: () => ({
+        GROUP_SEARCH_SIZE: 10000,
         PERSON_SEARCH_SIZE: 10000,
+        GROUP_PPK_KEY: 'https://schema.cassproject.org/0.3/ppk',
         username: '',
         password: '',
         createAccountUsername: '',
@@ -95,16 +97,48 @@ export default {
         createLinkPersonNameInvalid: false,
         createLinkPersonEmailInvalid: false,
         createLinkPersonEmailExists: false,
-        identityToLinkToPerson: {}
+        identityToLinkToPerson: {},
+        linkedPerson: {}
     }),
     methods: {
         goToAppHome: function() {
             this.loginBusy = false;
             this.$router.push({path: '/config'});
         },
+        addGroupIdentity(group) {
+            console.log("Adding group identity: " + "(" + group.shortId() + ") - " + group.getName());
+            let ecevGroupPpk = new EcEncryptedValue();
+            ecevGroupPpk.copyFrom(group[this.GROUP_PPK_KEY]);
+            let currentGroupPpkPem = ecevGroupPpk.decryptIntoString();
+            let grpIdent = new EcIdentity();
+            grpIdent.displayName = group.getName();
+            grpIdent.ppk = EcPpk.fromPem(currentGroupPpkPem);
+            EcIdentityManager.addIdentityQuietly(grpIdent);
+        },
+        searchRepositoryForGroupsSuccess(ecoa) {
+            let linkedPersonShortId = this.linkedPerson.shortId();
+            if (ecoa && ecoa.length > 0) {
+                for (let eco of ecoa) {
+                    if (eco.employee && eco.employee.length > 0) {
+                        for (let e of eco.employee) {
+                            if (e.equals(linkedPersonShortId)) {
+                                this.addGroupIdentity(eco);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        searchRepositoryForGroupsFailure(msg) {
+            console.log("Group search failure: " + msg);
+            this.goToAppHome();
+        },
         addGroupIdentities: function() {
-            // TODO implement
-            console.log(" TODO adding group identities");
+            console.log(" Adding group identities...");
+            let paramObj = {};
+            paramObj.size = this.GROUP_SEARCH_SIZE;
+            EcOrganization.search(window.repo, '', this.searchRepositoryForGroupsSuccess, this.searchRepositoryForGroupsFailure, paramObj);
             this.goToAppHome();
         },
         setDataToBaseLogin: function(clearIdentityManager) {
@@ -134,6 +168,7 @@ export default {
                 EcIdentityManager.clearContacts();
                 EcIdentityManager.clearIdentities();
                 this.identityToLinkToPerson = {};
+                this.linkedPerson = {};
             }
             this.amJustLoggingIn = true;
             this.loginBusy = false;
@@ -192,6 +227,7 @@ export default {
             p.email = this.createLinkPersonEmail;
             console.log(p);
             this.$store.commit('editor/loggedOnPerson', p);
+            this.linkedPerson = p;
             EcRepository.save(p, this.handleCreatePersonSuccess, this.handleAttemptLoginFetchIdentityFailure);
         },
         handleCreateAccountFetchIdentitySuccess() {
@@ -313,6 +349,7 @@ export default {
                 if (ep.getGuid().equals(this.identityToLinkToPerson.ppk.toPk().fingerprint())) {
                     matchingPersonRecordFound = true;
                     this.$store.commit('editor/loggedOnPerson', ep);
+                    this.linkedPerson = ep;
                     console.log('Matching person record found: ');
                     console.log(ep);
                 }

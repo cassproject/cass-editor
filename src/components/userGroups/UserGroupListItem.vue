@@ -1,6 +1,22 @@
 <template>
     <div>
-        User Group List Item
+        <div class="columns">
+            <div class="column is-3">
+                <b>{{ name }}</b>
+            </div>
+            <div class="column is-5">
+                {{ description }}
+            </div>
+            <div class="column is-2">
+                {{ numMembers }}
+            </div>
+            <div class="column is-2">
+                <button @click="$emit('showDetails', id)">
+                    <span v-if="isOwned">Manage</span>
+                    <span v-if="!isOwned">View</span>
+                </button>
+            </div>
+        </div>
     </div>
 </template>
 

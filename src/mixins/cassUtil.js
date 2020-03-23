@@ -3,6 +3,14 @@ export const cassUtil = {
     data() {
     },
     methods: {
+        getPersonEcPk(personObj) {
+            let personFingerprint = this.generateProbablePersonFingerprintFromShortId(personObj.shortId());
+            for (let pkPem of personObj.owner) {
+                let ecPk = EcPk.fromPem(pkPem);
+                if (personFingerprint.equals(ecPk.fingerprint())) return ecPk;
+            }
+            return null;
+        },
         setDefaultBrowserConfigId(configId) {
             localStorage.setItem("cassAuthoringToolDefaultBrowserConfigId", configId);
         },
@@ -57,7 +65,8 @@ export const cassUtil = {
                 let readerFingerprint = EcPk.fromPem(readerPkPem).fingerprint();
                 if (readerFingerprint.equals(personFingerprint)) return true;
             }
-            return obj.hasReader(EcPk.fromPem(pkPem));
+            //return obj.hasReader(EcPk.fromPem(pkPem));
+            return false;
         },
         areAnyIdentitiesThisPerson(personObj) {
             let personFingerprint = personObj.getFingerprint();
@@ -76,3 +85,4 @@ export const cassUtil = {
         }
     }
 };
+
