@@ -465,6 +465,7 @@ export default {
             }
         }, function() {}, function() {});
         this.refreshPage();
+        this.spitEvent('viewChanged');
     },
     watch: {
         exportType: function() {

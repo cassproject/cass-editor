@@ -131,6 +131,7 @@ export default {
     components: {Thing, ConceptHierarchy},
     created: function() {
         this.refreshPage();
+        this.spitEvent('viewChanged');
     },
     watch: {
         exportType: function() {

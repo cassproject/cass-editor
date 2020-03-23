@@ -899,6 +899,10 @@ export default {
                 true);
         }
     },
+    created: function() {
+        this.$store.commit('editor/framework', null);
+        this.spitEvent('viewChanged');
+    },
     methods: {
         handleDoneLoading: function() {
             console.log("done loading");
