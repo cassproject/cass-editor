@@ -11,10 +11,10 @@
                 {{ isDefault }}
             </div>
             <div class="column is-2">
-                <button  :disabled="defaultBrowserConfigId && defaultBrowserConfigId.equals(id)" @click="$emit('setBrowserDefault', id)">Set as Browser Default</button>
+                <button  :disabled="defaultBrowserConfigId && defaultBrowserConfigId.equals(id)" @click="$emit('setBrowserDefault', id)">set as browser default</button>
                 <button @click="$emit('showDetails', id)">
-                    <span v-if="isOwned">Manage</span>
-                    <span v-if="!isOwned">View</span>
+                    <span v-if="isOwned">manage</span>
+                    <span v-if="!isOwned">view</span>
                 </button>
             </div>
         </div>

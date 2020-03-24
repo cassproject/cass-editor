@@ -1,5 +1,88 @@
 <template>
     <div>
+        <!-- busy modal-->
+        <div
+            class="modal"
+            :class="[{'is-active': configDetailsBusy}]">
+            <div class="modal-background"></div>
+            <div class="modal-content has-text-centered">
+                <span class="icon is-large has-text-center has-text-link">
+                    <i class="fas fa-3x fa-spinner is-info fa-pulse" />
+                </span>
+            </div>
+        </div>
+        <!-- level search modal -->
+        <div
+            class="modal"
+            :class="[{'is-active': showSelectLevelModal}]">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="subtitle is-size-3 modal-card-title">
+                        {{ levelSelectionModalTitle }}
+                        <button
+                            class="delete is-pulled-right"
+                            aria-label="close"
+                            @click="closeSelectLevelModal">
+                        </button>
+                    </p>
+                </header>
+                <div class="modal-card-body has-text-dark">
+                    <div v-if="!showAddNewLevelSection">
+                        <div>
+                            <div class="columns">
+                                <div class="column is-3 listHdr">
+                                    <label>Available Levels:</label>
+                                </div>
+                                <div class="column is-9 listHdr">
+                                    <input type="text" v-model="selectedLevelFilter" placeholder="level filter">
+                                </div>
+                            </div>
+                            <div class="columns">
+                                <div class="column is-1 listHdr"></div>
+                                <div class="column is-4 listHdr">name</div>
+                                <div class="column is-6 listHdr">description</div>
+                            </div>
+                        </div>
+                        <div class="selectBox">
+                            <div class="columns is-multiline" v-for="lvl in filteredLevels">
+                                <div class="column is-1">
+                                    <input :id="lvl.shortId()" :value="lvl.shortId()" name="lvl.shortId()" type="checkbox" v-model="selectedLevels" />
+                                </div>
+                                <div class="column is-4">{{ lvl.getName() }}</div>
+                                <div class="column is-4">{{ lvl.description }}</div>
+                            </div>
+                        </div>
+                        <br>
+                        <div v-if="!readOnly">
+                            <button @click="showAddNewLevel">add level</button>
+                            <button @click="applySelectLevels">apply</button>
+                            <button @click="closeSelectLevelModal">cancel</button>
+                        </div>
+                    </div>
+                    <div v-if="showAddNewLevelSection">
+                        <label>Name: </label>
+                        <div>
+                            <input type="text" v-model="newLevelName">
+                        </div>
+                        <br>
+                        <label>Description: </label>
+                        <div v-if="!readOnly">
+                            <input type="text" v-model="newLevelDescription">
+                        </div>
+                        <br>
+                        <div v-if="levelInvalid">
+                            <p>Level is invalid:</p>
+                            <p v-if="levelNameInvalid">*Level name is required</p>
+                        </div>
+                        <div v-if="!readOnly && !savingLevelBusy">
+                            <button @click="saveAddNewLevel">save new level</button>
+                            <button @click="cancelAddNewLevel">cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- custom property details modal -->
         <div
             class="modal"
@@ -100,7 +183,7 @@
                         <br>
                         <label>Permitted Values (Optional): </label>
                         <p v-if="!readOnly">Leave this section empty to allow any values for this property</p>
-                        <button v-if="!readOnly" @click="addCustomPropertyPermittedValue">Add</button>
+                        <button v-if="!readOnly" @click="addCustomPropertyPermittedValue">add</button>
                         <div class="columns" v-if="customPropertyPermittedValues.length > 0">
                             <div class="column is-5 listHdr">display</div>
                             <div class="column is-5 listHdr">value</div>
@@ -129,8 +212,8 @@
                         <p v-if="customPropertyPropertyNameInvalid">*Description is required</p>
                     </div>
                     <div v-if="!readOnly">
-                        <button @click="applyCustomPropertyEdits">Apply</button>
-                        <button @click="closeCustomPropertyModal">Cancel</button>
+                        <button @click="applyCustomPropertyEdits">apply</button>
+                        <button @click="closeCustomPropertyModal">cancel</button>
                     </div>
                 </div>
             </div>
@@ -325,7 +408,7 @@
         <br>
         <br>
         <!-- ************************************** Competency Type Enforcement ************************************************ -->
-        <h5>Competency Type Enforcement (optional)</h5>
+        <h5>Enforce Competency Types? (optional)</h5>
         <p v-if="!readOnly">Leave this section empty to allow competencies of any type.</p>
         <div v-if="readOnly">
             {{ config.compEnforceTypes }}
@@ -373,25 +456,49 @@
             </select>
         </div>
         <div v-if="config.compAllowLevels">
-            <div class="columns">
-                <div class="column is-2">level label:</div>
-                <div class="column is-5">
-                    <div v-if="readOnly">
-                        {{ config.levelLabel }}
-                    </div>
-                    <div v-if="!readOnly">
-                        <input type="text" v-model="config.levelLabel">
-                    </div>
+            <div>
+                <label>label label: </label>
+                <div v-if="readOnly">
+                    {{ config.levelLabel }}
+                </div>
+                <div v-if="!readOnly">
+                    <input type="text" v-model="config.levelLabel">
                 </div>
             </div>
-            <div class="columns">
-                <div class="column is-2">level description:</div>
-                <div class="column is-5">
-                    <div v-if="readOnly">
-                        {{ config.levelDescription }}
+            <div>
+                <label>level description: </label>
+                <div v-if="readOnly">
+                    {{ config.levelDescription }}
+                </div>
+                <div v-if="!readOnly">
+                    <input type="text" v-model="config.levelDescription">
+                </div>
+            </div>
+            <br>
+            <h5>Enforce Level Values? (optional)</h5>
+            <div v-if="readOnly">
+                {{ config.enforceLevelValues }}
+            </div>
+            <div v-if="!readOnly">
+                <select v-model="config.enforceLevelValues">
+                    <option :value="true">true</option>
+                    <option :value="false">false</option>
+                </select>
+            </div>
+            <div v-if="config.enforceLevelValues">
+                <button @click="showSelectLevelsModal">manage enforced levels</button>
+                <div class="columns">
+                    <div class="column is-2 listHdr">name</div>
+                    <div class="column is-4 listHdr">description</div>
+                </div>
+                <div
+                    class="columns"
+                    v-for="lvlId in localEnforcedLevelValues">
+                    <div class="column is-2">
+                        <p>{{ getLevelNameById(lvlId) }}</p>
                     </div>
-                    <div v-if="!readOnly">
-                        <input type="text" v-model="config.levelDescription">
+                    <div class="column is-4">
+                        <p>{{ getLevelDescById(lvlId) }}</p>
                     </div>
                 </div>
             </div>
@@ -483,12 +590,12 @@
         </div>
         <!-- ************************************** Actions ************************************************ -->
         <div v-if="!readOnly">
-            <button @click="$emit('setBrowserDefault', config.id)">Set as Browser Default</button>
+            <button @click="$emit('setBrowserDefault', config.id)">set as browser default</button>
             <button @click="validateCurrentConfigAndEmitSave">save</button>
             <button @click="$emit('cancel')">cancel</button>
         </div>
         <div v-if="readOnly">
-            <button @click="$emit('setBrowserDefault', config.id)">Set as Browser Default</button>
+            <button @click="$emit('setBrowserDefault', config.id)">set as browser default</button>
             <button @click="$emit('back')">back</button>
         </div>
     </div>
@@ -497,8 +604,10 @@
 <script>
 import FrameworkCompetencyPropertyListItem from "./FrameworkCompetencyPropertyListItem";
 import RelationshipListItem from "./RelationshipListItem";
+import {cassUtil} from '../../mixins/cassUtil';
 
 export default {
+    mixins: [cassUtil],
     name: 'configurationDetails',
     props: {
         config: {
@@ -513,51 +622,171 @@ export default {
             default: null
         }
     },
-    data: () => ({
-        DEFAULT_CUSTOM_PROPERTY_CONTEXT: 'https://schema.cassproject.org/0.4/',
-        DEFAULT_CUSTOM_PROPERTY_RANGE: 'http://schema.org/Text',
-        configInvalid: false,
-        configNameInvalid: false,
-        configDescriptionInvalid: false,
-        configEnforcedTypesInvalid: false,
-        configRelationshipsInvalid: false,
-        configFrameworkIdLabelInvalid: false,
-        configFrameworkIdDescriptionInvalid: false,
-        configFrameworkNameLabelInvalid: false,
-        configFrameworkNameDescriptionInvalid: false,
-        configFrameworkDescLabelInvalid: false,
-        configFrameworkDescDescriptionInvalid: false,
-        configCompetencyIdLabelInvalid: false,
-        configCompetencyIdDescriptionInvalid: false,
-        configCompetencyNameLabelInvalid: false,
-        configCompetencyNameDescriptionInvalid: false,
-        configCompetencyDescLabelInvalid: false,
-        configCompetencyDescDescriptionInvalid: false,
-        configCompetencyTypeLabelInvalid: false,
-        configCompetencyTypeDescriptionInvalid: false,
-        showCustomPropertyDetailsModal: false,
-        customPropertyModalTitle: '',
-        customPropertyParent: '',
-        customPropertyIsNew: true,
-        customPropertyContext: '',
-        customPropertyPropertyName: '',
-        customPropertyRange: '',
-        customPropertyDescription: '',
-        customPropertyLabel: '',
-        customPropertyPriority: '',
-        customPropertyRequired: false,
-        customPropertyPermittedValues: [],
-        customPropertyInvalid: false,
-        customPropertyPropertyNameExists: false,
-        customPropertyPropertyNameInvalid: false,
-        customPropertyLabelInvalid: false,
-        customPropertyDescriptionInvalid: false
-    }),
+    data: function() {
+        return {
+            LEVEL_SEARCH_SIZE: 10000,
+            DEFAULT_CUSTOM_PROPERTY_CONTEXT: 'https://schema.cassproject.org/0.4/',
+            DEFAULT_CUSTOM_PROPERTY_RANGE: 'http://schema.org/Text',
+            configDetailsBusy: false,
+            configInvalid: false,
+            configNameInvalid: false,
+            configDescriptionInvalid: false,
+            configEnforcedTypesInvalid: false,
+            configRelationshipsInvalid: false,
+            configFrameworkIdLabelInvalid: false,
+            configFrameworkIdDescriptionInvalid: false,
+            configFrameworkNameLabelInvalid: false,
+            configFrameworkNameDescriptionInvalid: false,
+            configFrameworkDescLabelInvalid: false,
+            configFrameworkDescDescriptionInvalid: false,
+            configCompetencyIdLabelInvalid: false,
+            configCompetencyIdDescriptionInvalid: false,
+            configCompetencyNameLabelInvalid: false,
+            configCompetencyNameDescriptionInvalid: false,
+            configCompetencyDescLabelInvalid: false,
+            configCompetencyDescDescriptionInvalid: false,
+            configCompetencyTypeLabelInvalid: false,
+            configCompetencyTypeDescriptionInvalid: false,
+            showCustomPropertyDetailsModal: false,
+            customPropertyModalTitle: '',
+            customPropertyParent: '',
+            customPropertyIsNew: true,
+            customPropertyContext: '',
+            customPropertyPropertyName: '',
+            customPropertyRange: '',
+            customPropertyDescription: '',
+            customPropertyLabel: '',
+            customPropertyPriority: '',
+            customPropertyRequired: false,
+            customPropertyPermittedValues: [],
+            customPropertyInvalid: false,
+            customPropertyPropertyNameExists: false,
+            customPropertyPropertyNameInvalid: false,
+            customPropertyLabelInvalid: false,
+            customPropertyDescriptionInvalid: false,
+            levelSelectionModalTitle: '',
+            showAddNewLevelSection: false,
+            newLevelName: '',
+            newLevelDescription: '',
+            savingLevelBusy: false,
+            showSelectLevelModal: false,
+            selectedLevelFilter: '',
+            selectedLevels: [],
+            levelList: [],
+            levelInvalid: false,
+            levelNameInvalid: false,
+            localEnforcedLevelValues: this.config.enforcedLevelValues
+        };
+    },
     components: {
         FrameworkCompetencyPropertyListItem,
         RelationshipListItem
     },
     methods: {
+        setAllValidationsChecksToValid() {
+            this.levelInvalid = false;
+            this.levelNameInvalid = false;
+        },
+        validateLevelFields() {
+            this.setAllValidationsChecksToValid();
+            if (!this.newLevelName || this.newLevelName.trim().equals('')) {
+                this.levelInvalid = true;
+                this.levelNameInvalid = true;
+            }
+        },
+        setDataFieldsFromAddLevelToSelectLevel() {
+            this.setAllValidationsChecksToValid();
+            this.levelSelectionModalTitle = 'Select Enforced Levels';
+            this.newLevelName = '';
+            this.newLevelDescription = '';
+            this.savingLevelBusy = false;
+            this.showAddNewLevelSection = false;
+        },
+        buildLevelListForLevelSaveSuccess(ecla) {
+            if (ecla && ecla.length > 0) {
+                this.levelList = ecla;
+                this.sortLevelList();
+            } else this.levelList = [];
+            this.setDataFieldsFromAddLevelToSelectLevel();
+        },
+        buildLevelListForLevelSaveFailure(msg) {
+            console.log("Level search failure: " + msg);
+            this.configDetailsBusy = false;
+        },
+        createAndSaveNewLevelSuccess() {
+            let paramObj = {};
+            paramObj.size = this.LEVEL_SEARCH_SIZE;
+            EcLevel.search(window.repo, '', this.buildLevelListForLevelSaveSuccess, this.buildLevelListForLevelSaveFailure, paramObj);
+        },
+        createAndSaveNewLevelFailure(msg) {
+            console.log('Failed to save new level: ' + msg);
+            this.setDataFieldsFromAddLevelToSelectLevel();
+        },
+        createAndSaveNewLevel() {
+            let ecl = new EcLevel();
+            ecl.generateId(window.repo.selectedServer);
+            this.addAllIdentityPksAsOwners(ecl);
+            ecl.name = this.newLevelName.trim();
+            if (this.newLevelDescription && !this.newLevelDescription.trim().equals('')) ecl.description = this.newLevelDescription.trim();
+            EcRepository.save(ecl, this.createAndSaveNewLevelSuccess, this.createAndSaveNewLevelFailure);
+        },
+        saveAddNewLevel() {
+            this.validateLevelFields();
+            if (!this.levelInvalid) {
+                this.savingLevelBusy = true;
+                this.selectedLevelFilter = '';
+                this.createAndSaveNewLevel();
+            }
+        },
+        cancelAddNewLevel() {
+            this.setDataFieldsFromAddLevelToSelectLevel();
+        },
+        showAddNewLevel() {
+            this.setAllValidationsChecksToValid();
+            this.levelSelectionModalTitle = 'Add New Level';
+            this.newLevelName = '';
+            this.newLevelDescription = '';
+            this.savingLevelBusy = false;
+            this.showAddNewLevelSection = true;
+        },
+        closeSelectLevelModal() {
+            this.levelSelectionModalTitle = '';
+            this.selectedLevels = [];
+            this.selectedLevelFilter = '';
+            this.newLevelName = '';
+            this.newLevelDescription = '';
+            this.savingLevelBusy = false;
+            this.showAddNewLevelSection = false;
+            this.showSelectLevelModal = false;
+        },
+        applySelectLevels() {
+            this.localEnforcedLevelValues = this.selectedLevels;
+            this.closeSelectLevelModal();
+        },
+        showSelectLevelsModal() {
+            this.selectedLevels = this.localEnforcedLevelValues;
+            this.levelSelectionModalTitle = 'Select Enforced Levels';
+            this.showAddNewLevelSection = false;
+            this.showSelectLevelModal = true;
+        },
+        getLevelNameById(levelId) {
+            let lvl = this.getLevelById(levelId);
+            if (!lvl) return 'Unknown';
+            else return lvl.getName();
+        },
+        getLevelDescById(levelId) {
+            let lvl = this.getLevelById(levelId);
+            if (!lvl) return 'Unknown';
+            else return lvl.getDescription();
+        },
+        getLevelById(levelId) {
+            for (let lvl of this.levelList) {
+                if (lvl.shortId().equals(levelId)) {
+                    return lvl;
+                }
+            }
+            return null;
+        },
         setAllConfigValidationsChecksToValid() {
             this.configInvalid = false;
             this.configNameInvalid = false;
@@ -681,7 +910,7 @@ export default {
         validateCurrentConfigAndEmitSave() {
             this.validateConfigFields();
             if (!this.configInvalid) {
-                this.$emit('save');
+                this.$emit('save', this.localEnforcedLevelValues);
             }
         },
         deleteCompetencyEnforcedType(etIndex) {
@@ -960,6 +1189,45 @@ export default {
         },
         updateRelationshipProperty: function(relationship, field, newValue) {
             this.config.relationships[relationship][field] = newValue;
+        },
+        sortLevelList() {
+            let me = this;
+            this.levelList.sort(function(l1, l2) {
+                let l1Enforced = me.localEnforcedLevelValues.includes(l1.shortId());
+                let l2Enforced = me.localEnforcedLevelValues.includes(l2.shortId());
+                if (l1Enforced !== l2Enforced) {
+                    if (l2Enforced) return 1;
+                    else return -1;
+                } else {
+                    let l1Owned = me.doesAnyIdentityOwnObject(l1);
+                    let l2Owned = me.doesAnyIdentityOwnObject(l2);
+                    if (l1Owned !== l2Owned) {
+                        if (l2Owned) return 1;
+                        else return -1;
+                    } else {
+                        if (l1.getName() > l2.getName()) return 1;
+                        else if (l2.getName() > l1.getName()) return -1;
+                        else return 0;
+                    }
+                }
+            });
+        },
+        buildLevelListSuccess(ecla) {
+            if (ecla && ecla.length > 0) {
+                this.levelList = ecla;
+                this.sortLevelList();
+            } else this.levelList = [];
+            this.configDetailsBusy = false;
+        },
+        buildLevelListFailure(msg) {
+            console.log("Level search failure: " + msg);
+            this.configDetailsBusy = false;
+        },
+        buildLevelList() {
+            this.configDetailsBusy = true;
+            let paramObj = {};
+            paramObj.size = this.LEVEL_SEARCH_SIZE;
+            EcLevel.search(window.repo, '', this.buildLevelListSuccess, this.buildLevelListFailure, paramObj);
         }
     },
     computed: {
@@ -975,7 +1243,18 @@ export default {
         shouldAllowCustomPropertyPermittedValues: function() {
             if (this.customPropertyRange.equals('http://schema.org/Text')) return true;
             else return false;
+        },
+        filteredLevels() {
+            if (!this.levelList || this.levelList.length <= 0) return [];
+            else {
+                return this.levelList.filter(level => {
+                    return ((level.getName() && level.getName().toLowerCase().indexOf(this.selectedLevelFilter.toLowerCase()) > -1));
+                });
+            }
         }
+    },
+    mounted() {
+        this.buildLevelList();
     }
 };
 </script>
@@ -995,6 +1274,11 @@ export default {
     }
     .listHdr {
         font-weight: bold;
+    }
+    .selectBox {
+        min-height: 20rem;
+        max-height: 20rem;
+        overflow: auto;
     }
 </style>
 

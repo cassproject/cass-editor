@@ -372,6 +372,15 @@ export default {
             labelObj["@language"] = "en";
             labelObj["@value"] = this.currentConfig.levelDescription.trim();
             levConf["https://schema.cassproject.org/0.4/Level"]["http://www.w3.org/2000/01/rdf-schema#label"].push(labelObj);
+            if (this.currentConfig.enforceLevelValues && this.currentConfig.enforcedLevelValues && this.currentConfig.enforcedLevelValues.length > 0) {
+                let optionsArray = [];
+                for (let lvlId of this.currentConfig.enforcedLevelValues) {
+                    let lvlOptionObj = {};
+                    lvlOptionObj["val"] = lvlId;
+                    optionsArray.push(lvlOptionObj);
+                }
+                levConf["https://schema.cassproject.org/0.4/Level"]["options"] = optionsArray;
+            }
         },
         addLevelsConfigToObject(cco) {
             if (this.currentConfig.compAllowLevels) {
@@ -417,7 +426,13 @@ export default {
             this.configBusy = false;
             this.showListView();
         },
-        saveCurrentConfig() {
+        saveCurrentConfig(enforcedLevels) {
+            console.log("saveCurrentConfig: ");
+            console.log(enforcedLevels);
+            if (enforcedLevels && enforcedLevels.length > 0) {
+                this.currentConfig.enforceLevelValues = true;
+                this.currentConfig.enforcedLevelValues = enforcedLevels;
+            } else this.currentConfig.enforceLevelValues = false;
             this.generateComplexConfigObjectFromCurrentConfig();
             console.log("complexConfigObject: ");
             console.log(JSON.stringify(this.complexConfigObject));
@@ -452,6 +467,8 @@ export default {
             newConfigObj.compAllowLevels = true;
             newConfigObj.levelLabel = 'Level';
             newConfigObj.levelDescription = 'Level of the competency';
+            newConfigObj.enforceLevelValues = false;
+            newConfigObj.enforcedLevelValues = [];
             newConfigObj.compIdLabel = "Competency ID";
             newConfigObj.compIdDescription = "ID of the competency";
             newConfigObj.compIdPriorty = "primary";
@@ -640,11 +657,22 @@ export default {
             simpleConfigObj.compAllowLevels = false;
             simpleConfigObj.levelLabel = '';
             simpleConfigObj.levelDescription = '';
+            simpleConfigObj.enforceLevelValues = false;
+            simpleConfigObj.enforcedLevelValues = [];
             if (complexConfigObj["levelsConfig"] && complexConfigObj["levelsConfig"]["https://schema.cassproject.org/0.4/Level"]) {
                 let lo = complexConfigObj["levelsConfig"]["https://schema.cassproject.org/0.4/Level"];
                 simpleConfigObj.compAllowLevels = true;
                 simpleConfigObj.levelLabel = lo["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
                 simpleConfigObj.levelDescription = lo["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
+                if (complexConfigObj["levelsConfig"]["https://schema.cassproject.org/0.4/Level"]["options"]) {
+                    let complexLevelsEnforced = complexConfigObj["levelsConfig"]["https://schema.cassproject.org/0.4/Level"]["options"];
+                    if (complexLevelsEnforced.length > 0) {
+                        simpleConfigObj.enforceLevelValues = true;
+                        for (let cLvl of complexLevelsEnforced) {
+                            simpleConfigObj.enforcedLevelValues.push(cLvl["val"]);
+                        }
+                    }
+                }
             }
         },
         buildSimpleRelationshipConfigObject(simpleConfigObj, complexRelationshipObj, relationshipName, defaultLabel) {
@@ -758,6 +786,10 @@ export default {
             a.compAllowLevels = true;
             a.levelLabel = 'Level';
             a.levelDescription = 'Level of the competency';
+            a.enforceLevelValues = true;
+            a.enforcedLevelValues = [];
+            a.enforcedLevelValues.push("https://dev.api.cassproject.org/api/data/schema.cassproject.org.0.4.Level/760175fd-4bda-49e1-9607-f8fa51737f88");
+            a.enforcedLevelValues.push("https://dev.api.cassproject.org/api/data/schema.cassproject.org.0.4.Level/35d4b028-d805-4da5-8eba-8938fc5ef1d8");
             a.compIdLabel = "COMP ID LABEL 1";
             a.compIdDescription = "COMP ID DESC 1";
             a.compIdPriorty = "secondary";
@@ -843,6 +875,8 @@ export default {
             b.compAllowLevels = false;
             b.levelLabel = 'Level';
             b.levelDescription = 'Level of the competency';
+            b.enforceLevelValues = false;
+            b.enforcedLevelValues = [];
             b.compIdLabel = "competency id";
             b.compIdDescription = "id of the competency";
             b.compIdPriorty = "secondary";
@@ -984,6 +1018,8 @@ export default {
             c.compAllowLevels = true;
             c.levelLabel = 'Level';
             c.levelDescription = 'Level of the competency';
+            c.enforceLevelValues = false;
+            c.enforcedLevelValues = [];
             c.compIdLabel = "COMP ID LABEL 2";
             c.compIdDescription = "COMP ID DESC 2";
             c.compIdPriorty = "secondary";

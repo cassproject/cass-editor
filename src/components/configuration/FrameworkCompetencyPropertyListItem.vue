@@ -37,11 +37,11 @@
             </div>
             <div class="column is-1">
                 <div v-if="custom && readOnly">
-                    <button @click="$emit('manage', propertyParent, propertyIndex)">View</button>
+                    <button @click="$emit('manage', propertyParent, propertyIndex)">view</button>
                 </div>
                 <div v-if="custom && !readOnly">
-                    <button @click="$emit('manage', propertyParent, propertyIndex)">Edit</button>
-                    <button @click="$emit('delete', propertyParent, propertyIndex)">Delete</button>
+                    <button @click="$emit('manage', propertyParent, propertyIndex)">edit</button>
+                    <button @click="$emit('delete', propertyParent, propertyIndex)">delete</button>
                 </div>
             </div>
         </div>

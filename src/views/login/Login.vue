@@ -27,8 +27,8 @@
                     <p><b>Login failed: Invalid Username/Password</b></p>
                 </div>
                 <div>
-                    <button @click="attemptCassLogin">Login</button>
-                    <button @click="showCreateAccount">Create Account</button>
+                    <button @click="attemptCassLogin">login</button>
+                    <button @click="showCreateAccount">create account</button>
                 </div>
             </div>
             <div v-if="amCreatingAccount || amCreatingLinkedPerson">
@@ -57,9 +57,9 @@
                     <p><b>Could not retrieve configuration from selected server: {{configFailMsg}}</b></p>
                 </div>
                 <div>
-                    <button v-if="amCreatingAccount" @click="createNewAccount">Create</button>
-                    <button v-if="amCreatingLinkedPerson" @click="linkPerson">Update</button>
-                    <button @click="setDataToBaseLogin(true)">Cancel</button>
+                    <button v-if="amCreatingAccount" @click="createNewAccount">create</button>
+                    <button v-if="amCreatingLinkedPerson" @click="linkPerson">update</button>
+                    <button @click="setDataToBaseLogin(true)">cancel</button>
                 </div>
             </div>
         </div>

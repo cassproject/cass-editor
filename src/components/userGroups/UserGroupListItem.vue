@@ -12,8 +12,8 @@
             </div>
             <div class="column is-2">
                 <button @click="$emit('showDetails', id)">
-                    <span v-if="isOwned">Manage</span>
-                    <span v-if="!isOwned">View</span>
+                    <span v-if="isOwned">manage</span>
+                    <span v-if="!isOwned">view</span>
                 </button>
             </div>
         </div>

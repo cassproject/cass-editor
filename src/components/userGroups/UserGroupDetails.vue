@@ -43,8 +43,8 @@
                     </div>
                     <br>
                     <div v-if="!readOnly">
-                        <button @click="applyAddMembers">Apply</button>
-                        <button @click="closeAddMemberModal">Cancel</button>
+                        <button @click="applyAddMembers">apply</button>
+                        <button @click="closeAddMemberModal">cancel</button>
                     </div>
                 </div>
             </div>

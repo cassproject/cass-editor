@@ -252,8 +252,7 @@ export default {
             if (ecoa && ecoa.length > 0) {
                 this.userGroupList = ecoa;
                 this.sortUserGroupList();
-            }
-            else this.userGroupList = [];
+            } else this.userGroupList = [];
             this.userGroupBusy = false;
         },
         searchRepositoryForGroupsFailure(msg) {
