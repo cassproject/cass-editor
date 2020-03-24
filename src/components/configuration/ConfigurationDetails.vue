@@ -457,7 +457,7 @@
         </div>
         <div v-if="config.compAllowLevels">
             <div>
-                <label>label label: </label>
+                <label>level label: </label>
                 <div v-if="readOnly">
                     {{ config.levelLabel }}
                 </div>
