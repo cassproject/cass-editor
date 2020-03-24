@@ -8,6 +8,18 @@ p {
     padding: .25rem;
 }
 
+hr  {
+    width: 100%;
+    display: block;
+    height: 1px;
+    padding-left: -1px;
+    margin: 6px auto;
+    border-width: 1px;
+    background-color: rgba( $dark, .5);
+    color: rgba( $dark, .5);
+    border-color: rgba( $dark, .5);
+}
+
 // scrollable area minus top bar size
 .is-scrollable{
     overflow-y: scroll;

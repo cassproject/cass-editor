@@ -3,6 +3,13 @@
 .page-framework{
 
     padding-top: 52px;
+    #select-expand-all-section {
+        padding-top: 1rem !important;
+        .header {
+            padding-left: .75rem;
+            font-weight: 600;
+        }
+    }
     #add-node-selection {
     }
     #add-node-section:hover .add-new-node {
