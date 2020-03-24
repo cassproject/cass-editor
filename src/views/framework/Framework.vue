@@ -68,6 +68,12 @@
                         @click="selectButton">
                         {{ selectButtonText }}
                     </button>
+                    <span v-if="loggedIn">
+                        Make private
+                        <input
+                            type="checkbox"
+                            v-model="privateFramework">
+                    </span>
                 </span>
                 <hr>
                 <Hierarchy
@@ -150,7 +156,8 @@ export default {
             selectAll: false,
             selectedArray: [],
             isEditingContainer: false,
-            config: null
+            config: null,
+            privateFramework: false
         };
     },
     computed: {
@@ -176,6 +183,12 @@ export default {
         },
         shortId: function() {
             return this.$store.state.editor.framework.shortId();
+        },
+        loggedIn: function() {
+            if (EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
+                return true;
+            }
+            return false;
         },
         frameworkProfile: function() {
             if (this.config) {
@@ -467,6 +480,11 @@ export default {
         this.refreshPage();
         this.spitEvent('viewChanged');
     },
+    mounted: function() {
+        if (EcRepository.getBlocking(this.framework.id).type === "EncryptedValue") {
+            this.privateFramework = true;
+        }
+    },
     watch: {
         exportType: function() {
             if (this.exportType === "asn") {
@@ -493,6 +511,90 @@ export default {
         },
         shortId: function() {
             this.refreshPage();
+        },
+        privateFramework: function() {
+            var me = this;
+            var framework = this.framework;
+            if (this.privateFramework === true) {
+                this.$store.commit('editor/private', true);
+                if (framework.competency && framework.competency.length > 0) {
+                    new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
+                        EcCompetency.get(competencyId, function(c) {
+                            if (c.canEditAny(EcIdentityManager.getMyPks())) {
+                                c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                                c = EcEncryptedValue.toEncryptedValue(c);
+                                me.repo.saveTo(c, done, done);
+                            } else {
+                                done();
+                            }
+                        }, done);
+                    }, function(competencyIds) {
+                        if (framework.relation && framework.relation.length > 0) {
+                            new EcAsyncHelper().each(framework.relation, function(relationId, done) {
+                                EcAlignment.get(relationId, function(r) {
+                                    r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                                    r = EcEncryptedValue.toEncryptedValue(r);
+                                    me.repo.saveTo(r, done, done);
+                                }, done);
+                            }, function(relationIds) {
+                                me.encryptFramework(framework);
+                            });
+                        } else {
+                            me.encryptFramework(framework);
+                        }
+                    });
+                } else {
+                    me.encryptFramework(framework);
+                }
+            } else {
+                this.$store.commit('editor/private', false);
+                framework = EcEncryptedValue.toEncryptedValue(framework);
+                var f = new EcFramework();
+                f.copyFrom(framework.decryptIntoObject());
+                EcEncryptedValue.encryptOnSave(f.id, false);
+                me.repo.saveTo(f, function() {}, console.error);
+                framework = f;
+                if (framework.competency && framework.competency.length > 0) {
+                    new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
+                        EcRepository.get(competencyId, function(c) {
+                            var v;
+                            if (c.canEditAny(EcIdentityManager.getMyPks())) {
+                                if (c.isAny(new EcEncryptedValue().getTypes())) {
+                                    v = new EcEncryptedValue();
+                                    v.copyFrom(c);
+                                } else {
+                                    v = EcEncryptedValue.toEncryptedValue(c);
+                                }
+                                c = new EcCompetency();
+                                c.copyFrom(v.decryptIntoObject());
+                                EcEncryptedValue.encryptOnSave(c.id, false);
+                                me.repo.saveTo(c, done, done);
+                            } else {
+                                done();
+                            }
+                        }, done);
+                    }, function(competencyIds) {
+                        if (framework.relation && framework.relation.length > 0) {
+                            new EcAsyncHelper().each(framework.relation, function(relationId, done) {
+                                EcRepository.get(relationId, function(r) {
+                                    var v;
+                                    if (r.isAny(new EcEncryptedValue().getTypes())) {
+                                        v = new EcEncryptedValue();
+                                        v.copyFrom(r);
+                                    } else {
+                                        v = EcEncryptedValue.toEncryptedValue(r);
+                                    }
+                                    r = new EcAlignment();
+                                    r.copyFrom(v.decryptIntoObject());
+                                    EcEncryptedValue.encryptOnSave(r.id, false);
+                                    me.repo.saveTo(r, done, done);
+                                }, done);
+                            }, function(relationIds) {
+                            });
+                        }
+                    });
+                }
+            }
         }
     },
     methods: {
@@ -563,6 +665,13 @@ export default {
             } else {
                 this.isEditingContainer = false;
             }
+        },
+        encryptFramework: function(framework) {
+            var f = new EcFramework();
+            f.copyFrom(framework);
+            f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            f = EcEncryptedValue.toEncryptedValue(f);
+            this.repo.saveTo(f, function() {}, console.error);
         }
     }
 };

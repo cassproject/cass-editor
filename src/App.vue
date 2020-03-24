@@ -979,7 +979,7 @@ export default {
                 }
             }
             resource["schema:dateModified"] = new Date().toISOString();
-            if (this.queryParams.private === "true" && EcEncryptedValue.encryptOnSaveMap[resource.id] !== true) {
+            if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[resource.id] !== true) {
                 resource = EcEncryptedValue.toEncryptedValue(resource);
             }
             this.repo.saveTo(resource, function() {}, console.error);
@@ -1028,7 +1028,7 @@ export default {
                     }
                     c['ceasn:derivedFrom'] = thing.id;
                     copyDict[c['ceasn:derivedFrom']] = c;
-                    if (this.queryParams.private === "true" && EcEncryptedValue.encryptOnSaveMap[c.id] !== true) {
+                    if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[c.id] !== true) {
                         c = EcEncryptedValue.toEncryptedValue(c);
                     }
                     this.itemsSaving++;
@@ -1062,7 +1062,7 @@ export default {
                     }
                     level['ceasn:derivedFrom'] = thing.id;
                     copyDict[level['ceasn:derivedFrom']] = level;
-                    if (this.queryParams.private === "true" && EcEncryptedValue.encryptOnSaveMap[level.id] !== true) {
+                    if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[level.id] !== true) {
                         level = EcEncryptedValue.toEncryptedValue(level);
                     }
                     this.itemsSaving++;
@@ -1107,7 +1107,7 @@ export default {
                         if (r.source !== r.target) {
                             framework["schema:dateModified"] = new Date().toISOString();
                             EcArray.setRemove(results, thing.source);
-                            if (this.queryParams.private === "true") {
+                            if (this.$store.state.editor.private === true) {
                                 r = EcEncryptedValue.toEncryptedValue(r);
                             }
                             this.itemsSaving++;
@@ -1155,7 +1155,7 @@ export default {
                             this.itemsSaving++;
                             framework.addRelation(r.id);
                             framework["schema:dateModified"] = new Date().toISOString();
-                            if (this.queryParams.private === "true") {
+                            if (this.$store.state.editor.private === true) {
                                 r = EcEncryptedValue.toEncryptedValue(r);
                             }
                             (function(r) {
@@ -1181,7 +1181,7 @@ export default {
             // loading(this.itemsSaving + " objects left to copy.");
             if (this.itemsSaving === 0) {
                 var framework = this.$store.state.editor.framework;
-                if (this.queryParams.private === "true" && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
                 }
                 this.repo.saveTo(framework, function() {}, console.error);
@@ -1237,7 +1237,7 @@ export default {
 
                         if (r.source !== r.target) {
                             framework.addRelation(r.id);
-                            if (this.queryParams.private === "true") {
+                            if (this.$store.state.editor.private === true) {
                                 r = EcEncryptedValue.toEncryptedValue(r);
                             }
                             this.repo.saveTo(r, function() {}, console.error);
@@ -1245,7 +1245,7 @@ export default {
                     }
                 }
             }
-            if (this.queryParams.private === "true" && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+            if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                 framework = EcEncryptedValue.toEncryptedValue(framework);
             }
             this.repo.saveTo(framework, function() {
@@ -1261,7 +1261,7 @@ export default {
                 }
                 thing[relationType].push(targets[i]);
             }
-            if (this.queryParams.private === "true") {
+            if (this.$store.state.editor.private === true) {
                 if (EcEncryptedValue.encryptOnSaveMap[thing.id] !== true) {
                     thing = EcEncryptedValue.toEncryptedValue(thing);
                 }

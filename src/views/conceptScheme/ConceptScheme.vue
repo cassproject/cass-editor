@@ -45,6 +45,12 @@
             @click="selectButton">
             {{ selectButtonText }}
         </button>
+        <span v-if="loggedIn">
+            Make private
+            <input
+                type="checkbox"
+                v-model="privateFramework">
+        </span>
         <hr>
         <ConceptHierarchy
             :container="framework"
@@ -88,7 +94,6 @@ export default {
     data: function() {
         return {
             repo: window.repo,
-            framework: null,
             schemeExportLink: null,
             schemeExportGuid: null,
             conceptExportOptions: [
@@ -103,10 +108,14 @@ export default {
             selectAllButton: false,
             selectAll: false,
             selectedArray: [],
-            isEditingContainer: false
+            isEditingContainer: false,
+            privateFramework: false
         };
     },
     computed: {
+        framework: function() {
+            return this.$store.state.editor.framework;
+        },
         timestamp: function() {
             if (this.framework.getTimestamp()) {
                 return this.framework.getTimestamp();
@@ -126,12 +135,23 @@ export default {
         },
         shortId: function() {
             return this.$store.state.editor.framework.shortId();
+        },
+        loggedIn: function() {
+            if (EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
+                return true;
+            }
+            return false;
         }
     },
     components: {Thing, ConceptHierarchy},
     created: function() {
         this.refreshPage();
         this.spitEvent('viewChanged');
+    },
+    mounted: function() {
+        if (EcRepository.getBlocking(this.framework.id).type === "EncryptedValue") {
+            this.privateFramework = true;
+        }
     },
     watch: {
         exportType: function() {
@@ -151,6 +171,36 @@ export default {
         },
         shortId: function() {
             this.refreshPage();
+        },
+        privateFramework: function() {
+            var me = this;
+            var framework = this.framework;
+            if (this.privateFramework === true) {
+                this.$store.commit('editor/private', true);
+                var cs = new EcConceptScheme();
+                cs.copyFrom(framework);
+                cs.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                var name = cs["dcterms:title"];
+                cs = EcEncryptedValue.toEncryptedValue(cs);
+                cs["dcterms:title"] = name;
+                me.repo.saveTo(cs, function() {
+                    if (framework["skos:hasTopConcept"]) {
+                        me.encryptConcepts(framework);
+                    }
+                }, console.error);
+            } else {
+                this.$store.commit('editor/private', false);
+                framework = EcEncryptedValue.toEncryptedValue(framework);
+                var cs = new EcConceptScheme();
+                cs.copyFrom(framework.decryptIntoObject());
+                framework = cs;
+                EcEncryptedValue.encryptOnSave(cs.id, false);
+                me.repo.saveTo(cs, function() {
+                    if (cs["skos:hasTopConcept"]) {
+                        me.decryptConcepts(cs);
+                    }
+                }, console.error);
+            }
         }
     },
     methods: {
@@ -332,6 +382,51 @@ export default {
             } else {
                 this.isEditingContainer = false;
             }
+        },
+        encryptConcepts: function(c) {
+            var toSave = [];
+            var me = this;
+            var concepts = c["skos:hasTopConcept"] ? c["skos:hasTopConcept"] : c["skos:narrower"];
+            new EcAsyncHelper().each(concepts, function(conceptId, done) {
+                EcRepository.get(conceptId, function(concept) {
+                    concept.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    if (concept["skos:narrower"] && concept["skos:narrower"].length > 0) {
+                        me.encryptConcepts(concept);
+                    }
+                    if (EcEncryptedValue.encryptOnSaveMap[concept.id] !== true) {
+                        concept = EcEncryptedValue.toEncryptedValue(concept);
+                    }
+                    toSave.push(concept);
+                    done();
+                }, done);
+            }, function(conceptIds) {
+                for (var i = 0; i < toSave.length; i++) {
+                    me.repo.saveTo(toSave[i], function() {}, console.error);
+                }
+            });
+        },
+        decryptConcepts: function(c) {
+            var me = this;
+            var concepts = c["skos:hasTopConcept"] ? c["skos:hasTopConcept"] : c["skos:narrower"];
+            new EcAsyncHelper().each(concepts, function(conceptId, done) {
+                EcRepository.get(conceptId, function(concept) {
+                    var v;
+                    if (concept.isAny(new EcEncryptedValue().getTypes())) {
+                        v = new EcEncryptedValue();
+                        v.copyFrom(concept);
+                    } else {
+                        v = EcEncryptedValue.toEncryptedValue(concept);
+                    }
+                    concept = new EcConcept();
+                    concept.copyFrom(v.decryptIntoObject());
+                    EcEncryptedValue.encryptOnSave(concept.id, false);
+                    if (concept["skos:narrower"]) {
+                        me.decryptConcepts(concept);
+                    }
+                    me.repo.saveTo(concept, done, done);
+                }, done);
+            }, function(conceptIds) {
+            });
         }
     }
 };

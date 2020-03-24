@@ -193,7 +193,7 @@ export default {
                     var toIndex = container[property].indexOf(toId);
                     container[property].splice(toIndex, 0, fromId);
                 }
-                if (this.queryParams && this.queryParams.private === "true" && EcEncryptedValue.encryptOnSaveMap[container.id] !== true) {
+                if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[container.id] !== true) {
                     container = EcEncryptedValue.toEncryptedValue(container);
                 }
                 this.repo.saveTo(container, function() {
@@ -227,7 +227,7 @@ export default {
                 } else {
                     delete moveComp[fromProperty2];
                 }
-                if (this.queryParams && this.queryParams.private === "true" && EcEncryptedValue.encryptOnSaveMap[fromContainer.id] !== true) {
+                if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[fromContainer.id] !== true) {
                     fromContainer = EcEncryptedValue.toEncryptedValue(fromContainer);
                 }
                 this.repo.saveTo(fromContainer, function() {
@@ -248,10 +248,10 @@ export default {
                     } else {
                         moveComp[toProperty2].push(me.container.shortId());
                     }
-                    if (this.queryParams && this.queryParams.private === "true" && EcEncryptedValue.encryptOnSaveMap[toContainer.id] !== true) {
+                    if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[toContainer.id] !== true) {
                         toContainer = EcEncryptedValue.toEncryptedValue(toContainer);
                     }
-                    if (this.queryParams && this.queryParams.private === "true" && EcEncryptedValue.encryptOnSaveMap[moveComp.id] !== true) {
+                    if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[moveComp.id] !== true) {
                         moveComp = EcEncryptedValue.toEncryptedValue(moveComp);
                     }
                     me.repo.saveTo(toContainer, function() {

@@ -344,7 +344,7 @@ export default {
             }
             c.name = "New Level";
             c.competency = selectedCompetency;
-            if (this.queryParams.private === "true") {
+            if (this.$store.state.editor.private === true) {
                 c = EcEncryptedValue.toEncryptedValue(c);
                 if (EcEncryptedValue.encryptOnSaveMap[this.framework.id] !== true) {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
@@ -359,7 +359,7 @@ export default {
             this.framework["schema:dateModified"] = new Date().toISOString();
             var framework = this.framework;
             this.$store.commit('editor/framework', framework);
-            if (this.queryParams.private === "true" && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+            if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                 framework = EcEncryptedValue.toEncryptedValue(framework);
             }
             this.repo.saveTo(framework, function() {}, console.error);
