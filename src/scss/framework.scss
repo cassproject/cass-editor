@@ -6,19 +6,63 @@
     .far.fa-circle {
         font-size: .5rem;
     }
-    $elements: 100;
+    // room for improvement, iterate over loop for max depth tabbing
+    // possibly set tab value based on value in scss varaibles sheet
     .e-Hierarchy {
-       
-
-        $elements: 15;
-            @for $i from 0 to $elements {
-            .e-HierarchyNode:nth-of-type(#{$i + 1}){
-                .nested-competency {
-                    padding-left: .5rem;
+        .e-Hierarchy-ul {
+            li.e-HierarchyNode {
+                padding: .5rem 0rem;
+                .thing {
+                    padding-left: .75rem;
                 }
                 .e-HierarchyNode-ul {
-                    .thing {
-                        padding-left: calc(1rem * #{$i});
+                    .e-HierarchyNode {
+                        padding: .25rem 0rem;
+                        .thing {
+                            padding-left: 1.5rem;
+                        }
+                    }
+                    .e-HierarchyNode-ul {
+                        .e-HierarchyNode {
+                            .thing {
+                                padding-left: 2.25rem;
+                            }
+                            .e-HierarchyNode-ul {
+                                .e-HierarchyNode {
+                                    .thing {
+                                        padding-left: 3rem;
+                                    }
+                                    .e-HierarchyNode-ul {
+                                        .e-HierarchyNode {
+                                            .thing {
+                                                padding-left: 3.75rem;
+                                            }
+                                            .e-HierarchyNode-ul {
+                                                .e-HierarchyNode {
+                                                    .thing {
+                                                        padding-left: 4.5rem;
+                                                    }
+                                                    .e-HierarchyNode-ul {
+                                                        .e-HierarchyNode {
+                                                            .thing {
+                                                                padding-left: 5.25rem;
+                                                            }
+                                                            .e-HierarchyNode-ul {
+                                                                .e-HierarchyNode {
+                                                                    .thing {
+                                                                        padding-left: 6rem;
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -49,7 +93,6 @@
             width: 100%;
             flex-direction: column;
             flex-flow: column;
-            background-color: white;
             padding: 0rem 0rem;
             ul{
                 margin-left:1rem;
@@ -65,7 +108,6 @@
                 justify-content: space-between;
                 bottom: -3rem;
                 padding: .5rem .5rem;
-                background-color:white;
                     .action {
                         width: 30%;
                     }
@@ -84,7 +126,6 @@
                 border-top: none;
             }
             ul.e-Thing-always-ul.e-Thing-ul{
-                background-color: transparent;
                 .e-Property-text{
                     font-size:larger;
                 }
@@ -148,6 +189,7 @@
     }
     // list of competencies 
     .e-Hierarchy {
+        padding: 0rem 1rem;
         .highlighted{
             background-color:yellow;
         } 
@@ -170,8 +212,6 @@
                 width: 100%;
             }
             ul.e-Thing-ul, .e-Thing-always-ul {
-                background-color: none;
-
                 padding: .125rem;
                 margin-left: 0;
                 li.e-Property.e-name {
@@ -411,9 +451,8 @@
                 left: 0;
             }
             .e-Thing-ul, .e-Thing-ul, .e-Thing-always-ul{
-                background-color: none;
                 .e-Property {
-                    padding-top: .5rem;
+                    padding-top: 0rem;
                     display: flex;
                     flex-wrap: wrap;
                     justify-content: space-between;

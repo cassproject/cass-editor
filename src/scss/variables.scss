@@ -13,7 +13,7 @@ $cass-success: #0835ED;
 $cass-highlight: #ED823F;
 
 $cass-black: #2b2323;
-$cass-light: #f5f5f3bf;
+$cass-light: #b9b9b9bf;
 
 $family-primary: 'Open Sans',
 'sans-serif';
@@ -36,7 +36,7 @@ $text: rgba($dark, .8);
 
 $weight-normal: 400;
 $family-code: $family-primary;
-$has-background-white: $white;
+$background-white: $white;
 $background-light: $light;
 $background-medium: rgba($dark, .3);
 $background: $white;
@@ -61,3 +61,6 @@ $size-7: .7rem;
 
 
 $border-radius: 0;
+
+$gap: 6px;
+
