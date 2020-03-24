@@ -11,7 +11,7 @@
                     class="button is-text"
                     @click="showPropertyViewDropDown = !showPropertyViewDropDown"
                     aria-haspopup="true">
-                    <span>Property View</span>
+                    <span>View</span>
                     <span class="icon is-small">
                         <i
                             class="fas fa-angle-down"
@@ -49,7 +49,7 @@
                     class="button is-text"
                     @click="showShareDropdown = !showShareDropdown"
                     aria-haspopup="true">
-                    <span>Property View</span>
+                    <span>Share</span>
                     <span class="icon is-small">
                         <i
                             class="fas fa-angle-down"
@@ -65,15 +65,10 @@
                     <a
                         href="#"
                         class="dropdown-item">
-                        Primary Properties
+                        Export
                     </a>
                     <a class="dropdown-item">
-                        Secondary Properties
-                    </a>
-                    <a
-                        href="#"
-                        class="dropdown-item is-active">
-                        Tertiary Properties
+                        Manage Users
                     </a>
                 </div>
             </div>

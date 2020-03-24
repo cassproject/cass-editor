@@ -17,6 +17,7 @@
         height: 24px;
     }
     .add-new-node {
+        padding-left: 2.5rem;
         height: 24px;
         display: flex;
         visibility: hidden;
@@ -55,6 +56,7 @@
                 padding: .5rem 0rem;
                 .thing {
                     padding-left: .75rem;
+                   
                 }
                 .e-HierarchyNode-ul {
                     .e-HierarchyNode {
@@ -128,6 +130,13 @@
     }
     // top level items outside of Hierarchy
     .thing {
+        .e-Thing.e-Competency.showHoverItems {
+            background-color: $cass-lightest;
+            .edit-button {
+                visibility: visible;
+            }
+        }
+        
         .e-Thing.e-Competency {
             transform: translateX(0);
             display: flex;
@@ -135,6 +144,14 @@
             flex-direction: column;
             flex-flow: column;
             padding: 0rem 0rem;
+            .edit-button {
+                position: absolute;
+                color: dark;
+                right: 0;
+                visibility: hidden;
+                
+            }
+           
             ul{
                 margin-left:1rem;
             }
