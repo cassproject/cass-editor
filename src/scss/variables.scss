@@ -13,7 +13,8 @@ $cass-success: #0835ED;
 $cass-highlight: #ED823F;
 
 $cass-black: #2b2323;
-$cass-light: #b9b9b9bf;
+$cass-light: #c7c7c7;
+$cass-lightest: #e7e7e7;
 
 $family-primary: 'Open Sans',
 'sans-serif';
@@ -64,3 +65,6 @@ $border-radius: 0;
 
 $gap: 6px;
 
+.has-background-lightest {
+    background-color:  $cass-lightest;
+}

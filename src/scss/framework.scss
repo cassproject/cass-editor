@@ -1,10 +1,44 @@
 @import './variables.scss';
 
 .page-framework{
+
     padding-top: 52px;
-  
+    #add-node-selection {
+    }
+    #add-node-section:hover .add-new-node {
+        visibility: visible;
+        height: 24px;
+    }
+    .add-new-node {
+        height: 24px;
+        display: flex;
+        visibility: hidden;
+        align-items: center;
+        hr  {
+            width: 100%;
+            display: block;
+            height: 2px;
+            padding-left: -1px;
+            margin-left: auto;
+            margin-right: auto;
+            border-width: 1px;
+            background-color: $light !important;
+            color: $black !important;
+            border-color: $light !important;
+        }
+        i {
+            vertical-align: center;
+            z-index: 200;
+            padding-bottom: 4px;
+        }
+        
+    }
+    .add-new-node:hover {
+        visibility: visible !important;
+    }
+ 
     .far.fa-circle {
-        font-size: .5rem;
+        font-size: .4rem;
     }
     // room for improvement, iterate over loop for max depth tabbing
     // possibly set tab value based on value in scss varaibles sheet

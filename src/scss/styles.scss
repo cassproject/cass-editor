@@ -72,15 +72,6 @@ select {
     width: 10rem;
 }
 
-hr {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    padding-top: 0px;
-    padding-bottom: 0px;
-    height:2px;
-    background-color: $black !important;
-}
-
 iframe {
     min-height: 800px;
     border:1px solid rgba($black, .5);

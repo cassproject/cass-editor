@@ -263,7 +263,7 @@
                         <div
                             v-if="!framework"
                             class="section is-large">
-                            <div class="tile is-vertical has-background-light">
+                            <div class="tile is-vertical has-background-lightest">
                                 <div class="section is-medium">
                                     <!-- columns for tabs -->
                                     <div class="columns is-mobile">
