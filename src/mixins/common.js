@@ -84,6 +84,47 @@ export default {
                 }
             }
             return obj;
+        },
+        conceptCtids: function() {
+            var me = this;
+            if (this.queryParams.ceasnDataFields !== "true") {
+                return null;
+            }
+            var obj = {};
+            obj[this.framework.shortId()] = [{"@value": this.getCTID(this.framework.shortId())}];
+            var subCtids = function(ary) {
+                for (var i = 0; i < ary.length; i++) {
+                    obj[ary[i]] = [{"@value": me.getCTID(ary[i])}];
+                    var concept = EcConcept.getBlocking(ary[i]);
+                    if (concept["skos:narrower"]) {
+                        subCtids(concept["skos:narrower"]);
+                    }
+                }
+            };
+            if (this.framework["skos:hasTopConcept"]) {
+                subCtids(this.framework["skos:hasTopConcept"]);
+            }
+            return obj;
+        },
+        conceptRegistryURLs: function() {
+            var me = this;
+            if (this.queryParams.ceasnDataFields !== "true") {
+                return null;
+            }
+            var obj = {};
+            var subURLs = function(ary) {
+                for (var i = 0; i < ary.length; i++) {
+                    obj[ary[i]] = [{"@value": me.ceasnRegistryUriTransform(ary[i])}];
+                    var concept = EcConcept.getBlocking(ary[i]);
+                    if (concept["skos:narrower"]) {
+                        subURLs(concept["skos:narrower"]);
+                    }
+                }
+            };
+            if (this.framework["skos:hasTopConcept"]) {
+                subURLs(this.framework["skos:hasTopConcept"]);
+            }
+            return obj;
         }
     },
     methods: {
