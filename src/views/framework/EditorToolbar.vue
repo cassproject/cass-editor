@@ -25,16 +25,21 @@
                 role="menu">
                 <div class="dropdown-content">
                     <a
-                        href="#"
-                        class="dropdown-item">
+                        @click="changeProperties('primary')"
+                        class="dropdown-item"
+                        :class="activeView==='primary'? 'is-active' : ''">
                         Primary Properties
                     </a>
-                    <a class="dropdown-item">
+                    <a
+                        @click="changeProperties('secondary')"
+                        class="dropdown-item"
+                        :class="activeView==='secondary'? 'is-active' : ''">
                         Secondary Properties
                     </a>
                     <a
-                        href="#"
-                        class="dropdown-item is-active">
+                        @click="changeProperties('tertiary')"
+                        class="dropdown-item"
+                        :class="activeView==='tertiary'? 'is-active' : ''">
                         Tertiary Properties
                     </a>
                 </div>
@@ -104,8 +109,16 @@ export default {
     data() {
         return {
             showPropertyViewDropDown: false,
-            showShareDropdown: false
+            showShareDropdown: false,
+            activeView: "primary"
         };
+    },
+    methods: {
+        changeProperties(type) {
+            this.$emit('changeProperties', type);
+            this.showPropertyViewDropDown = false;
+            this.activeView = type;
+        }
     }
 };
 </script>
