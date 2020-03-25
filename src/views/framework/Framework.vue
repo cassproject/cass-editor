@@ -10,8 +10,9 @@
         <div class="container is-fluid is-marginless">
             <FrameworkEditorToolbar
                 @openCommentsEvent="onOpenComments()"
-                @openShareModalEvent="onOpenShareModal()" />
-            <div class="section is-paddingless">
+                @openShareModalEvent="onOpenShareModal()"
+                @changeProperties="changeProperties"  />
+        <div class="section is-paddingless">
                 <Thing
                     :obj="framework"
                     :repo="repo"
@@ -24,7 +25,8 @@
                     @removeObject="removeObject"
                     @exportObject="exportObject"
                     :isEditingContainer="isEditingContainer"
-                    @editingThing="handleEditingContainer($event)" />
+                    @editingThing="handleEditingContainer($event)"
+                    :properties="properties" />
                 <span class="actions">
                     <span
                         class="tag is-info has-text-white"
@@ -97,7 +99,8 @@
                     @removeObject="removeObject"
                     @exportObject="exportObject"
                     :isEditingContainer="isEditingContainer"
-                    @editingContainer="handleEditingContainer($event)" />
+                    @editingContainer="handleEditingContainer($event)"
+                    :properties="properties" />
             </div>
         </div>
     </div>
@@ -146,7 +149,8 @@ export default {
             selectAllButton: false,
             selectAll: false,
             selectedArray: [],
-            isEditingContainer: false
+            isEditingContainer: false,
+            properties: "primary"
         };
     },
     computed: {
@@ -526,6 +530,9 @@ export default {
             } else {
                 this.isEditingContainer = false;
             }
+        },
+        changeProperties: function(type) {
+            this.properties = type;
         }
     }
 };
