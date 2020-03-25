@@ -1,9 +1,11 @@
 <template>
     <div class="page-framework">
-        <ShareModal :isActive="true" />
+        <ShareModal
+            :isActive="showShareModal"
+            @closeShareModalEvent="onCloseShareModal()" />
         <div class="container is-fluid is-marginless">
-            <FrameworkEditorToolbar />
-
+            <FrameworkEditorToolbar
+                @openShareModalEvent="onOpenShareModal()" />
             <div class="section is-paddingless">
                 <Thing
                     :obj="framework"
@@ -118,6 +120,7 @@ export default {
     mixins: [common, exports, competencyEdits, ctdlasnProfile, t3Profile, tlaProfile],
     data: function() {
         return {
+            showShareModal: false,
             repo: window.repo,
             frameworkExportLink: null,
             frameworkExportGuid: null,
@@ -434,6 +437,12 @@ export default {
         }
     },
     methods: {
+        onCloseShareModal: function() {
+            this.showShareModal = false;
+        },
+        onOpenShareModal: function() {
+            this.showShareModal = true;
+        },
         refreshPage: function() {
             if (EcRepository.shouldTryUrl(this.framework.id) === false) {
                 this.frameworkExportGuid = EcCrypto.md5(this.framework.id);

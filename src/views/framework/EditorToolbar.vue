@@ -67,7 +67,9 @@
                         class="dropdown-item">
                         Export
                     </a>
-                    <a class="dropdown-item">
+                    <a
+                        @click="$emit('openShareModalEvent')"
+                        class="dropdown-item">
                         Manage Users
                     </a>
                 </div>

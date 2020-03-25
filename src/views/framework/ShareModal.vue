@@ -13,6 +13,7 @@
                 </p>
                 <button
                     class="delete"
+                    @click="$emit('closeShareModalEvent')"
                     aria-label="close" />
             </header>
             <section class="modal-card-body">
