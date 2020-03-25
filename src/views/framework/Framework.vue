@@ -1,7 +1,9 @@
 <template>
     <div class="page-framework">
+        <ShareModal :isActive="true" />
         <div class="container is-fluid is-marginless">
             <FrameworkEditorToolbar />
+
             <div class="section is-paddingless">
                 <Thing
                     :obj="framework"
@@ -102,7 +104,8 @@ import competencyEdits from '@/mixins/competencyEdits.js';
 import ctdlasnProfile from '@/mixins/ctdlasnProfile.js';
 import t3Profile from '@/mixins/t3Profile.js';
 import tlaProfile from '@/mixins/tlaProfile.js';
-import FrameworkEditorToolbar from './../../components/FrameworkEditorToolbar.vue';
+import ShareModal from './ShareModal.vue';
+import FrameworkEditorToolbar from './EditorToolbar.vue';
 
 export default {
     name: "Framework",
@@ -393,7 +396,12 @@ export default {
             }
         }
     },
-    components: {Hierarchy, Thing, FrameworkEditorToolbar},
+    components: {
+        Hierarchy,
+        Thing,
+        FrameworkEditorToolbar,
+        ShareModal
+    },
     created: function() {
         this.refreshPage();
     },

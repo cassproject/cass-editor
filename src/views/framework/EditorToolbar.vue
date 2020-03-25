@@ -98,7 +98,7 @@
 </template>
 <script>
 export default {
-    name: 'FrameworkEditorToolbar',
+    name: 'EditorToolbar',
     data() {
         return {
             showPropertyViewDropDown: false,
@@ -109,13 +109,13 @@ export default {
 </script>
 
 <style lang="scss">
-    @import './../scss/variables.scss';
+    @import './../../scss/variables.scss';
 
 #framework-editor-toolbar {
     position: fixed;
     border-bottom: solid 1px $light;
     top: 52px;
-    z-index: 100;
+    z-index: 10;
     height: 36px;
     display: flex;
     flex-direction: row;
