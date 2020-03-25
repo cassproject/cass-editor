@@ -75,7 +75,9 @@
                 </div>
             </div>
         </div>
-        <div class="button is-text">
+        <div
+            @click="$emit('openCommentsEvent')"
+            class="button is-text">
             <span class="icon">
                 <i class="fas fa-comment-alt" />
             </span>

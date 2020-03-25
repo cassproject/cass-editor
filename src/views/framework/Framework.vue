@@ -3,8 +3,13 @@
         <ShareModal
             :isActive="showShareModal"
             @closeShareModalEvent="onCloseShareModal()" />
+        <EditMultipleCompetencies />
+        <Comments
+            @closeCommentsEvent="onCloseComments()"
+            v-if="showComments" />
         <div class="container is-fluid is-marginless">
             <FrameworkEditorToolbar
+                @openCommentsEvent="onOpenComments()"
                 @openShareModalEvent="onOpenShareModal()" />
             <div class="section is-paddingless">
                 <Thing
@@ -108,6 +113,8 @@ import t3Profile from '@/mixins/t3Profile.js';
 import tlaProfile from '@/mixins/tlaProfile.js';
 import ShareModal from './ShareModal.vue';
 import FrameworkEditorToolbar from './EditorToolbar.vue';
+import Comments from './Comments.vue';
+import EditMultipleCompetencies from './EditMultipleCompetencies.vue';
 
 export default {
     name: "Framework",
@@ -120,6 +127,7 @@ export default {
     mixins: [common, exports, competencyEdits, ctdlasnProfile, t3Profile, tlaProfile],
     data: function() {
         return {
+            showComments: false,
             showShareModal: false,
             repo: window.repo,
             frameworkExportLink: null,
@@ -403,7 +411,9 @@ export default {
         Hierarchy,
         Thing,
         FrameworkEditorToolbar,
-        ShareModal
+        ShareModal,
+        Comments,
+        EditMultipleCompetencies
     },
     created: function() {
         this.refreshPage();
@@ -437,6 +447,12 @@ export default {
         }
     },
     methods: {
+        onOpenComments: function() {
+            this.showComments = true;
+        },
+        onCloseComments: function() {
+            this.showComments = false;
+        },
         onCloseShareModal: function() {
             this.showShareModal = false;
         },
