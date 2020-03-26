@@ -5,6 +5,7 @@
         <!-- nav bar navigation -->
         <cass-modal />
         <nav
+            :class="{'is-hidden': this.currentPathIsLogin}"
             class="navbar is-black is-fixed-top"
             role="navigation"
             aria-label="main navigation">
@@ -44,6 +45,14 @@
                             :class="{'is-active': currentRoute === '/'}"
                             to="/">
                             Open
+                        </router-link>
+                    </div>
+                    <div class="navbar-item">
+                        <router-link
+                            class="has-text-light"
+                            :class="{'is-active': currentRoute === '/crosswalk'}"
+                            to="/crosswalk">
+                            Crosswalk
                         </router-link>
                     </div>
                     <div class="navbar-item">
@@ -116,6 +125,22 @@
                                 IMS Global CASE (JSON)
                             </a>
                         </div>
+                    </div>
+                    <div class="navbar-item">
+                        <router-link
+                            class="has-text-light"
+                            :class="{'is-active': currentRoute === '/config'}"
+                            to="/config">
+                            Configure
+                        </router-link>
+                    </div>
+                    <div class="navbar-item">
+                        <router-link
+                            class="has-text-light"
+                            :class="{'is-active': currentRoute === '/userGroup'}"
+                            to="/userGroup">
+                            Users/Groups
+                        </router-link>
                     </div>
                     <!--<div class="navbar-item">
                         <router-link
@@ -202,7 +227,8 @@ html {
     font-size: 16px;
 }
 body{
-    overflow-y: hidden;
+    // Tom B.  Taking this out for now as it screws up the configuration editor and needing scrolling
+    //overflow-y: hidden;
     height: 100%;
     background: $light;
     background-repeat: no-repeat;
@@ -211,6 +237,7 @@ body{
 }
 #app {
     height: 100%;
+    padding-left: 1rem;
 }
 
 
@@ -241,13 +268,15 @@ import common from '@/mixins/common.js';
 import cassModal from './components/CassModal.vue';
 
 export default {
+    name: "App",
     data: function() {
         return {
             navBarActive: false,
             exportType: null,
             queryParams: null,
             repo: window.repo,
-            itemsSaving: 0
+            itemsSaving: 0,
+            showNav: true
         };
     },
     mixins: [common],
@@ -756,13 +785,10 @@ export default {
                     for (var key in data) {
                         d[key] = data[key];
                     }
+                    if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[d.id] !== true) {
+                        d = EcEncryptedValue.toEncryptedValue(d);
+                    }
                     repo.saveTo(d, function(success) {
-                        // Force view framework page to update the framework since changes were made
-                        if (d.isAny(new EcFramework().getTypes()) || d.isAny(new EcConceptScheme().getTypes())) {
-                            if (me.$route.name === 'frameworks') {
-                                // To do: Refresh page
-                            }
-                        }
                         var message = {
                             action: "response",
                             message: "setOk"
@@ -953,7 +979,7 @@ export default {
                 }
             }
             resource["schema:dateModified"] = new Date().toISOString();
-            if (this.queryParams.private === "true" && EcEncryptedValue.encryptOnSaveMap[resource.id] !== true) {
+            if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[resource.id] !== true) {
                 resource = EcEncryptedValue.toEncryptedValue(resource);
             }
             this.repo.saveTo(resource, function() {}, console.error);
@@ -1002,7 +1028,7 @@ export default {
                     }
                     c['ceasn:derivedFrom'] = thing.id;
                     copyDict[c['ceasn:derivedFrom']] = c;
-                    if (this.queryParams.private === "true" && EcEncryptedValue.encryptOnSaveMap[c.id] !== true) {
+                    if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[c.id] !== true) {
                         c = EcEncryptedValue.toEncryptedValue(c);
                     }
                     this.itemsSaving++;
@@ -1036,7 +1062,7 @@ export default {
                     }
                     level['ceasn:derivedFrom'] = thing.id;
                     copyDict[level['ceasn:derivedFrom']] = level;
-                    if (this.queryParams.private === "true" && EcEncryptedValue.encryptOnSaveMap[level.id] !== true) {
+                    if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[level.id] !== true) {
                         level = EcEncryptedValue.toEncryptedValue(level);
                     }
                     this.itemsSaving++;
@@ -1081,7 +1107,7 @@ export default {
                         if (r.source !== r.target) {
                             framework["schema:dateModified"] = new Date().toISOString();
                             EcArray.setRemove(results, thing.source);
-                            if (this.queryParams.private === "true") {
+                            if (this.$store.state.editor.private === true) {
                                 r = EcEncryptedValue.toEncryptedValue(r);
                             }
                             this.itemsSaving++;
@@ -1129,7 +1155,7 @@ export default {
                             this.itemsSaving++;
                             framework.addRelation(r.id);
                             framework["schema:dateModified"] = new Date().toISOString();
-                            if (this.queryParams.private === "true") {
+                            if (this.$store.state.editor.private === true) {
                                 r = EcEncryptedValue.toEncryptedValue(r);
                             }
                             (function(r) {
@@ -1155,7 +1181,7 @@ export default {
             // loading(this.itemsSaving + " objects left to copy.");
             if (this.itemsSaving === 0) {
                 var framework = this.$store.state.editor.framework;
-                if (this.queryParams.private === "true" && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
                 }
                 this.repo.saveTo(framework, function() {}, console.error);
@@ -1211,7 +1237,7 @@ export default {
 
                         if (r.source !== r.target) {
                             framework.addRelation(r.id);
-                            if (this.queryParams.private === "true") {
+                            if (this.$store.state.editor.private === true) {
                                 r = EcEncryptedValue.toEncryptedValue(r);
                             }
                             this.repo.saveTo(r, function() {}, console.error);
@@ -1219,7 +1245,7 @@ export default {
                     }
                 }
             }
-            if (this.queryParams.private === "true" && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+            if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                 framework = EcEncryptedValue.toEncryptedValue(framework);
             }
             this.repo.saveTo(framework, function() {
@@ -1235,7 +1261,7 @@ export default {
                 }
                 thing[relationType].push(targets[i]);
             }
-            if (this.queryParams.private === "true") {
+            if (this.$store.state.editor.private === true) {
                 if (EcEncryptedValue.encryptOnSaveMap[thing.id] !== true) {
                     thing = EcEncryptedValue.toEncryptedValue(thing);
                 }
@@ -1274,10 +1300,14 @@ export default {
     computed: {
         currentRoute: function() {
             return this.$route.path;
+        },
+        currentPathIsLogin: function() {
+            if (this.$route.name === 'login') return true;
+            else return false;
         }
     },
     watch: {
-        $route(to, from) {
+        '$route'(to, from) {
             let navigationTo = to;
             if (navigationTo) {
                 this.navBarActive = false;

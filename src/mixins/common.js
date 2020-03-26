@@ -84,6 +84,47 @@ export default {
                 }
             }
             return obj;
+        },
+        conceptCtids: function() {
+            var me = this;
+            if (this.queryParams.ceasnDataFields !== "true") {
+                return null;
+            }
+            var obj = {};
+            obj[this.framework.shortId()] = [{"@value": this.getCTID(this.framework.shortId())}];
+            var subCtids = function(ary) {
+                for (var i = 0; i < ary.length; i++) {
+                    obj[ary[i]] = [{"@value": me.getCTID(ary[i])}];
+                    var concept = EcConcept.getBlocking(ary[i]);
+                    if (concept["skos:narrower"]) {
+                        subCtids(concept["skos:narrower"]);
+                    }
+                }
+            };
+            if (this.framework["skos:hasTopConcept"]) {
+                subCtids(this.framework["skos:hasTopConcept"]);
+            }
+            return obj;
+        },
+        conceptRegistryURLs: function() {
+            var me = this;
+            if (this.queryParams.ceasnDataFields !== "true") {
+                return null;
+            }
+            var obj = {};
+            var subURLs = function(ary) {
+                for (var i = 0; i < ary.length; i++) {
+                    obj[ary[i]] = [{"@value": me.ceasnRegistryUriTransform(ary[i])}];
+                    var concept = EcConcept.getBlocking(ary[i]);
+                    if (concept["skos:narrower"]) {
+                        subURLs(concept["skos:narrower"]);
+                    }
+                }
+            };
+            if (this.framework["skos:hasTopConcept"]) {
+                subURLs(this.framework["skos:hasTopConcept"]);
+            }
+            return obj;
         }
     },
     methods: {
@@ -344,7 +385,7 @@ export default {
             }
             c.name = "New Level";
             c.competency = selectedCompetency;
-            if (this.queryParams.private === "true") {
+            if (this.$store.state.editor.private === true) {
                 c = EcEncryptedValue.toEncryptedValue(c);
                 if (EcEncryptedValue.encryptOnSaveMap[this.framework.id] !== true) {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
@@ -359,7 +400,7 @@ export default {
             this.framework["schema:dateModified"] = new Date().toISOString();
             var framework = this.framework;
             this.$store.commit('editor/framework', framework);
-            if (this.queryParams.private === "true" && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+            if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                 framework = EcEncryptedValue.toEncryptedValue(framework);
             }
             this.repo.saveTo(framework, function() {}, console.error);
