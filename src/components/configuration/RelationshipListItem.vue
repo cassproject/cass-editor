@@ -5,17 +5,30 @@
                 {{ relationship }}
             </div>
             <div class="column is-2">
-                <div v-if="readOnly">{{ localLabel }}</div>
+                <div v-if="readOnly">
+                    {{ localLabel }}
+                </div>
                 <div v-if="!readOnly">
-                    <input type="text" v-model="localLabel" @change="changeLabel">
+                    <input
+                        type="text"
+                        v-model="localLabel"
+                        @change="changeLabel">
                 </div>
             </div>
             <div class="column is-2">
-                <div v-if="readOnly">{{ localEnabled }}</div>
+                <div v-if="readOnly">
+                    {{ localEnabled }}
+                </div>
                 <div v-if="!readOnly">
-                    <select v-model="localEnabled" @change="changeEnabled">
-                        <option :value="true">true</option>
-                        <option :value="false">false</option>
+                    <select
+                        v-model="localEnabled"
+                        @change="changeEnabled">
+                        <option :value="true">
+                            true
+                        </option>
+                        <option :value="false">
+                            false
+                        </option>
                     </select>
                 </div>
             </div>
@@ -25,7 +38,7 @@
 
 <script>
 export default {
-    name: 'relationshipListItem',
+    name: 'RelationshipListItem',
     props: {
         relationship: {
             type: String,

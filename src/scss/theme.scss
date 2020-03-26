@@ -8,7 +8,7 @@ $section-padding-basic: .25rem .75rem;
 $section-padding: 1rem 1rem;
 $section-padding-medium: 1.5rem 1.5rem;
 $section-padding-large: 3rem 1.5rem;
-$section-padding-tb: .125rem 0rem;
+$section-padding-tb: .5rem 0rem;
 
 $menu-item-color:$black;
 $menu-item-hover-color: $black;
@@ -42,7 +42,18 @@ $menu-label-spacing:1em;
 
 $button-text-hover-background-color: transparent;
 
+$label-color: $dark;
+$label-weight: 600;
+$label-size: .6rem;
 
+/* inputs 
+$control-radius: ;
+$control-radius-small: ;
+$control-padding-vertical:;
+$control-padding-horizontal:''
+
+
+$help-size:;*/
 // utilities
 @import "./../../node_modules/bulma/sass/utilities/_all.sass";
 @import "./../../node_modules/bulma/sass/base/_all.sass";
@@ -116,45 +127,6 @@ $button-text-hover-background-color: transparent;
      font-weight: medium;
  }
 
-
-
-
-.e-Property {
-  
-    .fa {
-        font-size: $size-7;
-        color: $dark;
-    }
-    label {
-        font-size: $size-7;
-        font-weight: 500;
-    }
-    .e-name {
-        font-size: $size-4;
-        font-weight: 600;
-    }
-}
-
-.e-Property-text{
-    border-radius: .25rem;
-}
-
-.e-Property-ul{
-    border-radius: .25rem;
-    padding: 0rem .25rem;
-    font-size: .8rem;
-    color: rgba($dark, .9);
-    .button {
-        
-    }
-    .e-description {
-        font-weight: 400;
-        font-size: $size-7;
-    }
-    .e-name {
-        font-weight: 600;
-        font-size: $size-4;
-    }
-    
-    margin: .125em .5em;
+.label {
+    font-size: $label-size;
 }

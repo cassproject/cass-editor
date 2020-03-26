@@ -4,7 +4,7 @@
         <div
             class="modal"
             :class="[{'is-active': configDetailsBusy}]">
-            <div class="modal-background"></div>
+            <div class="modal-background" />
             <div class="modal-content has-text-centered">
                 <span class="icon is-large has-text-center has-text-link">
                     <i class="fas fa-3x fa-spinner is-info fa-pulse" />
@@ -15,7 +15,7 @@
         <div
             class="modal"
             :class="[{'is-active': showSelectLevelModal}]">
-            <div class="modal-background"></div>
+            <div class="modal-background" />
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="subtitle is-size-3 modal-card-title">
@@ -23,8 +23,7 @@
                         <button
                             class="delete is-pulled-right"
                             aria-label="close"
-                            @click="closeSelectLevelModal">
-                        </button>
+                            @click="closeSelectLevelModal" />
                     </p>
                 </header>
                 <div class="modal-card-body has-text-dark">
@@ -35,49 +34,83 @@
                                     <label>Available Levels:</label>
                                 </div>
                                 <div class="column is-9 listHdr">
-                                    <input type="text" v-model="selectedLevelFilter" placeholder="level filter">
+                                    <input
+                                        type="text"
+                                        v-model="selectedLevelFilter"
+                                        placeholder="level filter">
                                 </div>
                             </div>
                             <div class="columns">
-                                <div class="column is-1 listHdr"></div>
-                                <div class="column is-4 listHdr">name</div>
-                                <div class="column is-6 listHdr">description</div>
+                                <div class="column is-1 listHdr" />
+                                <div class="column is-4 listHdr">
+                                    name
+                                </div>
+                                <div class="column is-6 listHdr">
+                                    description
+                                </div>
                             </div>
                         </div>
                         <div class="selectBox">
-                            <div class="columns is-multiline" v-for="lvl in filteredLevels">
+                            <div
+                                class="columns is-multiline"
+                                v-for="lvl in filteredLevels">
                                 <div class="column is-1">
-                                    <input :id="lvl.shortId()" :value="lvl.shortId()" name="lvl.shortId()" type="checkbox" v-model="selectedLevels" />
+                                    <input
+                                        :id="lvl.shortId()"
+                                        :value="lvl.shortId()"
+                                        name="lvl.shortId()"
+                                        type="checkbox"
+                                        v-model="selectedLevels">
                                 </div>
-                                <div class="column is-4">{{ lvl.getName() }}</div>
-                                <div class="column is-4">{{ lvl.description }}</div>
+                                <div class="column is-4">
+                                    {{ lvl.getName() }}
+                                </div>
+                                <div class="column is-4">
+                                    {{ lvl.description }}
+                                </div>
                             </div>
                         </div>
                         <br>
                         <div v-if="!readOnly">
-                            <button @click="showAddNewLevel">add level</button>
-                            <button @click="applySelectLevels">apply</button>
-                            <button @click="closeSelectLevelModal">cancel</button>
+                            <button @click="showAddNewLevel">
+                                add level
+                            </button>
+                            <button @click="applySelectLevels">
+                                apply
+                            </button>
+                            <button @click="closeSelectLevelModal">
+                                cancel
+                            </button>
                         </div>
                     </div>
                     <div v-if="showAddNewLevelSection">
                         <label>Name: </label>
                         <div>
-                            <input type="text" v-model="newLevelName">
+                            <input
+                                type="text"
+                                v-model="newLevelName">
                         </div>
                         <br>
                         <label>Description: </label>
                         <div v-if="!readOnly">
-                            <input type="text" v-model="newLevelDescription">
+                            <input
+                                type="text"
+                                v-model="newLevelDescription">
                         </div>
                         <br>
                         <div v-if="levelInvalid">
                             <p>Level is invalid:</p>
-                            <p v-if="levelNameInvalid">*Level name is required</p>
+                            <p v-if="levelNameInvalid">
+                                *Level name is required
+                            </p>
                         </div>
                         <div v-if="!readOnly && !savingLevelBusy">
-                            <button @click="saveAddNewLevel">save new level</button>
-                            <button @click="cancelAddNewLevel">cancel</button>
+                            <button @click="saveAddNewLevel">
+                                save new level
+                            </button>
+                            <button @click="cancelAddNewLevel">
+                                cancel
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -87,7 +120,7 @@
         <div
             class="modal"
             :class="[{'is-active': showCustomPropertyDetailsModal}]">
-            <div class="modal-background"></div>
+            <div class="modal-background" />
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="subtitle is-size-3 modal-card-title">
@@ -95,8 +128,7 @@
                         <button
                             class="delete is-pulled-right"
                             aria-label="close"
-                            @click="closeCustomPropertyModal">
-                        </button>
+                            @click="closeCustomPropertyModal" />
                     </p>
                 </header>
                 <div class="modal-card-body has-text-dark">
@@ -106,20 +138,48 @@
                     </div>
                     <div v-if="!readOnly && customPropertyIsNew">
                         <select v-model="customPropertyContext">
-                            <option value="https://schema.cassproject.org/0.4/">https://schema.cassproject.org/0.4/</option>
-                            <option value="https://purl.org/ctdlasn/terms/">https://purl.org/ctdlasn/terms/</option>
-                            <option value="http://www.w3.org/1999/02/22-rdf-syntax-ns#">http://www.w3.org/1999/02/22-rdf-syntax-ns#</option>
-                            <option value="http://www.w3.org/2000/01/rdf-schema#">http://www.w3.org/2000/01/rdf-schema#</option>
-                            <option value="https://schema.cassproject.org/0.4/">https://schema.cassproject.org/0.4/</option>
-                            <option value="https://schema.cassproject.org/kbac/0.4/">https://schema.cassproject.org/kbac/0.4/</option>
-                            <option value="http://schema.eduworks.com/general/0.3/">http://schema.eduworks.com/general/0.3/</option>
-                            <option value="http://schema.org/">http://schema.org/</option>
-                            <option value="http://purl.org/ASN/schema/core/">http://purl.org/ASN/schema/core/</option>
-                            <option value="http://purl.org/dc/elements/1.1/">http://purl.org/dc/elements/1.1/</option>
-                            <option value="http://purl.org/gem/qualifiers/">http://purl.org/gem/qualifiers/</option>
-                            <option value="http://www.loc.gov/loc.terms/relators/">http://www.loc.gov/loc.terms/relators/</option>
-                            <option value="http://purl.org/dc/terms/">http://purl.org/dc/terms/</option>
-                            <option value="http://www.w3.org/2004/02/skos/core#">http://www.w3.org/2004/02/skos/core#</option>
+                            <option value="https://schema.cassproject.org/0.4/">
+                                https://schema.cassproject.org/0.4/
+                            </option>
+                            <option value="https://purl.org/ctdlasn/terms/">
+                                https://purl.org/ctdlasn/terms/
+                            </option>
+                            <option value="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+                                http://www.w3.org/1999/02/22-rdf-syntax-ns#
+                            </option>
+                            <option value="http://www.w3.org/2000/01/rdf-schema#">
+                                http://www.w3.org/2000/01/rdf-schema#
+                            </option>
+                            <option value="https://schema.cassproject.org/0.4/">
+                                https://schema.cassproject.org/0.4/
+                            </option>
+                            <option value="https://schema.cassproject.org/kbac/0.4/">
+                                https://schema.cassproject.org/kbac/0.4/
+                            </option>
+                            <option value="http://schema.eduworks.com/general/0.3/">
+                                http://schema.eduworks.com/general/0.3/
+                            </option>
+                            <option value="http://schema.org/">
+                                http://schema.org/
+                            </option>
+                            <option value="http://purl.org/ASN/schema/core/">
+                                http://purl.org/ASN/schema/core/
+                            </option>
+                            <option value="http://purl.org/dc/elements/1.1/">
+                                http://purl.org/dc/elements/1.1/
+                            </option>
+                            <option value="http://purl.org/gem/qualifiers/">
+                                http://purl.org/gem/qualifiers/
+                            </option>
+                            <option value="http://www.loc.gov/loc.terms/relators/">
+                                http://www.loc.gov/loc.terms/relators/
+                            </option>
+                            <option value="http://purl.org/dc/terms/">
+                                http://purl.org/dc/terms/
+                            </option>
+                            <option value="http://www.w3.org/2004/02/skos/core#">
+                                http://www.w3.org/2004/02/skos/core#
+                            </option>
                         </select>
                     </div>
                     <label>Range/Type: </label>
@@ -128,12 +188,24 @@
                     </div>
                     <div v-if="!readOnly && customPropertyIsNew">
                         <select v-model="customPropertyRange">
-                            <option value="http://www.w3.org/2000/01/rdf-schema#langString">Lang-String</option>
-                            <option value="http://schema.org/URL">URL</option>
-                            <option value="http://schema.org/Text">Text</option>
-                            <option value="http://www.w3.org/2001/XMLSchema#dateTime">Date-Time</option>
-                            <option value="http://purl.org/dc/terms/date">Date</option>
-                            <option value="https://schema.cassproject.org/0.4/skos/Concept">SKOS Concept</option>
+                            <option value="http://www.w3.org/2000/01/rdf-schema#langString">
+                                Lang-String
+                            </option>
+                            <option value="http://schema.org/URL">
+                                URL
+                            </option>
+                            <option value="http://schema.org/Text">
+                                Text
+                            </option>
+                            <option value="http://www.w3.org/2001/XMLSchema#dateTime">
+                                Date-Time
+                            </option>
+                            <option value="http://purl.org/dc/terms/date">
+                                Date
+                            </option>
+                            <option value="https://schema.cassproject.org/0.4/skos/Concept">
+                                SKOS Concept
+                            </option>
                         </select>
                     </div>
                     <label>Property Name<span v-if="customPropertyIsNew"> (only alphanumerics permitted)</span>:
@@ -142,21 +214,28 @@
                         {{ customPropertyPropertyName }}
                     </div>
                     <div v-if="!readOnly && customPropertyIsNew">
-                        <input type="text" v-model="customPropertyPropertyName" @change="simplifyCustomPropertyName">
+                        <input
+                            type="text"
+                            v-model="customPropertyPropertyName"
+                            @change="simplifyCustomPropertyName">
                     </div>
                     <label>Label: </label>
                     <div v-if="readOnly">
                         {{ customPropertyLabel }}
                     </div>
                     <div v-if="!readOnly">
-                        <input type="text" v-model="customPropertyLabel">
+                        <input
+                            type="text"
+                            v-model="customPropertyLabel">
                     </div>
                     <label>Description: </label>
                     <div v-if="readOnly">
                         {{ customPropertyDescription }}
                     </div>
                     <div v-if="!readOnly">
-                        <input type="text" v-model="customPropertyDescription">
+                        <input
+                            type="text"
+                            v-model="customPropertyDescription">
                     </div>
                     <label>Is Required: </label>
                     <div v-if="readOnly">
@@ -164,8 +243,12 @@
                     </div>
                     <div v-if="!readOnly">
                         <select v-model="customPropertyRequired">
-                            <option :value="true">true</option>
-                            <option :value="false">false</option>
+                            <option :value="true">
+                                true
+                            </option>
+                            <option :value="false">
+                                false
+                            </option>
                         </select>
                     </div>
                     <label>Priority: </label>
@@ -174,46 +257,92 @@
                     </div>
                     <div v-if="!readOnly">
                         <select v-model="customPropertyPriority">
-                            <option value="primary">primary</option>
-                            <option value="secondary">secondary</option>
-                            <option value="tertiary">tertiary</option>
+                            <option value="primary">
+                                primary
+                            </option>
+                            <option value="secondary">
+                                secondary
+                            </option>
+                            <option value="tertiary">
+                                tertiary
+                            </option>
                         </select>
                     </div>
                     <div v-if="shouldAllowCustomPropertyPermittedValues">
                         <br>
                         <label>Permitted Values (Optional): </label>
-                        <p v-if="!readOnly">Leave this section empty to allow any values for this property</p>
-                        <button v-if="!readOnly" @click="addCustomPropertyPermittedValue">add</button>
-                        <div class="columns" v-if="customPropertyPermittedValues.length > 0">
-                            <div class="column is-5 listHdr">display</div>
-                            <div class="column is-5 listHdr">value</div>
-                            <div class="column is-2"></div>
+                        <p v-if="!readOnly">
+                            Leave this section empty to allow any values for this property
+                        </p>
+                        <button
+                            v-if="!readOnly"
+                            @click="addCustomPropertyPermittedValue">
+                            add
+                        </button>
+                        <div
+                            class="columns"
+                            v-if="customPropertyPermittedValues.length > 0">
+                            <div class="column is-5 listHdr">
+                                display
+                            </div>
+                            <div class="column is-5 listHdr">
+                                value
+                            </div>
+                            <div class="column is-2" />
                         </div>
-                        <div class="columns is-multiline" v-for="(ev,idx) in customPropertyPermittedValues">
+                        <div
+                            class="columns is-multiline"
+                            v-for="(ev,idx) in customPropertyPermittedValues">
                             <div class="column is-5">
-                                <p v-if="readOnly">{{ ev.display }}</p>
-                                <input v-if="!readOnly" type="text" v-model="ev.display">
+                                <p v-if="readOnly">
+                                    {{ ev.display }}
+                                </p>
+                                <input
+                                    v-if="!readOnly"
+                                    type="text"
+                                    v-model="ev.display">
                             </div>
                             <div class="column is-5">
-                                <p v-if="readOnly">{{ ev.value }}</p>
-                                <input v-if="!readOnly" type="text" v-model="ev.value">
+                                <p v-if="readOnly">
+                                    {{ ev.value }}
+                                </p>
+                                <input
+                                    v-if="!readOnly"
+                                    type="text"
+                                    v-model="ev.value">
                             </div>
                             <div class="column is-2">
-                                <button v-if="!readOnly" @click="deleteCustomPropertyPermittedValue(idx)">delete</button>
+                                <button
+                                    v-if="!readOnly"
+                                    @click="deleteCustomPropertyPermittedValue(idx)">
+                                    delete
+                                </button>
                             </div>
                         </div>
                     </div>
                     <br>
                     <div v-if="customPropertyInvalid">
                         <p>Property is invalid:</p>
-                        <p v-if="customPropertyPropertyNameExists">*Property name is already in use</p>
-                        <p v-if="customPropertyPropertyNameInvalid">*Property name is required</p>
-                        <p v-if="customPropertyLabelInvalid">*Label is required</p>
-                        <p v-if="customPropertyPropertyNameInvalid">*Description is required</p>
+                        <p v-if="customPropertyPropertyNameExists">
+                            *Property name is already in use
+                        </p>
+                        <p v-if="customPropertyPropertyNameInvalid">
+                            *Property name is required
+                        </p>
+                        <p v-if="customPropertyLabelInvalid">
+                            *Label is required
+                        </p>
+                        <p v-if="customPropertyPropertyNameInvalid">
+                            *Description is required
+                        </p>
                     </div>
                     <div v-if="!readOnly">
-                        <button @click="applyCustomPropertyEdits">apply</button>
-                        <button @click="closeCustomPropertyModal">cancel</button>
+                        <button @click="applyCustomPropertyEdits">
+                            apply
+                        </button>
+                        <button @click="closeCustomPropertyModal">
+                            cancel
+                        </button>
                     </div>
                 </div>
             </div>
@@ -224,7 +353,9 @@
             {{ config.name }}
         </div>
         <div v-if="!readOnly">
-            <input type="text" v-model="config.name">
+            <input
+                type="text"
+                v-model="config.name">
         </div>
         <br>
         <label>Description: </label>
@@ -232,7 +363,9 @@
             {{ config.description }}
         </div>
         <div v-if="!readOnly">
-            <input type="text" v-model="config.description">
+            <input
+                type="text"
+                v-model="config.description">
         </div>
         <br>
         <label>Is Default: </label>
@@ -243,9 +376,15 @@
             <span v-if="this.defaultConfigId && !this.defaultConfigId.equals(this.config.id)">
                 {{ config.isDefault }}
             </span>
-            <select v-model="config.isDefault" v-if="!this.defaultConfigId || this.defaultConfigId.equals(this.config.id)">
-                <option :value="true">true</option>
-                <option :value="false">false</option>
+            <select
+                v-model="config.isDefault"
+                v-if="!this.defaultConfigId || this.defaultConfigId.equals(this.config.id)">
+                <option :value="true">
+                    true
+                </option>
+                <option :value="false">
+                    false
+                </option>
             </select>
         </div>
         <br>
@@ -253,12 +392,22 @@
         <!-- ************************************** Framework Properties ************************************************ -->
         <h5>Framework Properties</h5>
         <div class="columns">
-            <div class="column is-2 listHdr">property</div>
-            <div class="column is-2 listHdr">label</div>
-            <div class="column is-4 listHdr">description</div>
-            <div class="column is-1 listHdr">required</div>
-            <div class="column is-2 listHdr">priority</div>
-            <div class="column is-1 listHdr"></div>
+            <div class="column is-2 listHdr">
+                property
+            </div>
+            <div class="column is-2 listHdr">
+                label
+            </div>
+            <div class="column is-4 listHdr">
+                description
+            </div>
+            <div class="column is-1 listHdr">
+                required
+            </div>
+            <div class="column is-2 listHdr">
+                priority
+            </div>
+            <div class="column is-1 listHdr" />
         </div>
         <FrameworkCompetencyPropertyListItem
             propertyParent="framework"
@@ -271,8 +420,7 @@
             :readOnly="readOnly"
             :enforceRequired="true"
             :enforcePrimary="false"
-            @change="updateFrameworkCompetencyProperty">
-        </FrameworkCompetencyPropertyListItem>
+            @change="updateFrameworkCompetencyProperty" />
         <FrameworkCompetencyPropertyListItem
             propertyParent="framework"
             property="name"
@@ -284,8 +432,7 @@
             :readOnly="readOnly"
             :enforceRequired="true"
             :enforcePrimary="true"
-            @change="updateFrameworkCompetencyProperty">
-        </FrameworkCompetencyPropertyListItem>
+            @change="updateFrameworkCompetencyProperty" />
         <FrameworkCompetencyPropertyListItem
             propertyParent="framework"
             property="description"
@@ -297,8 +444,7 @@
             :readOnly="readOnly"
             :enforceRequired="false"
             :enforcePrimary="false"
-            @change="updateFrameworkCompetencyProperty">
-        </FrameworkCompetencyPropertyListItem>
+            @change="updateFrameworkCompetencyProperty" />
         <FrameworkCompetencyPropertyListItem
             v-for="(prop,idx) in config.fwkCustomProperties"
             :key="prop.propertyName + '_' + prop.label + '_' + prop.description + '_' + prop.required + '_' + prop.priority"
@@ -315,22 +461,33 @@
             :propertyIndex="idx"
             @change="updateFrameworkCompetencyProperty"
             @manage="manageCustomFrameworkCompetencyProperty"
-            @delete="deleteCustomFrameworkCompetencyProperty">
-        </FrameworkCompetencyPropertyListItem>
+            @delete="deleteCustomFrameworkCompetencyProperty" />
         <div v-if="!readOnly">
-            <button @click="addCustomFrameworkProperty">add custom framework property</button>
+            <button @click="addCustomFrameworkProperty">
+                add custom framework property
+            </button>
         </div>
         <br>
         <br>
         <!-- ************************************** Competency Properties ************************************************ -->
         <h5>Competency Properties</h5>
         <div class="columns">
-            <div class="column is-2 listHdr">property</div>
-            <div class="column is-2 listHdr">label</div>
-            <div class="column is-4 listHdr">description</div>
-            <div class="column is-1 listHdr">required</div>
-            <div class="column is-2 listHdr">priority</div>
-            <div class="column is-1 listHdr"></div>
+            <div class="column is-2 listHdr">
+                property
+            </div>
+            <div class="column is-2 listHdr">
+                label
+            </div>
+            <div class="column is-4 listHdr">
+                description
+            </div>
+            <div class="column is-1 listHdr">
+                required
+            </div>
+            <div class="column is-2 listHdr">
+                priority
+            </div>
+            <div class="column is-1 listHdr" />
         </div>
         <FrameworkCompetencyPropertyListItem
             propertyParent="competency"
@@ -343,8 +500,7 @@
             :readOnly="readOnly"
             :enforceRequired="true"
             :enforcePrimary="false"
-            @change="updateFrameworkCompetencyProperty">
-        </FrameworkCompetencyPropertyListItem>
+            @change="updateFrameworkCompetencyProperty" />
         <FrameworkCompetencyPropertyListItem
             propertyParent="competency"
             property="name"
@@ -356,8 +512,7 @@
             :readOnly="readOnly"
             :enforceRequired="true"
             :enforcePrimary="true"
-            @change="updateFrameworkCompetencyProperty">
-        </FrameworkCompetencyPropertyListItem>
+            @change="updateFrameworkCompetencyProperty" />
         <FrameworkCompetencyPropertyListItem
             propertyParent="competency"
             property="description"
@@ -369,8 +524,7 @@
             :readOnly="readOnly"
             :enforceRequired="false"
             :enforcePrimary="false"
-            @change="updateFrameworkCompetencyProperty">
-        </FrameworkCompetencyPropertyListItem>
+            @change="updateFrameworkCompetencyProperty" />
         <FrameworkCompetencyPropertyListItem
             propertyParent="competency"
             property="type"
@@ -382,8 +536,7 @@
             :readOnly="readOnly"
             :enforceRequired="false"
             :enforcePrimary="false"
-            @change="updateFrameworkCompetencyProperty">
-        </FrameworkCompetencyPropertyListItem>
+            @change="updateFrameworkCompetencyProperty" />
         <FrameworkCompetencyPropertyListItem
             v-for="(prop,idx) in config.compCustomProperties"
             :key="prop.propertyName + '_' + prop.label + '_' + prop.description + '_' + prop.required + '_' + prop.priority"
@@ -400,45 +553,76 @@
             :propertyIndex="idx"
             @change="updateFrameworkCompetencyProperty"
             @manage="manageCustomFrameworkCompetencyProperty"
-            @delete="deleteCustomFrameworkCompetencyProperty">
-        </FrameworkCompetencyPropertyListItem>
+            @delete="deleteCustomFrameworkCompetencyProperty" />
         <div v-if="!readOnly">
-            <button @click="addCustomCompetencyProperty">add custom competency property</button>
+            <button @click="addCustomCompetencyProperty">
+                add custom competency property
+            </button>
         </div>
         <br>
         <br>
         <!-- ************************************** Competency Type Enforcement ************************************************ -->
         <h5>Enforce Competency Types? (optional)</h5>
-        <p v-if="!readOnly">Leave this section empty to allow competencies of any type.</p>
+        <p v-if="!readOnly">
+            Leave this section empty to allow competencies of any type.
+        </p>
         <div v-if="readOnly">
             {{ config.compEnforceTypes }}
         </div>
         <div v-if="!readOnly ">
-            <select v-model="config.compEnforceTypes" @change="checkEnforceTypesChange">
-                <option :value="true">true</option>
-                <option :value="false">false</option>
+            <select
+                v-model="config.compEnforceTypes"
+                @change="checkEnforceTypesChange">
+                <option :value="true">
+                    true
+                </option>
+                <option :value="false">
+                    false
+                </option>
             </select>
         </div>
         <div v-if="config.compEnforceTypes">
-            <button v-if="!readOnly" @click="addCompetencyEnforcedTypeDataHolder">add enforced type</button>
+            <button
+                v-if="!readOnly"
+                @click="addCompetencyEnforcedTypeDataHolder">
+                add enforced type
+            </button>
             <div class="columns">
-                <div class="column is-2 listHdr">label</div>
-                <div class="column is-4 listHdr">value</div>
-                <div class="column is-2"></div>
+                <div class="column is-2 listHdr">
+                    label
+                </div>
+                <div class="column is-4 listHdr">
+                    value
+                </div>
+                <div class="column is-2" />
             </div>
             <div
                 class="columns"
                 v-for="(et,idx) in config.compEnforcedTypes">
                 <div class="column is-2">
-                    <p v-if="readOnly">{{ et.display }}</p>
-                    <input v-if="!readOnly" type="text" v-model="et.display">
+                    <p v-if="readOnly">
+                        {{ et.display }}
+                    </p>
+                    <input
+                        v-if="!readOnly"
+                        type="text"
+                        v-model="et.display">
                 </div>
                 <div class="column is-4">
-                    <p v-if="readOnly">{{ et.value }}</p>
-                    <input v-if="!readOnly" type="text" v-model="et.value">
+                    <p v-if="readOnly">
+                        {{ et.value }}
+                    </p>
+                    <input
+                        v-if="!readOnly"
+                        type="text"
+                        v-model="et.value">
                 </div>
                 <div class="column is-2">
-                    <button v-if="!readOnly" @click="deleteCompetencyEnforcedType(idx)">delete</button>
+                    <button
+                        v-if="!readOnly"
+                        @click="deleteCompetencyEnforcedType(idx)">
+                        delete
+                    </button>
                 </div>
             </div>
         </div>
@@ -451,8 +635,12 @@
         </div>
         <div v-if="!readOnly">
             <select v-model="config.compAllowLevels">
-                <option :value="true">true</option>
-                <option :value="false">false</option>
+                <option :value="true">
+                    true
+                </option>
+                <option :value="false">
+                    false
+                </option>
             </select>
         </div>
         <div v-if="config.compAllowLevels">
@@ -462,7 +650,9 @@
                     {{ config.levelLabel }}
                 </div>
                 <div v-if="!readOnly">
-                    <input type="text" v-model="config.levelLabel">
+                    <input
+                        type="text"
+                        v-model="config.levelLabel">
                 </div>
             </div>
             <div>
@@ -471,7 +661,9 @@
                     {{ config.levelDescription }}
                 </div>
                 <div v-if="!readOnly">
-                    <input type="text" v-model="config.levelDescription">
+                    <input
+                        type="text"
+                        v-model="config.levelDescription">
                 </div>
             </div>
             <br>
@@ -481,15 +673,25 @@
             </div>
             <div v-if="!readOnly">
                 <select v-model="config.enforceLevelValues">
-                    <option :value="true">true</option>
-                    <option :value="false">false</option>
+                    <option :value="true">
+                        true
+                    </option>
+                    <option :value="false">
+                        false
+                    </option>
                 </select>
             </div>
             <div v-if="config.enforceLevelValues">
-                <button @click="showSelectLevelsModal">manage enforced levels</button>
+                <button @click="showSelectLevelsModal">
+                    manage enforced levels
+                </button>
                 <div class="columns">
-                    <div class="column is-2 listHdr">name</div>
-                    <div class="column is-4 listHdr">description</div>
+                    <div class="column is-2 listHdr">
+                        name
+                    </div>
+                    <div class="column is-4 listHdr">
+                        description
+                    </div>
                 </div>
                 <div
                     class="columns"
@@ -508,9 +710,15 @@
         <!-- ************************************** Competency Relationships ************************************************ -->
         <h5>Competency Relationships</h5>
         <div class="columns">
-            <div class="column is-2 listHdr">relationship</div>
-            <div class="column is-2 listHdr">label</div>
-            <div class="column is-2 listHdr">enabled</div>
+            <div class="column is-2 listHdr">
+                relationship
+            </div>
+            <div class="column is-2 listHdr">
+                label
+            </div>
+            <div class="column is-2 listHdr">
+                enabled
+            </div>
         </div>
         <RelationshipListItem
             v-for="(relObj, relKey) in this.config.relationships"
@@ -518,48 +726,75 @@
             :label="relObj.label"
             :enabled="relObj.enabled"
             :readOnly="readOnly"
-            @change="updateRelationshipProperty">
-        </RelationshipListItem>
+            @change="updateRelationshipProperty" />
         <br>
         <br>
         <!-- ************************************** Resource Alignments ************************************************ -->
         <h5>Resource Alignment</h5>
         <div class="columns">
-            <div class="column is-2 listHdr">alignment</div>
-            <div class="column is-2 listHdr">enabled</div>
+            <div class="column is-2 listHdr">
+                alignment
+            </div>
+            <div class="column is-2 listHdr">
+                enabled
+            </div>
         </div>
         <div class="columns">
-            <div class="column is-2">teaches</div>
             <div class="column is-2">
-                <div v-if="readOnly">{{ config.alignments.teaches }}</div>
+                teaches
+            </div>
+            <div class="column is-2">
+                <div v-if="readOnly">
+                    {{ config.alignments.teaches }}
+                </div>
                 <div v-if="!readOnly">
                     <select v-model="config.alignments.teaches">
-                        <option :value="true">true</option>
-                        <option :value="false">false</option>
+                        <option :value="true">
+                            true
+                        </option>
+                        <option :value="false">
+                            false
+                        </option>
                     </select>
                 </div>
             </div>
         </div>
         <div class="columns">
-            <div class="column is-2">assesses</div>
             <div class="column is-2">
-                <div v-if="readOnly">{{ config.alignments.assesses }}</div>
+                assesses
+            </div>
+            <div class="column is-2">
+                <div v-if="readOnly">
+                    {{ config.alignments.assesses }}
+                </div>
                 <div v-if="!readOnly">
                     <select v-model="config.alignments.assesses">
-                        <option :value="true">true</option>
-                        <option :value="false">false</option>
+                        <option :value="true">
+                            true
+                        </option>
+                        <option :value="false">
+                            false
+                        </option>
                     </select>
                 </div>
             </div>
         </div>
         <div class="columns">
-            <div class="column is-2">requires</div>
             <div class="column is-2">
-                <div v-if="readOnly">{{ config.alignments.requires }}</div>
+                requires
+            </div>
+            <div class="column is-2">
+                <div v-if="readOnly">
+                    {{ config.alignments.requires }}
+                </div>
                 <div v-if="!readOnly">
                     <select v-model="config.alignments.requires">
-                        <option :value="true">true</option>
-                        <option :value="false">false</option>
+                        <option :value="true">
+                            true
+                        </option>
+                        <option :value="false">
+                            false
+                        </option>
                     </select>
                 </div>
             </div>
@@ -569,34 +804,80 @@
         <!-- ************************************** Validation ************************************************ -->
         <div v-if="configInvalid">
             <p>Configuration is invalid:</p>
-            <p v-if="configNameInvalid">*Configuration name is required</p>
-            <p v-if="configDescriptionInvalid">*Configuration description is required</p>
-            <p v-if="configEnforcedTypesInvalid">*Enforced types must have a label and value</p>
-            <p v-if="configRelationshipsInvalid">*Enabled relationships must have a label</p>
-            <p v-if="configFrameworkIdLabelInvalid">*Framework ID Label is required</p>
-            <p v-if="configFrameworkIdDescriptionInvalid">*Framework ID Description is required</p>
-            <p v-if="configFrameworkNameLabelInvalid">*Framework Name Label is required</p>
-            <p v-if="configFrameworkNameDescriptionInvalid">*Framework Name Description is required</p>
-            <p v-if="configFrameworkDescLabelInvalid">*Framework Description Label is required</p>
-            <p v-if="configFrameworkDescDescriptionInvalid">*Framework Description Description is required</p>
-            <p v-if="configCompetencyIdLabelInvalid">*Competency ID Label required</p>
-            <p v-if="configCompetencyIdDescriptionInvalid">*Competency ID Description is required</p>
-            <p v-if="configCompetencyNameLabelInvalid">*Competency Name Label is required</p>
-            <p v-if="configCompetencyNameDescriptionInvalid">*Competency Name Description is required</p>
-            <p v-if="configCompetencyDescLabelInvalid">*Competency Description Label is required</p>
-            <p v-if="configCompetencyDescDescriptionInvalid">*Competency Description Description is required</p>
-            <p v-if="configCompetencyTypeLabelInvalid">*Competency Type Label is required</p>
-            <p v-if="configCompetencyTypeDescriptionInvalid">*Competency Type Description is required</p>
+            <p v-if="configNameInvalid">
+                *Configuration name is required
+            </p>
+            <p v-if="configDescriptionInvalid">
+                *Configuration description is required
+            </p>
+            <p v-if="configEnforcedTypesInvalid">
+                *Enforced types must have a label and value
+            </p>
+            <p v-if="configRelationshipsInvalid">
+                *Enabled relationships must have a label
+            </p>
+            <p v-if="configFrameworkIdLabelInvalid">
+                *Framework ID Label is required
+            </p>
+            <p v-if="configFrameworkIdDescriptionInvalid">
+                *Framework ID Description is required
+            </p>
+            <p v-if="configFrameworkNameLabelInvalid">
+                *Framework Name Label is required
+            </p>
+            <p v-if="configFrameworkNameDescriptionInvalid">
+                *Framework Name Description is required
+            </p>
+            <p v-if="configFrameworkDescLabelInvalid">
+                *Framework Description Label is required
+            </p>
+            <p v-if="configFrameworkDescDescriptionInvalid">
+                *Framework Description Description is required
+            </p>
+            <p v-if="configCompetencyIdLabelInvalid">
+                *Competency ID Label required
+            </p>
+            <p v-if="configCompetencyIdDescriptionInvalid">
+                *Competency ID Description is required
+            </p>
+            <p v-if="configCompetencyNameLabelInvalid">
+                *Competency Name Label is required
+            </p>
+            <p v-if="configCompetencyNameDescriptionInvalid">
+                *Competency Name Description is required
+            </p>
+            <p v-if="configCompetencyDescLabelInvalid">
+                *Competency Description Label is required
+            </p>
+            <p v-if="configCompetencyDescDescriptionInvalid">
+                *Competency Description Description is required
+            </p>
+            <p v-if="configCompetencyTypeLabelInvalid">
+                *Competency Type Label is required
+            </p>
+            <p v-if="configCompetencyTypeDescriptionInvalid">
+                *Competency Type Description is required
+            </p>
         </div>
         <!-- ************************************** Actions ************************************************ -->
         <div v-if="!readOnly">
-            <button @click="$emit('setBrowserDefault', config.id)">set as browser default</button>
-            <button @click="validateCurrentConfigAndEmitSave">save</button>
-            <button @click="$emit('cancel')">cancel</button>
+            <button @click="$emit('setBrowserDefault', config.id)">
+                set as browser default
+            </button>
+            <button @click="validateCurrentConfigAndEmitSave">
+                save
+            </button>
+            <button @click="$emit('cancel')">
+                cancel
+            </button>
         </div>
         <div v-if="readOnly">
-            <button @click="$emit('setBrowserDefault', config.id)">set as browser default</button>
-            <button @click="$emit('back')">back</button>
+            <button @click="$emit('setBrowserDefault', config.id)">
+                set as browser default
+            </button>
+            <button @click="$emit('back')">
+                back
+            </button>
         </div>
     </div>
 </template>
@@ -608,7 +889,7 @@ import {cassUtil} from '../../mixins/cassUtil';
 
 export default {
     mixins: [cassUtil],
-    name: 'configurationDetails',
+    name: 'ConfigurationDetails',
     props: {
         config: {
             type: Object

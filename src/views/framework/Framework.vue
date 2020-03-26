@@ -52,11 +52,12 @@
                     :properties="properties">
                     <template v-slot:copyURL="slotProps">
                         <span v-if="slotProps.expandedProperty=='@id'">
-                            <button
+                            <div
+                                class="button is-small has-text-dark is-text"
                                 title="Copy URL to the clipboard."
                                 v-clipboard="slotProps.expandedValue[0]['@value']">
-                                <i class="fa fa-clipboard" />
-                            </button>
+                                <i class="fa fa-copy" />
+                            </div>
                         </span>
                     </template>
                 </Thing>
@@ -143,11 +144,12 @@
                     :properties="properties">
                     <template v-slot:copyURL="slotProps">
                         <span v-if="slotProps.expandedProperty=='@id'">
-                            <button
+                            <div
+                                class="button is-text has-text-dark is-small"
                                 title="Copy URL to the clipboard."
                                 v-clipboard="slotProps.expandedValue[0]['@value']">
-                                <i class="fa fa-clipboard" />
-                            </button>
+                                <i class="fa fa-copy" />
+                            </div>
                         </span>
                     </template>
                 </Hierarchy>
@@ -755,6 +757,5 @@ export default {
 
 <style lang="scss">
     @import './../../scss/framework.scss';
-    @import './../../scss/thingEditing.scss';
 
 </style>

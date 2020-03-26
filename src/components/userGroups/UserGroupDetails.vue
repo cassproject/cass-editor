@@ -4,7 +4,7 @@
         <div
             class="modal"
             :class="[{'is-active': showAddMemberModal}]">
-            <div class="modal-background"></div>
+            <div class="modal-background" />
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="subtitle is-size-3 modal-card-title">
@@ -12,8 +12,7 @@
                         <button
                             class="delete is-pulled-right"
                             aria-label="close"
-                            @click="closeAddMemberModal">
-                        </button>
+                            @click="closeAddMemberModal" />
                     </p>
                 </header>
                 <div class="modal-card-body has-text-dark">
@@ -23,28 +22,50 @@
                                 <label>Available Members:</label>
                             </div>
                             <div class="column is-9 listHdr">
-                                <input type="text" v-model="selectedPersonsFilter" placeholder="person filter">
+                                <input
+                                    type="text"
+                                    v-model="selectedPersonsFilter"
+                                    placeholder="person filter">
                             </div>
                         </div>
                         <div class="columns">
-                            <div class="column is-1 listHdr"></div>
-                            <div class="column is-4 listHdr">name</div>
-                            <div class="column is-4 listHdr">email</div>
+                            <div class="column is-1 listHdr" />
+                            <div class="column is-4 listHdr">
+                                name
+                            </div>
+                            <div class="column is-4 listHdr">
+                                email
+                            </div>
                         </div>
                     </div>
                     <div class="selectBox">
-                        <div class="columns is-multiline" v-for="prs in filteredPersons">
+                        <div
+                            class="columns is-multiline"
+                            v-for="prs in filteredPersons">
                             <div class="column is-1">
-                                <input :id="prs.shortId()" :value="prs.shortId()" name="prs.shortId()" type="checkbox" v-model="selectedPersons" />
+                                <input
+                                    :id="prs.shortId()"
+                                    :value="prs.shortId()"
+                                    name="prs.shortId()"
+                                    type="checkbox"
+                                    v-model="selectedPersons">
                             </div>
-                            <div class="column is-4">{{ prs.getName() }}</div>
-                            <div class="column is-4">{{ prs.email }}</div>
+                            <div class="column is-4">
+                                {{ prs.getName() }}
+                            </div>
+                            <div class="column is-4">
+                                {{ prs.email }}
+                            </div>
                         </div>
                     </div>
                     <br>
                     <div v-if="!readOnly">
-                        <button @click="applyAddMembers">apply</button>
-                        <button @click="closeAddMemberModal">cancel</button>
+                        <button @click="applyAddMembers">
+                            apply
+                        </button>
+                        <button @click="closeAddMemberModal">
+                            cancel
+                        </button>
                     </div>
                 </div>
             </div>
@@ -55,7 +76,9 @@
             {{ group.name }}
         </div>
         <div v-if="!readOnly">
-            <input type="text" v-model="group.name">
+            <input
+                type="text"
+                v-model="group.name">
         </div>
         <br>
         <label>Description: </label>
@@ -63,46 +86,84 @@
             {{ group.description }}
         </div>
         <div v-if="!readOnly">
-            <input type="text" v-model="group.description">
+            <input
+                type="text"
+                v-model="group.description">
         </div>
         <br>
         <h5>Managers</h5>
-        <button v-if="!readOnly" @click="addManagers">add managers</button>
+        <button
+            v-if="!readOnly"
+            @click="addManagers">
+            add managers
+        </button>
         <div class="columns">
-            <div class="column is-3 listHdr">name</div>
-            <div class="column is-3 listHdr">email</div>
-            <div class="column is-2 listHdr"></div>
+            <div class="column is-3 listHdr">
+                name
+            </div>
+            <div class="column is-3 listHdr">
+                email
+            </div>
+            <div class="column is-2 listHdr" />
         </div>
-        <div class="columns is-multiline" v-for="(mgr, mgrIdx) in localGroupManagers">
-            <div class="column is-3">{{ mgr.getName() }}</div>
-            <div class="column is-3">{{ mgr.email }}</div>
+        <div
+            class="columns is-multiline"
+            v-for="(mgr, mgrIdx) in localGroupManagers">
+            <div class="column is-3">
+                {{ mgr.getName() }}
+            </div>
+            <div class="column is-3">
+                {{ mgr.email }}
+            </div>
             <div class="column is-2">
                 <div v-if="!readOnly && !areAnyIdentitiesThisPerson(mgr)">
-                    <button @click="moveManagerToUser(mgrIdx)">reassign as user</button>
-                    <button @click="removeManager(mgrIdx)">remove</button>
+                    <button @click="moveManagerToUser(mgrIdx)">
+                        reassign as user
+                    </button>
+                    <button @click="removeManager(mgrIdx)">
+                        remove
+                    </button>
                 </div>
             </div>
         </div>
         <br>
         <br>
         <h5>Users</h5>
-        <button v-if="!readOnly" @click="addUsers">add users</button>
+        <button
+            v-if="!readOnly"
+            @click="addUsers">
+            add users
+        </button>
         <div v-if="groupUsers.length === 0">
             <p>No users assigned to this group</p>
         </div>
         <div v-if="groupUsers.length > 0">
             <div class="columns">
-                <div class="column is-3 listHdr">name</div>
-                <div class="column is-3 listHdr">email</div>
-                <div class="column is-2 listHdr"></div>
+                <div class="column is-3 listHdr">
+                    name
+                </div>
+                <div class="column is-3 listHdr">
+                    email
+                </div>
+                <div class="column is-2 listHdr" />
             </div>
-            <div class="columns is-multiline" v-for="(usr, usrIdx) in localGroupUsers">
-                <div class="column is-3">{{ usr.getName() }}</div>
-                <div class="column is-3">{{ usr.email }}</div>
+            <div
+                class="columns is-multiline"
+                v-for="(usr, usrIdx) in localGroupUsers">
+                <div class="column is-3">
+                    {{ usr.getName() }}
+                </div>
+                <div class="column is-3">
+                    {{ usr.email }}
+                </div>
                 <div class="column is-2">
                     <div v-if="!readOnly && !areAnyIdentitiesThisPerson(usr)">
-                        <button @click="moveUserToManager(usrIdx)">reassign as manager</button>
-                        <button @click="removeUser(usrIdx)">remove</button>
+                        <button @click="moveUserToManager(usrIdx)">
+                            reassign as manager
+                        </button>
+                        <button @click="removeUser(usrIdx)">
+                            remove
+                        </button>
                     </div>
                 </div>
             </div>
@@ -112,16 +173,26 @@
         <!-- ************************************** Validation ************************************************ -->
         <div v-if="groupInvalid">
             <p>User Group is invalid:</p>
-            <p v-if="groupNameInvalid">*User group name is required</p>
-            <p v-if="groupDescriptionInvalid">*User group description is required</p>
+            <p v-if="groupNameInvalid">
+                *User group name is required
+            </p>
+            <p v-if="groupDescriptionInvalid">
+                *User group description is required
+            </p>
         </div>
         <!-- ************************************** Actions ************************************************ -->
         <div v-if="!readOnly">
-            <button @click="validateCurrentGroupAndEmitSave">save</button>
-            <button @click="$emit('cancel')">cancel</button>
+            <button @click="validateCurrentGroupAndEmitSave">
+                save
+            </button>
+            <button @click="$emit('cancel')">
+                cancel
+            </button>
         </div>
         <div v-if="readOnly">
-            <button @click="$emit('back')">back</button>
+            <button @click="$emit('back')">
+                back
+            </button>
         </div>
     </div>
 </template>
@@ -131,7 +202,7 @@ import {cassUtil} from '../../mixins/cassUtil';
 
 export default {
     mixins: [cassUtil],
-    name: 'userGroupDetails',
+    name: 'UserGroupDetails',
     props: {
         group: {
             type: Object

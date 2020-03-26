@@ -22,7 +22,7 @@
 
 <script>
 export default {
-    name: 'userGroupListItem',
+    name: 'UserGroupListItem',
     props: {
         id: {
             type: String,

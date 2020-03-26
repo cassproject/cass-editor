@@ -65,7 +65,7 @@ export const cassUtil = {
                 let readerFingerprint = EcPk.fromPem(readerPkPem).fingerprint();
                 if (readerFingerprint.equals(personFingerprint)) return true;
             }
-            //return obj.hasReader(EcPk.fromPem(pkPem));
+            // return obj.hasReader(EcPk.fromPem(pkPem));
             return false;
         },
         areAnyIdentitiesThisPerson(personObj) {

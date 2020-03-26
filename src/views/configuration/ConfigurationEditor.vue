@@ -4,7 +4,7 @@
         <div
             class="modal"
             :class="[{'is-active': configBusy}]">
-            <div class="modal-background"></div>
+            <div class="modal-background" />
             <div class="modal-content has-text-centered">
                 <span class="icon is-large has-text-center has-text-link">
                     <i class="fas fa-3x fa-spinner is-info fa-pulse" />
@@ -15,7 +15,7 @@
         <div
             class="modal"
             :class="[{'is-active': showBrowserConfigSetModal}]">
-            <div class="modal-background"></div>
+            <div class="modal-background" />
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="subtitle is-size-3 modal-card-title">
@@ -23,8 +23,7 @@
                         <button
                             class="delete is-pulled-right"
                             aria-label="close"
-                            @click="closeBrowserConfigSetModal">
-                        </button>
+                            @click="closeBrowserConfigSetModal" />
                     </p>
                 </header>
                 <div class="modal-card-body has-text-dark">
@@ -38,10 +37,16 @@
             <div v-if="configViewMode.equals('list')">
                 <h4>Configurations</h4>
                 <div class="columns">
-                    <div class="column is-3 listHdr">name</div>
-                    <div class="column is-5 listHdr">description</div>
-                    <div class="column is-2 listHdr">default</div>
-                    <div class="column is-2 listHdr"></div>
+                    <div class="column is-3 listHdr">
+                        name
+                    </div>
+                    <div class="column is-5 listHdr">
+                        description
+                    </div>
+                    <div class="column is-2 listHdr">
+                        default
+                    </div>
+                    <div class="column is-2 listHdr" />
                 </div>
                 <configuration-list-item
                     v-for="config in configList"
@@ -52,10 +57,11 @@
                     :isDefault="config.isDefault"
                     :defaultBrowserConfigId="localDefaultBrowserConfigId"
                     @setBrowserDefault="setConfigAsBrowserDefault"
-                    @showDetails="showConfigDetails">
-                </configuration-list-item>
+                    @showDetails="showConfigDetails" />
                 <br>
-                <button @click="createNewConfig">create new configuration</button>
+                <button @click="createNewConfig">
+                    create new configuration
+                </button>
             </div>
             <div v-if="configViewMode.equals('detail')">
                 <h4>Configuration Details</h4>
@@ -66,8 +72,7 @@
                     @setBrowserDefault="setConfigAsBrowserDefault"
                     @save="saveCurrentConfig"
                     @cancel="cancelEditCurrentConfig"
-                    @back="backFromEditCurrentConfig">
-                </configuration-details>
+                    @back="backFromEditCurrentConfig" />
             </div>
         </div>
     </div>

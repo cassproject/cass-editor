@@ -1,7 +1,11 @@
 @import './variables.scss';
 
 .page-framework{
-
+    .container {
+        max-width: 880px;
+        display: block;
+        margin: auto;
+    }
     padding-top: 36px;
     #select-expand-all-section {
         padding-top: 1rem !important;
@@ -10,11 +14,46 @@
             font-weight: 600;
         }
     }
+    .thing-editing,
+        .thing {
+            .e-Thing.e-Competency {
+            padding: .75rem;
+        }
+    }
+    .thing-editing {
+        margin-bottom: .5rem;
+        background-color: rgba($light, .3);
+    }
+    .add-property {
+        background-color: rgba($white, .5);
+        margin: .5rem;
+        .label {
+            padding-left: .25rem;
+        }
+        .add-property__input-type {
+        }
+    }
     #add-node-selection {
     }
     #add-node-section:hover .add-new-node {
         visibility: visible;
         height: 24px;
+    }
+    .e-Property.e-name {
+        font-size: .8rem;
+        font-weight: 600;
+    }
+    .e-Property.e-id {
+        font-size: .7rem;
+        font-weight: 500;
+    }
+    .e-Property.e-description {
+        font-size: .8rem;
+        font-weight: 400;
+    }
+    .e-Property {
+        font-size: .8rem;
+        font-weight: 500;
     }
     .add-new-node {
         padding-left: 2.5rem;
@@ -39,7 +78,6 @@
             z-index: 200;
             padding-bottom: 4px;
         }
-        
     }
     .add-new-node:hover {
         visibility: visible !important;
@@ -52,48 +90,47 @@
     // possibly set tab value based on value in scss varaibles sheet
     .e-Hierarchy {
         .e-Hierarchy-ul {
+            max-width: 880px;
             li.e-HierarchyNode {
-                padding: .5rem 0rem;
-                .thing {
-                    padding-left: .75rem;
-                   
+                
+                .thing, .thing-editing {
+                    margin-left: 1rem;
                 }
                 .e-HierarchyNode-ul {
                     .e-HierarchyNode {
-                        padding: .25rem 0rem;
-                        .thing {
-                            padding-left: 1.5rem;
+                        .thing, .thing-editing {
+                            margin-left: 2rem;
                         }
                     }
                     .e-HierarchyNode-ul {
                         .e-HierarchyNode {
-                            .thing {
-                                padding-left: 2.25rem;
+                            .thing, .thing-editing {
+                                margin-left: 3rem;
                             }
                             .e-HierarchyNode-ul {
                                 .e-HierarchyNode {
-                                    .thing {
-                                        padding-left: 3rem;
+                                    .thing, .thing-editing {
+                                        margin-left: 4rem;
                                     }
                                     .e-HierarchyNode-ul {
                                         .e-HierarchyNode {
-                                            .thing {
-                                                padding-left: 3.75rem;
+                                            .thing, .thing-editing {
+                                                margin-left: 5rem;
                                             }
                                             .e-HierarchyNode-ul {
                                                 .e-HierarchyNode {
-                                                    .thing {
-                                                        padding-left: 4.5rem;
+                                                    .thing, .thing-editing {
+                                                        margin-left: 6rem;
                                                     }
                                                     .e-HierarchyNode-ul {
                                                         .e-HierarchyNode {
-                                                            .thing {
-                                                                padding-left: 5.25rem;
+                                                            .thing, .thing-editing {
+                                                                margin-left: 7rem;
                                                             }
                                                             .e-HierarchyNode-ul {
                                                                 .e-HierarchyNode {
-                                                                    .thing {
-                                                                        padding-left: 6rem;
+                                                                    .thing, .thing-editing {
+                                                                        margin-left: 8rem;
                                                                     }
                                                                 }
                                                             }
@@ -139,11 +176,7 @@
         
         .e-Thing.e-Competency {
             transform: translateX(0);
-            display: flex;
             width: 100%;
-            flex-direction: column;
-            flex-flow: column;
-            padding: 0rem 0rem;
             .edit-button {
                 position: absolute;
                 color: dark;
@@ -185,15 +218,10 @@
             }
             ul.e-Thing-always-ul.e-Thing-ul{
                 .e-Property-text{
-                    font-size:larger;
                 }
                 .e-Property {
-                    display: flex;
-                    flex-direction: row;
-                    justify-content: space-between;
-                    width: 100%;
+
                     label {
-                        display: none;
                     }
                     .property-buttons {
                         display: flex;
@@ -207,28 +235,13 @@
                         padding-bottom: .5rem;
                     }
                     .e-Property-ul {
-                        display: flex;
-                        width: 100%;
-                        flex-direction: row;
-                        flex-wrap: wrap;
+     
                         li {
                             display: flex;
                             flex-direction: row;
                             justify-content: space-between;
                             width: 100%;
                             flex-wrap: nowrap;
-                            .input-span,
-                            .property-string-span {
-                                width: 100%;
-                                .input-field {
-                                    width: 100%;
-                                    textarea {
-                                        border: none;
-                                        border-radius: 2px;
-                                        width: 100%;
-                                    }
-                                }
-                            }
                         }
                     }
                     .e-Property-ul.unsaved {
@@ -237,8 +250,6 @@
                 }
                 .e-Property-text {
                     label {
-                        font-size: $size-3;
-                        font-weight: 600 !important;
                     }
                 }
             }
@@ -255,8 +266,8 @@
             border-left: none;
             margin: 0rem;
             
+            
             .e-thing-ul {
-                width: calc(100% - 16px);
                 
             }
             ul .e-Thing {
@@ -264,6 +275,7 @@
             }
         }
         .e-Hierarchy-ul {
+            padding-top: .5rem;
             .e-HierarchyNode-ul .thing{
             }
             .e-Thing-ul {
@@ -323,26 +335,6 @@
                         display: flex;
                         flex-wrap: wrap;
                         margin-right: 0rem;
-                        li.add-property-button {
-                            display: flex;
-                            justify-content: flex-end;
-                        }
-                        
-                        label {
-                            width: 100%;
-                        }
-                        .property-value {
-                            width: calc(100% - 56px);
-                        }
-                        .add-property-button {
-                            width: 56px;
-                        }
-                        .property-action-section {
-                            width: 98%;
-                            padding: 1%;
-                            display: flex;
-                            justify-content: flex-start;
-                        }
                         li {
                             width: 100%;
                             display:flex;
@@ -350,9 +342,6 @@
                             justify-content: space-between;
                             flex-direction: row;
                             flex-wrap: wrap;
-                            .property-string-span {
-                                width: 100%;
-                            }
                             .property-buttons {
                                 width: 100%;
                             }
@@ -361,14 +350,6 @@
                                 font-size: 1rem;
                                 word-wrap: break-word;
                                 width: calc(100% - 124px);
-                            }
-                            span {
-                                textarea {
-                                    width: 100%;
-                                    border-radius: 5px;
-                                    border: none;
-                                    padding: 6px;
-                                }
                             }
                             .button {
                                 width: auto;
@@ -380,20 +361,7 @@
                 }                    
                 li.e-Property.editing {
                     width: 100%;
-                    display: flex;
-                    flex-direction: row;
-                    justify-content: space-between;
-                    align-content: flex-end;
-                    display: flex;
-                    flex-wrap: wrap;
                     label {
-                        width: 100%;
-                    }
-                    .property-value {
-                        width: 100%;
-                    }
-                    .add-property-button {
-                        width: 100%;
                     }
                     .property-buttons {
                         display: flex;
@@ -408,12 +376,8 @@
                         align-items: center;
                         justify-content: space-between;
                         width: auto;
-                        .button {
-                        }
                         span.button-text {
                             display: inline;
-                        }
-                        .icon {
                         }
                     }
                     ul.e-Property-ul {
@@ -423,7 +387,6 @@
                         margin-top: 0rem;
                         margin-right: 0rem;
                         label {
-                            width: 100%;
                         }
                         .property-action-section {
                             width: 98%;
@@ -438,51 +401,18 @@
                             justify-content: space-between;
                             flex-direction: row;
                             flex-wrap: nowrap;
-                            .e-Property-text {
-                                width: 100%;
-                            }
-                            .property-string-span {
-                                padding: .25rem;
-                                padding: 0rem;
-                                width: 100%;
-                                textarea {
-                                    border-radius: 0px;
-                                    border:transparent;
-                                    border-bottom: none;
-                                    padding: 6px;
-                                }
-                    
-                                .input-field {
-                                    textarea {
-                                        border: none;
-                                        width: 100%;
-                                    }
-                                }
-                                .editing-property-buttons {
-                                    width: 48px;
-                                }
-                            
-                            }
                             .property-buttons {
                                 padding: .25rem;
                                 padding: 0rem;
                                 width: 100%;
                                 height: auto;
                                 display:flex;
-                                justify-items: flex-end;
-                                align-items: flex-end;
                             }
                             .button {
                                 cursor: pointer;
                                 .button-text {
                                 }
                             }
-                        }
-                        li.add-property-button {
-                            width: 100%;
-                            display: flex;
-                            flex-direction: row;
-                            justify-content: space-between;
                         }
                     }
                     
@@ -510,23 +440,12 @@
             }
             .e-Thing-ul, .e-Thing-ul, .e-Thing-always-ul{
                 .e-Property {
-                    padding-top: 0rem;
-                    display: flex;
-                    flex-wrap: wrap;
-                    justify-content: space-between;
-                    flex-direction: row-reverse;
+
                     .e-Property-ul {
-                        padding: 0rem;
-                        width: 100%;
                     }
                     label {
-                        display: flex;
-                        width: 100%;
-                        flex-direction: row-reverse;
                     }
                     .thing-label {
-                        width: 100%;
-                        padding-left: .5rem;
                     }
                     .active {
                         color: $link;
@@ -534,19 +453,6 @@
                     .special-property {
                         width: 100% !important;
                     }
-                }
-                .input-field {
-                    display: flex;
-                }
-                .textarea-input {
-                    width: 70%;
-                }
-                .text-input {
-                    width: 30%;
-                }
-                .text-input, .textarea-input {
-                    border: none;
-                    border-radius: 5px;
                 }
             }
             // required properties
@@ -559,16 +465,10 @@
             .e-Thing-view-ul .e-Thing-ul {
                 width: 100%;
                 li .e-Property {
-                    width: 100%;
-                    display: flex;
-                    flex-direction: row-reverse;
                     label {
-                        width: 100%;
-                        display: flex;
         
                     }
                     span .button {
-                        width: 5%;
                     }
                 }
 

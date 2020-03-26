@@ -5,43 +5,77 @@
                 {{ property }}
             </div>
             <div class="column is-2">
-                <div v-if="readOnly">{{ localLabel }}</div>
+                <div v-if="readOnly">
+                    {{ localLabel }}
+                </div>
                 <div v-if="!readOnly">
-                    <input type="text" v-model="localLabel" @change="changeLabel">
+                    <input
+                        type="text"
+                        v-model="localLabel"
+                        @change="changeLabel">
                 </div>
             </div>
             <div class="column is-4">
-                <div v-if="readOnly">{{ localDescription }}</div>
+                <div v-if="readOnly">
+                    {{ localDescription }}
+                </div>
                 <div v-if="!readOnly">
-                    <input type="text" v-model="localDescription" @change="changeDescription">
+                    <input
+                        type="text"
+                        v-model="localDescription"
+                        @change="changeDescription">
                 </div>
             </div>
             <div class="column is-1">
-                <div v-if="readOnly || enforceRequired">{{ localRequired }}</div>
+                <div v-if="readOnly || enforceRequired">
+                    {{ localRequired }}
+                </div>
                 <div v-if="!readOnly && !enforceRequired">
-                    <select v-model="localRequired" @change="changeRequired">
-                        <option :value="true">true</option>
-                        <option :value="false">false</option>
+                    <select
+                        v-model="localRequired"
+                        @change="changeRequired">
+                        <option :value="true">
+                            true
+                        </option>
+                        <option :value="false">
+                            false
+                        </option>
                     </select>
                 </div>
             </div>
             <div class="column is-2">
-                <div v-if="readOnly || enforcePrimary">{{ localPriority }}</div>
+                <div v-if="readOnly || enforcePrimary">
+                    {{ localPriority }}
+                </div>
                 <div v-if="!readOnly && !enforcePrimary">
-                    <select v-model="localPriority" @change="changePriority">
-                        <option value="primary">primary</option>
-                        <option value="secondary">secondary</option>
-                        <option value="tertiary">tertiary</option>
+                    <select
+                        v-model="localPriority"
+                        @change="changePriority">
+                        <option value="primary">
+                            primary
+                        </option>
+                        <option value="secondary">
+                            secondary
+                        </option>
+                        <option value="tertiary">
+                            tertiary
+                        </option>
                     </select>
                 </div>
             </div>
             <div class="column is-1">
                 <div v-if="custom && readOnly">
-                    <button @click="$emit('manage', propertyParent, propertyIndex)">view</button>
+                    <button @click="$emit('manage', propertyParent, propertyIndex)">
+                        view
+                    </button>
                 </div>
                 <div v-if="custom && !readOnly">
-                    <button @click="$emit('manage', propertyParent, propertyIndex)">edit</button>
-                    <button @click="$emit('delete', propertyParent, propertyIndex)">delete</button>
+                    <button @click="$emit('manage', propertyParent, propertyIndex)">
+                        edit
+                    </button>
+                    <button @click="$emit('delete', propertyParent, propertyIndex)">
+                        delete
+                    </button>
                 </div>
             </div>
         </div>
@@ -50,7 +84,7 @@
 
 <script>
 export default {
-    name: 'frameworkCompetencyPropertyListItem',
+    name: 'FrameworkCompetencyPropertyListItem',
     props: {
         propertyParent: {
             type: String,

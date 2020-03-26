@@ -237,7 +237,6 @@ body{
 }
 #app {
     height: 100%;
-    padding-left: 1rem;
 }
 
 

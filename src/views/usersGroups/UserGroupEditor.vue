@@ -4,7 +4,7 @@
         <div
             class="modal"
             :class="[{'is-active': userGroupBusy}]">
-            <div class="modal-background"></div>
+            <div class="modal-background" />
             <div class="modal-content has-text-centered">
                 <span class="icon is-large has-text-center has-text-link">
                     <i class="fas fa-3x fa-spinner is-info fa-pulse" />
@@ -21,10 +21,16 @@
                 </div>
                 <div v-if="userGroupList.length > 0">
                     <div class="columns">
-                        <div class="column is-3 listHdr">name</div>
-                        <div class="column is-5 listHdr">description</div>
-                        <div class="column is-2 listHdr">number of members</div>
-                        <div class="column is-2 listHdr"></div>
+                        <div class="column is-3 listHdr">
+                            name
+                        </div>
+                        <div class="column is-5 listHdr">
+                            description
+                        </div>
+                        <div class="column is-2 listHdr">
+                            number of members
+                        </div>
+                        <div class="column is-2 listHdr" />
                     </div>
                     <user-group-list-item
                         v-for="grp in userGroupList"
@@ -33,11 +39,15 @@
                         :description="grp.getDescription()"
                         :numMembers="getUserGroupNumMembers(grp)"
                         :isOwned="doesAnyIdentityOwnObject(grp)"
-                        @showDetails="showUserGroupDetails">
-                    </user-group-list-item>
+                        @showDetails="showUserGroupDetails" />
                 </div>
                 <br>
-                <button @click="createNewUserGroup" :disabled="!amLoggedIn" :title="getCreateUserGroupButtonTitle">create new group</button>
+                <button
+                    @click="createNewUserGroup"
+                    :disabled="!amLoggedIn"
+                    :title="getCreateUserGroupButtonTitle">
+                    create new group
+                </button>
             </div>
             <div v-if="userGroupViewMode.equals('detail')">
                 <h4>User Group Details</h4>
@@ -49,8 +59,7 @@
                     :readOnly="currentUserGroupIsReadOnly"
                     @save="saveCurrentUserGroup"
                     @cancel="cancelEditCurrentUserGroup"
-                    @back="backFromEditCurrentUserGroup">
-                </user-group-details>
+                    @back="backFromEditCurrentUserGroup" />
             </div>
         </div>
     </div>

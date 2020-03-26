@@ -15,7 +15,7 @@
                     <button
                         title="Copy URL to the clipboard."
                         v-clipboard="slotProps.expandedValue[0]['@value']">
-                        <i class="fa fa-clipboard" />
+                        <i class="fa fa-copy" />
                     </button>
                 </span>
             </template>
@@ -71,11 +71,12 @@
             @editingContainer="handleEditingContainer($event)">
             <template v-slot:copyURL="slotProps">
                 <span v-if="slotProps.expandedProperty=='@id'">
-                    <button
+                    <div
+                        class="button"
                         title="Copy URL to the clipboard."
                         v-clipboard="slotProps.expandedValue[0]['@value']">
-                        <i class="fa fa-clipboard" />
-                    </button>
+                        <i class="fa fa-copy" />
+                    </div>
                 </span>
             </template>
         </ConceptHierarchy>
