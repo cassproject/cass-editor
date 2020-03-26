@@ -54,6 +54,8 @@ $control-padding-horizontal:''
 
 
 $help-size:;*/
+$column-gap: 4px;
+
 // utilities
 @import "./../../node_modules/bulma/sass/utilities/_all.sass";
 @import "./../../node_modules/bulma/sass/base/_all.sass";
