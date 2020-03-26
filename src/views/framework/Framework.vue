@@ -28,12 +28,13 @@
             FrameworkToolbar.vue enables management options on the framework
             such as sharing, exporting, comment, rolling back versions
         -->
-        <div class="container is-fluid is-marginless">
-            <FrameworkEditorToolbar
-                @openCommentsEvent="onOpenComments()"
-                @openShareModalEvent="onOpenShareModal()"
-                @changeProperties="changeProperties" />
-            <!-- begin framework -->
+
+        <FrameworkEditorToolbar
+            @openCommentsEvent="onOpenComments()"
+            @openShareModalEvent="onOpenShareModal()"
+            @changeProperties="changeProperties" />
+        <!-- begin framework -->
+        <div class="container">
             <div class="section is-paddingless">
                 <Thing
                     :obj="framework"
@@ -572,6 +573,6 @@ export default {
 
 <style lang="scss">
     @import './../../scss/framework.scss';
-
+    @import './../../scss/thingEditing.scss';
 
 </style>
