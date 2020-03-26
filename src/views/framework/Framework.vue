@@ -48,7 +48,17 @@
                     @exportObject="exportObject"
                     :isEditingContainer="isEditingContainer"
                     @editingThing="handleEditingContainer($event)"
-                    :properties="properties" />
+                    :properties="properties">
+                    <template v-slot:copyURL="slotProps">
+                        <span v-if="slotProps.expandedProperty=='@id'">
+                            <button
+                                title="Copy URL to the clipboard."
+                                v-clipboard="slotProps.expandedValue[0]['@value']">
+                                <i class="fa fa-clipboard" />
+                            </button>
+                        </span>
+                    </template>
+                </Thing>
                 <span class="actions">
                     <span
                         class="tag is-info has-text-white"
@@ -92,6 +102,12 @@
                         @click="selectButton">
                         {{ selectButtonText }}
                     </button>
+                    <span v-if="loggedIn">
+                        Make private
+                        <input
+                            type="checkbox"
+                            v-model="privateFramework">
+                    </span>
                 </span>
                 <hr>
                 <Hierarchy
@@ -123,7 +139,17 @@
                     @exportObject="exportObject"
                     :isEditingContainer="isEditingContainer"
                     @editingContainer="handleEditingContainer($event)"
-                    :properties="properties" />
+                    :properties="properties">
+                    <template v-slot:copyURL="slotProps">
+                        <span v-if="slotProps.expandedProperty=='@id'">
+                            <button
+                                title="Copy URL to the clipboard."
+                                v-clipboard="slotProps.expandedValue[0]['@value']">
+                                <i class="fa fa-clipboard" />
+                            </button>
+                        </span>
+                    </template>
+                </Hierarchy>
             </div>
         </div>
     </div>
@@ -176,6 +202,8 @@ export default {
             selectedArray: [],
             isEditingContainer: false,
             properties: "primary"
+            config: null,
+            privateFramework: false
         };
     },
     computed: {
@@ -202,7 +230,16 @@ export default {
         shortId: function() {
             return this.$store.state.editor.framework.shortId();
         },
+        loggedIn: function() {
+            if (EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
+                return true;
+            }
+            return false;
+        },
         frameworkProfile: function() {
+            if (this.config) {
+                return this.config.frameworkConfig;
+            }
             if (this.$store.state.editor.t3Profile === true) {
                 return this.t3FrameworkProfile;
             }
@@ -254,6 +291,40 @@ export default {
             };
         },
         competencyProfile: function() {
+            if (this.config) {
+                var profile = this.config.competencyConfig;
+                if (this.config.levelsConfig) {
+                    var me = this;
+                    var key = EcObject.keys(this.config.levelsConfig);
+                    key = key[0];
+                    profile.secondaryProperties.push(key);
+                    profile[key] = this.config.levelsConfig[key];
+                    profile[key]["http://schema.org/rangeIncludes"] = [{"@id": "https://schema.cassproject.org/0.4/Level"}];
+                    profile[key]["valuesIndexed"] = function() { return me.levels; };
+                    profile[key]["noTextEditing"] = true;
+                    profile[key]["add"] = function(selectedCompetency) { me.addLevel(selectedCompetency); };
+                    profile[key]["remove"] = function(competency, levelId) { me.removeLevelFromFramework(levelId); };
+                    profile[key]["save"] = function() { me.saveFramework(); };
+                }
+                if (this.config.relationshipConfig) {
+                    var keys = EcObject.keys(this.config.relationshipConfig);
+                    for (var i = 0; i < keys.length; i++) {
+                        let key = keys[i];
+                        var me = this;
+                        profile.secondaryProperties.push(key);
+                        profile[key] = this.config.relationshipConfig[key];
+                        profile[key]["http://schema.org/rangeIncludes"] = [{"@id": "http://schema.org/URL"}];
+                        profile[key]["valuesIndexed"] = function() { return me.relations[key]; };
+                        profile[key]["noTextEditing"] = true;
+                        profile[key]["add"] = "unsaved";
+                        profile[key]["remove"] = function(source, target) { me.removeRelationFromFramework(source, key, target); };
+                        profile[key]["save"] = function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, key, values); };
+                        profile[key]["iframePath"] = me.$store.state.editor.iframeCompetencyPathInterframework;
+                        profile[key]["iframeText"] = "Select competencies to align...";
+                    }
+                }
+                return profile;
+            }
             if (this.$store.state.editor.t3Profile === true) {
                 return this.t3CompetencyProfile;
             }
@@ -446,7 +517,27 @@ export default {
         CompetencySearch
     },
     created: function() {
+        var me = this;
+        // Set configuration
+        if (this.framework.configuration) {
+            var c = EcRepository.getBlocking(this.framework.configuration);
+            if (c) {
+                this.config = c;
+            }
+        }
+        // To do: Check for personal default in browser storage
+        this.repo.searchWithParams("@type:Configuration", {'size': 10000}, function(c) {
+            if (c.isDefault === "true") {
+                me.config = c;
+            }
+        }, function() {}, function() {});
         this.refreshPage();
+        this.spitEvent('viewChanged');
+    },
+    mounted: function() {
+        if (EcRepository.getBlocking(this.framework.id).type === "EncryptedValue") {
+            this.privateFramework = true;
+        }
     },
     watch: {
         exportType: function() {
@@ -474,6 +565,90 @@ export default {
         },
         shortId: function() {
             this.refreshPage();
+        },
+        privateFramework: function() {
+            var me = this;
+            var framework = this.framework;
+            if (this.privateFramework === true) {
+                this.$store.commit('editor/private', true);
+                if (framework.competency && framework.competency.length > 0) {
+                    new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
+                        EcCompetency.get(competencyId, function(c) {
+                            if (c.canEditAny(EcIdentityManager.getMyPks())) {
+                                c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                                c = EcEncryptedValue.toEncryptedValue(c);
+                                me.repo.saveTo(c, done, done);
+                            } else {
+                                done();
+                            }
+                        }, done);
+                    }, function(competencyIds) {
+                        if (framework.relation && framework.relation.length > 0) {
+                            new EcAsyncHelper().each(framework.relation, function(relationId, done) {
+                                EcAlignment.get(relationId, function(r) {
+                                    r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                                    r = EcEncryptedValue.toEncryptedValue(r);
+                                    me.repo.saveTo(r, done, done);
+                                }, done);
+                            }, function(relationIds) {
+                                me.encryptFramework(framework);
+                            });
+                        } else {
+                            me.encryptFramework(framework);
+                        }
+                    });
+                } else {
+                    me.encryptFramework(framework);
+                }
+            } else {
+                this.$store.commit('editor/private', false);
+                framework = EcEncryptedValue.toEncryptedValue(framework);
+                var f = new EcFramework();
+                f.copyFrom(framework.decryptIntoObject());
+                EcEncryptedValue.encryptOnSave(f.id, false);
+                me.repo.saveTo(f, function() {}, console.error);
+                framework = f;
+                if (framework.competency && framework.competency.length > 0) {
+                    new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
+                        EcRepository.get(competencyId, function(c) {
+                            var v;
+                            if (c.canEditAny(EcIdentityManager.getMyPks())) {
+                                if (c.isAny(new EcEncryptedValue().getTypes())) {
+                                    v = new EcEncryptedValue();
+                                    v.copyFrom(c);
+                                } else {
+                                    v = EcEncryptedValue.toEncryptedValue(c);
+                                }
+                                c = new EcCompetency();
+                                c.copyFrom(v.decryptIntoObject());
+                                EcEncryptedValue.encryptOnSave(c.id, false);
+                                me.repo.saveTo(c, done, done);
+                            } else {
+                                done();
+                            }
+                        }, done);
+                    }, function(competencyIds) {
+                        if (framework.relation && framework.relation.length > 0) {
+                            new EcAsyncHelper().each(framework.relation, function(relationId, done) {
+                                EcRepository.get(relationId, function(r) {
+                                    var v;
+                                    if (r.isAny(new EcEncryptedValue().getTypes())) {
+                                        v = new EcEncryptedValue();
+                                        v.copyFrom(r);
+                                    } else {
+                                        v = EcEncryptedValue.toEncryptedValue(r);
+                                    }
+                                    r = new EcAlignment();
+                                    r.copyFrom(v.decryptIntoObject());
+                                    EcEncryptedValue.encryptOnSave(r.id, false);
+                                    me.repo.saveTo(r, done, done);
+                                }, done);
+                            }, function(relationIds) {
+                            });
+                        }
+                    });
+                }
+            }
         }
     },
     methods: {
@@ -565,6 +740,13 @@ export default {
         },
         changeProperties: function(type) {
             this.properties = type;
+        },
+        encryptFramework: function(framework) {
+            var f = new EcFramework();
+            f.copyFrom(framework);
+            f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            f = EcEncryptedValue.toEncryptedValue(f);
+            this.repo.saveTo(f, function() {}, console.error);
         }
     }
 };

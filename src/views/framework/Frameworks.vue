@@ -164,6 +164,8 @@ export default {
     created: function() {
         this.sortBy = this.queryParams.concepts === 'true' ? "dcterms:title.keyword" : "name.keyword";
         this.$store.commit("editor/t3Profile", false);
+        this.$store.commit('editor/framework', null);
+        this.spitEvent('viewChanged');
     },
     computed: {
         type: function() {

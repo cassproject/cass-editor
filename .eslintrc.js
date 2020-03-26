@@ -254,7 +254,7 @@ module.exports = {
          */
         'max-len': [
             2, { // should we ignore urls or anything here?
-                code: 240,
+                code: 2400,
                 tabWidth: 4
             }
         ],
@@ -265,8 +265,8 @@ module.exports = {
          * 'max-params': 0,
          * 'max-statements': 0,
          * 'max-statements-per-line': 0,
-         */
-        'multiline-comment-style': [2, 'starred-block'],
+         * 'multiline-comment-style': [2, 'starred-block'],
+        */
         /*
          * 'multiline-ternary': 0,
          * 'new-cap': 2, // use array declarative instead

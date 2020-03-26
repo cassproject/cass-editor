@@ -31,6 +31,12 @@
                     @editingThing="handleEditingContainer($event)"
                     :parentStructure="hierarchy"
                     :parent="container">
+                    <template v-slot:copyURL="slotProps">
+                        <slot
+                            name="copyURL"
+                            :expandedProperty="slotProps.expandedProperty"
+                            :expandedValue="slotProps.expandedValue" />
+                    </template>
                     <slot />
                 </HierarchyNode>
             </draggable>
@@ -187,6 +193,9 @@ export default {
                     var toIndex = container[property].indexOf(toId);
                     container[property].splice(toIndex, 0, fromId);
                 }
+                if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[container.id] !== true) {
+                    container = EcEncryptedValue.toEncryptedValue(container);
+                }
                 this.repo.saveTo(container, function() {
                     me.computeHierarchy();
                 }, console.error);
@@ -218,6 +227,9 @@ export default {
                 } else {
                     delete moveComp[fromProperty2];
                 }
+                if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[fromContainer.id] !== true) {
+                    fromContainer = EcEncryptedValue.toEncryptedValue(fromContainer);
+                }
                 this.repo.saveTo(fromContainer, function() {
                     if (toId == null || toId === undefined) {
                         if (!EcArray.isArray(toContainer[toProperty])) {
@@ -235,6 +247,12 @@ export default {
                         moveComp[toProperty2].push(toContainerId);
                     } else {
                         moveComp[toProperty2].push(me.container.shortId());
+                    }
+                    if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[toContainer.id] !== true) {
+                        toContainer = EcEncryptedValue.toEncryptedValue(toContainer);
+                    }
+                    if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[moveComp.id] !== true) {
+                        moveComp = EcEncryptedValue.toEncryptedValue(moveComp);
                     }
                     me.repo.saveTo(toContainer, function() {
                         me.repo.saveTo(moveComp, console.log, console.error);

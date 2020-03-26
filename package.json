@@ -12,11 +12,12 @@
     },
     "dependencies": {
         "bulma": "^0.7.5",
-        "cassproject": "^2.11.2",
+        "cassproject": "^2.11.6",
         "core-js": "^2.6.5",
         "file-saver": "^2.0.2",
         "jsonld": "^1.8.1",
         "pure-uuid": "^1.6.0",
+        "v-clipboard": "^2.2.2",
         "vue": "^2.6.10",
         "vue-infinite-scroll": "^2.0.2",
         "vue-moment": "^4.0.0",
