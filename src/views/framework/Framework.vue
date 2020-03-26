@@ -1,18 +1,40 @@
 <template>
     <div class="page-framework">
+        <!-- competency search -->
+        <CompetencySearch
+            @closeCompetencySearchModal="onCloseCompetencySearchModal()"
+            :isActive="showCompetencySearchModal" />
+        <!--
+            share modal manages users who have access to
+            the framework
+        -->
         <ShareModal
             :isActive="showShareModal"
             @closeShareModalEvent="onCloseShareModal()" />
+        <!--
+            Editing multiple competencies are one time utilizes
+            a modal to do so, rather than one of the competencies.
+            This will ensure it is clear what the user is editing.
+        -->
         <EditMultipleCompetencies />
+        <!--
+            Comments are served in an aside in
+            Comments.vue template
+        -->
         <Comments
             @closeCommentsEvent="onCloseComments()"
             v-if="showComments" />
+        <!--
+            FrameworkToolbar.vue enables management options on the framework
+            such as sharing, exporting, comment, rolling back versions
+        -->
         <div class="container is-fluid is-marginless">
             <FrameworkEditorToolbar
                 @openCommentsEvent="onOpenComments()"
                 @openShareModalEvent="onOpenShareModal()"
-                @changeProperties="changeProperties"  />
-        <div class="section is-paddingless">
+                @changeProperties="changeProperties" />
+            <!-- begin framework -->
+            <div class="section is-paddingless">
                 <Thing
                     :obj="framework"
                     :repo="repo"
@@ -73,6 +95,7 @@
                 </span>
                 <hr>
                 <Hierarchy
+                    @showCompetencySearchModalEvent="onShowCompetencySearchModal"
                     :container="framework"
                     containerType="Framework"
                     containerTypeGet="EcFramework"
@@ -118,6 +141,7 @@ import ShareModal from './ShareModal.vue';
 import FrameworkEditorToolbar from './EditorToolbar.vue';
 import Comments from './Comments.vue';
 import EditMultipleCompetencies from './EditMultipleCompetencies.vue';
+import CompetencySearch from './CompetencySearch.vue';
 
 export default {
     name: "Framework",
@@ -130,6 +154,7 @@ export default {
     mixins: [common, exports, competencyEdits, ctdlasnProfile, t3Profile, tlaProfile],
     data: function() {
         return {
+            showCompetencySearchModal: false,
             showComments: false,
             showShareModal: false,
             repo: window.repo,
@@ -417,7 +442,8 @@ export default {
         FrameworkEditorToolbar,
         ShareModal,
         Comments,
-        EditMultipleCompetencies
+        EditMultipleCompetencies,
+        CompetencySearch
     },
     created: function() {
         this.refreshPage();
@@ -451,6 +477,12 @@ export default {
         }
     },
     methods: {
+        onShowCompetencySearchModal: function() {
+            this.showCompetencySearchModal = true;
+        },
+        onCloseCompetencySearchModal: function() {
+            this.showCompetencySearchModal = false;
+        },
         onOpenComments: function() {
             this.showComments = true;
         },
