@@ -201,7 +201,7 @@ export default {
             selectAll: false,
             selectedArray: [],
             isEditingContainer: false,
-            properties: "primary"
+            properties: "primary",
             config: null,
             privateFramework: false
         };
