@@ -43,7 +43,6 @@
                     :profile="frameworkProfile"
                     :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
                     iframeText="Attach subitems from other sources to the selected item."
-                    @select="select"
                     @deleteObject="deleteObject"
                     @removeObject="removeObject"
                     @exportObject="exportObject"
@@ -94,16 +93,6 @@
                         class="tag is-info has-text-white"
                         v-if="framework['Published']"
                         :title="framework['Published']">Published</span>
-                    <button
-                        v-if="selectAllButton"
-                        @click="selectAll=!selectAll">
-                        Select All
-                    </button>
-                    <button
-                        v-if="selectButtonText"
-                        @click="selectButton">
-                        {{ selectButtonText }}
-                    </button>
                     <span v-if="loggedIn">
                         Make private
                         <input
@@ -130,17 +119,15 @@
                     :queryParams="queryParams"
                     :exportOptions="competencyExportOptions"
                     :highlightList="highlightCompetency"
-                    :selectMode="selectButtonText != null"
-                    :selectAll="selectAll"
                     :profile="competencyProfile"
                     :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
                     iframeText="Attach subitems from other sources to the selected item."
-                    @select="select"
                     @deleteObject="deleteObject"
                     @removeObject="removeObject"
                     @exportObject="exportObject"
                     :isEditingContainer="isEditingContainer"
                     @editingContainer="handleEditingContainer($event)"
+                    @selectButtonClick="onSelectButtonClick"
                     :properties="properties">
                     <template v-slot:copyURL="slotProps">
                         <span v-if="slotProps.expandedProperty=='@id'">
@@ -199,10 +186,6 @@ export default {
                 {name: "IMS Global CASE (JSON)", value: "case"}
             ],
             highlightCompetency: null,
-            selectButtonText: null,
-            selectAllButton: false,
-            selectAll: false,
-            selectedArray: [],
             isEditingContainer: false,
             properties: "primary",
             config: null,
@@ -689,15 +672,6 @@ export default {
                     this.highlightCompetency = this.queryParams.highlightCompetency;
                 }
             }
-            if (this.queryParams.singleSelect) {
-                this.selectButtonText = this.queryParams.singleSelect;
-            }
-            if (this.queryParams.select) {
-                if (this.queryParams.select !== "" && this.queryParams.select !== "select") {
-                    this.selectButtonText = this.queryParams.select;
-                }
-                this.selectAllButton = true;
-            }
             var path = this.queryParams.editorRoot ? this.queryParams.editorRoot : "/";
             path += "cass-editor/?select=Align with...&view=true&back=true&frameworkId=" + this.framework.shortId();
             path += this.$store.state.editor.commonPathIframe;
@@ -727,13 +701,6 @@ export default {
                 this.exportCaseItems(guid);
             }
         },
-        select: function(id, checked) {
-            if (checked) {
-                EcArray.setAdd(this.selectedArray, id);
-            } else {
-                EcArray.setRemove(this.selectedArray, id);
-            }
-        },
         handleEditingContainer: function(e) {
             if (e) {
                 this.isEditingContainer = true;
@@ -750,6 +717,9 @@ export default {
             f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
             f = EcEncryptedValue.toEncryptedValue(f);
             this.repo.saveTo(f, function() {}, console.error);
+        },
+        onSelectButtonClick: function(ids) {
+            this.selectButton(ids);
         }
     }
 };

@@ -302,18 +302,21 @@ export default {
                 });
             })(id, depth);
         },
-        selectButton: function() {
+        selectButton: function(selectedArray) {
             var ary = [];
             var async = EcRemote.async;
             EcRemote.async = false;
-            for (var i = 0; i < this.selectedArray.length; i++) {
+            if (!selectedArray) {
+                selectedArray = this.selectedArray;
+            }
+            for (var i = 0; i < selectedArray.length; i++) {
                 if (this.queryParams.selectVerbose === "true" && this.queryParams.concepts !== "true") {
                     if (this.queryParams.selectExport === "ctdlasn") {
                         var link;
-                        if (EcRepository.shouldTryUrl(this.selectedArray[i]) === false) {
-                            link = this.repo.selectedServer + "ceasn/" + EcCrypto.md5(this.selectedArray[i]);
+                        if (EcRepository.shouldTryUrl(selectedArray[i]) === false) {
+                            link = this.repo.selectedServer + "ceasn/" + EcCrypto.md5(selectedArray[i]);
                         } else {
-                            link = this.selectedArray[i].replace("/data/", "/ceasn/");
+                            link = selectedArray[i].replace("/data/", "/ceasn/");
                         }
                         this.get(link, null, null, function(success) {
                             ary.push(JSON.parse(success));
@@ -321,18 +324,18 @@ export default {
                             console.log(failure);
                         });
                     } else {
-                        ary.push(JSON.parse(EcCompetency.getBlocking(this.selectedArray[i]).toJson()));
+                        ary.push(JSON.parse(EcCompetency.getBlocking(selectedArray[i]).toJson()));
                     }
                 } else if (this.queryParams.selectVerbose === "true") {
-                    ary.push(JSON.parse(EcConcept.getBlocking(this.selectedArray[i]).toJson()));
+                    ary.push(JSON.parse(EcConcept.getBlocking(selectedArray[i]).toJson()));
                 } else {
-                    ary.push(this.selectedArray[i]);
+                    ary.push(selectedArray[i]);
                 }
             }
             if (this.queryParams.selectRelations === "true" && this.framework.relation) {
                 for (var i = 0; i < this.framework.relation.length; i++) {
                     var relation = EcAlignment.getBlocking(this.framework.relation[i]);
-                    if (EcArray.has(this.selectedArray, relation.target)) {
+                    if (EcArray.has(selectedArray, relation.target)) {
                         if (this.queryParams.selectVerbose === "true") {
                             ary.push(JSON.parse((rld).toJson()));
                         } else {
