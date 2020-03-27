@@ -4,7 +4,7 @@
         <div
             class="modal"
             :class="[{'is-active': configBusy}]">
-            <div class="modal-background"></div>
+            <div class="modal-background" />
             <div class="modal-content has-text-centered">
                 <span class="icon is-large has-text-center has-text-link">
                     <i class="fas fa-3x fa-spinner is-info fa-pulse" />
@@ -15,17 +15,16 @@
         <div
             class="modal"
             :class="[{'is-active': showBrowserConfigSetModal}]">
-            <div class="modal-background"></div>
+            <div class="modal-background" />
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="subtitle is-size-3 modal-card-title">
                         Configuration set as browser default
-                        <button
-                            class="delete is-pulled-right"
-                            aria-label="close"
-                            @click="closeBrowserConfigSetModal">
-                        </button>
                     </p>
+                    <div
+                        class="button is-text is-pulled-right"
+                        aria-label="close"
+                        @click="closeBrowserConfigSetModal" />
                 </header>
                 <div class="modal-card-body has-text-dark">
                     <p>'<i>{{ defaultBrowserConfigName }}</i>' has been set as your browser's default CaSS Authoring Tool configuration.</p>
@@ -33,32 +32,46 @@
             </div>
         </div>
         <!-- configuration editor content-->
-        <div v-if="!configBusy">
-            <h3>Configuration</h3>
-            <div v-if="configViewMode.equals('list')">
-                <h4>Configurations</h4>
-                <div class="columns">
-                    <div class="column is-3 listHdr">name</div>
-                    <div class="column is-5 listHdr">description</div>
-                    <div class="column is-2 listHdr">default</div>
-                    <div class="column is-2 listHdr"></div>
+        <div
+            class="container"
+            v-if="!configBusy">
+            <div class="section">
+                <h3 class="subtitle">
+                    Configuration
+                </h3>
+                <div
+                    class="button is-primary"
+                    @click="createNewConfig">
+                    create new configuration
                 </div>
-                <configuration-list-item
-                    v-for="config in configList"
-                    :id="config.id"
-                    :name="config.name"
-                    :description="config.description"
-                    :isOwned="config.isOwned"
-                    :isDefault="config.isDefault"
-                    :defaultBrowserConfigId="localDefaultBrowserConfigId"
-                    @setBrowserDefault="setConfigAsBrowserDefault"
-                    @showDetails="showConfigDetails">
-                </configuration-list-item>
+            </div>
+            <div
+                class="table is-fullwidth"
+                v-if="configViewMode.equals('list')">
+                <thead>
+                    <tr>
+                        <th><abbr title="Name">name</abbr></th>
+                        <th><abbr title="Description">description</abbr></th>
+                        <th><abbr title="primary">primary</abbr></th>
+                        <th><abbr title="" />default</th>
+                        <th><abbr title="" />view/manage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <configuration-list-item
+                        v-for="config in configList"
+                        :id="config.id"
+                        :key="config"
+                        :name="config.name"
+                        :isDefault="config.isDefault"
+                        :description="config.description"
+                        :defaultBrowserConfigId="localDefaultBrowserConfigId"
+                        @setBrowserDefault="setConfigAsBrowserDefault"
+                        @showDetails="showConfigDetails" />
+                </tbody>
                 <br>
-                <button @click="createNewConfig">create new configuration</button>
             </div>
             <div v-if="configViewMode.equals('detail')">
-                <h4>Configuration Details</h4>
                 <configuration-details
                     :config="currentConfig"
                     :readOnly="currentConfigIsReadOnly"
@@ -66,8 +79,7 @@
                     @setBrowserDefault="setConfigAsBrowserDefault"
                     @save="saveCurrentConfig"
                     @cancel="cancelEditCurrentConfig"
-                    @back="backFromEditCurrentConfig">
-                </configuration-details>
+                    @back="backFromEditCurrentConfig" />
             </div>
         </div>
     </div>
