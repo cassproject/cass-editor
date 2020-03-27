@@ -132,3 +132,7 @@ $column-gap: 8px;
 .label {
     font-size: $label-size;
 }
+
+.has-text-underlined{
+   border-bottom: solid 1px rgba($primary, .8);
+}

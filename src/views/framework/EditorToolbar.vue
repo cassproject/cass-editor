@@ -26,20 +26,32 @@
                 <div class="dropdown-content">
                     <a
                         @click="changeProperties('primary')"
-                        class="dropdown-item"
-                        :class="activeView==='primary'? 'is-active' : ''">
+                        class="dropdown-item">
+                        <span
+                            :class="activeView==='primary'? '' : 'is-hidden'"
+                            class="icon">
+                            <i class="fa fa-check" />
+                        </span>
                         Primary Properties
                     </a>
                     <a
                         @click="changeProperties('secondary')"
-                        class="dropdown-item"
-                        :class="activeView==='secondary'? 'is-active' : ''">
+                        class="dropdown-item">
+                        <span
+                            :class="activeView==='secondary'? '' : 'is-hidden'"
+                            class="icon">
+                            <i class="fa fa-check" />
+                        </span>
                         Secondary Properties
                     </a>
                     <a
                         @click="changeProperties('tertiary')"
-                        class="dropdown-item"
-                        :class="activeView==='tertiary'? 'is-active' : ''">
+                        class="dropdown-item">
+                        <span
+                            :class="activeView==='tertiary'? '' : 'is-hidden'"
+                            class="icon">
+                            <i class="fa fa-check" />
+                        </span>
                         Tertiary Properties
                     </a>
                 </div>
@@ -150,6 +162,9 @@ export default {
     }
     .dropdown-menu {
         padding-top: 0;
+        .dropdown-item:hover {
+            background-color: $link;
+        }
     }
     .fet_view-options {
 

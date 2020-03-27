@@ -95,27 +95,42 @@
                 
                 .thing, .thing-editing {
                     margin-left: 1rem;
+                    .thing  {
+                        margin-left: 0;
+                    }
                 }
                 .e-HierarchyNode-ul {
                     .e-HierarchyNode {
                         .thing, .thing-editing {
                             margin-left: 2rem;
+                            .thing {
+                                margin-left: 0;
+                            }
                         }
                     }
                     .e-HierarchyNode-ul {
                         .e-HierarchyNode {
                             .thing, .thing-editing {
                                 margin-left: 3rem;
+                                .thing {
+                                    margin-left: 0;
+                                }
                             }
                             .e-HierarchyNode-ul {
                                 .e-HierarchyNode {
                                     .thing, .thing-editing {
                                         margin-left: 4rem;
+                                        .thing {
+                                            margin-left: 0;
+                                        }
                                     }
                                     .e-HierarchyNode-ul {
                                         .e-HierarchyNode {
                                             .thing, .thing-editing {
                                                 margin-left: 5rem;
+                                                .thing {
+                                                    margin-left: 0;
+                                                }
                                             }
                                             .e-HierarchyNode-ul {
                                                 .e-HierarchyNode {
