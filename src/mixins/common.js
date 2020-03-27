@@ -396,6 +396,40 @@ export default {
                 me.repo.saveTo(me.framework, function() {}, console.error);
             }, console.error);
         },
+        saveCheckedLevels: function(selectedCompetency, checkedOptions, allOptions) {
+            var competencyId = EcRemoteLinkedData.trimVersionFromUrl(selectedCompetency["@id"]);
+            for (var i = 0; i < allOptions.length; i++) {
+                if (!this.framework.level) {
+                    this.framework.level = [];
+                }
+                // If selected
+                if (checkedOptions.indexOf(allOptions[i].val) !== -1) {
+                    var level = EcLevel.getBlocking(allOptions[i].val);
+                    if (!EcArray.isArray(level.competency)) {
+                        level.competency = level.competency == null ? [] : [level.competency];
+                    }
+                    if (level.competency.indexOf(competencyId) === -1) {
+                        level.competency.push(competencyId);
+                        this.repo.saveTo(level, function() {}, console.error);
+                    }
+                    if (this.framework.level.indexOf(level.shortId()) === -1) {
+                        this.framework.addLevel(level.shortId());
+                    }
+                } else {
+                    // If not selected
+                    var level = EcLevel.getBlocking(allOptions[i].val);
+                    if (level.competency && level.competency.indexOf(competencyId) !== -1) {
+                        EcArray.setRemove(level.competency, competencyId);
+                        this.repo.saveTo(level, function() {}, console.error);
+                    }
+                    // If level doesn't have any competencies attached, remove it from the framework.
+                    if ((!level.competency || (level.competency && level.competency.length === 0)) && this.framework.level.indexOf(level.shortId()) !== -1) {
+                        EcArray.setRemove(this.framework.level, level.shortId());
+                    }
+                }
+            }
+            this.repo.saveTo(this.framework, function() {}, console.error);
+        },
         saveFramework: function() {
             this.framework["schema:dateModified"] = new Date().toISOString();
             var framework = this.framework;

@@ -255,10 +255,15 @@ export default {
                     profile[key] = this.config.levelsConfig[key];
                     profile[key]["http://schema.org/rangeIncludes"] = [{"@id": "https://schema.cassproject.org/0.4/Level"}];
                     profile[key]["valuesIndexed"] = function() { return me.levels; };
-                    profile[key]["noTextEditing"] = true;
-                    profile[key]["add"] = function(selectedCompetency) { me.addLevel(selectedCompetency); };
-                    profile[key]["remove"] = function(competency, levelId) { me.removeLevelFromFramework(levelId); };
-                    profile[key]["save"] = function() { me.saveFramework(); };
+                    if (!profile[key]["options"]) {
+                        profile[key]["noTextEditing"] = true;
+                        profile[key]["add"] = function(selectedCompetency) { me.addLevel(selectedCompetency); };
+                        profile[key]["save"] = function() { me.saveFramework(); };
+                        profile[key]["remove"] = function(competency, levelId) { me.removeLevelFromFramework(levelId); };
+                    } else {
+                        profile[key]["add"] = "checkedOptions";
+                        profile[key]["save"] = function(selectedCompetency, checkedOptions, allOptions) { me.saveCheckedLevels(selectedCompetency, checkedOptions, allOptions); };
+                    }
                 }
                 if (this.config.relationshipConfig) {
                     var keys = EcObject.keys(this.config.relationshipConfig);
