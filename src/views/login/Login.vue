@@ -67,14 +67,14 @@
                         </div>
                         <div class="buttons">
                             <div
-                                class="button is-success"
-                                @click="attemptCassLogin">
-                                login
-                            </div>
-                            <div
                                 class="button is-light"
                                 @click="showCreateAccount">
                                 create account
+                            </div>
+                            <div
+                                class="button is-primary"
+                                @click="attemptCassLogin">
+                                login
                             </div>
                         </div>
                     </div>
@@ -148,8 +148,11 @@
                             </div>
                         </div>
                         <div
-                            class="notification is-danger"
+                            class="field has-text-danger"
                             v-if="createAccountOrLinkPersonDataInvalid">
+                            <div class="label has-text-danger">
+                                Please correct the following errors:
+                            </div>
                             <div
                                 class="is-size-7"
                                 v-if="createAccountUsernameInvalid">
@@ -200,7 +203,7 @@
                                     cancel
                                 </div>
                                 <div
-                                    class="button is-success"
+                                    class="button is-primary"
                                     v-if="amCreatingAccount"
                                     @click="createNewAccount">
                                     create
