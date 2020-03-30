@@ -16,13 +16,18 @@
     }
     .thing-editing,
         .thing {
-            .e-Thing.e-Competency {
+            .e-Thing.e-Competency,
+            .e-Thing.e-Framework {
             padding: .75rem;
         }
     }
     .thing-editing {
-        margin-bottom: .5rem;
-        background-color: rgba($light, .3);
+        .thing  {
+            .e-Thing.e-Competency {
+                margin-bottom: .5rem;
+                background-color: rgba($light, .3);
+            }
+        }
     }
     .add-property {
         background-color: rgba($white, .5);
@@ -182,14 +187,16 @@
     }
     // top level items outside of Hierarchy
     .thing {
-        .e-Thing.e-Competency.showHoverItems {
+        .e-Thing.e-Competency.showHoverItems,
+        .e-Thing.e-Framework.showHoverItems  {
             background-color: $cass-lightest;
             .edit-button {
                 visibility: visible;
             }
         }
         
-        .e-Thing.e-Competency {
+        .e-Thing.e-Competency,
+        .e-Thing.e-Framework {
             transform: translateX(0);
             width: 100%;
             .edit-button {
@@ -197,9 +204,7 @@
                 color: dark;
                 right: 0;
                 visibility: hidden;
-                
             }
-           
             ul{
                 margin-left:1rem;
             }

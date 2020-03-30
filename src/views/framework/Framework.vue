@@ -35,8 +35,9 @@
             @changeProperties="changeProperties" />
         <!-- begin framework -->
         <div class="container">
-            <div class="section is-paddingless">
-                <Thing
+            <div class="section">
+                <Component
+                    :is="dynamicThingComponent"
                     :obj="framework"
                     :repo="repo"
                     :parentNotEditable="queryParams.view==='true'"
@@ -45,6 +46,7 @@
                     iframeText="Attach subitems from other sources to the selected item."
                     @deleteObject="deleteObject"
                     @removeObject="removeObject"
+                    @editNodeEvent="onEditNode()"
                     @exportObject="exportObject"
                     :isEditingContainer="isEditingContainer"
                     @editingThing="handleEditingContainer($event)"
@@ -59,7 +61,7 @@
                             </div>
                         </span>
                     </template>
-                </Thing>
+                </Component>
                 <span class="actions">
                     <span
                         class="tag is-info has-text-white"
@@ -146,6 +148,7 @@
 </template>
 <script>
 import Thing from '@/lode/components/lode/Thing.vue';
+import ThingEditing from '@/lode/components/lode/ThingEditing.vue';
 import Hierarchy from '@/lode/components/lode/Hierarchy.vue';
 import common from '@/mixins/common.js';
 import exports from '@/mixins/exports.js';
@@ -193,6 +196,13 @@ export default {
         };
     },
     computed: {
+        dynamicThingComponent: function() {
+            if (this.isEditingContainer) {
+                return 'ThingEditing';
+            } else {
+                return 'Thing';
+            }
+        },
         framework: function() {
             return this.$store.state.editor.framework;
         },
@@ -496,6 +506,7 @@ export default {
     components: {
         Hierarchy,
         Thing,
+        ThingEditing,
         FrameworkEditorToolbar,
         ShareModal,
         Comments,
@@ -638,6 +649,9 @@ export default {
         }
     },
     methods: {
+        onEditNode: function() {
+            this.isEditingContainer = true;
+        },
         onShowCompetencySearchModal: function() {
             this.showCompetencySearchModal = true;
         },
