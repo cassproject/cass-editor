@@ -6,8 +6,8 @@
             :class="[{'is-active': showAddMemberModal}]">
             <div class="modal-background" />
             <div class="modal-card">
-                <header class="modal-card-head">
-                    <p class="subtitle is-size-3 modal-card-title">
+                <header class="modal-card-head has-background-primary">
+                    <p class="subtitle is-size-3 modal-card-title has-text-white">
                         {{ addMemberModalTitle }}
                         <button
                             class="delete is-pulled-right"
@@ -16,55 +16,57 @@
                     </p>
                 </header>
                 <div class="modal-card-body has-text-dark">
-                    <div>
-                        <div class="columns">
-                            <div class="column is-3 listHdr">
-                                <label>Available Members:</label>
-                            </div>
-                            <div class="column is-9 listHdr">
-                                <input
-                                    type="text"
-                                    v-model="selectedPersonsFilter"
-                                    placeholder="person filter">
-                            </div>
-                        </div>
-                        <div class="columns">
-                            <div class="column is-1 listHdr" />
-                            <div class="column is-4 listHdr">
-                                name
-                            </div>
-                            <div class="column is-4 listHdr">
-                                email
-                            </div>
+                    <div class="field">
+                        <label class="label">Available Members:</label>
+                    </div>
+                    <div class="field">
+                        <input
+                            type="text"
+                            class="input"
+                            v-model="selectedPersonsFilter"
+                            placeholder="person filter">
+                    </div>
+                    <div class="table-container">
+                        <div class="table">
+                            <thead>
+                                <tr>
+                                    <th />
+                                    <th>name</th>
+                                    <th>email</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    v-for="(prs, index) in filteredPersons"
+                                    :key="index">
+                                    <th>
+                                        <div class="checkbox">
+                                            <input
+                                                :id="prs.shortId()"
+                                                :value="prs.shortId()"
+                                                name="prs.shortId()"
+                                                type="checkbox"
+                                                v-model="selectedPersons">
+                                        </div>
+                                    </th>
+                                    <td>{{ prs.getName() }}</td>
+                                    <td>  {{ prs.email }}</td>
+                                </tr>
+                            </tbody>
                         </div>
                     </div>
-                    <div class="selectBox">
-                        <div
-                            class="columns is-multiline"
-                            v-for="prs in filteredPersons">
-                            <div class="column is-1">
-                                <input
-                                    :id="prs.shortId()"
-                                    :value="prs.shortId()"
-                                    name="prs.shortId()"
-                                    type="checkbox"
-                                    v-model="selectedPersons">
-                            </div>
-                            <div class="column is-4">
-                                {{ prs.getName() }}
-                            </div>
-                            <div class="column is-4">
-                                {{ prs.email }}
-                            </div>
-                        </div>
-                    </div>
-                    <br>
-                    <div v-if="!readOnly">
-                        <button @click="applyAddMembers">
-                            apply
-                        </button>
-                        <button @click="closeAddMemberModal">
+                    <div
+                        class="buttons"
+                        v-if="!readOnly">
+                        <button
+                            class="button is-light"
+                            @click="closeAddMemberModal">
                             cancel
+                        </button>
+                        <button
+                            class="button is-primary"
+                            @click="applyAddMembers">
+                            apply
                         </button>
                     </div>
                 </div>
