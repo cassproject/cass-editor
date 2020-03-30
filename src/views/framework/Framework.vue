@@ -48,8 +48,6 @@
                     @removeObject="removeObject"
                     @editNodeEvent="onEditNode()"
                     @exportObject="exportObject"
-                    :isEditingContainer="isEditingContainer"
-                    @editingThing="handleEditingContainer($event)"
                     :properties="properties">
                     <template v-slot:copyURL="slotProps">
                         <span v-if="slotProps.expandedProperty=='@id'">
@@ -116,7 +114,7 @@
                     edgeRelationLiteral="narrows"
                     edgeSourceProperty="source"
                     edgeTargetProperty="target"
-                    :editable="disallowEdits !== true && queryParams.view !== 'true'"
+                    :viewOnly="queryParams.view === 'true'"
                     :repo="repo"
                     :queryParams="queryParams"
                     :exportOptions="competencyExportOptions"
@@ -127,8 +125,6 @@
                     @deleteObject="deleteObject"
                     @removeObject="removeObject"
                     @exportObject="exportObject"
-                    :isEditingContainer="isEditingContainer"
-                    @editingContainer="handleEditingContainer($event)"
                     @selectButtonClick="onSelectButtonClick"
                     :properties="properties">
                     <template v-slot:copyURL="slotProps">
@@ -167,7 +163,6 @@ export default {
     props: {
         exportType: String,
         queryParams: Object,
-        disallowEdits: Boolean,
         profileOverride: Object
     },
     mixins: [common, exports, competencyEdits, ctdlasnProfile, t3Profile, tlaProfile],
@@ -189,7 +184,7 @@ export default {
                 {name: "IMS Global CASE (JSON)", value: "case"}
             ],
             highlightCompetency: null,
-            isEditingContainer: false,
+            editingFramework: false,
             properties: "primary",
             config: null,
             privateFramework: false
@@ -197,7 +192,7 @@ export default {
     },
     computed: {
         dynamicThingComponent: function() {
-            if (this.isEditingContainer) {
+            if (this.editingFramework) {
                 return 'ThingEditing';
             } else {
                 return 'Thing';
@@ -650,7 +645,7 @@ export default {
     },
     methods: {
         onEditNode: function() {
-            this.isEditingContainer = true;
+            this.editingFramework = true;
         },
         onShowCompetencySearchModal: function() {
             this.showCompetencySearchModal = true;
@@ -713,13 +708,6 @@ export default {
                 this.exportCtdlasnJsonld(link);
             } else if (exportType === "case") {
                 this.exportCaseItems(guid);
-            }
-        },
-        handleEditingContainer: function(e) {
-            if (e) {
-                this.isEditingContainer = true;
-            } else {
-                this.isEditingContainer = false;
             }
         },
         changeProperties: function(type) {
