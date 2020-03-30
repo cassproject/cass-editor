@@ -5,7 +5,7 @@
         <!-- nav bar navigation -->
         <cass-modal />
         <nav
-            :class="{'is-hidden': this.currentPathIsLogin}"
+            :class="[{'is-hidden': this.currentPathIsLogin},{'is-transparent': this.currentPathIsLogin}]"
             class="navbar is-black is-fixed-top"
             role="navigation"
             aria-label="main navigation">
@@ -230,14 +230,13 @@ body{
     // Tom B.  Taking this out for now as it screws up the configuration editor and needing scrolling
     //overflow-y: hidden;
     height: 100%;
-    background: $light;
+    background: $white;
     background-repeat: no-repeat;
     background-size: cover;
     min-height: 100vh;
 }
 #app {
     height: 100%;
-    padding-left: 1rem;
 }
 
 
