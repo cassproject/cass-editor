@@ -30,7 +30,6 @@
                     }
             }
             .list-ul__item{
-                background-color:$white;
                 border-radius: $border-radius;
                 padding: .0rem .5rem .25rem .125rem;
                 margin-top: .5rem;
@@ -48,7 +47,6 @@
             
             }
             .list-ul__item:hover {
-                background-color: rgba($dark, .1);
                     .icon {
                         width: 56px;
                         display: flex;
