@@ -964,7 +964,7 @@ export default {
         },
         onOpenShareModal: function() {
             this.showShareModal = true;
-        },
+        }
     }
 };
 </script>
