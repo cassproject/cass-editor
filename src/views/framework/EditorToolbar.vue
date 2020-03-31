@@ -80,7 +80,7 @@
                 role="menu">
                 <div class="dropdown-content">
                     <a
-                        href="#"
+                        @click="$emit('openExportModalEvent')"
                         class="dropdown-item">
                         Export
                     </a>

@@ -1,11 +1,34 @@
 <template>
     <div class="page-framework">
+        <!--
+            share modal manages users who have access to
+            the framework
+        -->
+        <ShareModal
+            :isActive="showShareModal"
+            @closeShareModalEvent="onCloseShareModal()" />
+        <!--
+            Comments are served in an aside in
+            Comments.vue template
+        -->
+        <Comments
+            @closeCommentsEvent="onCloseComments()"
+            v-if="showComments" />
+        <!--
+            FrameworkToolbar.vue enables management options on the framework
+            such as sharing, exporting, comment, rolling back versions
+        -->
+        <FrameworkEditorToolbar
+            @openCommentsEvent="onOpenComments()"
+            @openShareModalEvent="onOpenShareModal()"
+            @changeProperties="changeProperties"
+            @openExportModalEvent="onOpenExportModal()" />
+        <!-- begin framework -->
         <Thing
             :obj="framework"
             :repo="repo"
             :parentNotEditable="queryParams.view==='true'"
             @deleteObject="deleteObject"
-            @exportObject="exportObject"
             @select="select"
             :profile="conceptSchemeProfile"
             @editingThing="handleEditingFramework($event)">
@@ -85,10 +108,12 @@ import ConceptHierarchy from './ConceptHierarchy.vue';
 import saveAs from 'file-saver';
 import common from '@/mixins/common.js';
 import ctdlasnProfile from '@/mixins/ctdlasnProfile.js';
+import ShareModal from '../framework/ShareModal.vue';
+import FrameworkEditorToolbar from '../framework/EditorToolbar.vue';
+import Comments from '../framework/Comments.vue';
 export default {
     name: "ConceptScheme",
     props: {
-        exportType: String,
         queryParams: Object
     },
     mixins: [common, ctdlasnProfile],
@@ -104,13 +129,24 @@ export default {
                 {name: "SKOS (RDF+XML)", value: "rdfXml"},
                 {name: "SKOS (Turtle)", value: "turtle"}
             ],
+            conceptSchemeExportOptions: [
+                {name: "Achievement Standards Network (RDF+JSON)", value: "asn"},
+                {name: "CASS (JSON-LD)", value: "jsonld"},
+                {name: "CaSS (RDF Quads)", value: "rdfQuads"},
+                {name: "CaSS (RDF+JSON)", value: "rdfJson"},
+                {name: "CaSS (RDF+XML)", value: "rdfXml"},
+                {name: "CaSS (Turtle)", value: "turtle"},
+                {name: "Credential Engine ASN (JSON-LD)", value: "ctdlasnJsonld"}
+            ],
             highlightCompetency: null,
             selectButtonText: null,
             selectAllButton: false,
             selectAll: false,
             selectedArray: [],
             isEditingFramework: false,
-            privateFramework: false
+            privateFramework: false,
+            showComments: false,
+            showShareModal: false
         };
     },
     computed: {
@@ -615,7 +651,7 @@ export default {
             };
         }
     },
-    components: {Thing, ConceptHierarchy},
+    components: {Thing, ConceptHierarchy, FrameworkEditorToolbar, ShareModal, Comments},
     created: function() {
         this.refreshPage();
         this.spitEvent('viewChanged');
@@ -626,21 +662,6 @@ export default {
         }
     },
     watch: {
-        exportType: function() {
-            if (this.exportType === "jsonld") {
-                this.exportJsonld(this.schemeExportLink);
-            } else if (this.exportType === "rdfQuads") {
-                this.exportRdfQuads(this.schemeExportLink);
-            } else if (this.exportType === "rdfJson") {
-                this.exportRdfJson(this.schemeExportLink);
-            } else if (this.exportType === "rdfXml") {
-                this.exportRdfXml(this.schemeExportLink);
-            } else if (this.exportType === "turtle") {
-                this.exportTurtle(this.schemeExportLink);
-            } else if (this.exportType === "ctdlasnJsonld") {
-                this.exportCtdlasnJsonld(this.schemeExportLink);
-            }
-        },
         shortId: function() {
             this.refreshPage();
         },
@@ -841,6 +862,21 @@ export default {
                 this.exportTurtle(link);
             }
         },
+        exportScheme: function(exportType) {
+            if (exportType === "jsonld") {
+                this.exportJsonld(this.schemeExportLink);
+            } else if (exportType === "rdfQuads") {
+                this.exportRdfQuads(this.schemeExportLink);
+            } else if (exportType === "rdfJson") {
+                this.exportRdfJson(this.schemeExportLink);
+            } else if (exportType === "rdfXml") {
+                this.exportRdfXml(this.schemeExportLink);
+            } else if (exportType === "turtle") {
+                this.exportTurtle(this.schemeExportLink);
+            } else if (exportType === "ctdlasnJsonld") {
+                this.exportCtdlasnJsonld(this.schemeExportLink);
+            }
+        },
         select: function(id, checked) {
             if (checked) {
                 EcArray.setAdd(this.selectedArray, id);
@@ -899,7 +935,36 @@ export default {
                 }, done);
             }, function(conceptIds) {
             });
-        }
+        },
+        onOpenExportModal() {
+            let params = {};
+            var me = this;
+            console.log("options", typeof me.conceptSchemeExportOptions);
+            params = {
+                type: "export",
+                selectedExportOption: '',
+                title: "Export Concept Scheme",
+                exportOptions: me.conceptSchemeExportOptions,
+                text: "Select a file format to export your concept scheme. Files download locally.",
+                onConfirm: (e) => {
+                    return me.exportScheme(e);
+                }
+            };
+            // reveal modal
+            this.$modal.show(params);
+        },
+        onOpenComments: function() {
+            this.showComments = true;
+        },
+        onCloseComments: function() {
+            this.showComments = false;
+        },
+        onCloseShareModal: function() {
+            this.showShareModal = false;
+        },
+        onOpenShareModal: function() {
+            this.showShareModal = true;
+        },
     }
 };
 </script>

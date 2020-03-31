@@ -32,7 +32,8 @@
         <FrameworkEditorToolbar
             @openCommentsEvent="onOpenComments()"
             @openShareModalEvent="onOpenShareModal()"
-            @changeProperties="changeProperties" />
+            @changeProperties="changeProperties"
+            @openExportModalEvent="onOpenExportModal()" />
         <!-- begin framework -->
         <div class="container">
             <div class="section">
@@ -47,7 +48,6 @@
                     @deleteObject="deleteObject"
                     @removeObject="removeObject"
                     @editNodeEvent="onEditNode()"
-                    @exportObject="exportObject"
                     :properties="properties">
                     <template v-slot:copyURL="slotProps">
                         <span v-if="slotProps.expandedProperty=='@id'">
@@ -161,7 +161,6 @@ import CompetencySearch from './CompetencySearch.vue';
 export default {
     name: "Framework",
     props: {
-        exportType: String,
         queryParams: Object,
         profileOverride: Object
     },
@@ -181,6 +180,18 @@ export default {
                 {name: "CASS (RDF+XML)", value: "rdfXml"},
                 {name: "CASS (Turtle)", value: "turtle"},
                 {name: "Credential Engine ASN (JSON-LD)", value: "ctdlasnJsonld"},
+                {name: "IMS Global CASE (JSON)", value: "case"}
+            ],
+            frameworkExportOptions: [
+                {name: "Achievement Standards Network (RDF+JSON)", value: "asn"},
+                {name: "CASS (JSON-LD)", value: "jsonld"},
+                {name: "CaSS (RDF Quads)", value: "rdfQuads"},
+                {name: "CaSS (RDF+JSON)", value: "rdfJson"},
+                {name: "CaSS (RDF+XML)", value: "rdfXml"},
+                {name: "CaSS (Turtle)", value: "turtle"},
+                {name: "Credential Engine ASN (JSON-LD)", value: "ctdlasnJsonld"},
+                {name: "Credential Engine ASN (CSV)", value: "ctdlasnCsv"},
+                {name: "Table (CSV)", value: "csv"},
                 {name: "IMS Global CASE (JSON)", value: "case"}
             ],
             highlightCompetency: null,
@@ -532,29 +543,6 @@ export default {
         }
     },
     watch: {
-        exportType: function() {
-            if (this.exportType === "asn") {
-                this.exportAsn(this.frameworkExportLink);
-            } else if (this.exportType === "jsonld") {
-                this.exportJsonld(this.frameworkExportLink);
-            } else if (this.exportType === "rdfQuads") {
-                this.exportRdfQuads(this.frameworkExportLink);
-            } else if (this.exportType === "rdfJson") {
-                this.exportRdfJson(this.frameworkExportLink);
-            } else if (this.exportType === "rdfXml") {
-                this.exportRdfXml(this.frameworkExportLink);
-            } else if (this.exportType === "turtle") {
-                this.exportTurtle(this.frameworkExportLink);
-            } else if (this.exportType === "ctdlasnJsonld") {
-                this.exportCtdlasnJsonld(this.frameworkExportLink);
-            } else if (this.exportType === "ctdlasnCsv") {
-                this.exportCtdlasnCsv(this.frameworkExportLink);
-            } else if (this.exportType === "csv") {
-                this.exportCsv();
-            } else if (this.exportType === "case") {
-                this.exportCasePackages(guid);
-            }
-        },
         shortId: function() {
             this.refreshPage();
         },
@@ -710,6 +698,29 @@ export default {
                 this.exportCaseItems(guid);
             }
         },
+        exportFramework: function(exportType) {
+            if (exportType === "asn") {
+                this.exportAsn(this.frameworkExportLink);
+            } else if (exportType === "jsonld") {
+                this.exportJsonld(this.frameworkExportLink);
+            } else if (exportType === "rdfQuads") {
+                this.exportRdfQuads(this.frameworkExportLink);
+            } else if (exportType === "rdfJson") {
+                this.exportRdfJson(this.frameworkExportLink);
+            } else if (exportType === "rdfXml") {
+                this.exportRdfXml(this.frameworkExportLink);
+            } else if (exportType === "turtle") {
+                this.exportTurtle(this.frameworkExportLink);
+            } else if (exportType === "ctdlasnJsonld") {
+                this.exportCtdlasnJsonld(this.frameworkExportLink);
+            } else if (exportType === "ctdlasnCsv") {
+                this.exportCtdlasnCsv(this.frameworkExportLink);
+            } else if (exportType === "csv") {
+                this.exportCsv();
+            } else if (exportType === "case") {
+                this.exportCasePackages(guid);
+            }
+        },
         changeProperties: function(type) {
             this.properties = type;
         },
@@ -722,6 +733,23 @@ export default {
         },
         onSelectButtonClick: function(ids) {
             this.selectButton(ids);
+        },
+        onOpenExportModal() {
+            let params = {};
+            var me = this;
+            console.log("options", typeof me.frameworkExportOptions);
+            params = {
+                type: "export",
+                selectedExportOption: '',
+                title: "Export Framework",
+                exportOptions: me.frameworkExportOptions,
+                text: "Select a file format to export your framework. Files download locally.",
+                onConfirm: (e) => {
+                    return me.exportFramework(e);
+                }
+            };
+            // reveal modal
+            this.$modal.show(params);
         }
     }
 };
