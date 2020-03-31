@@ -1243,8 +1243,11 @@ export default {
                 }
                 me.relationCount = (data.length - 1);
             }, function(error) {
-                me.statusType = "error";
+                me.showErrors = true;
                 me.status = error;
+                me.statusType = "error";
+                me.errors.push(error);
+                me.processingFile = false;
             });
         },
         analyzeJsonLdFramework: function(file, success, failure) {
@@ -1304,13 +1307,19 @@ export default {
                         me.spitEvent("importFinished", f.shortId(), "importPage");
                     }
                 }, function(failure) {
-                    me.statusType = "error";
+                    me.showErrors = true;
                     me.status = failure;
+                    me.statusType = "error";
+                    me.errors.push(failure);
+                    me.processingFile = false;
                 });
             },
             function(failure) {
-                me.statusType = "error";
+                me.showErrors = true;
                 me.status = failure;
+                me.statusType = "error";
+                me.errors.push(failure);
+                me.processingFile = false;
             },
             function(increment) {
                 me.status = increment.competencies + "/" + me.competencyCount + " competencies imported.";
@@ -1368,12 +1377,20 @@ export default {
                         me.analyzeImportFile();
                     }
                 }, function(failure) {
-                    me.statusType = "error";
+                    console.log("failure", failure);
+                    me.showErrors = true;
                     me.status = failure;
+                    me.statusType = "error";
+                    me.errors.push(failure);
+                    me.processingFile = false;
                 });
             }, function(failure) {
-                me.statusType = "error";
+                console.log("failure", failure);
+                me.showErrors = true;
                 me.status = failure;
+                me.statusType = "error";
+                me.errors.push(failure);
+                me.processingFile = false;
             }, ceo);
         },
         importPdf: function() {
@@ -1406,12 +1423,20 @@ export default {
                             me.savePdfImport(d);
                         } /* TO DO - ERROR HANDLING HERE */
                     }, function(error) {
-                        console.error(error);
+                        me.showErrors = true;
+                        me.status = error;
+                        me.statusType = "error";
+                        me.errors.push(error);
+                        me.processingFile = false;
                     });
                 },
                 /* TO DO - ERROR HANDLING HERE */
                 function(error) {
-                    console.error(error);
+                    me.showErrors = true;
+                    me.status = error;
+                    me.statusType = "error";
+                    me.errors.push(error);
+                    me.processingFile = false;
                 }
             );
             me.statusType = "info";
@@ -1488,7 +1513,13 @@ export default {
                 me.$store.commit('editor/t3Profile', true);
                 me.status = "";
                 me.importSuccess();
-            }, console.error);
+            }, function(error) {
+                me.showErrors = true;
+                me.status = error;
+                me.statusType = "error";
+                me.errors.push(error);
+                me.processingFile = false;
+            });
             me.statusType = "info";
             me.status = 'saving import...';
         },
@@ -1546,8 +1577,11 @@ export default {
                     });
                 },
                 function(failure) {
-                    me.statusType = "error";
+                    me.showErrors = true;
                     me.status = failure;
+                    me.statusType = "error";
+                    me.errors.push(failure);
+                    me.processingFile = false;
                 },
                 function(increment) {
                     if (increment.relations != null && increment.relations !== undefined) {
@@ -1596,9 +1630,11 @@ export default {
                     me.analyzeImportFile();
                 }
             }, function(failure) {
+                me.showErrors = true;
                 me.statusType = "error";
                 me.status = "Import failed. Check your import file for any errors.";
                 console.log(failure.statusText);
+                me.errors.push(failure);
             });
             me.statusType = "info";
             if (me.queryParams.concepts === 'true') {

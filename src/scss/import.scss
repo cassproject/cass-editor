@@ -5,7 +5,9 @@ textarea {
 }
     // room for improvement, iterate over loop for max depth tabbing
     // possibly set tab value based on value in scss varaibles sheet
-    .e-Hierarchy {
+    .e-Property {
+        padding: .5rem 0rem;
+    }.e-Hierarchy {
         .e-Hierarchy-ul {
             max-width: 880px;
             li.e-HierarchyNode {
@@ -80,29 +82,44 @@ textarea {
             }
         }
     }
-    
+    .thing {
+        .e-Thing.e-Competency,
+        .e-Thing.e-Framework {
+        }
+        .thing-editing,
+        .bottom-actions {
+            margin: .5rem;
+        }
+        .e-Thing.e-Competency.showHoverItems,
+        .e-Thing.e-Framework.showHoverItems  {
+            background-color: $cass-lightest;
+            .edit-button {
+                visibility: visible;
+            }
+        }
 
-.thing {
-    .e-Thing.e-Competency.showHoverItems,
-    .e-Thing.e-Framework.showHoverItems  {
-        background-color: $cass-lightest;
-        .edit-button {
-            visibility: visible;
+        .e-Thing.e-Competency,
+        .e-Thing.e-Framework {
+            transform: translateX(0);
+            width: 100%;
+            .edit-button {
+                position: absolute;
+                color: dark;
+                right: 0;
+                visibility: hidden;
+            }
         }
     }
-
-    .e-Thing.e-Competency,
-    .e-Thing.e-Framework {
-        transform: translateX(0);
-        width: 100%;
-        .edit-button {
-            position: absolute;
-            color: dark;
-            right: 0;
-            visibility: hidden;
+    .thing-editing {
+        padding: .5rem !important;
+        background-color: $cass-light;
+        .e-Thing.e-Competency, 
+        .e-Thing.e-Framework {
+            padding: .5rem;
+        }
+        .bottom-actions {
         }
     }
-}
 ul.processing-list {
     height: 100%;
     width: 100%;
@@ -268,71 +285,9 @@ ul.processing-list {
                 }
                 
             }
-            .editing-competency, .framework-title.editing-comepetency {
-                label {
-                    padding: .5rem 0rem .25rem .0rem;
-                    display: flex;
-                    font-size: $size-7;
-                    font-weight: 600;
-                    width: 100%;
-                    flex-direction: row;
-                    justify-content: flex-start;
-                    justify-items: start;
-                    align-items: center;
-                    color: $dark;
-                    span {
-                        padding: 0rem .25rem;
-                        width: auto;
-                    }
-                    .edit {
-                        padding: 0rem .25rem;
-                        width: 5%;
-                    }
-                    .icon {
-                        color: $text;
-                    }
-                }
-            }
+
             
             .e-Hierarchy-ul {
-                label {
-                    padding: .5rem 0rem .25rem .0rem;
-                    display: flex;
-                    width: 100%;
-                    flex-direction: row;
-                    justify-content: flex-start;
-                    justify-items: start;
-                    align-items: center;
-                    color: $dark;
-                    span {
-                        padding: 0rem .25rem;
-                        width: auto;
-                        font-size: $size-7;
-                        font-weight: 600;
-                        color: rgba($dark, .6);
-                    }
-                    .edit {
-                        padding: 0rem .25rem;
-                        width: 5%;
-                    }
-                    .icon {
-                        color: $text;
-                    }
-                
-                }
-                .thing.editing-competency .e-Thing-always-ul {
-                    label {
-                        display: flex;
-                    }
-                }
-                .thing .e-Thing-always-ul .editing-competency {
-                    label {
-                        display: flex;
-                        font-size: $size-7;
-                        font-weight: 600;
-                    }
-                }
-
                 ul.e-Thing-ul, .e-Thing-always-ul {
                     padding: .25rem .5rem;
                     li.e-Property.e-name {
@@ -343,273 +298,36 @@ ul.processing-list {
                             }
                         }
                     }
-                    li.e-Property {
-                        cursor: pointer;
-                        padding: 0;
-                        width: 100%;
-                        display: flex;
-                        flex-direction: row;
-                        justify-content: space-between;
-                        align-content: flex-end;
-                        display: flex;
-                        flex-wrap: wrap;
-                        .property-buttons {
-                            display: flex;
-                        }
-                        .property-buttons.general {
-                            align-items: flex-end;
-                            padding-bottom: .5rem;
-                            flex-wrap: nowrap;
-                            width: 120px;
-                            align-content: flex-end;
-              
-                        }
-                        // when editing a property, make clear
-                        .property-action-section {
-                            width: 98%;
-                            padding: 1%;
-                            display: flex;
-                            justify-content: flex-start;
-                        }
-                      
-                        ul.e-Property-ul {
-                            width: 100%;
-                            margin-top: 0rem;
-                            display: flex;
-                            flex-wrap: wrap;
-                            margin-right: 0rem;
-                            li.add-button {
-                                display: flex;
-                                justify-content: flex-end;
-                            }
-                            .thing.related-competency {
-                                width: 100%;
-                                .property-value {
-                                    div.button {
-                                        word-wrap: break-word;
-                                        overflow:hidden;
-                                        max-width: 100%;
-                                        height: auto;
-                                        display: block !important;
-                                    }
-                                }
-                                .e-Thing .e-Competency {
-                                    width: 100%;
-                                }
-                                
-                            }
-                            label {
-                                width: 100%;
-                                font-size: $size-7;
-                                font-weight: 600;
-                            }
-                            .property-value {
-                                width: calc(100% - 56px);
-                                span{
-                                    word-wrap: break-word;
-                                    overflow:hidden;
-                                    max-width: 100%;
-                                    height: auto;
-                                    //display: block;
-                                }
-                            }
-                            .add-property-button {
-                                width: 100%;
-                            }
-                            .property-action-section {
-                                width: 98%;
-                                padding: 1%;
-                                display: flex;
-                                justify-content: flex-start;
-                            }
-                            li {
-                                width: 100%;
-                                display:flex;
-                                padding: 0rem 0rem;
-                                justify-content: space-between;
-                                flex-direction: row;
-                                flex-wrap: wrap;
-                                .property-string-span, .input-span {
-                                    width: 100%;
-                                }
-                                .property-buttons {
-                                    width: 100%;
-                                }
-                                .e-Property-text {
-                                    width: 100%;
-                                    font-size: $size-6;
-                                    word-wrap: break-word;
-                                }
-                                .thing.related-competency {
-                                    word-wrap: break-word;
-                                    max-width: 100%;
-                                    width: 100%;
-                                    // related nested competency 
-                                    .e-Thing .e-Competency {
-                                        width: 100%;
-                                        .top-actions {
-                                            display: none !important;
-                                        }
-                                    }
-                                }
-                                span {
-                                    textarea, input {
-                                        width: 100%;
-                                        border-radius: 5px;
-                                        padding: 6px;
-                                    }
-                                }
-                                .button {
-                                    width: auto;
-                                }
-                            }
-                        }
-                    }                
-                    li.e-Property.editing, {
-                        width: 100%;
-                        display: flex;
-                        flex-direction: row;
-                        justify-content: space-between;
-                        align-content: flex-end;
-                        display: flex;
-                        flex-wrap: wrap;
-                        label {
-                            width: 100%;
-                        }
-                        .property-value {
-                            width: 100%;
-                        }
-                        .add-property-button {
-                            width: 100%;
-                        }
-                        .property-buttons {
-                            display: flex;
-                            justify-content: space-between;
-                            width: 100%;
-                        }
-                        .property-buttons.general {
-                            align-items: flex-end;
-                            display: flex;
-                            padding-bottom: .5rem;
-                            justify-items: space-between;
-                            align-items: center;
-                            justify-content: space-between;
-                            width: auto;
-                            span.button-text {
-                                display: inline;
-                            }
-                        }
-                        ul.e-Property-ul {
-                            width: 100%;
-                            margin-top: 0rem;
-                            margin-right: 0rem;
-                            
-                            label {
-                                width: 100%;
-                            }
-                            .property-action-section {
-                                width: 98%;
-                                padding: 1%;
-                                display: flex;
-                                justify-content: flex-start;
-                            }
-                            ul {
-                                width: 100%;
-                            }
-                            li {
-                                width: 100%;
-                                display:flex;
-                                padding: .25rem 0rem;
-                                justify-content: space-between;
-                                flex-direction: row;
-                                flex-wrap: nowrap;
-                                .e-Property-text {
-                                    width: 100%;
-                                }
-                                .property-string-span, .input-span {
-                                    padding: .25rem;
-                                    padding: 0rem;
-                                    width: 100%;
-                                    textarea, input {
-                                        border-radius: 0px;
-                                        border:transparent;
-                                        padding: 6px;
-                                    }
-                        
-                                    .input-field {
-                                        textarea, input{
-                                            border-radius: 2px;
-                                            width: 100%;
-                                        }
-                                    }
-                                    .editing-property-buttons {
-                                        width: 48px;
-                                    }
-                                
-                                }
-                                .property-buttons {
-                                    padding: .25rem;
-                                    padding: 0rem;
-                                    width: 100%;
-                                    height: auto;
-                                    display:flex;
-                                    justify-items: flex-end;
-                                    align-items: flex-end;
-                                }
-                                .button {
-                                    cursor: pointer;
-                                }
-                            }
-                            li.add-property-button {
-                                width: 100%;
-                                display: flex;
-                                flex-direction: row;
-                                justify-content: space-between;
-                            }
-                        }
-                        
-                    }
                 }
             }
-                    
-                
-                ul.e-Thing-ul, .e-Thing-view .e-Thing-always-ul {
-                    width: 100%;
-                   
-                   
+            .e-HierarchyNode {
+                //border: solid 1px rgba($dark, .3);
+                //margin: .5rem;
+                .grabbing {
+                    .e-Competency > *{
+                        cursor: grabbing;
+                    }
                 }
-                .e-HierarchyNode {
-                    //border: solid 1px rgba($dark, .3);
-                    //margin: .5rem;
-                    .grabbing {
-                        .e-Competency > *{
-                            cursor: grabbing;
-                        }
-                    }
 
-                    .dragging {
+                .dragging {
+                    cursor: grabbing ;
+                    .e-Competency, .e-Competency > * {
                         cursor: grabbing ;
-                        .e-Competency, .e-Competency > * {
-                            cursor: grabbing ;
-                        }
-                        cursor: grabbing ;
-                        > * {
-                            cursor: grabbing;
-
-                        }
                     }
-                
-                    .thing.editing-competency {
-                        .button.edit {
-                            display: none !important;
-                        }
-                    }   
+                    cursor: grabbing ;
+                    > * {
+                        cursor: grabbing;
+
+                    }
                 }
             
-        }
-        // indent second levels uls
-        ul.e-HierarchyNode-ul {
-            margin-top: .5rem;
+                .thing.editing-competency {
+                    .button.edit {
+                        display: none !important;
+                    }
+                }   
+            }
+        
         }
         .thing, .thing-editing {
             .e-Thing.e-Competency,
@@ -711,8 +429,6 @@ ul.processing-list {
                 padding: .25rem;
             }
             label {
-                padding-top: .5rem;
-                padding-left: .25rem;
                 span {
                     padding: 0rem .25rem;
                     width: auto;
@@ -721,9 +437,6 @@ ul.processing-list {
                     color: rgba($dark, .6);
                 }
             }
-            .thing-label {
-                padding-left: .25rem;
-            }
             .e-type, .top-actions, .bottom-actions, label {
                 display: none;
             }
@@ -731,9 +444,6 @@ ul.processing-list {
                 font-size: 1.2rem;
             }
             .e-Property.editing {
-                label {
-                    display: flex;
-                }
                 .e-Property-ul {
                     display: flex;
                     flex-wrap: wrap;
@@ -768,11 +478,6 @@ ul.processing-list {
                 
             }
     }
-    .framework-title.editing-competency {
-        label {
-            display: flex !important;
-        }
-    }
     #import-top-section {
         position: sticky;
         padding: 1rem 1rem;
@@ -786,11 +491,6 @@ ul.processing-list {
         .import-instructions {
             padding-top: .5rem;
         }
-    }
-    .import-details {
-        border: 2px solid rgba($black, .5);
-        border-radius: 1rem;
-        margin: 0rem 1rem;
     }
     #import-actions {
         position: sticky;
@@ -878,6 +578,11 @@ ul.processing-list {
             }
         }
 
+    }
+    .import-details {
+        border: 2px solid rgba($black, .5);
+        border-radius: 1rem;
+        margin: 0rem 1rem;
     }
 }
 

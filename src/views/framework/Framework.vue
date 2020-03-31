@@ -48,18 +48,7 @@
                     @deleteObject="deleteObject"
                     @removeObject="removeObject"
                     @editNodeEvent="onEditNode()"
-                    :properties="properties">
-                    <template v-slot:copyURL="slotProps">
-                        <span v-if="slotProps.expandedProperty=='@id'">
-                            <div
-                                class="button is-small has-text-dark is-text"
-                                title="Copy URL to the clipboard."
-                                v-clipboard="slotProps.expandedValue[0]['@value']">
-                                <i class="fa fa-copy" />
-                            </div>
-                        </span>
-                    </template>
-                </Component>
+                    :properties="properties" />
                 <div class="info-bar">
                     <span
                         class="is-info has-text-white"
@@ -125,18 +114,7 @@
                     @removeObject="removeObject"
                     @exportObject="exportObject"
                     @selectButtonClick="onSelectButtonClick"
-                    :properties="properties">
-                    <template v-slot:copyURL="slotProps">
-                        <span v-if="slotProps.expandedProperty=='@id'">
-                            <div
-                                class="button is-text has-text-dark is-small"
-                                title="Copy URL to the clipboard."
-                                v-clipboard="slotProps.expandedValue[0]['@value']">
-                                <i class="fa fa-copy" />
-                            </div>
-                        </span>
-                    </template>
-                </Hierarchy>
+                    :properties="properties" />
             </div>
         </div>
     </div>
@@ -166,6 +144,7 @@ export default {
     mixins: [common, exports, competencyEdits, ctdlasnProfile, t3Profile, tlaProfile],
     data: function() {
         return {
+            showClipboardSuccessModal: false,
             showCompetencySearchModal: false,
             showComments: false,
             showShareModal: false,
