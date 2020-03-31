@@ -41,6 +41,7 @@
                 </h3>
                 <div
                     class="button is-primary"
+                    v-if="configViewMode.equals('list')"
                     @click="createNewConfig">
                     create new configuration
                 </div>
@@ -65,6 +66,7 @@
                         :name="config.name"
                         :isDefault="config.isDefault"
                         :description="config.description"
+                        :isOwned="config.isOwned"
                         :defaultBrowserConfigId="localDefaultBrowserConfigId"
                         @setBrowserDefault="setConfigAsBrowserDefault"
                         @showDetails="showConfigDetails" />
@@ -106,7 +108,7 @@ export default {
         }
     },
     data: () => ({
-        USE_TEST_DATA: false,
+        USE_TEST_DATA: true,
         CONFIG_SEARCH_SIZE: 10000,
         DEFAULT_CONFIGURATION_CONTEXT: 'https://schema.cassproject.org/0.4/',
         DEFAULT_CONFIGURATION_TYPE: 'Configuration',

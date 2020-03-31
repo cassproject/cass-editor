@@ -125,7 +125,7 @@
                         </div>
                         <div
                             class="field"
-                            v-if="amCreatingLinkedPerson">
+                            v-if="amCreatingAccount || amCreatingLinkedPerson">
                             <div class="control">
                                 <label class="label">name</label>
                                 <input
@@ -137,7 +137,7 @@
                         </div>
                         <div
                             class="field"
-                            v-if="amCreatingLinkedPerson">
+                            v-if="amCreatingAccount || amCreatingLinkedPerson">
                             <div class="control">
                                 <label class="label">email</label>
                                 <input

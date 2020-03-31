@@ -58,7 +58,7 @@
                                             :key="index">
                                             <th>
                                                 <input
-                                                    class="input"
+                                                    class="checkbox"
                                                     :id="lvl.shortId()"
                                                     :value="lvl.shortId()"
                                                     name="lvl.shortId()"
@@ -118,12 +118,16 @@
                             </div>
                         </div>
                         <div
-                            class="field"
+                            class="field has-text-danger"
                             v-if="levelInvalid">
-                            <p>Level is invalid:</p>
-                            <p v-if="levelNameInvalid">
-                                *Level name is required
-                            </p>
+                            <div class="label has-text-danger">
+                                Please correct the following errors:
+                            </div>
+                            <div
+                                class="is-size-7"
+                                v-if="levelNameInvalid">
+                                Level name is required
+                            </div>
                         </div>
                         <div
                             class="buttons"
@@ -404,20 +408,32 @@
                         </div>
                     </template>
                     <br>
-                    <div v-if="customPropertyInvalid">
-                        <p>Property is invalid:</p>
-                        <p v-if="customPropertyPropertyNameExists">
-                            *Property name is already in use
-                        </p>
-                        <p v-if="customPropertyPropertyNameInvalid">
-                            *Property name is required
-                        </p>
-                        <p v-if="customPropertyLabelInvalid">
-                            *Label is required
-                        </p>
-                        <p v-if="customPropertyPropertyNameInvalid">
-                            *Description is required
-                        </p>
+                    <div
+                        class="field has-text-danger"
+                        v-if="customPropertyInvalid">
+                        <div class="label has-text-danger">
+                            Please correct the following errors:
+                        </div>
+                        <div
+                            class="is-size-7"
+                            v-if="customPropertyPropertyNameExists">
+                            Property name is already in use
+                        </div>
+                        <div
+                            class="is-size-7"
+                            v-if="customPropertyPropertyNameInvalid">
+                            Property name is required
+                        </div>
+                        <div
+                            class="is-size-7"
+                            v-if="customPropertyLabelInvalid">
+                            Label is required
+                        </div>
+                        <div
+                            class="is-size-7"
+                            v-if="customPropertyPropertyNameInvalid">
+                            Description is required
+                        </div>
                     </div>
                     <div
                         class="buttons"
@@ -709,7 +725,9 @@
                     add enforced type
                 </div>
             </div>
-            <div class="table-container">
+            <div
+                v-if="config.compEnforceTypes"
+                class="table-container">
                 <div class="table">
                     <thead>
                         <tr>
@@ -795,7 +813,9 @@
                         v-model="config.levelLabel">
                 </div>
             </div>
-            <div class="field">
+            <div
+                class="field"
+                v-if="config.compAllowLevels">
                 <label class="label">level description: </label>
                 <div v-if="readOnly">
                     {{ config.levelDescription }}
@@ -809,7 +829,9 @@
             </div>
         </div>
         <!-- enforce levels -->
-        <div class="section">
+        <div
+            v-if="config.compAllowLevels"
+            class="section">
             <h5>Enforce Level Values? (optional)</h5>
             <div v-if="readOnly">
                 {{ config.enforceLevelValues }}
@@ -837,7 +859,9 @@
                     manage enforced levels
                 </div>
             </div>
-            <div class="table-container">
+            <div
+                v-if="config.enforceLevelValues"
+                class="table-container">
                 <div class="table">
                     <thead>
                         <tr>
@@ -1244,6 +1268,7 @@ export default {
         },
         showSelectLevelsModal() {
             this.selectedLevels = this.localEnforcedLevelValues;
+            this.sortLevelList();
             this.levelSelectionModalTitle = 'Select Enforced Levels';
             this.showAddNewLevelSection = false;
             this.showSelectLevelModal = true;
