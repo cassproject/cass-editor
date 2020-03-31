@@ -27,8 +27,6 @@
                     @deleteObject="deleteObject"
                     @exportObject="exportObject"
                     @select="select"
-                    :isEditingContainer="isEditingContainer"
-                    @editingThing="handleEditingContainer($event)"
                     :parentStructure="hierarchy"
                     :parent="container">
                     <template v-slot:copyURL="slotProps">
@@ -63,8 +61,7 @@ export default {
         exportOptions: Array,
         highlightList: Array,
         selectMode: Boolean,
-        selectAll: Boolean,
-        isEditingContainer: Boolean
+        selectAll: Boolean
     },
     data: function() {
         return {
@@ -110,13 +107,6 @@ export default {
         }
     },
     methods: {
-        handleEditingContainer: function(e) {
-            if (e) {
-                this.$emit('editingContainer', true);
-            } else {
-                this.$emit('editingContainer', false);
-            }
-        },
         computeHierarchy: function() {
             this.structure.splice(0, this.structure.length);
             if (this.container == null) { return r; }

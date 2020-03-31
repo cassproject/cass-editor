@@ -1,6 +1,9 @@
 @import './variables.scss';
 
 .page-framework{
+    .info-bar {
+        margin: 1rem .5rem;
+    }
     .container {
         max-width: 880px;
         display: block;
@@ -15,6 +18,9 @@
         }
     }
     .thing-editing,
+        .bottom-actions {
+            margin: .5rem;
+        }
         .thing {
             .e-Thing.e-Competency,
             .e-Thing.e-Framework {
@@ -22,12 +28,16 @@
         }
     }
     .thing-editing {
-        .thing  {
-            .e-Thing.e-Competency {
-                margin-bottom: .5rem;
-                background-color: rgba($light, .3);
-            }
+        background-color: $cass-light;
+        .e-Thing.e-Competency, 
+        .e-Thing.e-Framework {
+            padding: .5rem;
+            
         }
+        
+        .bottom-actions {
+        }
+        
     }
     .add-property {
         background-color: rgba($white, .5);
@@ -211,30 +221,8 @@
             a {
                 display:none;
             }
-            .top-actions, .botton-actions {
-                opacity: 1;
-                display: flex;
-                flex-direction: row;
-                width: 100%;
-                justify-content: space-between;
-                bottom: -3rem;
+            .top-actions, .bottom-actions {
                 padding: .5rem .5rem;
-                    .action {
-                        width: 30%;
-                    }
-                    .info {
-                        width: 30%;
-                    }
-                    .tags {
-                        display: inline;
-                    }
-                    .view {
-                        display: flex;
-                        width: 30%;
-                }
-            }
-            .bottom-actions {
-                border-top: none;
             }
             ul.e-Thing-always-ul.e-Thing-ul{
                 .e-Property-text{

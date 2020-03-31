@@ -672,10 +672,14 @@
                                         </ul>
                                     </ul>
                                 </div>
-                                <Thing
+                                <Component
+                                    :is="dynamicThing"
+                                    @editNodeEvent="onEditNode"
                                     :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                     :obj="framework"
+                                    :editingNode="editingNode"
                                     :repo="repo"
+                                    :properties="properties"
                                     class="framework-title"
                                     :profile="t3FrameworkProfile"
                                     :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
@@ -707,7 +711,10 @@
                             v-else-if="framework && showImportLightView"
                             class="import-light">
                             <div class="tile is-vertical">
-                                <Thing
+                                <Component
+                                    :is="dynamicThing"
+                                    @editNodeEvent="onEditNode"
+                                    :editingNode="editingNode"
                                     :obj="framework"
                                     :repo="repo"
                                     :parentNotEditable="!canEdit"
@@ -750,6 +757,7 @@ import exports from '@/mixins/exports.js';
 import competencyEdits from '@/mixins/competencyEdits.js';
 import t3Profile from '@/mixins/t3Profile.js';
 import Thing from '@/lode/components/lode/Thing.vue';
+import ThingEditing from '@/lode/components/lode/ThingEditing.vue';
 
 export default {
     name: "Import",
@@ -757,9 +765,10 @@ export default {
         queryParams: Object
     },
     mixins: [common, exports, competencyEdits, t3Profile],
-    components: {Hierarchy, dragAndDrop, sideBar, Thing},
+    components: {Hierarchy, dragAndDrop, sideBar, Thing, ThingEditing},
     data: function() {
         return {
+            editingNode: false,
             hierarchyIsdoneLoading: false,
             frameworkBusy: true,
             detailsDetected: {
@@ -821,6 +830,13 @@ export default {
         };
     },
     computed: {
+        dynamicThing: function() {
+            if (this.editingNode) {
+                return 'ThingEditing';
+            } else {
+                return 'Thing';
+            }
+        },
         frameworkSize: function() {
             if (this.framework) {
                 return this.framework.competency.length;
@@ -858,19 +874,6 @@ export default {
         }
     },
     watch: {
-        status: function(val) {
-            let me = this;
-            if (val === 'processing') {
-                console.log("hello");
-                me.processingStatus = "Preparing competencies...";
-                setTimeout(() => {
-                    me.processingStatus = "Building competency hierarchy...";
-                    setTimeout(() => {
-                        me.processingStatus = "Preparing for editing...";
-                    }, 1000);
-                }, 1000);
-            }
-        },
         text: function(newText, oldText) {
             var me = this;
             TabStructuredImport.importCompetencies(
@@ -904,6 +907,9 @@ export default {
         this.spitEvent('viewChanged');
     },
     methods: {
+        onEditNode: function() {
+            this.editingNode = true;
+        },
         handleDoneLoading: function() {
             console.log("done loading");
             this.hierarchyIsdoneLoading = true;
@@ -1133,6 +1139,7 @@ export default {
                         }, function(error) {
                             me.statusType = "error";
                             me.status = error;
+                            me.processingFile = false;
                         });
                     });
                 }
@@ -1397,11 +1404,16 @@ export default {
                         } else {
                             me.status = 'no match, saving new framework...';
                             me.savePdfImport(d);
-                        }
+                        } /* TO DO - ERROR HANDLING HERE */
                     }, function(error) {
                         console.error(error);
                     });
-                }, console.error);
+                },
+                /* TO DO - ERROR HANDLING HERE */
+                function(error) {
+                    console.error(error);
+                }
+            );
             me.statusType = "info";
             me.status = 'processing file...';
         },
@@ -1435,7 +1447,6 @@ export default {
                 me.statusType = "error";
                 me.errors.push("Error importing competencies, no competencies found in file.");
                 me.processingFile = false;
-                return;
             }
             me.detailsDetected.competencies = d.competencies.length;
             for (var i = 0; i < d.competencies.length; i++) {
@@ -1791,6 +1802,7 @@ export default {
 
 <style lang="scss">
     @import './../../scss/import.scss';
+
 .list-complete-item {
   transition: all 1s;
   display: block;

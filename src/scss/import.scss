@@ -3,7 +3,106 @@
 textarea {
     resize: vertical !important;
 }
+    // room for improvement, iterate over loop for max depth tabbing
+    // possibly set tab value based on value in scss varaibles sheet
+    .e-Hierarchy {
+        .e-Hierarchy-ul {
+            max-width: 880px;
+            li.e-HierarchyNode {
+                
+                .thing, .thing-editing {
+                    margin-left: 0rem;
+                    .thing  {
+                        margin-left: 0;
+                    }
+                }
+                .e-HierarchyNode-ul {
+                    .e-HierarchyNode {
+                        .thing, .thing-editing {
+                            margin-left: 1rem;
+                            .thing {
+                                margin-left: 0;
+                            }
+                        }
+                    }
+                    .e-HierarchyNode-ul {
+                        .e-HierarchyNode {
+                            .thing, .thing-editing {
+                                margin-left: 2rem;
+                                .thing {
+                                    margin-left: 0;
+                                }
+                            }
+                            .e-HierarchyNode-ul {
+                                .e-HierarchyNode {
+                                    .thing, .thing-editing {
+                                        margin-left: 3rem;
+                                        .thing {
+                                            margin-left: 0;
+                                        }
+                                    }
+                                    .e-HierarchyNode-ul {
+                                        .e-HierarchyNode {
+                                            .thing, .thing-editing {
+                                                margin-left: 4rem;
+                                                .thing {
+                                                    margin-left: 0;
+                                                }
+                                            }
+                                            .e-HierarchyNode-ul {
+                                                .e-HierarchyNode {
+                                                    .thing, .thing-editing {
+                                                        margin-left: 5rem;
+                                                    }
+                                                    .e-HierarchyNode-ul {
+                                                        .e-HierarchyNode {
+                                                            .thing, .thing-editing {
+                                                                margin-left: 6rem;
+                                                            }
+                                                            .e-HierarchyNode-ul {
+                                                                .e-HierarchyNode {
+                                                                    .thing, .thing-editing {
+                                                                        margin-left: 8rem;
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
 
+.thing {
+    .e-Thing.e-Competency.showHoverItems,
+    .e-Thing.e-Framework.showHoverItems  {
+        background-color: $cass-lightest;
+        .edit-button {
+            visibility: visible;
+        }
+    }
+
+    .e-Thing.e-Competency,
+    .e-Thing.e-Framework {
+        transform: translateX(0);
+        width: 100%;
+        .edit-button {
+            position: absolute;
+            color: dark;
+            right: 0;
+            visibility: hidden;
+        }
+    }
+}
 ul.processing-list {
     height: 100%;
     width: 100%;
@@ -156,7 +255,6 @@ ul.processing-list {
         }
         .e-Hierarchy {
             .e-HierarchyNode {
-                border-left: solid 2px rgba($dark, .1);
                 margin: .5rem 0rem 0rem 0rem;
                 .e-thing-ul {
                     width: calc(100% - 16px);
@@ -276,7 +374,6 @@ ul.processing-list {
                       
                         ul.e-Property-ul {
                             width: 100%;
-                            margin-left: .75rem;
                             margin-top: 0rem;
                             display: flex;
                             flex-wrap: wrap;
@@ -404,8 +501,6 @@ ul.processing-list {
                         }
                         ul.e-Property-ul {
                             width: 100%;
-                            margin-left: .75rem;
-
                             margin-top: 0rem;
                             margin-right: 0rem;
                             
@@ -514,11 +609,11 @@ ul.processing-list {
         }
         // indent second levels uls
         ul.e-HierarchyNode-ul {
-            margin-left: 1rem;
             margin-top: .5rem;
         }
         .thing, .thing-editing {
-            .e-Thing.e-Competency {
+            .e-Thing.e-Competency,
+            .e-Thing.e-Framework {
                 .e-type {
                     display: none;
                 }
@@ -708,7 +803,6 @@ ul.processing-list {
         padding: 0rem 1rem;
         // on related competencies, hide buttons to edit competency
         .related-competency, .related-competency.editing-competency {
-            border-left: solid 1px black;
             width: 100%;
             .top-actions{
                 display: none !important;

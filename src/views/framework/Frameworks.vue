@@ -63,10 +63,10 @@
                         <span
                             class="framework-list-item__details is-light"
                             v-if="queryParams.concepts!=='true'">
-                            <span class="details-label">
+                            <span>
                                 Items:
                             </span>
-                            <span class="details-value">
+                            <span>
                                 {{ slotProps.item.competency ? slotProps.item.competency.length : 0 }}
                             </span>
                         </span>

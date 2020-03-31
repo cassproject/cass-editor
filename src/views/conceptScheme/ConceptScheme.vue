@@ -7,9 +7,8 @@
             @deleteObject="deleteObject"
             @exportObject="exportObject"
             @select="select"
-            :isEditingContainer="isEditingContainer"
             :profile="conceptSchemeProfile"
-            @editingThing="handleEditingContainer($event)">
+            @editingThing="handleEditingFramework($event)">
             <template v-slot:copyURL="slotProps">
                 <span v-if="slotProps.expandedProperty=='@id'">
                     <button
@@ -66,9 +65,7 @@
             :profile="conceptProfile"
             @deleteObject="deleteObject"
             @exportObject="exportObject"
-            @select="select"
-            :isEditingContainer="isEditingContainer"
-            @editingContainer="handleEditingContainer($event)">
+            @select="select">
             <template v-slot:copyURL="slotProps">
                 <span v-if="slotProps.expandedProperty=='@id'">
                     <div
@@ -112,7 +109,7 @@ export default {
             selectAllButton: false,
             selectAll: false,
             selectedArray: [],
-            isEditingContainer: false,
+            isEditingFramework: false,
             privateFramework: false
         };
     },
@@ -851,11 +848,11 @@ export default {
                 EcArray.setRemove(this.selectedArray, id);
             }
         },
-        handleEditingContainer: function(e) {
+        handleEditingFramework: function(e) {
             if (e) {
-                this.isEditingContainer = true;
+                this.isEditingFramework = true;
             } else {
-                this.isEditingContainer = false;
+                this.isEditingFramework = false;
             }
         },
         encryptConcepts: function(c) {
