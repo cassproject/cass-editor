@@ -121,9 +121,6 @@
         visibility: visible !important;
     }
  
-    .far.fa-circle {
-        font-size: .4rem;
-    }
     // room for improvement, iterate over loop for max depth tabbing
     // possibly set tab value based on value in scss varaibles sheet
     .e-Hierarchy {
@@ -203,7 +200,7 @@
         }
     }
     .e-Property {
-        padding: .5rem 0rem;
+        padding: 0rem 0rem .5rem 0rem;
     }
     
     .dragging{

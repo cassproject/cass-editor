@@ -25,11 +25,7 @@
                     .list-thing {
                         width: calc(100% - 56px);
                     }
-                    .icon {
-                        width: 56px;
-                        display: none;
-                        flex-direction: column;
-                    }
+
             }
             li.list-ul__item:hover {
                 background-color: $light;
@@ -52,11 +48,6 @@
             
             }
             .list-ul__item:hover {
-                    .icon {
-                        width: 56px;
-                        display: flex;
-                        flex-direction: column;
-                    }
             }
             .thing {
                 .bottom-actions, .top-actions {
@@ -136,10 +127,6 @@
                 font-size: $size-4;	
             }	
 
-            .fa {	
-                font-size: $size-7;	
-                color: $dark;	
-            }	
             label {	
                 font-size: $size-7;	
                 font-weight: 500;	
