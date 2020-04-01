@@ -14,7 +14,7 @@
                     <span>View</span>
                     <span class="icon is-small">
                         <i
-                            class="fas fa-angle-down"
+                            class="fas fa-angle-down has-text-link"
                             aria-hidden="true" />
                     </span>
                 </button>
@@ -30,7 +30,7 @@
                         <span
                             :class="activeView==='primary'? '' : 'is-hidden'"
                             class="icon">
-                            <i class="fa fa-check" />
+                            <i class="fa fa-check has-text-primary" />
                         </span>
                         Primary Properties
                     </a>
@@ -40,7 +40,7 @@
                         <span
                             :class="activeView==='secondary'? '' : 'is-hidden'"
                             class="icon">
-                            <i class="fa fa-check" />
+                            <i class="fa fa-check has-text-link" />
                         </span>
                         Secondary Properties
                     </a>
@@ -69,7 +69,7 @@
                     <span>Share</span>
                     <span class="icon is-small">
                         <i
-                            class="fas fa-angle-down"
+                            class="fas fa-angle-down has-text-link"
                             aria-hidden="true" />
                     </span>
                 </button>
@@ -94,19 +94,19 @@
         </div>
         <div
             @click="$emit('openCommentsEvent')"
-            class="button is-text">
+            class="button is-text has-text-dark">
             <span class="icon">
-                <i class="fas fa-comment-alt" />
+                <i class="fas fa-comment-alt has-text-dark" />
             </span>
         </div>
         <div class="button is-text">
             <span class="icon">
-                <i class="fas fa-undo-alt" />
+                <i class="fas fa-undo-alt has-text-dark" />
             </span>
         </div>
         <div class="button is-text">
             <span class="icon">
-                <i class="fas fa-history" />
+                <i class="fas fa-history has-text-dark" />
             </span>
         </div>
         <div class="framework-search">
