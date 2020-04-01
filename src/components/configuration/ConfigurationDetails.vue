@@ -17,8 +17,8 @@
             :class="[{'is-active': showSelectLevelModal}]">
             <div class="modal-background" />
             <div class="modal-card">
-                <header class="modal-card-head">
-                    <p class="subtitle is-size-3 modal-card-title">
+                <header class="modal-card-head has-background-primary">
+                    <p class="subtitle has-text-white is-size-3 modal-card-title">
                         {{ levelSelectionModalTitle }}
                         <button
                             class="delete is-pulled-right"
@@ -26,125 +26,157 @@
                             @click="closeSelectLevelModal" />
                     </p>
                 </header>
-                <div class="modal-card-body has-text-dark">
-                    <div v-if="!showAddNewLevelSection">
-                        <div>
-                            <div class="columns">
-                                <div class="column is-3 listHdr">
-                                    <label>Available Levels:</label>
-                                </div>
-                                <div class="column is-9 listHdr">
+                <div
+                    ref="levelsModal"
+                    class="modal-card-body has-text-dark">
+                    <div class="field">
+                        <div
+                            div
+                            class="control">
+                            <label class="label">Available Levels:</label>
+                            <input
+                                class="input is-small"
+                                type="text"
+                                v-model="selectedLevelFilter"
+                                placeholder="level filter">
+                        </div>
+                    </div>
+                    <div v-if="showAddNewLevelSection">
+                        <h4 class="header is-size-3">
+                            Add Level
+                        </h4>
+                        <div class="field-group">
+                            <div class="field">
+                                <label class="label">Name:</label>
+                                <div class="control">
                                     <input
                                         class="input"
                                         type="text"
-                                        v-model="selectedLevelFilter"
-                                        placeholder="level filter">
+                                        v-model="newLevelName">
                                 </div>
                             </div>
-                            <div class="table-container">
-                                <div class="table">
-                                    <thead>
-                                        <th />
+                            <div class="field">
+                                <label class="label">Description: </label>
+                                <div
+                                    class="control"
+                                    v-if="!readOnly">
+                                    <input
+                                        class="input"
+                                        type="text"
+                                        v-model="newLevelDescription">
+                                </div>
+                            </div>
+                            <div
+                                class="field has-text-danger"
+                                v-if="levelInvalid">
+                                <div class="label has-text-danger">
+                                    Please correct the following errors:
+                                </div>
+                                <div
+                                    class="is-size-7"
+                                    v-if="levelNameInvalid">
+                                    Level name is required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-else>
+                        <div class="table-container">
+                            <div class="table">
+                                <thead>
+                                    <th />
+                                    <th>
+                                        name
+                                    </th>
+                                    <th>
+                                        description
+                                    </th>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        v-for="(lvl, index) in filteredLevels"
+                                        :key="index">
                                         <th>
-                                            name
-                                        </th>
-                                        <th>
-                                            description
-                                        </th>
-                                    </thead>
-                                    <tbody>
-                                        <tr
-                                            v-for="(lvl, index) in filteredLevels"
-                                            :key="index">
-                                            <th>
+                                            <div class="checkbox">
                                                 <input
-                                                    class="checkbox"
                                                     :id="lvl.shortId()"
                                                     :value="lvl.shortId()"
                                                     name="lvl.shortId()"
                                                     type="checkbox"
                                                     v-model="selectedLevels">
-                                            </th>
-                                            <td>
-                                                {{ lvl.getName() }}
-                                            </td>
-                                            <td>
-                                                {{ lvl.description }}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </div>
+                                            </div>
+                                        </th>
+                                        <td>
+                                            {{ lvl.getName() }}
+                                        </td>
+                                        <td>
+                                            {{ lvl.description }}
+                                        </td>
+                                    </tr>
+                                </tbody>
                             </div>
-                        </div>
-                        <div
-                            class="buttons"
-                            v-if="!readOnly">
-                            <button
-                                class="button"
-                                @click="showAddNewLevel">
-                                add level
-                            </button>
-                            <button
-                                class="button"
-                                @click="applySelectLevels">
-                                apply
-                            </button>
-                            <button
-                                class="button"
-                                @click="closeSelectLevelModal">
-                                cancel
-                            </button>
-                        </div>
-                    </div>
-                    <div v-if="showAddNewLevelSection">
-                        <div class="field">
-                            <label class="label">Name: </label>
-                            <div class="control">
-                                <input
-                                    class="input"
-                                    type="text"
-                                    v-model="newLevelName">
-                            </div>
-                        </div>
-                        <div class="field">
-                            <label class="label">Description: </label>
-                            <div
-                                class="control"
-                                v-if="!readOnly">
-                                <input
-                                    class="input"
-                                    type="text"
-                                    v-model="newLevelDescription">
-                            </div>
-                        </div>
-                        <div
-                            class="field has-text-danger"
-                            v-if="levelInvalid">
-                            <div class="label has-text-danger">
-                                Please correct the following errors:
-                            </div>
-                            <div
-                                class="is-size-7"
-                                v-if="levelNameInvalid">
-                                Level name is required
-                            </div>
-                        </div>
-                        <div
-                            class="buttons"
-                            v-if="!readOnly && !savingLevelBusy">
-                            <button
-                                class="button"
-                                @click="saveAddNewLevel">
-                                save new level
-                            </button>
-                            <button
-                                class="button"
-                                @click="cancelAddNewLevel">
-                                cancel
-                            </button>
                         </div>
                     </div>
                 </div>
+                <footer
+                    v-if="!showAddNewLevelSection"
+                    class="modal-card-foot has-background-light">
+                    <div
+                        class="buttons"
+                        v-if="!readOnly">
+                        <button
+                            class="button is-outlined is-dark"
+                            @click="closeSelectLevelModal">
+                            cancel
+                        </button>
+                        <button
+                            class="button is-outlined is-primary"
+                            @click="showAddNewLevel">
+                            <span class="icon">
+                                <i class="fa fa-plus" />
+                            </span>
+                            <span>add level</span>
+                        </button>
+                        <button
+                            class="button is-outlined is-primary"
+                            @click="applySelectLevels">
+                            <span class="icon">
+                                <i class="fa fa-save" />
+                            </span>
+                            <span>
+                                apply selected
+                            </span>
+                        </button>
+                    </div>
+                </footer>
+                <footer
+                    v-if="showAddNewLevelSection"
+                    class="modal-card-foot has-background-light">
+                    <div
+                        class="buttons"
+                        v-if="!readOnly && !savingLevelBusy">
+                        <button
+                            class="button is-outlined"
+                            @click="cancelAddNewLevel">
+                            <span class="icon">
+                                <i class="fa fa-save" />
+                            </span>
+                            <span>
+                                cancel
+                            </span>
+                        </button>
+                        <button
+                            class="button is-outlined"
+                            @click="saveAddNewLevel">
+                            <span class="icon">
+                                <i class="fa fa-save" />
+                            </span>
+                            <span>
+                                save new level
+                            </span>
+                        </button>
+                    </div>
+                </footer>
             </div>
         </div>
         <!-- custom property details modal -->
@@ -348,7 +380,7 @@
                                 Leave this section empty to allow any values for this property
                             </p>
                             <button
-                                class="button is-small is-primary"
+                                class="button is-outlined is-small is-primary"
                                 v-if="!readOnly"
                                 @click="addCustomPropertyPermittedValue">
                                 <span class="icon">
@@ -372,34 +404,40 @@
                                         :key="idx">
                                         <th>
                                             <p
-                                                v-if="readOnly"
-                                                class="control">
+                                                v-if="readOnly">
                                                 {{ ev.display }}
                                             </p>
-                                            <input
-                                                class="input"
+                                            <div
                                                 v-if="!readOnly"
-                                                type="text"
-                                                v-model="ev.display">
+                                                class="control">
+                                                <input
+                                                    class="input is-small"
+
+                                                    type="text"
+                                                    v-model="ev.display">
+                                            </div>
                                         </th>
                                         <td>
                                             <p
-                                                class="control"
                                                 v-if="readOnly">
                                                 {{ ev.value }}
                                             </p>
-                                            <input
-                                                v-if="!readOnly"
-                                                type="text"
-                                                class="input"
-                                                v-model="ev.value">
+                                            <div class="control">
+                                                <input
+                                                    v-if="!readOnly"
+                                                    type="text"
+                                                    class="input is-small"
+                                                    v-model="ev.value">
+                                            </div>
                                         </td>
                                         <td>
                                             <div
-                                                class="button is-primary is-small"
+                                                class="button is-outlined is-danger is-outlined is-small"
                                                 v-if="!readOnly"
                                                 @click="deleteCustomPropertyPermittedValue(idx)">
-                                                delete
+                                                <span class="icon">
+                                                    <i class="fa fa-trash" />
+                                                </span>
                                             </div>
                                         </td>
                                     </tr>
@@ -435,21 +473,33 @@
                             Description is required
                         </div>
                     </div>
+                </div>
+                <footer class="modal-card-foot has-background-light">
                     <div
                         class="buttons"
                         v-if="!readOnly">
                         <button
-                            class="button is-light"
+                            class="button is-outlined is-dark"
                             @click="closeCustomPropertyModal">
-                            cancel
+                            <span class="icon">
+                                <i class="fa fa-times" />
+                            </span>
+                            <span>
+                                cancel
+                            </span>
                         </button>
                         <button
-                            class="button is-primary"
+                            class="button is-outlined is-primary"
                             @click="applyCustomPropertyEdits">
-                            apply
+                            <span class="icon">
+                                <i class="fa fa-save" />
+                            </span>
+                            <span>
+                                apply new framework property
+                            </span>
                         </button>
                     </div>
-                </div>
+                </footer>
             </div>
         </div>
         <!-- CONFIGURATION DETAILS BODY CONTENT -->
@@ -586,9 +636,14 @@
                 class="field"
                 v-if="!readOnly">
                 <div
-                    class="button is-small is-primary"
+                    class="button is-outlined is-small is-primary"
                     @click="addCustomFrameworkProperty">
-                    add custom framework property
+                    <span class="icon">
+                        <i class="fa fa-plus" />
+                    </span>
+                    <span>
+                        add custom framework property
+                    </span>
                 </div>
             </div>
         </div>
@@ -682,9 +737,14 @@
                 class="field"
                 v-if="!readOnly">
                 <div
-                    class="button is-small is-primary"
+                    class="button is-outlined is-small is-primary"
                     @click="addCustomCompetencyProperty">
-                    add custom competency property
+                    <span class="icon">
+                        <i class="fa fa-plus" />
+                    </span>
+                    <span>
+                        add custom competency property
+                    </span>
                 </div>
             </div>
         </div>
@@ -719,7 +779,7 @@
                 class="field"
                 v-if="config.compEnforceTypes">
                 <div
-                    class="button is-primary is-small"
+                    class="button is-outlined is-primary is-small"
                     v-if="!readOnly"
                     @click="addCompetencyEnforcedTypeDataHolder">
                     add enforced type
@@ -768,7 +828,7 @@
                             </td>
                             <td>
                                 <div
-                                    class="button is-small"
+                                    class="button is-outlined is-small"
                                     v-if="!readOnly"
                                     @click="deleteCompetencyEnforcedType(idx)">
                                     delete
@@ -854,7 +914,7 @@
                 class="field"
                 v-if="config.enforceLevelValues">
                 <div
-                    class="button is-primary is-small"
+                    class="button is-outlined is-primary is-small"
                     @click="showSelectLevelsModal">
                     manage enforced levels
                 </div>
@@ -1070,17 +1130,17 @@
                     class="buttons"
                     v-if="!readOnly">
                     <div
-                        class="button is-primary"
+                        class="button is-outlined is-primary"
                         @click="$emit('setBrowserDefault', config.id)">
                         set as browser default
                     </div>
                     <div
-                        class="button is-primary"
+                        class="button is-outlined is-primary"
                         @click="validateCurrentConfigAndEmitSave">
                         save
                     </div>
                     <div
-                        class="button is-primary"
+                        class="button is-outlined is-primary"
                         @click="$emit('cancel')">
                         cancel
                     </div>
@@ -1089,12 +1149,12 @@
                     class="buttons"
                     v-if="readOnly">
                     <div
-                        class="button is-primary"
+                        class="button is-outlined is-primary"
                         @click="$emit('setBrowserDefault', config.id)">
                         set as browser default
                     </div>
                     <div
-                        class="button is-primary"
+                        class="button is-outlined is-primary"
                         @click="$emit('back')">
                         back
                     </div>
@@ -1251,6 +1311,7 @@ export default {
             this.newLevelDescription = '';
             this.savingLevelBusy = false;
             this.showAddNewLevelSection = true;
+            this.$refs.levelsModal.scrollTop = 0;
         },
         closeSelectLevelModal() {
             this.levelSelectionModalTitle = '';

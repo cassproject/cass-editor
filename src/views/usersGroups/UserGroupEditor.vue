@@ -25,6 +25,20 @@
                 <div v-if="userGroupList.length === 0">
                     <p>No user groups are available.</p>
                 </div>
+                <div class="buttons is-left">
+                    <div
+                        class="button is-small is-outlined is-primary"
+                        @click="createNewUserGroup"
+                        :disabled="!amLoggedIn"
+                        :title="getCreateUserGroupButtonTitle">
+                        <span class="icon">
+                            <i class="fa fa-plus" />
+                        </span>
+                        <span>
+                            create new group
+                        </span>
+                    </div>
+                </div>
                 <div
                     class="table-container"
                     v-if="userGroupList.length > 0">
@@ -54,15 +68,6 @@
                                 :isOwned="doesAnyIdentityOwnObject(grp)"
                                 @showDetails="showUserGroupDetails" />
                         </tbody>
-                    </div>
-                </div>
-                <div class="buttons is-left">
-                    <div
-                        class="button is-primary"
-                        @click="createNewUserGroup"
-                        :disabled="!amLoggedIn"
-                        :title="getCreateUserGroupButtonTitle">
-                        create new group
                     </div>
                 </div>
             </div>

@@ -11,7 +11,7 @@
         </td>
         <td>
             <div
-                class="button is-small"
+                class="button is-outlined is-small"
                 :disabled="defaultBrowserConfigId && defaultBrowserConfigId.equals(id)"
                 @click="$emit('setBrowserDefault', id)">
                 set as browser default
@@ -20,7 +20,7 @@
         <td>
             <div
                 v-if="isOwned"
-                class="button is-small is-primary"
+                class="button is-outlined is-small is-primary"
                 @click="$emit('showDetails', id)">
                 <span class="icon">
                     <i class="fas fa-cog" />
@@ -31,7 +31,7 @@
             </div>
             <div
                 v-else-if="!isOwned"
-                class="button is-small is-primary"
+                class="button is-outlined is-small is-primary"
                 @click="$emit('showDetails', id)">
                 <span class="icon">
                     <i class="fas fa-eye" />

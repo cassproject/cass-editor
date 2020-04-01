@@ -11,7 +11,7 @@
         </td>
         <td>
             <div
-                class="button is-small is-primary"
+                class="button is-outlined is-small is-primary"
                 @click="$emit('showDetails', id)">
                 <span class="icon">
                     <i

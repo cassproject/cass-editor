@@ -17,12 +17,12 @@
             :class="[{'is-active': showBrowserConfigSetModal}]">
             <div class="modal-background" />
             <div class="modal-card">
-                <header class="modal-card-head">
-                    <p class="subtitle is-size-3 modal-card-title">
+                <header class="modal-card-head has-background-primary">
+                    <h4 class="subtitle is-size-3 has-text-white modal-card-title">
                         Configuration set as browser default
-                    </p>
+                    </h4>
                     <div
-                        class="button is-text is-pulled-right"
+                        class="delete is-pulled-right"
                         aria-label="close"
                         @click="closeBrowserConfigSetModal" />
                 </header>
@@ -40,10 +40,15 @@
                     Configuration
                 </h3>
                 <div
-                    class="button is-primary"
+                    class="button is-outlined is-primary"
                     v-if="configViewMode.equals('list')"
                     @click="createNewConfig">
-                    create new configuration
+                    <span class="icon">
+                        <i class="fa fa-plus" />
+                    </span>
+                    <span>
+                        create new configuration
+                    </span>
                 </div>
             </div>
             <div

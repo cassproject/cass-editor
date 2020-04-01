@@ -55,21 +55,33 @@
                             </tbody>
                         </div>
                     </div>
+                </div>
+                <footer class="modal-card-foot has-background-light">
                     <div
                         class="buttons"
                         v-if="!readOnly">
                         <button
-                            class="button is-light"
+                            class="button is-outlined is-dark"
                             @click="closeAddMemberModal">
-                            cancel
+                            <span class="icon">
+                                <i class="fa fa-times" />
+                            </span>
+                            <span>
+                                cancel
+                            </span>
                         </button>
                         <button
-                            class="button is-primary"
+                            class="button is-outlined is-primary"
                             @click="applyAddMembers">
-                            apply
+                            <span class="icon">
+                                <i class="fa fa-save" />
+                            </span>
+                            <span>
+                                apply
+                            </span>
                         </button>
                     </div>
-                </div>
+                </footer>
             </div>
         </div>
         <!-- ************************************** Content ************************************************ -->
@@ -108,7 +120,7 @@
             <h5>Managers</h5>
             <div class="buttons is-left">
                 <button
-                    class="button is-primary"
+                    class="button is-small is-outlined is-primary"
                     v-if="!readOnly"
                     @click="addManagers">
                     <span class="icon">
@@ -145,19 +157,23 @@
                             </td>
                             <td>
                                 <button
-                                    class="button is-small is-primary"
+                                    class="button is-outlined is-small is-primary"
                                     v-if="!readOnly && !areAnyIdentitiesThisPerson(mgr)"
                                     @click="moveManagerToUser(mgrIdx)">
                                     reassign as user
                                 </button>
                             </td>
                             <td>
-                                <button
-                                    class="button is-small is-primary"
-                                    v-if="!readOnly && !areAnyIdentitiesThisPerson(mgr)"
-                                    @click="removeManager(mgrIdx)">
-                                    remove
-                                </button>
+                                <div class="buttons is-centered">
+                                    <button
+                                        class="button is-outlined is-small is-danger"
+                                        v-if="!readOnly && !areAnyIdentitiesThisPerson(mgr)"
+                                        @click="removeManager(mgrIdx)">
+                                        <span class="icon">
+                                            <i class="fa fa-trash" />
+                                        </span>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -168,7 +184,7 @@
             <h5>Users</h5>
             <div class="buttons is-left">
                 <button
-                    class="button is-primary"
+                    class="button is-small is-outlined is-primary"
                     v-if="!readOnly"
                     @click="addUsers">
                     <span class="icon">
@@ -211,18 +227,22 @@
                             <td>
                                 <button
                                     v-if="!readOnly && !areAnyIdentitiesThisPerson(usr)"
-                                    class="button is-small is-primary"
+                                    class="button is-outlined is-small is-primary"
                                     @click="moveUserToManager(usrIdx)">
                                     reassign as manager
                                 </button>
                             </td>
                             <td>
-                                <button
-                                    v-if="!readOnly && !areAnyIdentitiesThisPerson(usr)"
-                                    class="button is-small is-primary"
-                                    @click="removeUser(usrIdx)">
-                                    remove
-                                </button>
+                                <div class="buttons is-centered">
+                                    <div
+                                        v-if="!readOnly && !areAnyIdentitiesThisPerson(usr)"
+                                        class="button is-outlined is-small is-danger"
+                                        @click="removeUser(usrIdx)">
+                                        <span class="icon">
+                                            <i class="fa fa-trash" />
+                                        </span>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -245,21 +265,34 @@
                 class="buttons is-right"
                 v-if="!readOnly">
                 <button
-                    class="button is-primary"
+                    class="button is-outlined is-primary"
                     @click="validateCurrentGroupAndEmitSave">
-                    save
+                    <span class="icon">
+                        <i class="fa fa-save" />
+                    </span>
+                    <span>
+                        save
+                    </span>
                 </button>
                 <button
-                    class="button is-primary"
+                    class="button is-outlined is-primary"
                     @click="$emit('cancel')">
-                    cancel
+                    <span class="icon">
+                        <i class="fa fa-times" />
+                    </span>
+                    <span>cancel</span>
                 </button>
             </div>
             <div v-else>
                 <button
-                    class="button is-primary"
+                    class="button is-outlined is-primary"
                     @click="$emit('back')">
-                    back
+                    <span class="icon">
+                        <i class="fa fa-arrow-left-alt" />
+                    </span>
+                    <span>
+                        back
+                    </span>
                 </button>
             </div>
         </div>
