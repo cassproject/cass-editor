@@ -4,200 +4,21 @@
         class="has-background-white">
         <!-- nav bar navigation -->
         <cass-modal />
-        <nav
-            :class="{'is-hidden': this.currentPathIsLogin}"
-            class="navbar is-black is-fixed-top"
-            role="navigation"
-            aria-label="main navigation">
-            <div class="navbar-brand">
-                <div class="navbar-item">
-                    <router-link to="/">
-                        <h2 class="has-text-white subtitle">
-                            Cass Editor
-                        </h2>
-                    </router-link>
-                </div>
-                <a
-                    role="button"
-                    class="navbar-burger burger"
-                    :class="{ 'is-active': navBarActive}"
-                    aria-label="menu"
-                    aria-expanded="false"
-                    data-target="mainDropDown"
-                    @click="navBarActive = !navBarActive">
-                    <span aria-hidden="true" />
-                    <span aria-hidden="true" />
-                    <span aria-hidden="true" />
-                </a>
-            </div>
-            <div class="navbar-menu">
-                <div class="navbar-start">
-                    <div class="navbar-item">
-                        <a
-                            class="has-text-light"
-                            @click="createNew">
-                            New
-                        </a>
-                    </div>
-                    <div class="navbar-item">
-                        <router-link
-                            class="has-text-light"
-                            :class="{'is-active': currentRoute === '/'}"
-                            to="/">
-                            Open
-                        </router-link>
-                    </div>
-                    <div class="navbar-item">
-                        <router-link
-                            class="has-text-light"
-                            :class="{'is-active': currentRoute === '/crosswalk'}"
-                            to="/crosswalk">
-                            Crosswalk
-                        </router-link>
-                    </div>
-                    <div class="navbar-item">
-                        <router-link
-                            class="has-text-light"
-                            :class="{'is-active': currentRoute === '/import'}"
-                            to="/import">
-                            Import
-                        </router-link>
-                    </div>
-                    <div class="navbar-item">
-                        <router-link
-                            class="has-text-light"
-                            :class="{'is-active': currentRoute === '/config'}"
-                            to="/config">
-                            Configure
-                        </router-link>
-                    </div>
-                    <div class="navbar-item">
-                        <router-link
-                            class="has-text-light"
-                            :class="{'is-active': currentRoute === '/userGroup'}"
-                            to="/userGroup">
-                            Users/Groups
-                        </router-link>
-                    </div>
-                    <!--<div class="navbar-item">
-                        <router-link
-                            class="has-text-light"
-                            to="/help">
-                            Help
-                        </router-link>
-                    </div>-->
-                </div>
-                <div class="navbar-end" />
-            </div>
-
-            <div
-                id="mainDropDown"
-                class="navbar-menu is-dark is-hoverable"
-                :class="{ 'is-active': navBarActive}">
-                <div class="navbar-end">
-                    <div
-                        class="navbar-item has-dropdown is-hidden-desktop"
-                        :class="{ 'is-active': navBarActive}">
-                        <div>
-                            <div class="navbar-item">
-                                <a @click="createNew">
-                                    New
-                                </a>
-                            </div>
-                            <div class="navbar-item">
-                                <router-link
-                                    to="/"
-                                    :class="{'is-active': currentRoute === '/'}">
-                                    Open
-                                </router-link>
-                            </div>
-                            <div class="navbar-item">
-                                <router-link
-                                    to="/import"
-                                    :class="{'is-active': currentRoute === '/import'}">
-                                    Import
-                                </router-link>
-                            </div>
-                            <div class="navbar-item">
-                                <router-link
-                                    to="/help"
-                                    :class="{'is-active': currentRoute === '/help'}">
-                                    Help
-                                </router-link>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- nav bar tablet and mobile drop down side navigation -->
-        </nav>
         <router-view
+            :showSidebar="showSidebar"
+            @sideBarEvent="onSidebarEvent"
+            name="topbar" />
+        <router-view
+            id="app-content"
+            :class="{ 'clear-side-bar': showSidebar}"
             :queryParams="queryParams" />
+        <router-view
+            :showSidebar="showSidebar"
+            @createNewFramework="onCreateNewFramework"
+            name="sidebar" />
     </div>
 </template>
-<style scoped lang="scss">
 
-.pagesFull {
-    margin-top:40px;
-}
-.pagesRightFull {
-    width: calc(100% - 360px) !important;
-    margin-left: 360px;
-    margin-top:50px;
-}
-
-</style>
-<style lang="scss">
-    @import './scss/variables.scss';
-
-html {
-    font-family: $family-primary;
-    max-width: 100vw !important;
-    margin: 0px;
-    height: 100%;
-    padding: 0px;
-    overflow: hidden;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-size: 16px;
-}
-body{
-    // Tom B.  Taking this out for now as it screws up the configuration editor and needing scrolling
-    //overflow-y: hidden;
-    height: 100%;
-    background: $light;
-    background-repeat: no-repeat;
-    background-size: cover;
-    min-height: 100vh;
-}
-#app {
-    height: 100%;
-}
-
-
-.menu {
-    overflow-y: scroll;
-    height: 100vh;
-    padding: 1rem;
-    width: 300px;
-}
-
-.navbar-menu {
-    // override active links
-    .is-active{
-        color: rgba($light, .8) !important;
-
-    }
-}
-
-#mainDropDown {
-    .is-active{
-        color: rgba($dark, .7) !important;
-    }
-}
-
-</style>
 <script>
 import common from '@/mixins/common.js';
 import cassModal from './components/CassModal.vue';
@@ -206,6 +27,7 @@ export default {
     name: "App",
     data: function() {
         return {
+            showSidebar: false,
             navBarActive: false,
             queryParams: null,
             repo: window.repo,
@@ -324,6 +146,12 @@ export default {
         }
     },
     methods: {
+        onSidebarEvent: function() {
+            this.showSidebar = !this.showSidebar;
+        },
+        onCreateNewFramework: function() {
+            this.createNew();
+        },
         cappend: function(event) {
             if (event.data.message === "selected") {
                 var selectedIds = [];
@@ -1250,3 +1078,70 @@ export default {
     }
 };
 </script>
+
+
+<style scoped lang="scss">
+ @import './scss/variables.scss';
+.pagesFull {
+    margin-top:40px;
+}
+.pagesRightFull {
+    width: calc(100% - 360px) !important;
+    margin-left: 360px;
+    margin-top:50px;
+}
+
+
+    html {
+        font-family: $family-primary;
+        max-width: 100vw !important;
+        margin: 0px;
+        height: 100%;
+        padding: 0px;
+        overflow: hidden;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        font-size: 16px;
+    }
+    body{
+        // Tom B.  Taking this out for now as it screws up the configuration editor and needing scrolling
+        //overflow-y: hidden;
+        height: 100%;
+        background: $light;
+        background-repeat: no-repeat;
+        background-size: cover;
+        min-height: 100vh;
+    }
+    #app {
+        height: 100%;
+    }
+    #app-content {
+
+    }
+    .clear-side-bar {
+        margin-left: 300px;
+    }
+
+
+    .menu {
+        overflow-y: scroll;
+        height: 100vh;
+        padding: 1rem;
+        width: 300px;
+    }
+
+    .navbar-menu {
+        // override active links
+        .is-active{
+            color: rgba($light, .8) !important;
+
+        }
+    }
+
+    #mainDropDown {
+        .is-active{
+            color: rgba($dark, .7) !important;
+        }
+    }
+
+</style>

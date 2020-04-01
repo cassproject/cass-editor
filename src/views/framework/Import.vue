@@ -1,15 +1,6 @@
 <template>
-    <div class="page-import container is-fluid is-marginless is-paddingless">
+    <div class="page-import container">
         <div class="columns is-multiline is-marginless is-gapless is-mobile">
-            <div class="column is-narrow is-hidden-mobile">
-                <!--- side bar -->
-                <side-bar
-                    type="import"
-                    :method="method"
-                    :queryParams="queryParams"
-                    @updateUrl="updateUrl" />
-                <!--- end side bar -->
-            </div>
             <!--- main body section -->
             <div class="column has-background-white is-scrollable">
                 <section class="page-import-body">
@@ -752,7 +743,6 @@
 import Hierarchy from '@/lode/components/lode/Hierarchy.vue';
 import common from '@/mixins/common.js';
 import dragAndDrop from './../../components/DragAndDrop.vue';
-import sideBar from './../../components/SideBar.vue';
 import exports from '@/mixins/exports.js';
 import competencyEdits from '@/mixins/competencyEdits.js';
 import t3Profile from '@/mixins/t3Profile.js';
@@ -765,7 +755,7 @@ export default {
         queryParams: Object
     },
     mixins: [common, exports, competencyEdits, t3Profile],
-    components: {Hierarchy, dragAndDrop, sideBar, Thing, ThingEditing},
+    components: {Hierarchy, dragAndDrop, Thing, ThingEditing},
     data: function() {
         return {
             editingNode: false,

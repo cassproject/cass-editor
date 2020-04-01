@@ -1,0 +1,56 @@
+<template>
+    <nav
+        :class="{'is-hidden': this.currentPathIsLogin}"
+        class="navbar is-black is-fixed-top"
+        role="navigation"
+        aria-label="main navigation">
+        <div class="navbar-brand">
+            <div
+                @click="$emit('sideBarEvent')"
+                v-if="!showSidebar"
+                class="navbar-item">
+                <div class="icon has-text-white">
+                    <i class="fa fa-bars" />
+                </div>
+            </div>
+            <div
+                v-else
+                @click="$emit('sideBarEvent')"
+                class="navbar-item">
+                <div class="icon has-text-white">
+                    <i class="fa fa-chevron-down has-text-white" />
+                </div>
+            </div>
+            <div class="navbar-item">
+                <router-link to="/">
+                    <h2 class="has-text-white subtitle">
+                        Cass Editor
+                    </h2>
+                </router-link>
+            </div>
+        </div>
+
+        <!-- nav bar tablet and mobile drop down side navigation -->
+    </nav>
+</template>
+
+<script>
+export default {
+    name: 'Topbar',
+    props: {
+        showSidebar: {
+            dafault: false,
+            type: Boolean
+        }
+    },
+    data: function() {
+        return {
+            return() {
+            }
+        };
+    }
+};
+</script>
+
+<style lang="scss">
+</style>

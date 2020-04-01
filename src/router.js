@@ -16,6 +16,8 @@ import FrameworkCrosswalk from './views/framework/Crosswalk';
 import NotFound from './views/NotFound.vue';
 import InternalError from './views/InternalError.vue';
 import Forbidden from './views/Forbidden.vue';
+import Sidebar from './components/Sidebar.vue';
+import Topbar from './components/Topbar.vue';
 
 Vue.use(Router);
 export default new Router({
@@ -25,7 +27,11 @@ export default new Router({
         {
             path: '/',
             name: 'frameworks',
-            component: Frameworks,
+            components: {
+                default: Frameworks,
+                sidebar: Sidebar,
+                topbar: Topbar
+            },
             alias: '/cass-editor/'
         },
         {
@@ -36,42 +42,74 @@ export default new Router({
         {
             path: '/config',
             name: 'configuration',
-            component: ConfigurationEditor
+            components: {
+                default: ConfigurationEditor,
+                sidebar: Sidebar,
+                topbar: Topbar
+            }
         },
         {
             path: '/userGroup',
             name: 'usergroup',
-            component: UserGroupEditor
+            components: {
+                default: UserGroupEditor,
+                sidebar: Sidebar,
+                topbar: Topbar
+            }
         },
         {
             path: '/crosswalk',
             name: 'crosswalk',
-            component: FrameworkCrosswalk
+            components: {
+                default: FrameworkCrosswalk,
+                sidebar: Sidebar,
+                topbar: Topbar
+            }
         },
         {
             path: '/about',
             name: 'about',
-            component: About
+            components: {
+                default: About,
+                sidebar: Sidebar,
+                topbar: Topbar
+            }
         },
         {
             path: '/framework',
             name: 'framework',
-            component: Framework
+            components: {
+                default: Framework,
+                sidebar: Sidebar,
+                topbar: Topbar
+            }
         },
         {
             path: '/import',
             name: 'import',
-            component: Import
+            components: {
+                default: Import,
+                sidebar: Sidebar,
+                topbar: Topbar
+            }
         },
         {
             path: '/organizations',
             name: 'organizations',
-            component: Organizations
+            components: {
+                default: Organizations,
+                sidebar: Sidebar,
+                topbar: Topbar
+            }
         },
         {
             path: '/organization',
             name: 'organization',
-            component: Organization
+            components: {
+                default: Organization,
+                sidebar: Sidebar,
+                topbar: Topbar
+            }
         },
         {
             path: '/test',
@@ -81,7 +119,11 @@ export default new Router({
         {
             path: '/conceptScheme',
             name: 'conceptScheme',
-            component: ConceptScheme
+            components: {
+                default: ConceptScheme,
+                sidebar: Sidebar,
+                topbar: Topbar
+            }
         },
         {
             path: '/403',
