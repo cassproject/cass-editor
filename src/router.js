@@ -16,7 +16,7 @@ import FrameworkCrosswalk from './views/framework/Crosswalk';
 import NotFound from './views/NotFound.vue';
 import InternalError from './views/InternalError.vue';
 import Forbidden from './views/Forbidden.vue';
-import Sidebar from './components/Sidebar.vue';
+import Sidebar from './components/SideBar.vue';
 import Topbar from './components/Topbar.vue';
 
 Vue.use(Router);
