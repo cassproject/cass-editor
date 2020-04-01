@@ -415,8 +415,74 @@ export default {
         },
         addRelationsToFramework: function(selectedCompetency, property, values) {
             if (values.length > 0) {
-                this.$parent.addAlignments(values, selectedCompetency, property);
+                selectedCompetency = EcRepository.getBlocking(selectedCompetency);
+                this.addAlignments(values, selectedCompetency, property);
             }
+        },
+        addAlignments: function(targets, thing, relationType, allowSave) {
+            if (this.queryParams.concepts === "true") {
+                return this.addConceptAlignments(targets, thing, relationType);
+            }
+            if (relationType === "ceasn:skillEmbodied" || relationType === "ceasn:abilityEmbodied" || relationType === "ceasn:knowledgeEmbodied" || relationType === "ceasn:taskEmbodied") {
+                // This property is attached to competency, not a relation attached to framework
+                return this.addRelationAsCompetencyField(targets, thing, relationType, allowSave);
+            }
+            for (var i = 0; i < targets.length; i++) {
+                var r = new EcAlignment();
+                if (this.queryParams.newObjectEndpoint != null) {
+                    r.generateShortId(this.newObjectEndpoint);
+                } else {
+                    r.generateId(this.repo.selectedServer);
+                }
+                r["schema:dateCreated"] = new Date().toISOString();
+                r.target = EcRemoteLinkedData.trimVersionFromUrl(targets[i]);
+                if (thing.id) {
+                    r.source = thing.shortId();
+                } else {
+                    r.source = EcRemoteLinkedData.trimVersionFromUrl(thing["@id"]);
+                }
+                if (r.target === r.source) {
+                    return;
+                }
+                r.relationType = relationType;
+                if (r.relationType === "broadens") {
+                    var dosedo = r.target;
+                    r.target = r.source;
+                    r.source = dosedo;
+                    r.relationType = "narrows";
+                }
+                if (EcIdentityManager.ids.length > 0) {
+                    r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                }
+                if (this.$store.state.editor.private === true) {
+                    r = EcEncryptedValue.toEncryptedValue(r);
+                }
+                this.repo.saveTo(r, function() {}, console.error);
+                var framework = this.$store.state.editor.framework;
+                if (thing.type === 'Concept') {
+                    if (framework.relation == null) {
+                        framework.relation = [];
+                    }
+                    let isNew = true;
+                    let idx = 0;
+                    while (isNew && idx < framework.relation.length) {
+                        if (EcRemoteLinkedData.trimVersionFromUrl(framework.relation[idx]).equals(r.id)) {
+                            isNew = false;
+                        }
+                        idx++;
+                    }
+                    if (isNew) {
+                        framework.relation.push(r.id);
+                    }
+                } else {
+                    framework.addRelation(r.id);
+                }
+            }
+            this.$store.commit('editor/framework', framework);
+            if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                framework = EcEncryptedValue.toEncryptedValue(framework);
+            }
+            this.repo.saveTo(framework, function() {}, console.error);
         },
         removeRelationFromFramework: function(source, property, target) {
             var me = this;

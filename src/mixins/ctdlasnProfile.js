@@ -514,7 +514,7 @@ export default {
                     "heading": "Scales"
                 },
                 "hasChild": {
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The referenced competency is lower in some arbitrary hierarchy than this competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Has Child"}],
@@ -524,7 +524,7 @@ export default {
                     "heading": "Connections"
                 },
                 "isChildOf": {
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The referenced competency is higher in some arbitrary hierarchy than this competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Child Of"}],
@@ -534,7 +534,7 @@ export default {
                     "heading": "Connections"
                 },
                 "narrows": {
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Covers all of the relevant concepts in the referenced competency as well as relevant concepts not found in the referenced competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Broad Alignment"}],
@@ -542,13 +542,12 @@ export default {
                     "iframeText": "Select competencies to align...",
                     "valuesIndexed": function() { return me.relations["narrows"]; },
                     "noTextEditing": "true",
-                    "add": "unsaved",
-                    "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "narrows", values); },
+                    "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "narrows", values); },
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "narrows", target); },
                     "heading": "Connections"
                 },
                 "broadens": {
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Covers all of the relevant concepts in this competency as well as relevant concepts not found in this competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Narrow Alignment"}],
@@ -556,13 +555,12 @@ export default {
                     "iframeText": "Select competencies to align...",
                     "valuesIndexed": function() { return me.relations["broadens"]; },
                     "noTextEditing": "true",
-                    "add": "unsaved",
-                    "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "broadens", values); },
+                    "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "broadens", values); },
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "broadens", target); },
                     "heading": "Connections"
                 },
                 "isEquivalentTo": {
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Relevant concepts in this competency and the referenced competency are coextensive."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Exact Alignment"}],
@@ -570,13 +568,12 @@ export default {
                     "iframeText": "Select competencies to align...",
                     "valuesIndexed": function() { return me.relations["isEquivalentTo"]; },
                     "noTextEditing": "true",
-                    "add": "unsaved",
-                    "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEquivalentTo", values); },
+                    "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEquivalentTo", values); },
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isEquivalentTo", target); },
                     "heading": "Connections"
                 },
                 "majorRelated": {
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Major overlap of relevant concepts between this competency and the referenced competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Major Alignment"}],
@@ -584,13 +581,12 @@ export default {
                     "iframeText": "Select competencies to align...",
                     "valuesIndexed": function() { return me.relations["majorRelated"]; },
                     "noTextEditing": "true",
-                    "add": "unsaved",
-                    "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "majorRelated", values); },
+                    "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "majorRelated", values); },
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "majorRelated", target); },
                     "heading": "Connections"
                 },
                 "minorRelated": {
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Minor overlap of relevant concepts between this competency and the referenced competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Minor Alignment"}],
@@ -598,13 +594,12 @@ export default {
                     "iframeText": "Select competencies to align...",
                     "valuesIndexed": function() { return me.relations["minorRelated"]; },
                     "noTextEditing": "true",
-                    "add": "unsaved",
-                    "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "minorRelated", values); },
+                    "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "minorRelated", values); },
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "minorRelated", target); },
                     "heading": "Connections"
                 },
                 "requires": {
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "This competency is a prerequisite to the referenced competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Prerequisite Alignment"}],
@@ -612,8 +607,7 @@ export default {
                     "iframeText": "Select competencies to align...",
                     "valuesIndexed": function() { return me.relations["requires"]; },
                     "noTextEditing": "true",
-                    "add": "unsaved",
-                    "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "requires", values); },
+                    "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "requires", values); },
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "requires", target); },
                     "heading": "Connections"
                 },
