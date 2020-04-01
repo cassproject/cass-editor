@@ -1,6 +1,21 @@
 @import './variables.scss';
 
 .page-framework{
+    .list-complete-item {
+        transition: transform 1s;
+        display: block;
+      }
+      .list-complete-enter, .list-complete-leave-to
+      /* .list-complete-leave-active below version 2.1.8 */ {
+        opacity: 0;
+        transform: translateY(0);
+      }
+      .list-complete-leave-active {
+        position: absolute;
+      }
+      .list-complete-move {
+        transition: transform 1s;
+      }
     .info-bar {
         margin: 1rem .5rem;
     }
@@ -19,7 +34,6 @@
         }
     }
     .thing {
-        padding-right: 1rem;
         .e-Thing.e-Competency,
         .e-Thing.e-Framework {
             .Thing__heading {
@@ -119,7 +133,6 @@
                 
                 .thing, .thing-editing {
                     margin-left: 1rem;
-                    padding-right: 1rem;
                     margin-bottom: .5rem;
                     .thing  {
                         margin-left: 0;
@@ -211,24 +224,17 @@
     }
     // top level items outside of Hierarchy
     .thing {
-        .e-Thing.e-Competency.showHoverItems,
-        .e-Thing.e-Framework.showHoverItems  {
-            background-color: $cass-lightest;
-            .edit-button {
-                visibility: visible;
-            }
+        .edit-button {
+            position: absolute;
+            color: $dark;
+            right: 0;
+            visibility: hidden;
         }
-        
         .e-Thing.e-Competency,
         .e-Thing.e-Framework {
             transform: translateX(0);
             width: 100%;
-            .edit-button {
-                position: absolute;
-                color: dark;
-                right: 0;
-                visibility: hidden;
-            }
+           
             a {
                 display:none;
             }
@@ -268,6 +274,12 @@
                     }
                 }
             }
+        }
+    }
+    .thing:hover {
+        background-color: $light;
+        .edit-button {
+            visibility: visible !important;
         }
     }
     // list of competencies 

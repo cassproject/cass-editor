@@ -1,71 +1,85 @@
 @import './variables.scss';
 
+.list-complete-item {
+    transition: all 1s;
+    display: block;
+  }
+  .list-complete-enter, .list-complete-leave-to
+  /* .list-complete-leave-active below version 2.1.8 */ {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  .list-complete-leave-active {
+    position: absolute;
+  }
+  .list-complete-move {
+    transition: transform 1s;
+  }
 textarea {
     resize: vertical !important;
 }
     // room for improvement, iterate over loop for max depth tabbing
     // possibly set tab value based on value in scss varaibles sheet
-    .e-Property {
-        padding: .5rem 0rem;
-    }.e-Hierarchy {
-        .e-Hierarchy-ul {
-            max-width: 880px;
-            li.e-HierarchyNode {
-                
-                .thing, .thing-editing {
-                    margin-left: 0rem;
-                    .thing  {
-                        margin-left: 0;
+.e-Property {
+    padding: .5rem 0rem;
+}.e-Hierarchy {
+    .e-Hierarchy-ul {
+        max-width: 880px;
+        li.e-HierarchyNode {
+            
+            .thing, .thing-editing {
+                margin-left: 0rem;
+                .thing  {
+                    margin-left: 0;
+                }
+            }
+            .e-HierarchyNode-ul {
+                .e-HierarchyNode {
+                    .thing, .thing-editing {
+                        margin-left: 1rem;
+                        .thing {
+                            margin-left: 0;
+                        }
                     }
                 }
                 .e-HierarchyNode-ul {
                     .e-HierarchyNode {
                         .thing, .thing-editing {
-                            margin-left: 1rem;
+                            margin-left: 2rem;
                             .thing {
                                 margin-left: 0;
                             }
                         }
-                    }
-                    .e-HierarchyNode-ul {
-                        .e-HierarchyNode {
-                            .thing, .thing-editing {
-                                margin-left: 2rem;
-                                .thing {
-                                    margin-left: 0;
-                                }
-                            }
-                            .e-HierarchyNode-ul {
-                                .e-HierarchyNode {
-                                    .thing, .thing-editing {
-                                        margin-left: 3rem;
-                                        .thing {
-                                            margin-left: 0;
-                                        }
+                        .e-HierarchyNode-ul {
+                            .e-HierarchyNode {
+                                .thing, .thing-editing {
+                                    margin-left: 3rem;
+                                    .thing {
+                                        margin-left: 0;
                                     }
-                                    .e-HierarchyNode-ul {
-                                        .e-HierarchyNode {
-                                            .thing, .thing-editing {
-                                                margin-left: 4rem;
-                                                .thing {
-                                                    margin-left: 0;
-                                                }
+                                }
+                                .e-HierarchyNode-ul {
+                                    .e-HierarchyNode {
+                                        .thing, .thing-editing {
+                                            margin-left: 4rem;
+                                            .thing {
+                                                margin-left: 0;
                                             }
-                                            .e-HierarchyNode-ul {
-                                                .e-HierarchyNode {
-                                                    .thing, .thing-editing {
-                                                        margin-left: 5rem;
-                                                    }
-                                                    .e-HierarchyNode-ul {
-                                                        .e-HierarchyNode {
-                                                            .thing, .thing-editing {
-                                                                margin-left: 6rem;
-                                                            }
-                                                            .e-HierarchyNode-ul {
-                                                                .e-HierarchyNode {
-                                                                    .thing, .thing-editing {
-                                                                        margin-left: 8rem;
-                                                                    }
+                                        }
+                                        .e-HierarchyNode-ul {
+                                            .e-HierarchyNode {
+                                                .thing, .thing-editing {
+                                                    margin-left: 5rem;
+                                                }
+                                                .e-HierarchyNode-ul {
+                                                    .e-HierarchyNode {
+                                                        .thing, .thing-editing {
+                                                            margin-left: 6rem;
+                                                        }
+                                                        .e-HierarchyNode-ul {
+                                                            .e-HierarchyNode {
+                                                                .thing, .thing-editing {
+                                                                    margin-left: 8rem;
                                                                 }
                                                             }
                                                         }
@@ -82,6 +96,7 @@ textarea {
             }
         }
     }
+}
     .thing {
         .e-Thing.e-Competency,
         .e-Thing.e-Framework {
@@ -92,7 +107,6 @@ textarea {
         }
         .e-Thing.e-Competency.showHoverItems,
         .e-Thing.e-Framework.showHoverItems  {
-            background-color: $cass-lightest;
             .edit-button {
                 visibility: visible;
             }

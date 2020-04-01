@@ -1,6 +1,6 @@
 @import './variables.scss';
 
-.page-framework-list {
+.framework-list-page {
     label{
         display:none;
     }
@@ -17,6 +17,8 @@
         }
         .list-ul {
              li.list-ul__item {
+                    padding: .5rem;
+                    background-color: white;
                     width: 100%;
                     display: flex;
                     align-items: center;
@@ -28,6 +30,9 @@
                         display: none;
                         flex-direction: column;
                     }
+            }
+            li.list-ul__item:hover {
+                background-color: $light;
             }
             .list-ul__item{
                 border-radius: $border-radius;
@@ -73,7 +78,7 @@
             }
         }
     }
-     .e-Framework, .page-framework-list .e-ConceptScheme {
+     .e-Framework, .framework-list-page .e-ConceptScheme {
         a {
             display:none;
         }

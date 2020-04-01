@@ -1839,19 +1839,4 @@ export default {
 <style lang="scss">
     @import './../../scss/import.scss';
 
-.list-complete-item {
-  transition: all 1s;
-  display: block;
-}
-.list-complete-enter, .list-complete-leave-to
-/* .list-complete-leave-active below version 2.1.8 */ {
-  opacity: 0;
-  transform: translateY(0);
-}
-.list-complete-leave-active {
-  position: absolute;
-}
-.list-complete-move {
-  transition: transform 1s;
-}
 </style>

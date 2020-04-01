@@ -1,5 +1,5 @@
 <template>
-    <div class="page-framework-list">
+    <div class="framework-list-page">
         <div class="container">
             <div class="section">
                 <!-- sort options -->
@@ -36,7 +36,7 @@
                 </div>
                 <!-- show my frameworks radio -->
                 <div class="control">
-                    <div v-if="queryParams.show!=='mine'&&queryParams.conceptShow!=='mine'&&numIdentities">
+                    <div v-if="queryParams.show !== 'mine' && queryParams.conceptShow !== 'mine' && numIdentities">
                         <label
                             class="checkbox"
                             for="showMine">
