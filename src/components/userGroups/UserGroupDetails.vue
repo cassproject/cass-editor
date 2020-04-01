@@ -6,8 +6,8 @@
             :class="[{'is-active': showAddMemberModal}]">
             <div class="modal-background" />
             <div class="modal-card">
-                <header class="modal-card-head">
-                    <p class="subtitle is-size-3 modal-card-title">
+                <header class="modal-card-head has-background-primary">
+                    <p class="subtitle is-size-3 modal-card-title has-text-white">
                         {{ addMemberModalTitle }}
                         <button
                             class="delete is-pulled-right"
@@ -16,183 +16,285 @@
                     </p>
                 </header>
                 <div class="modal-card-body has-text-dark">
-                    <div>
-                        <div class="columns">
-                            <div class="column is-3 listHdr">
-                                <label>Available Members:</label>
-                            </div>
-                            <div class="column is-9 listHdr">
-                                <input
-                                    type="text"
-                                    v-model="selectedPersonsFilter"
-                                    placeholder="person filter">
-                            </div>
-                        </div>
-                        <div class="columns">
-                            <div class="column is-1 listHdr" />
-                            <div class="column is-4 listHdr">
-                                name
-                            </div>
-                            <div class="column is-4 listHdr">
-                                email
-                            </div>
-                        </div>
+                    <div class="field">
+                        <label class="label">Available Members:</label>
                     </div>
-                    <div class="selectBox">
-                        <div
-                            class="columns is-multiline"
-                            v-for="prs in filteredPersons">
-                            <div class="column is-1">
-                                <input
-                                    :id="prs.shortId()"
-                                    :value="prs.shortId()"
-                                    name="prs.shortId()"
-                                    type="checkbox"
-                                    v-model="selectedPersons">
-                            </div>
-                            <div class="column is-4">
-                                {{ prs.getName() }}
-                            </div>
-                            <div class="column is-4">
-                                {{ prs.email }}
-                            </div>
-                        </div>
+                    <div class="field">
+                        <input
+                            type="text"
+                            class="input"
+                            v-model="selectedPersonsFilter"
+                            placeholder="person filter">
                     </div>
-                    <br>
-                    <div v-if="!readOnly">
-                        <button @click="applyAddMembers">
-                            apply
-                        </button>
-                        <button @click="closeAddMemberModal">
-                            cancel
-                        </button>
+                    <div class="table-container">
+                        <div class="table">
+                            <thead>
+                                <tr>
+                                    <th />
+                                    <th>name</th>
+                                    <th>email</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    v-for="(prs, index) in filteredPersons"
+                                    :key="index">
+                                    <th>
+                                        <div class="checkbox">
+                                            <input
+                                                :id="prs.shortId()"
+                                                :value="prs.shortId()"
+                                                name="prs.shortId()"
+                                                type="checkbox"
+                                                v-model="selectedPersons">
+                                        </div>
+                                    </th>
+                                    <td>{{ prs.getName() }}</td>
+                                    <td>  {{ prs.email }}</td>
+                                </tr>
+                            </tbody>
+                        </div>
                     </div>
                 </div>
+                <footer class="modal-card-foot has-background-light">
+                    <div
+                        class="buttons"
+                        v-if="!readOnly">
+                        <button
+                            class="button is-outlined is-dark"
+                            @click="closeAddMemberModal">
+                            <span class="icon">
+                                <i class="fa fa-times" />
+                            </span>
+                            <span>
+                                cancel
+                            </span>
+                        </button>
+                        <button
+                            class="button is-outlined is-primary"
+                            @click="applyAddMembers">
+                            <span class="icon">
+                                <i class="fa fa-save" />
+                            </span>
+                            <span>
+                                apply
+                            </span>
+                        </button>
+                    </div>
+                </footer>
             </div>
         </div>
         <!-- ************************************** Content ************************************************ -->
-        <label>Name: </label>
-        <div v-if="readOnly">
-            {{ group.name }}
-        </div>
-        <div v-if="!readOnly">
-            <input
-                type="text"
-                v-model="group.name">
-        </div>
-        <br>
-        <label>Description: </label>
-        <div v-if="readOnly">
-            {{ group.description }}
-        </div>
-        <div v-if="!readOnly">
-            <input
-                type="text"
-                v-model="group.description">
-        </div>
-        <br>
-        <h5>Managers</h5>
-        <button
-            v-if="!readOnly"
-            @click="addManagers">
-            add managers
-        </button>
-        <div class="columns">
-            <div class="column is-3 listHdr">
-                name
+        <div class="section">
+            <div class="field">
+                <label class="label">Name: </label>
+                <div v-if="readOnly">
+                    {{ group.name }}
+                </div>
+                <div
+                    div
+                    class="control"
+                    v-if="!readOnly">
+                    <input
+                        class="input"
+                        type="text"
+                        v-model="group.name">
+                </div>
             </div>
-            <div class="column is-3 listHdr">
-                email
-            </div>
-            <div class="column is-2 listHdr" />
-        </div>
-        <div
-            class="columns is-multiline"
-            v-for="(mgr, mgrIdx) in localGroupManagers">
-            <div class="column is-3">
-                {{ mgr.getName() }}
-            </div>
-            <div class="column is-3">
-                {{ mgr.email }}
-            </div>
-            <div class="column is-2">
-                <div v-if="!readOnly && !areAnyIdentitiesThisPerson(mgr)">
-                    <button @click="moveManagerToUser(mgrIdx)">
-                        reassign as user
-                    </button>
-                    <button @click="removeManager(mgrIdx)">
-                        remove
-                    </button>
+            <div class="field">
+                <label class="label">Description: </label>
+                <div v-if="readOnly">
+                    {{ group.description }}
+                </div>
+                <div
+                    class="control"
+                    v-if="!readOnly">
+                    <input
+                        class="input"
+                        type="text"
+                        v-model="group.description">
                 </div>
             </div>
         </div>
-        <br>
-        <br>
-        <h5>Users</h5>
-        <button
-            v-if="!readOnly"
-            @click="addUsers">
-            add users
-        </button>
-        <div v-if="groupUsers.length === 0">
-            <p>No users assigned to this group</p>
+        <div class="section">
+            <h5>Managers</h5>
+            <div class="buttons is-left">
+                <button
+                    class="button is-small is-outlined is-primary"
+                    v-if="!readOnly"
+                    @click="addManagers">
+                    <span class="icon">
+                        <i class="fa fa-user-plus" />
+                    </span>
+                    <span>
+                        add managers
+                    </span>
+                </button>
+            </div>
+            <div class="table-container">
+                <div class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                name
+                            </th>
+                            <th>
+                                email
+                            </th>
+                            <th> reassign</th>
+                            <th>remove</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="(mgr, mgrIdx) in localGroupManagers"
+                            :key="mgrIdx">
+                            <th>
+                                {{ mgr.getName() }}
+                            </th>
+                            <td>
+                                {{ mgr.email }}
+                            </td>
+                            <td>
+                                <button
+                                    class="button is-outlined is-small is-primary"
+                                    v-if="!readOnly && !areAnyIdentitiesThisPerson(mgr)"
+                                    @click="moveManagerToUser(mgrIdx)">
+                                    reassign as user
+                                </button>
+                            </td>
+                            <td>
+                                <div class="buttons is-centered">
+                                    <button
+                                        class="button is-outlined is-small is-danger"
+                                        v-if="!readOnly && !areAnyIdentitiesThisPerson(mgr)"
+                                        @click="removeManager(mgrIdx)">
+                                        <span class="icon">
+                                            <i class="fa fa-trash" />
+                                        </span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </div>
+            </div>
         </div>
-        <div v-if="groupUsers.length > 0">
-            <div class="columns">
-                <div class="column is-3 listHdr">
-                    name
-                </div>
-                <div class="column is-3 listHdr">
-                    email
-                </div>
-                <div class="column is-2 listHdr" />
+        <div class="section">
+            <h5>Users</h5>
+            <div class="buttons is-left">
+                <button
+                    class="button is-small is-outlined is-primary"
+                    v-if="!readOnly"
+                    @click="addUsers">
+                    <span class="icon">
+                        <i class="fa fa-user-plus" />
+                    </span>
+                    <span>
+                        add users
+                    </span>
+                </button>
+            </div>
+            <div v-if="groupUsers.length === 0">
+                <p>No users assigned to this group</p>
             </div>
             <div
-                class="columns is-multiline"
-                v-for="(usr, usrIdx) in localGroupUsers">
-                <div class="column is-3">
-                    {{ usr.getName() }}
-                </div>
-                <div class="column is-3">
-                    {{ usr.email }}
-                </div>
-                <div class="column is-2">
-                    <div v-if="!readOnly && !areAnyIdentitiesThisPerson(usr)">
-                        <button @click="moveUserToManager(usrIdx)">
-                            reassign as manager
-                        </button>
-                        <button @click="removeUser(usrIdx)">
-                            remove
-                        </button>
-                    </div>
+                class="table-container"
+                v-if="groupUsers.length > 0">
+                <div class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                name
+                            </th>
+                            <th>
+                                email
+                            </th>
+                            <th>reassign</th>
+                            <th>remove</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="(usr, usrIdx) in localGroupUsers"
+                            :key="usrIdx">
+                            <th>
+                                {{ usr.getName() }}
+                            </th>
+                            <td>
+                                {{ usr.email }}
+                            </td>
+                            <td>
+                                <button
+                                    v-if="!readOnly && !areAnyIdentitiesThisPerson(usr)"
+                                    class="button is-outlined is-small is-primary"
+                                    @click="moveUserToManager(usrIdx)">
+                                    reassign as manager
+                                </button>
+                            </td>
+                            <td>
+                                <div class="buttons is-centered">
+                                    <div
+                                        v-if="!readOnly && !areAnyIdentitiesThisPerson(usr)"
+                                        class="button is-outlined is-small is-danger"
+                                        @click="removeUser(usrIdx)">
+                                        <span class="icon">
+                                            <i class="fa fa-trash" />
+                                        </span>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
                 </div>
             </div>
-        </div>
-        <br>
-        <br>
-        <!-- ************************************** Validation ************************************************ -->
-        <div v-if="groupInvalid">
-            <p>User Group is invalid:</p>
-            <p v-if="groupNameInvalid">
-                *User group name is required
-            </p>
-            <p v-if="groupDescriptionInvalid">
-                *User group description is required
-            </p>
+            <!-- ************************************** Validation ************************************************ -->
+            <div v-if="groupInvalid">
+                <p>User Group is invalid:</p>
+                <p v-if="groupNameInvalid">
+                    *User group name is required
+                </p>
+                <p v-if="groupDescriptionInvalid">
+                    *User group description is required
+                </p>
+            </div>
         </div>
         <!-- ************************************** Actions ************************************************ -->
-        <div v-if="!readOnly">
-            <button @click="validateCurrentGroupAndEmitSave">
-                save
-            </button>
-            <button @click="$emit('cancel')">
-                cancel
-            </button>
-        </div>
-        <div v-if="readOnly">
-            <button @click="$emit('back')">
-                back
-            </button>
+        <div class="section">
+            <div
+                class="buttons is-right"
+                v-if="!readOnly">
+                <button
+                    class="button is-outlined is-primary"
+                    @click="validateCurrentGroupAndEmitSave">
+                    <span class="icon">
+                        <i class="fa fa-save" />
+                    </span>
+                    <span>
+                        save
+                    </span>
+                </button>
+                <button
+                    class="button is-outlined is-primary"
+                    @click="$emit('cancel')">
+                    <span class="icon">
+                        <i class="fa fa-times" />
+                    </span>
+                    <span>cancel</span>
+                </button>
+            </div>
+            <div v-else>
+                <button
+                    class="button is-outlined is-primary"
+                    @click="$emit('back')">
+                    <span class="icon">
+                        <i class="fa fa-arrow-left-alt" />
+                    </span>
+                    <span>
+                        back
+                    </span>
+                </button>
+            </div>
         </div>
     </div>
 </template>

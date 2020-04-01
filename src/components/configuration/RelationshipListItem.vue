@@ -1,39 +1,44 @@
+<!--
+    Fills a row in ConfigurationDetails.vue
+    RelationshipListItem component
+-->
 <template>
-    <div>
-        <div class="columns">
-            <div class="column is-2">
-                {{ relationship }}
+    <tr>
+        <th>
+            {{ relationship }}
+        </th>
+        <td>
+            <div v-if="readOnly">
+                {{ localLabel }}
             </div>
-            <div class="column is-2">
-                <div v-if="readOnly">
-                    {{ localLabel }}
-                </div>
-                <div v-if="!readOnly">
-                    <input
-                        type="text"
-                        v-model="localLabel"
-                        @change="changeLabel">
-                </div>
+            <div v-if="!readOnly">
+                <input
+                    type="text"
+                    class="input is-small"
+                    v-model="localLabel"
+                    @change="changeLabel">
             </div>
-            <div class="column is-2">
-                <div v-if="readOnly">
-                    {{ localEnabled }}
-                </div>
-                <div v-if="!readOnly">
-                    <select
-                        v-model="localEnabled"
-                        @change="changeEnabled">
-                        <option :value="true">
-                            true
-                        </option>
-                        <option :value="false">
-                            false
-                        </option>
-                    </select>
-                </div>
+        </td>
+        <td>
+            <div v-if="readOnly">
+                {{ localEnabled }}
             </div>
-        </div>
-    </div>
+            <div
+                class="select is-small"
+                v-if="!readOnly">
+                <select
+                    v-model="localEnabled"
+                    @change="changeEnabled">
+                    <option :value="true">
+                        true
+                    </option>
+                    <option :value="false">
+                        false
+                    </option>
+                </select>
+            </div>
+        </td>
+    </tr>
 </template>
 
 <script>

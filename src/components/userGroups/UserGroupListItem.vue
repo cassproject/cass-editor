@@ -1,23 +1,31 @@
 <template>
-    <div>
-        <div class="columns">
-            <div class="column is-3">
-                <b>{{ name }}</b>
+    <tr id="user-group-item">
+        <th>
+            <b>{{ name }}</b>
+        </th>
+        <td>
+            {{ description }}
+        </td>
+        <td>
+            {{ numMembers }}
+        </td>
+        <td>
+            <div
+                class="button is-outlined is-small is-primary"
+                @click="$emit('showDetails', id)">
+                <span class="icon">
+                    <i
+                        v-if="isOwned"
+                        class="fa fa-cog" />
+                    <i
+                        v-else
+                        class="fa fa-eye" />
+                </span>
+                <span v-if="isOwned">manage</span>
+                <span v-if="!isOwned">view</span>
             </div>
-            <div class="column is-5">
-                {{ description }}
-            </div>
-            <div class="column is-2">
-                {{ numMembers }}
-            </div>
-            <div class="column is-2">
-                <button @click="$emit('showDetails', id)">
-                    <span v-if="isOwned">manage</span>
-                    <span v-if="!isOwned">view</span>
-                </button>
-            </div>
-        </div>
-    </div>
+        </td>
+    </tr>
 </template>
 
 <script>
