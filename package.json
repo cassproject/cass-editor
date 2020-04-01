@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "bulma": "^0.7.5",
+        "bulma-checkradio": "^1.1.1",
         "cassproject": "^2.11.6",
         "core-js": "^2.6.5",
         "file-saver": "^2.0.2",
