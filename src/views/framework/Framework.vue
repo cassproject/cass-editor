@@ -2,8 +2,7 @@
     <div class="page-framework">
         <!-- competency search -->
         <CompetencySearch
-            @closeCompetencySearchModal="onCloseCompetencySearchModal()"
-            :isActive="showCompetencySearchModal" />
+            :isActive="$store.state.lode.competencySearchModalOpen" />
         <!--
             share modal manages users who have access to
             the framework
@@ -90,7 +89,6 @@
                     </span>
                 </div>
                 <Hierarchy
-                    @showCompetencySearchModalEvent="onShowCompetencySearchModal"
                     :container="framework"
                     containerType="Framework"
                     containerTypeGet="EcFramework"
@@ -145,7 +143,6 @@ export default {
     data: function() {
         return {
             showClipboardSuccessModal: false,
-            showCompetencySearchModal: false,
             showComments: false,
             showShareModal: false,
             repo: window.repo,
@@ -604,12 +601,6 @@ export default {
     methods: {
         onEditNode: function() {
             this.editingFramework = true;
-        },
-        onShowCompetencySearchModal: function() {
-            this.showCompetencySearchModal = true;
-        },
-        onCloseCompetencySearchModal: function() {
-            this.showCompetencySearchModal = false;
         },
         onOpenComments: function() {
             this.showComments = true;
