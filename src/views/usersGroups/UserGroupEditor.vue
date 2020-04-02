@@ -12,45 +12,69 @@
             </div>
         </div>
         <!-- user group editor content-->
-        <div v-if="!userGroupBusy">
-            <h3>User Groups</h3>
-            <div v-if="userGroupViewMode.equals('list')">
+        <div
+            class="container"
+            v-if="!userGroupBusy">
+            <div class="section">
+                <h3>User Groups</h3>
+            </div>
+            <div
+                class="section"
+                v-if="userGroupViewMode.equals('list')">
                 <h4>Groups</h4>
                 <div v-if="userGroupList.length === 0">
                     <p>No user groups are available.</p>
                 </div>
-                <div v-if="userGroupList.length > 0">
-                    <div class="columns">
-                        <div class="column is-3 listHdr">
-                            name
-                        </div>
-                        <div class="column is-5 listHdr">
-                            description
-                        </div>
-                        <div class="column is-2 listHdr">
-                            number of members
-                        </div>
-                        <div class="column is-2 listHdr" />
+                <div class="buttons is-left">
+                    <div
+                        class="button is-small is-outlined is-primary"
+                        @click="createNewUserGroup"
+                        :disabled="!amLoggedIn"
+                        :title="getCreateUserGroupButtonTitle">
+                        <span class="icon">
+                            <i class="fa fa-plus" />
+                        </span>
+                        <span>
+                            create new group
+                        </span>
                     </div>
-                    <user-group-list-item
-                        v-for="grp in userGroupList"
-                        :id="grp.shortId()"
-                        :name="grp.getName()"
-                        :description="grp.getDescription()"
-                        :numMembers="getUserGroupNumMembers(grp)"
-                        :isOwned="doesAnyIdentityOwnObject(grp)"
-                        @showDetails="showUserGroupDetails" />
                 </div>
-                <br>
-                <button
-                    @click="createNewUserGroup"
-                    :disabled="!amLoggedIn"
-                    :title="getCreateUserGroupButtonTitle">
-                    create new group
-                </button>
+                <div
+                    class="table-container"
+                    v-if="userGroupList.length > 0">
+                    <div class="table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    name
+                                </th>
+                                <th>
+                                    description
+                                </th>
+                                <th>
+                                    number of members
+                                </th>
+                                <th />
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <user-group-list-item
+                                v-for="(grp, index) in userGroupList"
+                                :id="grp.shortId()"
+                                :key="index"
+                                :name="grp.getName()"
+                                :description="grp.getDescription()"
+                                :numMembers="getUserGroupNumMembers(grp)"
+                                :isOwned="doesAnyIdentityOwnObject(grp)"
+                                @showDetails="showUserGroupDetails" />
+                        </tbody>
+                    </div>
+                </div>
             </div>
             <div v-if="userGroupViewMode.equals('detail')">
-                <h4>User Group Details</h4>
+                <div class="section">
+                    <h4>User Group Details</h4>
+                </div>
                 <user-group-details
                     :group="currentUserGroup"
                     :personList="personList"

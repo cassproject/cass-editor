@@ -1,28 +1,47 @@
 <template>
-    <div>
-        <div class="columns">
-            <div class="column is-3">
-                <b>{{ name }}</b>
+    <tr>
+        <th>
+            <b>{{ name }}</b>
+        </th>
+        <td>
+            {{ description }}
+        </td>
+        <td>
+            {{ isDefault }}
+        </td>
+        <td>
+            <div
+                class="button is-outlined is-small"
+                :disabled="defaultBrowserConfigId && defaultBrowserConfigId.equals(id)"
+                @click="$emit('setBrowserDefault', id)">
+                set as browser default
             </div>
-            <div class="column is-5">
-                {{ description }}
+        </td>
+        <td>
+            <div
+                v-if="isOwned"
+                class="button is-outlined is-small is-primary"
+                @click="$emit('showDetails', id)">
+                <span class="icon">
+                    <i class="fas fa-cog" />
+                </span>
+                <span>
+                    manage
+                </span>
             </div>
-            <div class="column is-2">
-                {{ isDefault }}
+            <div
+                v-else-if="!isOwned"
+                class="button is-outlined is-small is-primary"
+                @click="$emit('showDetails', id)">
+                <span class="icon">
+                    <i class="fas fa-eye" />
+                </span>
+                <span>
+                    view
+                </span>
             </div>
-            <div class="column is-2">
-                <button
-                    :disabled="defaultBrowserConfigId && defaultBrowserConfigId.equals(id)"
-                    @click="$emit('setBrowserDefault', id)">
-                    set as browser default
-                </button>
-                <button @click="$emit('showDetails', id)">
-                    <span v-if="isOwned">manage</span>
-                    <span v-if="!isOwned">view</span>
-                </button>
-            </div>
-        </div>
-    </div>
+        </td>
+    </tr>
 </template>
 
 <script>

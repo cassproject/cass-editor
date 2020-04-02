@@ -1,85 +1,113 @@
 <template>
-    <div>
-        <div class="columns">
-            <div class="column is-2">
-                {{ property }}
+    <tr>
+        <th>
+            {{ property }}
+        </th>
+        <td>
+            <div v-if="readOnly">
+                {{ localLabel }}
             </div>
-            <div class="column is-2">
-                <div v-if="readOnly">
-                    {{ localLabel }}
-                </div>
-                <div v-if="!readOnly">
+            <div
+                class="field"
+                v-if="!readOnly">
+                <div class="control">
                     <input
+                        class="input is-small"
                         type="text"
                         v-model="localLabel"
                         @change="changeLabel">
                 </div>
             </div>
-            <div class="column is-4">
-                <div v-if="readOnly">
-                    {{ localDescription }}
-                </div>
-                <div v-if="!readOnly">
+        </td>
+        <td>
+            <div v-if="readOnly">
+                {{ localDescription }}
+            </div>
+            <div
+                class="field"
+                v-if="!readOnly">
+                <div class="control">
                     <input
                         type="text"
+                        class="input is-small"
                         v-model="localDescription"
                         @change="changeDescription">
                 </div>
             </div>
-            <div class="column is-1">
-                <div v-if="readOnly || enforceRequired">
-                    {{ localRequired }}
-                </div>
-                <div v-if="!readOnly && !enforceRequired">
-                    <select
-                        v-model="localRequired"
-                        @change="changeRequired">
-                        <option :value="true">
-                            true
-                        </option>
-                        <option :value="false">
-                            false
-                        </option>
-                    </select>
+        </td>
+        <td class="is-narrow">
+            <div v-if="readOnly || enforceRequired">
+                {{ localRequired }}
+            </div>
+            <div
+                class="select is-small"
+                v-if="!readOnly && !enforceRequired">
+                <select
+                    v-model="localRequired"
+                    @change="changeRequired">
+                    <option :value="true">
+                        true
+                    </option>
+                    <option :value="false">
+                        false
+                    </option>
+                </select>
+            </div>
+        </td>
+        <td>
+            <div v-if="readOnly || enforcePrimary">
+                {{ localPriority }}
+            </div>
+            <div
+                class="select is-small"
+                v-if="!readOnly && !enforcePrimary">
+                <select
+                    v-model="localPriority"
+                    @change="changePriority">
+                    <option value="primary">
+                        primary
+                    </option>
+                    <option value="secondary">
+                        secondary
+                    </option>
+                    <option value="tertiary">
+                        tertiary
+                    </option>
+                </select>
+            </div>
+        </td>
+        <td>
+            <div v-if="custom && readOnly">
+                <div
+                    class="button"
+                    @click="$emit('manage', propertyParent, propertyIndex)">
+                    <div class="icon">
+                        <i class="fa fa-cog" />
+                    </div>
                 </div>
             </div>
-            <div class="column is-2">
-                <div v-if="readOnly || enforcePrimary">
-                    {{ localPriority }}
-                </div>
-                <div v-if="!readOnly && !enforcePrimary">
-                    <select
-                        v-model="localPriority"
-                        @change="changePriority">
-                        <option value="primary">
-                            primary
-                        </option>
-                        <option value="secondary">
-                            secondary
-                        </option>
-                        <option value="tertiary">
-                            tertiary
-                        </option>
-                    </select>
+            <div v-if="custom && !readOnly">
+                <div
+                    class="button is-small is-primary"
+                    @click="$emit('manage', propertyParent, propertyIndex)">
+                    <span class="icon">
+                        <i class="fa fa-cog" />
+                    </span>
                 </div>
             </div>
-            <div class="column is-1">
-                <div v-if="custom && readOnly">
-                    <button @click="$emit('manage', propertyParent, propertyIndex)">
-                        view
-                    </button>
-                </div>
-                <div v-if="custom && !readOnly">
-                    <button @click="$emit('manage', propertyParent, propertyIndex)">
-                        edit
-                    </button>
-                    <button @click="$emit('delete', propertyParent, propertyIndex)">
-                        delete
-                    </button>
+        </td>
+        <td>
+            <div v-if="custom && !readOnly">
+                <div
+                    class="button is-small is-danger"
+                    @click="$emit('delete', propertyParent, propertyIndex)">
+                    <span class="icon">
+                        <i class="fa fa-trash" />
+                    </span>
                 </div>
             </div>
-        </div>
-    </div>
+        </td>
+    </tr>
 </template>
 
 <script>

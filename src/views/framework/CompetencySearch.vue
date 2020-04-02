@@ -13,7 +13,7 @@
                 </p>
                 <button
                     class="delete"
-                    @click="$emit('closeCompetencySearchModal')"
+                    @click="$store.commit('competencySearchModalOpen', false)"
                     aria-label="close" />
             </header>
             <section class="modal-card-body">
@@ -26,7 +26,9 @@
             </section>
             <footer class="modal-card-foot">
                 <div class="buttons">
-                    <button class="button is-left is-light">
+                    <button
+                        class="button is-left is-light"
+                        @click="$store.commit('competencySearchModalOpen', false)">
                         Cancel
                     </button>
                     <button class="button is-success">

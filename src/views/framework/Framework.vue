@@ -2,8 +2,7 @@
     <div class="page-framework">
         <!-- competency search -->
         <CompetencySearch
-            @closeCompetencySearchModal="onCloseCompetencySearchModal()"
-            :isActive="showCompetencySearchModal" />
+            :isActive="$store.state.lode.competencySearchModalOpen" />
         <!--
             share modal manages users who have access to
             the framework
@@ -90,7 +89,6 @@
                     </span>
                 </div>
                 <Hierarchy
-                    @showCompetencySearchModalEvent="onShowCompetencySearchModal"
                     :container="framework"
                     containerType="Framework"
                     containerTypeGet="EcFramework"
@@ -145,7 +143,6 @@ export default {
     data: function() {
         return {
             showClipboardSuccessModal: false,
-            showCompetencySearchModal: false,
             showComments: false,
             showShareModal: false,
             repo: window.repo,
@@ -281,10 +278,15 @@ export default {
                     profile[key] = this.config.levelsConfig[key];
                     profile[key]["http://schema.org/rangeIncludes"] = [{"@id": "https://schema.cassproject.org/0.4/Level"}];
                     profile[key]["valuesIndexed"] = function() { return me.levels; };
-                    profile[key]["noTextEditing"] = 'true';
-                    profile[key]["add"] = function(selectedCompetency) { me.addLevel(selectedCompetency); };
-                    profile[key]["remove"] = function(competency, levelId) { me.removeLevelFromFramework(levelId); };
-                    profile[key]["save"] = function() { me.saveFramework(); };
+                    if (!profile[key]["options"]) {
+                        profile[key]["noTextEditing"] = 'true';
+                        profile[key]["add"] = function(selectedCompetency, levelId) { me.addLevel(selectedCompetency, levelId); };
+                        profile[key]["save"] = function() { me.saveFramework(); };
+                        profile[key]["remove"] = function(competency, levelId) { me.removeLevelFromFramework(levelId); };
+                    } else {
+                        profile[key]["add"] = "checkedOptions";
+                        profile[key]["save"] = function(selectedCompetency, checkedOptions, allOptions) { me.saveCheckedLevels(selectedCompetency, checkedOptions, allOptions); };
+                    }
                 }
                 if (this.config.relationshipConfig) {
                     var keys = EcObject.keys(this.config.relationshipConfig);
@@ -604,12 +606,6 @@ export default {
     methods: {
         onEditNode: function() {
             this.editingFramework = true;
-        },
-        onShowCompetencySearchModal: function() {
-            this.showCompetencySearchModal = true;
-        },
-        onCloseCompetencySearchModal: function() {
-            this.showCompetencySearchModal = false;
         },
         onOpenComments: function() {
             this.showComments = true;
