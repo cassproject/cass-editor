@@ -7,7 +7,7 @@
 -->
 <template>
     <aside
-        id="comments-modal"
+        id="comments-side-bar"
         class="menu has-background-light">
         <p class="subtitle is-size-4">
             <span
@@ -48,13 +48,14 @@ export default {
 </script>
 
 <style lang="scss">
-#comments-modal {
+#comments-side-bar {
     position: absolute;
     z-index: 10;
     height: calc(100vh - 36px - 48px);
     overflow: scroll;
     right: 0;
-    padding: 0;
+    padding: .5rem;
+    width: 300px;
     .comment-list {
         padding: .5rem;
          .comment-list__user {

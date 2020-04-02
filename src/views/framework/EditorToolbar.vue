@@ -92,16 +92,24 @@
                 </div>
             </div>
         </div>
+        <!-- hook this button up to add a new node at the top of the
+            hierarchy in editing mode -->
+        <div
+            class="button is-text has-text-primary">
+            <span class="icon">
+                <i class="fas fa-folder-plus" />
+            </span>
+        </div>
         <div
             @click="$emit('openCommentsEvent')"
             class="button is-text has-text-dark">
             <span class="icon">
-                <i class="fas fa-comment-alt has-text-dark" />
+                <i class="fas fa-comment-alt" />
             </span>
         </div>
-        <div class="button is-text">
+        <div class="button is-text has-text-dark">
             <span class="icon">
-                <i class="fas fa-undo-alt has-text-dark" />
+                <i class="fas fa-undo-alt " />
             </span>
         </div>
         <div class="button is-text">
@@ -141,7 +149,6 @@ export default {
     @import './../../scss/variables.scss';
 
 #framework-editor-toolbar {
-    position: fixed;
     border-bottom: solid 1px $light;
     top: 52px;
     z-index: 10;

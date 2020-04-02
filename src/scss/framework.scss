@@ -1,5 +1,20 @@
 @import './variables.scss';
 
+#framework-page {
+    padding-top: 36px;
+    .e-Hierarchy.e-Hierarchy-ul {
+        li.e-HierarchyNode {
+            .thing:hover  {
+            border-radius: 12px;
+            background-color: $light;
+            .edit-button {
+                visibility: visible !important;
+            }
+        }}
+    }
+    
+    
+}
 .control.auto-complete__control {
     transform: translateX(0);
     padding-right: 8px;
@@ -31,7 +46,6 @@
                 background-color: white;
             } 
             li:hover {
-                background-color: $link;
                 color: white;
             }
         }
@@ -40,7 +54,6 @@
     }
 }
 
-.page-framework{
     .list-complete-item {
         transition: transform 1s;
         display: block;
@@ -61,11 +74,9 @@
     }
   
     .container {
-        max-width: 880px;
         display: block;
         margin: auto;
     }
-    padding-top: 36px;
     #select-expand-all-section {
         padding-top: 1rem !important;
         .header {
@@ -118,69 +129,87 @@
         .add-property__input-type {
         }
     }
-    #add-node-selection {
+    #add-node-section {
+        .add-node__options {
+            padding: .5rem 0rem;
+        }
     }
     #add-node-section:hover .add-new-node {
         visibility: visible;
         height: 24px;
     }
     .e-Property.e-name {
-        font-size: .8rem;
+        font-family: $family-secondary;
+        font-size: $size-6;
         font-weight: 600;
     }
     .e-Property.e-id {
-        font-size: .7rem;
-        font-weight: 500;
+        font-size: $size-7;
+        font-weight: 400;
     }
     .e-Property.e-description {
-        font-size: .8rem;
+        font-size: $size-7;
         font-weight: 400;
     }
     .e-Property {
-        font-size: .8rem;
-        font-weight: 500;
+        font-size: $size-7;
+        font-weight: 400;
     }
+
     .add-new-node {
-        padding-left: 3.5rem;
+        margin: .5rem 0rem;
+        padding-left: 0 !important;
         height: 24px;
-        display: flex;
-        visibility: hidden;
+        width: 100%;
+        //display: flex;
+        visibility: visible;
+        opacity: 0;
         align-items: center;
+        .buttons {
+            padding: .5rem;
+        }
         hr  {
             width: 100%;
             display: block;
-            height: 2px;
+            height: 1px;
             padding-left: -1px;
             margin-left: auto;
             margin-right: auto;
             border-width: 1px;
-            background-color: $light !important;
+            background-color: $primary !important;
             color: $black !important;
-            border-color: $light !important;
+            border-color: $primary !important;
         }
     }
     .add-new-node:hover {
         visibility: visible !important;
+        opacity: .8;
     }
  
     // room for improvement, iterate over loop for max depth tabbing
     // possibly set tab value based on value in scss varaibles sheet
     .e-Hierarchy {
         .e-Hierarchy-ul {
-            max-width: 880px;
             li.e-HierarchyNode {
-                
+                .add-new-node {
+                    padding-left: 5rem;
+                }
                 .thing, .thing-editing {
                     margin-left: 1rem;
                     margin-bottom: .5rem;
+                   
                     .thing  {
                         margin-left: 0;
                     }
                 }
                 .e-HierarchyNode-ul {
                     .e-HierarchyNode {
+                        .add-new-node {
+                            padding-left: 6rem;
+                        }
                         .thing, .thing-editing {
                             margin-left: 2rem;
+                           
                             .thing {
                                 margin-left: 0;
                             }
@@ -188,6 +217,9 @@
                     }
                     .e-HierarchyNode-ul {
                         .e-HierarchyNode {
+                            .add-new-node {
+                                padding-left: 7rem;
+                            }
                             .thing, .thing-editing {
                                 margin-left: 3rem;
                                 .thing {
@@ -196,6 +228,9 @@
                             }
                             .e-HierarchyNode-ul {
                                 .e-HierarchyNode {
+                                    .add-new-node {
+                                        padding-left: 8rem;
+                                    }
                                     .thing, .thing-editing {
                                         margin-left: 4rem;
                                         .thing {
@@ -204,6 +239,9 @@
                                     }
                                     .e-HierarchyNode-ul {
                                         .e-HierarchyNode {
+                                            .add-new-node {
+                                                padding-left: 9rem;
+                                            }
                                             .thing, .thing-editing {
                                                 margin-left: 5rem;
                                                 .thing {
@@ -212,16 +250,25 @@
                                             }
                                             .e-HierarchyNode-ul {
                                                 .e-HierarchyNode {
+                                                    .add-new-node {
+                                                        padding-left: 10rem;
+                                                    }
                                                     .thing, .thing-editing {
                                                         margin-left: 6rem;
                                                     }
                                                     .e-HierarchyNode-ul {
                                                         .e-HierarchyNode {
+                                                            .add-new-node {
+                                                                padding-left: 11rem;
+                                                            }
                                                             .thing, .thing-editing {
                                                                 margin-left: 7rem;
                                                             }
                                                             .e-HierarchyNode-ul {
                                                                 .e-HierarchyNode {
+                                                                    .add-new-node {
+                                                                        padding-left: 12rem;
+                                                                    }
                                                                     .thing, .thing-editing {
                                                                         margin-left: 8rem;
                                                                     }
@@ -312,13 +359,7 @@
             }
         }
     }
-    .thing:hover {
-        background-color: rgba($link, .1);
-        border-radius: 12px;
-        .edit-button {
-            visibility: visible !important;
-        }
-    }
+ 
     // list of competencies 
     .e-Hierarchy {
         padding: 0rem 1rem;
@@ -385,4 +426,3 @@
             }
         }
     }
-}

@@ -4,12 +4,12 @@
     label{
         display:none;
     }
-    .e-Property {	
-    padding: .5rem 0rem;	
+    .e-Property {
+    padding: .5rem 0rem;
     }
 
-    .page {	
-        margin-top: 2rem;	
+    .page {
+        margin-top: 2rem;
     }
     .List {
         .button {
@@ -28,7 +28,7 @@
 
             }
             li.list-ul__item:hover {
-                background-color: $light;
+                background-color: $cass-lightest;
             }
             .list-ul__item{
                 border-radius: $border-radius;
@@ -45,7 +45,7 @@
                         font-weight: 600;
                     }
                 }
-            
+
             }
             .list-ul__item:hover {
             }
@@ -57,14 +57,14 @@
                     transform: translateX(0);
                     cursor: pointer;
                     .e-Framework {
-                       
+
                     }
                     .e-Thing-ul {
                         padding: 0rem .5rem;
                         width: 100%;
 
                     }
-                    
+
                 }
             }
         }
@@ -108,36 +108,36 @@
                 }
             }
         }
-        
-        
-        
+
+
+
         label {
             display:none;
         }
-        .e-Property-ul{	
-            border-radius: .25rem;	
-            padding: 0rem .0rem;	
-            font-size: .8rem;	
-            margin: .125em 0em;	
+        .e-Property-ul{
+            border-radius: .25rem;
+            padding: 0rem .0rem;
+            font-size: .8rem;
+            margin: .125em 0em;
 
-            color: rgba($dark, .9);	
-            .button {	
+            color: rgba($dark, .9);
+            .button {
 
-            }	
-            .e-description {	
-                font-weight: 400;	
-                font-size: $size-7;	
-            }	
-            .e-name{	
-                font-weight: 600;	
-                font-size: $size-4;	
-            }	
-
-            label {	
-                font-size: $size-7;	
-                font-weight: 500;	
             }
-        }	
+            .e-description {
+                font-weight: 400;
+                font-size: $size-7;
+            }
+            .e-name{
+                font-weight: 600;
+                font-size: $size-4;
+            }
+
+            label {
+                font-size: $size-7;
+                font-weight: 500;
+            }
+        }
     }
     .e-description {
         .e-Property-text  {

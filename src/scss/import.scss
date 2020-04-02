@@ -24,7 +24,6 @@ textarea {
     padding: .5rem 0rem;
 }.e-Hierarchy {
     .e-Hierarchy-ul {
-        max-width: 880px;
         li.e-HierarchyNode {
             
             .thing, .thing-editing {
@@ -98,30 +97,28 @@ textarea {
     }
 }
     .thing {
-        .e-Thing.e-Competency,
-        .e-Thing.e-Framework {
-        }
         .thing-editing,
         .bottom-actions {
             margin: .5rem;
         }
-        .e-Thing.e-Competency.showHoverItems,
-        .e-Thing.e-Framework.showHoverItems  {
-            .edit-button {
-                visibility: visible;
-            }
+        .edit-button {
+            position: absolute;
+            color: dark;
+            right: 0;
+            visibility: hidden;
         }
-
         .e-Thing.e-Competency,
         .e-Thing.e-Framework {
             transform: translateX(0);
             width: 100%;
-            .edit-button {
-                position: absolute;
-                color: dark;
-                right: 0;
-                visibility: hidden;
-            }
+         
+        }
+    }
+    .thing:hover {
+        background-color: $cass-lightest;
+        border-radius: .25rem;
+        .edit-button {
+            visibility: visible;
         }
     }
     .thing-editing {
@@ -193,6 +190,7 @@ ul.processing-list {
 
 
 .page-import {
+    padding-top: 1rem;
     .special-property {
         iframe {
             margin-top: .25rem;
@@ -239,32 +237,30 @@ ul.processing-list {
                 margin-left: auto;
                 margin-right: auto;
                 border-width: 1px;
-                background-color: $light !important;
+                background-color: $primary !important;
                 color: $black !important;
-                border-color: $light !important;
+                border: 1px dashed $primary !important;
             }
         }
         .add-new-node:hover {
             visibility: visible !important;
         }
-        .thing {
-            .e-Thing.e-Competency.showHoverItems {
-                background-color: $cass-lightest;
-                .edit-button {
-                    visibility: visible;
-                }
+        .thing:hover {
+            background-color: $cass-lightest;
+            .edit-button {
+                visibility: visible;
             }
-            
-            .e-Thing.e-Competency {
-                transform: translateX(0);
-                width: 100%;
-                .edit-button {
-                    position: absolute;
-                    color: dark;
-                    right: 0;
-                    visibility: hidden;
-                    
-                }
+            transform: translateX(0);
+            width: 100%;
+        }
+        .thing {
+            padding: .5rem;
+            border-radius: .25rem;
+            .edit-button {
+                position: absolute;
+                color: dark;
+                right: 0;
+                visibility: hidden;
             }
         }
         .e-Hierarchy {
@@ -466,7 +462,6 @@ ul.processing-list {
             }
     }
     #import-top-section {
-        position: sticky;
         padding: 1rem 1rem;
         width: auto;
         max-width: 100%;
@@ -511,60 +506,23 @@ ul.processing-list {
             }
            
         }
-        .top-actions {
-            width: 100%;
-            padding: .25rem .5rem;
-            color: $dark;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            align-content: center;
-            justify-items: center;
-            flex-direction: row;
-            bottom: 0;
-            .info {
-                width: 50%;
-                vertical-align: -webkit-baseline-middle;
-                vertical-align: middle;
-                .tags {
-                    display: inline;
-                    margin-left: 1rem;
-                    .tag {
-                        margin-bottom: 0;
-                    }
-                }
-            }
-            .view {
-                width: 50%;
-                display: flex;
-                justify-content: flex-end;
-            }
+    }
+    .import-light {
+        checkbox {
+            display: none;
         }
-        .bottom-actions {
-            width: 100%;
-            color: $dark;
-            height: auto;
-            padding: 0rem .5rem;
-            display: flex;
-            justify-content: space-between;
-            align-content: flex-start;
-            justify-items: flex-end;
-            justify-content: flex-end;
-            align-items: center;
-            flex-direction: row;
-            .hierarchy {
-                width: 50%;
-            }
-            .action {
-                display: flex;
-                justify-items: flex-end;
-                align-items: flex-end;
-                align-content: flex-end;
-                justify-content: flex-end;
-                width: 50%;
-            }
+        .button {
+            display: none;
+        };
+        .thing:hover {
+            background-color: transparent;
         }
-
+        #check-radio-column {
+            display: none;
+        }
+        #check-radio-all-column {
+            display: none;
+        }
     }
     .import-details {
         border: 2px solid rgba($black, .5);

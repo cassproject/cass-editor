@@ -1,5 +1,5 @@
 <template>
-    <div class="page-framework">
+    <div id="page-framework">
         <!-- competency search -->
         <CompetencySearch
             :isActive="$store.state.lode.competencySearchModalOpen" />
@@ -28,13 +28,14 @@
             such as sharing, exporting, comment, rolling back versions
         -->
 
-        <FrameworkEditorToolbar
-            @openCommentsEvent="onOpenComments()"
-            @openShareModalEvent="onOpenShareModal()"
-            @changeProperties="changeProperties"
-            @openExportModalEvent="onOpenExportModal()" />
+
         <!-- begin framework -->
         <div class="container">
+            <FrameworkEditorToolbar
+                @openCommentsEvent="onOpenComments()"
+                @openShareModalEvent="onOpenShareModal()"
+                @changeProperties="changeProperties"
+                @openExportModalEvent="onOpenExportModal()" />
             <div class="section">
                 <Component
                     :is="dynamicThingComponent"
@@ -47,6 +48,7 @@
                     @deleteObject="deleteObject"
                     @removeObject="removeObject"
                     @editNodeEvent="onEditNode()"
+                    @doneEditingNodeEvent="onDoneEditingNode()"
                     :properties="properties" />
                 <div class="info-bar">
                     <span
@@ -606,6 +608,9 @@ export default {
     methods: {
         onEditNode: function() {
             this.editingFramework = true;
+        },
+        onDoneEditingNode: function() {
+            this.editingFramework = false;
         },
         onOpenComments: function() {
             this.showComments = true;

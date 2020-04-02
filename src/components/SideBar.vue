@@ -1,5 +1,6 @@
 <template>
     <aside
+        id="app-side-nav-bar"
         v-if="showSidebar"
         class="menu has-background-primary has-text-white">
         <div
@@ -120,7 +121,7 @@ export default {
 };
 </script>
 <style>
-.menu {
+#app-side-nav-bar {
     position: fixed;
     z-index: 2;
     top: 0;
