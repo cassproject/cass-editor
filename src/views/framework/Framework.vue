@@ -280,7 +280,7 @@ export default {
                     profile[key]["valuesIndexed"] = function() { return me.levels; };
                     if (!profile[key]["options"]) {
                         profile[key]["noTextEditing"] = 'true';
-                        profile[key]["add"] = function(selectedCompetency) { me.addLevel(selectedCompetency); };
+                        profile[key]["add"] = function(selectedCompetency, levelId) { me.addLevel(selectedCompetency, levelId); };
                         profile[key]["save"] = function() { me.saveFramework(); };
                         profile[key]["remove"] = function(competency, levelId) { me.removeLevelFromFramework(levelId); };
                     } else {

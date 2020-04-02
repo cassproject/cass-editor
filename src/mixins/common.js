@@ -374,22 +374,28 @@ export default {
             parent.postMessage(message, this.queryParams.origin);
             EcRemote.async = async;
         },
-        addLevel: function(selectedCompetency) {
-            var c = new EcLevel();
-            var me = this;
-            if (this.queryParams.newObjectEndpoint != null) {
-                c.generateShortId(this.queryParams.newObjectEndpoint);
+        addLevel: function(selectedCompetency, optionalLevelUrl) {
+            var c;
+            if (!optionalLevelUrl) {
+                c = new EcLevel();
+                var me = this;
+                if (this.queryParams.newObjectEndpoint != null) {
+                    c.generateShortId(this.queryParams.newObjectEndpoint);
+                } else {
+                    c.generateId(this.repo.selectedServer);
+                }
+                c["schema:dateCreated"] = new Date().toISOString();
+                c.name = "New Level";
+                c.competency = selectedCompetency;
             } else {
-                c.generateId(this.repo.selectedServer);
+                optionalLevelUrl = optionalLevelUrl[0];
+                var c = EcRepository.getBlocking(optionalLevelUrl);
+                if (!EcArray.isArray(c.competency)) {
+                    c.competency = [c.competency];
+                }
+                c.competency.push(selectedCompetency);
             }
-            c["schema:dateCreated"] = new Date().toISOString();
-            if (EcIdentityManager.ids.length > 0) {
-                c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-            }
-            c.name = "New Level";
-            c.competency = selectedCompetency;
             if (this.$store.state.editor.private === true) {
-                c = EcEncryptedValue.toEncryptedValue(c);
                 if (EcEncryptedValue.encryptOnSaveMap[this.framework.id] !== true) {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
                 }
