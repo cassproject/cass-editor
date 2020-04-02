@@ -5,7 +5,7 @@
         display:none;
     }
     .e-Property {	
-    padding: .25rem 0rem;	
+    padding: .5rem 0rem;	
     }
 
     .page {	
@@ -84,26 +84,32 @@
         }
     }
     .e-name {
-        .e-Property-ul{
-            .property-value {
-                display: inline-block;
-            }
-            .property-value:nth-of-type(n + 3):not(:last-child) {
-                &::before {
-                    content: ", ";
+        .field {
+            display: inline-block;
+        }
+        .field:nth-of-type(n + 3) {
+            .field-body {
+                .field {
+                    &::before {
+                        content: ", ";
+                    }
                 }
             }
-            .property-value:first-child {
-                display: block;
-                font-weight: 500;
-                font-family: $family-secondary;
-                width: 100%;
-                font-size: $size-3;
-                .e-Property-text {
+        }
+        .field:first-of-type{
+            display: block;
+            .field-body {
+                .field {
+                    display: block;
+                    font-weight: 500;
+                    font-family: $family-secondary;
+                    width: 100%;
                     font-size: $size-3;
                 }
             }
         }
+        
+        
         
         label {
             display:none;
