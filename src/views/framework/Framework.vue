@@ -512,6 +512,9 @@ export default {
         this.spitEvent('viewChanged');
     },
     mounted: function() {
+        if (!this.framework) {
+            this.$router.push({name: "frameworks"});
+        }
         if (EcRepository.getBlocking(this.framework.id).type === "EncryptedValue") {
             this.privateFramework = true;
         }
