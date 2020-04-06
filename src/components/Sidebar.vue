@@ -164,6 +164,60 @@
             </ul>
         </div>
         <!-- END IMPORT CONTEXTUAL MENU -->
+        <!-- CONFIG OPTIONS -->
+        <div
+            class=""
+            v-if="currentRoute === '/config'">
+            <h3 class="subtitle has-text-white is-size-3 has-text-weight-bold">
+                Configuration
+            </h3>
+            <div class="menu-label">
+                Configuration
+            </div>
+            <ul class="menu-list">
+                <li>
+                    <a v-scroll-to="'#configuration-details'">
+                        <span>Configuration Details</span>
+                    </a>
+                </li>
+                <li>
+                    <a
+                        href="#"
+                        v-scroll-to="'#framework-properties'">Framework Properties</a>
+                </li>
+                <li>
+                    <a
+                        href="#"
+                        v-scroll-to="'#competency-properties'">Competency Properties</a>
+                </li>
+                <li>
+                    <a
+                        href="#"
+                        v-scroll-to="'#enforce-competency-types'">Enforce Competency Types</a>
+                </li>
+                <li>
+                    <a
+                        href="#"
+                        v-scroll-to="'#allow-levels'">Allow Levels</a>
+                </li>
+                <li>
+                    <a
+                        href="#"
+                        v-scroll-to="'#enforce-level-values'">Enforce Level Values</a>
+                </li>
+                <li>
+                    <a
+                        href="#"
+                        v-scroll-to="'#competency-relationships'">Competency Relationships</a>
+                </li>
+                <li>
+                    <a
+                        href="#"
+                        v-scroll-to="'#resource-alignments'">Resource Alignments</a>
+                </li>
+            </ul>
+        </div>
+        <!-- END IMPORT CONTEXTUAL MENU -->
     </aside>
 </template>
 

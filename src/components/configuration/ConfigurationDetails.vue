@@ -503,7 +503,9 @@
             </div>
         </div>
         <!-- CONFIGURATION DETAILS BODY CONTENT -->
-        <div class="section">
+        <div
+            class="section"
+            id="configuration-details">
             <h5 class="header">
                 Configuration Details
             </h5>
@@ -558,7 +560,9 @@
             </div>
         </div>
         <!-- ************************************** Framework Properties ************************************************ -->
-        <div class="section">
+        <div
+            class="section"
+            id="framework-properties">
             <h5 class="header">
                 Framework Properties
             </h5>
@@ -648,7 +652,9 @@
             </div>
         </div>
         <!-- ************************************** Competency Properties ************************************************ -->
-        <div class="section">
+        <div
+            class="section"
+            id="competency-properties">
             <h5>Competency Properties</h5>
             <div class="table-container">
                 <div class="table">
@@ -749,7 +755,9 @@
             </div>
         </div>
         <!-- ************************************** Competency Type Enforcement ************************************************ -->
-        <div class="section">
+        <div
+            class="section"
+            id="enforce-competency-types">
             <h5>Enforce Competency Types? (optional)</h5>
             <p v-if="!readOnly">
                 Leave this section empty to allow competencies of any type.
@@ -839,7 +847,9 @@
                 </div>
             </div>
         </div>
-        <div class="section">
+        <div
+            class="section"
+            id="allow-levels">
             <!-- ************************************** Allow Levels ************************************************ -->
             <h5>Allow Levels?</h5>
             <div v-if="readOnly">
@@ -891,7 +901,8 @@
         <!-- enforce levels -->
         <div
             v-if="config.compAllowLevels"
-            class="section">
+            class="section"
+            id="enforce-level-values">
             <h5>Enforce Level Values? (optional)</h5>
             <div v-if="readOnly">
                 {{ config.enforceLevelValues }}
@@ -949,7 +960,9 @@
             </div>
         </div>
         <!-- ************************************** Competency Relationships ************************************************ -->
-        <div class="section">
+        <div
+            class="section"
+            id="competency-relationships">
             <h5>Competency Relationships</h5>
             <div class="table-container">
                 <div class="table">
@@ -978,186 +991,188 @@
                     </tbody>
                 </div>
             </div>
-            <div class="section">
-                <!-- ************************************** Resource Alignments ************************************************ -->
-                <h5>Resource Alignment</h5>
-                <div class="table-container">
-                    <div class="table">
-                        <thead>
-                            <tr>
-                                <th>
-                                    alignment
-                                </th>
-                                <th>
-                                    enabled
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th>
-                                    teaches
-                                </th>
-                                <td>
-                                    <div v-if="readOnly">
-                                        {{ config.alignments.teaches }}
-                                    </div>
-                                    <div
-                                        class="select is-small"
-                                        v-if="!readOnly">
-                                        <select v-model="config.alignments.teaches">
-                                            <option :value="true">
-                                                true
-                                            </option>
-                                            <option :value="false">
-                                                false
-                                            </option>
-                                        </select>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>
-                                    assesses
-                                </th>
-                                <td>
-                                    <div v-if="readOnly">
-                                        {{ config.alignments.assesses }}
-                                    </div>
-                                    <div
-                                        class="select is-small"
-                                        v-if="!readOnly">
-                                        <select v-model="config.alignments.assesses">
-                                            <option :value="true">
-                                                true
-                                            </option>
-                                            <option :value="false">
-                                                false
-                                            </option>
-                                        </select>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>
-                                    requires
-                                </th>
-                                <td>
-                                    <div v-if="readOnly">
-                                        {{ config.alignments.requires }}
-                                    </div>
-                                    <div
-                                        class="select is-small"
-                                        v-if="!readOnly">
-                                        <select v-model="config.alignments.requires">
-                                            <option :value="true">
-                                                true
-                                            </option>
-                                            <option :value="false">
-                                                false
-                                            </option>
-                                        </select>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </div>
+        </div>
+        <div
+            class="section"
+            id="resource-alignments">
+            <!-- ************************************** Resource Alignments ************************************************ -->
+            <h5>Resource Alignment</h5>
+            <div class="table-container">
+                <div class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                alignment
+                            </th>
+                            <th>
+                                enabled
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>
+                                teaches
+                            </th>
+                            <td>
+                                <div v-if="readOnly">
+                                    {{ config.alignments.teaches }}
+                                </div>
+                                <div
+                                    class="select is-small"
+                                    v-if="!readOnly">
+                                    <select v-model="config.alignments.teaches">
+                                        <option :value="true">
+                                            true
+                                        </option>
+                                        <option :value="false">
+                                            false
+                                        </option>
+                                    </select>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                assesses
+                            </th>
+                            <td>
+                                <div v-if="readOnly">
+                                    {{ config.alignments.assesses }}
+                                </div>
+                                <div
+                                    class="select is-small"
+                                    v-if="!readOnly">
+                                    <select v-model="config.alignments.assesses">
+                                        <option :value="true">
+                                            true
+                                        </option>
+                                        <option :value="false">
+                                            false
+                                        </option>
+                                    </select>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                requires
+                            </th>
+                            <td>
+                                <div v-if="readOnly">
+                                    {{ config.alignments.requires }}
+                                </div>
+                                <div
+                                    class="select is-small"
+                                    v-if="!readOnly">
+                                    <select v-model="config.alignments.requires">
+                                        <option :value="true">
+                                            true
+                                        </option>
+                                        <option :value="false">
+                                            false
+                                        </option>
+                                    </select>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
                 </div>
             </div>
-            <!-- ************************************** Validation ************************************************ -->
-            <div class="section">
-                <div v-if="configInvalid">
-                    <p>Configuration is invalid:</p>
-                    <p v-if="configNameInvalid">
-                        *Configuration name is required
-                    </p>
-                    <p v-if="configDescriptionInvalid">
-                        *Configuration description is required
-                    </p>
-                    <p v-if="configEnforcedTypesInvalid">
-                        *Enforced types must have a label and value
-                    </p>
-                    <p v-if="configRelationshipsInvalid">
-                        *Enabled relationships must have a label
-                    </p>
-                    <p v-if="configFrameworkIdLabelInvalid">
-                        *Framework ID Label is required
-                    </p>
-                    <p v-if="configFrameworkIdDescriptionInvalid">
-                        *Framework ID Description is required
-                    </p>
-                    <p v-if="configFrameworkNameLabelInvalid">
-                        *Framework Name Label is required
-                    </p>
-                    <p v-if="configFrameworkNameDescriptionInvalid">
-                        *Framework Name Description is required
-                    </p>
-                    <p v-if="configFrameworkDescLabelInvalid">
-                        *Framework Description Label is required
-                    </p>
-                    <p v-if="configFrameworkDescDescriptionInvalid">
-                        *Framework Description Description is required
-                    </p>
-                    <p v-if="configCompetencyIdLabelInvalid">
-                        *Competency ID Label required
-                    </p>
-                    <p v-if="configCompetencyIdDescriptionInvalid">
-                        *Competency ID Description is required
-                    </p>
-                    <p v-if="configCompetencyNameLabelInvalid">
-                        *Competency Name Label is required
-                    </p>
-                    <p v-if="configCompetencyNameDescriptionInvalid">
-                        *Competency Name Description is required
-                    </p>
-                    <p v-if="configCompetencyDescLabelInvalid">
-                        *Competency Description Label is required
-                    </p>
-                    <p v-if="configCompetencyDescDescriptionInvalid">
-                        *Competency Description Description is required
-                    </p>
-                    <p v-if="configCompetencyTypeLabelInvalid">
-                        *Competency Type Label is required
-                    </p>
-                    <p v-if="configCompetencyTypeDescriptionInvalid">
-                        *Competency Type Description is required
-                    </p>
+        </div>
+        <!-- ************************************** Validation ************************************************ -->
+        <div class="section">
+            <div v-if="configInvalid">
+                <p>Configuration is invalid:</p>
+                <p v-if="configNameInvalid">
+                    *Configuration name is required
+                </p>
+                <p v-if="configDescriptionInvalid">
+                    *Configuration description is required
+                </p>
+                <p v-if="configEnforcedTypesInvalid">
+                    *Enforced types must have a label and value
+                </p>
+                <p v-if="configRelationshipsInvalid">
+                    *Enabled relationships must have a label
+                </p>
+                <p v-if="configFrameworkIdLabelInvalid">
+                    *Framework ID Label is required
+                </p>
+                <p v-if="configFrameworkIdDescriptionInvalid">
+                    *Framework ID Description is required
+                </p>
+                <p v-if="configFrameworkNameLabelInvalid">
+                    *Framework Name Label is required
+                </p>
+                <p v-if="configFrameworkNameDescriptionInvalid">
+                    *Framework Name Description is required
+                </p>
+                <p v-if="configFrameworkDescLabelInvalid">
+                    *Framework Description Label is required
+                </p>
+                <p v-if="configFrameworkDescDescriptionInvalid">
+                    *Framework Description Description is required
+                </p>
+                <p v-if="configCompetencyIdLabelInvalid">
+                    *Competency ID Label required
+                </p>
+                <p v-if="configCompetencyIdDescriptionInvalid">
+                    *Competency ID Description is required
+                </p>
+                <p v-if="configCompetencyNameLabelInvalid">
+                    *Competency Name Label is required
+                </p>
+                <p v-if="configCompetencyNameDescriptionInvalid">
+                    *Competency Name Description is required
+                </p>
+                <p v-if="configCompetencyDescLabelInvalid">
+                    *Competency Description Label is required
+                </p>
+                <p v-if="configCompetencyDescDescriptionInvalid">
+                    *Competency Description Description is required
+                </p>
+                <p v-if="configCompetencyTypeLabelInvalid">
+                    *Competency Type Label is required
+                </p>
+                <p v-if="configCompetencyTypeDescriptionInvalid">
+                    *Competency Type Description is required
+                </p>
+            </div>
+        </div>
+        <!-- ************************************** Actions ************************************************ -->
+        <div class="section">
+            <div
+                class="buttons"
+                v-if="!readOnly">
+                <div
+                    class="button is-outlined is-primary"
+                    @click="$emit('setBrowserDefault', config.id)">
+                    set as browser default
+                </div>
+                <div
+                    class="button is-outlined is-primary"
+                    @click="validateCurrentConfigAndEmitSave">
+                    save
+                </div>
+                <div
+                    class="button is-outlined is-primary"
+                    @click="$emit('cancel')">
+                    cancel
                 </div>
             </div>
-            <!-- ************************************** Actions ************************************************ -->
-            <div class="section">
+            <div
+                class="buttons"
+                v-if="readOnly">
                 <div
-                    class="buttons"
-                    v-if="!readOnly">
-                    <div
-                        class="button is-outlined is-primary"
-                        @click="$emit('setBrowserDefault', config.id)">
-                        set as browser default
-                    </div>
-                    <div
-                        class="button is-outlined is-primary"
-                        @click="validateCurrentConfigAndEmitSave">
-                        save
-                    </div>
-                    <div
-                        class="button is-outlined is-primary"
-                        @click="$emit('cancel')">
-                        cancel
-                    </div>
+                    class="button is-outlined is-primary"
+                    @click="$emit('setBrowserDefault', config.id)">
+                    set as browser default
                 </div>
                 <div
-                    class="buttons"
-                    v-if="readOnly">
-                    <div
-                        class="button is-outlined is-primary"
-                        @click="$emit('setBrowserDefault', config.id)">
-                        set as browser default
-                    </div>
-                    <div
-                        class="button is-outlined is-primary"
-                        @click="$emit('back')">
-                        back
-                    </div>
+                    class="button is-outlined is-primary"
+                    @click="$emit('back')">
+                    back
                 </div>
             </div>
         </div>
