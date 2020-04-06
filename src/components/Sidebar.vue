@@ -20,11 +20,29 @@
         <div>
             Organization Name
         </div>
+        <hr>
+        <!-- OPTION TO NAVIGATE BACK -->
         <div
-            class="menu-label">
+            class="menu-label has-text-white"
+            v-if="currentRoute !== '/'">
+            <router-link to="/">
+                <span class="icon">
+                    <i class="fa fa-arrow-left" />
+                </span>
+                <span>back</span>
+            </router-link>
+        </div>
+        <!-- END OPTION TO NAVIGATE BACK -->
+
+        <!-- GENERAL MENU -->
+        <div
+            class="menu-label"
+            v-if="currentRoute === '/'">
             Competencies & Frameworks
         </div>
-        <ul class="menu-list">
+        <ul
+            class="menu-list"
+            v-if="currentRoute === '/'">
             <li class="has-text-white">
                 <router-link to="/">
                     Frameworks
@@ -47,15 +65,19 @@
             </li>
         </ul>
         <div
-            class="menu-label">
+            class="menu-label"
+            v-if="currentRoute === '/'">
             Activity
         </div>
         <ul class="menu-list" />
         <div
-            class="menu-label">
+            class="menu-label"
+            v-if="currentRoute === '/'">
             Configuration
         </div>
-        <ul class="menu-list">
+        <ul
+            class="menu-list"
+            v-if="currentRoute === '/'">
             <li>
                 <router-link to="/config">
                     Configurations
@@ -67,6 +89,81 @@
                 </router-link>
             </li>
         </ul>
+        <!-- END GENERAL MENU -->
+
+        <!-- IMPORT OPTIONS -->
+        <div
+            class=""
+            v-if="currentRoute === '/import'">
+            <h3 class="subtitle has-text-white is-size-3 has-text-weight-bold">
+                Import Options
+            </h3>
+            <div class="menu-label">
+                Supported File Type
+            </div>
+            <ul class="menu-list">
+                <li>
+                    <a title="PDF imports are experimental. While some may work, we are still working out the kinks.">
+                        <span>PDF</span>
+                        <span class="icon">
+                            <i class="fa fa-exclamation" />
+                        </span>
+                    </a>
+                </li>
+                <li>
+                    <a title="HTML imports are supported at this time.">HTML<span class="icon"><i class="fa fa-check" /></span></a>
+                </li>
+                <li>
+                    <a title="DOCX imports are experimental, while some may work, we are still working out the kinks.">DOCX<span class="icon"><i class="fa fa-check" /></span></a>
+                </li>
+            </ul>
+            <div class="menu-label">
+                Supported Framework Formats
+            </div>
+            <ul class="menu-list">
+                <li>
+                    <a
+                        href="https://www.careeronestop.org/competencymodel/home.aspx"
+                        target="_blank">
+                        Competency Model Clearinghouse
+                    </a>
+                </li>
+                <li>
+                    <a
+                        href="https://kctcs.edu/"
+                        target="_blank">
+                        Kentucky Community and Technical College System
+                    </a>
+                </li>
+                <li>
+                    <a
+                        href="https://act.org"
+                        target="_blank">
+                        ACT.org</a>
+                </li>
+                <li>
+                    <a
+                        href="https://www.nccco.org/"
+                        target="_blank">
+                        National Commission for the Certification of Crane Operators
+                    </a>
+                </li>
+                <li>
+                    <a
+                        href="https://www.dol.gov/agencies/eta"
+                        target="_blank">
+                        Department of Labor: Employment and Training Administration
+                    </a>
+                </li>
+                <li>
+                    <a
+                        href="https://www.urban.org/policy-centers/center-labor-human-services-and-population/projects/competency-based-occupational-frameworks-registered-apprenticeships"
+                        target="_blank">
+                        CBOF</a>
+                </li>
+            </ul>
+        </div>
+        <!-- END IMPORT CONTEXTUAL MENU -->
     </aside>
 </template>
 
