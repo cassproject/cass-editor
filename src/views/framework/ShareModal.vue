@@ -20,17 +20,12 @@
                 <div class="columns is-multiline">
                     <!-- share link -->
                     <div class="column is-12">
-                        <div class="button is-link">
-                            <span>
-                                get sharable link
-                            </span>
-                            <div class="icon">
-                                <i class="fa fa-link" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="column is-12">
-                        If link exists put me here
+                        {{ shareableFrameworkInEditor }}
+                        <button
+                            title="Copy URL to the clipboard."
+                            v-clipboard="shareableFrameworkInEditor">
+                            <i class="fa fa-copy" />
+                        </button>
                     </div>
                     <!-- end share link -->
                     <!-- input new groups or users -->
@@ -156,7 +151,8 @@ export default {
     },
     data() {
         return {
-            frameworkName: 'My Framework Name',
+            frameworkName: this.$store.state.editor.framework.getName(),
+            frameworkId: this.$store.state.editor.framework.shortId(),
             viewOptions: [
                 {
                     label: 'View',
@@ -188,6 +184,11 @@ export default {
                 }
             ]
         };
+    },
+    computed: {
+        shareableFrameworkInEditor: function() {
+            return window.location.href + "?frameworkId=" + this.frameworkId;
+        }
     }
 };
 </script>
