@@ -15,7 +15,13 @@
             a modal to do so, rather than one of the competencies.
             This will ensure it is clear what the user is editing.
         -->
-        <EditMultipleCompetencies />
+        <EditMultipleCompetencies
+            v-if="showEditMultiple"
+            :showEditMultiple="showEditMultiple"
+            @cancelEditMultipleEvent="onCancelEditMultiple"
+            @EditMultipleEvent="onEditMultiple"
+            :profile="frameworkProfile"
+            @editMultipleCompetencies="onEditMultipleCompetencies" />
         <!--
             Comments are served in an aside in
             Comments.vue template
@@ -111,6 +117,7 @@
                     :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
                     iframeText="Attach subitems from other sources to the selected item."
                     @deleteObject="deleteObject"
+                    @editMultipleEvent="onEditMultiple"
                     @removeObject="removeObject"
                     @exportObject="exportObject"
                     @selectButtonClick="onSelectButtonClick"
@@ -144,6 +151,7 @@ export default {
     mixins: [common, exports, competencyEdits, ctdlasnProfile, t3Profile, tlaProfile],
     data: function() {
         return {
+            showEditMultiple: false,
             showClipboardSuccessModal: false,
             showComments: false,
             showShareModal: false,
@@ -609,6 +617,15 @@ export default {
         }
     },
     methods: {
+        onEditMultipleCompetencies: function() {
+            this.showEditMultiple = true;
+        },
+        onCancelEditMultiple: function() {
+            this.showEditMultiple = false;
+        },
+        onEditMultiple: function() {
+            this.showEditMultiple = true;
+        },
         onEditNode: function() {
             this.editingFramework = true;
         },
