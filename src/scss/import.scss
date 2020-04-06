@@ -348,10 +348,33 @@ ul.processing-list {
         font-size: .7rem;
         border-radius: 100px;
         background-color: transparent;
+        a { 
+            color: $dark;
+        }
         div {
             color: $dark;
         }
         
+    }
+    .is-active-tab{
+        background-color: $cass-lightest;
+        color: $link;
+        a {
+            color: $secondary;
+        }
+
+        div {
+            color: $secondary;
+            font-weight: 500;
+        }
+    }
+    .import-tab:hover {
+        a {
+            color: $primary;
+        }
+        div {
+            color: $primary;
+        }
     }
     .menu-list_list-item {
         list-style-type: none;
@@ -395,13 +418,6 @@ ul.processing-list {
             color: rgba($dark, .5);
         }
     }
-    .is-active-tab{
-        background-color: $cass-lightest;
-        color: $secondary;
-    div {
-        color: $secondary;
-    }
-}
     .tile {
         border-radius: 1rem;
     }
@@ -506,7 +522,7 @@ ul.processing-list {
             }
            
         }
-    }
+    } 
     .import-light {
         checkbox {
             display: none;

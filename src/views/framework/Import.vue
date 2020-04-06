@@ -4,7 +4,7 @@
             <!--- main body section -->
             <div class="column has-background-white is-scrollable">
                 <section class="page-import-body">
-                    <!-- top section import impormation -->
+                    <!-- top section import information -->
                     <div
                         class="has-background-white"
                         id="import-top-section">
@@ -22,7 +22,7 @@
                                         Import a framework
                                     </h1>
                                 </div>
-                                <!-- import buttons -->
+                                <!-- after importing framework: details and preview -->
                                 <div class="column">
                                     <div
                                         class="section"
@@ -183,6 +183,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!-- ready state details -->
                                 <div class="column is-12">
                                     <p
                                         v-if="status === 'Ready' && !file && queryParams.concepts === 'true'"
@@ -221,34 +222,10 @@
                                         <br><br>
                                     </p>
                                 </div>
-                            <!-- import details after selecting file
-                            <div
-                                v-if="framework && showImportPreviewView"
-                                class="import-instructions">
-                                <div class="columns is-mobile">
-                                    <div class="column is-6 has-text-centered">
-                                        <span class="icon">
-                                            <i class="far fa-hand-rock has-text-dark" />
-                                        </span>
-                                        <span class="is-size-7 has-text-weight-bold">
-                                            Drag to change hierarchy
-                                        </span>
-                                    </div>
-                                    <div class="column is-6 has-text-centered">
-                                        <span>
-                                            <span class="icon">
-                                                <i class="far fa-edit has-text-black" />
-                                            </span>
-                                            <span class="is-size-7 has-text-weight-bold">
-                                                Click descriptions to edit
-                                            </span>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>-->
                             </div>
                         </div>
                     </div>
+                    <!-- import drop area and tabs -->
                     <div
                         id="import-bottom-section"
                         class="section">
@@ -668,9 +645,10 @@
                                 <Component
                                     :is="dynamicThing"
                                     @editNodeEvent="onEditNode"
+                                    @doneEditingNodeEvent="onDoneEditingNode"
                                     :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                     :obj="framework"
-                                    :editingNode="editingNode"
+                                    :editingNode="editingFramework"
                                     :repo="repo"
                                     :properties="properties"
                                     class="framework-title"
@@ -706,7 +684,6 @@
                             <div class="tile is-vertical">
                                 <Component
                                     :is="dynamicThing"
-                                    @editNodeEvent="onEditNode"
                                     :editingNode="editingNode"
                                     :obj="framework"
                                     :repo="repo"
@@ -901,6 +878,9 @@ export default {
     methods: {
         onEditNode: function() {
             this.editingNode = true;
+        },
+        onDoneEditingNode: function() {
+            this.editingNode = false;
         },
         handleDoneLoading: function() {
             console.log("done loading");
