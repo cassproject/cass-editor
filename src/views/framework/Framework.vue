@@ -504,12 +504,8 @@ export default {
     created: function() {
         var me = this;
         // Set configuration
-        if (this.framework.configuration) {
-            var c = EcRepository.getBlocking(this.framework.configuration);
-            if (c) {
-                this.config = c;
-            }
-        }
+        this.getConfiguration();
+        console.log("configuration: ", this.config);
         // To do: Check for personal default in browser storage
         this.repo.searchWithParams("@type:Configuration", {'size': 10000}, function(c) {
             if (c.isDefault === "true") {
@@ -523,9 +519,7 @@ export default {
         if (!this.framework) {
             this.$router.push({name: "frameworks"});
         }
-        if (EcRepository.getBlocking(this.framework.id).type === "EncryptedValue") {
-            this.privateFramework = true;
-        }
+       this.checkIsPrivate();
     },
     watch: {
         shortId: function() {
@@ -617,6 +611,27 @@ export default {
         }
     },
     methods: {
+        checkIsPrivate: function() {
+            if(EcRepository.getBlocking(this.framework.id)) {
+                if (EcRepository.getBlocking(this.framework.id).type === "EncryptedValue") {
+                    this.privateFramework = true;
+                } else {
+                    this.privateFramework = false;
+                }
+            }
+            
+        },
+        getConfiguration: function() {
+            if (this.framework.configuration) {
+            var c = EcRepository.getBlocking(this.framework.configuration);
+            console.log("c is: ", c);
+            if (c) {
+                console.log("c is: ", c);
+                this.config = c;
+            }
+            console.log("c is: ", c);
+            }
+        },
         onEditMultipleCompetencies: function() {
             this.showEditMultiple = true;
         },
