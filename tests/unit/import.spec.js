@@ -8,7 +8,6 @@ const localVue = createLocalVue();
 localVue.use(Vuex);
 localVue.mixin(VueCommon);
 
-
 describe('Import.vue', () => {
     let store;
     let mutations;
@@ -55,8 +54,9 @@ describe('Import.vue', () => {
         store = new Vuex.Store({
             modules: {
                 editor: {
-                    mutations: mutations,
-                    state: state
+                    namespaced: true,
+                    mutations,
+                    state
                 }
             }
         });
@@ -64,21 +64,19 @@ describe('Import.vue', () => {
 
     it('Renders Import page when Import.vue is mounted ', () => {
         const wrapper = shallowMount(Import, {
-            store,
             localVue,
+            store,
             propsData: {
                 queryParams: {}
             },
             data() {
                 return {
-                    framework: null
                 };
             }
         });
+        console.log("state is: ", mutations.editor);
         let importPage = wrapper.find('#import-page');
         expect(importPage.exists()).toBe(true);
-        console.log("mutations", mutations.framework.mock);
-        expect(mutations.framework.mock.calls).toHaveLength(1);
     });
     it('Drag and drop component exists when mounted Import.vue is mounted', () => {
         const wrapper = mount(Import, {
