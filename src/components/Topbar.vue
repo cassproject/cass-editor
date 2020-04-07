@@ -1,6 +1,5 @@
 <template>
     <nav
-        :class="{'is-hidden': this.currentPathIsLogin}"
         class="navbar is-black is-fixed-top"
         role="navigation"
         aria-label="main navigation">
