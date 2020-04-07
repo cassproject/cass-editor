@@ -1,5 +1,7 @@
 <template>
-    <div class="page-import container">
+    <div
+        id="import-page"
+        class="page-import container">
         <div class="columns is-multiline is-marginless is-gapless is-mobile">
             <!--- main body section -->
             <div class="column has-background-white is-scrollable">
