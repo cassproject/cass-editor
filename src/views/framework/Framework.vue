@@ -522,7 +522,7 @@ export default {
         if (!this.framework) {
             this.$router.push({name: "frameworks"});
         }
-       this.checkIsPrivate();
+        this.checkIsPrivate();
     },
     watch: {
         shortId: function() {
@@ -615,24 +615,23 @@ export default {
     },
     methods: {
         checkIsPrivate: function() {
-            if(EcRepository.getBlocking(this.framework.id)) {
+            if (EcRepository.getBlocking(this.framework.id)) {
                 if (EcRepository.getBlocking(this.framework.id).type === "EncryptedValue") {
                     this.privateFramework = true;
                 } else {
                     this.privateFramework = false;
                 }
             }
-            
         },
         getConfiguration: function() {
             if (this.framework.configuration) {
-            var c = EcRepository.getBlocking(this.framework.configuration);
-            console.log("c is: ", c);
-            if (c) {
+                var c = EcRepository.getBlocking(this.framework.configuration);
                 console.log("c is: ", c);
-                this.config = c;
-            }
-            console.log("c is: ", c);
+                if (c) {
+                    console.log("c is: ", c);
+                    this.config = c;
+                }
+                console.log("c is: ", c);
             }
         },
         onEditMultipleCompetencies: function() {
