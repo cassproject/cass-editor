@@ -20,8 +20,9 @@
             :showEditMultiple="showEditMultiple"
             @cancelEditMultipleEvent="onCancelEditMultiple"
             @EditMultipleEvent="onEditMultiple"
-            :profile="frameworkProfile"
-            @editMultipleCompetencies="onEditMultipleCompetencies" />
+            :profile="competencyProfile"
+            @editMultipleCompetencies="onEditMultipleCompetencies"
+            :selectedCompetencies="selectedArray" />
         <!--
             Comments are served in an aside in
             Comments.vue template
@@ -121,7 +122,8 @@
                     @removeObject="removeObject"
                     @exportObject="exportObject"
                     @selectButtonClick="onSelectButtonClick"
-                    :properties="properties" />
+                    :properties="properties"
+                    @selectedArray="selectedArrayEvent" />
             </div>
         </div>
     </div>
@@ -183,7 +185,8 @@ export default {
             editingFramework: false,
             properties: "primary",
             config: null,
-            privateFramework: false
+            privateFramework: false,
+            selectedArray: []
         };
     },
     computed: {
@@ -643,6 +646,9 @@ export default {
         },
         onOpenShareModal: function() {
             this.showShareModal = true;
+        },
+        selectedArrayEvent: function(ary) {
+            this.selectedArray = ary;
         },
         refreshPage: function() {
             if (EcRepository.shouldTryUrl(this.framework.id) === false) {
