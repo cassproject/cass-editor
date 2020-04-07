@@ -22,7 +22,8 @@
                         :editingMultipleCompetencies="true"
                         @propertyStringUpdated="propertyStringUpdated"
                         :idx="idx"
-                        @removeValueAtIndex="removeValueAtIndex" />
+                        @removeValueAtIndex="removeValueAtIndex"
+                        @checkedOptions="onCheckedOptions" />
                     <span v-if="item['error']">
                         {{ item['error'] }}
                     </span>
@@ -78,7 +79,8 @@ export default {
             addedPropertiesAndValues: [{"property": "", "value": "", "range": []}],
             repo: window.repo,
             saveCount: 0,
-            errorMessage: []
+            errorMessage: [],
+            checkedOptions: []
         };
     },
     computed: {
@@ -92,21 +94,22 @@ export default {
         }
     },
     methods: {
-        showModal(val, property) {
+        showModal() {
             let params = {};
 
-            if (val === "onePerLanguage") {
-                params = {
-                    type: val,
-                    title: "One value per language",
-                    text: property + " can only have one entry per language."
-                };
-            }
+            params = {
+                type: "errors",
+                title: "Errors saving",
+                text: this.errorMessage
+            };
             // reveal modal
             this.$modal.show(params);
         },
         addErrorMessage: function(msg) {
             this.errorMessage.push(msg);
+        },
+        onCheckedOptions: function(options) {
+            this.checkedOptions = options;
         },
         propertyStringUpdated: function(property, value, range, index) {
             this.addedPropertiesAndValues[index].property = property;
@@ -135,16 +138,31 @@ export default {
                 }
             }
         },
-        validateOnePerLanguage: function(expandedCompetency, property) {
+        validateOnePerLanguage: function(expandedCompetency, property, competency) {
             var languagesUsed = [];
             for (var k = 0; k < expandedCompetency[property].length; k++) {
                 if (languagesUsed.includes(expandedCompetency[property][k]["@language"].toLowerCase())) {
-                    addErrorMessage("This property can only have one entry per language. Competency " + competency.getName() + " will not be saved.");
+                    this.addErrorMessage(property + " can only have one entry per language. Competency " + competency.getName() + " was not saved.");
                     return false;
                 }
                 languagesUsed.push(expandedCompetency[property][k]["@language"].toLowerCase());
             }
             return true;
+        },
+        validateMax: function(expandedCompetency, property, competencyId, competency) {
+            if (this.profile[property]["valuesIndexed"]) {
+                var f = this.profile[property]["valuesIndexed"];
+                f = f();
+                if (f && f[EcRemoteLinkedData.trimVersionFromUrl(competencyId)]) {
+                    this.addErrorMessage(property + " can only have one value. Competency " + competency.getName() + " was not saved.");
+                    return false;
+                }
+            } else {
+                if (expandedCompetency[property] != null && expandedCompetency[property].length > 0) {
+                    this.addErrorMessage(property + " can only have one value. Competency " + competency.getName() + " was not saved.");
+                    return false;
+                }
+            }
         },
         applyToMultiple: function() {
             var me = this;
@@ -159,10 +177,18 @@ export default {
 
                         if (range.length === 1 && range[0].toLowerCase().indexOf("langstring") !== -1) {
                             if (me.profile && me.profile[property] && me.profile[property]["onePerLanguage"] === 'true') {
-                                var okayToSave = me.validateOnePerLanguage(expandedCompetency, property);
+                                var okayToSave = me.validateOnePerLanguage(expandedCompetency, property, competency);
                                 if (!okayToSave) {
                                     continue;
                                 }
+                            }
+                        }
+
+                        // If one value is allowed for a property and it already exists, the user cannot add another
+                        if (me.profile[property]["max"] === 1) {
+                            var okayToSave = me.validateMax(expandedCompetency, property, competencyId, competency);
+                            if (!okayToSave) {
+                                continue;
                             }
                         }
 
@@ -186,6 +212,9 @@ export default {
                                 f();
                             }
                         }
+                    }
+                    if (me.errorMessage && me.errorMessage.length > 0) {
+                        me.showModal();
                     }
                     me.save(expandedCompetency);
                     me.saveCount++;
