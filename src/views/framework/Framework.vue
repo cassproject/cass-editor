@@ -538,6 +538,7 @@ export default {
                         EcCompetency.get(competencyId, function(c) {
                             if (c.canEditAny(EcIdentityManager.getMyPks())) {
                                 c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                                c["schema:dateModified"] = new Date().toISOString();
                                 c = EcEncryptedValue.toEncryptedValue(c);
                                 me.repo.saveTo(c, done, done);
                             } else {
@@ -567,6 +568,7 @@ export default {
                 framework = EcEncryptedValue.toEncryptedValue(framework);
                 var f = new EcFramework();
                 f.copyFrom(framework.decryptIntoObject());
+                f["schema:dateModified"] = new Date().toISOString();
                 EcEncryptedValue.encryptOnSave(f.id, false);
                 me.repo.saveTo(f, function() {}, console.error);
                 framework = f;
@@ -583,6 +585,7 @@ export default {
                                 }
                                 c = new EcCompetency();
                                 c.copyFrom(v.decryptIntoObject());
+                                c["schema:dateModified"] = new Date().toISOString();
                                 EcEncryptedValue.encryptOnSave(c.id, false);
                                 me.repo.saveTo(c, done, done);
                             } else {
@@ -739,6 +742,7 @@ export default {
             var f = new EcFramework();
             f.copyFrom(framework);
             f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            f["schema:dateModified"] = new Date().toISOString();
             f = EcEncryptedValue.toEncryptedValue(f);
             this.repo.saveTo(f, function() {}, console.error);
         },

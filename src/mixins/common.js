@@ -395,9 +395,10 @@ export default {
                 }
                 c.competency.push(selectedCompetency);
             }
+            this.framework["schema:dateModified"] = new Date().toISOString();
             if (this.$store.state.editor.private === true) {
                 if (EcEncryptedValue.encryptOnSaveMap[this.framework.id] !== true) {
-                    framework = EcEncryptedValue.toEncryptedValue(framework);
+                    this.framework = EcEncryptedValue.toEncryptedValue(this.framework);
                 }
             }
             this.repo.saveTo(c, function() {
@@ -437,7 +438,7 @@ export default {
                     }
                 }
             }
-            this.repo.saveTo(this.framework, function() {}, console.error);
+            this.saveFramework();
         },
         saveFramework: function() {
             this.framework["schema:dateModified"] = new Date().toISOString();

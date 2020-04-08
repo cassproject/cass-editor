@@ -183,6 +183,7 @@ export default {
                     var toIndex = container[property].indexOf(toId);
                     container[property].splice(toIndex, 0, fromId);
                 }
+                container["schema:dateModified"] = new Date().toISOString();
                 if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[container.id] !== true) {
                     container = EcEncryptedValue.toEncryptedValue(container);
                 }
@@ -217,6 +218,7 @@ export default {
                 } else {
                     delete moveComp[fromProperty2];
                 }
+                fromContainer["schema:dateModified"] = new Date().toISOString();
                 if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[fromContainer.id] !== true) {
                     fromContainer = EcEncryptedValue.toEncryptedValue(fromContainer);
                 }
@@ -238,6 +240,8 @@ export default {
                     } else {
                         moveComp[toProperty2].push(me.container.shortId());
                     }
+                    toContainer["schema:dateModified"] = new Date().toISOString();
+                    moveComp["schema:dateModified"] = new Date().toISOString();
                     if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[toContainer.id] !== true) {
                         toContainer = EcEncryptedValue.toEncryptedValue(toContainer);
                     }
@@ -261,6 +265,7 @@ export default {
                 c.generateId(this.repo.selectedServer);
             }
             c["schema:dateCreated"] = new Date().toISOString();
+            c["schema:dateModified"] = new Date().toISOString();
             if (EcIdentityManager.ids != null && EcIdentityManager.ids.length > 0) {
                 c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
             }
@@ -274,6 +279,7 @@ export default {
                 this.container["skos:hasTopConcept"].unshift(c.shortId());
                 c["skos:topConceptOf"] = this.container.shortId();
                 this.container["schema:dateModified"] = new Date().toISOString();
+                c["schema:dateModified"] = new Date().toISOString();
                 if (this.$store.state.editor.private === true) {
                     c = EcEncryptedValue.toEncryptedValue(c);
                     if (EcEncryptedValue.encryptOnSaveMap[me.container.id] !== true) {
@@ -293,6 +299,8 @@ export default {
                 }
                 parent["skos:narrower"].unshift(c.shortId());
                 this.container["schema:dateModified"] = new Date().toISOString();
+                c["schema:dateModified"] = new Date().toISOString();
+                parent["schema:dateModified"] = new Date().toISOString();
                 if (this.$store.state.editor.private === true) {
                     c = EcEncryptedValue.toEncryptedValue(c);
                     if (EcEncryptedValue.encryptOnSaveMap[parent.id] !== true) {

@@ -271,6 +271,7 @@ export default {
                 if (rld.owner && !EcArray.isArray(rld.owner)) {
                     rld.owner = [rld.owner];
                 }
+                rld["schema:dateModified"] = new Date().toISOString();
                 if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
                     rld = EcEncryptedValue.toEncryptedValue(rld);
                 }

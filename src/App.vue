@@ -482,6 +482,7 @@ export default {
                     for (var key in data) {
                         d[key] = data[key];
                     }
+                    d["schema:dateModified"] = new Date().toISOString();
                     if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[d.id] !== true) {
                         d = EcEncryptedValue.toEncryptedValue(d);
                     }
@@ -719,6 +720,7 @@ export default {
                         c.generateId(this.repo.selectedServer);
                     }
                     c["schema:dateCreated"] = new Date().toISOString();
+                    c["schema:dateModified"] = new Date().toISOString();
                     delete c.owner;
                     if (EcIdentityManager.ids.length > 0) {
                         c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
@@ -951,24 +953,19 @@ export default {
         },
         addRelationAsCompetencyField: function(targets, thing, relationType, allowSave) {
             var me = this;
-            var framework = this.$store.state.editor.framework;
             for (var i = 0; i < targets.length; i++) {
                 if (thing[relationType] == null) {
                     thing[relationType] = [];
                 }
                 thing[relationType].push(targets[i]);
             }
+            thing["schema:dateModified"] = new Date().toISOString();
             if (this.$store.state.editor.private === true) {
                 if (EcEncryptedValue.encryptOnSaveMap[thing.id] !== true) {
                     thing = EcEncryptedValue.toEncryptedValue(thing);
                 }
-                if (EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
-                    framework = EcEncryptedValue.toEncryptedValue(framework);
-                }
             }
-            me.repo.saveTo(thing, function() {
-                me.repo.saveTo(framework, function() {}, console.error);
-            }, console.error);
+            me.repo.saveTo(thing, function() {}, console.error);
         },
         importParentStyles: function() {
             var parentStyleSheets = parent.document.styleSheets;

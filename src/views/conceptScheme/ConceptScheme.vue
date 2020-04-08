@@ -674,6 +674,7 @@ export default {
                 cs.copyFrom(framework);
                 cs.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                 var name = cs["dcterms:title"];
+                cs["schema:dateModified"] = new Date().toISOString();
                 cs = EcEncryptedValue.toEncryptedValue(cs);
                 cs["dcterms:title"] = name;
                 me.repo.saveTo(cs, function() {
@@ -688,6 +689,7 @@ export default {
                 cs.copyFrom(framework.decryptIntoObject());
                 framework = cs;
                 EcEncryptedValue.encryptOnSave(cs.id, false);
+                cs["schema:dateModified"] = new Date().toISOString();
                 me.repo.saveTo(cs, function() {
                     if (cs["skos:hasTopConcept"]) {
                         me.decryptConcepts(cs);
@@ -812,6 +814,7 @@ export default {
                 for (var i = 0; i < c["skos:broader"].length; i++) {
                     EcConcept.get(c["skos:broader"][i], function(concept) {
                         EcArray.setRemove(concept["skos:narrower"], c.shortId());
+                        concept["schema:dateModified"] = new Date().toISOString();
                         if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[concept.id] !== true) {
                             concept = EcEncryptedValue.toEncryptedValue(concept);
                         }
@@ -831,6 +834,7 @@ export default {
             if (c["skos:topConceptOf"] != null) {
                 EcArray.setRemove(this.framework["skos:hasTopConcept"], c.shortId());
                 var framework = this.framework;
+                framework["schema:dateModified"] = new Date().toISOString();
                 if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
                 }
@@ -898,6 +902,7 @@ export default {
             new EcAsyncHelper().each(concepts, function(conceptId, done) {
                 EcRepository.get(conceptId, function(concept) {
                     concept.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    concept["schema:dateModified"] = new Date().toISOString();
                     if (concept["skos:narrower"] && concept["skos:narrower"].length > 0) {
                         me.encryptConcepts(concept);
                     }
@@ -931,6 +936,7 @@ export default {
                     if (concept["skos:narrower"]) {
                         me.decryptConcepts(concept);
                     }
+                    concept["schema:dateModified"] = new Date().toISOString();
                     me.repo.saveTo(concept, done, done);
                 }, done);
             }, function(conceptIds) {
