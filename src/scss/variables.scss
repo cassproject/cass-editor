@@ -1,23 +1,31 @@
 
+@function tint($color, $percentage) {
+    @return mix(white, $color, $percentage);
+}
+@function shade($color, $percentage) {
+    @return mix(black, $color, $percentage);
+  }
+
 // generic variables need to update before import 
-$cass-primary:#374169;
-$cass-primary-up: #4B588C;
-$cass-primary-down: #30385A;
+$cass-secondary:#68C8DB;
+$cass-secondary-up: tint($cass-secondary, 50%);
+$cass-secondary-down: shade($cass-secondary, 50%);
 
-$cass-secondary:#136E91;
-$cass-secondary-up: #1A8FBD;
-$cass-secondary-down: #116180;
+$cass-primary:#4F99A8;
+$cass-primary-up: tint($cass-primary, 50%);
+$cass-primary-down: shade($cass-primary, 50%);
 
-$cass-error: #C23206;
-$cass-success: #0835ED;
-$cass-highlight: #ED823F;
+$cass-error: #D74C44;
+$cass-success: #68C8DB;
+$cass-highlight: #EDAC5F;
 
-$cass-black: #2b2323;
-$cass-light: #f5f5f3bf;
+$cass-black: #47585C;
+$cass-light: tint($cass-black, 90%);
+$cass-lightest:tint($cass-black, 95%);
 
-$family-primary: 'Open Sans',
+$family-primary: 'Assistant',
 'sans-serif';
-$family-secondary: 'Oswald',
+$family-secondary: 'Roboto',
 'sans-serif';
 
 $black: $cass-black;
@@ -26,23 +34,23 @@ $light: $cass-light;
 $primary: $cass-primary;
 $secondary: $cass-secondary;
 $link: $cass-highlight;
-$info: $cass-secondary;
+$info: $black;
 $success: $cass-success;
 $warning: $cass-highlight;
 $danger: $cass-error;
 
 $dark:$cass-black;
-$text: rgba($dark, .8);
+$text: $cass-black;
 
 $weight-normal: 400;
 $family-code: $family-primary;
-$has-background-white: $white;
+$background-white: $white;
 $background-light: $light;
-$background-medium: rgba($dark, .3);
+$background-medium: tint($dark, 80%);
 $background: $white;
-$text-strong: $black;
+$text-strong: $cass-black;
 $weight-bold: 600;
-$link-hover: $black;
+$link-hover: $primary;
 $text-hover: $primary;
 $title-size: 2.2rem !important;
 $subtitle-weight: 600;
@@ -60,4 +68,10 @@ $size-6: .85rem;
 $size-7: .7rem;
 
 
-$border-radius: 0;
+$border-radius: 4px;
+
+$gap: 6px;
+
+.has-background-lightest {
+    background-color:  $cass-lightest;
+}

@@ -1,269 +1,241 @@
 <template>
-    <div class="page-import container is-fluid is-marginless is-paddingless">
+    <div
+        id="import-page"
+        class="page-import container">
         <div class="columns is-multiline is-marginless is-gapless is-mobile">
-            <div class="column is-narrow is-hidden-mobile">
-                <!--- side bar -->
-                <side-bar
-                    type="import"
-                    :method="method"
-                    :queryParams="queryParams"
-                    @updateUrl="updateUrl" />
-                <!--- end side bar -->
-            </div>
             <!--- main body section -->
             <div class="column has-background-white is-scrollable">
                 <section class="page-import-body">
-                    <!-- top section import impormation -->
+                    <!-- top section import information -->
                     <div
                         class="has-background-white"
                         id="import-top-section">
-                        <div class="columns is-gapless is-multiline is-mobile">
-                            <div class="column is-narrow">
-                                <h1
-                                    class="title is-size-2"
-                                    v-if="queryParams.concepts === 'true'">
-                                    Import a concept scheme
-                                </h1>
-                                <h1
-                                    class="title is-2"
-                                    v-else>
-                                    Import a framework
-                                </h1>
-                            </div>
-                            <!-- import buttons -->
-                            <div class="column">
-                                <div
-                                    class="section"
-                                    id="import-actions">
-                                    <div class="columns is-gapless is-marginless is-mobile is-multiline">
-                                        <div class="column is-12">
-                                            <!-- import details options -->
-                                            <div
-                                                v-if="showImportDetailsView || showImportPreviewView || showImportLightView"
-                                                class="buttons is-small is-right">
-                                                <!-- desktop friendly cancel button -->
+                        <div class="section is-medium">
+                            <div class="columns is-gapless is-multiline is-mobile">
+                                <div class="column is-narrow">
+                                    <h1
+                                        class="title is-size-2"
+                                        v-if="queryParams.concepts === 'true'">
+                                        Import a concept scheme
+                                    </h1>
+                                    <h1
+                                        class="title is-2"
+                                        v-else>
+                                        Import a framework
+                                    </h1>
+                                </div>
+                                <!-- after importing framework: details and preview -->
+                                <div class="column">
+                                    <div
+                                        class="section"
+                                        id="import-actions">
+                                        <div class="columns is-gapless is-marginless is-mobile is-multiline">
+                                            <div class="column is-12">
+                                                <!-- import details options -->
                                                 <div
-                                                    @click="cancelImport"
-                                                    v-if="showImportPreviewView || showImportDetailsView"
-                                                    class="is-hidden-touch button is-light is-small is-pulled-right is-light">
-                                                    <span>
-                                                        Cancel
-                                                    </span>
-                                                    <span class="icon">
-                                                        <i class="fa fa-times-circle" />
-                                                    </span>
-                                                </div>
-                                                <!-- mobile friendly cancel button -->
-                                                <div
-                                                    @click="cancelImport"
-                                                    v-if="showImportPreviewView || showImportDetailsView"
-                                                    class="is-hidden-desktop button is-light is-pulled-right is-small is-light">
-                                                    <span class="icon">
-                                                        <i class="fa fa-times-circle" />
-                                                    </span>
-                                                </div>
-                                                <!-- desktop friendly home -->
-                                                <router-link
-                                                    v-if="showImportLightView"
-                                                    class="button is-hidden-touch is-small is-light is -pulled-right"
-                                                    to="/">
-                                                    <span>
-                                                        Done
-                                                    </span>
-                                                    <span class="icon">
-                                                        <i class="fa fa-home" />
-                                                    </span>
-                                                </router-link>
-                                                <!-- mobile friendly home -->
-                                                <router-link
-                                                    v-if="showImportLightView"
-                                                    class="button is-hidden-desktop is-small is-light is-pulled-right"
-                                                    to="/">
-                                                    <span class="icon">
-                                                        <i class="fa fa-home" />
-                                                    </span>
-                                                </router-link>
-                                                <!-- desktop friendly export -->
-                                                <div
-                                                    v-if="showImportLightView"
-                                                    class="button is-hidden-touch is-small is-light is-pulled-right"
-                                                    @click="showModal('export')">
-                                                    <span>
-                                                        Export
-                                                    </span>
-                                                    <span class="icon">
-                                                        <i class="fa fa-download" />
-                                                    </span>
-                                                </div>
-                                                <!-- mobile friendly export -->
-                                                <div
-                                                    v-if="showImportLightView"
-                                                    class="button is-hidden-desktop is-small is-light is-pulled-right"
-                                                    @click="showModal('export')">
-                                                    <span class="icon">
-                                                        <i class="fa fa-download" />
-                                                    </span>
-                                                </div>
-                                                <!-- mobile friendly start over -->
-                                                <div
-                                                    v-if="framework && showImportLightView"
-                                                    @click="cancelImport"
-                                                    class="button is-hidden-touch is-small is-info is-pulled-right">
-                                                    <span>
-                                                        import again
-                                                    </span>
-                                                    <span class="icon">
-                                                        <i class="fa fa-redo-alt" />
-                                                    </span>
-                                                </div>
-                                                <!-- mobile friendly start over -->
-                                                <div
-                                                    v-if="framework && showImportLightView"
-                                                    @click="cancelImport"
-                                                    class="button is-hidden-desktop is-small is-info is-pulled-right">
-                                                    <span class="icon">
-                                                        <i class="fa fa-redo-alt" />
-                                                    </span>
-                                                </div>
-                                                <!-- desktop friendly open in editor -->
-                                                <div
-                                                    v-if="framework && showImportLightView"
-                                                    @click="openFramework"
-                                                    class="button is-hidden-touch is-small is-info is-pulled-right">
-                                                    <span>view in editor</span>
-                                                    <span class="icon">
-                                                        <i class="fa fa-edit" />
-                                                    </span>
-                                                </div>
-                                                <!-- mobile friendly open in editor -->
-                                                <div
-                                                    v-if="framework && showImportLightView"
-                                                    @click="openFramework"
-                                                    class="button is-hidden-desktop is-small is-info is-pulled-right">
-                                                    <span class="icon">
-                                                        <i class="fa fa-edit" />
-                                                    </span>
-                                                </div>
-                                                <!-- desktop friendly accept details -->
-                                                <div
-                                                    @click="importDetailsAccept"
-                                                    v-if="showImportDetailsView"
-                                                    class="button is-hidden-touch is-small is-info is-pulled-right">
-                                                    <span>
-                                                        Accept Details & Review
-                                                    </span>
-                                                    <span class="icon is-small">
-                                                        <i class="fas has-text-white fa-arrow-right" />
-                                                    </span>
-                                                </div>
-                                                <!-- mobile friendly accept details and edit -->
-                                                <div
-                                                    @click="importDetailsAccept"
-                                                    v-if="showImportDetailsView"
-                                                    class="button is-hidden-desktop is-small is-info is-pulled-right">
-                                                    <span class="icon is-small">
-                                                        <i class="fas has-text-white fa-arrow-right" />
-                                                    </span>
-                                                </div>
-                                                <!-- desktop friendly accept preview -->
-                                                <div
-                                                    @click="importPreviewAccept()"
-                                                    v-if="showImportPreviewView"
-                                                    class="button is-hidden-touch is-small is-info is-pulled-right">
-                                                    <span>
-                                                        done editing
-                                                    </span>
-                                                    <span class="icon">
-                                                        <i class="fa has-text-white fa-arrow-right" />
-                                                    </span>
-                                                </div>
-                                                <!-- mobile friendly accept preview -->
-                                                <div
-                                                    @click="importPreviewAccept()"
-                                                    v-if="showImportPreviewView"
-                                                    class="button is-hidden-desktop is-small is-info is-pulled-right">
-                                                    <span class="icon">
-                                                        <i class="fa has-text-white fa-arrow-right" />
-                                                    </span>
+                                                    v-if="showImportDetailsView || showImportPreviewView || showImportLightView"
+                                                    class="buttons is-small is-right">
+                                                    <!-- desktop friendly cancel button -->
+                                                    <div
+                                                        @click="cancelImport"
+                                                        v-if="showImportPreviewView || showImportDetailsView"
+                                                        class="is-hidden-touch button is-light is-small is-pulled-right is-light">
+                                                        <span>
+                                                            Cancel
+                                                        </span>
+                                                        <span class="icon">
+                                                            <i class="fa fa-times-circle" />
+                                                        </span>
+                                                    </div>
+                                                    <!-- mobile friendly cancel button -->
+                                                    <div
+                                                        @click="cancelImport"
+                                                        v-if="showImportPreviewView || showImportDetailsView"
+                                                        class="is-hidden-desktop button is-light is-pulled-right is-small is-light">
+                                                        <span class="icon">
+                                                            <i class="fa fa-times-circle" />
+                                                        </span>
+                                                    </div>
+                                                    <!-- desktop friendly home -->
+                                                    <router-link
+                                                        v-if="showImportLightView"
+                                                        class="button is-hidden-touch is-small is-light is -pulled-right"
+                                                        to="/">
+                                                        <span>
+                                                            Done
+                                                        </span>
+                                                        <span class="icon">
+                                                            <i class="fa fa-home" />
+                                                        </span>
+                                                    </router-link>
+                                                    <!-- mobile friendly home -->
+                                                    <router-link
+                                                        v-if="showImportLightView"
+                                                        class="button is-hidden-desktop is-small is-light is-pulled-right"
+                                                        to="/">
+                                                        <span class="icon">
+                                                            <i class="fa fa-home" />
+                                                        </span>
+                                                    </router-link>
+                                                    <!-- desktop friendly export -->
+                                                    <div
+                                                        v-if="showImportLightView"
+                                                        class="button is-hidden-touch is-small is-light is-pulled-right"
+                                                        @click="showModal('export')">
+                                                        <span>
+                                                            Export
+                                                        </span>
+                                                        <span class="icon">
+                                                            <i class="fa fa-download" />
+                                                        </span>
+                                                    </div>
+                                                    <!-- mobile friendly export -->
+                                                    <div
+                                                        v-if="showImportLightView"
+                                                        class="button is-hidden-desktop is-small is-light is-pulled-right"
+                                                        @click="showModal('export')">
+                                                        <span class="icon">
+                                                            <i class="fa fa-download" />
+                                                        </span>
+                                                    </div>
+                                                    <!-- mobile friendly start over -->
+                                                    <div
+                                                        v-if="framework && showImportLightView"
+                                                        @click="cancelImport"
+                                                        class="button is-hidden-touch is-small is-info is-pulled-right">
+                                                        <span>
+                                                            import again
+                                                        </span>
+                                                        <span class="icon">
+                                                            <i class="fa fa-redo-alt" />
+                                                        </span>
+                                                    </div>
+                                                    <!-- mobile friendly start over -->
+                                                    <div
+                                                        v-if="framework && showImportLightView"
+                                                        @click="cancelImport"
+                                                        class="button is-hidden-desktop is-small is-info is-pulled-right">
+                                                        <span class="icon">
+                                                            <i class="fa fa-redo-alt" />
+                                                        </span>
+                                                    </div>
+                                                    <!-- desktop friendly open in editor -->
+                                                    <div
+                                                        v-if="framework && showImportLightView"
+                                                        @click="openFramework"
+                                                        class="button is-hidden-touch is-small is-info is-pulled-right">
+                                                        <span>view in editor</span>
+                                                        <span class="icon">
+                                                            <i class="fa fa-edit" />
+                                                        </span>
+                                                    </div>
+                                                    <!-- mobile friendly open in editor -->
+                                                    <div
+                                                        v-if="framework && showImportLightView"
+                                                        @click="openFramework"
+                                                        class="button is-hidden-desktop is-small is-info is-pulled-right">
+                                                        <span class="icon">
+                                                            <i class="fa fa-edit" />
+                                                        </span>
+                                                    </div>
+                                                    <!-- desktop friendly accept details -->
+                                                    <div
+                                                        @click="importDetailsAccept"
+                                                        v-if="showImportDetailsView"
+                                                        class="button is-hidden-touch is-small is-info is-pulled-right">
+                                                        <span>
+                                                            Accept Details & Review
+                                                        </span>
+                                                        <span class="icon is-small">
+                                                            <i class="fas has-text-white fa-arrow-right" />
+                                                        </span>
+                                                    </div>
+                                                    <!-- mobile friendly accept details and edit -->
+                                                    <div
+                                                        @click="importDetailsAccept"
+                                                        v-if="showImportDetailsView"
+                                                        class="button is-hidden-desktop is-small is-info is-pulled-right">
+                                                        <span class="icon is-small">
+                                                            <i class="fas has-text-white fa-arrow-right" />
+                                                        </span>
+                                                    </div>
+                                                    <!-- desktop friendly accept preview -->
+                                                    <div
+                                                        @click="importPreviewAccept()"
+                                                        v-if="showImportPreviewView"
+                                                        class="button is-hidden-touch is-small is-info is-pulled-right">
+                                                        <span>
+                                                            done editing
+                                                        </span>
+                                                        <span class="icon">
+                                                            <i class="fa has-text-white fa-arrow-right" />
+                                                        </span>
+                                                    </div>
+                                                    <!-- mobile friendly accept preview -->
+                                                    <div
+                                                        @click="importPreviewAccept()"
+                                                        v-if="showImportPreviewView"
+                                                        class="button is-hidden-desktop is-small is-info is-pulled-right">
+                                                        <span class="icon">
+                                                            <i class="fa has-text-white fa-arrow-right" />
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="column is-12">
-                                <p
-                                    v-if="status === 'Ready' && !file && queryParams.concepts === 'true'"
-                                    class="is-size-6">
-                                    Upload documents to transform into CaSS Concept Schemes.
-                                </p>
-                                <p
-                                    v-else-if="status === 'Ready' && !file"
-                                    class="is-size-6">
-                                    Upload documents to transform into CaSS Competency Frameworks.
-                                </p>
-                                <p
-                                    v-if="showImportDetailsView"
-                                    class="is-size-6">
-                                    <span class="has-text-success has-text-weight-bold">
-                                        CaSS has detected a framework!
-                                    </span>
-                                    <br><br>
-                                    We've gathered details about your competency framework and file.  Please review. Accept and approve to continue, cancel to review your file and re-import.
-                                </p>
-                                <p
-                                    v-if="showImportPreviewView"
-                                    class="">
-                                    <span class=" is-size-6 has-text-success has-text-weight-bold">
-                                        Import success, {{ frameworkSize }} competencies ready to edit.
-                                    </span>
-                                    <br><br>
+                                <!-- ready state details -->
+                                <div class="column is-12">
+                                    <p
+                                        v-if="status === 'Ready' && !file && queryParams.concepts === 'true'"
+                                        class="is-size-6">
+                                        Upload documents to transform into CaSS Concept Schemes.
+                                    </p>
+                                    <p
+                                        v-else-if="status === 'Ready' && !file"
+                                        class="is-size-6">
+                                        Upload documents to transform into CaSS Competency Frameworks.
+                                    </p>
+                                    <p
+                                        v-if="showImportDetailsView"
+                                        class="is-size-6">
+                                        <span class="has-text-success has-text-weight-bold">
+                                            CaSS has detected a framework!
+                                        </span>
+                                        <br><br>
+                                        We've gathered details about your competency framework and file.  Please review. Accept and approve to continue, cancel to review your file and re-import.
+                                    </p>
+                                    <p
+                                        v-if="showImportPreviewView"
+                                        class="">
+                                        <span class=" is-size-6 has-text-success has-text-weight-bold">
+                                            Import success, {{ frameworkSize }} competencies ready to edit.
+                                        </span>
+                                        <br><br>
                                     <!-- Please review the name and descriptions of the imported competencies. After making edits, "approve" the changes to view the imported competency details.-->
-                                </p>
-                                <p
-                                    v-if="showImportLightView"
-                                    class="is-size-6">
-                                    <span class="has-text-success has-text-weight-bold">
-                                        Your import is complete!
-                                    </span>
-                                    <br><br>
-                                </p>
-                            </div>
-                            <!-- import details after selecting file
-                            <div
-                                v-if="framework && showImportPreviewView"
-                                class="import-instructions">
-                                <div class="columns is-mobile">
-                                    <div class="column is-6 has-text-centered">
-                                        <span class="icon">
-                                            <i class="far fa-hand-rock has-text-dark" />
+                                    </p>
+                                    <p
+                                        v-if="showImportLightView"
+                                        class="is-size-6">
+                                        <span class="has-text-success has-text-weight-bold">
+                                            Your import is complete!
                                         </span>
-                                        <span class="is-size-7 has-text-weight-bold">
-                                            Drag to change hierarchy
-                                        </span>
-                                    </div>
-                                    <div class="column is-6 has-text-centered">
-                                        <span>
-                                            <span class="icon">
-                                                <i class="far fa-edit has-text-black" />
-                                            </span>
-                                            <span class="is-size-7 has-text-weight-bold">
-                                                Click descriptions to edit
-                                            </span>
-                                        </span>
-                                    </div>
+                                        <br><br>
+                                    </p>
                                 </div>
-                            </div>-->
+                            </div>
                         </div>
                     </div>
+                    <!-- import drop area and tabs -->
                     <div
                         id="import-bottom-section"
-                        class="section is-paddingless">
+                        class="section">
                         <!-- types of import for tabs -->
                         <div
                             v-if="!framework"
                             class="section is-large">
-                            <div class="tile is-vertical has-background-light">
+                            <div class="tile is-vertical has-background-lightest">
                                 <div class="section is-medium">
                                     <!-- columns for tabs -->
                                     <div class="columns is-mobile">
@@ -672,10 +644,15 @@
                                         </ul>
                                     </ul>
                                 </div>
-                                <Thing
+                                <Component
+                                    :is="dynamicThing"
+                                    @editNodeEvent="onEditNode"
+                                    @doneEditingNodeEvent="onDoneEditingNode"
                                     :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                     :obj="framework"
+                                    :editingNode="editingFramework"
                                     :repo="repo"
+                                    :properties="properties"
                                     class="framework-title"
                                     :profile="t3FrameworkProfile"
                                     :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
@@ -707,7 +684,9 @@
                             v-else-if="framework && showImportLightView"
                             class="import-light">
                             <div class="tile is-vertical">
-                                <Thing
+                                <Component
+                                    :is="dynamicThing"
+                                    :editingNode="editingNode"
                                     :obj="framework"
                                     :repo="repo"
                                     :parentNotEditable="!canEdit"
@@ -745,11 +724,11 @@
 import Hierarchy from '@/lode/components/lode/Hierarchy.vue';
 import common from '@/mixins/common.js';
 import dragAndDrop from './../../components/DragAndDrop.vue';
-import sideBar from './../../components/SideBar.vue';
 import exports from '@/mixins/exports.js';
 import competencyEdits from '@/mixins/competencyEdits.js';
 import t3Profile from '@/mixins/t3Profile.js';
 import Thing from '@/lode/components/lode/Thing.vue';
+import ThingEditing from '@/lode/components/lode/ThingEditing.vue';
 
 export default {
     name: "Import",
@@ -757,9 +736,10 @@ export default {
         queryParams: Object
     },
     mixins: [common, exports, competencyEdits, t3Profile],
-    components: {Hierarchy, dragAndDrop, sideBar, Thing},
+    components: {Hierarchy, dragAndDrop, Thing, ThingEditing},
     data: function() {
         return {
+            editingNode: false,
             hierarchyIsdoneLoading: false,
             frameworkBusy: true,
             detailsDetected: {
@@ -821,6 +801,13 @@ export default {
         };
     },
     computed: {
+        dynamicThing: function() {
+            if (this.editingNode) {
+                return 'ThingEditing';
+            } else {
+                return 'Thing';
+            }
+        },
         frameworkSize: function() {
             if (this.framework) {
                 return this.framework.competency.length;
@@ -858,19 +845,6 @@ export default {
         }
     },
     watch: {
-        status: function(val) {
-            let me = this;
-            if (val === 'processing') {
-                console.log("hello");
-                me.processingStatus = "Preparing competencies...";
-                setTimeout(() => {
-                    me.processingStatus = "Building competency hierarchy...";
-                    setTimeout(() => {
-                        me.processingStatus = "Preparing for editing...";
-                    }, 1000);
-                }, 1000);
-            }
-        },
         text: function(newText, oldText) {
             var me = this;
             TabStructuredImport.importCompetencies(
@@ -899,7 +873,17 @@ export default {
                 true);
         }
     },
+    created: function() {
+        this.$store.commit('editor/framework', null);
+        this.spitEvent('viewChanged');
+    },
     methods: {
+        onEditNode: function() {
+            this.editingNode = true;
+        },
+        onDoneEditingNode: function() {
+            this.editingNode = false;
+        },
         handleDoneLoading: function() {
             console.log("done loading");
             this.hierarchyIsdoneLoading = true;
@@ -1129,6 +1113,7 @@ export default {
                         }, function(error) {
                             me.statusType = "error";
                             me.status = error;
+                            me.processingFile = false;
                         });
                     });
                 }
@@ -1237,8 +1222,11 @@ export default {
                 }
                 me.relationCount = (data.length - 1);
             }, function(error) {
-                me.statusType = "error";
+                me.showErrors = true;
                 me.status = error;
+                me.statusType = "error";
+                me.errors.push(error);
+                me.processingFile = false;
             });
         },
         analyzeJsonLdFramework: function(file, success, failure) {
@@ -1298,13 +1286,19 @@ export default {
                         me.spitEvent("importFinished", f.shortId(), "importPage");
                     }
                 }, function(failure) {
-                    me.statusType = "error";
+                    me.showErrors = true;
                     me.status = failure;
+                    me.statusType = "error";
+                    me.errors.push(failure);
+                    me.processingFile = false;
                 });
             },
             function(failure) {
-                me.statusType = "error";
+                me.showErrors = true;
                 me.status = failure;
+                me.statusType = "error";
+                me.errors.push(failure);
+                me.processingFile = false;
             },
             function(increment) {
                 me.status = increment.competencies + "/" + me.competencyCount + " competencies imported.";
@@ -1362,12 +1356,20 @@ export default {
                         me.analyzeImportFile();
                     }
                 }, function(failure) {
-                    me.statusType = "error";
+                    console.log("failure", failure);
+                    me.showErrors = true;
                     me.status = failure;
+                    me.statusType = "error";
+                    me.errors.push(failure);
+                    me.processingFile = false;
                 });
             }, function(failure) {
-                me.statusType = "error";
+                console.log("failure", failure);
+                me.showErrors = true;
                 me.status = failure;
+                me.statusType = "error";
+                me.errors.push(failure);
+                me.processingFile = false;
             }, ceo);
         },
         importPdf: function() {
@@ -1384,7 +1386,11 @@ export default {
                     var uuid = new UUID(3, "nil", d.name).format();
                     var f = new EcFramework();
                     me.status = 'looking for existing framework...';
-                    f.assignId(me.repo.selectedServer, uuid);
+                    if (me.queryParams && me.queryParams.newObjectEndpoint) {
+                        f.id = me.queryParams.newObjectEndpoint + uuid;
+                    } else {
+                        f.assignId(me.repo.selectedServer, uuid);
+                    }
                     me.repo.search("(@id:\"" + f.shortId() + "\") AND (@type:Framework)", function() {}, function(frameworks) {
                         console.log(frameworks);
                         me.status = 'looking for existing framwork...';
@@ -1394,11 +1400,24 @@ export default {
                         } else {
                             me.status = 'no match, saving new framework...';
                             me.savePdfImport(d);
-                        }
+                        } /* TO DO - ERROR HANDLING HERE */
                     }, function(error) {
-                        console.error(error);
+                        me.showErrors = true;
+                        me.status = error;
+                        me.statusType = "error";
+                        me.errors.push(error);
+                        me.processingFile = false;
                     });
-                }, console.error);
+                },
+                /* TO DO - ERROR HANDLING HERE */
+                function(error) {
+                    me.showErrors = true;
+                    me.status = error;
+                    me.statusType = "error";
+                    me.errors.push(error);
+                    me.processingFile = false;
+                }
+            );
             me.statusType = "info";
             me.status = 'processing file...';
         },
@@ -1413,7 +1432,11 @@ export default {
                 f.setDescription(d.description);
             }
             var uuid = new UUID(3, "nil", name).format();
-            f.assignId(me.repo.selectedServer, uuid);
+            if (me.queryParams && me.queryParams.newObjectEndpoint) {
+                f.id = me.queryParams.newObjectEndpoint + uuid;
+            } else {
+                f.assignId(me.repo.selectedServer, uuid);
+            }
             f.competency = [];
             f.relation = [];
             f.level = [];
@@ -1428,12 +1451,15 @@ export default {
                 me.statusType = "error";
                 me.errors.push("Error importing competencies, no competencies found in file.");
                 me.processingFile = false;
-                return;
             }
             me.detailsDetected.competencies = d.competencies.length;
             for (var i = 0; i < d.competencies.length; i++) {
                 var c = new EcCompetency();
-                c.assignId(me.repo.selectedServer, d.competencies[i].id);
+                if (me.queryParams && me.queryParams.newObjectEndpoint) {
+                    c.id = me.queryParams.newObjectEndpoint + d.competencies[i].id;
+                } else {
+                    c.assignId(me.repo.selectedServer, d.competencies[i].id);
+                }
                 cs[d.competencies[i].id] = c.shortId();
                 if (d.competencies[i].name != null) { c.setName(d.competencies[i].name.trim()); }
                 if (d.competencies[i].name !== d.competencies[i].description && d.competencies[i].description) { c.setDescription(d.competencies[i].description.trim()); }
@@ -1445,7 +1471,11 @@ export default {
             }
             for (var i = 0; i < d.relation.length; i++) {
                 var c = new EcAlignment();
-                c.assignId(me.repo.selectedServer, d.relation[i].source + "_" + d.relation[i].relationType + "_" + d.relation[i].target);
+                if (me.queryParams && me.queryParams.newObjectEndpoint) {
+                    c.generateShortId(this.queryParams.newObjectEndpoint);
+                } else {
+                    c.assignId(me.repo.selectedServer, d.relation[i].source + "_" + d.relation[i].relationType + "_" + d.relation[i].target);
+                }
                 c.source = cs[d.relation[i].source];
                 c.target = cs[d.relation[i].target];
                 c.relationType = d.relation[i].relationType;
@@ -1462,7 +1492,13 @@ export default {
                 me.$store.commit('editor/t3Profile', true);
                 me.status = "";
                 me.importSuccess();
-            }, console.error);
+            }, function(error) {
+                me.showErrors = true;
+                me.status = error;
+                me.statusType = "error";
+                me.errors.push(error);
+                me.processingFile = false;
+            });
             me.statusType = "info";
             me.status = 'saving import...';
         },
@@ -1520,8 +1556,11 @@ export default {
                     });
                 },
                 function(failure) {
-                    me.statusType = "error";
+                    me.showErrors = true;
                     me.status = failure;
+                    me.statusType = "error";
+                    me.errors.push(failure);
+                    me.processingFile = false;
                 },
                 function(increment) {
                     if (increment.relations != null && increment.relations !== undefined) {
@@ -1570,9 +1609,11 @@ export default {
                     me.analyzeImportFile();
                 }
             }, function(failure) {
+                me.showErrors = true;
                 me.statusType = "error";
                 me.status = "Import failed. Check your import file for any errors.";
                 console.log(failure.statusText);
+                me.errors.push(failure);
             });
             me.statusType = "info";
             if (me.queryParams.concepts === 'true') {
@@ -1780,19 +1821,6 @@ export default {
 
 <style lang="scss">
     @import './../../scss/import.scss';
-.list-complete-item {
-  transition: all 1s;
-  display: block;
-}
-.list-complete-enter, .list-complete-leave-to
-/* .list-complete-leave-active below version 2.1.8 */ {
-  opacity: 0;
-  transform: translateY(0);
-}
-.list-complete-leave-active {
-  position: absolute;
-}
-.list-complete-move {
-  transition: transform 1s;
-}
+    @import './../../scss/framework.scss';
+
 </style>

@@ -27,10 +27,14 @@
                     @deleteObject="deleteObject"
                     @exportObject="exportObject"
                     @select="select"
-                    :isEditingContainer="isEditingContainer"
-                    @editingThing="handleEditingContainer($event)"
                     :parentStructure="hierarchy"
                     :parent="container">
+                    <template v-slot:copyURL="slotProps">
+                        <slot
+                            name="copyURL"
+                            :expandedProperty="slotProps.expandedProperty"
+                            :expandedValue="slotProps.expandedValue" />
+                    </template>
                     <slot />
                 </HierarchyNode>
             </draggable>
@@ -57,8 +61,7 @@ export default {
         exportOptions: Array,
         highlightList: Array,
         selectMode: Boolean,
-        selectAll: Boolean,
-        isEditingContainer: Boolean
+        selectAll: Boolean
     },
     data: function() {
         return {
@@ -104,13 +107,6 @@ export default {
         }
     },
     methods: {
-        handleEditingContainer: function(e) {
-            if (e) {
-                this.$emit('editingContainer', true);
-            } else {
-                this.$emit('editingContainer', false);
-            }
-        },
         computeHierarchy: function() {
             this.structure.splice(0, this.structure.length);
             if (this.container == null) { return r; }
@@ -187,6 +183,10 @@ export default {
                     var toIndex = container[property].indexOf(toId);
                     container[property].splice(toIndex, 0, fromId);
                 }
+                container["schema:dateModified"] = new Date().toISOString();
+                if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[container.id] !== true) {
+                    container = EcEncryptedValue.toEncryptedValue(container);
+                }
                 this.repo.saveTo(container, function() {
                     me.computeHierarchy();
                 }, console.error);
@@ -218,6 +218,10 @@ export default {
                 } else {
                     delete moveComp[fromProperty2];
                 }
+                fromContainer["schema:dateModified"] = new Date().toISOString();
+                if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[fromContainer.id] !== true) {
+                    fromContainer = EcEncryptedValue.toEncryptedValue(fromContainer);
+                }
                 this.repo.saveTo(fromContainer, function() {
                     if (toId == null || toId === undefined) {
                         if (!EcArray.isArray(toContainer[toProperty])) {
@@ -236,6 +240,14 @@ export default {
                     } else {
                         moveComp[toProperty2].push(me.container.shortId());
                     }
+                    toContainer["schema:dateModified"] = new Date().toISOString();
+                    moveComp["schema:dateModified"] = new Date().toISOString();
+                    if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[toContainer.id] !== true) {
+                        toContainer = EcEncryptedValue.toEncryptedValue(toContainer);
+                    }
+                    if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[moveComp.id] !== true) {
+                        moveComp = EcEncryptedValue.toEncryptedValue(moveComp);
+                    }
                     me.repo.saveTo(toContainer, function() {
                         me.repo.saveTo(moveComp, console.log, console.error);
                         me.computeHierarchy();
@@ -253,6 +265,7 @@ export default {
                 c.generateId(this.repo.selectedServer);
             }
             c["schema:dateCreated"] = new Date().toISOString();
+            c["schema:dateModified"] = new Date().toISOString();
             if (EcIdentityManager.ids != null && EcIdentityManager.ids.length > 0) {
                 c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
             }
@@ -266,6 +279,7 @@ export default {
                 this.container["skos:hasTopConcept"].unshift(c.shortId());
                 c["skos:topConceptOf"] = this.container.shortId();
                 this.container["schema:dateModified"] = new Date().toISOString();
+                c["schema:dateModified"] = new Date().toISOString();
                 if (this.$store.state.editor.private === true) {
                     c = EcEncryptedValue.toEncryptedValue(c);
                     if (EcEncryptedValue.encryptOnSaveMap[me.container.id] !== true) {
@@ -285,6 +299,8 @@ export default {
                 }
                 parent["skos:narrower"].unshift(c.shortId());
                 this.container["schema:dateModified"] = new Date().toISOString();
+                c["schema:dateModified"] = new Date().toISOString();
+                parent["schema:dateModified"] = new Date().toISOString();
                 if (this.$store.state.editor.private === true) {
                     c = EcEncryptedValue.toEncryptedValue(c);
                     if (EcEncryptedValue.encryptOnSaveMap[parent.id] !== true) {

@@ -1,5 +1,5 @@
 @charset 'utf-8';
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,700,800|Oswald&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,700,800|Roboto&display=swap');
 
 @import './variables.scss';
 
@@ -8,7 +8,7 @@ $section-padding-basic: .25rem .75rem;
 $section-padding: 1rem 1rem;
 $section-padding-medium: 1.5rem 1.5rem;
 $section-padding-large: 3rem 1.5rem;
-$section-padding-tb: .125rem 0rem;
+$section-padding-tb: .5rem 0rem;
 
 $menu-item-color:$black;
 $menu-item-hover-color: $black;
@@ -28,12 +28,11 @@ $navbar-padding-vertical: 2rem;
 $box-padding: .75rem;
 $menu-list-link-padding: .5em 1em;
 
-.subtitle-2 {
-    font-family: $family-secondary;
-    color: $black;
-}
-$title-size: $size-3;
-$subtitle-weight: 300;
+$title-size: $size-2;
+$title-weight: 500;
+$subtitle-weight: 200;
+$subtitle-family: $family-primary;
+$subtitle-line-height: 1.75;
 /* side bad menu theme*/ 
 $menu-label-color: $white;
 $menu-label-font-size:1em;
@@ -43,6 +42,37 @@ $menu-label-spacing:1em;
 
 $button-text-hover-background-color: transparent;
 
+$label-color: $dark;
+$label-weight: 600;
+$label-size: .6rem;
+
+/* inputs 
+$control-radius: ;
+$control-radius-small: ;
+$control-padding-vertical:;
+$control-padding-horizontal:''
+
+
+$help-size:;*/
+$column-gap: 6px;
+
+
+$menu-item-color: $white;
+$menu-item-hover-color: $dark;
+$menu-item-hover-background-color: transparent !default;
+$menu-item-active-color: $primary !default;
+$menu-item-active-background-color: $link !default;
+
+$menu-list-border-left: 1px solid $dark !default;
+$menu-list-line-height: 1.25 !default;
+$menu-list-link-padding: 0.5em 0.75em !default;
+$menu-nested-list-margin: 0.75em !default;
+$menu-nested-list-padding-left: 0.75em !default;
+
+$menu-label-color: $light !default;
+$menu-label-font-size: 0.75em !default;
+$menu-label-letter-spacing: 0.1em !default;
+$menu-label-spacing: 1em !default;
 
 // utilities
 @import "./../../node_modules/bulma/sass/utilities/_all.sass";
@@ -52,6 +82,7 @@ $button-text-hover-background-color: transparent;
 @import "./../../node_modules/bulma/sass/form/_all.sass";
 @import "./../../node_modules/bulma/sass/grid/_all.sass";
 @import "./../../node_modules/bulma/sass/layout/_all.sass";
+@import "./../../node_modules/bulma-checkradio/src/sass/index.sass";
 
 @include desktop {
     .pagesRight {
@@ -95,7 +126,7 @@ $button-text-hover-background-color: transparent;
     padding: $section-padding-medium !important;
  }
  .has-dashed-border {
-    border:2px dashed $black !important;
+    border:2px dashed $dark !important;
     border-radius: 1rem;
     min-height: 200px;
     height: 100%;
@@ -117,45 +148,12 @@ $button-text-hover-background-color: transparent;
      font-weight: medium;
  }
 
-
-
-
-.e-Property {
-  
-    .fa {
-        font-size: $size-7;
-        color: $dark;
-    }
-    label {
-        font-size: $size-7;
-        font-weight: 500;
-    }
-    .e-name {
-        font-size: $size-4;
-        font-weight: 600;
-    }
+.label {
+    font-size: $label-size;
 }
 
-.e-Property-text{
-    border-radius: .25rem;
+.has-text-underlined{
+   border-bottom: solid 1px rgba($primary, .8);
 }
 
-.e-Property-ul{
-    border-radius: .25rem;
-    padding: 0rem .25rem;
-    font-size: .8rem;
-    color: rgba($dark, .9);
-    .button {
-        
-    }
-    .e-description {
-        font-weight: 400;
-        font-size: $size-7;
-    }
-    .e-name {
-        font-weight: 600;
-        font-size: $size-4;
-    }
-    
-    margin: .125em .5em;
-}
+

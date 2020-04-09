@@ -5,13 +5,22 @@
 
 p {
     font-style: normal;
-    padding: .25rem;
+}
+
+hr  {
+    width: 100%;
+    display: block;
+    height: 1px;
+    padding-left: -1px;
+    margin: 6px auto;
+    border-width: 1px;
+    background-color: rgba( $dark, .5);
+    color: rgba( $dark, .5);
+    border-color: rgba( $dark, .5);
 }
 
 // scrollable area minus top bar size
 .is-scrollable{
-    overflow-y: scroll;
-    height: calc(100vh - 3.25em);
 }
 
 // base styles for text inputs
@@ -26,9 +35,6 @@ label {
     color: rgba($dark, .5);
     width: 95%;
     font-size: .7rem;
-    i {
-        color: rgba($dark, .3);
-    }
 }
 
 
@@ -39,8 +45,6 @@ label {
 .e-Property-ul{
     border-radius: .25rem;
     padding: 0rem .25rem;
-    font-size: .8rem;
-    color: rgba($dark, .9);
     .button {
         
     }
@@ -68,17 +72,6 @@ label {
 
 progress,
 select {
-    margin-right: .25rem;
-    width: 10rem;
-}
-
-hr {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    padding-top: 0px;
-    padding-bottom: 0px;
-    height:2px;
-    background-color: $black !important;
 }
 
 iframe {
@@ -120,3 +113,11 @@ iframe {
 }
 
 
+.buttons.is-spaced {
+    justify-content: space-between;
+}
+.modal-card-foot {
+    .buttons.is-spaced {
+        width: 100% !important;
+    }
+}

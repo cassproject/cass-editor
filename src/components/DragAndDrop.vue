@@ -47,17 +47,14 @@
                     </ul>
                 </div><div class="column is-12">
                     <button
-                        class="button is-info is-medium"
+                        class="button is-outlined is-primary is-medium"
                         :disabled="uploadDisabled"
                         @click="upload">
                         <span>
                             Process Files
                         </span>
-                        <span class="icon">
-                            <span class="fa-stack">
-                                <i class="fas fa-circle fa-stack-1x" />
-                                <i class="fas has-text-secondary fa-caret-right fa-stack-1x caret-icon-overlay-fix" />
-                            </span>
+                        <span class="icon is-large">
+                            <i class="fas fa-arrow-right" />
                         </span>
                     </button>
                 </div>

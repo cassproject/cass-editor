@@ -9,45 +9,115 @@ import Organizations from './views/organization/Organizations.vue';
 import Organization from './views/organization/Organization.vue';
 import Import from './views/framework/Import.vue';
 import ConceptScheme from './views/conceptScheme/ConceptScheme.vue';
+import Login from './views/login/Login.vue';
+import ConfigurationEditor from './views/configuration/ConfigurationEditor';
+import UserGroupEditor from './views/usersGroups/UserGroupEditor';
+import FrameworkCrosswalk from './views/framework/Crosswalk';
 import NotFound from './views/NotFound.vue';
 import InternalError from './views/InternalError.vue';
 import Forbidden from './views/Forbidden.vue';
+import Sidebar from './components/Sidebar.vue';
+import Topbar from './components/Topbar.vue';
 
 Vue.use(Router);
 export default new Router({
     mode: 'history',
     base: process.env.BASE_URL,
+    scrollBehavior(to, from, savedPosition) {
+        if (to.hash) {
+            return {
+                selector: to.hash,
+                offset: {x: 0, y: -100}
+            };
+        }
+    },
     routes: [
         {
             path: '/',
             name: 'frameworks',
-            component: Frameworks,
+            components: {
+                default: Frameworks,
+                sidebar: Sidebar,
+                topbar: Topbar
+            },
             alias: '/cass-editor/'
+        },
+        {
+            path: '/login',
+            name: 'login',
+            component: Login
+        },
+        {
+            path: '/config',
+            name: 'configuration',
+            components: {
+                default: ConfigurationEditor,
+                sidebar: Sidebar,
+                topbar: Topbar
+            }
+        },
+        {
+            path: '/userGroup',
+            name: 'usergroup',
+            components: {
+                default: UserGroupEditor,
+                sidebar: Sidebar,
+                topbar: Topbar
+            }
+        },
+        {
+            path: '/crosswalk',
+            name: 'crosswalk',
+            components: {
+                default: FrameworkCrosswalk,
+                sidebar: Sidebar,
+                topbar: Topbar
+            }
         },
         {
             path: '/about',
             name: 'about',
-            component: About
+            components: {
+                default: About,
+                sidebar: Sidebar,
+                topbar: Topbar
+            }
         },
         {
             path: '/framework',
             name: 'framework',
-            component: Framework
+            components: {
+                default: Framework,
+                sidebar: Sidebar,
+                topbar: Topbar
+            }
         },
         {
             path: '/import',
             name: 'import',
-            component: Import
+            components: {
+                default: Import,
+                sidebar: Sidebar,
+                topbar: Topbar
+            }
         },
         {
             path: '/organizations',
             name: 'organizations',
-            component: Organizations
+            components: {
+                default: Organizations,
+                sidebar: Sidebar,
+                topbar: Topbar
+            }
         },
         {
             path: '/organization',
             name: 'organization',
-            component: Organization
+            components: {
+                default: Organization,
+                sidebar: Sidebar,
+                topbar: Topbar
+            }
         },
         {
             path: '/test',
@@ -57,7 +127,11 @@ export default new Router({
         {
             path: '/conceptScheme',
             name: 'conceptScheme',
-            component: ConceptScheme
+            components: {
+                default: ConceptScheme,
+                sidebar: Sidebar,
+                topbar: Topbar
+            }
         },
         {
             path: '/403',
