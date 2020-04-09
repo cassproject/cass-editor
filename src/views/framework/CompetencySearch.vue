@@ -18,10 +18,15 @@
             </header>
             <section class="modal-card-body">
                 <div class="column is-12">
-                    <!--
-                            I'm guessing this will be a hierarchy/node/thing:framework
-                            structure, so leaving blank for now.
-                        -->
+                    <List
+                        type="Competency"
+                        :repo="repo"
+                        :click="select"
+                        :searchOptions="searchOptions"
+                        :paramObj="paramObj"
+                        :disallowEdits="true"
+                        :selectingCompetency="true"
+                        :selected="selectedIds" />
                 </div>
             </section>
             <footer class="modal-card-foot">
@@ -31,10 +36,14 @@
                         @click="$store.commit('competencySearchModalOpen', false)">
                         Cancel
                     </button>
-                    <button class="button is-success">
+                    <button
+                        class="button is-success"
+                        @click="copyCompetency">
                         Copy Competency
                     </button>
-                    <button class="button is-success">
+                    <button
+                        class="button is-success"
+                        @click="linkCompetency">
                         Link Competency
                     </button>
                 </div>
@@ -44,14 +53,16 @@
 </template>
 
 <script>
+import List from '@/lode/components/lode/List.vue';
 export default {
     name: 'CompetencySearch',
     props: {
-        isActive: Boolean
+        isActive: Boolean,
+        framework: Object
     },
+    components: {List},
     data() {
         return {
-            frameworkName: 'My Framework Name',
             viewOptions: [
                 {
                     label: 'View',
@@ -81,8 +92,61 @@ export default {
                     header: 'user 2',
                     view: 'view'
                 }
-            ]
+            ],
+            repo: window.repo,
+            selectedIds: []
         };
+    },
+    computed: {
+        frameworkName: function() {
+            return this.framework.getName();
+        },
+        searchOptions: function() {
+            let search = "";
+            if (this.queryParams && this.queryParams.filter != null) {
+                search += " AND (" + this.queryParams.filter + ")";
+            }
+            if (this.showMine || (this.queryParams && this.queryParams.concepts !== "true" && this.queryParams.show === "mine") ||
+                (this.queryParams && this.queryParams.concepts === "true" && this.queryParams.conceptShow === "mine")) {
+                search += " AND (";
+                for (var i = 0; i < EcIdentityManager.ids.length; i++) {
+                    if (i !== 0) {
+                        search += " OR ";
+                    }
+                    var id = EcIdentityManager.ids[i];
+                    search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
+                    search += " OR @owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
+                }
+                search += ")";
+            }
+            return search;
+        },
+        paramObj: function() {
+            let obj = {};
+            obj.size = 20;
+            var order = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "asc" : "desc";
+            obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "long",  "missing" : "_last"}} ]';
+            if (this.queryParams && ((this.queryParams.concepts !== "true" && this.queryParams.show === 'mine') ||
+                (this.queryParams.concepts === "true" && this.queryParams.conceptShow === "mine"))) {
+                obj.ownership = 'me';
+            }
+            return obj;
+        }
+    },
+    methods: {
+        select: function(competency) {
+            if (!EcArray.has(this.selectedIds, competency.shortId())) {
+                this.selectedIds.push(competency.shortId());
+            } else {
+                EcArray.setRemove(this.selectedIds, competency.shortId());
+            }
+        },
+        copyCompetency: function() {
+
+        },
+        linkCompetency: function() {
+
+        }
     }
 };
 </script>

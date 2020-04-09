@@ -2,7 +2,8 @@
     <div id="page-framework">
         <!-- competency search -->
         <CompetencySearch
-            :isActive="$store.state.lode.competencySearchModalOpen" />
+            :isActive="$store.state.lode.competencySearchModalOpen"
+            :framework="framework" />
         <!--
             share modal manages users who have access to
             the framework
