@@ -3,7 +3,8 @@
         <!-- competency search -->
         <CompetencySearch
             :isActive="$store.state.lode.competencySearchModalOpen"
-            :framework="framework" />
+            :framework="framework"
+            :queryParams="queryParams" />
         <!--
             share modal manages users who have access to
             the framework
