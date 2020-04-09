@@ -1179,6 +1179,11 @@ export default {
                 me.detailsDetected.fileType = "docx";
                 me.firstImport = false;
                 me.status = "File selected.";
+            } else if (file.name.endsWith(".html")) {
+                me.importType = "pdf";
+                me.detailsDetected.fileType = "html";
+                me.firstImport = false;
+                me.status = "File selected.";
             } else {
                 me.showErrors = true;
                 me.status = "CaSS cannot read the file " + file.name + ". Please check that the file has the correct file extension.";
@@ -1665,6 +1670,10 @@ export default {
                 this.importPdf();
             } else if (this.importType === "medbiq") {
                 this.importMedbiq();
+            } else {
+                this.statusType = "error";
+                this.status = "Unsupported file type" + this.importType;
+                this.processingFile = false;
             }
         },
         connectToServer: function() {
