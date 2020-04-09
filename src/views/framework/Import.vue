@@ -1631,7 +1631,7 @@ export default {
                 this.importMedbiq();
             } else {
                 this.statusType = "error";
-                this.status = "Unsupported file tyoe" + this.importType;
+                this.status = "Unsupported file type" + this.importType;
                 this.processingFile = false;
             }
         },
