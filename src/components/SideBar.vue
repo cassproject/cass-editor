@@ -236,7 +236,7 @@ import csvConceptExample from 'file-loader!../../files/Concept Scheme Example.cs
 import csvConceptTemplate from 'file-loader!../../files/Concept Scheme Template.csv';
 import ctdlAsnJsonldConcepts from 'file-loader!../../files/ConnectingCredentialsLevels.jsonld';
 export default {
-    name: 'Sidebar',
+    name: 'SideBar',
     props: {
         method: {
             default: ''
