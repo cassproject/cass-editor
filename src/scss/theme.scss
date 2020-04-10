@@ -74,6 +74,12 @@ $menu-label-font-size: 0.75em !default;
 $menu-label-letter-spacing: 0.1em !default;
 $menu-label-spacing: 1em !default;
 
+$breadcrumb-item-padding-vertial: .25rem;
+$breadcrumb-item-color: $cass-primary-down;
+$breadcrumb-item-hover-color: $cass-primary-down;
+$breadcrumb-item-active-color: $cass-primary-down;
+
+
 // utilities
 @import "./../../node_modules/bulma/sass/utilities/_all.sass";
 @import "./../../node_modules/bulma/sass/base/_all.sass";
