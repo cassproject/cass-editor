@@ -7,13 +7,20 @@
             <header class="modal-card-head">
                 <p class="modal-card-title">
                     <span class="title">Search for Competency</span>
-                    <br><span class="subtitle">
+                    <br><span
+                        class="subtitle"
+                        v-if="copyOrLink">
                         Sharing settings for {{ frameworkName }}
+                    </span>
+                    <span
+                        v-else
+                        class="subtitle">
+                        {{ $store.state.editor.selectedCompetency.getName() }}
                     </span>
                 </p>
                 <button
                     class="delete"
-                    @click="$store.commit('competencySearchModalOpen', false); selectedIds = [];"
+                    @click="resetModal();"
                     aria-label="close" />
             </header>
             <section class="modal-card-body">
@@ -34,20 +41,26 @@
                 <div class="buttons">
                     <button
                         class="button is-left is-light"
-                        @click="$store.commit('competencySearchModalOpen', false); selectedIds = [];">
+                        @click="resetModal();">
                         Cancel
                     </button>
                     <button
                         class="button is-success"
                         v-if="copyOrLink"
-                        @click="copyCompetencies(selectedIds); $store.commit('competencySearchModalOpen', false); selectedIds = [];">
+                        @click="copyCompetencies(selectedIds); resetModal();">
                         Copy Competency
                     </button>
                     <button
                         class="button is-success"
                         v-if="copyOrLink"
-                        @click="appendCompetencies(selectedIds); $store.commit('competencySearchModalOpen', false); selectedIds = [];">
+                        @click="appendCompetencies(selectedIds); resetModal();">
                         Link Competency
+                    </button>
+                    <button
+                        v-if="!copyOrLink"
+                        class="button is-success"
+                        @click="addSelected(selectedIds); resetModal();">
+                        Add Selected
                     </button>
                 </div>
             </footer>
@@ -57,6 +70,7 @@
 
 <script>
 import List from '@/lode/components/lode/List.vue';
+import common from '@/mixins/common.js';
 export default {
     name: 'CompetencySearch',
     props: {
@@ -65,6 +79,7 @@ export default {
         queryParams: Object
     },
     components: {List},
+    mixins: [common],
     data() {
         return {
             viewOptions: [
@@ -142,6 +157,10 @@ export default {
         }
     },
     methods: {
+        resetModal: function() {
+            this.$store.commit('competencySearchModalOpen', false);
+            this.selectedIds = [];
+        },
         select: function(competency) {
             if (!EcArray.has(this.selectedIds, competency.shortId())) {
                 this.selectedIds.push(competency.shortId());
@@ -394,6 +413,9 @@ export default {
             this.repo.saveTo(framework, function() {
                 me.$store.commit('editor/framework', EcFramework.getBlocking(framework.id));
             }, console.error);
+        },
+        addSelected: function(ids) {
+            this.addAlignments(ids, this.$store.state.editor.selectedCompetency, this.$store.state.editor.selectCompetencyRelation);
         }
     }
 };

@@ -315,8 +315,6 @@ export default {
                         profile[key]["noTextEditing"] = 'true';
                         profile[key]["remove"] = function(source, target) { me.removeRelationFromFramework(source, key, target); };
                         profile[key]["add"] = function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, key, values); };
-                        profile[key]["iframePath"] = me.$store.state.editor.iframeCompetencyPathInterframework;
-                        profile[key]["iframeText"] = "Select competencies to align...";
                     }
                 }
                 return profile;
