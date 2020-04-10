@@ -1,20 +1,20 @@
 <template>
     <div
-        class="modal"
+        class="modal competency-search"
         :class="{'is-active': isActive}">
         <div class="modal-background" />
         <div class="modal-card">
-            <header class="modal-card-head">
+            <header class="modal-card-head has-background-primary">
                 <p class="modal-card-title">
-                    <span class="title">Search for Competency</span>
+                    <span class="title has-text-white">Search for Competency</span>
                     <br><span
-                        class="subtitle"
+                        class="subtitle has-text-white"
                         v-if="copyOrLink">
                         Sharing settings for {{ frameworkName }}
                     </span>
                     <span
                         v-else
-                        class="subtitle">
+                        class="subtitle has-text-white">
                         {{ $store.state.editor.selectedCompetency.getName() }}
                     </span>
                 </p>
@@ -40,25 +40,38 @@
             <footer class="modal-card-foot">
                 <div class="buttons">
                     <button
-                        class="button is-left is-light"
+                        class="button is-outlined is-dark"
                         @click="resetModal();">
-                        Cancel
+                        <span class="icon">
+                            <i class="fa fa-times" />
+                        </span>
+                        <span>cancel</span>
                     </button>
                     <button
-                        class="button is-success"
+                        class="button is-outlined is-primary"
                         v-if="copyOrLink"
                         @click="copyCompetencies(selectedIds); resetModal();">
-                        Copy Competency
+                        <span class="icon">
+                            <i class="fa fa-copy" />
+                        </span>
+                        <span>
+                            Copy Competency
+                        </span>
                     </button>
                     <button
-                        class="button is-success"
+                        class="button is-outlined is-primary"
                         v-if="copyOrLink"
                         @click="appendCompetencies(selectedIds); resetModal();">
-                        Link Competency
+                        <span class="icon">
+                            <i class="fa fa-link" />
+                        </span>
+                        <span>
+                            Link Competency
+                        </span>
                     </button>
                     <button
                         v-if="!copyOrLink"
-                        class="button is-success"
+                        class="button is-outlined is-primary"
                         @click="addSelected(selectedIds); resetModal();">
                         Add Selected
                     </button>
@@ -422,5 +435,32 @@ export default {
 </script>
 
 
-<style>
+<style lang="scss">
+    @import './../../scss/frameworks.scss';
+.competency-search{
+    .thing {
+        padding: .125rem .25rem !important;
+    }
+    .thing .list-thing:hover {
+        background-color: none;
+    }
+    .Thing__heading {
+        padding-left: .25rem !important;
+        margin-right: 2rem;
+    }
+    .edit-button {
+        display: none;
+    }
+
+    .list-ul__item:hover {
+        padding-top: .25rem;
+        background-color: $cass-lightest;
+    }
+    .list-ul__item {
+        margin-top: .25rem;
+        border-radius: 3px;
+        padding-top: .25rem;
+    }
+}
+
 </style>
