@@ -1,5 +1,16 @@
 @import './variables.scss';
 
+#search-selection__icon {
+    float: right;
+    position:fixed;
+    right: 8px;
+    display: flex;
+    height: 100%;
+    align-content: center;
+    .icon {
+        height: 100%;
+    }
+}
 .framework-list-page {
     label{
         display:none;
@@ -29,6 +40,9 @@
             }
             li.list-ul__item:hover {
                 background-color: $cass-lightest;
+                #arrow-icon {
+                    display:block;
+                }
             }
             .list-ul__item{
                 border-radius: $border-radius;
