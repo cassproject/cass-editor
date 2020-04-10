@@ -19,6 +19,7 @@
             <section class="modal-card-body">
                 <div class="column is-12">
                     <List
+                        v-if="$store.state.lode.competencySearchModalOpen"
                         type="Competency"
                         :repo="repo"
                         :click="select"
