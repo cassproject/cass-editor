@@ -6,7 +6,7 @@
         <div class="modal-card">
             <header class="modal-card-head has-background-primary">
                 <p class="modal-card-title">
-                    <span class="title has-text-white">Search for Competency</span>
+                    <span class="title has-text-white">Search for {{ $store.state.lode.searchType }}</span>
                     <br><span
                         class="subtitle has-text-white"
                         v-if="copyOrLink">
@@ -27,7 +27,7 @@
                 <div class="column is-12">
                     <List
                         v-if="$store.state.lode.competencySearchModalOpen"
-                        type="Competency"
+                        :type="$store.state.lode.searchType"
                         :repo="repo"
                         :click="select"
                         :searchOptions="searchOptions"
@@ -55,7 +55,7 @@
                             <i class="fa fa-copy" />
                         </span>
                         <span>
-                            Copy Competency
+                            Copy {{ $store.state.lode.searchType }}
                         </span>
                     </button>
                     <button
@@ -66,7 +66,7 @@
                             <i class="fa fa-link" />
                         </span>
                         <span>
-                            Link Competency
+                            Link {{ $store.state.lode.searchType }}
                         </span>
                     </button>
                     <button
@@ -427,8 +427,32 @@ export default {
                 me.$store.commit('editor/framework', EcFramework.getBlocking(framework.id));
             }, console.error);
         },
+        attachUrlProperties: function(results) {
+            var resource = this.$store.state.editor.framework;
+            if (this.$store.state.editor.selectedCompetency != null) {
+                resource = this.$store.state.editor.selectedCompetency;
+            }
+            for (var i = 0; i < results.length; i++) {
+                var thing = EcRepository.getBlocking(results[i]);
+                if (thing.isAny(new EcConcept().getTypes())) {
+                    if (!EcArray.isArray(resource[this.$store.state.editor.selectCompetencyRelation])) {
+                        resource[this.$store.state.editor.selectCompetencyRelation] = [];
+                    }
+                    EcArray.setAdd(resource[this.$store.state.editor.selectCompetencyRelation], thing.shortId());
+                }
+            }
+            resource["schema:dateModified"] = new Date().toISOString();
+            if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[resource.id] !== true) {
+                resource = EcEncryptedValue.toEncryptedValue(resource);
+            }
+            this.repo.saveTo(resource, function() {}, console.error);
+        },
         addSelected: function(ids) {
-            this.addAlignments(ids, this.$store.state.editor.selectedCompetency, this.$store.state.editor.selectCompetencyRelation);
+            if (this.$store.state.lode.searchType === "Competency") {
+                this.addAlignments(ids, this.$store.state.editor.selectedCompetency, this.$store.state.editor.selectCompetencyRelation);
+            } else {
+                this.attachUrlProperties(ids);
+            }
         }
     }
 };
