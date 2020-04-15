@@ -113,7 +113,7 @@ export default {
         }
     },
     data: () => ({
-        USE_TEST_DATA: true,
+        USE_TEST_DATA: false,
         CONFIG_SEARCH_SIZE: 10000,
         DEFAULT_CONFIGURATION_CONTEXT: 'https://schema.cassproject.org/0.4/',
         DEFAULT_CONFIGURATION_TYPE: 'Configuration',
@@ -416,6 +416,11 @@ export default {
             }
             cco.alignConfig = algConfig;
         },
+        addDefaultPermissionConfigToObject(cco) {
+            cco.defaultObjectOwners = this.currentConfig.defaultOwners;
+            cco.defaultObjectReaders = this.currentConfig.defaultReaders;
+            cco.defaultCommenters = this.currentConfig.defaultCommenters;
+        },
         generateComplexConfigObjectFromCurrentConfig() {
             let cco = new Thing();
             cco.context = this.DEFAULT_CONFIGURATION_CONTEXT;
@@ -432,6 +437,7 @@ export default {
             this.addRelationsConfigToObject(cco);
             this.addLevelsConfigToObject(cco);
             this.addAlignmentConfigToObject(cco);
+            this.addDefaultPermissionConfigToObject(cco);
             this.complexConfigObject = cco;
         },
         saveConfigToRepositorySuccess(msg) {
@@ -445,13 +451,16 @@ export default {
             this.configBusy = false;
             this.showListView();
         },
-        saveCurrentConfig(enforcedLevels) {
+        saveCurrentConfig(enforcedLevels, defaultOwners, defaultReaders, defaultCommenters) {
             console.log("saveCurrentConfig: ");
             console.log(enforcedLevels);
             if (enforcedLevels && enforcedLevels.length > 0) {
                 this.currentConfig.enforceLevelValues = true;
                 this.currentConfig.enforcedLevelValues = enforcedLevels;
             } else this.currentConfig.enforceLevelValues = false;
+            this.currentConfig.defaultOwners = defaultOwners;
+            this.currentConfig.defaultReaders = defaultReaders;
+            this.currentConfig.defaultCommenters = defaultCommenters;
             this.generateComplexConfigObjectFromCurrentConfig();
             console.log("complexConfigObject: ");
             console.log(JSON.stringify(this.complexConfigObject));
@@ -552,6 +561,9 @@ export default {
             newConfigObj.alignments.teaches = true;
             newConfigObj.alignments.assesses = true;
             newConfigObj.alignments.requires = true;
+            newConfigObj.defaultOwners = [];
+            newConfigObj.defaultReaders = [];
+            newConfigObj.defaultCommenters = [];
             return newConfigObj;
         },
         createNewConfig() {
@@ -729,6 +741,17 @@ export default {
             simpleConfigObj.alignments.assesses = caa.includes("assesses");
             simpleConfigObj.alignments.requires = caa.includes("requires");
         },
+        buildSimpleConfigDefaultPermissionData(simpleConfigObj, complexConfigObj) {
+            if (complexConfigObj["defaultObjectOwners"]) {
+                simpleConfigObj.defaultOwners = complexConfigObj["defaultObjectOwners"];
+            } else simpleConfigObj.defaultOwners = [];
+            if (complexConfigObj["defaultObjectReaders"]) {
+                simpleConfigObj.defaultReaders = complexConfigObj["defaultObjectReaders"];
+            } else simpleConfigObj.defaultReaders = [];
+            if (complexConfigObj["defaultCommenters"]) {
+                simpleConfigObj.defaultCommenters = complexConfigObj["defaultCommenters"];
+            } else simpleConfigObj.defaultCommenters = [];
+        },
         generateSimpleConfigObject(cco) {
             let simpleConfigObj = {};
             simpleConfigObj.id = cco.shortId();
@@ -744,6 +767,7 @@ export default {
             this.buildSimpleConfigObjectLevelData(simpleConfigObj, cco);
             this.buildSimpleConfigObjectRelationshipData(simpleConfigObj, cco);
             this.buildSimpleConfigObjectAlignmentData(simpleConfigObj, cco);
+            this.buildSimpleConfigDefaultPermissionData(simpleConfigObj, cco);
             return simpleConfigObj;
         },
         searchRepositoryForConfigsSuccess(ecRemoteLda) {
@@ -873,6 +897,9 @@ export default {
             a.alignments.teaches = true;
             a.alignments.assesses = true;
             a.alignments.requires = true;
+            a.defaultOwners = [];
+            a.defaultReaders = [];
+            a.defaultCommenters = [];
             ca.push(a);
             /** **************************** Test Config B ***********************************************/
             let b = {};
@@ -1016,6 +1043,9 @@ export default {
             b.alignments.teaches = true;
             b.alignments.assesses = true;
             b.alignments.requires = true;
+            b.defaultOwners = [];
+            b.defaultReaders = [];
+            b.defaultCommenters = [];
             ca.push(b);
             /** **************************** Test Config C ***********************************************/
             let c = {};
@@ -1159,6 +1189,9 @@ export default {
             c.alignments.teaches = true;
             c.alignments.assesses = true;
             c.alignments.requires = true;
+            c.defaultOwners = [];
+            c.defaultReaders = [];
+            c.defaultCommenters = [];
             ca.push(c);
             return ca;
         }

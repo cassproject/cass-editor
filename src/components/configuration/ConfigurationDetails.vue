@@ -11,6 +11,92 @@
                 </span>
             </div>
         </div>
+        <!-- permission entities search modal -->
+        <div
+            class="modal"
+            :class="[{'is-active': showSelectPermissionEntitiesModal}]">
+            <div class="modal-background" />
+            <div class="modal-card">
+                <header class="modal-card-head has-background-primary">
+                    <p class="subtitle is-size-3 modal-card-title has-text-white">
+                        {{ permissionEntitySelectionTitle }}
+                        <button
+                            class="delete is-pulled-right"
+                            aria-label="close"
+                            @click="closeSelectPermissionEntitiesModal" />
+                    </p>
+                </header>
+                <div class="modal-card-body has-text-dark">
+                    <div class="field">
+                        <input
+                            type="text"
+                            class="input"
+                            v-model="permissionEntitiesFilter"
+                            placeholder="user/group filter">
+                    </div>
+                    <div class="table-container">
+                        <div class="table">
+                            <thead>
+                                <tr>
+                                    <th />
+                                    <th>name</th>
+                                    <th>email</th>
+                                    <th>type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    v-for="(pe, index) in filteredPermissionEntities"
+                                    :key="index">
+                                    <th>
+                                        <div class="checkbox">
+                                            <input
+                                                :id="pe.pk"
+                                                :value="pe.pk"
+                                                name="pe.name"
+                                                type="checkbox"
+                                                v-model="selectedPermissionEntities">
+                                        </div>
+                                    </th>
+                                    <td>{{ pe.name }}</td>
+                                    <td>{{ pe.email }}</td>
+                                    <td>
+                                        <i v-if="pe.type.equalsIgnoreCase('person')" class="fa fa-user" title="user"/>
+                                        <i v-if="pe.type.equalsIgnoreCase('group')" class="fa fa-users" title="group"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </div>
+                    </div>
+                </div>
+                <footer class="modal-card-foot has-background-light">
+                    <div
+                        class="buttons"
+                        v-if="!readOnly">
+                        <button
+                            class="button is-outlined is-dark"
+                            @click="closeSelectPermissionEntitiesModal">
+                            <span class="icon">
+                                <i class="fa fa-times" />
+                            </span>
+                            <span>
+                                cancel
+                            </span>
+                        </button>
+                        <button
+                            class="button is-outlined is-primary"
+                            @click="applySelectPermissionEntities">
+                            <span class="icon">
+                                <i class="fa fa-save" />
+                            </span>
+                            <span>
+                                apply
+                            </span>
+                        </button>
+                    </div>
+                </footer>
+            </div>
+        </div>
         <!-- level search modal -->
         <div
             class="modal"
@@ -31,7 +117,7 @@
                     class="modal-card-body has-text-dark">
                     <div class="field">
                         <div
-                            div
+                            v-if="!showAddNewLevelSection"
                             class="control">
                             <label class="label">Available Levels:</label>
                             <input
@@ -469,7 +555,7 @@
                         </div>
                         <div
                             class="is-size-7"
-                            v-if="customPropertyPropertyNameInvalid">
+                            v-if="customPropertyDescriptionInvalid">
                             Description is required
                         </div>
                     </div>
@@ -1080,6 +1166,147 @@
                 </div>
             </div>
         </div>
+        <div
+            class="section"
+            id="default-owners">
+            <!-- ************************************** Default Owners ************************************************ -->
+            <h5>Default Owners</h5>
+            <div
+                class="button is-outlined is-primary is-small"
+                v-if="!readOnly"
+                @click="openSelectPermissionEntitiesModal('owner')">
+                manage default owners
+            </div>
+            <div
+                v-if="localDefaultOwners.length > 0"
+                class="table-container">
+                <div class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                name
+                            </th>
+                            <th>
+                                email
+                            </th>
+                            <th>
+                                type
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="pk in localDefaultOwners"
+                            :key="pk">
+                            <th class="control">
+                                <p>{{ getPermissionEntityName(pk) }}</p>
+                            </th>
+                            <td>
+                                <p>{{ getPermissionEntityEmail(pk) }}</p>
+                            </td>
+                            <td>
+                                <i v-if="getPermissionEntityType(pk).equalsIgnoreCase('person')" class="fa fa-user" title="user"/>
+                                <i v-if="getPermissionEntityType(pk).equalsIgnoreCase('group')" class="fa fa-users" title="group"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </div>
+            </div>
+        </div>
+        <div
+            class="section"
+            id="default-readers">
+            <!-- ************************************** Default Readers ************************************************ -->
+            <h5>Default Readers</h5>
+            <div
+                class="button is-outlined is-primary is-small"
+                v-if="!readOnly"
+                @click="openSelectPermissionEntitiesModal('reader')">
+                manage default readers
+            </div>
+            <div
+                v-if="localDefaultReaders.length > 0"
+                class="table-container">
+                <div class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                name
+                            </th>
+                            <th>
+                                email
+                            </th>
+                            <th>
+                                type
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="pk in localDefaultReaders"
+                            :key="pk">
+                            <th class="control">
+                                <p>{{ getPermissionEntityName(pk) }}</p>
+                            </th>
+                            <td>
+                                <p>{{ getPermissionEntityEmail(pk) }}</p>
+                            </td>
+                            <td>
+                                <i v-if="getPermissionEntityType(pk).equalsIgnoreCase('person')" class="fa fa-user" title="user"/>
+                                <i v-if="getPermissionEntityType(pk).equalsIgnoreCase('group')" class="fa fa-users" title="group"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </div>
+            </div>
+        </div>
+        <div
+            class="section"
+            id="default-commenters">
+            <!-- ************************************** Default Commenters ************************************************ -->
+            <h5>Default Commenters</h5>
+            <div
+                class="button is-outlined is-primary is-small"
+                v-if="!readOnly"
+                @click="openSelectPermissionEntitiesModal('commenter')">
+                manage default commenters
+            </div>
+            <div
+                v-if="localDefaultCommenters.length > 0"
+                class="table-container">
+                <div class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                name
+                            </th>
+                            <th>
+                                email
+                            </th>
+                            <th>
+                                type
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="pk in localDefaultCommenters"
+                            :key="pk">
+                            <th class="control">
+                                <p>{{ getPermissionEntityName(pk) }}</p>
+                            </th>
+                            <td>
+                                <p>{{ getPermissionEntityEmail(pk) }}</p>
+                            </td>
+                            <td>
+                                <i v-if="getPermissionEntityType(pk).equalsIgnoreCase('person')" class="fa fa-user" title="user"/>
+                                <i v-if="getPermissionEntityType(pk).equalsIgnoreCase('group')" class="fa fa-users" title="group"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </div>
+            </div>
+        </div>
         <!-- ************************************** Validation ************************************************ -->
         <div class="section">
             <div v-if="configInvalid">
@@ -1203,6 +1430,8 @@ export default {
     data: function() {
         return {
             LEVEL_SEARCH_SIZE: 10000,
+            GROUP_SEARCH_SIZE: 10000,
+            PERSON_SEARCH_SIZE: 10000,
             DEFAULT_CUSTOM_PROPERTY_CONTEXT: 'https://schema.cassproject.org/0.4/',
             DEFAULT_CUSTOM_PROPERTY_RANGE: 'http://schema.org/Text',
             configDetailsBusy: false,
@@ -1251,9 +1480,20 @@ export default {
             selectedLevelFilter: '',
             selectedLevels: [],
             levelList: [],
+            personList: [],
+            groupList: [],
+            showSelectPermissionEntitiesModal: false,
+            permissionEntityList: [],
+            selectedPermissionEntities: [],
+            permissionEntitiesFilter: '',
+            permissionEntitySelectionMode: '',
+            permissionEntitySelectionTitle: '',
             levelInvalid: false,
             levelNameInvalid: false,
-            localEnforcedLevelValues: this.config.enforcedLevelValues
+            localEnforcedLevelValues: this.config.enforcedLevelValues,
+            localDefaultOwners: this.config.defaultOwners,
+            localDefaultReaders: this.config.defaultReaders,
+            localDefaultCommenters: this.config.defaultCommenters
         };
     },
     components: {
@@ -1261,6 +1501,52 @@ export default {
         RelationshipListItem
     },
     methods: {
+        getPermissionEntityEmail(pk) {
+            let pe = this.getPermissionEntityByPk(pk);
+            if (pe) return pe.email;
+            else return 'unknown';
+        },
+        getPermissionEntityType(pk) {
+            let pe = this.getPermissionEntityByPk(pk);
+            if (pe) return pe.type;
+            else return 'unknown';
+        },
+        getPermissionEntityName(pk) {
+            let pe = this.getPermissionEntityByPk(pk);
+            if (pe) return pe.name;
+            else return 'unknown';
+        },
+        getPermissionEntityByPk(pk) {
+            for (let pe of this.permissionEntityList) {
+                if (pe.pk.equals(pk)) return pe;
+            }
+        },
+        applySelectPermissionEntities() {
+            if (this.permissionEntitySelectionMode.equalsIgnoreCase('owner')) this.localDefaultOwners = this.selectedPermissionEntities;
+            else if (this.permissionEntitySelectionMode.equalsIgnoreCase('reader')) this.localDefaultReaders = this.selectedPermissionEntities;
+            else if (this.permissionEntitySelectionMode.equalsIgnoreCase('commenter')) this.localDefaultCommenters = this.selectedPermissionEntities;
+            this.closeSelectPermissionEntitiesModal();
+        },
+        closeSelectPermissionEntitiesModal() {
+            this.permissionEntitySelectionTitle = '';
+            this.selectedPermissionEntities = [];
+            this.permissionEntitiesFilter = '';
+            this.showSelectPermissionEntitiesModal = false;
+        },
+        openSelectPermissionEntitiesModal(pesMode) {
+            this.permissionEntitySelectionMode = pesMode;
+            if (this.permissionEntitySelectionMode.equalsIgnoreCase('owner')) {
+                this.selectedPermissionEntities = this.localDefaultOwners;
+                this.permissionEntitySelectionTitle = 'Select Default Owners';
+            } else if (this.permissionEntitySelectionMode.equalsIgnoreCase('reader')) {
+                this.selectedPermissionEntities = this.localDefaultReaders;
+                this.permissionEntitySelectionTitle = 'Select Default Readers';
+            } else if (this.permissionEntitySelectionMode.equalsIgnoreCase('commenter')) {
+                this.selectedPermissionEntities = this.localDefaultCommenters;
+                this.permissionEntitySelectionTitle = 'Select Default Commenters';
+            }
+            this.showSelectPermissionEntitiesModal = true;
+        },
         setAllValidationsChecksToValid() {
             this.levelInvalid = false;
             this.levelNameInvalid = false;
@@ -1303,7 +1589,7 @@ export default {
         createAndSaveNewLevel() {
             let ecl = new EcLevel();
             ecl.generateId(window.repo.selectedServer);
-            this.addAllIdentityPksAsOwners(ecl);
+            // this.addAllIdentityPksAsOwners(ecl);
             ecl.name = this.newLevelName.trim();
             if (this.newLevelDescription && !this.newLevelDescription.trim().equals('')) ecl.description = this.newLevelDescription.trim();
             EcRepository.save(ecl, this.createAndSaveNewLevelSuccess, this.createAndSaveNewLevelFailure);
@@ -1490,7 +1776,7 @@ export default {
         validateCurrentConfigAndEmitSave() {
             this.validateConfigFields();
             if (!this.configInvalid) {
-                this.$emit('save', this.localEnforcedLevelValues);
+                this.$emit('save', this.localEnforcedLevelValues, this.localDefaultOwners, this.localDefaultReaders, this.localDefaultCommenters);
             }
         },
         deleteCompetencyEnforcedType(etIndex) {
@@ -1792,22 +2078,96 @@ export default {
                 }
             });
         },
-        buildLevelListSuccess(ecla) {
+        addPersonsToPermissionEntityList() {
+            for (let p of this.personList) {
+                let pEcPk = this.getPersonEcPk(p);
+                if (pEcPk) {
+                    let pe = {};
+                    pe.pk = pEcPk.toPem();
+                    pe.name = p.getName();
+                    pe.email = p.email;
+                    pe.type = 'Person';
+                    this.permissionEntityList.push(pe);
+                }
+            }
+        },
+        addGroupsToPermissionEntityList() {
+            for (let g of this.groupList) {
+                let gEcPk = this.getOrganizationEcPk(g);
+                if (gEcPk) {
+                    let pe = {};
+                    pe.pk = gEcPk.toPem();
+                    pe.name = g.getName();
+                    pe.email = 'n/a';
+                    pe.type = 'Group';
+                    this.permissionEntityList.push(pe);
+                }
+            }
+        },
+        sortPersonList() {
+            this.personList.sort(function(p1, p2) {
+                if (p1.getName() > p2.getName()) return 1;
+                else if (p2.getName() > p1.getName()) return -1;
+                else return 0;
+            });
+        },
+        sortGroupList() {
+            this.groupList.sort(function(g1, g2) {
+                if (g1.getName() > g2.getName()) return 1;
+                else if (g2.getName() > g1.getName()) return -1;
+                else return 0;
+            });
+        },
+        fetchGroupListForPermissionEntitySuccess(ecoa) {
+            this.groupList = ecoa;
+            this.sortGroupList();
+            this.addGroupsToPermissionEntityList();
+            this.configDetailsBusy = false;
+        },
+        fetchGroupListForPermissionEntityFailure(msg) {
+            console.log("Group search failure: " + msg);
+            this.configDetailsBusy = false;
+        },
+        fetchPersonListForPermissionEntitySuccess(ecpa) {
+            this.personList = ecpa;
+            this.sortPersonList();
+            this.addPersonsToPermissionEntityList();
+            this.configDetailsBusy = true;
+            let paramObj = {};
+            paramObj.size = this.GROUP_SEARCH_SIZE;
+            EcOrganization.search(window.repo, '', this.fetchGroupListForPermissionEntitySuccess, this.fetchGroupListForPermissionEntityFailure, paramObj);
+        },
+        fetchPersonListForPermissionEntityFailure(msg) {
+            console.log("Person search failure: " + msg);
+            this.configDetailsBusy = false;
+        },
+        initializePermissionEntityList() {
+            this.personList = [];
+            this.groupList = [];
+            this.permissionEntityList = [];
+            this.configDetailsBusy = true;
+            let paramObj = {};
+            paramObj.size = this.PERSON_SEARCH_SIZE;
+            EcPerson.search(window.repo, '', this.fetchPersonListForPermissionEntitySuccess, this.fetchPersonListForPermissionEntityFailure, paramObj);
+        },
+        initializeLevelListSuccess(ecla) {
             if (ecla && ecla.length > 0) {
                 this.levelList = ecla;
                 this.sortLevelList();
             } else this.levelList = [];
-            this.configDetailsBusy = false;
+            // this.configDetailsBusy = false;
+            this.initializePermissionEntityList();
         },
-        buildLevelListFailure(msg) {
+        initializeLevelListFailure(msg) {
             console.log("Level search failure: " + msg);
             this.configDetailsBusy = false;
+            // this.initializePermissionEntityList();
         },
-        buildLevelList() {
+        initializeDataLists() {
             this.configDetailsBusy = true;
             let paramObj = {};
             paramObj.size = this.LEVEL_SEARCH_SIZE;
-            EcLevel.search(window.repo, '', this.buildLevelListSuccess, this.buildLevelListFailure, paramObj);
+            EcLevel.search(window.repo, '', this.initializeLevelListSuccess, this.initializeLevelListFailure, paramObj);
         }
     },
     computed: {
@@ -1831,10 +2191,18 @@ export default {
                     return ((level.getName() && level.getName().toLowerCase().indexOf(this.selectedLevelFilter.toLowerCase()) > -1));
                 });
             }
+        },
+        filteredPermissionEntities() {
+            if (!this.permissionEntityList || this.permissionEntityList.length <= 0) return [];
+            else {
+                return this.permissionEntityList.filter(pe => {
+                    return ((pe.name && pe.name.toLowerCase().indexOf(this.permissionEntitiesFilter.toLowerCase()) > -1));
+                });
+            }
         }
     },
     mounted() {
-        this.buildLevelList();
+        this.initializeDataLists();
     }
 };
 </script>

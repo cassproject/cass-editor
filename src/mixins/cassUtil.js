@@ -1,8 +1,19 @@
 export const cassUtil = {
     name: 'cassUtil',
-    data() {
-    },
+    data: () => ({
+        GROUP_PPK_KEY: 'https://schema.cassproject.org/0.3/ppk'
+    }),
     methods: {
+        getOrganizationEcPk(orgObj) {
+            try {
+                let orgEvPpk = new EcEncryptedValue();
+                orgEvPpk.copyFrom(orgObj[this.GROUP_PPK_KEY]);
+                let orgPpk = EcPpk.fromPem(orgEvPpk.decryptIntoString());
+                return orgPpk.toPk();
+            } catch (e) {
+                return null;
+            }
+        },
         getPersonEcPk(personObj) {
             let personFingerprint = this.generateProbablePersonFingerprintFromShortId(personObj.shortId());
             for (let pkPem of personObj.owner) {
