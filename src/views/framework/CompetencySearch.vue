@@ -6,7 +6,7 @@
         <div class="modal-card">
             <header class="modal-card-head has-background-primary">
                 <p class="modal-card-title">
-                    <span class="title has-text-white">Search for {{ $store.state.lode.searchType }}</span>
+                    <span class="title has-text-white">Search for {{ searchType }}</span>
                     <br><span
                         class="subtitle has-text-white"
                         v-if="copyOrLink">
@@ -27,14 +27,15 @@
                 <div class="column is-12">
                     <List
                         v-if="$store.state.lode.competencySearchModalOpen"
-                        :type="$store.state.lode.searchType"
+                        :type="searchType"
                         :repo="repo"
                         :click="select"
                         :searchOptions="searchOptions"
                         :paramObj="paramObj"
                         :disallowEdits="true"
                         :selectingCompetency="true"
-                        :selected="selectedIds" />
+                        :selected="selectedIds"
+                        :displayFirst="displayFirst" />
                 </div>
             </section>
             <footer class="modal-card-foot">
@@ -55,7 +56,7 @@
                             <i class="fa fa-copy" />
                         </span>
                         <span>
-                            Copy {{ $store.state.lode.searchType }}
+                            Copy {{ searchType }}
                         </span>
                     </button>
                     <button
@@ -66,7 +67,7 @@
                             <i class="fa fa-link" />
                         </span>
                         <span>
-                            Link {{ $store.state.lode.searchType }}
+                            Link {{ searchType }}
                         </span>
                     </button>
                     <button
@@ -127,7 +128,8 @@ export default {
             ],
             repo: window.repo,
             selectedIds: [],
-            itemsSaving: 0
+            itemsSaving: 0,
+            displayFirst: []
         };
     },
     computed: {
@@ -167,6 +169,9 @@ export default {
                 obj.ownership = 'me';
             }
             return obj;
+        },
+        searchType: function() {
+            return this.$store.state.lode.searchType;
         }
     },
     methods: {
@@ -497,10 +502,33 @@ export default {
             this.repo.saveTo(resource, function() {}, console.error);
         },
         addSelected: function(ids) {
-            if (this.$store.state.lode.searchType === "Competency") {
+            if (this.searchType === "Competency") {
                 this.addAlignments(ids, this.$store.state.editor.selectedCompetency, this.$store.state.editor.selectCompetencyRelation);
             } else {
                 this.attachUrlProperties(ids);
+            }
+        }
+    },
+    watch: {
+        isActive: function() {
+            if (this.isActive) {
+                this.displayFirst.splice(0, this.displayFirst.length);
+                if (!this.copyOrLink && this.searchType === "Competency" && this.framework.competency) {
+                    for (var i = 0; i < this.framework.competency.length; i++) {
+                        var comp = EcRepository.getBlocking(this.framework.competency[i]);
+                        if (comp) {
+                            this.displayFirst.push(comp);
+                        }
+                    }
+                }
+                if (this.searchType === "Level" && this.framework.level) {
+                    for (var i = 0; i < this.framework.level.length; i++) {
+                        var comp = EcRepository.getBlocking(this.framework.level[i]);
+                        if (comp) {
+                            this.displayFirst.push(comp);
+                        }
+                    }
+                }
             }
         }
     }
