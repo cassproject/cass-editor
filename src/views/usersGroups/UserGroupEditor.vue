@@ -104,7 +104,6 @@ export default {
     data: () => ({
         GROUP_SEARCH_SIZE: 10000,
         PERSON_SEARCH_SIZE: 10000,
-        GROUP_PPK_KEY: 'https://schema.cassproject.org/0.3/ppk',
         userGroupViewMode: 'list',
         userGroupBusy: false,
         currentUserGroup: {},

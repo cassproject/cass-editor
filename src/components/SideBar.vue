@@ -215,6 +215,21 @@
                         href="#"
                         v-scroll-to="'#resource-alignments'">Resource Alignments</a>
                 </li>
+                <li>
+                    <a
+                        href="#"
+                        v-scroll-to="'#default-owners'">Default Owners</a>
+                </li>
+                <li>
+                    <a
+                        href="#"
+                        v-scroll-to="'#default-readers'">Default Readers</a>
+                </li>
+                <li>
+                    <a
+                        href="#"
+                        v-scroll-to="'#default-commenters'">Default Commenters</a>
+                </li>
             </ul>
         </div>
         <!-- END IMPORT CONTEXTUAL MENU -->
