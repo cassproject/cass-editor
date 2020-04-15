@@ -614,6 +614,9 @@ export default {
                     });
                 }
             }
+        },
+        config: function() {
+            this.$store.commit('editor/configuration', this.config);
         }
     },
     methods: {

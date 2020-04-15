@@ -495,6 +495,19 @@ export default {
                 if (EcIdentityManager.ids.length > 0) {
                     r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                 }
+                if (this.$store.state.editor && this.$store.state.editor.configuration) {
+                    var config = this.$store.state.editor.configuration;
+                    if (config["defaultObjectOwners"]) {
+                        for (var i = 0; i < config["defaultObjectOwners"].length; i++) {
+                            r.addOwner(config["defaultObjectOwners"][i]);
+                        }
+                    }
+                    if (config["defaultObjectReaders"]) {
+                        for (var i = 0; i < config["defaultObjectReaders"].length; i++) {
+                            r.addReader(config["defaultObjectReaders"][i]);
+                        }
+                    }
+                }
                 if (this.$store.state.editor.private === true) {
                     r = EcEncryptedValue.toEncryptedValue(r);
                 }
