@@ -725,6 +725,19 @@ export default {
                     if (EcIdentityManager.ids.length > 0) {
                         c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                     }
+                    if (this.$store.state.editor && this.$store.state.editor.configuration) {
+                        var config = this.$store.state.editor.configuration;
+                        if (config["defaultObjectOwners"]) {
+                            for (var i = 0; i < config["defaultObjectOwners"].length; i++) {
+                                c.addOwner(EcPk.fromPem(config["defaultObjectOwners"][i]));
+                            }
+                        }
+                        if (config["defaultObjectReaders"]) {
+                            for (var i = 0; i < config["defaultObjectReaders"].length; i++) {
+                                c.addReader(EcPk.fromPem(config["defaultObjectReaders"][i]));
+                            }
+                        }
+                    }
                     c['ceasn:derivedFrom'] = thing.id;
                     copyDict[c['ceasn:derivedFrom']] = c;
                     if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[c.id] !== true) {
@@ -756,9 +769,6 @@ export default {
                     level["schema:dateCreated"] = new Date().toISOString();
                     level.competency = this.$store.state.editor.selectedCompetency.shortId();
                     delete level.owner;
-                    if (EcIdentityManager.ids.length > 0) {
-                        level.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-                    }
                     level['ceasn:derivedFrom'] = thing.id;
                     copyDict[level['ceasn:derivedFrom']] = level;
                     if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[level.id] !== true) {
@@ -802,6 +812,19 @@ export default {
                         r.relationType = thing.relationType;
                         if (EcIdentityManager.ids.length > 0) {
                             r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                        }
+                        if (this.$store.state.editor && this.$store.state.editor.configuration) {
+                            var config = this.$store.state.editor.configuration;
+                            if (config["defaultObjectOwners"]) {
+                                for (var i = 0; i < config["defaultObjectOwners"].length; i++) {
+                                    r.addOwner(EcPk.fromPem(config["defaultObjectOwners"][i]));
+                                }
+                            }
+                            if (config["defaultObjectReaders"]) {
+                                for (var i = 0; i < config["defaultObjectReaders"].length; i++) {
+                                    r.addReader(EcPk.fromPem(config["defaultObjectReaders"][i]));
+                                }
+                            }
                         }
                         if (r.source !== r.target) {
                             framework["schema:dateModified"] = new Date().toISOString();
@@ -849,6 +872,19 @@ export default {
                         r.relationType = Relation.NARROWS;
                         if (EcIdentityManager.ids.length > 0) {
                             r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                        }
+                        if (this.$store.state.editor && this.$store.state.editor.configuration) {
+                            var config = this.$store.state.editor.configuration;
+                            if (config["defaultObjectOwners"]) {
+                                for (var i = 0; i < config["defaultObjectOwners"].length; i++) {
+                                    r.addOwner(EcPk.fromPem(config["defaultObjectOwners"][i]));
+                                }
+                            }
+                            if (config["defaultObjectReaders"]) {
+                                for (var i = 0; i < config["defaultObjectReaders"].length; i++) {
+                                    r.addReader(EcPk.fromPem(config["defaultObjectReaders"][i]));
+                                }
+                            }
                         }
                         if (r.source !== r.target) {
                             this.itemsSaving++;
@@ -932,6 +968,19 @@ export default {
                         r.relationType = Relation.NARROWS;
                         if (EcIdentityManager.ids.length > 0) {
                             r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                        }
+                        if (this.$store.state.editor && this.$store.state.editor.configuration) {
+                            var config = this.$store.state.editor.configuration;
+                            if (config["defaultObjectOwners"]) {
+                                for (var i = 0; i < config["defaultObjectOwners"].length; i++) {
+                                    r.addOwner(EcPk.fromPem(config["defaultObjectOwners"][i]));
+                                }
+                            }
+                            if (config["defaultObjectReaders"]) {
+                                for (var i = 0; i < config["defaultObjectReaders"].length; i++) {
+                                    r.addReader(EcPk.fromPem(config["defaultObjectReaders"][i]));
+                                }
+                            }
                         }
 
                         if (r.source !== r.target) {

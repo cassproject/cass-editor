@@ -6,7 +6,7 @@
         <div class="modal-card">
             <header class="modal-card-head has-background-primary">
                 <p class="modal-card-title">
-                    <span class="title has-text-white">Search for Competency</span>
+                    <span class="title has-text-white">Search for {{ searchType }}</span>
                     <br><span
                         class="subtitle has-text-white"
                         v-if="copyOrLink">
@@ -27,14 +27,15 @@
                 <div class="column is-12">
                     <List
                         v-if="$store.state.lode.competencySearchModalOpen"
-                        type="Competency"
+                        :type="searchType"
                         :repo="repo"
                         :click="select"
                         :searchOptions="searchOptions"
                         :paramObj="paramObj"
                         :disallowEdits="true"
                         :selectingCompetency="true"
-                        :selected="selectedIds" />
+                        :selected="selectedIds"
+                        :displayFirst="displayFirst" />
                 </div>
             </section>
             <footer class="modal-card-foot">
@@ -55,7 +56,7 @@
                             <i class="fa fa-copy" />
                         </span>
                         <span>
-                            Copy Competency
+                            Copy {{ searchType }}
                         </span>
                     </button>
                     <button
@@ -66,7 +67,7 @@
                             <i class="fa fa-link" />
                         </span>
                         <span>
-                            Link Competency
+                            Link {{ searchType }}
                         </span>
                     </button>
                     <button
@@ -127,7 +128,8 @@ export default {
             ],
             repo: window.repo,
             selectedIds: [],
-            itemsSaving: 0
+            itemsSaving: 0,
+            displayFirst: []
         };
     },
     computed: {
@@ -167,6 +169,9 @@ export default {
                 obj.ownership = 'me';
             }
             return obj;
+        },
+        searchType: function() {
+            return this.$store.state.lode.searchType;
         }
     },
     methods: {
@@ -201,6 +206,19 @@ export default {
                     if (EcIdentityManager.ids.length > 0) {
                         c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                     }
+                    if (this.$store.state.editor && this.$store.state.editor.configuration) {
+                        var config = this.$store.state.editor.configuration;
+                        if (config["defaultObjectOwners"]) {
+                            for (var i = 0; i < config["defaultObjectOwners"].length; i++) {
+                                c.addOwner(EcPk.fromPem(config["defaultObjectOwners"][i]));
+                            }
+                        }
+                        if (config["defaultObjectReaders"]) {
+                            for (var i = 0; i < config["defaultObjectReaders"].length; i++) {
+                                c.addReader(EcPk.fromPem(config["defaultObjectReaders"][i]));
+                            }
+                        }
+                    }
                     c['ceasn:derivedFrom'] = thing.id;
                     copyDict[c['ceasn:derivedFrom']] = c;
                     if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[c.id] !== true) {
@@ -232,9 +250,6 @@ export default {
                     level["schema:dateCreated"] = new Date().toISOString();
                     level.competency = this.$store.state.editor.selectedCompetency.shortId();
                     delete level.owner;
-                    if (EcIdentityManager.ids.length > 0) {
-                        level.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-                    }
                     level['ceasn:derivedFrom'] = thing.id;
                     copyDict[level['ceasn:derivedFrom']] = level;
                     if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[level.id] !== true) {
@@ -278,6 +293,19 @@ export default {
                         r.relationType = thing.relationType;
                         if (EcIdentityManager.ids.length > 0) {
                             r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                        }
+                        if (this.$store.state.editor && this.$store.state.editor.configuration) {
+                            var config = this.$store.state.editor.configuration;
+                            if (config["defaultObjectOwners"]) {
+                                for (var i = 0; i < config["defaultObjectOwners"].length; i++) {
+                                    r.addOwner(EcPk.fromPem(config["defaultObjectOwners"][i]));
+                                }
+                            }
+                            if (config["defaultObjectReaders"]) {
+                                for (var i = 0; i < config["defaultObjectReaders"].length; i++) {
+                                    r.addReader(EcPk.fromPem(config["defaultObjectReaders"][i]));
+                                }
+                            }
                         }
                         if (r.source !== r.target) {
                             framework["schema:dateModified"] = new Date().toISOString();
@@ -325,6 +353,19 @@ export default {
                         r.relationType = Relation.NARROWS;
                         if (EcIdentityManager.ids.length > 0) {
                             r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                        }
+                        if (this.$store.state.editor && this.$store.state.editor.configuration) {
+                            var config = this.$store.state.editor.configuration;
+                            if (config["defaultObjectOwners"]) {
+                                for (var i = 0; i < config["defaultObjectOwners"].length; i++) {
+                                    r.addOwner(EcPk.fromPem(config["defaultObjectOwners"][i]));
+                                }
+                            }
+                            if (config["defaultObjectReaders"]) {
+                                for (var i = 0; i < config["defaultObjectReaders"].length; i++) {
+                                    r.addReader(EcPk.fromPem(config["defaultObjectReaders"][i]));
+                                }
+                            }
                         }
                         if (r.source !== r.target) {
                             this.itemsSaving++;
@@ -409,6 +450,19 @@ export default {
                         if (EcIdentityManager.ids.length > 0) {
                             r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                         }
+                        if (this.$store.state.editor && this.$store.state.editor.configuration) {
+                            var config = this.$store.state.editor.configuration;
+                            if (config["defaultObjectOwners"]) {
+                                for (var i = 0; i < config["defaultObjectOwners"].length; i++) {
+                                    r.addOwner(EcPk.fromPem(config["defaultObjectOwners"][i]));
+                                }
+                            }
+                            if (config["defaultObjectReaders"]) {
+                                for (var i = 0; i < config["defaultObjectReaders"].length; i++) {
+                                    r.addReader(EcPk.fromPem(config["defaultObjectReaders"][i]));
+                                }
+                            }
+                        }
 
                         if (r.source !== r.target) {
                             framework.addRelation(r.id);
@@ -427,8 +481,55 @@ export default {
                 me.$store.commit('editor/framework', EcFramework.getBlocking(framework.id));
             }, console.error);
         },
+        attachUrlProperties: function(results) {
+            var resource = this.$store.state.editor.framework;
+            if (this.$store.state.editor.selectedCompetency != null) {
+                resource = this.$store.state.editor.selectedCompetency;
+            }
+            for (var i = 0; i < results.length; i++) {
+                var thing = EcRepository.getBlocking(results[i]);
+                if (thing.isAny(new EcConcept().getTypes())) {
+                    if (!EcArray.isArray(resource[this.$store.state.editor.selectCompetencyRelation])) {
+                        resource[this.$store.state.editor.selectCompetencyRelation] = [];
+                    }
+                    EcArray.setAdd(resource[this.$store.state.editor.selectCompetencyRelation], thing.shortId());
+                }
+            }
+            resource["schema:dateModified"] = new Date().toISOString();
+            if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[resource.id] !== true) {
+                resource = EcEncryptedValue.toEncryptedValue(resource);
+            }
+            this.repo.saveTo(resource, function() {}, console.error);
+        },
         addSelected: function(ids) {
-            this.addAlignments(ids, this.$store.state.editor.selectedCompetency, this.$store.state.editor.selectCompetencyRelation);
+            if (this.searchType === "Competency") {
+                this.addAlignments(ids, this.$store.state.editor.selectedCompetency, this.$store.state.editor.selectCompetencyRelation);
+            } else {
+                this.attachUrlProperties(ids);
+            }
+        }
+    },
+    watch: {
+        isActive: function() {
+            if (this.isActive) {
+                this.displayFirst.splice(0, this.displayFirst.length);
+                if (!this.copyOrLink && this.searchType === "Competency" && this.framework.competency) {
+                    for (var i = 0; i < this.framework.competency.length; i++) {
+                        var comp = EcRepository.getBlocking(this.framework.competency[i]);
+                        if (comp) {
+                            this.displayFirst.push(comp);
+                        }
+                    }
+                }
+                if (this.searchType === "Level" && this.framework.level) {
+                    for (var i = 0; i < this.framework.level.length; i++) {
+                        var comp = EcRepository.getBlocking(this.framework.level[i]);
+                        if (comp) {
+                            this.displayFirst.push(comp);
+                        }
+                    }
+                }
+            }
         }
     }
 };

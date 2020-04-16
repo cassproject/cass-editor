@@ -22,7 +22,8 @@ const editor = {
         newCompetency: null,
         t3Profile: false,
         changedObject: null,
-        loggedOnPerson: {}
+        loggedOnPerson: {},
+        configuration: null
     },
     mutations: {
         framework(state, f) {
@@ -72,6 +73,9 @@ const editor = {
         },
         loggedOnPerson(state, personObj) {
             state.loggedOnPerson = personObj;
+        },
+        configuration(state, config) {
+            state.configuration = config;
         }
     },
     actions: {
