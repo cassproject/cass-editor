@@ -505,16 +505,8 @@ export default {
         CompetencySearch
     },
     created: function() {
-        var me = this;
         // Set configuration
         this.getConfiguration();
-        console.log("configuration: ", this.config);
-        // To do: Check for personal default in browser storage
-        this.repo.searchWithParams("@type:Configuration", {'size': 10000}, function(c) {
-            if (c.isDefault === "true") {
-                me.config = c;
-            }
-        }, function() {}, function() {});
         this.refreshPage();
         this.spitEvent('viewChanged');
     },
@@ -630,6 +622,7 @@ export default {
             }
         },
         getConfiguration: function() {
+            var me = this;
             if (this.framework.configuration) {
                 var c = EcRepository.getBlocking(this.framework.configuration);
                 console.log("c is: ", c);
@@ -638,6 +631,19 @@ export default {
                     this.config = c;
                 }
                 console.log("c is: ", c);
+            } else if (localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId")) {
+                // If no framework configuration, use browser default
+                var c = EcRepository.getBlocking(localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId"));
+                if (c) {
+                    this.config = c;
+                }
+            }
+            if (!this.config) {
+                this.repo.searchWithParams("@type:Configuration", {'size': 10000}, function(c) {
+                    if (c.isDefault === "true") {
+                        me.config = c;
+                    }
+                }, function() {}, function() {});
             }
         },
         onEditMultipleCompetencies: function() {
