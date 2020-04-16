@@ -499,12 +499,12 @@ export default {
                     var config = this.$store.state.editor.configuration;
                     if (config["defaultObjectOwners"]) {
                         for (var i = 0; i < config["defaultObjectOwners"].length; i++) {
-                            r.addOwner(config["defaultObjectOwners"][i]);
+                            r.addOwner(EcPk.fromPem(config["defaultObjectOwners"][i]));
                         }
                     }
                     if (config["defaultObjectReaders"]) {
                         for (var i = 0; i < config["defaultObjectReaders"].length; i++) {
-                            r.addReader(config["defaultObjectReaders"][i]);
+                            r.addReader(EcPk.fromPem(config["defaultObjectReaders"][i]));
                         }
                     }
                 }

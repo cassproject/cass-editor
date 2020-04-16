@@ -273,12 +273,12 @@ export default {
                 var config = this.$store.state.editor.configuration;
                 if (config["defaultObjectOwners"]) {
                     for (var i = 0; i < config["defaultObjectOwners"].length; i++) {
-                        c.addOwner(config["defaultObjectOwners"][i]);
+                        c.addOwner(EcPk.fromPem(config["defaultObjectOwners"][i]));
                     }
                 }
                 if (config["defaultObjectReaders"]) {
                     for (var i = 0; i < config["defaultObjectReaders"].length; i++) {
-                        c.addReader(config["defaultObjectReaders"][i]);
+                        c.addReader(EcPk.fromPem(config["defaultObjectReaders"][i]));
                     }
                 }
             }
