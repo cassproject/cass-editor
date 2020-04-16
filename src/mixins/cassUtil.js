@@ -4,27 +4,6 @@ export const cassUtil = {
         GROUP_PPK_KEY: 'https://schema.cassproject.org/0.3/ppk'
     }),
     methods: {
-        getOrganizationByEcPk(ecPk, successCallback, failureCallback) {
-            let ecPkPem = ecPk.toPem();
-            let paramObj = {};
-            paramObj.size = 10000;
-            let me = this;
-            EcOrganization.search(window.repo, '',
-                function(ecoa) {
-                    for (let o of ecoa) {
-                        let oPk = me.getOrganizationEcPk(o);
-                        if (oPk && oPk.toPem().equals(ecPkPem)) {
-                            successCallback(o);
-                            return;
-                        }
-                    }
-                    successCallback(null);
-                },
-                function(err) {
-                    failureCallback(err);
-                },
-                paramObj);
-        },
         getOrganizationEcPk(orgObj) {
             try {
                 let orgEvPpk = new EcEncryptedValue();
