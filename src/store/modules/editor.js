@@ -1,3 +1,7 @@
+import Vue from 'vue';
+import Vuex from 'vuex';
+Vue.use(Vuex);
+
 
 const state = {
     framework: null,
@@ -63,9 +67,6 @@ const mutations = {
     },
     changedObject(state, id) {
         state.changedObject = id;
-    },
-    loggedOnPerson(state, personObj) {
-        state.loggedOnPerson = personObj;
     },
     configuration(state, config) {
         state.configuration = config;

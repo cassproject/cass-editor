@@ -5,7 +5,7 @@
         class="menu has-background-primary has-text-white">
         <div
             class="menu-label has-text-white is-size-3">
-            Username
+            {{ displayName }}
             <!-- might need later to close -->
             <div
                 v-if="false"
@@ -237,7 +237,7 @@
 </template>
 
 <script>
-
+import { mapState } from 'vuex'
 import ctdlAsnCsvExample from 'file-loader!../../files/CTDL-ASN.ONET.example.csv';
 import ctdlAsnCsvTemplate from 'file-loader!../../files/CTDL-ASN.ONET.template.csv';
 import csvExampleCompetencies from 'file-loader!../../files/CAP Software Engineering - Competencies.csv';
@@ -277,11 +277,21 @@ export default {
         }
     },
     computed: {
+        displayName: function() {
+            if(this.loggedOnPerson) {
+                return this.loggedOnPerson.name;
+            } else {
+                return 'No user';
+            }
+        },
         currentRoute: function() {
             return this.$route.path;
         },
         supportedFiles: function() {
             return this.queryParams.concepts === 'true' ? this.supportedConceptFileTypes : this.supportedFileTypes;
+        },
+        loggedOnPerson: function() {
+            return this.$store.getters['user/loggedOnPerson'];
         }
     }
 };

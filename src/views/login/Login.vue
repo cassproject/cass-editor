@@ -383,7 +383,7 @@ export default {
             p.name = this.createLinkPersonName;
             p.email = this.createLinkPersonEmail;
             console.log(p);
-            this.$store.commit('editor/loggedOnPerson', p);
+            this.$store.commit('user/loggedOnPerson', p);
             this.linkedPerson = p;
             EcRepository.save(p, this.handleCreatePersonSuccess, this.handleAttemptLoginFetchIdentityFailure);
         },
@@ -505,7 +505,7 @@ export default {
                 ep.copyFrom(ecrld);
                 if (ep.getGuid().equals(this.identityToLinkToPerson.ppk.toPk().fingerprint())) {
                     matchingPersonRecordFound = true;
-                    this.$store.commit('editor/loggedOnPerson', ep);
+                    this.$store.commit('user/loggedOnPerson', ep);
                     this.linkedPerson = ep;
                     console.log('Matching person record found: ');
                     console.log(ep);

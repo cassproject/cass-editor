@@ -253,7 +253,7 @@ export default {
             newUserGroup.setName('New User Group');
             newUserGroup.setDescription('New group of users');
             newUserGroup.employee = [];
-            newUserGroup.addEmployee(this.$store.state.editor.loggedOnPerson);
+            newUserGroup.addEmployee(this.$store.state.user.loggedOnPerson);
             this.addAllIdentityPksAsOwners(newUserGroup);
             let newUserGroupPpk = EcPpk.generateKey();
             newUserGroup[this.GROUP_PPK_KEY] = EcEncryptedValue.encryptValue(newUserGroupPpk.toPem(), this.GROUP_PPK_KEY, newUserGroup.owner, newUserGroup.reader);
@@ -309,7 +309,7 @@ export default {
             tempIdent.ppk = EcPpk.fromPem("-----BEGIN RSA PRIVATE KEY-----MIIEowIBAAKCAQEA6at3xRErrHESxqie/SbKm84QQXIe6HVfoT7nZTQZzbRQdyiHzJufcJ6WhchofF1PE2aAniWqR1HM7af8LxdtVzir4JKzypHmuoQGyzDjTPH10lD6NSHTokLSHGpftm3aRvWjU/Vrw9JC40eXR1naxV4vJMOI8LY/CEg6kTSvLseHbUpGb9XT/NWD7cIAczMp45DCUf3qoZtaWltB0RV15tPKWImLX5tME8Plygq4P/9mMDU4H5Oili38s0383tO/nYFOtehQ5wfEoMgfGEHsQy/xw4DGyCPyGWiTNQwhPD1ybtQc2J+HueC+nwqgZOH/PA2KieCglk0OB28VoZ0oPwIDAQABAoIBADTDAOJAhEoFpiWxQWUL80fG+aitagk3J4azO3CAmSr3ggvF3RP4N8IoLPi8Tct3DjnlNTmAa7h64fjvq2O+uHOvWi/1MB+XXi/TS+1pdomTQNxiaHzCzJSg3eyIoGAC4fyPzndQvSqUOYI0UhZMVbenEqIMfMlNfWITXRYYfU3kVVJCM84ax6GlhLlpDIdo49c9jmacsBKjH1qWYPi+Aynt4MyY3MxU3GqQpamXKBJegjXXQpFzvVlAm2WSf7gSAiDgr1fHqrtjRbHa0HMdMMta85DvC2o8s9zMmdiBCmpJwoM4MAukzRyGq8FqC5Aa20fZryCJ4lIhW2KPiivykWECgYEA+8v/QkuIZTW+k7VapKZm+kF1HU6pn9wOZdUzivBoVTYmBfavChrJuk1sWo7c8mCjG4LP+BKV6cZGAK+1nRheqU1k1M+G0OxAe1qkxh7dMvOaQwg23NhWVhEzA5OrgCFHJr3uNIV+gXH+4HfRPxzx6fVUmbTnahPskFSDAi8BPDcCgYEA7ZICJiXHtgt486EsnC5phZwzsoD5mHVuwAm+gW/dmleaK9xFh+0C9tljROMBdQWvvDEFMg9xPCscUmfDDBq2GIMP1/eg4H5KS4Dg+xuMlXTjGYqhr6Y+OniCq/K0e2dasFuiI+hXTDexj/UX3vpBVTQXYT24+1gjBDjoveR/QDkCgYBiiIvVN5WidYukZb2Y3P1DRUY9N8EtK4H+25WV80oAvnXWs5f/zkfOvel+7pULzEFHzMLxguRjXRGbxya82QKCIiUpGiTZsPnyy5/bX8yT2bwuKxK9DXOLrqNV7P2Z4Gvlf0GuD+dXZHKnCHw7xGnucfCvTZmZaz6RpGC4BAjptQKBgHAyX49ykkH4YxP0T2QnSzCNl6C65qXI+Bf7whvRIAAvVSFXswLBvX+lJQu4hcylddxT7lc5EcpPtd15IZWK2+rxor7lNPYwzpef8yDEXv2KqWI7paaVxZfJqDTat7/8DMlzTTzWErxtJQ+OucpVuBssMcp74uvZMRhiZBCiZDKJAoGBAN1XsaLCJYi5Cogc4HV9bAt2Q5L1nn62OU32NbMwmpr4ibmQe0xESDEDVEaeB1RfycTyVe3P9ydKbycMJ+cswBFme1ZW/RzO47lsr70scUiu80UxH5g2IkjEeF0FtM1CBgKr2M2re/wwXRS1+tXm35/oEIW+9SCNFrUu4ivceVWF-----END RSA PRIVATE KEY-----");
             EcIdentityManager.addIdentity(tempIdent);
             let p = EcPerson.getBlocking("https://dev.api.cassproject.org/api/data/schema.org.Person/2e522c778a1f0a2b31db7b2848ba4212");
-            this.$store.commit('editor/loggedOnPerson', p);
+            this.$store.commit('user/loggedOnPerson', p);
         }
     }
 };
