@@ -1,9 +1,9 @@
 <template>
     <div class="modal-card">
-        <header class="modal-card-head">
+        <header class="modal-card-head has-background-primary">
             <p class="modal-card-title">
-                <span class="title">Share Framework</span>
-                <br><span class="subtitle">
+                <span class="title has-text-white">Share Framework</span>
+                <br><span class="subtitle has-text-white has-text-weight-medium">
                     Sharing settings for {{ frameworkName }}
                 </span>
             </p>

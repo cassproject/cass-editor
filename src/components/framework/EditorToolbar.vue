@@ -85,7 +85,7 @@
                         Export
                     </a>
                     <a
-                        @click="showManageUsersModal; showShareDropdown = false;"
+                        @click="showManageUsersModal(); showShareDropdown = false;"
                         class="dropdown-item">
                         Manage Users
                     </a>
