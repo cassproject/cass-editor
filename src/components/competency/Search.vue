@@ -137,11 +137,11 @@ export default {
     },
     computed: {
         ...mapState({
-            selectedCompetency: state => state.editor.selectedComptency
+            selectedCompetency: state => state.editor.selectedCompetency
         }),
         nameOfSelectedCompetency: function() {
             if (this.selectedCompetency) {
-                return this.selectecompetency.getName();
+                return this.selectedCompetency.getName();
             } else {
                 return '';
             }

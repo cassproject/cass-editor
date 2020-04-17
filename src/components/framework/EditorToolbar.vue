@@ -142,7 +142,7 @@ export default {
             this.$store.commit('app/showModal', 'Export');
         },
         showManageUsersModal() {
-            this.$store.commit('app/showModal', 'Share');
+            this.$store.commit('app/showModal', {component: 'Share'});
         },
         changeProperties(type) {
             this.$emit('changeProperties', type);
