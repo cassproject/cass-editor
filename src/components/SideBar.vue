@@ -238,6 +238,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import {cassUtil} from './../mixins/cassUtil';
 import ctdlAsnCsvExample from 'file-loader!../../files/CTDL-ASN.ONET.example.csv';
 import ctdlAsnCsvTemplate from 'file-loader!../../files/CTDL-ASN.ONET.template.csv';
 import csvExampleCompetencies from 'file-loader!../../files/CAP Software Engineering - Competencies.csv';
@@ -277,8 +278,12 @@ export default {
         }
     },
     computed: {
+        amLoggedIn: function() {
+            if (EcIdentityManager && EcIdentityManager.ids && EcIdentityManager.ids.length > 0) return true;
+            else return false;
+        },
         displayName: function() {
-            if(this.loggedOnPerson) {
+            if(this.amLoggedIn) {
                 return this.loggedOnPerson.name;
             } else {
                 return 'No user';
