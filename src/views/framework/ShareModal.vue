@@ -35,7 +35,19 @@
                             <div class="control is-expanded">
                                 <input
                                     type="text"
-                                    class="input is-fullwidth">
+                                    class="input is-fullwidth"
+                                    v-model="search"
+                                    @input="filterResults">
+                                <span class="auto-complete">
+                                    <ul v-show="isOpenAutocomplete">
+                                        <li
+                                            v-for="(result, i) in filtered"
+                                            :key="i"
+                                            @mousedown="selectUserOrGroup(result)">
+                                            {{ result.name }}
+                                        </li>
+                                    </ul>
+                                </span>
                             </div>
                             <div class="control">
                                 <div class="select">
@@ -92,7 +104,7 @@
                         <table class="table is-fullwidth">
                             <thead>
                                 <tr>
-                                    <th><abbr title="Position">Group Name</abbr></th>
+                                    <th><abbr title="Position">User Name</abbr></th>
                                     <th><abbr title="Played">View</abbr></th>
                                     <th><abbr title="Won">Delete</abbr></th>
                                 </tr>
@@ -144,11 +156,13 @@
 </template>
 
 <script>
+import {cassUtil} from '@/mixins/cassUtil.js';
 export default {
     name: 'ShareModal',
     props: {
         isActive: Boolean
     },
+    mixins: [ cassUtil ],
     data() {
         return {
             frameworkName: this.$store.state.editor.framework.getName(),
@@ -163,31 +177,100 @@ export default {
                     value: 'admin'
                 }
             ],
-            groups: [
-                {
-                    header: 'group 1',
-                    view: 'admin'
-                },
-                {
-                    header: 'group 2',
-                    view: 'view'
-                }
-            ],
-            users: [
-                {
-                    header: 'user 1',
-                    view: 'admin'
-                },
-                {
-                    header: 'user 2',
-                    view: 'view'
-                }
-            ]
+            groups: [],
+            users: [],
+            search: "",
+            filtered: [],
+            possibleGroupsAndUsers: [],
+            isOpenAutocomplete: false,
+            userOrGroupToAdd: null
         };
     },
     computed: {
         shareableFrameworkInEditor: function() {
             return window.location.href + "?frameworkId=" + this.frameworkId;
+        },
+        framework: function() {
+            return this.$store.state.editor.framework;
+        }
+    },
+    mounted: function() {
+        this.getCurrentOwnersAndReaders();
+        this.getPossibleOwnersAndReaders();
+    },
+    methods: {
+        getCurrentOwnersAndReaders: function() {
+            var me = this;
+            if (this.framework.owner) {
+                for (var i = 0; i < this.framework.owner.length; i++) {
+                    var pk = EcPk.fromPem(this.framework.owner[i]);
+                    EcPerson.getByPk(window.repo, pk, function(success) {
+                        console.log(success);
+                        var user = {header: success.name, view: "admin", id: success.shortId()};
+                        me.users.push(user);
+                    }, function(failure) {
+                        // If it's not a Person, check organizations
+                        this.getOrganizationByEcPk(pk, function(success) {
+                            console.log(success);
+                            var org = {header: success.name, view: "admin", id: success.shortId()};
+                            me.groups.push(org);
+                        }, function(error) {
+                            console.error(error);
+                        });
+                    });
+                }
+            }
+            if (this.framework.reader) {
+                for (var i = 0; i < this.framework.reader.length; i++) {
+                    var pk = EcPk.fromPem(this.framework.reader[i]);
+                    EcPerson.getByPk(window.repo, pk, function(success) {
+                        console.log(success);
+                        var user = {header: success.name, view: "view", id: success.shortId()};
+                        me.users.push(user);
+                    }, function(failure) {
+                        // If it's not a Person, check organizations
+                        this.getOrganizationByEcPk(pk, function(success) {
+                            console.log(success);
+                            var org = {header: success.name, view: "view", id: success.shortId()};
+                            me.groups.push(org);
+                        }, function(error) {
+                            console.error(error);
+                        });
+                    });
+                }
+            }
+        },
+        getPossibleOwnersAndReaders: function() {
+            let paramObj = {};
+            paramObj.size = 10000;
+            let me = this;
+            EcPerson.search(window.repo, '', function(success) {
+                console.log(success);
+                for (var i = 0; i < success.length; i++) {
+                    let person = {id: success[i].shortId(), name: success[i].name};
+                    me.possibleGroupsAndUsers.push(person);
+                }
+            }, function(failure) {
+                console.error(failure);
+            }, paramObj);
+            EcOrganization.search(window.repo, '', function(success) {
+                console.log(success);
+                for (var i = 0; i < success.length; i++) {
+                    let org = {id: success[i].shortId(), name: success[i].name};
+                    me.possibleGroupsAndUsers.push(org);
+                }
+            }, function(failure) {
+                console.error(failure);
+            }, paramObj);
+        },
+        filterResults: function() {
+            this.isOpenAutocomplete = true;
+            this.filtered = this.possibleGroupsAndUsers.filter(item => item.name.toLowerCase().indexOf(this.search.toLowerCase()) !== -1);
+        },
+        selectUserOrGroup: function(nameAndId) {
+            this.userOrGroupToAdd = nameAndId.id;
+            this.search = nameAndId.name;
+            this.isOpenAutocomplete = false;
         }
     }
 };

@@ -10,7 +10,7 @@
                     <br><span
                         class="subtitle has-text-white"
                         v-if="copyOrLink">
-                        Sharing settings for {{ frameworkName }}
+                        Framework {{ frameworkName }}
                     </span>
                     <span
                         v-else
