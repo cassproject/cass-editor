@@ -1,165 +1,170 @@
 <template>
-    <div class="modal-card">
-        <header class="modal-card-head">
-            <p class="modal-card-title">
-                <span class="title">Share Framework</span>
-                <br><span class="subtitle">
-                    Sharing settings for {{ frameworkName }}
-                </span>
-            </p>
-            <button
-                class="delete"
-                @click="$emit('closeShareModalEvent')"
-                aria-label="close" />
-        </header>
-        <section class="modal-card-body">
-            <div class="columns is-multiline">
-                <!-- share link -->
-                <div class="column is-12">
-                    {{ shareableFrameworkInEditor }}
-                    <button
-                        title="Copy URL to the clipboard."
-                        v-clipboard="shareableFrameworkInEditor">
-                        <i class="fa fa-copy" />
-                    </button>
-                </div>
-                <!-- end share link -->
-                <!-- input new groups or users -->
-                <div class="column is-12">
-                    <label>Add users or groups</label>
-                    <div class="field has-addons">
-                        <div class="control is-expanded">
-                            <input
-                                type="text"
-                                class="input is-fullwidth"
-                                v-model="search"
-                                @input="filterResults">
-                            <span class="auto-complete">
-                                <ul v-show="isOpenAutocomplete">
-                                    <li
-                                        v-for="(result, i) in filtered"
-                                        :key="i"
-                                        @mousedown="selectUserOrGroup(result)">
-                                        {{ result.name }}
-                                    </li>
-                                </ul>
-                            </span>
-                        </div>
-                        <div class="control">
-                            <div class="select">
-                                <select v-model="selectViewOrAdmin">
-                                    <option
-                                        v-for="(option, index) in viewOptions"
-                                        :key="index"
-                                        :value="option.value">
-                                        {{ option.label }}
-                                    </option>
-                                </select>
+    <div
+        class="modal"
+        :class="{'is-active': isActive}">
+        <div class="modal-background" />
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">
+                    <span class="title">Share Framework</span>
+                    <br><span class="subtitle">
+                        Sharing settings for {{ frameworkName }}
+                    </span>
+                </p>
+                <button
+                    class="delete"
+                    @click="$emit('closeShareModalEvent')"
+                    aria-label="close" />
+            </header>
+            <section class="modal-card-body">
+                <div class="columns is-multiline">
+                    <!-- share link -->
+                    <div class="column is-12">
+                        {{ shareableFrameworkInEditor }}
+                        <button
+                            title="Copy URL to the clipboard."
+                            v-clipboard="shareableFrameworkInEditor">
+                            <i class="fa fa-copy" />
+                        </button>
+                    </div>
+                    <!-- end share link -->
+                    <!-- input new groups or users -->
+                    <div class="column is-12">
+                        <label>Add users or groups</label>
+                        <div class="field has-addons">
+                            <div class="control is-expanded">
+                                <input
+                                    type="text"
+                                    class="input is-fullwidth"
+                                    v-model="search"
+                                    @input="filterResults">
+                                <span class="auto-complete">
+                                    <ul v-show="isOpenAutocomplete">
+                                        <li
+                                            v-for="(result, i) in filtered"
+                                            :key="i"
+                                            @mousedown="selectUserOrGroup(result)">
+                                            {{ result.name }}
+                                        </li>
+                                    </ul>
+                                </span>
+                            </div>
+                            <div class="control">
+                                <div class="select">
+                                    <select v-model="selectViewOrAdmin">
+                                        <option
+                                            v-for="(option, index) in viewOptions"
+                                            :key="index"
+                                            :value="option.value">
+                                            {{ option.label }}
+                                        </option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- end input new users or groups -->
-                <!-- begin list of access -->
-                <div class="column is-12">
-                    <table class="table is-fullwidth">
-                        <thead>
-                            <tr>
-                                <th><abbr title="Position">Group Name</abbr></th>
-                                <th><abbr title="Played">View</abbr></th>
-                                <th><abbr title="Won">Delete</abbr></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr
-                                v-for="group in groups"
-                                :key="group">
-                                <th> {{ group.header }}</th>
-                                <td>
-                                    <select
-                                        v-model="group.view"
-                                        @change="group.changed=true">
-                                        <option
-                                            :value="option.value"
-                                            v-for="option in viewOptions"
-                                            :key="option">
-                                            {{ option.label }}
-                                        </option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <div
-                                        class="button is-text"
-                                        @click="removeOwnerOrReader(group, 'group')">
-                                        <div class="icon">
-                                            <i class="fa fa-times" />
+                    <!-- end input new users or groups -->
+                    <!-- begin list of access -->
+                    <div class="column is-12">
+                        <table class="table is-fullwidth">
+                            <thead>
+                                <tr>
+                                    <th><abbr title="Position">Group Name</abbr></th>
+                                    <th><abbr title="Played">View</abbr></th>
+                                    <th><abbr title="Won">Delete</abbr></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    v-for="group in groups"
+                                    :key="group">
+                                    <th> {{ group.header }}</th>
+                                    <td>
+                                        <select
+                                            v-model="group.view"
+                                            @change="group.changed=true">
+                                            <option
+                                                :value="option.value"
+                                                v-for="option in viewOptions"
+                                                :key="option">
+                                                {{ option.label }}
+                                            </option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <div
+                                            class="button is-text"
+                                            @click="removeOwnerOrReader(group, 'group')">
+                                            <div class="icon">
+                                                <i class="fa fa-times" />
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <!-- user table -->
-                <div class="column is-12">
-                    <table class="table is-fullwidth">
-                        <thead>
-                            <tr>
-                                <th><abbr title="Position">User Name</abbr></th>
-                                <th><abbr title="Played">View</abbr></th>
-                                <th><abbr title="Won">Delete</abbr></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr
-                                v-for="user in users"
-                                :key="user">
-                                <th> {{ user.header }}</th>
-                                <td>
-                                    <select
-                                        v-model="user.view"
-                                        @change="user.changed=true">
-                                        <option
-                                            :value="option.value"
-                                            v-for="option in viewOptions"
-                                            :key="option">
-                                            {{ option.label }}
-                                        </option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <div
-                                        class="button is-text"
-                                        @click="removeOwnerOrReader(user, 'user')">
-                                        <div class="icon">
-                                            <i class="fa fa-times" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- user table -->
+                    <div class="column is-12">
+                        <table class="table is-fullwidth">
+                            <thead>
+                                <tr>
+                                    <th><abbr title="Position">User Name</abbr></th>
+                                    <th><abbr title="Played">View</abbr></th>
+                                    <th><abbr title="Won">Delete</abbr></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    v-for="user in users"
+                                    :key="user">
+                                    <th> {{ user.header }}</th>
+                                    <td>
+                                        <select
+                                            v-model="user.view"
+                                            @change="user.changed=true">
+                                            <option
+                                                :value="option.value"
+                                                v-for="option in viewOptions"
+                                                :key="option">
+                                                {{ option.label }}
+                                            </option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <div
+                                            class="button is-text"
+                                            @click="removeOwnerOrReader(user, 'user')">
+                                            <div class="icon">
+                                                <i class="fa fa-times" />
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
-        </section>
-        <footer class="modal-card-foot">
-            <div class="columns is-12">
-                <div class="column is-12">
-                    <button
-                        class="button is-left is-light"
-                        @click="$emit('closeShareModalEvent')">
-                        Cancel
-                    </button>
+            </section>
+            <footer class="modal-card-foot">
+                <div class="columns is-12">
+                    <div class="column is-12">
+                        <button
+                            class="button is-left is-light"
+                            @click="$emit('closeShareModalEvent')">
+                            Cancel
+                        </button>
+                    </div>
+                    <div class="column is-12">
+                        <button
+                            class="button is-fullwidth is-success"
+                            @click="saveSettings">
+                            Save Framework Settings
+                        </button>
+                    </div>
                 </div>
-                <div class="column is-12">
-                    <button
-                        class="button is-fullwidth is-success"
-                        @click="saveSettings">
-                        Save Framework Settings
-                    </button>
-                </div>
-            </div>
-        </footer>
+            </footer>
+        </div>
     </div>
 </template>
 
