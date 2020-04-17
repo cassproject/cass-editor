@@ -185,7 +185,11 @@ export default {
             }
         },
         shortId: function() {
-            return this.$store.state.editor.framework.shortId();
+            if(this.framework) {
+                return this.framework.shortId();
+            } else {
+                return null;
+            }
         },
         loggedIn: function() {
             if (EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
@@ -468,10 +472,14 @@ export default {
         DynamicModal
     },
     created: function() {
-        // Set configuration
-        this.getConfiguration();
-        this.refreshPage();
-        this.spitEvent('viewChanged');
+        // Set configuration create() happens before mount, make sure framework exists in case 
+        // the page was being refreshed and no longer exists.
+        if(this.framework!==null) {
+            this.getConfiguration();
+            this.refreshPage();
+            this.spitEvent('viewChanged');
+        }
+        
     },
     mounted: function() {
         if (!this.framework) {
@@ -641,6 +649,10 @@ export default {
             this.selectedArray = ary;
         },
         refreshPage: function() {
+            if(!this.framework){
+                console.log("no framework to fresh");
+                return;
+            }
             if (EcRepository.shouldTryUrl(this.framework.id) === false) {
                 this.frameworkExportGuid = EcCrypto.md5(this.framework.id);
             } else {
