@@ -1,91 +1,92 @@
+<!--
+This component is displays a ui for searchin for compencies and selecting them
+this component can be dropped into a card element such as DynamicModel.vue
+with some adjustments to the modal-card classes to just card, this could be
+placed anywhere in a structured html element such as a <section> or a <div>
+-->
 <template>
-    <div
-        class="modal competency-search"
-        :class="{'is-active': isActive}">
-        <div class="modal-background" />
-        <div class="modal-card">
-            <header class="modal-card-head has-background-primary">
-                <p class="modal-card-title">
-                    <span class="title has-text-white">Search for {{ searchType }}</span>
-                    <br><span
-                        class="subtitle has-text-white"
-                        v-if="copyOrLink">
-                        Sharing settings for {{ frameworkName }}
-                    </span>
-                    <span
-                        v-else
-                        class="subtitle has-text-white">
-                        {{ nameOfSelectedCompetency }}
-                    </span>
-                </p>x
+    <div class="modal-card">
+        <header class="modal-card-head has-background-primary">
+            <p class="modal-card-title">
+                <span class="title has-text-white">Search for {{ searchType }}</span>
+                <br><span
+                    class="subtitle has-text-white"
+                    v-if="copyOrLink">
+                    Sharing settings for {{ frameworkName }}
+                </span>
+                <span
+                    v-else
+                    class="subtitle has-text-white">
+                    {{ nameOfSelectedCompetency }}
+                </span>
+            </p>
+            <button
+                class="delete"
+                @click="resetModal();"
+                aria-label="close" />
+        </header>
+        <section class="modal-card-body">
+            <div class="column is-12">
+                <List
+                    v-if="$store.state.lode.competencySearchModalOpen"
+                    :type="searchType"
+                    :repo="repo"
+                    :click="select"
+                    :searchOptions="searchOptions"
+                    :paramObj="paramObj"
+                    :disallowEdits="true"
+                    :selectingCompetency="true"
+                    :selected="selectedIds"
+                    :displayFirst="displayFirst" />
+            </div>
+        </section>
+        <footer class="modal-card-foot">
+            <div class="buttons">
                 <button
-                    class="delete"
-                    @click="resetModal();"
-                    aria-label="close" />
-            </header>
-            <section class="modal-card-body">
-                <div class="column is-12">
-                    <List
-                        v-if="$store.state.lode.competencySearchModalOpen"
-                        :type="searchType"
-                        :repo="repo"
-                        :click="select"
-                        :searchOptions="searchOptions"
-                        :paramObj="paramObj"
-                        :disallowEdits="true"
-                        :selectingCompetency="true"
-                        :selected="selectedIds"
-                        :displayFirst="displayFirst" />
-                </div>
-            </section>
-            <footer class="modal-card-foot">
-                <div class="buttons">
-                    <button
-                        class="button is-outlined is-dark"
-                        @click="resetModal();">
-                        <span class="icon">
-                            <i class="fa fa-times" />
-                        </span>
-                        <span>cancel</span>
-                    </button>
-                    <button
-                        class="button is-outlined is-primary"
-                        v-if="copyOrLink"
-                        @click="copyCompetencies(selectedIds); resetModal();">
-                        <span class="icon">
-                            <i class="fa fa-copy" />
-                        </span>
-                        <span>
-                            Copy {{ searchType }}
-                        </span>
-                    </button>
-                    <button
-                        class="button is-outlined is-primary"
-                        v-if="copyOrLink"
-                        @click="appendCompetencies(selectedIds); resetModal();">
-                        <span class="icon">
-                            <i class="fa fa-link" />
-                        </span>
-                        <span>
-                            Link {{ searchType }}
-                        </span>
-                    </button>
-                    <button
-                        v-if="!copyOrLink"
-                        class="button is-outlined is-primary"
-                        @click="addSelected(selectedIds); resetModal();">
-                        Add Selected
-                    </button>
-                </div>
-            </footer>
-        </div>
+                    class="button is-outlined is-dark"
+                    @click="resetModal();">
+                    <span class="icon">
+                        <i class="fa fa-times" />
+                    </span>
+                    <span>cancel</span>
+                </button>
+                <button
+                    class="button is-outlined is-primary"
+                    v-if="copyOrLink"
+                    @click="copyCompetencies(selectedIds); resetModal();">
+                    <span class="icon">
+                        <i class="fa fa-copy" />
+                    </span>
+                    <span>
+                        Copy {{ searchType }}
+                    </span>
+                </button>
+                <button
+                    class="button is-outlined is-primary"
+                    v-if="copyOrLink"
+                    @click="appendCompetencies(selectedIds); resetModal();">
+                    <span class="icon">
+                        <i class="fa fa-link" />
+                    </span>
+                    <span>
+                        Link {{ searchType }}
+                    </span>
+                </button>
+                <button
+                    v-if="!copyOrLink"
+                    class="button is-outlined is-primary"
+                    @click="addSelected(selectedIds); resetModal();">
+                    Add Selected
+                </button>
+            </div>
+        </footer>
     </div>
 </template>
 
 <script>
 import List from '@/lode/components/lode/List.vue';
 import common from '@/mixins/common.js';
-import { mapState } from 'vuex'
+import {mapState} from 'vuex';
 
 export default {
     name: 'CompetencySearch',
@@ -135,11 +136,11 @@ export default {
         };
     },
     computed: {
-        ...mapState({ 
+        ...mapState({
             selectedCompetency: state => state.editor.selectedComptency
-        }), 
+        }),
         nameOfSelectedCompetency: function() {
-            if(this.selectedCompetency) {
+            if (this.selectedCompetency) {
                 return this.selectecompetency.getName();
             } else {
                 return '';
@@ -192,7 +193,7 @@ export default {
     },
     methods: {
         resetModal: function() {
-            this.$store.commit('competencySearchModalOpen', false);
+            this.$store.commit('app/closeModal');
             this.selectedIds = [];
         },
         select: function(competency) {
@@ -553,7 +554,7 @@ export default {
 
 
 <style lang="scss">
-    @import './../../scss/frameworks.scss';
+    @import '@/scss/frameworks.scss';
 .competency-search{
     .thing {
         padding: .125rem .25rem !important;

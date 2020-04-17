@@ -5,8 +5,8 @@
         aria-label="main navigation">
         <div class="navbar-brand">
             <div
-                @click="$emit('sideBarEvent')"
-                v-if="!showSidebar"
+                @click="$store.commit('app/showSideNav')"
+                v-if="!showSideNav"
                 class="navbar-item">
                 <div class="icon has-text-white">
                     <i class="fa fa-bars" />
@@ -14,7 +14,7 @@
             </div>
             <div
                 v-else
-                @click="$emit('sideBarEvent')"
+                @click="$store.commit('app/closeSideNav')"
                 class="navbar-item">
                 <div class="icon has-text-white">
                     <i class="fa fa-chevron-down has-text-white" />
@@ -37,7 +37,7 @@
 export default {
     name: 'Topbar',
     props: {
-        showSidebar: {
+        showSideNav: {
             dafault: false,
             type: Boolean
         }

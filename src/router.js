@@ -16,7 +16,7 @@ import FrameworkCrosswalk from './views/framework/Crosswalk';
 import NotFound from './views/NotFound.vue';
 import InternalError from './views/InternalError.vue';
 import Forbidden from './views/Forbidden.vue';
-import SideBar from './components/SideBar.vue';
+import SideNav from './components/SideNav.vue';
 import Topbar from './components/Topbar.vue';
 
 Vue.use(Router);
@@ -37,7 +37,7 @@ export default new Router({
             name: 'frameworks',
             components: {
                 default: Frameworks,
-                sidebar: SideBar,
+                sidebar: SideNav,
                 topbar: Topbar
             },
             alias: '/cass-editor/'
@@ -52,7 +52,7 @@ export default new Router({
             name: 'configuration',
             components: {
                 default: ConfigurationEditor,
-                sidebar: SideBar,
+                sidebar: SideNav,
                 topbar: Topbar
             }
         },
@@ -61,7 +61,7 @@ export default new Router({
             name: 'usergroup',
             components: {
                 default: UserGroupEditor,
-                sidebar: SideBar,
+                sidebar: SideNav,
                 topbar: Topbar
             }
         },
@@ -70,7 +70,7 @@ export default new Router({
             name: 'crosswalk',
             components: {
                 default: FrameworkCrosswalk,
-                sidebar: SideBar,
+                sidebar: SideNav,
                 topbar: Topbar
             }
         },
@@ -79,7 +79,7 @@ export default new Router({
             name: 'about',
             components: {
                 default: About,
-                sidebar: SideBar,
+                sidebar: SideNav,
                 topbar: Topbar
             }
         },
@@ -88,7 +88,7 @@ export default new Router({
             name: 'framework',
             components: {
                 default: Framework,
-                sidebar: SideBar,
+                sidebar: SideNav,
                 topbar: Topbar
             }
         },
@@ -97,7 +97,7 @@ export default new Router({
             name: 'import',
             components: {
                 default: Import,
-                sidebar: SideBar,
+                sidebar: SideNav,
                 topbar: Topbar
             }
         },
@@ -106,7 +106,7 @@ export default new Router({
             name: 'organizations',
             components: {
                 default: Organizations,
-                sidebar: SideBar,
+                sidebar: SideNav,
                 topbar: Topbar
             }
         },
@@ -115,7 +115,7 @@ export default new Router({
             name: 'organization',
             components: {
                 default: Organization,
-                sidebar: SideBar,
+                sidebar: SideNav,
                 topbar: Topbar
             }
         },
@@ -129,7 +129,7 @@ export default new Router({
             name: 'conceptScheme',
             components: {
                 default: ConceptScheme,
-                sidebar: SideBar,
+                sidebar: SideNav,
                 topbar: Topbar
             }
         },

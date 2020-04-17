@@ -11,28 +11,21 @@
         class="menu has-background-light">
         <p class="subtitle is-size-4">
             <span
-                @click="$emit('closeCommentsEvent')"
+                @click="$store.commit('app/closeRightAside')"
                 class="icon">
                 <i class="fa fa-caret-right" />
             </span>
-            Comments
+            Version History
         </p>
         <!-- for each comment in time sequence
             click to scroll to position in framework eventually -->
         <!-- for each response -->
-        <Comment
-            :isAdmin="isAdmin"
-            :isViewer="isViewer"
-            :isCommenter="isCommenter"
-            v-for="n in 10"
-            :key="n" />
     </aside>
 </template>
 <script>
-import Comment from './Comment.vue';
 
 export default {
-    name: 'Comments',
+    name: 'Versions',
     data() {
         return {
             isCommenter: true,
@@ -42,7 +35,7 @@ export default {
         };
     },
     components: {
-        Comment
+
     }
 };
 </script>

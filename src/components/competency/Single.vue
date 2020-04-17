@@ -27,10 +27,10 @@
 </template>
 
 <script>
-import Thing from './../lode/components/Thing.vue';
+import Thing from '@/lode/components/lode/Thing.vue';
 
 export default {
-    name: 'ThingAsProperty',
+    name: 'Single',
     components: {Thing},
     data() {
         return {

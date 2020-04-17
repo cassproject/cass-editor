@@ -1,51 +1,12 @@
 <template>
     <div id="page-framework">
-        <!-- competency search -->
-        <CompetencySearch
-            :isActive="$store.state.lode.competencySearchModalOpen"
-            :framework="framework"
-            :queryParams="queryParams" />
-        <!--
-            share modal manages users who have access to
-            the framework
-        -->
-        <ShareModal
-            :isActive="showShareModal"
-            @closeShareModalEvent="onCloseShareModal()" />
-        <!--
-            Editing multiple competencies are one time utilizes
-            a modal to do so, rather than one of the competencies.
-            This will ensure it is clear what the user is editing.
-        -->
-        <EditMultipleCompetencies
-            v-if="showEditMultiple"
-            :showEditMultiple="showEditMultiple"
-            @cancelEditMultipleEvent="onCancelEditMultiple"
-            @EditMultipleEvent="onEditMultiple"
-            :profile="competencyProfile"
-            @editMultipleCompetencies="onEditMultipleCompetencies"
-            :selectedCompetencies="selectedArray" />
-        <!--
-            Comments are served in an aside in
-            Comments.vue template
-        -->
-        <Comments
-            @closeCommentsEvent="onCloseComments()"
-            v-if="showComments" />
-        <!--
-            FrameworkToolbar.vue enables management options on the framework
-            such as sharing, exporting, comment, rolling back versions
-        -->
-        <CompetencyModal
-            v-if="showComments" />
-
+        <DynamicModal />
+        <RightAside v-if="showRightAside" />
         <!-- begin framework -->
         <div class="container">
             <FrameworkEditorToolbar
-                @openCommentsEvent="onOpenComments()"
-                @openShareModalEvent="onOpenShareModal()"
-                @changeProperties="changeProperties"
-                @openExportModalEvent="onOpenExportModal()" />
+                @showExportModal="onOpenExportModal"
+                @changeProperties="changeProperties" />
             <div class="section">
                 <Component
                     :is="dynamicThingComponent"
@@ -124,6 +85,7 @@
                     @editMultipleEvent="onEditMultiple"
                     @removeObject="removeObject"
                     @exportObject="exportObject"
+                    @searchThings="handleSearch($event)"
                     @selectButtonClick="onSelectButtonClick"
                     :properties="properties"
                     @selectedArray="selectedArrayEvent" />
@@ -141,11 +103,10 @@ import competencyEdits from '@/mixins/competencyEdits.js';
 import ctdlasnProfile from '@/mixins/ctdlasnProfile.js';
 import t3Profile from '@/mixins/t3Profile.js';
 import tlaProfile from '@/mixins/tlaProfile.js';
-import ShareModal from './ShareModal.vue';
-import FrameworkEditorToolbar from './EditorToolbar.vue';
-import Comments from './Comments.vue';
-import EditMultipleCompetencies from './EditMultipleCompetencies.vue';
-import CompetencySearch from './CompetencySearch.vue';
+
+import FrameworkEditorToolbar from '@/components/framework/EditorToolbar.vue';
+import RightAside from '@/components/framework/RightAside.vue';
+import DynamicModal from '@/components/modals/DynamicModal.vue';
 
 export default {
     name: "Framework",
@@ -156,10 +117,10 @@ export default {
     mixins: [common, exports, competencyEdits, ctdlasnProfile, t3Profile, tlaProfile],
     data: function() {
         return {
+            showVersionHistory: false,
             showEditMultiple: false,
             showClipboardSuccessModal: false,
             showComments: false,
-            showShareModal: false,
             repo: window.repo,
             frameworkExportLink: null,
             frameworkExportGuid: null,
@@ -193,6 +154,9 @@ export default {
         };
     },
     computed: {
+        showRightAside: function() {
+            return this.$store.getters['app/showRightAside'];
+        },
         dynamicThingComponent: function() {
             if (this.editingFramework) {
                 return 'ThingEditing';
@@ -201,7 +165,7 @@ export default {
             }
         },
         framework: function() {
-            return this.$store.state.editor.framework;
+            return this.$store.getters['editor/framework'];
         },
         timestamp: function() {
             if (this.framework.getTimestamp()) {
@@ -500,10 +464,8 @@ export default {
         Thing,
         ThingEditing,
         FrameworkEditorToolbar,
-        ShareModal,
-        Comments,
-        EditMultipleCompetencies,
-        CompetencySearch
+        RightAside,
+        DynamicModal
     },
     created: function() {
         // Set configuration
@@ -514,8 +476,9 @@ export default {
     mounted: function() {
         if (!this.framework) {
             this.$router.push({name: "frameworks"});
+        } else {
+            this.checkIsPrivate();
         }
-        this.checkIsPrivate();
     },
     watch: {
         shortId: function() {
@@ -613,6 +576,9 @@ export default {
         }
     },
     methods: {
+        handleSearch: function(e) {
+            this.$store.commit('app/showModal', e);
+        },
         checkIsPrivate: function() {
             if (EcRepository.getBlocking(this.framework.id)) {
                 if (EcRepository.getBlocking(this.framework.id).type === "EncryptedValue") {
@@ -647,14 +613,17 @@ export default {
                 }, function() {}, function() {});
             }
         },
-        onEditMultipleCompetencies: function() {
-            this.showEditMultiple = true;
-        },
         onCancelEditMultiple: function() {
             this.showEditMultiple = false;
         },
         onEditMultiple: function() {
             this.showEditMultiple = true;
+            var payload = {
+                profile: this.competencyProfile,
+                selectedCompetencies: this.selectedArray,
+                component: 'MultiEdit'
+            };
+            this.$store.commit('app/showModal', payload);
         },
         onEditNode: function() {
             this.editingFramework = true;
@@ -667,12 +636,6 @@ export default {
         },
         onCloseComments: function() {
             this.showComments = false;
-        },
-        onCloseShareModal: function() {
-            this.showShareModal = false;
-        },
-        onOpenShareModal: function() {
-            this.showShareModal = true;
         },
         selectedArrayEvent: function(ary) {
             this.selectedArray = ary;

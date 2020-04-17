@@ -61,8 +61,14 @@
                                     <td>{{ pe.name }}</td>
                                     <td>{{ pe.email }}</td>
                                     <td>
-                                        <i v-if="pe.type.equalsIgnoreCase('person')" class="fa fa-user" title="user"/>
-                                        <i v-if="pe.type.equalsIgnoreCase('group')" class="fa fa-users" title="group"/>
+                                        <i
+                                            v-if="pe.type.equalsIgnoreCase('person')"
+                                            class="fa fa-user"
+                                            title="user" />
+                                        <i
+                                            v-if="pe.type.equalsIgnoreCase('group')"
+                                            class="fa fa-users"
+                                            title="group" />
                                     </td>
                                 </tr>
                             </tbody>
@@ -1205,8 +1211,14 @@
                                 <p>{{ getPermissionEntityEmail(pk) }}</p>
                             </td>
                             <td>
-                                <i v-if="getPermissionEntityType(pk).equalsIgnoreCase('person')" class="fa fa-user" title="user"/>
-                                <i v-if="getPermissionEntityType(pk).equalsIgnoreCase('group')" class="fa fa-users" title="group"/>
+                                <i
+                                    v-if="getPermissionEntityType(pk).equalsIgnoreCase('person')"
+                                    class="fa fa-user"
+                                    title="user" />
+                                <i
+                                    v-if="getPermissionEntityType(pk).equalsIgnoreCase('group')"
+                                    class="fa fa-users"
+                                    title="group" />
                             </td>
                         </tr>
                     </tbody>
@@ -1252,8 +1264,14 @@
                                 <p>{{ getPermissionEntityEmail(pk) }}</p>
                             </td>
                             <td>
-                                <i v-if="getPermissionEntityType(pk).equalsIgnoreCase('person')" class="fa fa-user" title="user"/>
-                                <i v-if="getPermissionEntityType(pk).equalsIgnoreCase('group')" class="fa fa-users" title="group"/>
+                                <i
+                                    v-if="getPermissionEntityType(pk).equalsIgnoreCase('person')"
+                                    class="fa fa-user"
+                                    title="user" />
+                                <i
+                                    v-if="getPermissionEntityType(pk).equalsIgnoreCase('group')"
+                                    class="fa fa-users"
+                                    title="group" />
                             </td>
                         </tr>
                     </tbody>
@@ -1299,8 +1317,14 @@
                                 <p>{{ getPermissionEntityEmail(pk) }}</p>
                             </td>
                             <td>
-                                <i v-if="getPermissionEntityType(pk).equalsIgnoreCase('person')" class="fa fa-user" title="user"/>
-                                <i v-if="getPermissionEntityType(pk).equalsIgnoreCase('group')" class="fa fa-users" title="group"/>
+                                <i
+                                    v-if="getPermissionEntityType(pk).equalsIgnoreCase('person')"
+                                    class="fa fa-user"
+                                    title="user" />
+                                <i
+                                    v-if="getPermissionEntityType(pk).equalsIgnoreCase('group')"
+                                    class="fa fa-users"
+                                    title="group" />
                             </td>
                         </tr>
                     </tbody>

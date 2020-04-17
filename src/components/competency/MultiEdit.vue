@@ -1,78 +1,71 @@
 <template>
-    <div
-        class="modal"
-        :class="{'is-active': showEditMultiple}">
-        <div class="modal-background i" />
-        <div class="modal-card">
-            <header class="modal-card-head has-background-primary">
-                <h3 class="modal-card-title has-text-white is-size-3">
-                    Edit Multiple Competencies
-                </h3>
-                <button
-                    class="delete"
-                    aria-label="close"
-                    @click="$emit('cancelEditMultipleEvent')" />
-            </header>
-            <section class="modal-card-body">
-                <div
-                    v-for="(item,idx) in addedPropertiesAndValues"
-                    :key="item">
-                    <AddProperty
-                        :profile="profile"
-                        :editingMultipleCompetencies="true"
-                        @propertyStringUpdated="propertyStringUpdated"
-                        :idx="idx"
-                        @removeValueAtIndex="removeValueAtIndex"
-                        @checkedOptions="onCheckedOptions" />
-                    <span v-if="item['error']">
-                        {{ item['error'] }}
+    <div class="modal-card">
+        <header class="modal-card-head has-background-primary">
+            <h3 class="modal-card-title has-text-white is-size-3">
+                Edit Multiple Competencies
+            </h3>
+            <button
+                class="delete"
+                aria-label="close"
+                @click="$store.commit('app/closeModal')" />
+        </header>
+        <section class="modal-card-body">
+            <div
+                v-for="(item,idx) in addedPropertiesAndValues"
+                :key="item">
+                <AddProperty
+                    :profile="profile"
+                    :editingMultipleCompetencies="true"
+                    @propertyStringUpdated="propertyStringUpdated"
+                    :idx="idx"
+                    @removeValueAtIndex="removeValueAtIndex"
+                    @checkedOptions="onCheckedOptions" />
+                <span v-if="item['error']">
+                    {{ item['error'] }}
+                </span>
+            </div>
+            <!-- after adding one property, show button to add another -->
+            <div class="buttons is-right">
+                <div class="button is-small is-outlined is-primary">
+                    <span class="icon">
+                        <i class="fa fa-plus" />
                     </span>
+                    <span @click="addAnotherProperty">Add another property</span>
                 </div>
-                <!-- after adding one property, show button to add another -->
-                <div class="buttons is-right">
-                    <div class="button is-small is-outlined is-primary">
-                        <span class="icon">
-                            <i class="fa fa-plus" />
-                        </span>
-                        <span @click="addAnotherProperty">Add another property</span>
-                    </div>
-                </div>
-            </section>
-            <footer class="modal-card-foot">
-                <div class="buttons is-spaced">
-                    <button
-                        @click="$emit('cancelEditMultipleEvent')"
-                        class="button is-outlined is-dark">
-                        <span class="icon">
-                            <i class="fa fa-times" />
-                        </span>
-                        <span>cancel</span>
-                    </button>
-                    <button
-                        class="button is-outlined is-success"
-                        @click="applyToMultiple"
-                        :disabled="disableApplyButton">
-                        <span class="icon">
-                            <i class="fa fa-save" />
-                        </span>
-                        <span>Apply to multiple</span>
-                    </button>
-                </div>
-            </footer>
-        </div>
+            </div>
+        </section>
+        <footer class="modal-card-foot">
+            <div class="buttons is-spaced">
+                <button
+                    @click="$store.commit('app/closeModal');"
+                    class="button is-outlined is-dark">
+                    <span class="icon">
+                        <i class="fa fa-times" />
+                    </span>
+                    <span>cancel</span>
+                </button>
+                <button
+                    class="button is-outlined is-success"
+                    @click="applyToMultiple"
+                    :disabled="disableApplyButton">
+                    <span class="icon">
+                        <i class="fa fa-save" />
+                    </span>
+                    <span>Apply to multiple</span>
+                </button>
+            </div>
+        </footer>
     </div>
 </template>
 <script>
 import AddProperty from '@/lode/components/lode/AddProperty.vue';
 export default {
-    name: 'EditMultipleCompetencies',
+    name: 'MultiEdit',
     components: {
         AddProperty
     },
     props: {
-        showEditMultiple: Boolean,
-        profile: Object,
-        selectedCompetencies: Array
+        content: Object
     },
     data() {
         return {
@@ -84,6 +77,12 @@ export default {
         };
     },
     computed: {
+        profile: function() {
+            return this.content.profile;
+        },
+        selectedCompetencies: function() {
+            return this.content.selectedCompetencies;
+        },
         disableApplyButton: function() {
             for (var i = 0; i < this.addedPropertiesAndValues.length; i++) {
                 if (this.addedPropertiesAndValues[i].error) {

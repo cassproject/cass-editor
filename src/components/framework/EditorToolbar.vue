@@ -80,12 +80,12 @@
                 role="menu">
                 <div class="dropdown-content">
                     <a
-                        @click="$emit('openExportModalEvent')"
+                        @click="$emit('showExportModal')"
                         class="dropdown-item">
                         Export
                     </a>
                     <a
-                        @click="$emit('openShareModalEvent')"
+                        @click="showManageUsersModal"
                         class="dropdown-item">
                         Manage Users
                     </a>
@@ -101,7 +101,7 @@
             </span>
         </div>
         <div
-            @click="$emit('openCommentsEvent')"
+            @click="$store.commit('app/showRightAside', 'Comments')"
             class="button is-text has-text-dark">
             <span class="icon">
                 <i class="fas fa-comment-alt" />
@@ -112,7 +112,9 @@
                 <i class="fas fa-undo-alt " />
             </span>
         </div>
-        <div class="button is-text">
+        <div
+            @click="$store.commit('app/showRightAside', 'Versions')"
+            class="button is-text">
             <span class="icon">
                 <i class="fas fa-history has-text-dark" />
             </span>
@@ -136,6 +138,12 @@ export default {
         };
     },
     methods: {
+        showExportModal() {
+            this.$store.commit('app/showModal', 'Export');
+        },
+        showManageUsersModal() {
+            this.$store.commit('app/showModal', 'Share');
+        },
         changeProperties(type) {
             this.$emit('changeProperties', type);
             this.showPropertyViewDropDown = false;

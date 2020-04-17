@@ -1,23 +1,7 @@
 <template>
     <div class="page-framework">
-        <!--
-            share modal manages users who have access to
-            the framework
-        -->
-        <ShareModal
-            :isActive="showShareModal"
-            @closeShareModalEvent="onCloseShareModal()" />
-        <!--
-            Comments are served in an aside in
-            Comments.vue template
-        -->
-        <Comments
-            @closeCommentsEvent="onCloseComments()"
-            v-if="showComments" />
-        <!--
-            FrameworkToolbar.vue enables management options on the framework
-            such as sharing, exporting, comment, rolling back versions
-        -->
+        <DynamicModal />
+        <RightAside v-if="showRightAside" />
         <FrameworkEditorToolbar
             @openCommentsEvent="onOpenComments()"
             @openShareModalEvent="onOpenShareModal()"
@@ -108,9 +92,10 @@ import ConceptHierarchy from './ConceptHierarchy.vue';
 import saveAs from 'file-saver';
 import common from '@/mixins/common.js';
 import ctdlasnProfile from '@/mixins/ctdlasnProfile.js';
-import ShareModal from '../framework/ShareModal.vue';
-import FrameworkEditorToolbar from '../framework/EditorToolbar.vue';
-import Comments from '../framework/Comments.vue';
+import FrameworkEditorToolbar from '@/components/framework/EditorToolbar.vue';
+import RightAside from '@/components/framework/RightAside.vue';
+import DynamicModal from '@/components/modals/DynamicModal.vue';
+
 export default {
     name: "ConceptScheme",
     props: {
@@ -651,7 +636,13 @@ export default {
             };
         }
     },
-    components: {Thing, ConceptHierarchy, FrameworkEditorToolbar, ShareModal, Comments},
+    components: {
+        Thing,
+        ConceptHierarchy,
+        FrameworkEditorToolbar,
+        RightAside,
+        DynamicModal
+    },
     created: function() {
         this.refreshPage();
         this.spitEvent('viewChanged');
