@@ -5,15 +5,15 @@
         <!-- nav bar navigation -->
         <cass-modal />
         <router-view
-            :showSidebar="showSidebar"
+            :showSideNav="showSideNav"
             @sideBarEvent="onSidebarEvent"
             name="topbar" />
         <router-view
             id="app-content"
-            :class="{ 'clear-side-bar': showSidebar}"
+            :class="{ 'clear-side-bar': showSideNav}"
             :queryParams="queryParams" />
         <router-view
-            :showSidebar="showSidebar"
+            :showSideNav="showSideNav"
             @createNewFramework="onCreateNewFramework"
             name="sidebar" />
     </div>
@@ -27,7 +27,6 @@ export default {
     name: "App",
     data: function() {
         return {
-            showSidebar: false,
             navBarActive: false,
             queryParams: null,
             repo: window.repo,
@@ -147,7 +146,7 @@ export default {
     },
     methods: {
         onSidebarEvent: function() {
-            this.showSidebar = !this.showSidebar;
+            this.showSideNav = !this.showSideNav;
         },
         onCreateNewFramework: function() {
             this.createNew();
@@ -1041,6 +1040,9 @@ export default {
         }
     },
     computed: {
+        showSideNav: function() {
+            return this.$store.getters['app/showSideNav'];
+        },
         currentRoute: function() {
             return this.$route.path;
         },

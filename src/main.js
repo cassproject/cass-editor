@@ -6,7 +6,7 @@ import router from './router';
 import Vuex from 'vuex';
 import Modal from './plugins/modalPlugin.js';
 import Clipboard from 'v-clipboard';
-import store from './store.js';
+import store from './store/index.js';
 var VueScrollTo = require('vue-scrollto');
 require("cassproject");
 

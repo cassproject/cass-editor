@@ -1,11 +1,11 @@
 <template>
     <aside
         id="app-side-nav-bar"
-        v-if="showSidebar"
+        v-if="showSideNav"
         class="menu has-background-primary has-text-white">
         <div
             class="menu-label has-text-white is-size-3">
-            Username
+            {{ displayName }}
             <!-- might need later to close -->
             <div
                 v-if="false"
@@ -237,26 +237,15 @@
 </template>
 
 <script>
-
-import ctdlAsnCsvExample from 'file-loader!../../files/CTDL-ASN.ONET.example.csv';
-import ctdlAsnCsvTemplate from 'file-loader!../../files/CTDL-ASN.ONET.template.csv';
-import csvExampleCompetencies from 'file-loader!../../files/CAP Software Engineering - Competencies.csv';
-import csvExampleRelations from 'file-loader!../../files/CAP Software Engineering - Relations.csv';
-import csvTemplateCompetencies from 'file-loader!../../files/Template - Competencies.csv';
-import csvTemplateRelations from 'file-loader!../../files/Template - Relations.csv';
-import ctdlAsnJsonld from 'file-loader!../../files/DQP.jsonld';
-import asnRdfJson from 'file-loader!../../files/D2695955';
-import medbiquitous from 'file-loader!../../files/educational_achievement_sample_1June2012.xml';
-import csvConceptExample from 'file-loader!../../files/Concept Scheme Example.csv';
-import csvConceptTemplate from 'file-loader!../../files/Concept Scheme Template.csv';
-import ctdlAsnJsonldConcepts from 'file-loader!../../files/ConnectingCredentialsLevels.jsonld';
+import {mapState} from 'vuex';
+import {cassUtil} from './../mixins/cassUtil';
 export default {
-    name: 'SideBar',
+    name: 'SideNav',
     props: {
         method: {
             default: ''
         },
-        showSidebar: {
+        showSideNav: {
             default: false,
             type: Boolean
         },
@@ -277,11 +266,25 @@ export default {
         }
     },
     computed: {
+        amLoggedIn: function() {
+            if (EcIdentityManager && EcIdentityManager.ids && EcIdentityManager.ids.length > 0) return true;
+            else return false;
+        },
+        displayName: function() {
+            if (this.amLoggedIn) {
+                return this.loggedOnPerson.name;
+            } else {
+                return 'No user';
+            }
+        },
         currentRoute: function() {
             return this.$route.path;
         },
         supportedFiles: function() {
             return this.queryParams.concepts === 'true' ? this.supportedConceptFileTypes : this.supportedFileTypes;
+        },
+        loggedOnPerson: function() {
+            return this.$store.getters['user/loggedOnPerson'];
         }
     }
 };
