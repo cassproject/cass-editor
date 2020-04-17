@@ -51,10 +51,11 @@
                             </div>
                             <div class="control">
                                 <div class="select">
-                                    <select>
+                                    <select v-model="selectViewOrAdmin">
                                         <option
                                             v-for="(option, index) in viewOptions"
-                                            :key="index">
+                                            :key="index"
+                                            :value="option.value">
                                             {{ option.label }}
                                         </option>
                                     </select>
@@ -79,7 +80,9 @@
                                     :key="group">
                                     <th> {{ group.header }}</th>
                                     <td>
-                                        <select v-model="group.view">
+                                        <select
+                                            v-model="group.view"
+                                            @change="group.changed=true">
                                             <option
                                                 :value="option.value"
                                                 v-for="option in viewOptions"
@@ -89,7 +92,9 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <div class="button is-text">
+                                        <div
+                                            class="button is-text"
+                                            @click="removeOwnerOrReader(group, 'group')">
                                             <div class="icon">
                                                 <i class="fa fa-times" />
                                             </div>
@@ -115,7 +120,9 @@
                                     :key="user">
                                     <th> {{ user.header }}</th>
                                     <td>
-                                        <select v-model="user.view">
+                                        <select
+                                            v-model="user.view"
+                                            @change="user.changed=true">
                                             <option
                                                 :value="option.value"
                                                 v-for="option in viewOptions"
@@ -125,7 +132,9 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <div class="button is-text">
+                                        <div
+                                            class="button is-text"
+                                            @click="removeOwnerOrReader(user, 'user')">
                                             <div class="icon">
                                                 <i class="fa fa-times" />
                                             </div>
@@ -140,12 +149,16 @@
             <footer class="modal-card-foot">
                 <div class="columns is-12">
                     <div class="column is-12">
-                        <button class="button is-left is-light">
+                        <button
+                            class="button is-left is-light"
+                            @click="$emit('closeShareModalEvent')">
                             Cancel
                         </button>
                     </div>
                     <div class="column is-12">
-                        <button class="button is-fullwidth is-success">
+                        <button
+                            class="button is-fullwidth is-success"
+                            @click="saveSettings">
                             Save Framework Settings
                         </button>
                     </div>
@@ -183,7 +196,13 @@ export default {
             filtered: [],
             possibleGroupsAndUsers: [],
             isOpenAutocomplete: false,
-            userOrGroupToAdd: null
+            userOrGroupToAdd: null,
+            selectViewOrAdmin: "view",
+            removeReader: [],
+            removeOwner: [],
+            addReader: [],
+            addOwner: [],
+            repo: window.repo
         };
     },
     computed: {
@@ -206,13 +225,13 @@ export default {
                     var pk = EcPk.fromPem(this.framework.owner[i]);
                     EcPerson.getByPk(window.repo, pk, function(success) {
                         console.log(success);
-                        var user = {header: success.name, view: "admin", id: success.shortId()};
+                        var user = {header: success.name, view: "admin", id: success.shortId(), changed: false, pk: pk};
                         me.users.push(user);
                     }, function(failure) {
                         // If it's not a Person, check organizations
                         this.getOrganizationByEcPk(pk, function(success) {
                             console.log(success);
-                            var org = {header: success.name, view: "admin", id: success.shortId()};
+                            var org = {header: success.name, view: "admin", id: success.shortId(), changed: false, pk: pk};
                             me.groups.push(org);
                         }, function(error) {
                             console.error(error);
@@ -225,13 +244,13 @@ export default {
                     var pk = EcPk.fromPem(this.framework.reader[i]);
                     EcPerson.getByPk(window.repo, pk, function(success) {
                         console.log(success);
-                        var user = {header: success.name, view: "view", id: success.shortId()};
+                        var user = {header: success.name, view: "view", id: success.shortId(), changed: false, pk: pk};
                         me.users.push(user);
                     }, function(failure) {
                         // If it's not a Person, check organizations
                         this.getOrganizationByEcPk(pk, function(success) {
                             console.log(success);
-                            var org = {header: success.name, view: "view", id: success.shortId()};
+                            var org = {header: success.name, view: "view", id: success.shortId(), changed: false, pk: pk};
                             me.groups.push(org);
                         }, function(error) {
                             console.error(error);
@@ -247,7 +266,7 @@ export default {
             EcPerson.search(window.repo, '', function(success) {
                 console.log(success);
                 for (var i = 0; i < success.length; i++) {
-                    let person = {id: success[i].shortId(), name: success[i].name};
+                    let person = {id: success[i].shortId(), name: success[i].name, pk: me.getPersonEcPk(success[i])};
                     me.possibleGroupsAndUsers.push(person);
                 }
             }, function(failure) {
@@ -256,7 +275,7 @@ export default {
             EcOrganization.search(window.repo, '', function(success) {
                 console.log(success);
                 for (var i = 0; i < success.length; i++) {
-                    let org = {id: success[i].shortId(), name: success[i].name};
+                    let org = {id: success[i].shortId(), name: success[i].name, pk: me.getOrganizationEcPk(success[i])};
                     me.possibleGroupsAndUsers.push(org);
                 }
             }, function(failure) {
@@ -268,9 +287,121 @@ export default {
             this.filtered = this.possibleGroupsAndUsers.filter(item => item.name.toLowerCase().indexOf(this.search.toLowerCase()) !== -1);
         },
         selectUserOrGroup: function(nameAndId) {
-            this.userOrGroupToAdd = nameAndId.id;
+            this.userOrGroupToAdd = nameAndId;
             this.search = nameAndId.name;
             this.isOpenAutocomplete = false;
+        },
+        saveSettings: function() {
+            this.populateAddAndRemoveArrays();
+            this.addAndRemoveFromAllObjects();
+        },
+        populateAddAndRemoveArrays: function() {
+            for (let i = 0; i < this.users.length; i++) {
+                if (this.users[i].changed) {
+                    if (this.users[i].view === "view") {
+                        this.removeOwner.push(this.users[i].pk);
+                        this.addReader.push(this.users[i].pk);
+                    } else if (this.users[i].view === "admin") {
+                        this.removeReader.push(this.users[i].pk);
+                        this.addOwner.push(this.users[i].pk);
+                    }
+                }
+            }
+            for (let i = 0; i < this.groups.length; i++) {
+                if (this.groups[i].changed) {
+                    if (this.groups[i].view === "view") {
+                        this.removeOwner.push(this.groups[i].pk);
+                        this.addReader.push(this.groups[i].pk);
+                    } else if (this.groups[i].view === "admin") {
+                        this.removeReader.push(this.groups[i].pk);
+                        this.addOwner.push(this.groups[i].pk);
+                    }
+                }
+            }
+            if (this.userOrGroupToAdd) {
+                if (this.selectViewOrAdmin === "view") {
+                    this.addReader.push(this.userOrGroupToAdd.pk);
+                } else if (this.selectViewOrAdmin === "admin") {
+                    this.addOwner.push(this.userOrGroupToAdd.pk);
+                }
+            }
+        },
+        addAndRemoveFromAllObjects: function() {
+            let me = this;
+            if (this.framework.competency && this.framework.competency.length > 0) {
+                new EcAsyncHelper().each(this.framework.competency, function(competencyId, done) {
+                    EcCompetency.get(competencyId, function(c) {
+                        for (let i = 0; i < me.removeReader.length; i++) {
+                            c.removeReader(me.removeReader[i]);
+                        }
+                        for (let i = 0; i < me.removeOwner.length; i++) {
+                            c.removeOwner(me.removeOwner[i]);
+                        }
+                        for (let i = 0; i < me.addReader.length; i++) {
+                            c.addReader(me.addReader[i]);
+                        }
+                        for (let i = 0; i < me.addOwner.length; i++) {
+                            c.addOwner(me.addOwner[i]);
+                        }
+                        me.repo.saveTo(c, done, done);
+                    }, done);
+                }, function(competencyIds) {
+                    if (me.framework.relation && me.framework.relation.length > 0) {
+                        new EcAsyncHelper().each(me.framework.relation, function(relationId, done) {
+                            EcAlignment.get(relationId, function(r) {
+                                for (let i = 0; i < me.removeReader.length; i++) {
+                                    r.removeReader(me.removeReader[i]);
+                                }
+                                for (let i = 0; i < me.removeOwner.length; i++) {
+                                    r.removeOwner(me.removeOwner[i]);
+                                }
+                                for (let i = 0; i < me.addReader.length; i++) {
+                                    r.addReader(me.addReader[i]);
+                                }
+                                for (let i = 0; i < me.addOwner.length; i++) {
+                                    r.addOwner(me.addOwner[i]);
+                                }
+                                me.repo.saveTo(r, done, done);
+                            }, done);
+                        }, function(relationIds) {
+                            me.addAndRemoveFromFrameworkObject();
+                        });
+                    } else {
+                        me.addAndRemoveFromFrameworkObject();
+                    }
+                });
+            }
+        },
+        addAndRemoveFromFrameworkObject: function() {
+            let f = this.framework;
+            let me = this;
+            for (let i = 0; i < me.removeReader.length; i++) {
+                f.removeReader(me.removeReader[i]);
+            }
+            for (let i = 0; i < me.removeOwner.length; i++) {
+                f.removeOwner(me.removeOwner[i]);
+            }
+            for (let i = 0; i < me.addReader.length; i++) {
+                f.addReader(me.addReader[i]);
+            }
+            for (let i = 0; i < me.addOwner.length; i++) {
+                f.addOwner(me.addOwner[i]);
+            }
+            me.repo.saveTo(f, function() {
+                me.$emit('closeShareModalEvent');
+            }, function() {});
+        },
+        removeOwnerOrReader: function(userOrGroup, type) {
+            if (userOrGroup.view === "view") {
+                this.removeReader.push(userOrGroup.pk);
+            } else if (userOrGroup.view === "admin") {
+                this.removeOwner.push(userOrGroup.pk);
+            }
+            if (type === "user") {
+                EcArray.setRemove(this.users, userOrGroup);
+            } else if (type === "group") {
+                EcArray.setRemove(this.groups, userOrGroup);
+            }
         }
     }
 };

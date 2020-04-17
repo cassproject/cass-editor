@@ -80,12 +80,12 @@
                 role="menu">
                 <div class="dropdown-content">
                     <a
-                        @click="$emit('openExportModalEvent')"
+                        @click="$emit('openExportModalEvent'); showShareDropdown = false;"
                         class="dropdown-item">
                         Export
                     </a>
                     <a
-                        @click="$emit('openShareModalEvent')"
+                        @click="$emit('openShareModalEvent'); showShareDropdown = false;"
                         class="dropdown-item">
                         Manage Users
                     </a>
