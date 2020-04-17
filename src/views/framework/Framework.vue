@@ -36,7 +36,8 @@
             FrameworkToolbar.vue enables management options on the framework
             such as sharing, exporting, comment, rolling back versions
         -->
-
+        <CompetencyModal
+            v-if="showComments" />
 
         <!-- begin framework -->
         <div class="container">

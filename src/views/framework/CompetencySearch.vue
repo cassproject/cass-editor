@@ -15,9 +15,9 @@
                     <span
                         v-else
                         class="subtitle has-text-white">
-                        {{ $store.state.editor.selectedCompetency.getName() }}
+                        {{ nameOfSelectedCompetency }}
                     </span>
-                </p>
+                </p>x
                 <button
                     class="delete"
                     @click="resetModal();"
@@ -85,6 +85,8 @@
 <script>
 import List from '@/lode/components/lode/List.vue';
 import common from '@/mixins/common.js';
+import { mapState } from 'vuex'
+
 export default {
     name: 'CompetencySearch',
     props: {
@@ -133,11 +135,25 @@ export default {
         };
     },
     computed: {
+        ...mapState({ 
+            selectedCompetency: state => state.editor.selectedComptency
+        }), 
+        nameOfSelectedCompetency: function() {
+            if(this.selectedCompetency) {
+                return this.selectecompetency.getName();
+            } else {
+                return '';
+            }
+        },
         copyOrLink: function() {
             return this.$store.state.lode.copyOrLink;
         },
         frameworkName: function() {
-            return this.framework.getName();
+            if (this.framework) {
+                return this.framework.getName();
+            } else {
+                return '';
+            }
         },
         searchOptions: function() {
             let search = "";
