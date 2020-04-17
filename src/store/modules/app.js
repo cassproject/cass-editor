@@ -12,6 +12,9 @@ const state = {
         commentsEnabled: true,
         versionsEnabled: true
     },
+    configuration: {
+        contentSection: ''
+    },
     modal: {
         framework: '',
         showModal: false,
