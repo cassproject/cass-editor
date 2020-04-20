@@ -223,16 +223,22 @@ export default {
                     if (EcIdentityManager.ids.length > 0) {
                         c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                     }
+                    if (framework.owner && framework.owner.length > 0) {
+                        for (var j = 0; j < framework.owner.length; j++) {
+                            var owner = framework.owner[j];
+                            c.addOwner(EcPk.fromPem(owner));
+                        }
+                    }
                     if (this.$store.state.editor && this.$store.state.editor.configuration) {
                         var config = this.$store.state.editor.configuration;
                         if (config["defaultObjectOwners"]) {
-                            for (var i = 0; i < config["defaultObjectOwners"].length; i++) {
-                                c.addOwner(EcPk.fromPem(config["defaultObjectOwners"][i]));
+                            for (var k = 0; k < config["defaultObjectOwners"].length; k++) {
+                                c.addOwner(EcPk.fromPem(config["defaultObjectOwners"][k]));
                             }
                         }
                         if (config["defaultObjectReaders"]) {
-                            for (var i = 0; i < config["defaultObjectReaders"].length; i++) {
-                                c.addReader(EcPk.fromPem(config["defaultObjectReaders"][i]));
+                            for (var k = 0; k < config["defaultObjectReaders"].length; k++) {
+                                c.addReader(EcPk.fromPem(config["defaultObjectReaders"][k]));
                             }
                         }
                     }
@@ -311,16 +317,22 @@ export default {
                         if (EcIdentityManager.ids.length > 0) {
                             r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                         }
+                        if (framework.owner && framework.owner.length > 0) {
+                            for (var j = 0; j < framework.owner.length; j++) {
+                                var owner = framework.owner[j];
+                                r.addOwner(EcPk.fromPem(owner));
+                            }
+                        }
                         if (this.$store.state.editor && this.$store.state.editor.configuration) {
                             var config = this.$store.state.editor.configuration;
                             if (config["defaultObjectOwners"]) {
-                                for (var i = 0; i < config["defaultObjectOwners"].length; i++) {
-                                    r.addOwner(EcPk.fromPem(config["defaultObjectOwners"][i]));
+                                for (var k = 0; k < config["defaultObjectOwners"].length; k++) {
+                                    r.addOwner(EcPk.fromPem(config["defaultObjectOwners"][k]));
                                 }
                             }
                             if (config["defaultObjectReaders"]) {
-                                for (var i = 0; i < config["defaultObjectReaders"].length; i++) {
-                                    r.addReader(EcPk.fromPem(config["defaultObjectReaders"][i]));
+                                for (var k = 0; k < config["defaultObjectReaders"].length; k++) {
+                                    r.addReader(EcPk.fromPem(config["defaultObjectReaders"][k]));
                                 }
                             }
                         }
@@ -371,16 +383,22 @@ export default {
                         if (EcIdentityManager.ids.length > 0) {
                             r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                         }
+                        if (framework.owner && framework.owner.length > 0) {
+                            for (var j = 0; j < framework.owner.length; j++) {
+                                var owner = framework.owner[j];
+                                r.addOwner(EcPk.fromPem(owner));
+                            }
+                        }
                         if (this.$store.state.editor && this.$store.state.editor.configuration) {
                             var config = this.$store.state.editor.configuration;
                             if (config["defaultObjectOwners"]) {
-                                for (var i = 0; i < config["defaultObjectOwners"].length; i++) {
-                                    r.addOwner(EcPk.fromPem(config["defaultObjectOwners"][i]));
+                                for (var k = 0; k < config["defaultObjectOwners"].length; k++) {
+                                    r.addOwner(EcPk.fromPem(config["defaultObjectOwners"][k]));
                                 }
                             }
                             if (config["defaultObjectReaders"]) {
-                                for (var i = 0; i < config["defaultObjectReaders"].length; i++) {
-                                    r.addReader(EcPk.fromPem(config["defaultObjectReaders"][i]));
+                                for (var k = 0; k < config["defaultObjectReaders"].length; k++) {
+                                    r.addReader(EcPk.fromPem(config["defaultObjectReaders"][k]));
                                 }
                             }
                         }
@@ -467,16 +485,22 @@ export default {
                         if (EcIdentityManager.ids.length > 0) {
                             r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                         }
+                        if (framework.owner && framework.owner.length > 0) {
+                            for (var j = 0; j < framework.owner.length; j++) {
+                                var owner = framework.owner[j];
+                                r.addOwner(EcPk.fromPem(owner));
+                            }
+                        }
                         if (this.$store.state.editor && this.$store.state.editor.configuration) {
                             var config = this.$store.state.editor.configuration;
                             if (config["defaultObjectOwners"]) {
-                                for (var i = 0; i < config["defaultObjectOwners"].length; i++) {
-                                    r.addOwner(EcPk.fromPem(config["defaultObjectOwners"][i]));
+                                for (var k = 0; k < config["defaultObjectOwners"].length; k++) {
+                                    r.addOwner(EcPk.fromPem(config["defaultObjectOwners"][k]));
                                 }
                             }
                             if (config["defaultObjectReaders"]) {
-                                for (var i = 0; i < config["defaultObjectReaders"].length; i++) {
-                                    r.addReader(EcPk.fromPem(config["defaultObjectReaders"][i]));
+                                for (var k = 0; k < config["defaultObjectReaders"].length; k++) {
+                                    r.addReader(EcPk.fromPem(config["defaultObjectReaders"][k]));
                                 }
                             }
                         }

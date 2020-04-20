@@ -269,6 +269,12 @@ export default {
             if (EcIdentityManager.ids != null && EcIdentityManager.ids.length > 0) {
                 c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
             }
+            if (this.container.owner && this.container.owner.length > 0) {
+                for (var j = 0; j < this.container.owner.length; j++) {
+                    var owner = this.container.owner[j];
+                    c.addOwner(EcPk.fromPem(owner));
+                }
+            }
             if (this.$store.state.editor && this.$store.state.editor.configuration) {
                 var config = this.$store.state.editor.configuration;
                 if (config["defaultObjectOwners"]) {

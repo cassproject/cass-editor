@@ -495,16 +495,23 @@ export default {
                 if (EcIdentityManager.ids.length > 0) {
                     r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                 }
+                var framework = this.$store.state.editor.framework;
+                if (framework.owner && framework.owner.length > 0) {
+                    for (var j = 0; j < framework.owner.length; j++) {
+                        var owner = framework.owner[j];
+                        r.addOwner(EcPk.fromPem(owner));
+                    }
+                }
                 if (this.$store.state.editor && this.$store.state.editor.configuration) {
                     var config = this.$store.state.editor.configuration;
                     if (config["defaultObjectOwners"]) {
-                        for (var i = 0; i < config["defaultObjectOwners"].length; i++) {
-                            r.addOwner(EcPk.fromPem(config["defaultObjectOwners"][i]));
+                        for (var k = 0; k < config["defaultObjectOwners"].length; k++) {
+                            r.addOwner(EcPk.fromPem(config["defaultObjectOwners"][k]));
                         }
                     }
                     if (config["defaultObjectReaders"]) {
-                        for (var i = 0; i < config["defaultObjectReaders"].length; i++) {
-                            r.addReader(EcPk.fromPem(config["defaultObjectReaders"][i]));
+                        for (var k = 0; k < config["defaultObjectReaders"].length; k++) {
+                            r.addReader(EcPk.fromPem(config["defaultObjectReaders"][k]));
                         }
                     }
                 }
@@ -512,7 +519,6 @@ export default {
                     r = EcEncryptedValue.toEncryptedValue(r);
                 }
                 this.repo.saveTo(r, function() {}, console.error);
-                var framework = this.$store.state.editor.framework;
                 if (thing.type === 'Concept') {
                     if (framework.relation == null) {
                         framework.relation = [];
