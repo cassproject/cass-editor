@@ -257,7 +257,7 @@
                                             class="column"
                                             v-if="queryParams.concepts !== 'true'">
                                             <div
-                                                class="import-tab disabled"
+                                                class="import-tab"
                                                 :class="{ 'is-active-tab': method === 'server'}">
                                                 <a @click="switchToRemoteServerTab()">
                                                     <i
@@ -273,7 +273,7 @@
                                             class="column"
                                             v-if="queryParams.concepts !== 'true'">
                                             <div
-                                                class="import-tab disabled"
+                                                class="import-tab"
                                                 :class="{ 'is-active-tab': method === 'text'}">
                                                 <a @click="switchToPasteTextTab()">
                                                     <i
@@ -289,7 +289,7 @@
                                             class="column"
                                             v-if="queryParams.concepts !== 'true'">
                                             <div
-                                                class="import-tab disabled"
+                                                class="import-tab"
                                                 :class="{ 'is-active-tab': method === 'url'}">
                                                 <a @click="switchToUrlSourceTab()">
                                                     <i
@@ -572,7 +572,7 @@
                         <!-- import details -->
                         <div
                             class="section import-details"
-                            v-if="framework && showImportDetailsView">
+                            v-if="framework && showImportDetailsView && isT3Import">
                             <!-- interstitial screen will go here -->
                             <div class="import-details__section">
                                 <h3 class="subtitle is-size-3 has-text-weight-normal">
@@ -842,6 +842,12 @@ export default {
             } else {
                 return false;
             }
+        },
+        isT3Import: function() {
+            if (this.importType === 'pdf') {
+                return true;
+            }
+            return false;
         }
     },
     watch: {
@@ -951,28 +957,19 @@ export default {
             }
         },
         switchToRemoteServerTab: function() {
-
-            /*
-             * this.method = 'server';
-             * this.framework = null;
-             * this.status='';
-             */
+            this.method = 'server';
+            this.framework = null;
+            this.status = '';
         },
         switchToPasteTextTab: function() {
-
-            /*
-             * this.method = 'text';
-             * this.framework = null;
-             * thi.status='';
-             */
+            this.method = 'text';
+            this.framework = null;
+            this.status = '';
         },
         switchToUrlSourceTab: function() {
-
-            /*
-             * this.method = 'url';
-             * this.framework = null;
-             * thi.status='';
-             */
+            this.method = 'url';
+            this.framework = null;
+            this.status = '';
         },
         unsupportedFile: function(val) {
             let fileType = val;
@@ -1196,7 +1193,12 @@ export default {
             }
         },
         analyzeCsvRelation: function(e) {
-            this.csvRelationFile = this.file[0];
+            var files = e.target.files || e.dataTransfer.files;
+            if (!files.length) {
+                this.csvRelationFile = null;
+            } else {
+                this.csvRelationFile = files[0];
+            }
             let me = this;
             CSVImport.analyzeFile(this.csvRelationFile, function(data) {
                 for (var i = 0; i < data[0].length; i++) {
@@ -1263,7 +1265,7 @@ export default {
             var identity = EcIdentityManager.ids[0];
             var f = new EcFramework();
             if (identity != null) { f.addOwner(identity.ppk.toPk()); }
-            if (this.queryParams.newObjectEndpoint != null) {
+            if (this.queryParams.newObjectEndpoint != null && this.queryParams.newObjectEndpoint !== undefined) {
                 f.generateShortId(this.queryParams.newObjectEndpoint == null ? this.repo.selectedServer : this.queryParams.newObjectEndpoint);
             } else {
                 f.generateId(this.queryParams.newObjectEndpoint == null ? this.repo.selectedServer : this.queryParams.newObjectEndpoint);
@@ -1283,6 +1285,7 @@ export default {
                         me.analyzeImportFile();
                     } else {
                         me.framework = f;
+                        me.importSuccess();
                         me.spitEvent("importFinished", f.shortId(), "importPage");
                     }
                 }, function(failure) {
@@ -1314,6 +1317,7 @@ export default {
                     me.analyzeImportFile();
                 } else {
                     me.framework = f;
+                    me.importSuccess();
                     me.spitEvent("importFinished", f.shortId(), "importPage");
                 }
             },
@@ -1376,6 +1380,7 @@ export default {
             var me = this;
             me.status = 'importing framework...';
             var formData = new FormData();
+            console.log(me.file[0].name);
             formData.append(me.file[0].name, me.file[0]);
             me.status = 'importing file...';
             EcRemote.postExpectingObject(
@@ -1510,7 +1515,7 @@ export default {
 
             var f = new EcFramework();
             if (identity != null) { f.addOwner(identity.ppk.toPk()); }
-            if (this.queryParams.newObjectEndpoint !== null) {
+            if (this.queryParams.newObjectEndpoint !== null && this.queryParams.newObjectEndpoint !== undefined) {
                 f.generateShortId(endpoint);
             } else {
                 f.generateId(endpoint);
@@ -1540,7 +1545,7 @@ export default {
                     for (var i = 0; i < alignments.length; i++) {
                         f.relation.push(alignments[i].shortId());
                     }
-                    repo.saveTo(f, function(success) {
+                    me.repo.saveTo(f, function(success) {
                         me.file.splice(0, 1);
                         if (me.file.length > 0) {
                             me.firstImport = false;
@@ -1758,6 +1763,7 @@ export default {
                         me.caseDocs[firstIndex].success = true;
                         EcFramework.get(id, function(f) {
                             me.framework = f;
+                            me.importSuccess();
                             me.spitEvent("importFinished", f.shortId(), "importPage");
                         }, console.error);
                         me.importCase();
