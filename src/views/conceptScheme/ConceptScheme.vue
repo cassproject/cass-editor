@@ -678,6 +678,7 @@ export default {
                 framework = EcEncryptedValue.toEncryptedValue(framework);
                 var cs = new EcConceptScheme();
                 cs.copyFrom(framework.decryptIntoObject());
+                delete cs.reader;
                 framework = cs;
                 EcEncryptedValue.encryptOnSave(cs.id, false);
                 cs["schema:dateModified"] = new Date().toISOString();
@@ -923,6 +924,7 @@ export default {
                     }
                     concept = new EcConcept();
                     concept.copyFrom(v.decryptIntoObject());
+                    delete concept.reader;
                     EcEncryptedValue.encryptOnSave(concept.id, false);
                     if (concept["skos:narrower"]) {
                         me.decryptConcepts(concept);

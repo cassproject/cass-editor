@@ -185,7 +185,7 @@ export default {
             }
         },
         shortId: function() {
-            if(this.framework) {
+            if (this.framework) {
                 return this.framework.shortId();
             } else {
                 return null;
@@ -472,14 +472,13 @@ export default {
         DynamicModal
     },
     created: function() {
-        // Set configuration create() happens before mount, make sure framework exists in case 
+        // Set configuration create() happens before mount, make sure framework exists in case
         // the page was being refreshed and no longer exists.
-        if(this.framework!==null) {
+        if (this.framework !== null) {
             this.getConfiguration();
             this.refreshPage();
             this.spitEvent('viewChanged');
         }
-        
     },
     mounted: function() {
         if (!this.framework) {
@@ -533,6 +532,7 @@ export default {
                 var f = new EcFramework();
                 f.copyFrom(framework.decryptIntoObject());
                 f["schema:dateModified"] = new Date().toISOString();
+                delete f.reader;
                 EcEncryptedValue.encryptOnSave(f.id, false);
                 me.repo.saveTo(f, function() {}, console.error);
                 framework = f;
@@ -550,6 +550,7 @@ export default {
                                 c = new EcCompetency();
                                 c.copyFrom(v.decryptIntoObject());
                                 c["schema:dateModified"] = new Date().toISOString();
+                                delete c.reader;
                                 EcEncryptedValue.encryptOnSave(c.id, false);
                                 me.repo.saveTo(c, done, done);
                             } else {
@@ -569,6 +570,7 @@ export default {
                                     }
                                     r = new EcAlignment();
                                     r.copyFrom(v.decryptIntoObject());
+                                    delete r.reader;
                                     EcEncryptedValue.encryptOnSave(r.id, false);
                                     me.repo.saveTo(r, done, done);
                                 }, done);
@@ -649,8 +651,8 @@ export default {
             this.selectedArray = ary;
         },
         refreshPage: function() {
-            if(!this.framework){
-                console.log("no framework to fresh");
+            if (!this.framework) {
+                console.log("no framework to refresh");
                 return;
             }
             if (EcRepository.shouldTryUrl(this.framework.id) === false) {
