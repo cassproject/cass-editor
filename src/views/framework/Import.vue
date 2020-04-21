@@ -58,7 +58,7 @@
                                                     </div>
                                                     <!-- desktop friendly home -->
                                                     <router-link
-                                                        v-if="showImportLightView"
+                                                        v-if="showImportLightView && method !== 'text'"
                                                         class="button is-hidden-touch is-small is-light is -pulled-right"
                                                         to="/">
                                                         <span>
@@ -70,7 +70,7 @@
                                                     </router-link>
                                                     <!-- mobile friendly home -->
                                                     <router-link
-                                                        v-if="showImportLightView"
+                                                        v-if="showImportLightView && method !== 'text'"
                                                         class="button is-hidden-desktop is-small is-light is-pulled-right"
                                                         to="/">
                                                         <span class="icon">
@@ -79,7 +79,7 @@
                                                     </router-link>
                                                     <!-- desktop friendly export -->
                                                     <div
-                                                        v-if="showImportLightView"
+                                                        v-if="showImportLightView && method !== 'text'"
                                                         class="button is-hidden-touch is-small is-light is-pulled-right"
                                                         @click="showModal('export')">
                                                         <span>
@@ -91,7 +91,7 @@
                                                     </div>
                                                     <!-- mobile friendly export -->
                                                     <div
-                                                        v-if="showImportLightView"
+                                                        v-if="showImportLightView && method !== 'text'"
                                                         class="button is-hidden-desktop is-small is-light is-pulled-right"
                                                         @click="showModal('export')">
                                                         <span class="icon">
@@ -100,7 +100,7 @@
                                                     </div>
                                                     <!-- mobile friendly start over -->
                                                     <div
-                                                        v-if="framework && showImportLightView"
+                                                        v-if="framework && showImportLightView && method !== 'text'"
                                                         @click="cancelImport"
                                                         class="button is-hidden-touch is-small is-info is-pulled-right">
                                                         <span>
@@ -121,7 +121,7 @@
                                                     </div>
                                                     <!-- desktop friendly open in editor -->
                                                     <div
-                                                        v-if="framework && showImportLightView"
+                                                        v-if="framework && showImportLightView && method !== 'text'"
                                                         @click="openFramework"
                                                         class="button is-hidden-touch is-small is-info is-pulled-right">
                                                         <span>view in editor</span>
@@ -131,7 +131,7 @@
                                                     </div>
                                                     <!-- mobile friendly open in editor -->
                                                     <div
-                                                        v-if="framework && showImportLightView"
+                                                        v-if="framework && showImportLightView && method !== 'text'"
                                                         @click="openFramework"
                                                         class="button is-hidden-desktop is-small is-info is-pulled-right">
                                                         <span class="icon">
@@ -233,7 +233,7 @@
                         class="section">
                         <!-- types of import for tabs -->
                         <div
-                            v-if="!framework"
+                            v-if="!framework || (framework && method === 'text')"
                             class="section is-large">
                             <div class="tile is-vertical has-background-lightest">
                                 <div class="section is-medium">
@@ -539,6 +539,9 @@
                                         class="section has-dashed-border"
                                         v-if="method=='text'">
                                         <center>
+                                            <input
+                                                v-model="importFrameworkName"
+                                                placeholder="Framework Name">
                                             <h1>Paste Text</h1>
                                             <textarea v-model="text" />
                                             <div>
@@ -858,8 +861,8 @@ export default {
                 this.repo.selectedServer,
                 EcIdentityManager.ids[0],
                 function(competencies, relations) {
+                    me.showImportLightView = true;
                     me.status = competencies.length + " competencies and " + relations.length + " relations.";
-                    me.status = "info";
                     var f = new EcFramework();
                     me.framework = null;
                     for (var i = 0; i < competencies.length; i++) {
@@ -1380,7 +1383,6 @@ export default {
             var me = this;
             me.status = 'importing framework...';
             var formData = new FormData();
-            console.log(me.file[0].name);
             formData.append(me.file[0].name, me.file[0]);
             me.status = 'importing file...';
             EcRemote.postExpectingObject(
@@ -1647,8 +1649,8 @@ export default {
                 me.repo.multiput(all, function() {
                     for (var i = 0; i < frameworks.length; i++) {
                         me.spitEvent("importFinished", frameworks[i].shortId(), "importPage");
-                        me.importSuccess();
                     }
+                    me.importSuccess();
                 }, function(failure) {
                     me.statusType = "error";
                     me.status = "Failed to save: " + failure;
@@ -1792,6 +1794,41 @@ export default {
             this.status = "Import Canceled.";
         },
         parseText: function() {
+            var me = this;
+            if (EcIdentityManager.ids != null && EcIdentityManager.ids.length > 0) {
+                this.framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            }
+            if (this.queryParams.newObjectEndpoint !== null && this.queryParams.newObjectEndpoint !== undefined) {
+                this.framework.generateShortId(this.queryParams.newObjectEndpoint);
+            } else {
+                this.framework.generateId(this.repo.selectedServer);
+            }
+            this.framework.name = this.importFrameworkName;
+            var toSave = [this.framework];
+            for (var i = 0; i < this.framework.competency.length; i++) {
+                var comp = EcRepository.cache[this.framework.competency[i]];
+                if (EcIdentityManager.ids != null && EcIdentityManager.ids.length > 0) {
+                    comp.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                }
+                toSave.push(comp);
+            }
+            for (var i = 0; i < this.framework.relation.length; i++) {
+                var relation = EcRepository.cache[this.framework.relation[i]];
+                if (EcIdentityManager.ids != null && EcIdentityManager.ids.length > 0) {
+                    relation.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                }
+                toSave.push(relation);
+            }
+            this.repo.multiput(toSave, function() {
+                me.importSuccess();
+                me.spitEvent("importFinished", me.framework.shortId(), "importPage");
+            }, function(failure) {
+                console.log("failure", failure);
+                me.showErrors = true;
+                me.status = failure;
+                me.statusType = "error";
+                me.errors.push(failure);
+            });
         },
         importFromUrl: function() {
             let me = this;
