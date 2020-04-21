@@ -58,7 +58,7 @@
                                                     </div>
                                                     <!-- desktop friendly home -->
                                                     <router-link
-                                                        v-if="showImportLightView"
+                                                        v-if="showImportLightView && method !== 'text'"
                                                         class="button is-hidden-touch is-small is-light is -pulled-right"
                                                         to="/">
                                                         <span>
@@ -70,7 +70,7 @@
                                                     </router-link>
                                                     <!-- mobile friendly home -->
                                                     <router-link
-                                                        v-if="showImportLightView"
+                                                        v-if="showImportLightView && method !== 'text'"
                                                         class="button is-hidden-desktop is-small is-light is-pulled-right"
                                                         to="/">
                                                         <span class="icon">
@@ -79,7 +79,7 @@
                                                     </router-link>
                                                     <!-- desktop friendly export -->
                                                     <div
-                                                        v-if="showImportLightView"
+                                                        v-if="showImportLightView && method !== 'text'"
                                                         class="button is-hidden-touch is-small is-light is-pulled-right"
                                                         @click="showModal('export')">
                                                         <span>
@@ -91,7 +91,7 @@
                                                     </div>
                                                     <!-- mobile friendly export -->
                                                     <div
-                                                        v-if="showImportLightView"
+                                                        v-if="showImportLightView && method !== 'text'"
                                                         class="button is-hidden-desktop is-small is-light is-pulled-right"
                                                         @click="showModal('export')">
                                                         <span class="icon">
@@ -100,7 +100,7 @@
                                                     </div>
                                                     <!-- mobile friendly start over -->
                                                     <div
-                                                        v-if="framework && showImportLightView"
+                                                        v-if="framework && showImportLightView && method !== 'text'"
                                                         @click="cancelImport"
                                                         class="button is-hidden-touch is-small is-info is-pulled-right">
                                                         <span>
@@ -121,7 +121,7 @@
                                                     </div>
                                                     <!-- desktop friendly open in editor -->
                                                     <div
-                                                        v-if="framework && showImportLightView"
+                                                        v-if="framework && showImportLightView && method !== 'text'"
                                                         @click="openFramework"
                                                         class="button is-hidden-touch is-small is-info is-pulled-right">
                                                         <span>view in editor</span>
@@ -131,7 +131,7 @@
                                                     </div>
                                                     <!-- mobile friendly open in editor -->
                                                     <div
-                                                        v-if="framework && showImportLightView"
+                                                        v-if="framework && showImportLightView && method !== 'text'"
                                                         @click="openFramework"
                                                         class="button is-hidden-desktop is-small is-info is-pulled-right">
                                                         <span class="icon">
@@ -233,7 +233,7 @@
                         class="section">
                         <!-- types of import for tabs -->
                         <div
-                            v-if="!framework"
+                            v-if="!framework || (framework && method === 'text')"
                             class="section is-large">
                             <div class="tile is-vertical has-background-lightest">
                                 <div class="section is-medium">
@@ -257,7 +257,7 @@
                                             class="column"
                                             v-if="queryParams.concepts !== 'true'">
                                             <div
-                                                class="import-tab disabled"
+                                                class="import-tab"
                                                 :class="{ 'is-active-tab': method === 'server'}">
                                                 <a @click="switchToRemoteServerTab()">
                                                     <i
@@ -273,7 +273,7 @@
                                             class="column"
                                             v-if="queryParams.concepts !== 'true'">
                                             <div
-                                                class="import-tab disabled"
+                                                class="import-tab"
                                                 :class="{ 'is-active-tab': method === 'text'}">
                                                 <a @click="switchToPasteTextTab()">
                                                     <i
@@ -289,7 +289,7 @@
                                             class="column"
                                             v-if="queryParams.concepts !== 'true'">
                                             <div
-                                                class="import-tab disabled"
+                                                class="import-tab"
                                                 :class="{ 'is-active-tab': method === 'url'}">
                                                 <a @click="switchToUrlSourceTab()">
                                                     <i
@@ -539,6 +539,9 @@
                                         class="section has-dashed-border"
                                         v-if="method=='text'">
                                         <center>
+                                            <input
+                                                v-model="importFrameworkName"
+                                                placeholder="Framework Name">
                                             <h1>Paste Text</h1>
                                             <textarea v-model="text" />
                                             <div>
@@ -572,7 +575,7 @@
                         <!-- import details -->
                         <div
                             class="section import-details"
-                            v-if="framework && showImportDetailsView">
+                            v-if="framework && showImportDetailsView && isT3Import">
                             <!-- interstitial screen will go here -->
                             <div class="import-details__section">
                                 <h3 class="subtitle is-size-3 has-text-weight-normal">
@@ -842,6 +845,12 @@ export default {
             } else {
                 return false;
             }
+        },
+        isT3Import: function() {
+            if (this.importType === 'pdf') {
+                return true;
+            }
+            return false;
         }
     },
     watch: {
@@ -852,8 +861,8 @@ export default {
                 this.repo.selectedServer,
                 EcIdentityManager.ids[0],
                 function(competencies, relations) {
+                    me.showImportLightView = true;
                     me.status = competencies.length + " competencies and " + relations.length + " relations.";
-                    me.status = "info";
                     var f = new EcFramework();
                     me.framework = null;
                     for (var i = 0; i < competencies.length; i++) {
@@ -951,28 +960,19 @@ export default {
             }
         },
         switchToRemoteServerTab: function() {
-
-            /*
-             * this.method = 'server';
-             * this.framework = null;
-             * this.status='';
-             */
+            this.method = 'server';
+            this.framework = null;
+            this.status = '';
         },
         switchToPasteTextTab: function() {
-
-            /*
-             * this.method = 'text';
-             * this.framework = null;
-             * thi.status='';
-             */
+            this.method = 'text';
+            this.framework = null;
+            this.status = '';
         },
         switchToUrlSourceTab: function() {
-
-            /*
-             * this.method = 'url';
-             * this.framework = null;
-             * thi.status='';
-             */
+            this.method = 'url';
+            this.framework = null;
+            this.status = '';
         },
         unsupportedFile: function(val) {
             let fileType = val;
@@ -1197,7 +1197,12 @@ export default {
             }
         },
         analyzeCsvRelation: function(e) {
-            this.csvRelationFile = this.file[0];
+            var files = e.target.files || e.dataTransfer.files;
+            if (!files.length) {
+                this.csvRelationFile = null;
+            } else {
+                this.csvRelationFile = files[0];
+            }
             let me = this;
             CSVImport.analyzeFile(this.csvRelationFile, function(data) {
                 for (var i = 0; i < data[0].length; i++) {
@@ -1264,7 +1269,7 @@ export default {
             var identity = EcIdentityManager.ids[0];
             var f = new EcFramework();
             if (identity != null) { f.addOwner(identity.ppk.toPk()); }
-            if (this.queryParams.newObjectEndpoint != null) {
+            if (this.queryParams.newObjectEndpoint != null && this.queryParams.newObjectEndpoint !== undefined) {
                 f.generateShortId(this.queryParams.newObjectEndpoint == null ? this.repo.selectedServer : this.queryParams.newObjectEndpoint);
             } else {
                 f.generateId(this.queryParams.newObjectEndpoint == null ? this.repo.selectedServer : this.queryParams.newObjectEndpoint);
@@ -1284,6 +1289,7 @@ export default {
                         me.analyzeImportFile();
                     } else {
                         me.framework = f;
+                        me.importSuccess();
                         me.spitEvent("importFinished", f.shortId(), "importPage");
                     }
                 }, function(failure) {
@@ -1315,6 +1321,7 @@ export default {
                     me.analyzeImportFile();
                 } else {
                     me.framework = f;
+                    me.importSuccess();
                     me.spitEvent("importFinished", f.shortId(), "importPage");
                 }
             },
@@ -1512,7 +1519,7 @@ export default {
 
             var f = new EcFramework();
             if (identity != null) { f.addOwner(identity.ppk.toPk()); }
-            if (this.queryParams.newObjectEndpoint !== null) {
+            if (this.queryParams.newObjectEndpoint !== null && this.queryParams.newObjectEndpoint !== undefined) {
                 f.generateShortId(endpoint);
             } else {
                 f.generateId(endpoint);
@@ -1542,7 +1549,7 @@ export default {
                     for (var i = 0; i < alignments.length; i++) {
                         f.relation.push(alignments[i].shortId());
                     }
-                    repo.saveTo(f, function(success) {
+                    me.repo.saveTo(f, function(success) {
                         me.file.splice(0, 1);
                         if (me.file.length > 0) {
                             me.firstImport = false;
@@ -1644,8 +1651,8 @@ export default {
                 me.repo.multiput(all, function() {
                     for (var i = 0; i < frameworks.length; i++) {
                         me.spitEvent("importFinished", frameworks[i].shortId(), "importPage");
-                        me.importSuccess();
                     }
+                    me.importSuccess();
                 }, function(failure) {
                     me.statusType = "error";
                     me.status = "Failed to save: " + failure;
@@ -1760,6 +1767,7 @@ export default {
                         me.caseDocs[firstIndex].success = true;
                         EcFramework.get(id, function(f) {
                             me.framework = f;
+                            me.importSuccess();
                             me.spitEvent("importFinished", f.shortId(), "importPage");
                         }, console.error);
                         me.importCase();
@@ -1788,6 +1796,41 @@ export default {
             this.status = "Import Canceled.";
         },
         parseText: function() {
+            var me = this;
+            if (EcIdentityManager.ids != null && EcIdentityManager.ids.length > 0) {
+                this.framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            }
+            if (this.queryParams.newObjectEndpoint !== null && this.queryParams.newObjectEndpoint !== undefined) {
+                this.framework.generateShortId(this.queryParams.newObjectEndpoint);
+            } else {
+                this.framework.generateId(this.repo.selectedServer);
+            }
+            this.framework.name = this.importFrameworkName;
+            var toSave = [this.framework];
+            for (var i = 0; i < this.framework.competency.length; i++) {
+                var comp = EcRepository.cache[this.framework.competency[i]];
+                if (EcIdentityManager.ids != null && EcIdentityManager.ids.length > 0) {
+                    comp.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                }
+                toSave.push(comp);
+            }
+            for (var i = 0; i < this.framework.relation.length; i++) {
+                var relation = EcRepository.cache[this.framework.relation[i]];
+                if (EcIdentityManager.ids != null && EcIdentityManager.ids.length > 0) {
+                    relation.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                }
+                toSave.push(relation);
+            }
+            this.repo.multiput(toSave, function() {
+                me.importSuccess();
+                me.spitEvent("importFinished", me.framework.shortId(), "importPage");
+            }, function(failure) {
+                console.log("failure", failure);
+                me.showErrors = true;
+                me.status = failure;
+                me.statusType = "error";
+                me.errors.push(failure);
+            });
         },
         importFromUrl: function() {
             let me = this;
