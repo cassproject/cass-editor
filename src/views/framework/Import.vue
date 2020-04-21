@@ -1,6 +1,6 @@
 <template>
     <div
-        id="import-page"
+        id="page-import"
         class="page-import container">
         <div class="columns is-multiline is-marginless is-gapless is-mobile">
             <!--- main body section -->
@@ -653,9 +653,7 @@
                                     @doneEditingNodeEvent="onDoneEditingNode"
                                     :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                     :obj="framework"
-                                    :editingNode="editingFramework"
                                     :repo="repo"
-                                    :properties="properties"
                                     class="framework-title"
                                     :profile="t3FrameworkProfile"
                                     :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
@@ -671,7 +669,8 @@
                                     containerEdgeProperty="relation"
                                     nodeType="EcCompetency"
                                     :profile="t3CompetencyProfile"
-                                    :editable="true"
+                                    :viewOnly="false"
+                                    :isDraggable="true"
                                     edgeType="EcAlignment"
                                     edgeRelationProperty="relationType"
                                     edgeRelationLiteral="narrows"
@@ -691,8 +690,7 @@
                                     :is="dynamicThing"
                                     :editingNode="editingNode"
                                     :obj="framework"
-                                    :repo="repo"
-                                    :parentNotEditable="!canEdit"
+                                    :parentNotEditable="true"
                                     class="framework-title"
                                     :profile="t3FrameworkProfile"
                                     :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
@@ -706,6 +704,7 @@
                                     nodeType="EcCompetency"
                                     :profile="t3CompetencyProfile"
                                     :editable="false"
+                                    :viewOnly="true"
                                     edgeType="EcAlignment"
                                     edgeRelationProperty="relationType"
                                     edgeRelationLiteral="narrows"
@@ -1866,6 +1865,5 @@ export default {
 
 <style lang="scss">
     @import './../../scss/import.scss';
-    @import './../../scss/framework.scss';
 
 </style>

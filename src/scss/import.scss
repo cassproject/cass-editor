@@ -20,117 +20,10 @@ textarea {
 }
     // room for improvement, iterate over loop for max depth tabbing
     // possibly set tab value based on value in scss varaibles sheet
-.e-Property {
+.lode-Property {
     padding: .5rem 0rem;
-}.e-Hierarchy {
-    .e-Hierarchy-ul {
-        li.e-HierarchyNode {
-            
-            .thing, .thing-editing {
-                margin-left: 0rem;
-                .thing  {
-                    margin-left: 0;
-                }
-            }
-            .e-HierarchyNode-ul {
-                .e-HierarchyNode {
-                    .thing, .thing-editing {
-                        margin-left: 1rem;
-                        .thing {
-                            margin-left: 0;
-                        }
-                    }
-                }
-                .e-HierarchyNode-ul {
-                    .e-HierarchyNode {
-                        .thing, .thing-editing {
-                            margin-left: 2rem;
-                            .thing {
-                                margin-left: 0;
-                            }
-                        }
-                        .e-HierarchyNode-ul {
-                            .e-HierarchyNode {
-                                .thing, .thing-editing {
-                                    margin-left: 3rem;
-                                    .thing {
-                                        margin-left: 0;
-                                    }
-                                }
-                                .e-HierarchyNode-ul {
-                                    .e-HierarchyNode {
-                                        .thing, .thing-editing {
-                                            margin-left: 4rem;
-                                            .thing {
-                                                margin-left: 0;
-                                            }
-                                        }
-                                        .e-HierarchyNode-ul {
-                                            .e-HierarchyNode {
-                                                .thing, .thing-editing {
-                                                    margin-left: 5rem;
-                                                }
-                                                .e-HierarchyNode-ul {
-                                                    .e-HierarchyNode {
-                                                        .thing, .thing-editing {
-                                                            margin-left: 6rem;
-                                                        }
-                                                        .e-HierarchyNode-ul {
-                                                            .e-HierarchyNode {
-                                                                .thing, .thing-editing {
-                                                                    margin-left: 8rem;
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
 }
-    .thing {
-        .thing-editing,
-        .bottom-actions {
-            margin: .5rem;
-        }
-        .edit-button {
-            position: absolute;
-            color: dark;
-            right: 0;
-            visibility: hidden;
-        }
-        .lode__thing.e-Competency,
-        .lode__thing.e-Framework {
-            transform: translateX(0);
-            width: 100%;
-         
-        }
-    }
-    .thing:hover {
-        background-color: $cass-lightest;
-        border-radius: .25rem;
-        .edit-button {
-            visibility: visible;
-        }
-    }
-    .thing-editing {
-        padding: .5rem !important;
-        background-color: $cass-light;
-        .lode__thing.e-Competency, 
-        .lode__thing.e-Framework {
-            padding: .5rem;
-        }
-        .bottom-actions {
-        }
-    }
+
 ul.processing-list {
     height: 100%;
     width: 100%;
@@ -245,7 +138,7 @@ ul.processing-list {
         .add-new-node:hover {
             visibility: visible !important;
         }
-        .thing:hover {
+        .lode__thing:hover {
             background-color: $cass-lightest;
             .edit-button {
                 visibility: visible;
@@ -253,7 +146,7 @@ ul.processing-list {
             transform: translateX(0);
             width: 100%;
         }
-        .thing {
+        .lode__thing {
             padding: .5rem;
             border-radius: .25rem;
             .edit-button {
@@ -263,10 +156,10 @@ ul.processing-list {
                 visibility: hidden;
             }
         }
-        .e-Hierarchy {
-            .e-HierarchyNode {
+        .lode-hierarchy {
+            .lode-hierarchyNode {
                 margin: .5rem 0rem 0rem 0rem;
-                .e-thing-ul {
+                .lode-thing-ul {
                     width: calc(100% - 16px);
                 }
             }
@@ -280,12 +173,12 @@ ul.processing-list {
             }
 
             
-            .e-Hierarchy-ul {
+            .lode-hierarchy-ul {
                 ul.lode__thing-ul, .lode__thing-always-ul {
                     padding: .25rem .5rem;
-                    li.e-Property.e-name {
-                        ul.e-Property-ul {
-                            .e-Property-text {
+                    li.lode-Property.lode-name {
+                        ul.lode-Property-ul {
+                            .lode-Property-text {
                                 font-size: $size-4;
                                 font-weight: 500;
                             }
@@ -293,18 +186,18 @@ ul.processing-list {
                     }
                 }
             }
-            .e-HierarchyNode {
+            .lode-hierarchyNode {
                 //border: solid 1px rgba($dark, .3);
                 //margin: .5rem;
                 .grabbing {
-                    .e-Competency > *{
+                    .lode-Competency > *{
                         cursor: grabbing;
                     }
                 }
 
                 .dragging {
                     cursor: grabbing ;
-                    .e-Competency, .e-Competency > * {
+                    .lode-Competency, .lode-Competency > * {
                         cursor: grabbing ;
                     }
                     cursor: grabbing ;
@@ -314,7 +207,7 @@ ul.processing-list {
                     }
                 }
             
-                .thing.editing-competency {
+                .lode__thing.editing-competency {
                     .button.edit {
                         display: none !important;
                     }
@@ -322,10 +215,10 @@ ul.processing-list {
             }
         
         }
-        .thing, .thing-editing {
-            .lode__thing.e-Competency,
-            .lode__thing.e-Framework {
-                .e-type {
+        .lode__thing, .lode__thing-editing {
+            .lode__thing.lode-Competency,
+            .lode__thing.lode-Framework {
+                .lode-type {
                     display: none;
                 }
                 a {
@@ -422,7 +315,7 @@ ul.processing-list {
         border-radius: 1rem;
     }
     // framework title is a separate component from hierarchy
-    .thing.framework-title {
+    .lode__thing.framework-title {
             padding: .5rem 0rem;
             ul {
                 padding: .25rem;
@@ -436,14 +329,14 @@ ul.processing-list {
                     color: rgba($dark, .6);
                 }
             }
-            .e-type, .top-actions, .bottom-actions, label {
+            .lode-type, .top-actions, .bottom-actions, label {
                 display: none;
             }
-            .e-Property-ul {
+            .lode-Property-ul {
                 font-size: 1.2rem;
             }
-            .e-Property.editing {
-                .e-Property-ul {
+            .lode-Property.editing {
+                .lode-Property-ul {
                     display: flex;
                     flex-wrap: wrap;
                     width: 100%;
@@ -505,7 +398,7 @@ ul.processing-list {
             .top-actions{
                 display: none !important;
             }
-            .lode__thing.e-Competency {
+            .lode__thing.lode-Competency {
                 .edit-button {
                     position: absolute;
                     color: dark;
@@ -530,7 +423,7 @@ ul.processing-list {
         .button {
             display: none;
         };
-        .thing:hover {
+        .lode__thing:hover {
             background-color: transparent;
         }
         #check-radio-column {
