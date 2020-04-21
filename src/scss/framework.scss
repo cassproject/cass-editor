@@ -425,6 +425,8 @@ i.fa-hand-paper {
 }
 .lode__thing:hover {
     background-color: $light;
+    padding: .5rem;
+    padding-right: 1rem;
     .lode__Competency {
         
         .edit-button {
@@ -443,7 +445,6 @@ i.fa-hand-paper {
     .lode__Competency {
         transform: translateX(0);
         border-left: none;
-        width: 100%;
         a {
             display:none;
         }

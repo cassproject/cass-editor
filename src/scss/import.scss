@@ -1,29 +1,8 @@
 @import './variables.scss';
 
-.list-complete-item {
-    transition: all 1s;
-    display: block;
-  }
-  .list-complete-enter, .list-complete-leave-to
-  /* .list-complete-leave-active below version 2.1.8 */ {
-    opacity: 0;
-    transform: translateY(0);
-  }
-  .list-complete-leave-active {
-    position: absolute;
-  }
-  .list-complete-move {
-    transition: transform 1s;
-  }
 textarea {
     resize: vertical !important;
 }
-    // room for improvement, iterate over loop for max depth tabbing
-    // possibly set tab value based on value in scss varaibles sheet
-.lode-Property {
-    padding: .5rem 0rem;
-}
-
 ul.processing-list {
     height: 100%;
     width: 100%;
@@ -138,94 +117,7 @@ ul.processing-list {
         .add-new-node:hover {
             visibility: visible !important;
         }
-        .lode__thing:hover {
-            background-color: $cass-lightest;
-            .edit-button {
-                visibility: visible;
-            }
-            transform: translateX(0);
-            width: 100%;
-        }
-        .lode__thing {
-            padding: .5rem;
-            border-radius: .25rem;
-            .edit-button {
-                position: absolute;
-                color: dark;
-                right: 0;
-                visibility: hidden;
-            }
-        }
-        .lode-hierarchy {
-            .lode-hierarchyNode {
-                margin: .5rem 0rem 0rem 0rem;
-                .lode-thing-ul {
-                    width: calc(100% - 16px);
-                }
-            }
-            
-            .editing-thing {
-                .property-buttons {
-                    width: 100%;
-                    display: none;
-                }
-                
-            }
-
-            
-            .lode-hierarchy-ul {
-                ul.lode__thing-ul, .lode__thing-always-ul {
-                    padding: .25rem .5rem;
-                    li.lode-Property.lode-name {
-                        ul.lode-Property-ul {
-                            .lode-Property-text {
-                                font-size: $size-4;
-                                font-weight: 500;
-                            }
-                        }
-                    }
-                }
-            }
-            .lode-hierarchyNode {
-                //border: solid 1px rgba($dark, .3);
-                //margin: .5rem;
-                .grabbing {
-                    .lode-Competency > *{
-                        cursor: grabbing;
-                    }
-                }
-
-                .dragging {
-                    cursor: grabbing ;
-                    .lode-Competency, .lode-Competency > * {
-                        cursor: grabbing ;
-                    }
-                    cursor: grabbing ;
-                    > * {
-                        cursor: grabbing;
-
-                    }
-                }
-            
-                .lode__thing.editing-competency {
-                    .button.edit {
-                        display: none !important;
-                    }
-                }   
-            }
-        
-        }
-        .lode__thing, .lode__thing-editing {
-            .lode__thing.lode-Competency,
-            .lode__thing.lode-Framework {
-                .lode-type {
-                    display: none;
-                }
-                a {
-                    display:none;
-                }
-            }
-        }
+       
     }
     .import-tab {
         margin-top: -40px;
@@ -398,21 +290,6 @@ ul.processing-list {
             .top-actions{
                 display: none !important;
             }
-            .lode__thing.lode-Competency {
-                .edit-button {
-                    position: absolute;
-                    color: dark;
-                    right: 0;
-                    visibility: hidden;
-                    
-                }
-               
-                li.add-property-button {
-                    span {
-                        display: inline-block;
-                    }
-                }
-            }
            
         }
     } 
@@ -423,9 +300,6 @@ ul.processing-list {
         .button {
             display: none;
         };
-        .lode__thing:hover {
-            background-color: transparent;
-        }
         #check-radio-column {
             display: none;
         }
