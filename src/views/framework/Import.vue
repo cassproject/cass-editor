@@ -993,9 +993,15 @@ export default {
         importSuccess: function() {
             if (this.queryParams.concepts !== "true") {
                 this.status = "Competency detected";
-                this.showImportDetailsView = true;
-                this.showImportPreviewView = false;
-                this.showImportLightView = false;
+                if (this.isT3Import) {
+                    this.showImportDetailsView = true;
+                    this.showImportPreviewView = false;
+                    this.showImportLightView = false;
+                } else {
+                    this.showImportDetailsView = false;
+                    this.showImportPreviewView = true;
+                    this.showImportLightView = false;
+                }
             } else {
                 this.status = "Concept Scheme Imported.";
                 this.spin = false;
@@ -1042,6 +1048,7 @@ export default {
             this.processingSuccess = false;
             this.status = "Ready";
             this.spin = true;
+            this.importType = null;
         },
         onUploadFiles: function(value) {
             this.file = value;
@@ -1607,14 +1614,18 @@ export default {
                 } else {
                     framework = EcFramework.getBlocking(data);
                 }
-                me.importSuccess();
                 me.spitEvent("importFinished", framework.shortId(), "importPage");
                 if (me.file != null) {
                     me.file.splice(0, 1);
                 }
-                if (me.file.length > 0) {
+                if (me.file && me.file.length > 0) {
                     me.firstImport = false;
                     me.analyzeImportFile();
+                } else {
+                    me.importSuccess();
+                    if (me.queryParams.concepts !== "true") {
+                        me.framework = framework;
+                    }
                 }
             }, function(failure) {
                 me.showErrors = true;
