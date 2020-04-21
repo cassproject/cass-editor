@@ -1190,6 +1190,7 @@ export default {
                 me.statusType = "error";
                 me.errors.push("CaSS cannot read the file " + file.name + ". Please check that the file has the correct file extension.");
                 me.processingFile = false;
+                return;
             }
             if (!me.firstImport) {
                 me.importFromFile();
@@ -1442,8 +1443,8 @@ export default {
             f.level = [];
             f["schema:dateCreated"] = new Date().toISOString();
             toSave.push(f);
-            console.log(d);
-            console.log(JSON.parse(f.toJson()));
+            console.log("d", d);
+            console.log("message: ", JSON.parse(f.toJson()));
             var cs = {};
             if (!d.competencies) {
                 me.showErrors = true;
@@ -1451,6 +1452,7 @@ export default {
                 me.statusType = "error";
                 me.errors.push("Error importing competencies, no competencies found in file.");
                 me.processingFile = false;
+                return;
             }
             me.detailsDetected.competencies = d.competencies.length;
             for (var i = 0; i < d.competencies.length; i++) {

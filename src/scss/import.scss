@@ -107,8 +107,8 @@ textarea {
             right: 0;
             visibility: hidden;
         }
-        .e-Thing.e-Competency,
-        .e-Thing.e-Framework {
+        .lode__thing.e-Competency,
+        .lode__thing.e-Framework {
             transform: translateX(0);
             width: 100%;
          
@@ -124,8 +124,8 @@ textarea {
     .thing-editing {
         padding: .5rem !important;
         background-color: $cass-light;
-        .e-Thing.e-Competency, 
-        .e-Thing.e-Framework {
+        .lode__thing.e-Competency, 
+        .lode__thing.e-Framework {
             padding: .5rem;
         }
         .bottom-actions {
@@ -281,7 +281,7 @@ ul.processing-list {
 
             
             .e-Hierarchy-ul {
-                ul.e-Thing-ul, .e-Thing-always-ul {
+                ul.lode__thing-ul, .lode__thing-always-ul {
                     padding: .25rem .5rem;
                     li.e-Property.e-name {
                         ul.e-Property-ul {
@@ -323,8 +323,8 @@ ul.processing-list {
         
         }
         .thing, .thing-editing {
-            .e-Thing.e-Competency,
-            .e-Thing.e-Framework {
+            .lode__thing.e-Competency,
+            .lode__thing.e-Framework {
                 .e-type {
                     display: none;
                 }
@@ -505,7 +505,7 @@ ul.processing-list {
             .top-actions{
                 display: none !important;
             }
-            .e-Thing.e-Competency {
+            .lode__thing.e-Competency {
                 .edit-button {
                     position: absolute;
                     color: dark;

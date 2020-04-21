@@ -10,7 +10,10 @@ const state = {
         rightAsideContent: '',
         showToolBar: true,
         commentsEnabled: true,
-        versionsEnabled: true
+        versionsEnabled: true,
+        draggingEnabled: false,
+        isDragging: false,
+        draggable: {}
     },
     configuration: {
         contentSection: ''
@@ -43,6 +46,15 @@ const mutations = {
     closeModal: function(state) {
         state.modal.showModal = false;
         state.modal.dynamicModalContent = {};
+    },
+    draggingEnabled: function(state, value) {
+        state.framework.draggingEnabled = value;
+    },
+    isDragging: function(state, value) {
+        state.framework.isDragging = value;
+    },
+    draggable: function(state, value) {
+        state.framework.draggable = value;
     }
 };
 const actions = {
@@ -66,6 +78,15 @@ const getters = {
     },
     dynamicModalContent: state => {
         return state.modal.dynamicModalContent;
+    },
+    draggingEnabled: state => {
+        return state.modal.draggingEnabled;
+    },
+    isDragging: state => {
+        return state.modal.isDragging;
+    },
+    draggable: state => {
+        return state.framework.draggable;
     }
 };
 

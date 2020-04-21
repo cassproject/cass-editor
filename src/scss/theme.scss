@@ -159,7 +159,9 @@ $breadcrumb-item-active-color: $cass-primary-down;
 }
 
 .has-text-underlined{
-   border-bottom: solid 1px rgba($primary, .8);
+   border-bottom: solid 1px rgba($primary, .5);
 }
 
-
+.tag.is-medium-grey {
+    background-color: tint($dark, 80%);
+}
