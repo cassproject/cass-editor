@@ -25,13 +25,14 @@ const state = {
     },
     import: {
         files: [],
-        transition: 'upload',
-        processingStatus: '',
-        importType: 'file', // pdf, server, text
+        transition: 'upload', // upload, process, detail, preview, light
+        status: '', // success, failure, edit
+        type: 'file', // pdf, server, text
         fileType: '',
         firstImport: Boolean,
-        errors: [],
-        feedback: ''
+        errors: [], // erorrs from the code or from the api
+        feedback: '', // additional information
+        framework: null
     }
 };
 const mutations = {
@@ -78,6 +79,9 @@ const mutations = {
     importFileType: function(state, value) {
         state.import.fileType = value;
     },
+    importType: function(state, value) {
+        state.import.type = value;
+    },
     firstImport: function(state, val) {
         state.import.firstImport = val;
     },
@@ -87,8 +91,14 @@ const mutations = {
     clearImportErrors: function(state) {
         state.import.errors = [];
     },
-    importProcessingStatus: function(state, val) {
-        state.import.processingState = val;
+    importStatus: function(state, val) {
+        state.import.status = val;
+    },
+    importFeedback: function(state, val) {
+        state.import.feedback = val;
+    },
+    importFramework: function(state, val) {
+        state.import.framework = val;
     }
 };
 const actions = {
@@ -131,14 +141,23 @@ const getters = {
     importFileType: state => {
         return state.import.fileType;
     },
+    importType: state => {
+        return state.import.type;
+    },
     firstImport: state => {
         return state.import.firstImport;
     },
     importErrors: state => {
         return state.import.errors;
     },
-    importProcessingState: state => {
-        return state.import.processingState;
+    importStatus: state => {
+        return state.import.status;
+    },
+    importFeedback: state => {
+        return state.import.feedback;
+    },
+    importFramework: state => {
+        return state.import.framework;
     }
 };
 

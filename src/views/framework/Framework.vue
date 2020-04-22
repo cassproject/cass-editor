@@ -3,7 +3,7 @@
         <DynamicModal />
         <RightAside v-if="showRightAside" />
         <!-- begin framework -->
-        <div class="container fluid is-marginless is-paddingless">
+        <div class="container is-fluid is-marginless is-paddingless">
             <FrameworkEditorToolbar
                 @showExportModal="onOpenExportModal"
                 @changeProperties="changeProperties" />

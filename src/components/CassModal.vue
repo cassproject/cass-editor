@@ -1,7 +1,7 @@
 <template>
     <div
         class="modal is-small"
-        :class="[{'is-active': visible}, modalClass]">
+        :class="[{'is-active': visible}, type, modalClass]">
         <div class="modal-background" />
         <div class="modal-card">
             <header
@@ -95,7 +95,8 @@
                     </button>
                     <button
                         v-if="type==='export'"
-                        class="button is-outlined is-info"
+                        class="export-confirm button is-outlined is-info"
+                        :disabled="confirmDisabled"
                         @click="confirm">
                         <span>
                             Export file
@@ -106,7 +107,8 @@
                     </button>
                     <button
                         v-else
-                        class="button is-outlined"
+                        class="confirm button is-outlined"
+                        :disabled="confirmDisabled"
                         :class="modalConfirmButton"
                         @click="confirm">
                         <span>
@@ -151,6 +153,23 @@ export default {
         };
     },
     computed: {
+        confirmDisabled: function() {
+            if (this.type === 'duplicate') {
+                if (this.options.length > 0 && this.selectedOption === "") {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else if (this.type === 'export') {
+                if (this.exportOptions.length > 0 && this.selectedExportOption === "") {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        },
         modalButtonIcons: function() {
             let modalClass = '';
             if (this.type === 'removeObject') {

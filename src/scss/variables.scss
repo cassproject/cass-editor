@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Assistant:wght@200;300;400;600&family=Roboto+Condensed:wght@400;700&display=swap');
 
 @function tint($color, $percentage) {
     @return mix(white, $color, $percentage);
@@ -25,7 +26,7 @@ $cass-lightest:tint($cass-black, 97%);
 
 $family-primary: 'Assistant',
 'sans-serif';
-$family-secondary: 'Roboto',
+$family-secondary: 'Roboto Condensed',
 'sans-serif';
 
 $black: $cass-black;

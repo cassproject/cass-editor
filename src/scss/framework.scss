@@ -10,7 +10,7 @@ i.fa-hand-rock {
   cursor: -webkit-grabbing !important;
     visibility: hidden;
     position:absolute;
-    right: 36px;
+    right: 3rem;
     padding-top: .5rem;
 }
 i.fa-hand-paper {
@@ -18,7 +18,7 @@ i.fa-hand-paper {
   cursor: -webkit-grabbing !important;
     visibility: visible;
     position:absolute;
-    right: 36px;
+    right: 3rem;
     padding-top: .5rem;
 }
 .ghost-drag {
@@ -27,7 +27,7 @@ i.fa-hand-paper {
     }
     i.fa-hand-rock {
         position:absolute;
-        right: 36px;
+        right: 3rem;
         visibility: visible;
         padding-top: .5rem;
     }
@@ -35,7 +35,7 @@ i.fa-hand-paper {
 .chosen-drag {
     i.fa-hand-rock {
         position:absolute;
-        right: 36px;
+        right: 3rem;
         visibility: visible;
         padding-top: .5rem;
     }
@@ -47,14 +47,14 @@ i.fa-hand-paper {
     margin: .25rem;
     i.fa-hand-paper {
         position:absolute;
-        right: 36px;
+        right: 3rem;
         visibility: visible;
         color: $cass-primary-down;
         padding-top: .5rem;
     }
      i.fa-hand-rock {
         position:absolute;
-        right: 36px;
+        right: 3rem;
         visibility: visible;
         color: $cass-primary-down;
         padding-top: .5rem;
@@ -64,67 +64,248 @@ i.fa-hand-paper {
 .uneditable {
     word-break: break-all;
 }
-
+.lode__hierarchy {
+    margin: 0 auto;
+    display: block !important;
+}
 // room for improvement, iterate over loop for max depth tabbing
 // possibly set tab value based on value in scss varaibles sheet
 .lode__hierarchy {
+    
     ul.lode__hierarchy-ul {
         li.lode__hierarchy-li {
             .add-new-node {
                 padding-left: 5rem;
             }
+            .lode__hierarchy-item {
+                                
+                .add-node-section {
+                    width: 100%;
+                    display:block;
+                    max-width: 800px;
+                    margin: auto;
+                    height: auto;
+                    cursor: pointer;
+                }
+                .add-node-section:hover .add-new-node__line, 
+                .add-node-section:hover .button {
+                    opacity: 1;
+                    .add-node__options {
+                        padding: 0rem 0rem;
+                    }
+                }
+                .add-new-node__line {
+                    transition: opacity .2s;
+                    transition-delay: .2s;
+                    margin: 0rem;
+                    opacity: 0;
+                    padding-left: 4rem;
+                    height: 6px;
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    .button {
+                        padding: 0rem;
+                    }
+                    hr  {
+                        z-index: 2;
+                        width: 100%;
+                        display: inline-block;
+                        height: 1px;
+                        padding-left: -1px;
+                        margin-left: auto;
+                        margin-right: auto;
+                        border-width: 1px;
+                        background-color: $primary !important;
+                        color: $black !important;
+                        border-color: $primary !important;
+                    }
+                }
+                .lode__thing {
+                    .lode__Competency {
+                        .lode__thing-heading {
+                            max-width: 800px;
+                            margin: auto;
+                        }
+                    }
+                }
+                .lode__thing-editing {
+                    max-width: 800px;
+                    margin: auto;
+                    background-color: $light;
+                }
+                .lode__name {
+                    .field {
+                        .field-body {
+                            .field {
+                                font-size: 1.2rem; // top level competencies
+                                font-weight: 600;
+                            }
+                        }
+                    }
+                }
+            }
             ul.lode__hierarchy-sub-ul {
                 li.lode__hierarchy-sub-li {
                     .lode__hierarchy-item {
-                        .lode__thing, .lode__thing-editing {
-                            margin-left: 1.5rem;
-                            margin-bottom: .5rem;
+                        .add-node-section {
+                            padding-left: 3rem;
+                            margin: auto;
+                        }
+                        .lode__thing {
+                            .lode__Competency {
+                                .lode__thing-heading {
+                                    padding-left: 2rem;
+                                    margin-bottom: .5rem;
+                                }
+                            }
+                           
                             .lode__thing  {
                                 margin-left: 0;
+                            }
+                        }
+                        .lode__thing-editing {
+                            max-width: 800px;
+                            margin: auto;
+                        }
+                        .lode__name {
+                            .field {
+                                .field-body {
+                                    .field {
+                                        font-size: 1.2rem;
+                                        font-weight: 500;
+                                        font-family: $family-primary; // second level competencies
+                                    }
+                                }
                             }
                         }
                     }
                     ul.lode__hierarchy-sub-ul {
                         li.lode__hierarchy-sub-li {
                             .lode__hierarchy-item {
-                                .lode__thing, .lode__thing-editing {
-                                    margin-left: 3rem;
-                                    margin-bottom: .5rem;
+                                .add-node-section {
+                                    padding-left: 4.5rem;
+                                    margin: auto;
+                                }
+                                .lode__thing {
+                                    .lode__Competency {
+                                        .lode__thing-heading {
+                                            padding-left: 3.5rem;
+                                            margin-bottom: .5rem;
+                                        }
+                                    }
                                     .lode__thing  {
                                         margin-left: 0;
+                                    }
+                                }
+                                .lode__thing-editing {
+                                    max-width: 800px;
+                                    margin: auto;
+                                }
+                                .lode__name {
+                                    .field {
+                                        .field-body {
+                                            .field {
+                                                font-size: 1.1rem;
+                                                font-weight: 600;
+                                                font-family: $family-secondary;
+                                            }
+                                        }
                                     }
                                 }
                             }
                             ul.lode__hierarchy-sub-ul {
                                 li.lode__hierarchy-sub-li {
                                     .lode__hierarchy-item {
-                                        .lode__thing, .lode__thing-editing {
-                                            margin-left: 4.5rem;
-                                            margin-bottom: .5rem;
+                                        .add-node-section {
+                                            padding-left: 6rem;
+                                            margin: auto;
+                                        }
+                                        .lode__thing {
+                                            .lode__Competency {
+                                                .lode__thing-heading {
+                                                    padding-left: 5rem;
+                                                    margin-bottom: .5rem;
+                                                }
+                                            }
                                             .thing  {
                                                 margin-left: 0;
+                                            }
+                                        }
+                                        .lode__thing-editing {
+                                            max-width: 800px;
+                                            margin: auto;
+                                        }
+                                        .lode__name {
+                                            .field {
+                                                .field-body {
+                                                    .field {
+                                                        font-size: 1.1rem;
+                                                        font-weight: 400;
+                                                        font-family: $family-primary;
+                                                    }
+                                                }
                                             }
                                         }
                                     }
                                     ul.lode__hierarchy-sub-ul {
                                         li.lode__hierarchy-sub-li {
                                             .lode__hierarchy-item {
+                                                .add-node-section {
+                                                    padding-left: 7.5rem;
+                                                    margin: auto;
+                                                }
                                                 .lode__thing, .lode__thing-editing {
-                                                    margin-left: 6rem;
-                                                    margin-bottom: .5rem;
+                                                    .lode__Competency {
+                                                        .lode__thing-heading {
+                                                            padding-left: 6.5rem;
+                                                            margin-bottom: .5rem;
+                                                        }
+                                                    }
                                                     .lode__thing  {
                                                         margin-left: 0;
+                                                    }
+                                                }
+                                                .lode__name {
+                                                    .field {
+                                                        .field-body {
+                                                            .field {
+                                                                font-size: 1rem;
+                                                                font-weight: 600;
+                                                                font-family: $family-secondary;
+                                                            }
+                                                        }
                                                     }
                                                 }
                                             }
                                             ul.lode__hierarchy-sub-ul {
                                                 li.lode__hierarchy-sub-li {
                                                     .lode__hierarchy-item {
-                                                        .lode__thing, .lode__thing-editing {
-                                                            margin-left: 7.5rem;
-                                                            margin-bottom: .5rem;
+                                                        .lode__thing{
+                                                            .lode__Competency {
+                                                                .lode__thing-heading {
+                                                                    padding-left: 8rem;
+                                                                    margin-bottom: .5rem;
+                                                                }
+                                                            }
                                                             .lode__thing  {
                                                                 margin-left: 0;
+                                                            }
+                                                        }
+                                                        .lode__thing-editing  {
+                                                            .lode__Competency {
+                                                                margin-left: 8rem;
+                                                            }
+                                                        }
+                                                        .lode__name {
+                                                            .field {
+                                                                .field-body {
+                                                                    .field {
+                                                                        font-size: 1rem;
+                                                                        font-weight: 400;
+                                                                        font-family: $family-primary;
+                                                                    }
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -132,10 +313,25 @@ i.fa-hand-paper {
                                                         li.lode__hierarchy-sub-li {
                                                             .lode__hierarchy-item {
                                                                 .lode__thing, .lode__thing-editing {
-                                                                    margin-left: 9rem;
-                                                                    margin-bottom: .5rem;
+                                                                    .lode__Competency {
+                                                                        .lode__thing-heading {
+                                                                            padding-left: 9rem;
+                                                                            margin-bottom: .5rem;
+                                                                        }
+                                                                    }
                                                                     .lode__thing  {
                                                                         margin-left: 0;
+                                                                    }
+                                                                }
+                                                                .lode__name {
+                                                                    .field {
+                                                                        .field-body {
+                                                                            .field {
+                                                                                font-size: .9rem;
+                                                                                font-weight: 600;
+                                                                                font-family: $family-secondary;
+                                                                            }
+                                                                        }
                                                                     }
                                                                 }
                                                             }
@@ -143,10 +339,25 @@ i.fa-hand-paper {
                                                                 li.lode__hierarchy-sub-li {
                                                                     .lode__hierarchy-item {
                                                                         .lode__thing, .lode__thing-editing {
-                                                                            margin-left: 10.5rem;
-                                                                            margin-bottom: .5rem;
+                                                                            .lode__Competency {
+                                                                                .lode__thing-heading {
+                                                                                    margin-left: 10.5rem;
+                                                                                    margin-bottom: .5rem;
+                                                                                }
+                                                                            }
                                                                             .lode__thing  {
                                                                                 margin-left: 0;
+                                                                            }
+                                                                        }
+                                                                        .lode__name {
+                                                                            .field {
+                                                                                .field-body {
+                                                                                    .field {
+                                                                                        font-size: .9rem;
+                                                                                        font-weight: 400;
+                                                                                        font-family: $family-primary;
+                                                                                    }
+                                                                                }
                                                                             }
                                                                         }
                                                                     }
@@ -246,7 +457,9 @@ i.fa-hand-paper {
         display: none;
     }
     padding: .5rem !important;
-    background-color: $cass-lightest;
+    .lode__thing.lode__Competency {
+        background-color: $cass-lightest;
+    }
     i.handle {
         display: none;
     }
@@ -281,23 +494,22 @@ i.fa-hand-paper {
         padding: 1rem 0rem;
     }
 }
-#add-node-section {
-    .add-node__options {
-        padding: .5rem 0rem;
-    }
-}
-#add-node-section:hover .add-new-node {
-    visibility: visible;
-    height: 24px;
-}
+
 .lode__Property {
+    padding: .5rem 0rem;
     font-size: $size-7;
     font-weight: 400;
+    .field  {
+        padding-left: 1rem;
+    }
+    .field-label {
+        padding: .25rem 0rem;
+    }
 }
 .lode__Property.lode__name {
     font-family: $family-secondary;
     font-size: $size-6;
-    font-weight: 600;
+    font-weight: 400;
 }
 .lode__Property.lode__id {
     font-size: $size-7;
@@ -316,38 +528,7 @@ i.fa-hand-paper {
         color: $link;
     }
 }
-    
-    
-
-.add-new-node {
-    margin: .5rem 0rem;
-    padding-left: 0 !important;
-    height: 24px;
-    width: 100%;
-    //display: flex;
-    visibility: visible;
-    opacity: 0;
-    align-items: center;
-    .buttons {
-        padding: .5rem;
-    }
-    hr  {
-        width: 100%;
-        display: block;
-        height: 1px;
-        padding-left: -1px;
-        margin-left: auto;
-        margin-right: auto;
-        border-width: 1px;
-        background-color: $primary !important;
-        color: $black !important;
-        border-color: $primary !important;
-    }
-}
-.add-new-node:hover {
-    visibility: visible !important;
-    opacity: .8;
-}
+ 
 // top thing
 .lode__thing {
     a {
@@ -356,13 +537,23 @@ i.fa-hand-paper {
 }
 // top level items outside of Hierarchy
 .lode__thing {
-    .lode__Competency {
-        .edit-button {
-            position: absolute;
-            color: $dark;
-            right: 0;
-            visibility: hidden;
+    transform: translateX(0); // make room for add node
+    .edit-button {
+        .i {
+            font-size: 1rem;
         }
+        position: absolute;
+        color: $dark;
+        right: 1rem;
+        top: 8px;
+        -webkit-backface-visibility: hidden;
+        visibility: hidden;
+    }
+    .handle {
+        visibility: hidden;
+    }
+    .lode__Competency {
+        
         .drag-button {
             position: absolute;
             right: 32px;
@@ -424,15 +615,15 @@ i.fa-hand-paper {
     }
 }
 .lode__thing:hover {
-    background-color: $light;
     padding: .5rem;
     padding-right: 1rem;
-    .lode__Competency {
-        
-        .edit-button {
-            visibility: visible;
-        }
+    .lode__Property.lode__name {
+        color: $primary;
     }
+    .edit-button, .handle.fa-hand-paper {
+        visibility: visible;
+    }
+    
 }
 
 // list of competencies 
