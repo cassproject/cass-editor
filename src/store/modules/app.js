@@ -22,6 +22,16 @@ const state = {
         framework: '',
         showModal: false,
         dynamicModalContent: {}
+    },
+    import: {
+        files: [],
+        transition: 'upload',
+        processingStatus: '',
+        importType: 'file', // pdf, server, text
+        fileType: '',
+        firstImport: Boolean,
+        errors: [],
+        feedback: ''
     }
 };
 const mutations = {
@@ -55,6 +65,30 @@ const mutations = {
     },
     draggable: function(state, value) {
         state.framework.draggable = value;
+    },
+    importFiles: function(state, value) {
+        state.import.files = value;
+    },
+    clearImportFiles: function(state) {
+        state.import.files = [];
+    },
+    importTransition: function(state, value) {
+        state.import.transition = value;
+    },
+    importFileType: function(state, value) {
+        state.import.fileType = value;
+    },
+    firstImport: function(state, val) {
+        state.import.firstImport = val;
+    },
+    addImportError: function(state, val) {
+        state.import.errors.push(val);
+    },
+    clearImportErrors: function(state) {
+        state.import.errors = [];
+    },
+    importProcessingStatus: function(state, val) {
+        state.import.processingState = val;
     }
 };
 const actions = {
@@ -87,6 +121,24 @@ const getters = {
     },
     draggable: state => {
         return state.framework.draggable;
+    },
+    importFiles: state => {
+        return state.import.files;
+    },
+    importTransition: state => {
+        return state.import.transition;
+    },
+    importFileType: state => {
+        return state.import.fileType;
+    },
+    firstImport: state => {
+        return state.import.firstImport;
+    },
+    importErrors: state => {
+        return state.import.errors;
+    },
+    importProcessingState: state => {
+        return state.import.processingState;
     }
 };
 
