@@ -1481,7 +1481,7 @@ export default {
                 if (d.competencies[i]["ceasn:codedNotation"] != null) {
                     c["ceasn:codedNotation"] = d.competencies[i]["ceasn:codedNotation"];
                 }
-                f.competency.push(c.shortId());
+                f.addCompetency(c.shortId());
                 toSave.push(c);
             }
             for (var i = 0; i < d.relation.length; i++) {
@@ -1495,7 +1495,7 @@ export default {
                 c.target = cs[d.relation[i].target];
                 c.relationType = d.relation[i].relationType;
                 if (c.source !== undefined && c.target !== undefined) {
-                    f.relation.push(c.shortId());
+                    f.addRelation(c.shortId());
                     toSave.push(c);
                 } else {
                     console.log(JSON.parse(c.toJson()));
