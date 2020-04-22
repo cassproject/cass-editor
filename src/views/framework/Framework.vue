@@ -7,7 +7,7 @@
             <FrameworkEditorToolbar
                 @showExportModal="onOpenExportModal"
                 @changeProperties="changeProperties" />
-            <div class="section">
+            <div class="framework-wrapper">
                 <Component
                     :is="dynamicThingComponent"
                     :obj="framework"

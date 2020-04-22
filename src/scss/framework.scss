@@ -1,6 +1,12 @@
 @import './variables.scss';
 
-
+.framework-wrapper {
+    max-width: 1400px;
+    width: 100%;
+    margin: auto;
+    display: block;
+    padding: 3rem 1rem 1rem 1rem;
+}
 /* 
 handle dragging icon on ghost 
 drag, drag, and chosen states 
@@ -64,9 +70,8 @@ i.fa-hand-paper {
 .uneditable {
     word-break: break-all;
 }
+
 .lode__hierarchy {
-    margin: 0 auto;
-    display: block !important;
 }
 // room for improvement, iterate over loop for max depth tabbing
 // possibly set tab value based on value in scss varaibles sheet
@@ -82,7 +87,7 @@ i.fa-hand-paper {
                 .add-node-section {
                     width: 100%;
                     display:block;
-                    max-width: 800px;
+                    max-width: 900px;
                     margin: auto;
                     height: auto;
                     cursor: pointer;
@@ -124,13 +129,13 @@ i.fa-hand-paper {
                 .lode__thing {
                     .lode__Competency {
                         .lode__thing-heading {
-                            max-width: 800px;
+                            max-width: 900px;
                             margin: auto;
                         }
                     }
                 }
                 .lode__thing-editing {
-                    max-width: 800px;
+                    max-width: 900px;
                     margin: auto;
                     background-color: $light;
                 }
@@ -165,7 +170,7 @@ i.fa-hand-paper {
                             }
                         }
                         .lode__thing-editing {
-                            max-width: 800px;
+                            max-width: 900px;
                             margin: auto;
                         }
                         .lode__name {
@@ -199,7 +204,7 @@ i.fa-hand-paper {
                                     }
                                 }
                                 .lode__thing-editing {
-                                    max-width: 800px;
+                                    max-width: 900px;
                                     margin: auto;
                                 }
                                 .lode__name {
@@ -233,7 +238,7 @@ i.fa-hand-paper {
                                             }
                                         }
                                         .lode__thing-editing {
-                                            max-width: 800px;
+                                            max-width: 900px;
                                             margin: auto;
                                         }
                                         .lode__name {
