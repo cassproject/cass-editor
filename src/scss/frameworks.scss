@@ -15,7 +15,7 @@
     label{
         display:none;
     }
-    .e-Property {
+    .lode__Property {
     padding: .5rem 0rem;
     }
 
@@ -63,17 +63,17 @@
             }
             .list-ul__item:hover {
             }
-            .thing {
+            .lode__thing {
                 .bottom-actions, .top-actions {
                     display: none !important;
                 }
-                .e-Thing.e-Framework {
+                .lode__Framework {
                     transform: translateX(0);
                     cursor: pointer;
-                    .e-Framework {
+                    .lode__Framework {
 
                     }
-                    .e-Thing-ul {
+                    .lode__Thing-ul {
                         padding: 0rem .5rem;
                         width: 100%;
 
@@ -83,7 +83,9 @@
             }
         }
     }
-     .e-Framework, .framework-list-page .e-ConceptScheme {
+     .lode__Framework,
+     .framework-list-page
+     .lode__ConceptScheme {
         a {
             display:none;
         }
@@ -97,7 +99,7 @@
             display:inline;
         }
     }
-    .e-name {
+    .lode__name {
         .field {
             display: inline-block;
         }
@@ -128,7 +130,7 @@
         label {
             display:none;
         }
-        .e-Property-ul{
+        .lode__Property-ul{
             border-radius: .25rem;
             padding: 0rem .0rem;
             font-size: .8rem;
@@ -138,11 +140,11 @@
             .button {
 
             }
-            .e-description {
+            .lode__description {
                 font-weight: 400;
                 font-size: $size-7;
             }
-            .e-name{
+            .lode__name{
                 font-weight: 600;
                 font-size: $size-4;
             }
@@ -153,11 +155,11 @@
             }
         }
     }
-    .e-description {
-        .e-Property-text  {
+    .lode__description {
+        .lode__Property-text  {
             font-size: $size-6;
         }
-        .e-Property-ul {
+        .lode__Property-ul {
             margin: 0rem;
         }
     }

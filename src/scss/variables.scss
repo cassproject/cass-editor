@@ -12,8 +12,8 @@ $cass-secondary-up: tint($cass-secondary, 50%);
 $cass-secondary-down: shade($cass-secondary, 50%);
 
 $cass-primary:#4F99A8;
-$cass-primary-up: tint($cass-primary, 50%);
-$cass-primary-down: shade($cass-primary, 50%);
+$cass-primary-down: tint($cass-primary, 50%);
+$cass-primary-up: shade($cass-primary, 50%);
 
 $cass-error: #D74C44;
 $cass-success: #68C8DB;

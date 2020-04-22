@@ -1,6 +1,6 @@
 <template>
     <div class="framework-list-page">
-        <div class="container">
+        <div class="container fluid is-marginless is-paddingless">
             <div class="section">
                 <!-- sort options -->
                 <div class="control">

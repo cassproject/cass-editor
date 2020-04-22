@@ -1,6 +1,6 @@
 <template>
     <div
-        id="import-page"
+        id="page-import"
         class="page-import container">
         <div class="columns is-multiline is-marginless is-gapless is-mobile">
             <!--- main body section -->
@@ -653,9 +653,7 @@
                                     @doneEditingNodeEvent="onDoneEditingNode"
                                     :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                     :obj="framework"
-                                    :editingNode="editingFramework"
                                     :repo="repo"
-                                    :properties="properties"
                                     class="framework-title"
                                     :profile="t3FrameworkProfile"
                                     :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
@@ -671,7 +669,8 @@
                                     containerEdgeProperty="relation"
                                     nodeType="EcCompetency"
                                     :profile="t3CompetencyProfile"
-                                    :editable="true"
+                                    :viewOnly="false"
+                                    :isDraggable="true"
                                     edgeType="EcAlignment"
                                     edgeRelationProperty="relationType"
                                     edgeRelationLiteral="narrows"
@@ -691,8 +690,7 @@
                                     :is="dynamicThing"
                                     :editingNode="editingNode"
                                     :obj="framework"
-                                    :repo="repo"
-                                    :parentNotEditable="!canEdit"
+                                    :parentNotEditable="true"
                                     class="framework-title"
                                     :profile="t3FrameworkProfile"
                                     :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
@@ -706,6 +704,7 @@
                                     nodeType="EcCompetency"
                                     :profile="t3CompetencyProfile"
                                     :editable="false"
+                                    :viewOnly="true"
                                     edgeType="EcAlignment"
                                     edgeRelationProperty="relationType"
                                     edgeRelationLiteral="narrows"
@@ -1197,6 +1196,7 @@ export default {
                 me.statusType = "error";
                 me.errors.push("CaSS cannot read the file " + file.name + ". Please check that the file has the correct file extension.");
                 me.processingFile = false;
+                return;
             }
             if (!me.firstImport) {
                 me.importFromFile();
@@ -1456,8 +1456,8 @@ export default {
             f.level = [];
             f["schema:dateCreated"] = new Date().toISOString();
             toSave.push(f);
-            console.log(d);
-            console.log(JSON.parse(f.toJson()));
+            console.log("d", d);
+            console.log("message: ", JSON.parse(f.toJson()));
             var cs = {};
             if (!d.competencies) {
                 me.showErrors = true;
@@ -1465,6 +1465,7 @@ export default {
                 me.statusType = "error";
                 me.errors.push("Error importing competencies, no competencies found in file.");
                 me.processingFile = false;
+                return;
             }
             me.detailsDetected.competencies = d.competencies.length;
             for (var i = 0; i < d.competencies.length; i++) {
@@ -1480,7 +1481,7 @@ export default {
                 if (d.competencies[i]["ceasn:codedNotation"] != null) {
                     c["ceasn:codedNotation"] = d.competencies[i]["ceasn:codedNotation"];
                 }
-                f.competency.push(c.shortId());
+                f.addCompetency(c.shortId());
                 toSave.push(c);
             }
             for (var i = 0; i < d.relation.length; i++) {
@@ -1494,7 +1495,7 @@ export default {
                 c.target = cs[d.relation[i].target];
                 c.relationType = d.relation[i].relationType;
                 if (c.source !== undefined && c.target !== undefined) {
-                    f.relation.push(c.shortId());
+                    f.addRelation(c.shortId());
                     toSave.push(c);
                 } else {
                     console.log(JSON.parse(c.toJson()));
@@ -1875,6 +1876,5 @@ export default {
 
 <style lang="scss">
     @import './../../scss/import.scss';
-    @import './../../scss/framework.scss';
 
 </style>
