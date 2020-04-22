@@ -2,723 +2,718 @@
     <div
         id="page-import"
         class="page-import container">
-        <div class="columns is-multiline is-marginless is-gapless is-mobile">
             <!--- main body section -->
-            <div class="column has-background-white is-scrollable">
-                <section class="page-import-body">
-                    <!-- top section import information -->
-                    <div
-                        class="has-background-white"
-                        id="import-top-section">
-                        <div class="section is-medium">
-                            <div class="columns is-gapless is-multiline is-mobile">
-                                <div class="column is-narrow">
-                                    <h1
-                                        class="title is-size-2"
-                                        v-if="queryParams.concepts === 'true'">
-                                        Import a concept scheme
-                                    </h1>
-                                    <h1
-                                        class="title is-2"
-                                        v-else>
-                                        Import a framework
-                                    </h1>
-                                </div>
-                                <!-- after importing framework: details and preview -->
-                                <div class="column">
-                                    <div
-                                        class="section"
-                                        id="import-actions">
-                                        <div class="columns is-gapless is-marginless is-mobile is-multiline">
-                                            <div class="column is-12">
-                                                <!-- import details options -->
-                                                <div
-                                                    v-if="showImportDetailsView || showImportPreviewView || showImportLightView"
-                                                    class="buttons is-small is-right">
-                                                    <!-- desktop friendly cancel button -->
-                                                    <div
-                                                        @click="cancelImport"
-                                                        v-if="showImportPreviewView || showImportDetailsView"
-                                                        class="is-hidden-touch button is-light is-small is-pulled-right is-light">
-                                                        <span>
-                                                            Cancel
-                                                        </span>
-                                                        <span class="icon">
-                                                            <i class="fa fa-times-circle" />
-                                                        </span>
-                                                    </div>
-                                                    <!-- mobile friendly cancel button -->
-                                                    <div
-                                                        @click="cancelImport"
-                                                        v-if="showImportPreviewView || showImportDetailsView"
-                                                        class="is-hidden-desktop button is-light is-pulled-right is-small is-light">
-                                                        <span class="icon">
-                                                            <i class="fa fa-times-circle" />
-                                                        </span>
-                                                    </div>
-                                                    <!-- desktop friendly home -->
-                                                    <router-link
-                                                        v-if="showImportLightView && method !== 'text'"
-                                                        class="button is-hidden-touch is-small is-light is -pulled-right"
-                                                        to="/">
-                                                        <span>
-                                                            Done
-                                                        </span>
-                                                        <span class="icon">
-                                                            <i class="fa fa-home" />
-                                                        </span>
-                                                    </router-link>
-                                                    <!-- mobile friendly home -->
-                                                    <router-link
-                                                        v-if="showImportLightView && method !== 'text'"
-                                                        class="button is-hidden-desktop is-small is-light is-pulled-right"
-                                                        to="/">
-                                                        <span class="icon">
-                                                            <i class="fa fa-home" />
-                                                        </span>
-                                                    </router-link>
-                                                    <!-- desktop friendly export -->
-                                                    <div
-                                                        v-if="showImportLightView && method !== 'text'"
-                                                        class="button is-hidden-touch is-small is-light is-pulled-right"
-                                                        @click="showModal('export')">
-                                                        <span>
-                                                            Export
-                                                        </span>
-                                                        <span class="icon">
-                                                            <i class="fa fa-download" />
-                                                        </span>
-                                                    </div>
-                                                    <!-- mobile friendly export -->
-                                                    <div
-                                                        v-if="showImportLightView && method !== 'text'"
-                                                        class="button is-hidden-desktop is-small is-light is-pulled-right"
-                                                        @click="showModal('export')">
-                                                        <span class="icon">
-                                                            <i class="fa fa-download" />
-                                                        </span>
-                                                    </div>
-                                                    <!-- mobile friendly start over -->
-                                                    <div
-                                                        v-if="framework && showImportLightView && method !== 'text'"
-                                                        @click="cancelImport"
-                                                        class="button is-hidden-touch is-small is-info is-pulled-right">
-                                                        <span>
-                                                            import again
-                                                        </span>
-                                                        <span class="icon">
-                                                            <i class="fa fa-redo-alt" />
-                                                        </span>
-                                                    </div>
-                                                    <!-- mobile friendly start over -->
-                                                    <div
-                                                        v-if="framework && showImportLightView"
-                                                        @click="cancelImport"
-                                                        class="button is-hidden-desktop is-small is-info is-pulled-right">
-                                                        <span class="icon">
-                                                            <i class="fa fa-redo-alt" />
-                                                        </span>
-                                                    </div>
-                                                    <!-- desktop friendly open in editor -->
-                                                    <div
-                                                        v-if="framework && showImportLightView && method !== 'text'"
-                                                        @click="openFramework"
-                                                        class="button is-hidden-touch is-small is-info is-pulled-right">
-                                                        <span>view in editor</span>
-                                                        <span class="icon">
-                                                            <i class="fa fa-edit" />
-                                                        </span>
-                                                    </div>
-                                                    <!-- mobile friendly open in editor -->
-                                                    <div
-                                                        v-if="framework && showImportLightView && method !== 'text'"
-                                                        @click="openFramework"
-                                                        class="button is-hidden-desktop is-small is-info is-pulled-right">
-                                                        <span class="icon">
-                                                            <i class="fa fa-edit" />
-                                                        </span>
-                                                    </div>
-                                                    <!-- desktop friendly accept details -->
-                                                    <div
-                                                        @click="importDetailsAccept"
-                                                        v-if="showImportDetailsView"
-                                                        class="button is-hidden-touch is-small is-info is-pulled-right">
-                                                        <span>
-                                                            Accept Details & Review
-                                                        </span>
-                                                        <span class="icon is-small">
-                                                            <i class="fas has-text-white fa-arrow-right" />
-                                                        </span>
-                                                    </div>
-                                                    <!-- mobile friendly accept details and edit -->
-                                                    <div
-                                                        @click="importDetailsAccept"
-                                                        v-if="showImportDetailsView"
-                                                        class="button is-hidden-desktop is-small is-info is-pulled-right">
-                                                        <span class="icon is-small">
-                                                            <i class="fas has-text-white fa-arrow-right" />
-                                                        </span>
-                                                    </div>
-                                                    <!-- desktop friendly accept preview -->
-                                                    <div
-                                                        @click="importPreviewAccept()"
-                                                        v-if="showImportPreviewView"
-                                                        class="button is-hidden-touch is-small is-info is-pulled-right">
-                                                        <span>
-                                                            done editing
-                                                        </span>
-                                                        <span class="icon">
-                                                            <i class="fa has-text-white fa-arrow-right" />
-                                                        </span>
-                                                    </div>
-                                                    <!-- mobile friendly accept preview -->
-                                                    <div
-                                                        @click="importPreviewAccept()"
-                                                        v-if="showImportPreviewView"
-                                                        class="button is-hidden-desktop is-small is-info is-pulled-right">
-                                                        <span class="icon">
-                                                            <i class="fa has-text-white fa-arrow-right" />
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- ready state details -->
-                                <div class="column is-12">
-                                    <p
-                                        v-if="status === 'Ready' && !file && queryParams.concepts === 'true'"
-                                        class="is-size-6">
-                                        Upload documents to transform into CaSS Concept Schemes.
-                                    </p>
-                                    <p
-                                        v-else-if="status === 'Ready' && !file"
-                                        class="is-size-6">
-                                        Upload documents to transform into CaSS Competency Frameworks.
-                                    </p>
-                                    <p
-                                        v-if="showImportDetailsView"
-                                        class="is-size-6">
-                                        <span class="has-text-success has-text-weight-bold">
-                                            CaSS has detected a framework!
-                                        </span>
-                                        <br><br>
-                                        We've gathered details about your competency framework and file.  Please review. Accept and approve to continue, cancel to review your file and re-import.
-                                    </p>
-                                    <p
-                                        v-if="showImportPreviewView"
-                                        class="">
-                                        <span class=" is-size-6 has-text-success has-text-weight-bold">
-                                            Import success, {{ frameworkSize }} competencies ready to edit.
-                                        </span>
-                                        <br><br>
-                                    <!-- Please review the name and descriptions of the imported competencies. After making edits, "approve" the changes to view the imported competency details.-->
-                                    </p>
-                                    <p
-                                        v-if="showImportLightView"
-                                        class="is-size-6">
-                                        <span class="has-text-success has-text-weight-bold">
-                                            Your import is complete!
-                                        </span>
-                                        <br><br>
-                                    </p>
-                                </div>
+                <!-- top section import information -->
+                <div
+                    class="has-background-white"
+                    id="import-top-section">
+                    <div class="section is-medium">
+                        <div class="columns is-gapless is-multiline is-mobile">
+                            <div class="column is-narrow">
+                                <h1
+                                    class="title is-size-2"
+                                    v-if="queryParams.concepts === 'true'">
+                                    Import a concept scheme
+                                </h1>
+                                <h1
+                                    class="title is-2"
+                                    v-else>
+                                    Import a framework
+                                </h1>
                             </div>
+                           
                         </div>
                     </div>
-                    <!-- import drop area and tabs -->
+                </div>
+                                <!-- ready state details -->
+                <div class="column is-12">
+                    <p
+                        v-if="importTransition === 'upload' && !file && queryParams.concepts === 'true'"
+                        class="is-size-6">
+                        Upload documents to transform into CaSS Concept Schemes.
+                    </p>
+                    <p
+                        v-else-if="importTransition === 'upload' && !file"
+                        class="is-size-6">
+                        Upload documents to transform into CaSS Competency Frameworks.
+                    </p>
+                    <p
+                        v-if="importTransition === 'light'"
+                        class="is-size-6">
+                        <span class="has-text-success has-text-weight-bold">
+                            CaSS has detected a framework!
+                        </span>
+                        <br><br>
+                        We've gathered details about your competency framework and file.  Please review. Accept and approve to continue, cancel to review your file and re-import.
+                    </p>
+                    <p
+                        v-if="importTransition === 'light'"
+                        class="">
+                        <span class=" is-size-6 has-text-success has-text-weight-bold">
+                            Import success, {{ frameworkSize }} competencies ready to edit.
+                        </span>
+                        <br><br>
+                    <!-- Please review the name and descriptions of the imported competencies. After making edits, "approve" the changes to view the imported competency details.-->
+                    </p>
+                    <p
+                        v-if="importTransition === 'light'"
+                        class="is-size-6">
+                        <span class="has-text-success has-text-weight-bold">
+                            Your import is complete!
+                        </span>
+                        <br><br>
+                    </p>
+                </div>
+                <!-- import drop area and tabs -->
+                <div
+                    id="import-bottom-section"
+                    class="section">
+                    <!-- types of import for tabs -->
                     <div
-                        id="import-bottom-section"
-                        class="section">
-                        <!-- types of import for tabs -->
-                        <div
-                            v-if="!framework || (framework && method === 'text')"
-                            class="section is-large">
-                            <div class="tile is-vertical has-background-lightest">
-                                <div class="section is-medium">
-                                    <!-- columns for tabs -->
-                                    <div class="columns is-mobile">
-                                        <div class="column">
-                                            <div
-                                                class="import-tab"
-                                                :class="{ 'is-active-tab': method === 'file'}">
-                                                <a @click="method = 'file';framework = null;status='';">
-                                                    <i
-                                                        class="fa fa-2x fa-file has-text-centered is-block"
-                                                        aria-hidden="true" />
-                                                    <div class="is-hidden-mobile is-block has-text-centered">
-                                                        File Import
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
+                        v-if="!framework || (framework && method === 'text')"
+                        class="section is-large">
+                        <div class="tile is-vertical has-background-lightest">
+                            <div class="section is-medium">
+                                <!-- columns for tabs -->
+                                <div class="columns is-mobile">
+                                    <div class="column">
                                         <div
-                                            class="column"
-                                            v-if="queryParams.concepts !== 'true'">
-                                            <div
-                                                class="import-tab"
-                                                :class="{ 'is-active-tab': method === 'server'}">
-                                                <a @click="switchToRemoteServerTab()">
-                                                    <i
-                                                        class="fa fa-2x fa-server is-block has-text-centered"
-                                                        aria-hidden="true" />
-                                                    <div class="is-hidden-mobile is-block has-text-centered">
-                                                        Remote Server
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <div
-                                            class="column"
-                                            v-if="queryParams.concepts !== 'true'">
-                                            <div
-                                                class="import-tab"
-                                                :class="{ 'is-active-tab': method === 'text'}">
-                                                <a @click="switchToPasteTextTab()">
-                                                    <i
-                                                        class="fa fa-2x fa-paste has-text-centered is-block"
-                                                        aria-hidden="true" />
-                                                    <div class="is-hidden-mobile is-block has-text-centered">
-                                                        Paste Text
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <div
-                                            class="column"
-                                            v-if="queryParams.concepts !== 'true'">
-                                            <div
-                                                class="import-tab"
-                                                :class="{ 'is-active-tab': method === 'url'}">
-                                                <a @click="switchToUrlSourceTab()">
-                                                    <i
-                                                        class="fa fa-link has-text-centered is-block fa-2x"
-                                                        aria-hidden="true" />
-                                                    <div class="is-hidden-mobile is-block has-text-centered">
-                                                        URL Source
-                                                    </div>
-                                                </a>
-                                            </div>
+                                            class="import-tab"
+                                            :class="{ 'is-active-tab': method === 'file'}">
+                                            <a @click="method = 'file';framework = null;status='';">
+                                                <i
+                                                    class="fa fa-2x fa-file has-text-centered is-block"
+                                                    aria-hidden="true" />
+                                                <div class="is-hidden-mobile is-block has-text-centered">
+                                                    File Import
+                                                </div>
+                                            </a>
                                         </div>
                                     </div>
-                                    <!-- file input -->
                                     <div
-                                        class="has-dashed-border columns"
-                                        id="drop-area"
-                                        v-if="method=='file'">
-                                        <drag-and-drop
-                                            class="column is-12"
-                                            v-if="!processingFile && !showErrors"
-                                            @clearFiles="onClearFiles"
-                                            @dragAndDropEmitFiles="onUploadFiles" />
+                                        class="column"
+                                        v-if="queryParams.concepts !== 'true'">
                                         <div
-                                            v-else-if="processingFile && !showErrors"
-                                            class="column is-12">
-                                            <span
-                                                class="icon is-large"
-                                                v-if="spin">
-                                                <i class="fa fa-spinner fa-pulse fa-2x" />
-                                            </span>
-                                            <div class="section">
-                                                <p
-                                                    v-if="status !== 'processing'"
-                                                    class="is-size-7">
-                                                    {{ status }}
-                                                </p>
-                                                <p
-                                                    v-if="status === 'processing'"
-                                                    class="is-size-7">
-                                                    {{ processingStatus }}
-                                                </p>
-                                            </div>
+                                            class="import-tab"
+                                            :class="{ 'is-active-tab': method === 'server'}">
+                                            <a @click="switchToRemoteServerTab()">
+                                                <i
+                                                    class="fa fa-2x fa-server is-block has-text-centered"
+                                                    aria-hidden="true" />
+                                                <div class="is-hidden-mobile is-block has-text-centered">
+                                                    Remote Server
+                                                </div>
+                                            </a>
                                         </div>
-                                        <!-- import errors -->
+                                    </div>
+                                    <div
+                                        class="column"
+                                        v-if="queryParams.concepts !== 'true'">
                                         <div
-                                            v-else-if="showErrors"
-                                            class="column is-12 has-text-warning">
-                                            <ul>
-                                                <li
-                                                    class="is-size-7"
-                                                    v-for="(error, index) in errors"
-                                                    :key="index">
-                                                    <span class="">
-                                                        <span class="icon">
-                                                            <i class="fa fa-times" />
-                                                        </span>
-                                                        {{ error }}
+                                            class="import-tab"
+                                            :class="{ 'is-active-tab': method === 'text'}">
+                                            <a @click="switchToPasteTextTab()">
+                                                <i
+                                                    class="fa fa-2x fa-paste has-text-centered is-block"
+                                                    aria-hidden="true" />
+                                                <div class="is-hidden-mobile is-block has-text-centered">
+                                                    Paste Text
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="column"
+                                        v-if="queryParams.concepts !== 'true'">
+                                        <div
+                                            class="import-tab"
+                                            :class="{ 'is-active-tab': method === 'url'}">
+                                            <a @click="switchToUrlSourceTab()">
+                                                <i
+                                                    class="fa fa-link has-text-centered is-block fa-2x"
+                                                    aria-hidden="true" />
+                                                <div class="is-hidden-mobile is-block has-text-centered">
+                                                    URL Source
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- file input -->
+                                <div
+                                    class="has-dashed-border columns"
+                                    id="drop-area"
+                                    v-if="method=='file'">
+                                    <drag-and-drop
+                                        class="column is-12"
+                                        v-if="importTransition === 'upload'"
+                                        @clearFiles="onClearFiles"/>
+                                    <div
+                                        v-else-if="importTransition === 'process' && importErrors.length === 0"
+                                        class="column is-12">
+                                        <span
+                                            class="icon is-large"
+                                            v-if="importTransition === 'process'">
+                                            <i class="fa fa-spinner fa-pulse fa-2x" />
+                                        </span>
+                                        <div class="section">
+                                            <p
+                                                v-if="importTransition !== 'process'"
+                                                class="is-size-7">
+                                                {{ importProcessingStatus }}
+                                            </p>
+                                            <p
+                                                v-if="status === 'process'"
+                                                class="is-size-7">
+                                                {{ importProcessingStatus }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <!-- import errors -->
+                                    <div
+                                        v-else-if="importErrors.length > 0"
+                                        class="column is-12 has-text-warning">
+                                        <ul>
+                                            <li
+                                                class="is-size-7"
+                                                v-for="(error, index) in importErrors"
+                                                :key="index">
+                                                <span class="">
+                                                    <span class="icon">
+                                                        <i class="fa fa-times" />
                                                     </span>
-                                                </li>
-                                                <li />
-                                            </ul>
-                                            <div class="section">
-                                                <div class="columns">
-                                                    <div class="column is-4">
-                                                        <div
-                                                            @click="cancelImport()"
-                                                            class="button is-primary">
-                                                            Start over
-                                                        </div>
+                                                    {{ error }}
+                                                </span>
+                                            </li>
+                                            <li />
+                                        </ul>
+                                        <div class="section">
+                                            <div class="columns">
+                                                <div class="column is-4">
+                                                    <div
+                                                        @click="cancelImport()"
+                                                        class="button is-primary">
+                                                        Start over
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- appears to be part of an interstitial screen -->
-                                    <div
-                                        class="section">
-                                        <div v-if="importType=='csv'">
-                                            <div>
-                                                <label>Step 1: Name the framework.</label>
-                                                <input v-model="importFrameworkName">
-                                            </div>
-                                            <div>
-                                                <label>Step 2: Describe the framework (optional).</label>
-                                                <input v-model="importFrameworkDescription">
-                                            </div>
-                                            <div>
-                                                <label>Step 3: Select the Name column.</label>
-                                                <select v-model="importCsvColumnName">
-                                                    <option
-                                                        v-for="(column, i) in csvColumns"
-                                                        :key="i"
-                                                        :value="column">
-                                                        {{ column.name }}
-                                                    </option>
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <label>Step 4: Select the Description column (optional).</label>
-                                                <select v-model="importCsvColumnDescription">
-                                                    <option>N/A</option>
-                                                    <option
-                                                        v-for="(column, i) in csvColumns"
-                                                        :key="i"
-                                                        :value="column">
-                                                        {{ column.name }}
-                                                    </option>
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <label>Step 5: Select the Scope column (optional).</label>
-                                                <select v-model="importCsvColumnScope">
-                                                    <option>N/A</option>
-                                                    <option
-                                                        v-for="(column, i) in csvColumns"
-                                                        :key="i"
-                                                        :value="column">
-                                                        {{ column.name }}
-                                                    </option>
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <label>Step 6: Select the ID column (optional). If chosen, this should be a URL from another CaSS system or a non-numeric ID.</label>
-                                                <select v-model="importCsvColumnId">
-                                                    <option>N/A</option>
-                                                    <option
-                                                        v-for="(column, i) in csvColumns"
-                                                        :key="i"
-                                                        :value="column">
-                                                        {{ column.name }}
-                                                    </option>
-                                                </select>
-                                            </div>
+                                </div>
+                                <!-- appears to be part of an interstitial screen -->
+                                <div
+                                    class="section">
+                                    <div v-if="importFileType=='csv'">
+                                        <div>
+                                            <label>Step 1: Name the framework.</label>
+                                            <input v-model="importFrameworkName">
+                                        </div>
+                                        <div>
+                                            <label>Step 2: Describe the framework (optional).</label>
+                                            <input v-model="importFrameworkDescription">
+                                        </div>
+                                        <div>
+                                            <label>Step 3: Select the Name column.</label>
+                                            <select v-model="importCsvColumnName">
+                                                <option
+                                                    v-for="(column, i) in csvColumns"
+                                                    :key="i"
+                                                    :value="column">
+                                                    {{ column.name }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label>Step 4: Select the Description column (optional).</label>
+                                            <select v-model="importCsvColumnDescription">
+                                                <option>N/A</option>
+                                                <option
+                                                    v-for="(column, i) in csvColumns"
+                                                    :key="i"
+                                                    :value="column">
+                                                    {{ column.name }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label>Step 5: Select the Scope column (optional).</label>
+                                            <select v-model="importCsvColumnScope">
+                                                <option>N/A</option>
+                                                <option
+                                                    v-for="(column, i) in csvColumns"
+                                                    :key="i"
+                                                    :value="column">
+                                                    {{ column.name }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label>Step 6: Select the ID column (optional). If chosen, this should be a URL from another CaSS system or a non-numeric ID.</label>
+                                            <select v-model="importCsvColumnId">
+                                                <option>N/A</option>
+                                                <option
+                                                    v-for="(column, i) in csvColumns"
+                                                    :key="i"
+                                                    :value="column">
+                                                    {{ column.name }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label>
+                                                Step 7: Select a relation file (optional).
+                                                The relation source/target must be in the
+                                                form of ID or Name, and the relation types
+                                                should be "requires", "desires", "narrows",
+                                                "isEnabledBy", "isRelatedTo", or "isEquivalentTo".
+                                            </label>
+                                            <input
+                                                type="file"
+                                                @change="analyzeCsvRelation">
+                                        </div>
+                                        <div v-if="csvRelationFile">
                                             <div>
                                                 <label>
-                                                    Step 7: Select a relation file (optional).
-                                                    The relation source/target must be in the
-                                                    form of ID or Name, and the relation types
-                                                    should be "requires", "desires", "narrows",
-                                                    "isEnabledBy", "isRelatedTo", or "isEquivalentTo".
+                                                    Step 8: Select the Source column.
                                                 </label>
+                                                <select v-model="importCsvColumnSource">
+                                                    <option
+                                                        v-for="(column, i) in csvRelationColumns"
+                                                        :key="i"
+                                                        :value="column">
+                                                        {{ column.name }}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label>Step 9: Select the Relation Type column.</label>
+                                                <select v-model="importCsvColumnRelationType">
+                                                    <option
+                                                        v-for="(column, i) in csvRelationColumns"
+                                                        :key="i"
+                                                        :value="column">
+                                                        {{ column.name }}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label>Step 10: Select the Target column.</label>
+                                                <select v-model="importCsvColumnTarget">
+                                                    <option
+                                                        v-for="(column, i) in csvRelationColumns"
+                                                        :key="i"
+                                                        :value="column">
+                                                        {{ column.name }}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div v-else-if="importFileType=='medbiq'">
+                                        <div>
+                                            <label>Step 1: Name the framework.</label>
+                                            <input v-model="importFrameworkName">
+                                        </div>
+                                        <div>
+                                            <label>Step 2: Describe the framework (optional).</label>
+                                            <input v-model="importFrameworkDescription">
+                                        </div>
+                                    </div>
+                                    <button
+                                        v-if="file && importFileType!=='pdf'"
+                                        @click="importFromFile">
+                                        Import
+                                    </button>
+                                </div>
+                                <!-- server input -->
+                                <div
+                                    class="section has-dashed-border"
+                                    v-if="method=='server'">
+                                    <center>
+                                        <h1>Paste URL endpoint of server</h1>
+                                        <input
+                                            v-model="serverUrl"
+                                            type="url">
+                                        <button @click="connectToServer">
+                                            Connect
+                                        </button>
+                                        <div>
+                                            {{ status }}
+                                        </div>
+                                    </center>
+                                    <div v-if="caseDocs.length">
+                                        <ul>
+                                            <li
+                                                v-for="doc in caseDocs"
+                                                :key="doc.id">
                                                 <input
-                                                    type="file"
-                                                    @change="analyzeCsvRelation">
-                                            </div>
-                                            <div v-if="csvRelationFile">
-                                                <div>
-                                                    <label>
-                                                        Step 8: Select the Source column.
-                                                    </label>
-                                                    <select v-model="importCsvColumnSource">
-                                                        <option
-                                                            v-for="(column, i) in csvRelationColumns"
-                                                            :key="i"
-                                                            :value="column">
-                                                            {{ column.name }}
-                                                        </option>
-                                                    </select>
-                                                </div>
-                                                <div>
-                                                    <label>Step 9: Select the Relation Type column.</label>
-                                                    <select v-model="importCsvColumnRelationType">
-                                                        <option
-                                                            v-for="(column, i) in csvRelationColumns"
-                                                            :key="i"
-                                                            :value="column">
-                                                            {{ column.name }}
-                                                        </option>
-                                                    </select>
-                                                </div>
-                                                <div>
-                                                    <label>Step 10: Select the Target column.</label>
-                                                    <select v-model="importCsvColumnTarget">
-                                                        <option
-                                                            v-for="(column, i) in csvRelationColumns"
-                                                            :key="i"
-                                                            :value="column">
-                                                            {{ column.name }}
-                                                        </option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div v-else-if="importType=='medbiq'">
-                                            <div>
-                                                <label>Step 1: Name the framework.</label>
-                                                <input v-model="importFrameworkName">
-                                            </div>
-                                            <div>
-                                                <label>Step 2: Describe the framework (optional).</label>
-                                                <input v-model="importFrameworkDescription">
-                                            </div>
-                                        </div>
-                                        <button
-                                            v-if="file && importType!=='pdf'"
-                                            @click="importFromFile">
+                                                    type="checkbox"
+                                                    v-model="doc.checked"
+                                                    v-if="!doc.loading && !doc.success && !doc.error">
+                                                <i
+                                                    class="fa fa-circle-notch fa-spin"
+                                                    v-if="doc.loading" />
+                                                <i
+                                                    class="fa fa-check"
+                                                    v-else-if="doc.success" />
+                                                <i
+                                                    class="fa fa-exclamation-triangle"
+                                                    v-else-if="doc.error" />
+                                                {{ doc.name }}
+                                            </li>
+                                        </ul>
+                                        <button @click="importCase">
                                             Import
                                         </button>
+                                        <button @click="cancelCase">
+                                            Cancel
+                                        </button>
                                     </div>
-                                    <!-- server input -->
-                                    <div
-                                        class="section has-dashed-border"
-                                        v-if="method=='server'">
-                                        <center>
-                                            <h1>Paste URL endpoint of server</h1>
-                                            <input
-                                                v-model="serverUrl"
-                                                type="url">
-                                            <button @click="connectToServer">
-                                                Connect
-                                            </button>
-                                            <div>
-                                                {{ status }}
-                                            </div>
-                                        </center>
-                                        <div v-if="caseDocs.length">
-                                            <ul>
-                                                <li
-                                                    v-for="doc in caseDocs"
-                                                    :key="doc.id">
-                                                    <input
-                                                        type="checkbox"
-                                                        v-model="doc.checked"
-                                                        v-if="!doc.loading && !doc.success && !doc.error">
-                                                    <i
-                                                        class="fa fa-circle-notch fa-spin"
-                                                        v-if="doc.loading" />
-                                                    <i
-                                                        class="fa fa-check"
-                                                        v-else-if="doc.success" />
-                                                    <i
-                                                        class="fa fa-exclamation-triangle"
-                                                        v-else-if="doc.error" />
-                                                    {{ doc.name }}
-                                                </li>
-                                            </ul>
-                                            <button @click="importCase">
+                                </div>
+                                <!-- text input -->
+                                <div
+                                    class="section has-dashed-border"
+                                    v-if="method=='text'">
+                                    <center>
+                                        <input
+                                            v-model="importFrameworkName"
+                                            placeholder="Framework Name">
+                                        <h1>Paste Text</h1>
+                                        <textarea v-model="text" />
+                                        <div>
+                                            {{ status }}
+                                            <button @click="parseText">
                                                 Import
-                                            </button>
-                                            <button @click="cancelCase">
-                                                Cancel
                                             </button>
                                         </div>
-                                    </div>
-                                    <!-- text input -->
-                                    <div
-                                        class="section has-dashed-border"
-                                        v-if="method=='text'">
-                                        <center>
-                                            <input
-                                                v-model="importFrameworkName"
-                                                placeholder="Framework Name">
-                                            <h1>Paste Text</h1>
-                                            <textarea v-model="text" />
-                                            <div>
-                                                {{ status }}
-                                                <button @click="parseText">
-                                                    Import
-                                                </button>
-                                            </div>
-                                        </center>
-                                    </div>
-                                    <!-- url input -->
-                                    <div
-                                        class="section has-dashed-border"
-                                        v-if="method=='url'">
-                                        <center>
-                                            <h1>Paste URL of document</h1>
-                                            <input
-                                                v-model="url"
-                                                type="url">
-                                            <button @click="importFromUrl">
-                                                Import
-                                            </button>
-                                            <div>
-                                                {{ status }}
-                                            </div>
-                                        </center>
-                                    </div>
+                                    </center>
                                 </div>
-                            </div>
-                        </div>
-                        <!-- import details -->
-                        <div
-                            class="section import-details"
-                            v-if="framework && showImportDetailsView && isT3Import">
-                            <!-- interstitial screen will go here -->
-                            <div class="import-details__section">
-                                <h3 class="subtitle is-size-3 has-text-weight-normal">
-                                    The following details were detected.
-                                </h3>
-                                <p class="is-size-6 has-text-weight-light">
-                                    If these details don't look correct, please verify your file
-                                    is correct and import again.
-                                </p>
-                                <ul class="is-size-6 detected-import-details">
-                                    <li v-if="detailsDetected.columns > 0">
-                                        <span class="icon has-text-success">
-                                            <i class="fa fa-check-circle" />
-                                        </span>
-                                        CaSS detected <b>{{ detailsDetected.columns }}</b> columns
-                                    </li>
-                                    <li v-if="detailsDetected.rows > 0">
-                                        <span class="icon has-text-success">
-                                            <i class="fa fa-check-circle" />
-                                        </span>
-                                        CaSS detected <b>{{ detailsDetected.rows }}</b> rows
-                                    </li>
-                                    <li>
-                                        <span class="icon has-text-success">
-                                            <i class="fa fa-check-circle" />
-                                        </span>
-                                        CaSS detected <b>{{ detailsDetected.competencies }}</b> competencies in the imported framework
-                                    </li>
-                                    <li>
-                                        <span class="icon has-text-success">
-                                            <i class="fa fa-check-circle" />
-                                        </span>
-                                        CaSS detected a <b>{{ detailsDetected.fileType }}</b> file type
-                                    </li>
-                                    <li v-if="detailsDetected.headers">
-                                        <span class="icon has-text-success">
-                                            <i class="fa fa-check-circle" />
-                                        </span>
-                                        <b>Header rows detected</b>
-                                    </li>
-                                    <li class="is-size-7">
-                                        If this information looks correct, "approve" to continue.
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <!-- import preview -->
-                        <div
-                            v-if="framework && showImportPreviewView"
-                            class="import-preview">
-                            <div class="tile is-vertical">
-                                <!-- loading section -- dummy content to show while loading dome elemnts -->
+                                <!-- url input -->
                                 <div
-                                    class="section"
-                                    v-if="!hierarchyIsdoneLoading">
-                                    <ul class="processing-list">
-                                        <li />
-                                        <li />
-                                        <ul>
-                                            <li />
-                                            <li />
-                                            <li />
-                                        </ul>
-                                        <li />
-                                        <li />
-                                        <ul>
-                                            <li />
-                                            <li />
-                                        </ul>
-                                    </ul>
+                                    class="section has-dashed-border"
+                                    v-if="method=='url'">
+                                    <center>
+                                        <h1>Paste URL of document</h1>
+                                        <input
+                                            v-model="url"
+                                            type="url">
+                                        <button @click="importFromUrl">
+                                            Import
+                                        </button>
+                                        <div>
+                                            {{ status }}
+                                        </div>
+                                    </center>
                                 </div>
-                                <Component
-                                    :is="dynamicThing"
-                                    @editNodeEvent="onEditNode"
-                                    @doneEditingNodeEvent="onDoneEditingNode"
-                                    :class="{'is-hidden': !hierarchyIsdoneLoading}"
-                                    :obj="framework"
-                                    :repo="repo"
-                                    class="framework-title"
-                                    :profile="t3FrameworkProfile"
-                                    :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
-                                    iframeText="Attach subitems from other sources to the selected item." />
-
-                                <Hierarchy
-                                    :class="{'is-hidden': !hierarchyIsdoneLoading}"
-                                    v-if="framework"
-                                    @doneLoadingNodes="handleDoneLoading"
-                                    :container="framework"
-                                    containerType="Framework"
-                                    containerNodeProperty="competency"
-                                    containerEdgeProperty="relation"
-                                    nodeType="EcCompetency"
-                                    :profile="t3CompetencyProfile"
-                                    :viewOnly="false"
-                                    :isDraggable="true"
-                                    edgeType="EcAlignment"
-                                    edgeRelationProperty="relationType"
-                                    edgeRelationLiteral="narrows"
-                                    edgeSourceProperty="source"
-                                    edgeTargetProperty="target"
-                                    :repo="repo"
-                                    :newFramework="true"
-                                    @deleteObject="deleteObject" />
-                            </div>
-                        </div>
-                        <!-- import light view -->
-                        <div
-                            v-else-if="framework && showImportLightView"
-                            class="import-light">
-                            <div class="tile is-vertical">
-                                <Component
-                                    :is="dynamicThing"
-                                    :editingNode="editingNode"
-                                    :obj="framework"
-                                    :parentNotEditable="true"
-                                    class="framework-title"
-                                    :profile="t3FrameworkProfile"
-                                    :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
-                                    iframeText="Attach subitems from other sources to the selected item." />
-                                <Hierarchy
-                                    v-if="framework"
-                                    :container="framework"
-                                    containerType="Framework"
-                                    containerNodeProperty="competency"
-                                    containerEdgeProperty="relation"
-                                    nodeType="EcCompetency"
-                                    :profile="t3CompetencyProfile"
-                                    :editable="false"
-                                    :viewOnly="true"
-                                    edgeType="EcAlignment"
-                                    edgeRelationProperty="relationType"
-                                    edgeRelationLiteral="narrows"
-                                    edgeSourceProperty="source"
-                                    edgeTargetProperty="target"
-                                    :repo="repo"
-                                    :newFramework="true"
-                                    @deleteObject="deleteObject" />
                             </div>
                         </div>
                     </div>
-                </section>
-            </div>
-        </div>
+                    <!-- import details -->
+                    <div
+                        class="section import-details"
+                        v-if="framework && importTransition === 'detail' && isT3Import">
+                        <!-- interstitial screen will go here -->
+                        <div class="import-details__section">
+                            <h3 class="subtitle is-size-3 has-text-weight-normal">
+                                The following details were detected.
+                            </h3>
+                            <p class="is-size-6 has-text-weight-light">
+                                If these details don't look correct, please verify your file
+                                is correct and import again.
+                            </p>
+                            <ul class="is-size-6 detected-import-details">
+                                <li v-if="detailsDetected.columns > 0">
+                                    <span class="icon has-text-success">
+                                        <i class="fa fa-check-circle" />
+                                    </span>
+                                    CaSS detected <b>{{ detailsDetected.columns }}</b> columns
+                                </li>
+                                <li v-if="detailsDetected.rows > 0">
+                                    <span class="icon has-text-success">
+                                        <i class="fa fa-check-circle" />
+                                    </span>
+                                    CaSS detected <b>{{ detailsDetected.rows }}</b> rows
+                                </li>
+                                <li>
+                                    <span class="icon has-text-success">
+                                        <i class="fa fa-check-circle" />
+                                    </span>
+                                    CaSS detected <b>{{ detailsDetected.competencies }}</b> competencies in the imported framework
+                                </li>
+                                <li>
+                                    <span class="icon has-text-success">
+                                        <i class="fa fa-check-circle" />
+                                    </span>
+                                    CaSS detected a <b>{{ detailsDetected.fileType }}</b> file type
+                                </li>
+                                <li v-if="detailsDetected.headers">
+                                    <span class="icon has-text-success">
+                                        <i class="fa fa-check-circle" />
+                                    </span>
+                                    <b>Header rows detected</b>
+                                </li>
+                                <li class="is-size-7">
+                                    If this information looks correct, "approve" to continue.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- import preview -->
+                    <div
+                        v-if="framework && importTransition === 'preview'"
+                        class="import-preview">
+                        <div class="tile is-vertical">
+                            <!-- loading section -- dummy content to show while loading dome elemnts -->
+                            <div
+                                class="section"
+                                v-if="!hierarchyIsdoneLoading">
+                                <ul class="processing-list">
+                                    <li />
+                                    <li />
+                                    <ul>
+                                        <li />
+                                        <li />
+                                        <li />
+                                    </ul>
+                                    <li />
+                                    <li />
+                                    <ul>
+                                        <li />
+                                        <li />
+                                    </ul>
+                                </ul>
+                            </div>
+                            <Component
+                                :is="dynamicThing"
+                                @editNodeEvent="onEditNode"
+                                @doneEditingNodeEvent="onDoneEditingNode"
+                                :class="{'is-hidden': !hierarchyIsdoneLoading}"
+                                :obj="framework"
+                                :repo="repo"
+                                class="framework-title"
+                                :profile="t3FrameworkProfile"
+                                :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
+                                iframeText="Attach subitems from other sources to the selected item." />
+
+                            <Hierarchy
+                                :class="{'is-hidden': !hierarchyIsdoneLoading}"
+                                v-if="framework"
+                                @doneLoadingNodes="handleDoneLoading"
+                                :container="framework"
+                                containerType="Framework"
+                                containerNodeProperty="competency"
+                                containerEdgeProperty="relation"
+                                nodeType="EcCompetency"
+                                :profile="t3CompetencyProfile"
+                                :viewOnly="false"
+                                :isDraggable="true"
+                                edgeType="EcAlignment"
+                                edgeRelationProperty="relationType"
+                                edgeRelationLiteral="narrows"
+                                edgeSourceProperty="source"
+                                edgeTargetProperty="target"
+                                :repo="repo"
+                                :newFramework="true"
+                                @deleteObject="deleteObject" />
+                        </div>
+                    </div>
+                    <!-- import light view -->
+                    <div
+                        v-else-if="framework && importTransition === 'light'"
+                        class="import-light">
+                        <div class="tile is-vertical">
+                            <Component
+                                :is="dynamicThing"
+                                :editingNode="editingNode"
+                                :obj="framework"
+                                :parentNotEditable="true"
+                                class="framework-title"
+                                :profile="t3FrameworkProfile"
+                                :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
+                                iframeText="Attach subitems from other sources to the selected item." />
+                            <Hierarchy
+                                v-if="framework"
+                                :container="framework"
+                                containerType="Framework"
+                                containerNodeProperty="competency"
+                                containerEdgeProperty="relation"
+                                nodeType="EcCompetency"
+                                :profile="t3CompetencyProfile"
+                                :editable="false"
+                                :viewOnly="true"
+                                edgeType="EcAlignment"
+                                edgeRelationProperty="relationType"
+                                edgeRelationLiteral="narrows"
+                                edgeSourceProperty="source"
+                                edgeTargetProperty="target"
+                                :repo="repo"
+                                :newFramework="true"
+                                @deleteObject="deleteObject" />
+                        </div>
+                    </div>
+                </div>
+                 <!-- after importing framework: details and preview -->
+                <div class="column is-12">
+                    <div
+                        class="section"
+                        id="import-actions">
+                        <div class="columns is-gapless is-marginless is-mobile is-multiline">
+                            <div class="column is-12">
+                                <!-- import details options -->
+                                <div
+                                    v-if="importTransition !== 'upload'"
+                                    class="buttons is-small is-right">
+                                    <!-- desktop friendly cancel button -->
+                                    <div
+                                        @click="cancelImport"
+                                        v-if="importTransition === 'detail' || importTransition === 'light'"
+                                        class="is-hidden-touch button is-light is-small is-pulled-right is-light">
+                                        <span>
+                                            Cancel
+                                        </span>
+                                        <span class="icon">
+                                            <i class="fa fa-times-circle" />
+                                        </span>
+                                    </div>
+                                    <!-- mobile friendly cancel button -->
+                                    <div
+                                        @click="cancelImport"
+                                        v-if="importTransition === 'detail' || importTransition === 'light'"
+                                        class="is-hidden-desktop button is-light is-pulled-right is-small is-light">
+                                        <span class="icon">
+                                            <i class="fa fa-times-circle" />
+                                        </span>
+                                    </div>
+                                    <!-- desktop friendly home -->
+                                    <router-link
+                                        v-if="importTransition === 'light' && importType !== 'text'"
+                                        class="button is-hidden-touch is-small is-light is -pulled-right"
+                                        to="/">
+                                        <span>
+                                            Done
+                                        </span>
+                                        <span class="icon">
+                                            <i class="fa fa-home" />
+                                        </span>
+                                    </router-link>
+                                    <!-- mobile friendly home -->
+                                    <router-link
+                                        v-if="importTransition === 'light' && importType !== 'text'"
+                                        class="button is-hidden-desktop is-small is-light is-pulled-right"
+                                        to="/">
+                                        <span class="icon">
+                                            <i class="fa fa-home" />
+                                        </span>
+                                    </router-link>
+                                    <!-- desktop friendly export -->
+                                    <div
+                                        v-if="importTransition === 'light' && importType !== 'text'"
+                                        class="button is-hidden-touch is-small is-light is-pulled-right"
+                                        @click="showModal('export')">
+                                        <span>
+                                            Export
+                                        </span>
+                                        <span class="icon">
+                                            <i class="fa fa-download" />
+                                        </span>
+                                    </div>
+                                    <!-- mobile friendly export -->
+                                    <div
+                                        v-if="importTransition === 'light' && importType !== 'text'"
+                                        class="button is-hidden-desktop is-small is-light is-pulled-right"
+                                        @click="showModal('export')">
+                                        <span class="icon">
+                                            <i class="fa fa-download" />
+                                        </span>
+                                    </div>
+                                    <!-- mobile friendly start over -->
+                                    <div
+                                        v-if="importTransition === 'light' && importType !== 'text'"
+                                        @click="cancelImport"
+                                        class="button is-hidden-touch is-small is-info is-pulled-right">
+                                        <span>
+                                            import again
+                                        </span>
+                                        <span class="icon">
+                                            <i class="fa fa-redo-alt" />
+                                        </span>
+                                    </div>
+                                    <!-- mobile friendly start over -->
+                                    <div
+                                        v-if="framework && importTransition === 'light'"
+                                        @click="cancelImport"
+                                        class="button is-hidden-desktop is-small is-info is-pulled-right">
+                                        <span class="icon">
+                                            <i class="fa fa-redo-alt" />
+                                        </span>
+                                    </div>
+                                    <!-- desktop friendly open in editor -->
+                                    <div
+                                        v-if="framework && importTransition === 'light' && method !== 'text'"
+                                        @click="openFramework"
+                                        class="button is-hidden-touch is-small is-info is-pulled-right">
+                                        <span>view in editor</span>
+                                        <span class="icon">
+                                            <i class="fa fa-edit" />
+                                        </span>
+                                    </div>
+                                    <!-- mobile friendly open in editor -->
+                                    <div
+                                        v-if="framework && importTransition === 'light' && method !== 'text'"
+                                        @click="openFramework"
+                                        class="button is-hidden-desktop is-small is-info is-pulled-right">
+                                        <span class="icon">
+                                            <i class="fa fa-edit" />
+                                        </span>
+                                    </div>
+                                    <!-- desktop friendly accept details -->
+                                    <div
+                                        @click="$store.commit('app/importTransition', 'preview')"
+                                        v-if="importTransition === 'detail'"
+                                        class="button is-hidden-touch is-small is-info is-pulled-right">
+                                        <span>
+                                            Accept Details & Review
+                                        </span>
+                                        <span class="icon is-small">
+                                            <i class="fas has-text-white fa-arrow-right" />
+                                        </span>
+                                    </div>
+                                    <!-- mobile friendly accept details and edit -->
+                                    <div
+                                        @click="$store.commit('app/importTransition', 'preview')"
+                                        v-if="importTransition === 'detail'"
+                                        class="button is-hidden-desktop is-small is-info is-pulled-right">
+                                        <span class="icon is-small">
+                                            <i class="fas has-text-white fa-arrow-right" />
+                                        </span>
+                                    </div>
+                                    <!-- desktop friendly accept preview -->
+                                    <div
+                                        @click="$store.commit('app/importTransition', 'light')"
+                                        v-if="importTransition === 'preview'"
+                                        class="button is-hidden-touch is-small is-info is-pulled-right">
+                                        <span>
+                                            done editing
+                                        </span>
+                                        <span class="icon">
+                                            <i class="fa has-text-white fa-arrow-right" />
+                                        </span>
+                                    </div>
+                                    <!-- mobile friendly accept preview -->
+                                    <div
+                                        @click="$store.commit('app/importTransition', 'light')"
+                                        v-if="importTransition === 'preview'"
+                                        class="button is-hidden-desktop is-small is-info is-pulled-right">
+                                        <span class="icon">
+                                            <i class="fa has-text-white fa-arrow-right" />
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
     </div>
 </template>
 
@@ -754,9 +749,6 @@ export default {
             },
             errors: [],
             showErrors: false,
-            showImportPreviewView: false,
-            showImportLightView: false,
-            showImportDetailsView: false,
             processingFile: false,
             processingSuccess: false,
             showCassCsv: false,
@@ -771,7 +763,6 @@ export default {
             processingStatus: '',
             statusType: 'info',
             competencyCount: 0,
-            importType: null,
             importFrameworkName: null,
             importFrameworkDescription: null,
             importCsvColumnName: null,
@@ -803,6 +794,21 @@ export default {
         };
     },
     computed: {
+        importErrors: function() {
+            return this.$store.getters['app/importErrors'];
+        },
+        importFile: function() {
+            return this.$store.getters['app/importFiles'];
+        },
+        importTransition: function() {
+            return this.$store.getters['app/importTransition'];
+        },
+        importType: function() {
+            return this.$store.getters['app/importType'];
+        },
+        importFileType: function() {
+            return this.$store.getters['app/importFileType'];
+        },
         dynamicThing: function() {
             if (this.editingNode) {
                 return 'ThingEditing';
@@ -817,42 +823,21 @@ export default {
                 return 0;
             }
         },
-        isUrl: function() {
-            if (this.method === 'url') {
-                return true;
-            } else {
-                return false;
-            }
-        },
-        isFile: function() {
-            if (this.method === 'file') {
-                return true;
-            } else {
-                return false;
-            }
-        },
-        isText: function() {
-            if (this.method === 'text') {
-                return true;
-            } else {
-                return false;
-            }
-        },
-        isServer: function() {
-            if (this.method === 'server') {
-                return true;
-            } else {
-                return false;
-            }
-        },
         isT3Import: function() {
-            if (this.importType === 'pdf') {
+            if (this.importFileType === 'pdf') {
                 return true;
             }
             return false;
         }
     },
     watch: {
+        importTransition: function(val) {
+            if(val === 'process') {
+                return this.uploadFiles(this.importFile);
+            } else {
+                return;
+            }
+        },
         text: function(newText, oldText) {
             var me = this;
             TabStructuredImport.importCompetencies(
@@ -860,7 +845,7 @@ export default {
                 this.repo.selectedServer,
                 EcIdentityManager.ids[0],
                 function(competencies, relations) {
-                    me.showImportLightView = true;
+                    me.$store.commit('app/importTransition', 'ligjt');
                     me.status = competencies.length + " competencies and " + relations.length + " relations.";
                     var f = new EcFramework();
                     me.framework = null;
@@ -974,12 +959,10 @@ export default {
             this.status = '';
         },
         unsupportedFile: function(val) {
-            let fileType = val;
-            this.statusType = "error";
-            this.status = "File type " + fileType + " is unsupported in this workflow";
-            this.errors.push(this.status);
-            this.showErrors = true;
-            this.processingFile = false;
+            this.$store.commit('app/importFileType', val);
+            let error = "File type " + fileType + " is unsupported in this workflow";
+            this.$store.commit('app/addImportError', error);
+            this.$store.commit('app/importTransition', 'upload');
         },
         /* Event from Sidebar component */
         updateUrl(url) {
@@ -994,68 +977,37 @@ export default {
             if (this.queryParams.concepts !== "true") {
                 this.status = "Competency detected";
                 if (this.isT3Import) {
-                    this.showImportDetailsView = true;
-                    this.showImportPreviewView = false;
-                    this.showImportLightView = false;
+                    this.$store.commit('app/importTransition', 'detail');
                 } else {
-                    this.showImportDetailsView = false;
-                    this.showImportPreviewView = true;
-                    this.showImportLightView = false;
+                    this.$store.commit('app/importTransition', 'preview');
                 }
             } else {
                 this.status = "Concept Scheme Imported.";
-                this.spin = false;
+                this.$store.commit('app/importTransition', 'complete');
             }
         },
-        /*
-         * from the interstital screen the user accepts
-         * the displayed details
-         */
         importDetailsAccept: function() {
-            this.status = "Edit and approve";
-            this.showImportDetailsView = false;
-            this.showImportPreviewView = true;
+            this.$store.commit('app/importFeedback', 'Edit and approve');
+            this.$store.commit('app/importTransition', 'preview');
         },
-        /*
-         * after editing preview the user can accept the preview
-         * displaying the uneditable framework for review
-         * displays the appropriate profile of information requested by client
-         */
         importPreviewAccept: function() {
-            this.status = "Import complete!";
-            this.showImportLightView = true;
-            this.showImportPreviewView = false;
-            /*
-             * TO DO: Make sure all competency properties are in a non-editable state
-             * or ensure state does not crossover from here
-             */
+            this.$store.commit('app/importFeedback', 'Import Complete!');
+            this.$store.commit('app/importTransition', 'light');
         },
         cancelImport: function() {
-            /*
-             * TO DO: properly cancel import, leaving the screen in a state
-             * in which they are capable of importing a new framwork
-             * clear all files and framework states
-             * this does not completely work
-             */
-            this.showImportPreviewView = false;
-            this.showImportDetailsView = false;
-            this.showImportLightView = false;
-            this.errors = [];
-            this.showErrors = false;
             this.framework = null;
-            this.file = null;
-            this.processingFile = false;
-            this.processingSuccess = false;
-            this.status = "Ready";
-            this.spin = true;
-            this.importType = null;
+            this.$store.commit('app/clearImportFiles');
+            this.$store.commit('app/clearImportErrors');
+            this.$store.commit('app/clearImportFiles');
+            this.$store.commit('app/importTransition', 'upload');
+            this.$store.commit('app/importProcessingStatus', '');
+            this.$store.commit('app/importFileType', '');
         },
-        onUploadFiles: function(value) {
-            this.file = value;
-            this.fileChange(this.file);
+        uploadFiles: function() {
+            this.fileChange(this.importFile);
         },
         onClearFiles: function() {
-            this.file = null;
+            this.$store.commit('app/clearImportfiles');
         },
         openFramework: function() {
             if (this.queryParams.concepts === "true") {
@@ -1067,34 +1019,34 @@ export default {
             }
         },
         fileChange: function(e) {
-            console.log(e);
-            this.processingFile = true;
-            this.processingSuccess = false;
+            console.log('file change', e);
+            this.$store.commit('app/clearImportErrors');
+            this.$store.commit('app/importTransition', 'process');
+            this.$store.commit('app/firstImport', true);
             this.analyzeImportFile();
-            this.firstImport = true;
-            this.spin = true;
         },
         analyzeImportFile: function() {
             var me = this;
-            var file = this.file[0];
+            var file = this.importFile[0];
+            console.log("file is", file);
+            var feedback;
             if (file.name.endsWith(".csv")) {
                 if (this.queryParams.concepts === 'true') {
                     CTDLASNCSVConceptImport.analyzeFile(file, function(frameworkCount, competencyCount) {
-                        me.importType = "conceptcsv";
-                        me.status = "Import " + frameworkCount + " concept schemes and " + competencyCount + " concepts.";
-                        me.spin = false;
+                        me.$store.commit('app/importFileType', 'conceptcsv');
+                        feedback = "Import " + frameworkCount + " concept schemes and " + competencyCount + " concepts.";
+                        me.$store.commit('app/importProcessingStatus', feedback);
                     }, function(errorMsg) {
-                        me.statusType = "error";
-                        me.status = errorMsg;
+                        me.$store.commit('app/addImportError', errorMsg);
                     });
                 } else {
                     CTDLASNCSVImport.analyzeFile(file, function(frameworkCount, competencyCount) {
-                        me.importType = "ctdlasncsv";
-                        me.status = "Import " + frameworkCount + " frameworks and " + competencyCount + " competencies.";
-                        me.spin = false;
+                        me.$store.commit('app/importFileType', 'ctdlasncsv');
+                        feedback = "Import " + frameworkCount + " frameworks and " + competencyCount + " competencies.";
+                        me.$store.commit('app/importProcessingStatus', feedback);
                     }, function(errorMsg) {
                         CSVImport.analyzeFile(file, function(data) {
-                            me.importType = "csv";
+                            me.$store.commit('app/importFileType', 'csv');
                             me.importFrameworkName = file.name.replace(".csv", "");
                             for (var i = 0; i < data[0].length; i++) {
                                 let column = {};
@@ -1114,12 +1066,11 @@ export default {
                                     me.importCsvColumnId = column;
                                 }
                             }
-                            me.processingFile = false;
+                            //me.processingFile = false;
                             me.status = (me.competencyCount = (data.length - 1)) + " Competencies Detected.";
                         }, function(error) {
-                            me.statusType = "error";
-                            me.status = error;
-                            me.processingFile = false;
+                            me.$store.commit('app/addImportError', error);
+                            //me.processingFile = false;
                         });
                     });
                 }
@@ -1127,75 +1078,75 @@ export default {
                 // Try JSON-LD first, checks for @graph
                 this.analyzeJsonLdFramework(file, function(data, ctdlasn) {
                     var invalid = false;
+                    var error;
+                    var feedback;
                     if (ctdlasn === "ctdlasnConcept") {
                         if (me.queryParams.concepts === 'true') {
-                            me.status = "1 Concept Scheme Detected.";
-                            me.importType = "ctdlasnjsonld";
-                            me.spin = false;
+                            me.$store.commit('app/importProcessingStatus', "1 Concept Scheme Detected.");
+                            me.$store.commit('app/importFileType', 'ctdlasnjsonld');
                         } else {
-                            me.status = "Concept Schemes must be imported in the concept scheme editor.";
+                            message = "Concept Schemes must be imported in the concept scheme editor.";
                             invalid = true;
+                            me.$store.commit('app/importError', message);
                         }
                     } else {
                         if (me.queryParams.concepts !== 'true') {
-                            me.importType = "ctdlasnjsonld";
-                            me.status = "1 Framework and " + (EcObject.keys(data).length - 1) + " Competencies Detected.";
-                            me.spin = false;
+                            me.$store.commit('app/importFileType', 'ctdlasnjsonld');
+                            feedback = "1 Framework and " + (EcObject.keys(data).length - 1) + " Competencies Detected.";
+                            me.$store.commit('app/importProcessingStatus', feedback);
                         } else {
-                            me.status = "Frameworks must be imported in the competency editor.";
+                            error = "Frameworks must be imported in the competency editor.";
                             invalid = true;
+                            me.$store.commit('app/importError', error);
                         }
                     }
                     me.competencyCount = EcObject.keys(data).length;
                     if (!invalid && (ctdlasn === "ctdlasn" || ctdlasn === "ctdlasnConcept")) {
                         // Do nothing
                     } else if (!invalid) {
-                        me.status = "Context is not CTDL-ASN";
+                        error = "Context is not CTDL-ASN";
+                        me.$store.commit('app/importError', error);
                     }
                 }, function(error) {
-                    var error = error;
                     // If JSON-LD doesn't work, try JSON
                     ASNImport.analyzeFile(file, function(data) {
-                        me.importType = "asn";
+                        me.$store.commit('app/importFileType', 'asn');
                         me.status = "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.";
                         me.competencyCount = EcObject.keys(data).length;
-                        me.spin = false;
                     }, function(error) {
-                        me.status = error;
+                        error = error;
+                        me.$store.commit('app/importError', error);
                     });
                 });
             } else if (file.name.endsWith(".xml")) {
                 MedbiqImport.analyzeFile(file, function(data) {
-                    me.importType = "medbiq";
+                    me.$store.commit('app/importFileType', 'medbiq');
                     me.importFrameworkName = file.name.replace(".xml", "");
                     me.status = "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.";
                     me.competencyCount = EcObject.keys(data).length;
-                    me.spin = false;
                 }, function(error) {
                     me.statusType = "error";
                     me.status = error;
                 });
             } else if (file.name.endsWith(".pdf")) {
-                me.importType = "pdf";
+                me.$store.commit('app/importFileType', 'pdf');
                 me.firstImport = false;
                 me.detailsDetected.fileType = "pdf";
-                me.status = "File selected.";
+                me.$store.commit('app/importProcessingStatus', "File selected.");
             } else if (file.name.endsWith(".docx")) {
-                me.importType = "pdf";
-                me.detailsDetected.fileType = "docx";
+                me.$store.commit('app/importFileType', "pdf");
                 me.firstImport = false;
-                me.status = "File selected.";
+                me.$store.commit('app/importProcessingStatus', "File selected.");
             } else if (file.name.endsWith(".html")) {
-                me.importType = "pdf";
+                me.$store.commit('app/importFileType', "pdf");
                 me.detailsDetected.fileType = "html";
                 me.firstImport = false;
-                me.status = "File selected.";
+                me.$store.commit('app/importProcessingStatus', "File selected.");
             } else {
-                me.showErrors = true;
-                me.status = "CaSS cannot read the file " + file.name + ". Please check that the file has the correct file extension.";
-                me.statusType = "error";
-                me.errors.push("CaSS cannot read the file " + file.name + ". Please check that the file has the correct file extension.");
-                me.processingFile = false;
+                me.$store.commit('app/importFileType', '');
+                error = ("CaSS cannot read the file " + file.name + ". Please check that the file has the correct file extension.");
+                me.$store.commit('app/addImportError', error);
+                me.$store.commit('app/importTransition', 'upload');
                 return;
             }
             if (!me.firstImport) {
@@ -1390,7 +1341,7 @@ export default {
             var me = this;
             me.status = 'importing framework...';
             var formData = new FormData();
-            formData.append(me.file[0].name, me.file[0]);
+            formData.append(me.importFile[0].name, me.importFile[0]);
             me.status = 'importing file...';
             EcRemote.postExpectingObject(
                 "https://t3.cassproject.org/service/parse/",
@@ -1674,25 +1625,25 @@ export default {
             }, ceo);
         },
         importFromFile: function() {
-            this.spin = true;
-            if (this.importType === "csv") {
+            console.log("this.importFileType", this.importFileType);
+            if (this.importFileType === "csv") {
                 this.importCsv();
-            } else if (this.importType === "ctdlasncsv") {
+            } else if (this.importFileType === "ctdlasncsv") {
                 this.importCtdlAsnCsv();
-            } else if (this.importType === "conceptcsv") {
+            } else if (this.importFileType === "conceptcsv") {
                 this.importCtdlAsnConceptCsv();
-            } else if (this.importType === "ctdlasnjsonld") {
+            } else if (this.importFileType === "ctdlasnjsonld") {
                 this.importJsonLd();
-            } else if (this.importType === "asn") {
+            } else if (this.importFileType === "asn") {
                 this.importAsn();
-            } else if (this.importType === "pdf") {
+            } else if (this.importFileType === "pdf") {
                 this.importPdf();
-            } else if (this.importType === "medbiq") {
+            } else if (this.importFileType === "medbiq") {
                 this.importMedbiq();
             } else {
-                this.statusType = "error";
-                this.status = "Unsupported file type" + this.importType;
-                this.processingFile = false;
+                let error = "Unsupported file type" + this.importFileType;
+                this.$store.commit('app/addImportError', error);
+                this.$store.commit('app/importTransition', 'upload');
             }
         },
         connectToServer: function() {
@@ -1713,11 +1664,13 @@ export default {
         },
         caseGetDocsSuccess: function(result) {
             result = JSON.parse(result);
+            let error;
             if (result.CFDocuments == null) {
-                me.statusType = "error";
-                this.status = "No frameworks found. Please check the URL and try again.";
+                error = "No frameworks found. Please check the URL and try again.";
+                this.$store.commit('app/addImportError', error);
             } else {
-                this.status = result.CFDocuments.length + " frameworks detected.";
+                let message = result.CFDocuments.length + " frameworks detected.";
+                this.$store.commit('app/importProcessingStatus', message);
                 for (var i = 0; i < result.CFDocuments.length; i++) {
                     var doc = result.CFDocuments[i];
                     var obj = {};
@@ -1803,7 +1756,7 @@ export default {
                 }
             }
             this.cancelImport();
-            this.status = "Import Canceled.";
+            this.$store.commit('app/importTransition', 'upload');
         },
         parseText: function() {
             var me = this;
@@ -1836,39 +1789,37 @@ export default {
                 me.spitEvent("importFinished", me.framework.shortId(), "importPage");
             }, function(failure) {
                 console.log("failure", failure);
-                me.showErrors = true;
-                me.status = failure;
-                me.statusType = "error";
-                me.errors.push(failure);
+                me.$store.commit('app/addImportError', failure);
             });
         },
         importFromUrl: function() {
             let me = this;
+            let error;
             EcRemote.getExpectingString(this.url, null, function(result) {
                 result = JSON.parse(result);
                 var graph = result["@graph"];
                 if (graph != null) {
                     me.importJsonLd(result);
                 } else {
-                    me.statusType = "error";
-                    me.status = "URL must have an '@graph' field at the top level.";
+                    error = "URL must have an '@graph' field at the top level.";
+                    me.$store.commit('app/addImportError', error);
                     return;
                 }
                 if (graph[0]["@type"].indexOf("Concept") !== -1) {
-                    me.status = "Competency Editor cannot be used to import concept schemes.";
+                    error = "Competency Editor cannot be used to import concept schemes.";
+                    me.$store.commit('app/addImportError', error);
                 }
             }, function(failure) {
                 if (!failure) {
-                    me.statusType = "error";
-                    me.status = "Import Error";
+                    error = "Import Error";
+                    me.$store.commit('app/addImportError', error);
                 } else {
-                    me.statusType = "error";
-                    me.status = failure;
+                    me.$store.commit('app/addImportError', failure);
                 }
             });
         },
         mounted: function() {
-
+            this.$store.commit('app/clearImportFiles');
         }
     }
 };
