@@ -655,9 +655,7 @@
                                     :obj="framework"
                                     :repo="repo"
                                     class="framework-title"
-                                    :profile="t3FrameworkProfile"
-                                    :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
-                                    iframeText="Attach subitems from other sources to the selected item." />
+                                    :profile="t3FrameworkProfile" />
 
                                 <Hierarchy
                                     :class="{'is-hidden': !hierarchyIsdoneLoading}"
@@ -692,9 +690,7 @@
                                     :obj="framework"
                                     :parentNotEditable="true"
                                     class="framework-title"
-                                    :profile="t3FrameworkProfile"
-                                    :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
-                                    iframeText="Attach subitems from other sources to the selected item." />
+                                    :profile="t3FrameworkProfile" />
                                 <Hierarchy
                                     v-if="framework"
                                     :container="framework"
