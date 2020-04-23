@@ -127,7 +127,7 @@
                         </div>
                         <!-- open in editor -->
                         <div
-                            v-if="importFramework && importTransition === 'light' && method !== 'text'"
+                            v-if="importFramework && importTransition === 'light' && importType !== 'text'"
                             @click="openFramework"
                             class="button is-small is-dark is-outlined is-pulled-right">
                             <span>view in editor</span>
@@ -178,7 +178,15 @@
         <!-- import tabs -->
         <ImportTabs
             v-if="!importFramework"
-            :q="queryParams" />
+            :q="queryParams"
+            :caseDocs="caseDocs"
+            :csvRelationFile="csvRelationFile"
+            :csvRelationColumns="csvRelationColumns"
+            :importCsvColumnSource="importCsvColumnSource"
+            :importCsvColumnRelationType="importCsvColumnRelationType"
+            :importCsvColumnTarget="importCsvColumnTarget"
+            :csvColumns="csvColumns"
+            @analyzeCsvRelation="analyzeCsvRelation($event)" />
         <!-- import details -->
         <!--
             we shouldn't need to check for isT3Type here, since this information
@@ -337,8 +345,6 @@ export default {
             processingStatus: '',
             statusType: 'info',
             competencyCount: 0,
-            importFrameworkName: null,
-            importFrameworkDescription: null,
             importCsvColumnName: null,
             importCsvColumnDescription: "N/A",
             importCsvColumnScope: "N/A",
@@ -377,6 +383,9 @@ export default {
                 return false;
             }
         },
+        importServerUrl: function() {
+            return this.$store.getters['app/importServerUrl'];
+        },
         importErrors: function() {
             return this.$store.getters['app/importErrors'];
         },
@@ -394,6 +403,17 @@ export default {
         },
         importFramework: function() {
             return this.$store.getters['app/importFramework'];
+        },
+        importFrameworkName: {
+            get: function() {
+                return this.$store.getters['app/importFrameworkName'];
+            },
+            set: function() {
+                return this.$store.commit('app/importFrameworkName');
+            }
+        },
+        importFrameworkDescription: function() {
+            return this.$store.getters['app/importFrameworkDescription'];
         },
         dynamicThing: function() {
             if (this.editingNode) {
@@ -417,9 +437,22 @@ export default {
         }
     },
     watch: {
+        importStatus: function(val) {
+            if (val === 'connectToServer') {
+                this.connectToServer();
+            } else if (val === 'importFromUrl') {
+                this.importFromUrl();
+            }
+        },
+        importType: function(val) {
+            this.$store.commit('app/importFramework', null);
+            this.$store.commit('app/importStatus', 'upload');
+        },
         importTransition: function(val) {
             if (val === 'process') {
                 return this.uploadFiles(this.importFile);
+            } else if(val === 'uploadCsv') {
+                this.importFromFile();
             }
         },
         text: function(newText, oldText) {
@@ -530,21 +563,6 @@ export default {
                 this.exportCasePackages(guid);
             }
         },
-        switchToRemoteServerTab: function() {
-            this.method = 'server';
-            this.$store.commit('app/importFramework', null);
-            me.$store.commit('app/importStatus', '');
-        },
-        switchToPasteTextTab: function() {
-            this.method = 'text';
-            this.$store.commit('app/importFramework', null);
-            me.$store.commit('app/importStatus', '');
-        },
-        switchToUrlSourceTab: function() {
-            this.method = 'url';
-            this.$store.commit('app/importFramework', null);
-            me.$store.commit('app/importStatus', '');
-        },
         unsupportedFile: function(val) {
             this.$store.commit('app/importFileType', val);
             let error = "File type " + fileType + " is unsupported in this workflow";
@@ -553,9 +571,9 @@ export default {
         },
         /* Event from Sidebar component */
         updateUrl(url) {
-            if (this.method === "url") {
+            if (this.importType === "url") {
                 this.url = url;
-            } else if (this.method === "server") {
+            } else if (this.importType === "server") {
                 this.serverUrl = url;
             }
         },
@@ -739,6 +757,7 @@ export default {
             }
         },
         analyzeCsvRelation: function(e) {
+            console.log(e);
             var files = e.target.files || e.dataTransfer.files;
             if (!files.length) {
                 this.csvRelationFile = null;
@@ -825,8 +844,8 @@ export default {
                     f.addCompetency(competencies[i].shortId());
                 }
                 me.repo.saveTo(f, function(success) {
-                    me.file.splice(0, 1);
-                    if (me.file.length > 0) {
+                    me.importFile.splice(0, 1);
+                    if (me.importFile.length > 0) {
                         me.firstImport = false;
                         me.analyzeImportFile();
                     } else {
@@ -857,8 +876,8 @@ export default {
             var identity = EcIdentityManager.ids[0];
             let me = this;
             ASNImport.importCompetencies(this.repo.selectedServer, identity, true, function(competencies, f) {
-                me.file.splice(0, 1);
-                if (me.file.length > 0) {
+                me.importFile.splice(0, 1);
+                if (me.importFile.length > 0) {
                     me.firstImport = false;
                     me.analyzeImportFile();
                 } else {
@@ -880,7 +899,7 @@ export default {
             let ceo = null;
             if (EcIdentityManager.ids.length > 0) { ceo = EcIdentityManager.ids[0]; }
             let me = this;
-            CTDLASNCSVImport.importFrameworksAndCompetencies(me.repo, me.file[0], function(frameworks, competencies, relations) {
+            CTDLASNCSVImport.importFrameworksAndCompetencies(me.repo, me.importFile[0], function(frameworks, competencies, relations) {
                 if (me.queryParams.ceasnDataFields === true) {
                     for (var i = 0; i < frameworks.length; i++) {
                         if (frameworks[i]["schema:inLanguage"] == null || frameworks[i]["schema:inLanguage"] === undefined) {
@@ -900,8 +919,8 @@ export default {
                         me.importSuccess();
                         me.spitEvent("importFinished", frameworks[i].shortId(), "importPage");
                     }
-                    me.file.splice(0, 1);
-                    if (me.file.length > 0) {
+                    me.importFile.splice(0, 1);
+                    if (me.importFile.length > 0) {
                         me.firstImport = false;
                         me.analyzeImportFile();
                     }
@@ -1054,7 +1073,7 @@ export default {
             me.status = 'saving import...';
         },
         importCsv: function() {
-            var file = this.file[0];
+            var file = this.importFile[0];
             var relations = this.csvRelationFile;
             var identity = EcIdentityManager.ids[0];
             var endpoint = this.queryParams.newObjectEndpoint == null ? this.repo.selectedServer : this.queryParams.newObjectEndpoint;
@@ -1092,8 +1111,8 @@ export default {
                         f.relation.push(alignments[i].shortId());
                     }
                     me.repo.saveTo(f, function(success) {
-                        me.file.splice(0, 1);
-                        if (me.file.length > 0) {
+                        me.importFile.splice(0, 1);
+                        if (me.importFile.length > 0) {
                             me.firstImport = false;
                             me.analyzeImportFile();
                         } else {
@@ -1153,10 +1172,10 @@ export default {
                     me.$store.commit('app/importFramework', framework);
                 }
                 me.spitEvent("importFinished", framework.shortId(), "importPage");
-                if (me.file != null) {
-                    me.file.splice(0, 1);
+                if (me.importFile != null) {
+                    me.importFile.splice(0, 1);
                 }
-                if (me.file && me.file.length > 0) {
+                if (me.importFile && me.importFile.length > 0) {
                     me.firstImport = false;
                     me.analyzeImportFile();
                 } else {
@@ -1185,7 +1204,7 @@ export default {
             if (EcIdentityManager.ids.length > 0) {
                 ceo = EcIdentityManager.ids[0];
             }
-            CTDLASNCSVConceptImport.importFrameworksAndCompetencies(me.repo, me.file[0], function(frameworks, competencies) {
+            CTDLASNCSVConceptImport.importFrameworksAndCompetencies(me.repo, me.importFile[0], function(frameworks, competencies) {
                 if (me.queryParams.ceasnDataFields === 'true') {
                     for (var i = 0; i < frameworks.length; i++) {
                         if (frameworks[i]["dcterms:language"] == null || frameworks[i]["dcterms:language"] === undefined) {

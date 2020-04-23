@@ -441,9 +441,19 @@ i.fa-hand-paper {
     }
 }
 .lode__thing {
-    
     padding: .5rem;
     padding-right: 1rem;
+    .lode__Framework {
+        .lode__framework__info-bar {
+            padding: .5rem;
+            margin-left: 1.5rem;
+        }
+        .lode__Property.lode__name {
+            font-size: 1.2rem;
+            font-family: $family-secondary;
+            font-weight: 600;
+        }
+    }
     .lode__Competency,
     .lode__Framework {
         .lode__thing-heading {
@@ -477,6 +487,20 @@ i.fa-hand-paper {
         padding: .25rem .5rem;
         .select {
             margin: 0 .5rem;
+        }
+    }
+    .lode__Framework {
+        .header {
+            padding: .5rem;
+        }
+        .lode__framework__info-bar {
+            padding: .5rem;
+            margin-left: 0rem;
+        }
+        .lode__Property.lode__name {
+            font-size: 1.2rem;
+            font-family: $family-secondary;
+            font-weight: 600;
         }
     }
     

@@ -32,7 +32,22 @@ const state = {
         firstImport: Boolean,
         errors: [], // erorrs from the code or from the api
         feedback: '', // additional information
-        framework: null
+        framework: null,
+        serverUrl: '',
+        frameworkName: '',
+        frameworkDescription: '',
+        nameColumm: {},
+        importCsv: {
+            nameColumn: {},
+            descriptionCcolumn: {},
+            scopeColumn: {},
+            idColumn: {},
+            sourceColumn: {},
+            relationColumn: {},
+            targetColumn: {}
+        },
+        parseText: ''
+
     }
 };
 const mutations = {
@@ -99,6 +114,48 @@ const mutations = {
     },
     importFramework: function(state, val) {
         state.import.framework = val;
+    },
+    importFrameworkName: function(state, val) {
+        state.import.frameworkName = val;
+    },
+    importFrameworkNameColumn: function(state, val) {
+        state.import.frameworkNameColumn = val;
+    },
+    importFrameworkScopeColumn: function(state, val) {
+        state.import.frameworkScopeColumn = val;
+    },
+    importFrameworkIdColumn: function(state, val) {
+        state.import.frameworkIdColumn = val;
+    },
+    importFrameworkDescription: function(state, val) {
+        state.import.frameworkDescription = val;
+    },
+    importServerUrl: function(state, val) {
+        state.import.serverUrl = val;
+    },
+    importParseText: function(state, val) {
+        state.import.parseText = val;
+    },
+    importNameColumn: function(state, val) {
+        state.import.importCsv.nameColumn = val;
+    },
+    importDescriptionColumn: function(state, val) {
+        state.import.importCsv.descriptionColumn = val;
+    },
+    importScopeColumn: function(state, val) {
+        state.import.importCsv.scopeColumn = val;
+    },
+    importSourceColumn: function(state, val) {
+        state.import.importCsv.sourceColumn = val;
+    },
+    importTargetColumn: function(state, val) {
+        state.import.importCsv.targetColumn = val;
+    },
+    importRelationColumn: function(state, val) {
+        state.import.importCsv.relationColumn = val;
+    },
+    importIdColumn: function(state, val) {
+        state.import.importCsv.idColumn = val;
     }
 };
 const actions = {
@@ -158,7 +215,50 @@ const getters = {
     },
     importFramework: state => {
         return state.import.framework;
+    },
+    importFrameworkName: state => {
+        return state.import.frameworkName;
+    },
+    importFrameworkNameColumn: state => {
+        return state.import.frameworkNameColumn;
+    },
+    importFrameworkScopeColumn: state => {
+        return state.import.frameworkScopeColumn;
+    },
+    importFrameworkIdColumn: state => {
+        return state.import.frameworkIdColumn;
+    },
+    importFrameworkDescription: state => {
+        return state.import.frameworkDescription;
+    },
+    importServerUrl: state => {
+        return state.import.serverUrl;
+    },
+    importParseText: state => {
+        return state.import.parseText;
+    },
+    importNameColumn: state => {
+        return state.import.importCsv.nameColumn;
+    },
+    importDescriptionColumn: state => {
+        return state.import.importCsv.descriptionColumn;
+    },
+    importScopeColumn: state => {
+        return state.import.importCsv.scopeColumn;
+    },
+    importIdColumn: state => {
+        return state.import.importCsvidColumn;
+    },
+    importSourceColumn: state => {
+        return state.import.importCsv.sourceColumn;
+    },
+    importRelationColumn: state => {
+        return state.import.importCsv.relationColumn;
+    },
+    importTargetColumn: state => {
+        return state.import.importCsv.targetColumn;
     }
+
 };
 
 export default {
