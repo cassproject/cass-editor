@@ -16,7 +16,10 @@ const state = {
     newCompetency: null,
     t3Profile: false,
     changedObject: null,
-    configuration: null
+    configuration: null,
+    commonPathIframe: '',
+    iframeCompetencyPathInterframework: '',
+    iframeConceptPath: ''
 };
 const mutations = {
     framework(state, f) {
@@ -54,6 +57,15 @@ const mutations = {
     },
     configuration(state, config) {
         state.configuration = config;
+    },
+    commonPathIframe(state, val) {
+        state.commonPathIframe = val;
+    },
+    iframeCompetencyPathInterframework(state, val) {
+        state.iframeCompetencyPathInterframework = val;
+    },
+    iframeConceptPath(state, val) {
+        state.iframeConceptPath = val;
     }
 };
 const actions = {
