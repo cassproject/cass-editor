@@ -363,6 +363,18 @@ i.fa-hand-paper {
             right: 0;
             visibility: hidden;
         }
+        .comment-button {
+            position: absolute;
+            color: $dark;
+            right: 56px;
+            visibility: hidden;
+        }
+        .comment-button:hover {
+            color: $primary;
+            .icon {
+                color: $primary;
+            }
+        }
         .drag-button {
             position: absolute;
             right: 32px;
@@ -430,6 +442,9 @@ i.fa-hand-paper {
     .lode__Competency {
         
         .edit-button {
+            visibility: visible;
+        }
+        .comment-button {
             visibility: visible;
         }
     }
