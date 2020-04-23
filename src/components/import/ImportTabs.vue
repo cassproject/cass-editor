@@ -88,7 +88,7 @@
                     <div
                         class="has-dashed-border columns has-text-centered"
                         id="drop-area"
-                        v-if="importType=='file' && importFileType !== 'csv'">
+                        v-if="importType=='file' && importFileType !== 'csv' && importFileType !== 'medbiq'">
                         <drag-and-drop
                             class="column is-12"
                             v-if="importTransition === 'upload'"
@@ -529,7 +529,7 @@ export default {
             },
             medbiqDetails: [
                 {
-                    label: 'Select the framework',
+                    label: 'Name the framework',
                     value: '',
                     type: 'string'
                 },
