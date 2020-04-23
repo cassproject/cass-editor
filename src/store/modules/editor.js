@@ -13,10 +13,6 @@ const state = {
     selectCompetencyRelation: null,
     selectingCompetencies: false,
     private: false,
-    commonPathIframe: null,
-    iframeCompetencyPathInterframework: null,
-    iframeCompetencyPathIntraframework: null,
-    iframeConceptPath: null,
     newCompetency: null,
     t3Profile: false,
     changedObject: null,
@@ -46,18 +42,6 @@ const mutations = {
     },
     selectingCompetencies(state, bool) {
         state.selectingCompetencies = bool;
-    },
-    commonPathIframe(state, path) {
-        state.commonPathIframe = path;
-    },
-    iframeCompetencyPathInterframework(state, path) {
-        state.iframeCompetencyPathInterframework = path;
-    },
-    iframeCompetencyPathIntraframework(state, path) {
-        state.iframeCompetencyPathIntraframework = path;
-    },
-    iframeConceptPath(state, path) {
-        state.iframeConceptPath = path;
     },
     newCompetency(state, id) {
         state.newCompetency = id;
@@ -99,18 +83,6 @@ const getters = {
     },
     private: function(state) {
         return state.private;
-    },
-    commonPathIframe: function(state) {
-        return state.commonPathIframe;
-    },
-    iframeCompetencyPathInterframework: function(state) {
-        return state.iframeCompetencyPathInterframework;
-    },
-    iframeCompetencyPathIntraframework: function(state) {
-        return state.iframeCompetencyPathIntraframework;
-    },
-    iframeConceptPath: function(state) {
-        return state.iframeConceptPath;
     },
     newCompetency: function(state) {
         return state.newCompetency;

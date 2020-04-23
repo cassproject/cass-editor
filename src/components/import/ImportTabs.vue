@@ -495,10 +495,10 @@ export default {
                 // frameworkName
                 this.$store.commit('app/importFrameworkName', this.csvImportDetails.name.value);
                 this.$store.commit('app/importFrameworkDescription', this.csvImportDetails.description.value);
-                this.$store.commit('app/importFrameworkNameColumn', this.csvImportDetails.nameColumn.value);
-                this.$store.commit('app/importFrameworkDescriptionColumn', this.csvImportDetails.descriptionColumn.value);
-                this.$store.commit('app/importFrameworkScopeColumn', this.csvImportDetails.scopeColumn.value);
-                this.$store.commit('app/importFrameworkIdColumn', this.csvImportDetails.idColumn.value);
+                this.$store.commit('app/importNameColumn', this.csvImportDetails.nameColumn.value);
+                this.$store.commit('app/importDescriptionColumn', this.csvImportDetails.descriptionColumn.value);
+                this.$store.commit('app/importScopeColumn', this.csvImportDetails.scopeColumn.value);
+                this.$store.commit('app/importIdColumn', this.csvImportDetails.idColumn.value);
                 this.$store.commit('app/importSourceColumn', this.csvRelationDetails.sourceColumn.value);
                 this.$store.commit('app/importTargetColumn', this.csvRelationDetails.targetColumn.value);
                 this.$store.commit('app/importRelationColumn', this.csvRelationDetails.relationColumn.value);

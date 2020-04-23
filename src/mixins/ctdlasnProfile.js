@@ -136,8 +136,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual resources contextually."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Concept Term"}],
-                    "iframePath": me.$store.state.editor.iframeConceptPath,
-                    "iframeText": "Select concepts to attach...",
                     "heading": "Tagging"
                 },
                 "https://purl.org/ctdlasn/terms/derivedFrom": {
@@ -196,8 +194,6 @@ export default {
                                 Alternatively, a more specific statement of the location of the audience in terms of its progression through an education or training context.`}
                         ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Education Level Type"}],
-                    "iframePath": me.$store.state.editor.iframeConceptPath,
-                    "iframeText": "Select concepts to attach...",
                     "heading": "Context"
                 },
                 "http://schema.org/validFrom": {
@@ -409,8 +405,6 @@ export default {
                                 through an education or training context.`}
                         ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Education Level"}],
-                    "iframePath": me.$store.state.editor.iframeConceptPath,
-                    "iframeText": "Select concepts to attach...",
                     "heading": "General"
                 },
                 "https://purl.org/ctdlasn/terms/listId": {
@@ -484,8 +478,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual resources contextually."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Concept Term"}],
-                    "iframePath": me.$store.state.editor.iframeConceptPath,
-                    "iframeText": "Select concepts to attach...",
                     "heading": "Tagging"
                 },
                 "https://purl.org/ctdlasn/terms/complexityLevel": {
@@ -497,8 +489,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "The expected performance level of a learner or professional as defined by a competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Complexity Level"}],
-                    "iframePath": me.$store.state.editor.iframeConceptPath,
-                    "iframeText": "Select concepts to attach...",
                     "heading": "Scales"
                 },
                 "https://purl.org/ctdlasn/terms/weight": {
@@ -538,8 +528,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Covers all of the relevant concepts in the referenced competency as well as relevant concepts not found in the referenced competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Broad Alignment"}],
-                    "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
-                    "iframeText": "Select competencies to align...",
                     "valuesIndexed": function() { return me.relations["narrows"]; },
                     "noTextEditing": "true",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "narrows", values); },
@@ -551,8 +539,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Covers all of the relevant concepts in this competency as well as relevant concepts not found in this competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Narrow Alignment"}],
-                    "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
-                    "iframeText": "Select competencies to align...",
                     "valuesIndexed": function() { return me.relations["broadens"]; },
                     "noTextEditing": "true",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "broadens", values); },
@@ -564,8 +550,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Relevant concepts in this competency and the referenced competency are coextensive."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Exact Alignment"}],
-                    "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
-                    "iframeText": "Select competencies to align...",
                     "valuesIndexed": function() { return me.relations["isEquivalentTo"]; },
                     "noTextEditing": "true",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEquivalentTo", values); },
@@ -577,8 +561,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Major overlap of relevant concepts between this competency and the referenced competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Major Alignment"}],
-                    "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
-                    "iframeText": "Select competencies to align...",
                     "valuesIndexed": function() { return me.relations["majorRelated"]; },
                     "noTextEditing": "true",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "majorRelated", values); },
@@ -590,8 +572,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Minor overlap of relevant concepts between this competency and the referenced competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Minor Alignment"}],
-                    "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
-                    "iframeText": "Select competencies to align...",
                     "valuesIndexed": function() { return me.relations["minorRelated"]; },
                     "noTextEditing": "true",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "minorRelated", values); },
@@ -603,8 +583,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "This competency is a prerequisite to the referenced competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Prerequisite Alignment"}],
-                    "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
-                    "iframeText": "Select competencies to align...",
                     "valuesIndexed": function() { return me.relations["requires"]; },
                     "noTextEditing": "true",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "requires", values); },
@@ -620,8 +598,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Enduring attributes of the individual that influence performance are embodied either directly or indirectly in this competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Ability Embodied"}],
-                    "iframePath": me.$store.state.editor.iframeCompetencyPathIntraframework,
-                    "iframeText": "Select competencies to align...",
                     "heading": "Connections"
                 },
                 "https://purl.org/ctdlasn/terms/knowledgeEmbodied": {
@@ -633,8 +609,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Body of information embodied either directly or indirectly in this competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Knowledge Embodied"}],
-                    "iframePath": me.$store.state.editor.iframeCompetencyPathIntraframework,
-                    "iframeText": "Select competencies to align...",
                     "heading": "Connections"
                 },
                 "https://purl.org/ctdlasn/terms/skillEmbodied": {
@@ -646,8 +620,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Cognitive, affective, and psychomotor skills directly or indirectly embodied in this competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Skill Embodied"}],
-                    "iframePath": me.$store.state.editor.iframeCompetencyPathIntraframework,
-                    "iframeText": "Select competencies to align...",
                     "heading": "Connections"
                 },
                 "https://purl.org/ctdlasn/terms/taskEmbodied": {
@@ -659,8 +631,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Specifically defined piece of work embodied either directly or indirectly in this competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Task Embodied"}],
-                    "iframePath": me.$store.state.editor.iframeCompetencyPathIntraframework,
-                    "iframeText": "Select competencies to align...",
                     "heading": "Connections"
                 },
                 "headings": ["Keys", "General", "Context", "Tagging", "Scales", "Connections"]
