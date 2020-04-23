@@ -527,18 +527,18 @@ export default {
                     array: this.importColumnTarget
                 }
             },
-            medbiqDetails: [
-                {
+            medbiqDetails: {
+                name: {
                     label: 'Name the framework',
                     value: '',
                     type: 'string'
                 },
-                {
+                description: {
                     label: 'Describe the framework (optional)',
                     value: '',
                     type: 'string'
                 }
-            ],
+            },
             serverDetails: [
                 {
                     label: 'Paste URL endpoint of server',
@@ -564,6 +564,10 @@ export default {
                 this.$store.commit('app/importRelationColumn', this.csvRelationDetails.relationColumn.value);
                 // frameworkDescription
                 this.$store.commit('app/importTransition', 'uploadCsv');
+            } else if (this.importFileType === 'medbiq') {
+                this.$store.commit('app/importFrameworkName', this.csvImportDetails.name.value);
+                this.$store.commit('app/importFrameworkDescription', this.csvImportDetails.description.value);
+                this.$store.commit('app/importTransition', 'uploadMedbiq');
             }
         },
         importFromFile: function() {

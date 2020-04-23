@@ -452,7 +452,7 @@ export default {
         importTransition: function(val) {
             if (val === 'process') {
                 return this.uploadFiles(this.importFile);
-            } else if (val === 'uploadCsv') {
+            } else if (val === 'uploadCsv' || val === 'uploadMedbiq') {
                 this.importFromFile();
             } else if (val === 'connectToServer') {
                 this.connectToServer();
