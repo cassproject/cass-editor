@@ -46,6 +46,7 @@ const state = {
             relationColumn: {},
             targetColumn: {}
         },
+        caseDocs: [],
         parseText: ''
 
     }
@@ -87,6 +88,34 @@ const mutations = {
     },
     clearImportFiles: function(state) {
         state.import.files = [];
+    },
+    resetImport: function(sate) {
+        state.import = {
+            files: [],
+            transition: 'upload', // upload, process, detail, preview, light
+            status: '', // success, failure, edit
+            type: 'file', // pdf, server, text
+            fileType: '',
+            firstImport: Boolean,
+            errors: [], // erorrs from the code or from the api
+            feedback: '', // additional information
+            framework: null,
+            serverUrl: '',
+            frameworkName: '',
+            frameworkDescription: '',
+            nameColumm: {},
+            importCsv: {
+                nameColumn: {},
+                descriptionCcolumn: {},
+                scopeColumn: {},
+                idColumn: {},
+                sourceColumn: {},
+                relationColumn: {},
+                targetColumn: {}
+            },
+            caseDocs: [],
+            parseText: ''
+        };
     },
     importTransition: function(state, value) {
         state.import.transition = value;
@@ -156,6 +185,12 @@ const mutations = {
     },
     importIdColumn: function(state, val) {
         state.import.importCsv.idColumn = val;
+    },
+    importCaseDocs: function(state, val) {
+        state.import.caseDocs = val;
+    },
+    addCaseDoc: function(state, val) {
+        state.import.caseDocs.push(val);
     }
 };
 const actions = {
@@ -257,6 +292,9 @@ const getters = {
     },
     importTargetColumn: state => {
         return state.import.importCsv.targetColumn;
+    },
+    importCaseDocs: state => {
+        return state.import.caseDocs;
     }
 
 };

@@ -186,7 +186,8 @@
             :importCsvColumnRelationType="importCsvColumnRelationType"
             :importCsvColumnTarget="importCsvColumnTarget"
             :csvColumns="csvColumns"
-            @analyzeCsvRelation="analyzeCsvRelation($event)" />
+            @analyzeCsvRelation="analyzeCsvRelation($event)"
+            @importCase="handleImportFromTabs($event)" />
         <!-- import details -->
         <!--
             we shouldn't need to check for isT3Type here, since this information
@@ -451,8 +452,10 @@ export default {
         importTransition: function(val) {
             if (val === 'process') {
                 return this.uploadFiles(this.importFile);
-            } else if(val === 'uploadCsv') {
+            } else if (val === 'uploadCsv') {
                 this.importFromFile();
+            } else if (val === 'connectToServer') {
+                this.connectToServer();
             }
         },
         text: function(newText, oldText) {
@@ -491,6 +494,10 @@ export default {
         this.spitEvent('viewChanged');
     },
     methods: {
+        handleImportFromTabs: function(e) {
+            this.caseDocs = e;
+            this.importCase();
+        },
         onEditNode: function() {
             this.editingNode = true;
         },
@@ -1253,16 +1260,18 @@ export default {
             }
         },
         connectToServer: function() {
+            console.log("connecting to server");
             this.caseDocs.splice(0, this.caseDocs.length);
             // To do: add import from CaSS Server
             this.caseDetectEndpoint();
         },
         caseDetectEndpoint: function() {
             var me = this;
-            if (!this.serverUrl.endsWith("/")) {
-                this.serverUrl += "/";
+            let serverUrl = this.importServerUrl;
+            if (!serverUrl.endsWith("/")) {
+                serverUrl += "/";
             }
-            this.get(this.serverUrl, "ims/case/v1p0/CFDocuments", {"Accept": "application/json"}, function(success) {
+            this.get(serverUrl, "ims/case/v1p0/CFDocuments", {"Accept": "application/json"}, function(success) {
                 me.caseGetDocsSuccess(success);
             }, function(failure) {
                 me.caseGetServerSide();
@@ -1277,6 +1286,7 @@ export default {
             } else {
                 let message = result.CFDocuments.length + " frameworks detected.";
                 this.$store.commit('app/importStatus', message);
+                this.$store.commit('app/importTransition', 'serverFrameworksDetected');
                 for (var i = 0; i < result.CFDocuments.length; i++) {
                     var doc = result.CFDocuments[i];
                     var obj = {};

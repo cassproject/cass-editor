@@ -13,7 +13,7 @@
         <div
             v-if="!importFramework || (importFramework && importType === 'text')"
             class="section is-large">
-            <div class="tile is-vertical has-background-lightest">
+            <div class="tile is-vertical has-background-light">
                 <div class="section is-medium">
                     <!-- columns for tabs -->
                     <div class="columns is-mobile">
@@ -31,6 +31,7 @@
                                 </a>
                             </div>
                         </div>
+                        <!-- if q concepts -->
                         <div
                             class="column"
                             v-if="q.concepts !== 'true'">
@@ -47,6 +48,7 @@
                                 </a>
                             </div>
                         </div>
+                        <!-- if no q concepts -->
                         <div
                             class="column"
                             v-if="q.concepts !== 'true'">
@@ -82,13 +84,13 @@
                     </div>
                     <!-- file input -->
                     <div
-                        class="has-dashed-border columns"
+                        class="has-dashed-border columns has-text-centered"
                         id="drop-area"
                         v-if="importType=='file' && importFileType !== 'csv'">
                         <drag-and-drop
                             class="column is-12"
                             v-if="importTransition === 'upload'"
-                            @clearFiles="onClearFiles" />
+                            @clearFiles="clearFiles" />
                         <div
                             v-else-if="importTransition === 'process' && importErrors.length === 0"
                             class="column is-12">
@@ -162,29 +164,41 @@
                                 <div
                                     v-else-if="item.type === 'column'"
                                     class="control">
-                                    <select
-                                        class="select"
-                                        v-model="item.value">
-                                        <option
-                                            value
-                                            selected>
-                                            N/A
-                                        </option>
-                                        <option
-                                            v-for="(column, i) in csvColumns"
-                                            :key="i"
-                                            :value="column">
-                                            {{ column.name }}
-                                        </option>
-                                    </select>
+                                    <div class="select is-smal">
+                                        <select
+                                            v-model="item.value">
+                                            <option
+                                                value
+                                                selected>
+                                                N/A
+                                            </option>
+                                            <option
+                                                v-for="(column, i) in csvColumns"
+                                                :key="i"
+                                                :value="column">
+                                                {{ column.name }}
+                                            </option>
+                                        </select>
+                                    </div>
                                 </div>
                                 <div
                                     v-else-if="item.type === 'file'"
-                                    class="control">
-                                    <input
-                                        class="input"
-                                        type="file"
-                                        @change="$emit('analyzeCsvRelation', $event)">
+                                    class="file is-primary">
+                                    <label class="file-label">
+                                        <input
+                                            class="file-input"
+                                            type="file"
+                                            name="relation-file"
+                                            @change="$emit('analyzeCsvRelation', $event)">
+                                        <span class="file-cta">
+                                            <span class="file-icon">
+                                                <i class="fas fa-upload" />
+                                            </span>
+                                            <span class="file-label">
+                                                Choose a file…
+                                            </span>
+                                        </span>
+                                    </label>
                                 </div>
                             </div>
                             <!-- IF RELATIONAL FILE, GATHER DETAILS -->
@@ -194,22 +208,24 @@
                                     :key="item"
                                     class="field">
                                     <div class="field">
-                                        <label class="label">
+                                        <label class="label is-size-5">
                                             {{ item.label }}
                                         </label>
-                                        <select v-model="item.value">
-                                            <option
-                                                value
-                                                selected>
-                                                n/a
-                                            </option>
-                                            <option
-                                                v-for="(column, i) in csvRelationColumns"
-                                                :key="i"
-                                                :value="column">
-                                                {{ column.name }}
-                                            </option>
-                                        </select>
+                                        <div class="select is-small">
+                                            <select v-model="item.value">
+                                                <option
+                                                    value
+                                                    selected>
+                                                    n/a
+                                                </option>
+                                                <option
+                                                    v-for="(column, i) in csvRelationColumns"
+                                                    :key="i"
+                                                    :value="column">
+                                                    {{ column.name }}
+                                                </option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                             </template>
@@ -235,7 +251,7 @@
                         <div class="control">
                             <div
                                 class="button is-pulled-right is-outlined is-primary"
-                                v-if="importFile && importFileType!=='pdf'"
+                                v-if="importFile && importType === 'file' && importFileType!=='pdf'"
                                 @click="prepareToImportNonPdf">
                                 <span class="icon">
                                     <i class="fas fa-upload" />
@@ -248,8 +264,11 @@
                     </div>
                     <!-- server input -->
                     <div
-                        class="section has-dashed-border"
+                        class="section"
                         v-if="importType=='server'">
+                        <h3 class="title is-size-3 has-text-weight-medium">
+                            Import from remote server
+                        </h3>
                         <div
                             v-for="item in serverDetails"
                             :key="item"
@@ -257,35 +276,46 @@
                             <label class="label is-size-5">
                                 {{ item.label }}
                             </label>
-                            <div class="control">
-                                <input
-                                    class="input"
-                                    v-model="item.value"
-                                    @change="$store.commit('app/importServerUrl', serverUrl)"
-                                    type="url">
+                            <div class="field is-grouped">
+                                <div class="control is-expanded">
+                                    <input
+                                        class="input"
+                                        v-model="item.value"
+                                        @change="$store.commit('app/importServerUrl', item.value)"
+                                        type="url">
+                                </div>
+                                <div class="control">
+                                    <div
+                                        class="button is-pulled-right is-outlined is-primary"
+                                        @click="$store.commit('app/importTransition', 'connectToServer')">
+                                        <span class="icon">
+                                            <i class="fas fa-network-wired" />
+                                        </span>
+                                        <span>
+                                            connect
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="field">
+
+                        <!-- HANDLE CASE DOCS -->
+                        <div
+                            class="section"
+                            v-if="caseDocs.length">
+                            <h3 class="subtitle has-text-weight-medium is-size-4">
+                                Found Frameworks
+                            </h3>
                             <div
-                                class="button is-pulled-right is-outlined is-primary"
-                                @click="$store.commit('app/importStatus', 'connectToServer')">
-                                <span class="icon">
-                                    <i class="fas fa-network-wired" />
-                                </span>
-                                <span>
-                                    connect
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- HANDLE CASE DOCS -->
-                    <div v-if="caseDocs.length">
-                        <ul>
-                            <li
+                                class="field"
                                 v-for="doc in caseDocs"
                                 :key="doc.id">
                                 <input
+                                    class="is-checkradio"
                                     type="checkbox"
+                                    :checked="doc.checked"
+                                    :id="'check' + doc.id"
+                                    :name="'check' + doc.id"
                                     v-model="doc.checked"
                                     v-if="!doc.loading && !doc.success && !doc.error">
                                 <i
@@ -297,20 +327,31 @@
                                 <i
                                     class="fa fa-exclamation-triangle"
                                     v-else-if="doc.error" />
-                                {{ doc.name }}
-                            </li>
-                        </ul>
-                        <button @click="importCase">
-                            Import
-                        </button>
-                        <button @click="cancelCase">
-                            Cancel
-                        </button>
+                                <label
+                                    class="label"
+                                    :for="'check' + doc.id">{{ doc.name }}</label>
+                            </div>
+                            <div class="buttons is-right">
+                                <div
+                                    class="button is-outlined is-dark"
+                                    @click="resetImport">
+                                    Cancel
+                                </div>
+                                <div
+                                    class="button is-outlined is-primary"
+                                    @click="$emit('importCase', caseDocs)">
+                                    Import
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <!-- text input -->
                     <div
-                        class="section has-dashed-border"
+                        class="section"
                         v-if="importType=='text'">
+                        <h3 class="title is-size-3 has-text-weight-medium">
+                            Import framework as text
+                        </h3>
                         <div class="field">
                             <label class="label is-size-5">
                                 Framework name
@@ -344,23 +385,37 @@
                     </div>
                     <!-- url input -->
                     <div
-                        class="section has-dashed-border"
+                        class="section"
                         v-if="importType=='url'">
+                        <h3 class="title is-size-3 has-text-weight-medium">
+                            Import framework from url source
+                        </h3>
                         <div class="field">
                             <label class="label is-size-5">
                                 Paste URL of document
                             </label>
-                            <div class="control">
-                                <input
-                                    class="input"
-                                    v-model="importServerUrl"
-                                    type="url">
-                            </div>
-                            <button @click="$store.commit('app/importStatus', 'importFromUrl')">
-                                Import
-                            </button>
-                            <div>
-                                {{ importStatus }}
+                            <div class="field is-grouped">
+                                <div class="control is-expanded">
+                                    <input
+                                        class="input"
+                                        v-model="importServerUrl"
+                                        type="url">
+                                </div>
+                                <div class="control">
+                                    <div
+                                        class="button is-outlined is-primary"
+                                        @click="$store.commit('app/importStatus', 'importFromUrl')">
+                                        <span class="file-icon">
+                                            <i class="fas fa-upload" />
+                                        </span>
+                                        <span>
+                                            Import
+                                        </span>
+                                    </div>
+                                    <div>
+                                        {{ importStatus }}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -378,7 +433,10 @@ export default {
     components: {dragAndDrop},
     props: {
         q: Object,
-        caseDocs: Array,
+        caseDocs: {
+            default: function() { return []; },
+            type: Array
+        },
         csvColumns: {
             default: function() { return []; },
             type: Array
@@ -438,7 +496,7 @@ export default {
                     type: 'column'
                 },
                 relationFile: {
-                    label: `Step 7: Select a relation file (optional).
+                    label: `Select a relation file (optional).
                                 The relation source/target must be in the
                                 form of ID or Name, and the relation types
                                 should be "requires", "desires", "narrows",
@@ -512,18 +570,14 @@ export default {
             this.$store.commit('app/importFramework', null);
             this.$store.commit('app/importTransition', 'upload');
         },
-        onClearFiles: function() {
-            this.$store.commit('app/clearImportfiles');
+        clearFiles: function() {
+            this.$store.commit('app/clearImportFiles');
+        },
+        resetImport: function() {
+            this.$store.commit('app/resetImport');
         }
     },
     computed: {
-        importDetails: function() {
-            if (importFileType === 'medbiq') {
-                return this.medbiqDetails;
-            } else if (importType === 'server') {
-                return this.serverDetails;
-            }
-        },
         importText: function() {
             return this.$store.getters['app/importText'];
         },

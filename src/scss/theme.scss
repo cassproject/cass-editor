@@ -134,7 +134,7 @@ $breadcrumb-item-active-color: $cass-primary-down;
     border-radius: 1rem;
     min-height: 200px;
     height: 100%;
-    div {
+    div:first {
         display: block;
         width: 100%;
         height: 100%;

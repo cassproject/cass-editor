@@ -14,7 +14,7 @@
             ref="file"
             style="display: none;">
         <div class="section">
-            <div class="columns">
+            <div class="columns is-centered is-multiline">
                 <div class="column is-12">
                     <p class="is-size-5">
                         Files to Upload
