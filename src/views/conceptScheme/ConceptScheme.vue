@@ -1,93 +1,92 @@
 <template>
-    <div class="page-framework">
+    <div id="page-framework">
         <DynamicModal />
         <RightAside v-if="showRightAside" />
-        <FrameworkEditorToolbar
-            @openCommentsEvent="onOpenComments()"
-            @openShareModalEvent="onOpenShareModal()"
-            @changeProperties="changeProperties"
-            @openExportModalEvent="onOpenExportModal()" />
         <!-- begin framework -->
-        <Thing
-            :obj="framework"
-            :repo="repo"
-            :parentNotEditable="queryParams.view==='true'"
-            @deleteObject="deleteObject"
-            @select="select"
-            :profile="conceptSchemeProfile"
-            @editingThing="handleEditingFramework($event)">
-            <template v-slot:copyURL="slotProps">
-                <span v-if="slotProps.expandedProperty=='@id'">
-                    <button
-                        title="Copy URL to the clipboard."
-                        v-clipboard="slotProps.expandedValue[0]['@value']">
-                        <i class="fa fa-copy" />
-                    </button>
-                </span>
-            </template>
-        </Thing>
-        <span
-            class="info-tag"
-            v-if="timestamp"
-            :title="new Date(timestamp)">Last modified {{ lastModified }}</span>
-        <span
-            class="info-tag"
-            v-if="framework['schema:dateCreated']"
-            :title="new Date(framework['schema:dateCreated'])">Created {{ $moment(framework['schema:dateCreated']).fromNow() }}</span>
-        <span
-            class="info-tag"
-            v-if="framework['Approved']"
-            :title="framework['Approved']">Approved</span>
-        <span
-            class="info-tag"
-            v-if="framework['Published']"
-            :title="framework['Published']">Published</span>
-        <button
-            v-if="selectAllButton"
-            @click="selectAll=!selectAll">
-            Select All
-        </button>
-        <button
-            v-if="selectButtonText"
-            @click="selectButton">
-            {{ selectButtonText }}
-        </button>
-        <span v-if="loggedIn">
-            Make private
-            <input
-                type="checkbox"
-                v-model="privateFramework">
-        </span>
-        <hr>
-        <ConceptHierarchy
-            :container="framework"
-            containerType="ConceptScheme"
-            :editable="queryParams.view !== 'true'"
-            :repo="repo"
-            :queryParams="queryParams"
-            :exportOptions="conceptExportOptions"
-            :highlightList="highlightCompetency"
-            :selectMode="selectButtonText != null"
-            :selectAll="selectAll"
-            :profile="conceptProfile"
-            @deleteObject="deleteObject"
-            @exportObject="exportObject"
-            @select="select">
-            <template v-slot:copyURL="slotProps">
-                <span v-if="slotProps.expandedProperty=='@id'">
-                    <div
-                        class="button"
-                        title="Copy URL to the clipboard."
-                        v-clipboard="slotProps.expandedValue[0]['@value']">
-                        <i class="fa fa-copy" />
-                    </div>
-                </span>
-            </template>
-        </ConceptHierarchy>
+        <div class="container fluid is-marginless is-paddingless">
+            <FrameworkEditorToolbar
+                @changeProperties="changeProperties"
+                @openExportModalEvent="onOpenExportModal()" />
+            <div class="section">
+                <Component
+                    :is="dynamicThingComponent"
+                    :obj="framework"
+                    :repo="repo"
+                    :parentNotEditable="queryParams.view==='true'"
+                    @deleteObject="deleteObject"
+                    :profile="conceptSchemeProfile"
+                    @editNodeEvent="onEditNode()"
+                    @doneEditingNodeEvent="onDoneEditingNode()"
+                    :properties="properties">
+                    <template v-slot:copyURL="slotProps">
+                        <span v-if="slotProps.expandedProperty=='@id'">
+                            <button
+                                title="Copy URL to the clipboard."
+                                v-clipboard="slotProps.expandedValue[0]['@value']">
+                                <i class="fa fa-copy" />
+                            </button>
+                        </span>
+                    </template>
+                </Component>
+                <div class="lode__framework__info-bar">
+                    <span
+                        class="tag is-medium-grey has-text-dark"
+                        v-if="timestamp"
+                        :title="new Date(timestamp)">Last modified {{ lastModified }}</span>
+                    <span
+                        class="tag is-medium-grey has-text-dark"
+                        v-if="framework['schema:dateCreated']"
+                        :title="new Date(framework['schema:dateCreated'])">Created {{ $moment(framework['schema:dateCreated']).fromNow() }}</span>
+                    <span
+                        class="tag is-medium-grey has-text-dark"
+                        v-if="framework['Approved']"
+                        :title="framework['Approved']">Approved</span>
+                    <span
+                        class="tag is-medium-grey has-text-dark"
+                        v-if="framework['Published']"
+                        :title="framework['Published']">Published</span>
+                    <span v-if="loggedIn">
+                        Make private
+                        <input
+                            type="checkbox"
+                            v-model="privateFramework">
+                    </span>
+                </div>
+                <ConceptHierarchy
+                    :container="framework"
+                    containerType="ConceptScheme"
+                    containerTypeGet="EcConceptScheme"
+                    :viewOnly="queryParams.view === 'true'"
+                    :repo="repo"
+                    :queryParams="queryParams"
+                    :exportOptions="conceptExportOptions"
+                    :highlightList="highlightCompetency"
+                    :profile="conceptProfile"
+                    @deleteObject="deleteObject"
+                    @exportObject="exportObject"
+                    @editMultipleEvent="onEditMultiple"
+                    @searchThings="handleSearch($event)"
+                    @selectButtonClick="onSelectButtonClick"
+                    :properties="properties"
+                    @selectedArray="selectedArrayEvent">
+                    <template v-slot:copyURL="slotProps">
+                        <span v-if="slotProps.expandedProperty=='@id'">
+                            <div
+                                class="button"
+                                title="Copy URL to the clipboard."
+                                v-clipboard="slotProps.expandedValue[0]['@value']">
+                                <i class="fa fa-copy" />
+                            </div>
+                        </span>
+                    </template>
+                </ConceptHierarchy>
+            </div>
+        </div>
     </div>
 </template>
 <script>
 import Thing from '@/lode/components/lode/Thing.vue';
+import ThingEditing from '@/lode/components/lode/ThingEditing.vue';
 import ConceptHierarchy from './ConceptHierarchy.vue';
 import saveAs from 'file-saver';
 import common from '@/mixins/common.js';
@@ -104,6 +103,10 @@ export default {
     mixins: [common, ctdlasnProfile],
     data: function() {
         return {
+            showVersionHistory: false,
+            showEditMultiple: false,
+            showClipboardSuccessModal: false,
+            showComments: false,
             repo: window.repo,
             schemeExportLink: null,
             schemeExportGuid: null,
@@ -124,19 +127,26 @@ export default {
                 {name: "Credential Engine ASN (JSON-LD)", value: "ctdlasnJsonld"}
             ],
             highlightCompetency: null,
-            selectButtonText: null,
-            selectAllButton: false,
-            selectAll: false,
-            selectedArray: [],
-            isEditingFramework: false,
+            editingFramework: false,
+            properties: "primary",
+            config: null,
             privateFramework: false,
-            showComments: false,
-            showShareModal: false
+            selectedArray: []
         };
     },
     computed: {
+        showRightAside: function() {
+            return this.$store.getters['app/showRightAside'];
+        },
+        dynamicThingComponent: function() {
+            if (this.editingFramework) {
+                return 'ThingEditing';
+            } else {
+                return 'Thing';
+            }
+        },
         framework: function() {
-            return this.$store.state.editor.framework;
+            return this.$store.getters['editor/framework'];
         },
         timestamp: function() {
             if (this.framework.getTimestamp()) {
@@ -156,7 +166,11 @@ export default {
             }
         },
         shortId: function() {
-            return this.$store.state.editor.framework.shortId();
+            if (this.framework) {
+                return this.framework.shortId();
+            } else {
+                return null;
+            }
         },
         loggedIn: function() {
             if (EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
@@ -638,18 +652,23 @@ export default {
     },
     components: {
         Thing,
+        ThingEditing,
         ConceptHierarchy,
         FrameworkEditorToolbar,
         RightAside,
         DynamicModal
     },
     created: function() {
-        this.refreshPage();
-        this.spitEvent('viewChanged');
+        if (this.framework !== null) {
+            this.refreshPage();
+            this.spitEvent('viewChanged');
+        }
     },
     mounted: function() {
-        if (EcRepository.getBlocking(this.framework.id).type === "EncryptedValue") {
-            this.privateFramework = true;
+        if (!this.framework) {
+            this.$router.push({name: "frameworks"});
+        } else {
+            this.checkIsPrivate();
         }
     },
     watch: {
@@ -691,8 +710,50 @@ export default {
         }
     },
     methods: {
+        handleSearch: function(e) {
+            this.$store.commit('app/showModal', e);
+        },
+        checkIsPrivate: function() {
+            if (EcRepository.getBlocking(this.framework.id)) {
+                if (EcRepository.getBlocking(this.framework.id).type === "EncryptedValue") {
+                    this.privateFramework = true;
+                } else {
+                    this.privateFramework = false;
+                }
+            }
+        },
+        onCancelEditMultiple: function() {
+            this.showEditMultiple = false;
+        },
+        onEditMultiple: function() {
+            this.showEditMultiple = true;
+            var payload = {
+                profile: this.conceptProfile,
+                selectedCompetencies: this.selectedArray,
+                component: 'MultiEdit'
+            };
+            this.$store.commit('app/showModal', payload);
+        },
+        onEditNode: function() {
+            this.editingFramework = true;
+        },
+        onDoneEditingNode: function() {
+            this.editingFramework = false;
+        },
+        onOpenComments: function() {
+            this.showComments = true;
+        },
+        onCloseComments: function() {
+            this.showComments = false;
+        },
+        selectedArrayEvent: function(ary) {
+            this.selectedArray = ary;
+        },
         refreshPage: function() {
-            this.framework = this.$store.state.editor.framework;
+            if (!this.framework) {
+                console.log("no framework to refresh");
+                return;
+            }
             if (EcRepository.shouldTryUrl(this.framework.id) === false) {
                 this.schemeExportGuid = EcCrypto.md5(this.framework.id);
             } else {
@@ -706,15 +767,6 @@ export default {
                 } else {
                     this.highlightCompetency = this.queryParams.highlightCompetency;
                 }
-            }
-            if (this.queryParams.singleSelect) {
-                this.selectButtonText = this.queryParams.singleSelect;
-            }
-            if (this.queryParams.select) {
-                if (this.queryParams.select !== "" && this.queryParams.select !== "select") {
-                    this.selectButtonText = this.queryParams.select;
-                }
-                this.selectAllButton = true;
             }
         },
         download: function(fileName, data) {
@@ -873,20 +925,6 @@ export default {
                 this.exportCtdlasnJsonld(this.schemeExportLink);
             }
         },
-        select: function(id, checked) {
-            if (checked) {
-                EcArray.setAdd(this.selectedArray, id);
-            } else {
-                EcArray.setRemove(this.selectedArray, id);
-            }
-        },
-        handleEditingFramework: function(e) {
-            if (e) {
-                this.isEditingFramework = true;
-            } else {
-                this.isEditingFramework = false;
-            }
-        },
         encryptConcepts: function(c) {
             var toSave = [];
             var me = this;
@@ -951,18 +989,6 @@ export default {
             };
             // reveal modal
             this.$modal.show(params);
-        },
-        onOpenComments: function() {
-            this.showComments = true;
-        },
-        onCloseComments: function() {
-            this.showComments = false;
-        },
-        onCloseShareModal: function() {
-            this.showShareModal = false;
-        },
-        onOpenShareModal: function() {
-            this.showShareModal = true;
         }
     }
 };
