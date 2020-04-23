@@ -17,6 +17,7 @@
                 <div class="section is-medium">
                     <!-- columns for tabs -->
                     <div class="columns is-mobile">
+                        <!-- file -->
                         <div class="column">
                             <div
                                 class="import-tab"
@@ -31,7 +32,7 @@
                                 </a>
                             </div>
                         </div>
-                        <!-- if q concepts -->
+                        <!-- server tab -->
                         <div
                             class="column"
                             v-if="q.concepts !== 'true'">
@@ -48,7 +49,7 @@
                                 </a>
                             </div>
                         </div>
-                        <!-- if no q concepts -->
+                        <!-- text tab -->
                         <div
                             class="column"
                             v-if="q.concepts !== 'true'">
@@ -65,6 +66,7 @@
                                 </a>
                             </div>
                         </div>
+                        <!-- url tab -->
                         <div
                             class="column"
                             v-if="q.concepts !== 'true'">
