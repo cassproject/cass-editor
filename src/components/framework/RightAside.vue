@@ -9,19 +9,17 @@
     <aside
         id="right-side-bar"
         class="menu has-background-light">
-        <p class="is-pulled-left">
-            <span
-                @click="$store.commit('app/closeRightAside')"
-                class="icon">
-                <i class="fa fa-caret-right" />
-            </span>
-        </p>
+        <button
+            class="delete is-dark has-text-dark is-pulled-right"
+            @click="$store.commit('app/closeRightAside')"
+            aria-label="close" />
         <Component :is="rightAsideContent" />
     </aside>
 </template>
 <script>
 import Comments from './Comments.vue';
 import Versions from './Versions.vue';
+import FilterAndSort from './../frameworks/FilterAndSort.vue';
 
 export default {
     name: 'RightAside',
@@ -35,17 +33,15 @@ export default {
     },
     components: {
         Comments,
-        Versions
+        Versions,
+        FilterAndSort
     },
     computed: {
-        dynamicSideBarContent: function() {
-            return this.$store.getters['app/framework'];
-        },
-        showRightSideContent: function() {
-            return this.dynamicSideBarContent.showRightAside;
+        showRightAside: function() {
+            return this.$store.getters['app/showRightAside'];
         },
         rightAsideContent: function() {
-            return this.dynamicSideBarContent.rightAsideContent;
+            return this.$store.getters['app/rightAsideContent'];
         }
     }
 };
@@ -53,13 +49,14 @@ export default {
 
 <style lang="scss">
 #right-side-bar {
-    position: absolute;
+    position: fixed;
     z-index: 10;
     height: calc(100vh - 48px);
     overflow: scroll;
     right: 0;
-    padding: .5rem;
-    width: 300px;
+    padding: 1.5rem 1rem;
+    width: 320px;
+    transform: translateX(0);
     .comment-list {
          .comment-list__user {
         font-weight: 700;
