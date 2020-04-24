@@ -529,12 +529,12 @@ export default {
             medbiqDetails: {
                 name: {
                     label: 'Name the framework',
-                    value: '',
+                    value: this.importFrameworkName,
                     type: 'string'
                 },
                 description: {
                     label: 'Describe the framework (optional)',
-                    value: '',
+                    value: this.importFrameworkDescription,
                     type: 'string'
                 }
             },
@@ -568,10 +568,18 @@ export default {
             this.csvRelationDetails.targetColumn.value = this.importTargetColumn;
         },
         importFrameworkName: function() {
-            this.csvImportDetails.name.value = this.importFrameworkName;
+            if (this.importFileType === "medbiq") {
+                this.medbiqDetails.name.value = this.importFrameworkName;
+            } else if (this.importFileType === "csv") {
+                this.csvImportDetails.name.value = this.importFrameworkName;
+            }
         },
         importFrameworkDescription: function() {
-            this.csvImportDetails.description.value = this.importFrameworkDescription;
+            if (this.importFileType === "medbiq") {
+                this.medbiqDetails.description.value = this.importFrameworkDescription;
+            } else if (this.importFileType === "csv") {
+                this.csvImportDetails.description.value = this.importFrameworkDescription;
+            }
         }
     },
     methods: {

@@ -770,9 +770,8 @@ export default {
                         let error = "Context is not CTDL-ASN";
                         me.$store.commit('app/importError', error);
                     }
-                }, function(error) {
+                }, function() {
                     // If JSON-LD doesn't work, try JSON
-                    me.$store.commit('app/importStatus', error);
                     ASNImport.analyzeFile(file, function(data) {
                         me.$store.commit('app/importFileType', 'asn');
                         me.status = "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.";
