@@ -1209,7 +1209,7 @@ export default {
             if (data != null && data !== undefined) {
                 formData.append('data', JSON.stringify(data));
             } else {
-                var file = this.file[0];
+                var file = this.importFile[0];
                 formData.append('file', file);
             }
             var identity = EcIdentityManager.ids[0];
