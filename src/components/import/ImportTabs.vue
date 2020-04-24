@@ -468,12 +468,12 @@ export default {
             csvImportDetails: {
                 name: {
                     label: 'Name the framework',
-                    value: '',
+                    value: this.importFrameworkName,
                     type: 'string'
                 },
                 description: {
                     label: 'Describe the framework (optional)',
-                    value: '',
+                    value: this.importFrameworkDescription,
                     type: 'string'
                 },
                 nameColumn: {
@@ -559,13 +559,13 @@ export default {
             this.csvImportDetails.idColumn.value = this.importIdColumn;
         },
         importSourceColumn: function() {
-            this.csvImportDetails.sourceColumn.value = this.importSourceColumn;
+            this.csvRelationDetails.sourceColumn.value = this.importSourceColumn;
         },
         importRelationColumn: function() {
-            this.csvImportDetails.relationColumn.value = this.importRelationColumn;
+            this.csvRelationDetails.relationColumn.value = this.importRelationColumn;
         },
         importTargetColumn: function() {
-            this.csvImportDetails.targetColumn.value = this.importTargetColumn;
+            this.csvRelationDetails.targetColumn.value = this.importTargetColumn;
         },
         importFrameworkName: function() {
             this.csvImportDetails.name.value = this.importFrameworkName;

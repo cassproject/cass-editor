@@ -37,7 +37,6 @@ const state = {
         url: '',
         frameworkName: '',
         frameworkDescription: '',
-        nameColumm: {},
         importCsv: {
             nameColumn: {},
             descriptionColumn: {},
@@ -104,7 +103,6 @@ const mutations = {
             url: '',
             frameworkName: '',
             frameworkDescription: '',
-            nameColumm: {},
             importCsv: {
                 nameColumn: {},
                 descriptionCcolumn: {},
