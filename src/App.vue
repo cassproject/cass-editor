@@ -10,7 +10,7 @@
             name="topbar" />
         <router-view
             id="app-content"
-            :class="{ 'clear-side-bar': showSideNav}"
+            :class="[{ 'clear-side-bar': showSideNav}, {'clear-right-aside': showRightAside}]"
             :queryParams="queryParams" />
         <router-view
             :showSideNav="showSideNav"
@@ -1042,6 +1042,9 @@ export default {
         }
     },
     computed: {
+        showRightAside: function() {
+            return this.$store.getters['app/showRightAside'];
+        },
         showSideNav: function() {
             return this.$store.getters['app/showSideNav'];
         },
@@ -1105,6 +1108,9 @@ export default {
     }
     .clear-side-bar {
         margin-left: 300px;
+    }
+    .clear-right-aside {
+        margin-right: 340px;
     }
 
 

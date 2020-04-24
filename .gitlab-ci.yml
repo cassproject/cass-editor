@@ -1,5 +1,6 @@
 variables:
    DEV_USERNAME: deployment
+   T3_USERNAME: deploymentcass
 
 image: node:11
 
@@ -61,6 +62,32 @@ buildQA:
     - ./dist
 
 
+buildT3:
+  stage: build
+  only:
+    - t3
+  before_script:
+    - git submodule sync --recursive
+    - git submodule update --init --recursive
+  script:
+  - LAST_TAG=$(git describe --tags --always)
+  - sed -i "s/VERSION/$LAST_TAG/" public/index.html
+  - sed -i 's/cass-editor\///g' src/App.vue
+  - sed -i 's/cass-editor\///g' vue.config.js
+  - sed -i 's/cass-editor//g' vue.config.js
+
+  - sed -i 's/https:\/\/dev.api.cassproject.org\/api\//https:\/\/t3.api.cassproject.org\/api\//g' ./src/main.js
+  - sed -i 's/https:\/\/dev.api.cassproject.org\/api\//https:\/\/t3.api.cassproject.org\/api\//g' ./src/App.vue
+
+  - npm install
+  - npm run lint
+  - npm run buildDev
+  artifacts:
+    paths:
+    - ./dist
+
+
+
 ### DEPLOYMENTS
 
 
@@ -118,3 +145,31 @@ deployQA:
    ## Build commands
    - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "rm -rf /var/www/qa.editor.cassproject.org/*"
    - scp -P22 -r dist/* $DEV_USERNAME@$DEV_SERVER_IP:/var/www/qa.editor.cassproject.org/
+
+
+
+deployT3:
+  stage: deploy
+  only:
+    - t3
+  environment:
+    name: t3
+    url: https://t3.editor.cassproject.org
+  script:
+   - apt-get update -y
+   - apt-get install openssh-client -y
+   - 'which ssh-agent || apt-get install openssh-client -y'
+
+   - eval $(ssh-agent -s)
+
+   - mkdir -p ~/.ssh
+   - chmod 700 ~/.ssh
+   - echo "$T3_SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+   - chmod 644 ~/.ssh/known_hosts
+
+   - chmod 600 "$T3_PRIVATE_KEY"
+   - ssh-add "$T3_PRIVATE_KEY" > /dev/null
+
+   ## Build commands
+   - ssh -p22 $T3_USERNAME@$T3_SERVER_IP "rm -rf /var/www/t3.editor.cassproject.org/*"
+   - scp -P22 -r dist/* $T3_USERNAME@$T3_SERVER_IP:/var/www/t3.editor.cassproject.org/

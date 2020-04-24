@@ -95,16 +95,17 @@
             <!-- hook this button up to add a new node at the top of the
             hierarchy in editing mode -->
             <div
+                @click="$store.commit('app/showModal', { component: 'AddComment'})"
                 class="button is-text has-text-primary">
                 <span class="icon">
-                    <i class="fas fa-folder-plus" />
+                    <i class="fas fa-comment-medical" />
                 </span>
             </div>
             <div
                 @click="$store.commit('app/showRightAside', 'Comments')"
                 class="button is-text has-text-dark">
                 <span class="icon">
-                    <i class="fas fa-comment-alt" />
+                    <i class="fas fa-comments" />
                 </span>
             </div>
             <div class="button is-text has-text-dark">
@@ -163,7 +164,6 @@ export default {
     z-index: 10;
     height: 36px;
     display: fixed;
-    position: fixed;
     width: 100%;
     padding: 4px;
     background-color:$light;

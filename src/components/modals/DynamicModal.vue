@@ -24,13 +24,15 @@ import {mapState} from 'vuex';
 import Share from '@/components/framework/Share.vue';
 import MultiEdit from '@/components/competency/MultiEdit.vue';
 import Search from '@/components/competency/Search.vue';
+import AddComment from '@/components/framework/AddComment.vue';
 
 export default {
     name: 'DynamicModal',
     components: {
         Share,
         MultiEdit,
-        Search
+        Search,
+        AddComment
     },
     data() {
         return {

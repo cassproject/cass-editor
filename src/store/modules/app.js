@@ -5,9 +5,9 @@
 const state = {
     sideNavEnabled: true,
     showSideNav: false,
+    showRightAside: false,
+    rightAsideContent: '',
     framework: {
-        showRightAside: false,
-        rightAsideContent: '',
         showToolBar: true,
         commentsEnabled: true,
         versionsEnabled: true,
@@ -17,6 +17,12 @@ const state = {
     },
     configuration: {
         contentSection: ''
+    },
+    frameworks: {
+        searchTerm: '',
+        quickFilters: [],
+        applySearchTo: [],
+        sortResults: []
     },
     modal: {
         framework: '',
@@ -52,17 +58,19 @@ const state = {
 const mutations = {
     showSideNav: function() {
         state.showSideNav = true;
+        state.showRightAside = false;
     },
     closeSideNav: function() {
         state.showSideNav = false;
     },
     showRightAside: function(state, payload) {
-        state.framework.showRightAside = true;
-        state.framework.rightAsideContent = payload;
+        state.showRightAside = true;
+        state.rightAsideContent = payload;
+        state.showSideNav = false;
     },
-    closeRightAside: function(state, payload) {
-        state.framework.showRightAside = false;
-        state.framework.rightAsideContent = '';
+    closeRightAside: function(state) {
+        state.showRightAside = false;
+        state.rightAsideContent = '';
     },
     showModal: function(state, payload) {
         state.modal.showModal = true;
@@ -185,6 +193,36 @@ const mutations = {
     },
     importIdColumn: function(state, val) {
         state.import.importCsv.idColumn = val;
+    },
+    searchTerm: function(state, value) {
+        state.frameworks.searchTerm = value;
+    },
+    applySearchTo: function(state, value) {
+        state.frameworks.applySearchTo = value;
+    },
+    sortResults: function(state, value) {
+        state.frameworks.sortResults = value;
+    },
+    quickFilters: function(state, value) {
+        state.frameworks.quickFilters = value;
+    },
+    clearSearchFilters: function(state) {
+        let quickFilters = state.frameworks.quickFilters;
+        let sortResults = state.frameworks.sortResults;
+        let applySearchTo = state.frameworks.applySearchTo;
+
+        for (let i = 0; i < quickFilters.length; i++) {
+            quickFilters[i].checked = false;
+        }
+        for (let i = 0; i < sortResults.length; i++) {
+            sortResults[i].checked = false;
+        }
+        for (let i = 0; i < applySearchTo.length; i++) {
+            applySearchTo[i].checked = false;
+        }
+        state.frameworks.quickFilters = quickFilters;
+        state.frameworks.sortResults = sortResults;
+        state.frameworks.applySearchTo = applySearchTo;
     }
 };
 const actions = {
@@ -198,7 +236,10 @@ const getters = {
         return state.showSideNav;
     },
     showRightAside: state => {
-        return state.framework.showRightAside;
+        return state.showRightAside;
+    },
+    rightAsideContent: state => {
+        return state.rightAsideContent;
     },
     framework: state => {
         return state.framework;
@@ -289,6 +330,18 @@ const getters = {
     },
     importTargetColumn: state => {
         return state.import.importCsv.targetColumn;
+    },
+    searchTerm: state => {
+        return state.frameworks.searchTerm;
+    },
+    sortResults: state => {
+        return state.frameworks.sortResults;
+    },
+    quickFilters: state => {
+        return state.frameworks.quickFilters;
+    },
+    applySearchTo: state => {
+        return state.frameworks.applySearchTo;
     }
 };
 

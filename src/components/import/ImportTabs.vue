@@ -411,9 +411,6 @@
                                             Import
                                         </span>
                                     </div>
-                                    <div>
-                                        {{ importStatus }}
-                                    </div>
                                 </div>
                             </div>
                         </div>
