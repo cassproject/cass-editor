@@ -177,7 +177,7 @@
         </div>
         <!-- import tabs -->
         <ImportTabs
-            v-if="!importFramework"
+            v-if="!importFramework ||(importFramework && importType==='text')"
             :q="queryParams"
             :caseDocs="caseDocs"
             :csvRelationFile="csvRelationFile"
@@ -338,7 +338,6 @@ export default {
             showCassCsv: false,
             method: "file",
             file: null,
-            text: "",
             repo: window.repo,
             status: "Ready",
             processingStatus: '',
@@ -495,6 +494,10 @@ export default {
             set(val) {
                 this.$store.commit('app/importTargetColumn', val);
             }
+        },
+        text: function() {
+            console.log(this.$store.getters['app/importText']);
+            return this.$store.getters['app/importText'];
         }
     },
     watch: {
@@ -503,6 +506,8 @@ export default {
                 this.connectToServer();
             } else if (val === 'importFromUrl') {
                 this.importFromUrl();
+            } else if (val === 'parseText') {
+                this.parseText();
             }
         },
         importType: function(val) {
@@ -657,7 +662,7 @@ export default {
             this.$store.commit('app/importTransition', 'preview');
         },
         importPreviewAccept: function() {
-            this.$store.commit('app/importSatus', 'Import Complete!');
+            this.$store.commit('app/importStatus', 'Import Complete!');
             this.$store.commit('app/importTransition', 'light');
         },
         clearImport: function() {
@@ -1225,7 +1230,6 @@ export default {
                 var framework;
                 if (me.queryParams.concepts === 'true') {
                     framework = EcConceptScheme.getBlocking(data);
-                    me.$store.commit('app/importFramework', framework);
                 } else {
                     framework = EcFramework.getBlocking(data);
                     me.$store.commit('app/importFramework', framework);

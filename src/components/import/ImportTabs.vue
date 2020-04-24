@@ -361,7 +361,6 @@
                         <div class="control">
                             <input
                                 class="input"
-                                @change="$store.commit('app/importFrameworkName')"
                                 v-model="importFrameworkName"
                                 placeholder="Framework Name">
                         </div>
@@ -371,7 +370,6 @@
                             </label>
                             <div class="control">
                                 <textarea
-                                    @change="$store.commit('app/importFrameworkText')"
                                     class="textarea"
                                     v-model="importText" />
                             </div>
@@ -618,8 +616,13 @@ export default {
         }
     },
     computed: {
-        importText: function() {
-            return this.$store.getters['app/importText'];
+        importText: {
+            get() {
+                return this.$store.getters['app/importText'];
+            },
+            set(text) {
+                this.$store.commit('app/importText', text);
+            }
         },
         importServerUrl: {
             get() {

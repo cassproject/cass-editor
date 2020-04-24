@@ -46,8 +46,7 @@ const state = {
             relationColumn: {},
             targetColumn: {}
         },
-        caseDocs: [],
-        parseText: ''
+        importText: ''
     }
 };
 const mutations = {
@@ -112,8 +111,7 @@ const mutations = {
                 relationColumn: {},
                 targetColumn: {}
             },
-            caseDocs: [],
-            parseText: ''
+            importText: ''
         };
     },
     importTransition: function(state, value) {
@@ -158,14 +156,14 @@ const mutations = {
     importFrameworkDescription: function(state, val) {
         state.import.frameworkDescription = val;
     },
+    importText: function(state, val) {
+        state.import.importText = val;
+    },
     importServerUrl: function(state, val) {
         state.import.serverUrl = val;
     },
     importUrl: function(state, val) {
         state.import.url = val;
-    },
-    importParseText: function(state, val) {
-        state.import.parseText = val;
     },
     importNameColumn: function(state, val) {
         state.import.importCsv.nameColumn = val;
@@ -187,12 +185,6 @@ const mutations = {
     },
     importIdColumn: function(state, val) {
         state.import.importCsv.idColumn = val;
-    },
-    importCaseDocs: function(state, val) {
-        state.import.caseDocs = val;
-    },
-    addCaseDoc: function(state, val) {
-        state.import.caseDocs.push(val);
     }
 };
 const actions = {
@@ -268,14 +260,14 @@ const getters = {
     importFrameworkDescription: state => {
         return state.import.frameworkDescription;
     },
+    importText: state => {
+        return state.import.importText;
+    },
     importServerUrl: state => {
         return state.import.serverUrl;
     },
     importUrl: state => {
         return state.import.url;
-    },
-    importParseText: state => {
-        return state.import.parseText;
     },
     importNameColumn: state => {
         return state.import.importCsv.nameColumn;
@@ -297,11 +289,7 @@ const getters = {
     },
     importTargetColumn: state => {
         return state.import.importCsv.targetColumn;
-    },
-    importCaseDocs: state => {
-        return state.import.caseDocs;
     }
-
 };
 
 export default {
