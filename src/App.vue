@@ -1110,7 +1110,7 @@ export default {
         margin-left: 300px;
     }
     .clear-right-aside {
-        margin-right: 320px;
+        margin-right: 340px;
     }
 
 

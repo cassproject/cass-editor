@@ -52,6 +52,7 @@
                 .framework-list-item__details {
                     color: rgba($dark, .6);
                     padding-right: .5rem;
+                    padding-left: 0rem;
                     font-size: $size-7;
                     .details-value {
 
@@ -99,14 +100,19 @@
         .not-editable {
             display:inline;
         }
+        .field {
+            padding-left: 0;
+        }
     }
     .lode__name {
         .field {
+            padding-left: 0;
             display: inline-block;
         }
         .field:nth-of-type(n + 3) {
             .field-body {
                 .field {
+                    padding-left: 0;
                     &::before {
                         content: ", ";
                     }

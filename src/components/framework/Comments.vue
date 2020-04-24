@@ -8,7 +8,7 @@
 <template>
     <aside
         id="right-side-bar__comments"
-        class="menu has-background-light">
+        class="menu has-background-lightest">
         <p class="subtitle is-size-4">
             Comments
         </p>

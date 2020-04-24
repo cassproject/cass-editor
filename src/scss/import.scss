@@ -63,7 +63,15 @@ ul.processing-list {
 
 .page-import {
     padding-top: 1rem;
-    .page-import-body {
+    .special-property {
+        iframe {
+            margin-top: .25rem;
+        }
+        .special-property-text {
+            padding-left: .5rem;
+            vertical-align: center;
+        }
+    }
         .drag-file-area {
             width:100%;
             display:block;
@@ -90,7 +98,6 @@ ul.processing-list {
             padding-left: 2.5rem;
             height: 24px;
             display: flex;
-            visibility: hidden;
             align-items: center;
             hr  {
                 width: 100%;
@@ -109,7 +116,7 @@ ul.processing-list {
             visibility: visible !important;
         }
        
-    }
+    
     .import-tab {
         margin-top: -40px;
         height: 100px;

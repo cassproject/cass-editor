@@ -3,11 +3,11 @@
         <DynamicModal />
         <RightAside v-if="showRightAside" />
         <!-- begin framework -->
-        <div class="container fluid is-marginless is-paddingless">
+        <div class="">
             <FrameworkEditorToolbar
                 @showExportModal="onOpenExportModal"
                 @changeProperties="changeProperties" />
-            <div class="section">
+            <div class="framework-wrapper">
                 <Component
                     :is="dynamicThingComponent"
                     :obj="framework"
@@ -18,47 +18,48 @@
                     @removeObject="removeObject"
                     @editNodeEvent="onEditNode()"
                     @doneEditingNodeEvent="onDoneEditingNode()"
-                    :properties="properties" />
-                <div class="lode__framework__info-bar">
-                    <span
-                        class="tag is-medium-grey has-text-dark"
-                        v-if="framework.competency && framework.competency.length == 1">
-                        {{ framework.competency.length }} item
-                    </span>
-                    <span
-                        class="tag is-medium-grey has-text-dark"
-                        v-else-if="framework.competency && framework.competency.length > 1">
-                        {{ framework.competency.length }} items
-                    </span>
-                    <span
-                        class="tag is-medium-grey has-text-dark"
-                        v-if="timestamp"
-                        :title="new Date(timestamp)">
-                        Last modified {{ lastModified }}
-                    </span>
-                    <span
-                        class="tag is-medium-grey has-text-dark"
-                        v-if="framework['schema:dateCreated']"
-                        :title="new Date(framework['schema:dateCreated'])">
-                        Created {{ $moment(framework['schema:dateCreated']).fromNow() }}
-                    </span>
-                    <span
-                        class="tag is-medium-grey has-text-dark"
-                        v-if="framework['Approved']"
-                        :title="framework['Approved']">
-                        Approved
-                    </span>
-                    <span
-                        class="tag is-medium-grey has-text-dark"
-                        v-if="framework['Published']"
-                        :title="framework['Published']">Published</span>
-                    <span v-if="loggedIn">
-                        Make private
-                        <input
-                            type="checkbox"
-                            v-model="privateFramework">
-                    </span>
-                </div>
+                    :properties="properties">
+                    <div class="lode__framework__info-bar">
+                        <span
+                            class="tag is-medium-grey has-text-dark"
+                            v-if="framework.competency && framework.competency.length == 1">
+                            {{ framework.competency.length }} item
+                        </span>
+                        <span
+                            class="tag is-medium-grey has-text-dark"
+                            v-else-if="framework.competency && framework.competency.length > 1">
+                            {{ framework.competency.length }} items
+                        </span>
+                        <span
+                            class="tag is-medium-grey has-text-dark"
+                            v-if="timestamp"
+                            :title="new Date(timestamp)">
+                            Last modified {{ lastModified }}
+                        </span>
+                        <span
+                            class="tag is-medium-grey has-text-dark"
+                            v-if="framework['schema:dateCreated']"
+                            :title="new Date(framework['schema:dateCreated'])">
+                            Created {{ $moment(framework['schema:dateCreated']).fromNow() }}
+                        </span>
+                        <span
+                            class="tag is-medium-grey has-text-dark"
+                            v-if="framework['Approved']"
+                            :title="framework['Approved']">
+                            Approved
+                        </span>
+                        <span
+                            class="tag is-medium-grey has-text-dark"
+                            v-if="framework['Published']"
+                            :title="framework['Published']">Published</span>
+                        <span v-if="loggedIn">
+                            Make private
+                            <input
+                                type="checkbox"
+                                v-model="privateFramework">
+                        </span>
+                    </div>
+                </Component>
                 <Hierarchy
                     :container="framework"
                     containerType="Framework"

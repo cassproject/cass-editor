@@ -48,14 +48,17 @@ export default {
 </script>
 
 <style lang="scss">
+    @import './../../scss/variables.scss';
+
 #right-side-bar {
     position: fixed;
+    border-left: solid 1px rgba($dark, .4);
     z-index: 10;
     height: calc(100vh - 48px);
     overflow: scroll;
     right: 0;
-    padding: 1.5rem 1rem;
-    width: 320px;
+    padding: 2.5rem 1.5rem;
+    width: 340px;
     transform: translateX(0);
     .comment-list {
          .comment-list__user {
