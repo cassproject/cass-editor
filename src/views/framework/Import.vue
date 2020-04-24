@@ -344,13 +344,13 @@ export default {
             processingStatus: '',
             statusType: 'info',
             competencyCount: 0,
-            importCsvColumnName: null,
-            importCsvColumnDescription: "N/A",
-            importCsvColumnScope: "N/A",
-            importCsvColumnId: "N/A",
-            importCsvColumnSource: null,
-            importCsvColumnRelationType: null,
-            importCsvColumnTarget: null,
+            // importCsvColumnName: null,
+            // importCsvColumnDescription: "N/A",
+            // importCsvColumnScope: "N/A",
+            // importCsvColumnId: "N/A",
+            // importCsvColumnSource: null,
+            // importCsvColumnRelationType: null,
+            // importCsvColumnTarget: null,
             csvColumns: [],
             csvRelationFile: null,
             csvRelationColumns: [],
@@ -410,8 +410,8 @@ export default {
             get: function() {
                 return this.$store.getters['app/importFrameworkName'];
             },
-            set: function() {
-                return this.$store.commit('app/importFrameworkName');
+            set: function(val) {
+                return this.$store.commit('app/importFrameworkName', val);
             }
         },
         importFrameworkDescription: function() {
@@ -439,6 +439,62 @@ export default {
         },
         importStatus: function() {
             return this.$store.getters['app/importStatus'];
+        },
+        importCsvColumnName: {
+            get() {
+                return this.$store.getters['app/importNameColumn'];
+            },
+            set(val) {
+                this.$store.commit('app/importNameColumn', val);
+            }
+        },
+        importCsvColumnDescription: {
+            get() {
+                return this.$store.getters['app/importDescriptionColumn'];
+            },
+            set(val) {
+                this.$store.commit('app/importDescriptionColumn', val);
+            }
+        },
+        importCsvColumnScope: {
+            get() {
+                return this.$store.getters['app/importScopeColumn'];
+            },
+            set(val) {
+                this.$store.commit('app/importScopeColumn', val);
+            }
+        },
+        importCsvColumnId: {
+            get() {
+                return this.$store.getters['app/importIdColumn'];
+            },
+            set(val) {
+                this.$store.commit('app/importIdColumn', val);
+            }
+        },
+        importCsvColumnSource: {
+            get() {
+                return this.$store.getters['app/importSourceColumn'];
+            },
+            set(val) {
+                this.$store.commit('app/importSourceColumn', val);
+            }
+        },
+        importCsvColumnRelationType: {
+            get() {
+                return this.$store.getters['app/importRelationColumn'];
+            },
+            set(val) {
+                this.$store.commit('app/importRelationColumn', val);
+            }
+        },
+        importCsvColumnTarget: {
+            get() {
+                return this.$store.getters['app/importTargetColumn'];
+            },
+            set(val) {
+                this.$store.commit('app/importTargetColumn', val);
+            }
         }
     },
     watch: {

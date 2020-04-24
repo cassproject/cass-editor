@@ -478,22 +478,22 @@ export default {
                 },
                 nameColumn: {
                     label: 'Select the Name column',
-                    value: '',
+                    value: this.$store.getters['app/importNameColumn'],
                     type: 'column'
                 },
                 descriptionColumn: {
                     label: 'Select the Description column (optional)',
-                    value: '',
+                    value: this.$store.getters['app/importDescriptionColumn'],
                     type: 'column'
                 },
                 scopeColumn: {
                     label: 'Select the Scope column (optional)',
-                    value: '',
+                    value: this.$store.getters['app/importScopeColumn'],
                     type: 'column'
                 },
                 idColumn: {
                     label: 'Select the ID column (optional). If chosen, this should be a URL from another CaSS system or a non-numeric ID',
-                    value: '',
+                    value: this.$store.getters['app/importIdColumn'],
                     type: 'column'
                 },
                 relationFile: {
@@ -510,19 +510,19 @@ export default {
                 sourceColumn: {
                     label: 'Select the Source column',
                     type: 'column',
-                    value: '',
+                    value: this.$store.getters['app/importSourceColumn'],
                     array: this.importCsvColumnSource
                 },
                 relationColumn: {
                     label: 'Select the Relation Type column.',
                     type: 'column',
-                    value: '',
+                    value: this.$store.getters['app/importRelationColumn'],
                     array: this.importColumnRelationType
                 },
                 targetColumn: {
                     label: 'Select the Target column.',
                     type: 'column',
-                    value: '',
+                    value: this.$store.getters['app/importTargetColumn'],
                     array: this.importColumnTarget
                 }
             },
@@ -544,6 +544,35 @@ export default {
                 }
             ]
         };
+    },
+    watch: {
+        importNameColumn: function() {
+            this.csvImportDetails.nameColumn.value = this.importNameColumn;
+        },
+        importDescriptionColumn: function() {
+            this.csvImportDetails.descriptionColumn.value = this.importDescriptionColumn;
+        },
+        importScopeColumn: function() {
+            this.csvImportDetails.scopeColumn.value = this.importScopeColumn;
+        },
+        importIdColumn: function() {
+            this.csvImportDetails.idColumn.value = this.importIdColumn;
+        },
+        importSourceColumn: function() {
+            this.csvImportDetails.sourceColumn.value = this.importSourceColumn;
+        },
+        importRelationColumn: function() {
+            this.csvImportDetails.relationColumn.value = this.importRelationColumn;
+        },
+        importTargetColumn: function() {
+            this.csvImportDetails.targetColumn.value = this.importTargetColumn;
+        },
+        importFrameworkName: function() {
+            this.csvImportDetails.name.value = this.importFrameworkName;
+        },
+        importFrameworkDescription: function() {
+            this.csvImportDetails.description.value = this.importFrameworkDescription;
+        }
     },
     methods: {
         prepareToImportNonPdf: function() {
@@ -623,7 +652,7 @@ export default {
                 return this.$store.getters['app/importFrameworkName'];
             },
             set: function(val) {
-                this.$store.commit('app/importFrameworkName');
+                this.$store.commit('app/importFrameworkName', val);
             }
         },
         importFrameworkDescription: function() {
@@ -631,6 +660,27 @@ export default {
         },
         importStatus: function() {
             return this.$store.getters['app/importStatus'];
+        },
+        importNameColumn: function() {
+            return this.$store.getters['app/importNameColumn'];
+        },
+        importDescriptionColumn: function() {
+            return this.$store.getters['app/importDescriptionColumn'];
+        },
+        importScopeColumn: function() {
+            return this.$store.getters['app/importScopeColumn'];
+        },
+        importIdColumn: function() {
+            return this.$store.getters['app/importIdColumn'];
+        },
+        importSourceColumn: function() {
+            return this.$store.getters['app/importSourceColumn'];
+        },
+        importRelationColumn: function() {
+            return this.$store.getters['app/importRelationColumn'];
+        },
+        importTargetColumn: function() {
+            return this.$store.getters['app/importTargetColumn'];
         }
     }
 };

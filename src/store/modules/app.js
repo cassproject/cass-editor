@@ -289,7 +289,7 @@ const getters = {
         return state.import.importCsv.scopeColumn;
     },
     importIdColumn: state => {
-        return state.import.importCsvidColumn;
+        return state.import.importCsv.idColumn;
     },
     importSourceColumn: state => {
         return state.import.importCsv.sourceColumn;
