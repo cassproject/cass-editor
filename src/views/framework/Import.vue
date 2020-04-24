@@ -338,9 +338,7 @@ export default {
             showCassCsv: false,
             method: "file",
             file: null,
-            serverUrl: null,
             text: "",
-            url: null,
             repo: window.repo,
             status: "Ready",
             processingStatus: '',
@@ -386,6 +384,9 @@ export default {
         },
         importServerUrl: function() {
             return this.$store.getters['app/importServerUrl'];
+        },
+        importUrl: function() {
+            return this.$store.getters['app/importUrl'];
         },
         importErrors: function() {
             return this.$store.getters['app/importErrors'];
@@ -435,6 +436,9 @@ export default {
                 return true;
             }
             return false;
+        },
+        importStatus: function() {
+            return this.$store.getters['app/importStatus'];
         }
     },
     watch: {
@@ -449,7 +453,6 @@ export default {
             this.$store.commit('app/importFramework', null);
             this.$store.commit('app/importStatus', 'upload');
             this.caseDocs = [];
-            this.$store.commit('app/importServerUrl', '');
         },
         importTransition: function(val) {
             if (val === 'process') {
@@ -577,14 +580,6 @@ export default {
             let error = "File type " + fileType + " is unsupported in this workflow";
             this.$store.commit('app/addImportError', error);
             this.$store.commit('app/importTransition', 'upload');
-        },
-        /* Event from Sidebar component */
-        updateUrl(url) {
-            if (this.importType === "url") {
-                this.url = url;
-            } else if (this.importType === "server") {
-                this.serverUrl = url;
-            }
         },
         /* When an import is "successful" */
         importSuccess: function() {
@@ -1306,7 +1301,7 @@ export default {
         },
         caseGetServerSide: function() {
             var me = this;
-            EcRemote.getExpectingString(this.repo.selectedServer, "ims/case/getDocs?url=" + this.serverUrl, function(success) {
+            EcRemote.getExpectingString(this.repo.selectedServer, "ims/case/getDocs?url=" + this.importServerUrl, function(success) {
                 me.caseGetDocsSuccess(success);
             }, function(failure) {
                 me.statusType = "error";
@@ -1343,7 +1338,7 @@ export default {
                     var identity = EcIdentityManager.ids[0];
                     var formData = new FormData();
                     if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
-                    EcRemote.postInner(this.repo.selectedServer, "ims/case/harvest?caseEndpoint=" + this.serverUrl + "&dId=" + uuid, formData, null, function(success) {
+                    EcRemote.postInner(this.repo.selectedServer, "ims/case/harvest?caseEndpoint=" + this.importServerUrl + "&dId=" + uuid, formData, null, function(success) {
                         me.caseDocs[firstIndex].loading = false;
                         me.caseDocs[firstIndex].success = true;
                         EcFramework.get(id, function(f) {
@@ -1413,7 +1408,7 @@ export default {
         importFromUrl: function() {
             let me = this;
             let error;
-            EcRemote.getExpectingString(this.url, null, function(result) {
+            EcRemote.getExpectingString(this.importUrl, null, function(result) {
                 result = JSON.parse(result);
                 var graph = result["@graph"];
                 if (graph != null) {

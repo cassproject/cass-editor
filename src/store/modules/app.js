@@ -34,6 +34,7 @@ const state = {
         feedback: '', // additional information
         framework: null,
         serverUrl: '',
+        url: '',
         frameworkName: '',
         frameworkDescription: '',
         nameColumm: {},
@@ -100,6 +101,7 @@ const mutations = {
             feedback: '', // additional information
             framework: null,
             serverUrl: '',
+            url: '',
             frameworkName: '',
             frameworkDescription: '',
             nameColumm: {},
@@ -160,6 +162,9 @@ const mutations = {
     },
     importServerUrl: function(state, val) {
         state.import.serverUrl = val;
+    },
+    importUrl: function(state, val) {
+        state.import.url = val;
     },
     importParseText: function(state, val) {
         state.import.parseText = val;
@@ -267,6 +272,9 @@ const getters = {
     },
     importServerUrl: state => {
         return state.import.serverUrl;
+    },
+    importUrl: state => {
+        return state.import.url;
     },
     importParseText: state => {
         return state.import.parseText;

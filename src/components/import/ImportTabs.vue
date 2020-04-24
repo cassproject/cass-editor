@@ -399,7 +399,7 @@
                                 <div class="control is-expanded">
                                     <input
                                         class="input"
-                                        v-model="importServerUrl"
+                                        v-model="importUrl"
                                         type="url">
                                 </div>
                                 <div class="control">
@@ -590,6 +590,14 @@ export default {
             },
             set(url) {
                 this.$store.commit('app/importServerUrl', url);
+            }
+        },
+        importUrl: {
+            get() {
+                return this.$store.getters['app/importUrl'];
+            },
+            set(url) {
+                this.$store.commit('app/importUrl', url);
             }
         },
         importErrors: function() {
