@@ -148,7 +148,7 @@
                     <!-- HANDLE CSV INPUTS -->
                     <div
                         class="section">
-                        <template v-if="importFileType == 'csv'">
+                        <template v-if="importFileType == 'csv' && importType == 'file'">
                             <div
                                 v-for="item in csvImportDetails"
                                 :key="item"
@@ -233,7 +233,7 @@
                             </template>
                         </template>
                         <!-- HANDLE MEDBIQ -->
-                        <template v-else-if="importFileType =='medbiq'">
+                        <template v-else-if="importFileType =='medbiq' && importType == 'file'">
                             <div
                                 v-for="item in medbiqDetails"
                                 :key="item"
