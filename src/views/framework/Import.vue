@@ -448,6 +448,8 @@ export default {
         importType: function(val) {
             this.$store.commit('app/importFramework', null);
             this.$store.commit('app/importStatus', 'upload');
+            this.caseDocs = [];
+            this.$store.commit('app/importServerUrl', '');
         },
         importTransition: function(val) {
             if (val === 'process') {

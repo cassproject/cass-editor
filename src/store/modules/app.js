@@ -39,7 +39,7 @@ const state = {
         nameColumm: {},
         importCsv: {
             nameColumn: {},
-            descriptionCcolumn: {},
+            descriptionColumn: {},
             scopeColumn: {},
             idColumn: {},
             sourceColumn: {},
@@ -48,7 +48,6 @@ const state = {
         },
         caseDocs: [],
         parseText: ''
-
     }
 };
 const mutations = {
@@ -89,7 +88,7 @@ const mutations = {
     clearImportFiles: function(state) {
         state.import.files = [];
     },
-    resetImport: function(sate) {
+    resetImport: function(state) {
         state.import = {
             files: [],
             transition: 'upload', // upload, process, detail, preview, light

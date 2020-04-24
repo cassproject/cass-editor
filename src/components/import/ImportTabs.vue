@@ -282,8 +282,7 @@
                                 <div class="control is-expanded">
                                     <input
                                         class="input"
-                                        v-model="item.value"
-                                        @change="$store.commit('app/importServerUrl', item.value)"
+                                        v-model="importServerUrl"
                                         type="url">
                                 </div>
                                 <div class="control">
@@ -541,9 +540,7 @@ export default {
             },
             serverDetails: [
                 {
-                    label: 'Paste URL endpoint of server',
-                    value: ''
-
+                    label: 'Paste URL endpoint of server'
                 }
             ]
         };
@@ -587,8 +584,13 @@ export default {
         importText: function() {
             return this.$store.getters['app/importText'];
         },
-        importServerUrl: function() {
-            return this.$store.getters['app/importServerUrl'];
+        importServerUrl: {
+            get() {
+                return this.$store.getters['app/importServerUrl'];
+            },
+            set(url) {
+                this.$store.commit('app/importServerUrl', url);
+            }
         },
         importErrors: function() {
             return this.$store.getters['app/importErrors'];
