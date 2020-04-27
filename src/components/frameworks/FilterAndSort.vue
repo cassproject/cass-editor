@@ -16,9 +16,9 @@
                         class="is-checkradio"
                         :id="option.id"
                         type="radio"
-                        v-model="option.checked"
-                        :value="true"
-                        :name="option.id">
+                        v-model="sortBy"
+                        :value="{id: option.id, label: option.label}"
+                        name="sortResults">
                     <label :for="option.id">{{ option.label }}</label>
                 </template>
             </div>
@@ -72,26 +72,12 @@ export default {
             sortResults: [
                 {
                     id: 'dateCreated',
-                    checked: false,
                     label: 'created date',
                     enabled: true
                 },
                 {
-                    id: 'datePublished',
-                    checked: false,
-                    label: 'published date',
-                    enabled: true
-                },
-                {
                     id: 'lastEdited',
-                    checked: false,
                     label: 'last edited',
-                    enabled: true
-                },
-                {
-                    id: 'configMatchDefault',
-                    checked: false,
-                    label: 'Configuration matches default',
                     enabled: true
                 }
             ],
@@ -108,17 +94,12 @@ export default {
                     label: 'Not owned by me',
                     enabled: true
                 },
+                // To do: enable after frameworks are associated with configs
                 {
-                    id: 'publishedByMe',
+                    id: 'configMatchDefault',
                     checked: false,
-                    label: 'Published by me',
-                    enabled: true
-                },
-                {
-                    id: 'authoredByMe',
-                    checked: false,
-                    label: 'Authored by me',
-                    enabled: true
+                    label: 'Configuration matches default',
+                    enabled: false
                 }
             ],
             applySearchTo: [
@@ -155,6 +136,16 @@ export default {
             ]
         };
     },
+    computed: {
+        sortBy: {
+            get() {
+                return this.$store.getters['app/sortResults'];
+            },
+            set(val) {
+                this.$store.commit('app/sortResults', val);
+            }
+        }
+    },
     mounted: function() {
 
     },
@@ -170,12 +161,6 @@ export default {
             handler() {
                 console.log('watched');
                 this.$store.commit('app/quickFilters', this.quickFilters);
-            },
-            deep: true
-        },
-        sortResults: {
-            handler() {
-                this.$store.commit('app/sortResults', this.sortResults);
             },
             deep: true
         }

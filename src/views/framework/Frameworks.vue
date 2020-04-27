@@ -43,12 +43,11 @@
                     </span>
                     <template class="">
                         <span
-                            v-for="filter in filteredSortResults"
-                            :key="filter"
+                            v-if="sortResults.label"
                             class="tag is-dark">
-                            {{ filter.label }}
+                            {{ sortResults.label }}
                             <button
-                                @click="removeFilter('sortResults', filter)"
+                                @click="clearSortBy"
                                 class="delete is-small" />
                         </span>
                     </template>
@@ -68,38 +67,6 @@
             <div
                 v-if="!queryParams.concepts==='true'"
                 class="section">
-                <!-- sort options -->
-                <div class="control">
-                    <label
-                        v-if="!queryParams.concepts==='true'"
-                        class="is-checkradio is-large"
-                        for="dcterms:title.keyword">
-                        <input
-                            type="radio"
-                            value="dcterms:title.keyword"
-                            id="dcterms:title.keyword"
-                            v-model="sortBy">
-                        Sort alphabetically</label>
-                    <label
-                        v-else
-                        class="radio"
-                        for="name.keyword">
-                        <input
-                            type="radio"
-                            value="name.keyword"
-                            id="name.keyword"
-                            v-model="sortBy">
-                        Sort alphabetically</label>
-                    <label
-                        class="radio"
-                        for="schema:dateModified">
-                        <input
-                            type="radio"
-                            value="schema:dateModified"
-                            id="schema:dateModified"
-                            v-model="sortBy">
-                        Sort by last modified</label>
-                </div>
                 <!-- show my frameworks radio -->
                 <div class="control">
                     <div v-if="queryParams.show !== 'mine' && queryParams.conceptShow !== 'mine' && numIdentities">
@@ -254,11 +221,6 @@ export default {
         sortResults: function() {
             return this.$store.getters['app/sortResults'];
         },
-        filteredSortResults: function() {
-            let filterValues = this.sortResults.filter(item => item.checked === true);
-            console.log('filtered value', filterValues);
-            return filterValues;
-        },
         showRightAside: function() {
             return this.$store.getters['app/showRightAside'];
         },
@@ -304,6 +266,11 @@ export default {
     methods: {
         clearAllFilters: function() {
             this.$store.commit('app/clearSearchFilters');
+            this.clearSortBy();
+        },
+        clearSortBy: function() {
+            this.$store.commit('app/sortResults', []);
+            this.sortBy = this.queryParams.concepts === 'true' ? "dcterms:title.keyword" : "name.keyword";
         },
         removeFilter: function(filterType, val) {
             let storeCaller = 'app/' + filterType;
@@ -350,6 +317,15 @@ export default {
             // End public key line
             pem = pem.substring(0, length - 24) + "\n" + pem.substring(length - 24);
             return pem;
+        }
+    },
+    watch: {
+        sortResults: function() {
+            if (this.sortResults.id === "lastEdited") {
+                this.sortBy = "schema:dateModified";
+            } else if (this.sortResults.id === "dateCreated") {
+                this.sortBy = "schema:dateCreated";
+            }
         }
     }
 };
