@@ -1,65 +1,65 @@
 <template>
-    <div class="page-framework">
-        <div class="container">
-            <div class="section is-paddingless">
-                <Thing
+    <div id="page-framework">
+        <DynamicModal />
+        <RightAside v-if="showRightAside" />
+        <!-- begin framework -->
+        <div class="">
+            <FrameworkEditorToolbar
+                @showExportModal="onOpenExportModal"
+                @changeProperties="changeProperties" />
+            <div class="framework-wrapper">
+                <Component
+                    :is="dynamicThingComponent"
                     :obj="framework"
                     :repo="repo"
                     :parentNotEditable="queryParams.view==='true'"
                     :profile="frameworkProfile"
-                    :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
-                    iframeText="Attach subitems from other sources to the selected item."
-                    @select="select"
                     @deleteObject="deleteObject"
                     @removeObject="removeObject"
-                    @exportObject="exportObject"
-                    :isEditingContainer="isEditingContainer"
-                    @editingThing="handleEditingContainer($event)" />
-                <span class="actions">
-                    <span
-                        class="tag is-info has-text-white"
-                        v-if="framework.competency && framework.competency.length == 1">
-                        {{ framework.competency.length }} item
-                    </span>
-                    <span
-                        class="tag is-info has-text-white"
-                        v-else-if="framework.competency && framework.competency.length > 1">
-                        {{ framework.competency.length }} items
-                    </span>
-                    <span
-                        class="tag is-info has-text-white"
-                        v-if="timestamp"
-                        :title="new Date(timestamp)">
-                        Last modified {{ lastModified }}
-                    </span>
-                    <span
-                        class="tag is-info has-text-white"
-                        v-if="framework['schema:dateCreated']"
-                        :title="new Date(framework['schema:dateCreated'])">
-                        Created {{ $moment(framework['schema:dateCreated']).fromNow() }}
-                    </span>
-                    <span
-                        class="tag is-info has-text-white"
-                        v-if="framework['Approved']"
-                        :title="framework['Approved']">
-                        Approved
-                    </span>
-                    <span
-                        class="tag is-info has-text-white"
-                        v-if="framework['Published']"
-                        :title="framework['Published']">Published</span>
-                    <button
-                        v-if="selectAllButton"
-                        @click="selectAll=!selectAll">
-                        Select All
-                    </button>
-                    <button
-                        v-if="selectButtonText"
-                        @click="selectButton">
-                        {{ selectButtonText }}
-                    </button>
-                </span>
-                <hr>
+                    @editNodeEvent="onEditNode()"
+                    @doneEditingNodeEvent="onDoneEditingNode()"
+                    :properties="properties">
+                    <div class="lode__framework__info-bar">
+                        <span
+                            class="tag is-medium-grey has-text-dark"
+                            v-if="framework.competency && framework.competency.length == 1">
+                            {{ framework.competency.length }} item
+                        </span>
+                        <span
+                            class="tag is-medium-grey has-text-dark"
+                            v-else-if="framework.competency && framework.competency.length > 1">
+                            {{ framework.competency.length }} items
+                        </span>
+                        <span
+                            class="tag is-medium-grey has-text-dark"
+                            v-if="timestamp"
+                            :title="new Date(timestamp)">
+                            Last modified {{ lastModified }}
+                        </span>
+                        <span
+                            class="tag is-medium-grey has-text-dark"
+                            v-if="framework['schema:dateCreated']"
+                            :title="new Date(framework['schema:dateCreated'])">
+                            Created {{ $moment(framework['schema:dateCreated']).fromNow() }}
+                        </span>
+                        <span
+                            class="tag is-medium-grey has-text-dark"
+                            v-if="framework['Approved']"
+                            :title="framework['Approved']">
+                            Approved
+                        </span>
+                        <span
+                            class="tag is-medium-grey has-text-dark"
+                            v-if="framework['Published']"
+                            :title="framework['Published']">Published</span>
+                        <span v-if="loggedIn">
+                            Make private
+                            <input
+                                type="checkbox"
+                                v-model="privateFramework">
+                        </span>
+                    </div>
+                </Component>
                 <Hierarchy
                     :container="framework"
                     containerType="Framework"
@@ -72,28 +72,27 @@
                     edgeRelationLiteral="narrows"
                     edgeSourceProperty="source"
                     edgeTargetProperty="target"
-                    :editable="disallowEdits !== true && queryParams.view !== 'true'"
+                    :viewOnly="queryParams.view === 'true'"
                     :repo="repo"
                     :queryParams="queryParams"
                     :exportOptions="competencyExportOptions"
                     :highlightList="highlightCompetency"
-                    :selectMode="selectButtonText != null"
-                    :selectAll="selectAll"
                     :profile="competencyProfile"
-                    :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
-                    iframeText="Attach subitems from other sources to the selected item."
-                    @select="select"
                     @deleteObject="deleteObject"
+                    @editMultipleEvent="onEditMultiple"
                     @removeObject="removeObject"
                     @exportObject="exportObject"
-                    :isEditingContainer="isEditingContainer"
-                    @editingContainer="handleEditingContainer($event)" />
+                    @searchThings="handleSearch($event)"
+                    @selectButtonClick="onSelectButtonClick"
+                    :properties="properties"
+                    @selectedArray="selectedArrayEvent" />
             </div>
         </div>
     </div>
 </template>
 <script>
 import Thing from '@/lode/components/lode/Thing.vue';
+import ThingEditing from '@/lode/components/lode/ThingEditing.vue';
 import Hierarchy from '@/lode/components/lode/Hierarchy.vue';
 import common from '@/mixins/common.js';
 import exports from '@/mixins/exports.js';
@@ -101,17 +100,24 @@ import competencyEdits from '@/mixins/competencyEdits.js';
 import ctdlasnProfile from '@/mixins/ctdlasnProfile.js';
 import t3Profile from '@/mixins/t3Profile.js';
 import tlaProfile from '@/mixins/tlaProfile.js';
+
+import FrameworkEditorToolbar from '@/components/framework/EditorToolbar.vue';
+import RightAside from '@/components/framework/RightAside.vue';
+import DynamicModal from '@/components/modals/DynamicModal.vue';
+
 export default {
     name: "Framework",
     props: {
-        exportType: String,
         queryParams: Object,
-        disallowEdits: Boolean,
         profileOverride: Object
     },
     mixins: [common, exports, competencyEdits, ctdlasnProfile, t3Profile, tlaProfile],
     data: function() {
         return {
+            showVersionHistory: false,
+            showEditMultiple: false,
+            showClipboardSuccessModal: false,
+            showComments: false,
             repo: window.repo,
             frameworkExportLink: null,
             frameworkExportGuid: null,
@@ -124,17 +130,39 @@ export default {
                 {name: "Credential Engine ASN (JSON-LD)", value: "ctdlasnJsonld"},
                 {name: "IMS Global CASE (JSON)", value: "case"}
             ],
+            frameworkExportOptions: [
+                {name: "Achievement Standards Network (RDF+JSON)", value: "asn"},
+                {name: "CASS (JSON-LD)", value: "jsonld"},
+                {name: "CaSS (RDF Quads)", value: "rdfQuads"},
+                {name: "CaSS (RDF+JSON)", value: "rdfJson"},
+                {name: "CaSS (RDF+XML)", value: "rdfXml"},
+                {name: "CaSS (Turtle)", value: "turtle"},
+                {name: "Credential Engine ASN (JSON-LD)", value: "ctdlasnJsonld"},
+                {name: "Credential Engine ASN (CSV)", value: "ctdlasnCsv"},
+                {name: "Table (CSV)", value: "csv"},
+                {name: "IMS Global CASE (JSON)", value: "case"}
+            ],
             highlightCompetency: null,
-            selectButtonText: null,
-            selectAllButton: false,
-            selectAll: false,
-            selectedArray: [],
-            isEditingContainer: false
+            editingFramework: false,
+            properties: "primary",
+            config: null,
+            privateFramework: false,
+            selectedArray: []
         };
     },
     computed: {
+        showRightAside: function() {
+            return this.$store.getters['app/showRightAside'];
+        },
+        dynamicThingComponent: function() {
+            if (this.editingFramework) {
+                return 'ThingEditing';
+            } else {
+                return 'Thing';
+            }
+        },
         framework: function() {
-            return this.$store.state.editor.framework;
+            return this.$store.getters['editor/framework'];
         },
         timestamp: function() {
             if (this.framework.getTimestamp()) {
@@ -154,9 +182,22 @@ export default {
             }
         },
         shortId: function() {
-            return this.$store.state.editor.framework.shortId();
+            if (this.framework) {
+                return this.framework.shortId();
+            } else {
+                return null;
+            }
+        },
+        loggedIn: function() {
+            if (EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
+                return true;
+            }
+            return false;
         },
         frameworkProfile: function() {
+            if (this.config) {
+                return this.config.frameworkConfig;
+            }
             if (this.$store.state.editor.t3Profile === true) {
                 return this.t3FrameworkProfile;
             }
@@ -176,7 +217,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The URL of the framework."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Framework URL"}],
-                    "readOnly": true,
+                    "readOnly": "true",
                     "max": 1,
                     "heading": "Keys"
                 },
@@ -190,7 +231,7 @@ export default {
                     [{"@language": "en", "@value": "The name of the framework. One name per language."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Framework Name"}],
                     "heading": "General",
-                    "onePerLanguage": true
+                    "onePerLanguage": "true"
                 },
                 "http://schema.org/description": {
                     "@id": "http://schema.org/description",
@@ -202,12 +243,48 @@ export default {
                     [{"@language": "en", "@value": "The description of the framework. One description per language"}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}],
                     "heading": "General",
-                    "onePerLanguage": true
+                    "onePerLanguage": "true"
                 },
                 "headings": ["Keys", "General"]
             };
         },
         competencyProfile: function() {
+            if (this.config) {
+                var profile = this.config.competencyConfig;
+                if (this.config.levelsConfig) {
+                    var me = this;
+                    var key = EcObject.keys(this.config.levelsConfig);
+                    key = key[0];
+                    profile.secondaryProperties.push(key);
+                    profile[key] = this.config.levelsConfig[key];
+                    profile[key]["http://schema.org/rangeIncludes"] = [{"@id": "https://schema.cassproject.org/0.4/Level"}];
+                    profile[key]["valuesIndexed"] = function() { return me.levels; };
+                    if (!profile[key]["options"]) {
+                        profile[key]["noTextEditing"] = 'true';
+                        profile[key]["add"] = function(selectedCompetency, levelId) { me.addLevel(selectedCompetency, levelId); };
+                        profile[key]["save"] = function() { me.saveFramework(); };
+                        profile[key]["remove"] = function(competency, levelId) { me.removeLevelFromFramework(levelId); };
+                    } else {
+                        profile[key]["add"] = "checkedOptions";
+                        profile[key]["save"] = function(selectedCompetency, checkedOptions, allOptions) { me.saveCheckedLevels(selectedCompetency, checkedOptions, allOptions); };
+                    }
+                }
+                if (this.config.relationshipConfig) {
+                    var keys = EcObject.keys(this.config.relationshipConfig);
+                    for (var i = 0; i < keys.length; i++) {
+                        let key = keys[i];
+                        var me = this;
+                        profile.secondaryProperties.push(key);
+                        profile[key] = this.config.relationshipConfig[key];
+                        profile[key]["http://schema.org/rangeIncludes"] = [{"@id": "https://schema.cassproject.org/0.4/Competency"}];
+                        profile[key]["valuesIndexed"] = function() { return me.relations[key]; };
+                        profile[key]["noTextEditing"] = 'true';
+                        profile[key]["remove"] = function(source, target) { me.removeRelationFromFramework(source, key, target); };
+                        profile[key]["add"] = function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, key, values); };
+                    }
+                }
+                return profile;
+            }
             if (this.$store.state.editor.t3Profile === true) {
                 return this.t3CompetencyProfile;
             }
@@ -229,7 +306,7 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "The URL of the competency."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "URL"}],
-                        "readOnly": true,
+                        "readOnly": "true",
                         "max": 1,
                         "heading": "Keys"
                     },
@@ -243,7 +320,7 @@ export default {
                         [{"@language": "en", "@value": "The name of the competency. One name per language."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}],
                         "heading": "General",
-                        "onePerLanguage": true
+                        "onePerLanguage": "true"
                     },
                     "http://schema.org/description": {
                         "@id": "http://schema.org/description",
@@ -281,107 +358,86 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Level"}],
                         "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Level"}],
                         "valuesIndexed": function() { return me.levels; },
-                        "noTextEditing": true,
+                        "noTextEditing": "true",
                         "add": function(selectedCompetency) { me.addLevel(selectedCompetency); },
                         "remove": function(competency, levelId) { me.removeLevelFromFramework(levelId); },
                         "save": function() { me.saveFramework(); },
                         "heading": "Connections"
                     },
                     "narrows": {
-                        "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                        "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "A sub-competency relationship which has relevance to this competency."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Narrows"}],
-                        "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
-                        "iframeText": "Select competencies to align...",
                         "valuesIndexed": function() { return me.relations["narrows"]; },
-                        "noTextEditing": true,
-                        "add": "unsaved",
-                        "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "narrows", values); },
+                        "noTextEditing": "true",
+                        "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "narrows", values); },
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "narrows", target); },
                         "heading": "Connections"
                     },
                     "broadens": {
-                        "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                        "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "Covers other relevant competencies not found in this competency."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Broadens"}],
-                        "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
-                        "iframeText": "Select competencies to align...",
                         "valuesIndexed": function() { return me.relations["broadens"]; },
-                        "noTextEditing": true,
-                        "add": "unsaved",
-                        "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "broadens", values); },
+                        "noTextEditing": "true",
+                        "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "broadens", values); },
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "broadens", target); },
                         "heading": "Connections"
                     },
                     "isEquivalentTo": {
-                        "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                        "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "Represents same capability in all aspects to another competency."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Equivalent To"}],
-                        "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
-                        "iframeText": "Select competencies to align...",
                         "valuesIndexed": function() { return me.relations["isEquivalentTo"]; },
-                        "noTextEditing": true,
-                        "add": "unsaved",
-                        "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEquivalentTo", values); },
+                        "noTextEditing": "true",
+                        "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEquivalentTo", values); },
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "isEquivalentTo", target); },
                         "heading": "Connections"
                     },
                     "requires": {
-                        "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                        "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "Another competency is prerequisite for this."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Requires"}],
-                        "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
-                        "iframeText": "Select competencies to align...",
                         "valuesIndexed": function() { return me.relations["requires"]; },
-                        "noTextEditing": true,
-                        "add": "unsaved",
-                        "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "requires", values); },
+                        "noTextEditing": "true",
+                        "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "requires", values); },
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "requires", target); },
                         "heading": "Connections"
                     },
                     "isEnabledBy": {
-                        "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                        "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "A recommended option that speeds up acquisition of this competency."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Enabled By"}],
-                        "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
-                        "iframeText": "Select competencies to align...",
                         "valuesIndexed": function() { return me.relations["isEnabledBy"]; },
-                        "noTextEditing": true,
-                        "add": "unsaved",
-                        "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEnabledBy", values); },
+                        "noTextEditing": "true",
+                        "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEnabledBy", values); },
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "isEnabledBy", target); },
                         "heading": "Connections"
                     },
                     "isRelatedTo": {
-                        "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                        "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "This competency has some degree of overlap with another."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Related To"}],
-                        "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
-                        "iframeText": "Select competencies to align...",
                         "valuesIndexed": function() { return me.relations["isRelatedTo"]; },
-                        "noTextEditing": true,
-                        "add": "unsaved",
-                        "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isRelatedTo", values); },
+                        "noTextEditing": "true",
+                        "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isRelatedTo", values); },
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "isRelatedTo", target); },
                         "heading": "Connections"
                     },
                     "desires": {
-                        "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                        "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "Recommended, assumed, or expected competency not essential to acquisition of this competency."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Desires"}],
-                        "iframePath": me.$store.state.editor.iframeCompetencyPathInterframework,
-                        "iframeText": "Select competencies to align...",
                         "valuesIndexed": function() { return me.relations["desires"]; },
-                        "noTextEditing": true,
-                        "add": "unsaved",
-                        "save": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "desires", values); },
+                        "noTextEditing": "true",
+                        "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "desires", values); },
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "desires", target); },
                         "heading": "Connections"
                     },
@@ -390,40 +446,198 @@ export default {
             }
         }
     },
-    components: {Hierarchy, Thing},
+    components: {
+        Hierarchy,
+        Thing,
+        ThingEditing,
+        FrameworkEditorToolbar,
+        RightAside,
+        DynamicModal
+    },
     created: function() {
-        this.refreshPage();
+        // Set configuration create() happens before mount, make sure framework exists in case
+        // the page was being refreshed and no longer exists.
+        if (this.framework !== null) {
+            this.getConfiguration();
+            this.refreshPage();
+            this.spitEvent('viewChanged');
+        }
+    },
+    mounted: function() {
+        if (!this.framework) {
+            this.$router.push({name: "frameworks"});
+        } else {
+            this.checkIsPrivate();
+        }
     },
     watch: {
-        exportType: function() {
-            if (this.exportType === "asn") {
-                this.exportAsn(this.frameworkExportLink);
-            } else if (this.exportType === "jsonld") {
-                this.exportJsonld(this.frameworkExportLink);
-            } else if (this.exportType === "rdfQuads") {
-                this.exportRdfQuads(this.frameworkExportLink);
-            } else if (this.exportType === "rdfJson") {
-                this.exportRdfJson(this.frameworkExportLink);
-            } else if (this.exportType === "rdfXml") {
-                this.exportRdfXml(this.frameworkExportLink);
-            } else if (this.exportType === "turtle") {
-                this.exportTurtle(this.frameworkExportLink);
-            } else if (this.exportType === "ctdlasnJsonld") {
-                this.exportCtdlasnJsonld(this.frameworkExportLink);
-            } else if (this.exportType === "ctdlasnCsv") {
-                this.exportCtdlasnCsv(this.frameworkExportLink);
-            } else if (this.exportType === "csv") {
-                this.exportCsv();
-            } else if (this.exportType === "case") {
-                this.exportCasePackages(guid);
-            }
-        },
         shortId: function() {
             this.refreshPage();
+        },
+        privateFramework: function() {
+            var me = this;
+            var framework = this.framework;
+            if (this.privateFramework === true) {
+                this.$store.commit('editor/private', true);
+                if (framework.competency && framework.competency.length > 0) {
+                    new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
+                        EcCompetency.get(competencyId, function(c) {
+                            if (c.canEditAny(EcIdentityManager.getMyPks())) {
+                                c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                                c["schema:dateModified"] = new Date().toISOString();
+                                c = EcEncryptedValue.toEncryptedValue(c);
+                                me.repo.saveTo(c, done, done);
+                            } else {
+                                done();
+                            }
+                        }, done);
+                    }, function(competencyIds) {
+                        if (framework.relation && framework.relation.length > 0) {
+                            new EcAsyncHelper().each(framework.relation, function(relationId, done) {
+                                EcAlignment.get(relationId, function(r) {
+                                    r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                                    r = EcEncryptedValue.toEncryptedValue(r);
+                                    me.repo.saveTo(r, done, done);
+                                }, done);
+                            }, function(relationIds) {
+                                me.encryptFramework(framework);
+                            });
+                        } else {
+                            me.encryptFramework(framework);
+                        }
+                    });
+                } else {
+                    me.encryptFramework(framework);
+                }
+            } else {
+                this.$store.commit('editor/private', false);
+                framework = EcEncryptedValue.toEncryptedValue(framework);
+                var f = new EcFramework();
+                f.copyFrom(framework.decryptIntoObject());
+                f["schema:dateModified"] = new Date().toISOString();
+                delete f.reader;
+                EcEncryptedValue.encryptOnSave(f.id, false);
+                me.repo.saveTo(f, function() {}, console.error);
+                framework = f;
+                if (framework.competency && framework.competency.length > 0) {
+                    new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
+                        EcRepository.get(competencyId, function(c) {
+                            var v;
+                            if (c.canEditAny(EcIdentityManager.getMyPks())) {
+                                if (c.isAny(new EcEncryptedValue().getTypes())) {
+                                    v = new EcEncryptedValue();
+                                    v.copyFrom(c);
+                                } else {
+                                    v = EcEncryptedValue.toEncryptedValue(c);
+                                }
+                                c = new EcCompetency();
+                                c.copyFrom(v.decryptIntoObject());
+                                c["schema:dateModified"] = new Date().toISOString();
+                                delete c.reader;
+                                EcEncryptedValue.encryptOnSave(c.id, false);
+                                me.repo.saveTo(c, done, done);
+                            } else {
+                                done();
+                            }
+                        }, done);
+                    }, function(competencyIds) {
+                        if (framework.relation && framework.relation.length > 0) {
+                            new EcAsyncHelper().each(framework.relation, function(relationId, done) {
+                                EcRepository.get(relationId, function(r) {
+                                    var v;
+                                    if (r.isAny(new EcEncryptedValue().getTypes())) {
+                                        v = new EcEncryptedValue();
+                                        v.copyFrom(r);
+                                    } else {
+                                        v = EcEncryptedValue.toEncryptedValue(r);
+                                    }
+                                    r = new EcAlignment();
+                                    r.copyFrom(v.decryptIntoObject());
+                                    delete r.reader;
+                                    EcEncryptedValue.encryptOnSave(r.id, false);
+                                    me.repo.saveTo(r, done, done);
+                                }, done);
+                            }, function(relationIds) {
+                            });
+                        }
+                    });
+                }
+            }
+        },
+        config: function() {
+            this.$store.commit('editor/configuration', this.config);
         }
     },
     methods: {
+        handleSearch: function(e) {
+            this.$store.commit('app/showModal', e);
+        },
+        checkIsPrivate: function() {
+            if (EcRepository.getBlocking(this.framework.id)) {
+                if (EcRepository.getBlocking(this.framework.id).type === "EncryptedValue") {
+                    this.privateFramework = true;
+                } else {
+                    this.privateFramework = false;
+                }
+            }
+        },
+        getConfiguration: function() {
+            var me = this;
+            if (this.framework.configuration) {
+                var c = EcRepository.getBlocking(this.framework.configuration);
+                console.log("c is: ", c);
+                if (c) {
+                    console.log("c is: ", c);
+                    this.config = c;
+                }
+                console.log("c is: ", c);
+            } else if (localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId")) {
+                // If no framework configuration, use browser default
+                var c = EcRepository.getBlocking(localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId"));
+                if (c) {
+                    this.config = c;
+                }
+            }
+            if (!this.config) {
+                this.repo.searchWithParams("@type:Configuration", {'size': 10000}, function(c) {
+                    if (c.isDefault === "true") {
+                        me.config = c;
+                    }
+                }, function() {}, function() {});
+            }
+        },
+        onCancelEditMultiple: function() {
+            this.showEditMultiple = false;
+        },
+        onEditMultiple: function() {
+            this.showEditMultiple = true;
+            var payload = {
+                profile: this.competencyProfile,
+                selectedCompetencies: this.selectedArray,
+                component: 'MultiEdit'
+            };
+            this.$store.commit('app/showModal', payload);
+        },
+        onEditNode: function() {
+            this.editingFramework = true;
+        },
+        onDoneEditingNode: function() {
+            this.editingFramework = false;
+        },
+        onOpenComments: function() {
+            this.showComments = true;
+        },
+        onCloseComments: function() {
+            this.showComments = false;
+        },
+        selectedArrayEvent: function(ary) {
+            this.selectedArray = ary;
+        },
         refreshPage: function() {
+            if (!this.framework) {
+                console.log("no framework to refresh");
+                return;
+            }
             if (EcRepository.shouldTryUrl(this.framework.id) === false) {
                 this.frameworkExportGuid = EcCrypto.md5(this.framework.id);
             } else {
@@ -439,19 +653,6 @@ export default {
                     this.highlightCompetency = this.queryParams.highlightCompetency;
                 }
             }
-            if (this.queryParams.singleSelect) {
-                this.selectButtonText = this.queryParams.singleSelect;
-            }
-            if (this.queryParams.select) {
-                if (this.queryParams.select !== "" && this.queryParams.select !== "select") {
-                    this.selectButtonText = this.queryParams.select;
-                }
-                this.selectAllButton = true;
-            }
-            var path = this.queryParams.editorRoot ? this.queryParams.editorRoot : "/";
-            path += "cass-editor/?select=Align with...&view=true&back=true&frameworkId=" + this.framework.shortId();
-            path += this.$store.state.editor.commonPathIframe;
-            this.$store.commit('editor/iframeCompetencyPathIntraframework', path);
         },
         exportObject: function(selectedCompetency, exportType) {
             var guid;
@@ -477,19 +678,59 @@ export default {
                 this.exportCaseItems(guid);
             }
         },
-        select: function(id, checked) {
-            if (checked) {
-                EcArray.setAdd(this.selectedArray, id);
-            } else {
-                EcArray.setRemove(this.selectedArray, id);
+        exportFramework: function(exportType) {
+            if (exportType === "asn") {
+                this.exportAsn(this.frameworkExportLink);
+            } else if (exportType === "jsonld") {
+                this.exportJsonld(this.frameworkExportLink);
+            } else if (exportType === "rdfQuads") {
+                this.exportRdfQuads(this.frameworkExportLink);
+            } else if (exportType === "rdfJson") {
+                this.exportRdfJson(this.frameworkExportLink);
+            } else if (exportType === "rdfXml") {
+                this.exportRdfXml(this.frameworkExportLink);
+            } else if (exportType === "turtle") {
+                this.exportTurtle(this.frameworkExportLink);
+            } else if (exportType === "ctdlasnJsonld") {
+                this.exportCtdlasnJsonld(this.frameworkExportLink);
+            } else if (exportType === "ctdlasnCsv") {
+                this.exportCtdlasnCsv(this.frameworkExportLink);
+            } else if (exportType === "csv") {
+                this.exportCsv();
+            } else if (exportType === "case") {
+                this.exportCasePackages(guid);
             }
         },
-        handleEditingContainer: function(e) {
-            if (e) {
-                this.isEditingContainer = true;
-            } else {
-                this.isEditingContainer = false;
-            }
+        changeProperties: function(type) {
+            this.properties = type;
+        },
+        encryptFramework: function(framework) {
+            var f = new EcFramework();
+            f.copyFrom(framework);
+            f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            f["schema:dateModified"] = new Date().toISOString();
+            f = EcEncryptedValue.toEncryptedValue(f);
+            this.repo.saveTo(f, function() {}, console.error);
+        },
+        onSelectButtonClick: function(ids) {
+            this.selectButton(ids);
+        },
+        onOpenExportModal() {
+            let params = {};
+            var me = this;
+            console.log("options", typeof me.frameworkExportOptions);
+            params = {
+                type: "export",
+                selectedExportOption: '',
+                title: "Export Framework",
+                exportOptions: me.frameworkExportOptions,
+                text: "Select a file format to export your framework. Files download locally.",
+                onConfirm: (e) => {
+                    return me.exportFramework(e);
+                }
+            };
+            // reveal modal
+            this.$modal.show(params);
         }
     }
 };
@@ -497,6 +738,5 @@ export default {
 
 <style lang="scss">
     @import './../../scss/framework.scss';
-
 
 </style>

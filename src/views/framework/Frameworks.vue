@@ -1,12 +1,78 @@
 <template>
-    <div class="page-framework-list">
-        <div class="container">
+    <div class="framework-list-page">
+        <RightAside v-if="showRightAside" />
+        <!-- search field -->
+        <div class="container is-fluid is-marginless is-paddingless">
             <div class="section">
+                <div class="field">
+                    <p class="control has-icons-right">
+                        <input
+                            class="input is-large"
+                            ref="text"
+                            :placeholder="'Search for '+type+'s...'"
+                            @change="updateSearchTerm($event)"
+                            @keyup.enter="updateSearchTerm($event)">
+                        <span
+                            class="icon is-small is-right">
+                            <i class="fas fa-search" />
+                        </span>
+                    </p>
+                </div>
+                <!-- filter option button opens side bar -->
+                <div class="buttons is-right">
+                    <div
+                        @click="clearAllFilters()"
+                        class="button is-dark is-outlined">
+                        clear filters
+                    </div>
+                    <div
+                        class="button is-primary is-outlined"
+                        @click="$store.commit('app/showRightAside', 'FilterAndSort')">
+                        filter options
+                    </div>
+                </div>
+                <div class="section">
+                    <span
+                        v-for="filter in filteredQuickFilters"
+                        :key="filter"
+                        class="tag is-dark">
+                        {{ filter.label }}
+                        <button
+                            @click="removeFilter('quickFilters', filter)"
+                            class="delete is-small" />
+                    </span>
+                    <template class="">
+                        <span
+                            v-for="filter in filteredSortResults"
+                            :key="filter"
+                            class="tag is-dark">
+                            {{ filter.label }}
+                            <button
+                                @click="removeFilter('sortResults', filter)"
+                                class="delete is-small" />
+                        </span>
+                    </template>
+                    <template class="section">
+                        <span
+                            v-for="filter in filteredSearchTo"
+                            :key="filter"
+                            class="tag is-dark">
+                            {{ filter.label }}
+                            <button
+                                @click="removeFilter('applySearchTo', filter)"
+                                class="delete is-small" />
+                        </span>
+                    </template>
+                </div>
+            </div>
+            <div
+                v-if="!queryParams.concepts==='true'"
+                class="section">
                 <!-- sort options -->
                 <div class="control">
                     <label
-                        v-if="queryParams.concepts==='true'"
-                        class="radio is-large"
+                        v-if="!queryParams.concepts==='true'"
+                        class="is-checkradio is-large"
                         for="dcterms:title.keyword">
                         <input
                             type="radio"
@@ -36,7 +102,7 @@
                 </div>
                 <!-- show my frameworks radio -->
                 <div class="control">
-                    <div v-if="queryParams.show!=='mine'&&queryParams.conceptShow!=='mine'&&numIdentities">
+                    <div v-if="queryParams.show !== 'mine' && queryParams.conceptShow !== 'mine' && numIdentities">
                         <label
                             class="checkbox"
                             for="showMine">
@@ -63,10 +129,10 @@
                         <span
                             class="framework-list-item__details is-light"
                             v-if="queryParams.concepts!=='true'">
-                            <span class="details-label">
+                            <span>
                                 Items:
                             </span>
-                            <span class="details-value">
+                            <span>
                                 {{ slotProps.item.competency ? slotProps.item.competency.length : 0 }}
                             </span>
                         </span>
@@ -146,6 +212,7 @@
 </template>
 <script>
 import List from '@/lode/components/lode/List.vue';
+import RightAside from '@/components/framework/RightAside.vue';
 import common from '@/mixins/common.js';
 export default {
     name: "Frameworks",
@@ -164,8 +231,40 @@ export default {
     created: function() {
         this.sortBy = this.queryParams.concepts === 'true' ? "dcterms:title.keyword" : "name.keyword";
         this.$store.commit("editor/t3Profile", false);
+        this.$store.commit('editor/framework', null);
+        this.spitEvent('viewChanged');
     },
     computed: {
+        applySearchTo: function() {
+            return this.$store.getters['app/applySearchTo'];
+        },
+        filteredSearchTo: function() {
+            let filterValues = this.applySearchTo.filter(item => item.checked === true);
+            console.log('filtered value', filterValues);
+            return filterValues;
+        },
+        quickFilters: function() {
+            return this.$store.getters['app/quickFilters'];
+        },
+        filteredQuickFilters: function() {
+            let filterValues = this.quickFilters.filter(item => item.checked === true);
+            console.log('filtered value', filterValues);
+            return filterValues;
+        },
+        sortResults: function() {
+            return this.$store.getters['app/sortResults'];
+        },
+        filteredSortResults: function() {
+            let filterValues = this.sortResults.filter(item => item.checked === true);
+            console.log('filtered value', filterValues);
+            return filterValues;
+        },
+        showRightAside: function() {
+            return this.$store.getters['app/showRightAside'];
+        },
+        frameworkSearchTerm: function() {
+            return this.$store.getters['app/searchTerm'];
+        },
         type: function() {
             return this.queryParams.concepts === 'true' ? "ConceptScheme" : "Framework";
         },
@@ -201,8 +300,21 @@ export default {
             return obj;
         }
     },
-    components: {List},
+    components: {List, RightAside},
     methods: {
+        clearAllFilters: function() {
+            this.$store.commit('app/clearSearchFilters');
+        },
+        removeFilter: function(filterType, val) {
+            let storeCaller = 'app/' + filterType;
+            let filterArray = this.$store.getters[storeCaller];
+            let objIndex = filterArray.findIndex(obj => obj.id === val.id);
+            filterArray[objIndex].checked = false;
+            this.$store.commit(storeCaller, filterArray);
+        },
+        updateSearchTerm: function(e) {
+            this.$store.commit('app/searchTerm', e.target.value);
+        },
         frameworkClick: function(framework) {
             var me = this;
             if (this.queryParams.concepts === "true") {

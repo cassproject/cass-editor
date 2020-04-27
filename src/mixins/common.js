@@ -84,6 +84,47 @@ export default {
                 }
             }
             return obj;
+        },
+        conceptCtids: function() {
+            var me = this;
+            if (this.queryParams.ceasnDataFields !== "true") {
+                return null;
+            }
+            var obj = {};
+            obj[this.framework.shortId()] = [{"@value": this.getCTID(this.framework.shortId())}];
+            var subCtids = function(ary) {
+                for (var i = 0; i < ary.length; i++) {
+                    obj[ary[i]] = [{"@value": me.getCTID(ary[i])}];
+                    var concept = EcConcept.getBlocking(ary[i]);
+                    if (concept["skos:narrower"]) {
+                        subCtids(concept["skos:narrower"]);
+                    }
+                }
+            };
+            if (this.framework["skos:hasTopConcept"]) {
+                subCtids(this.framework["skos:hasTopConcept"]);
+            }
+            return obj;
+        },
+        conceptRegistryURLs: function() {
+            var me = this;
+            if (this.queryParams.ceasnDataFields !== "true") {
+                return null;
+            }
+            var obj = {};
+            var subURLs = function(ary) {
+                for (var i = 0; i < ary.length; i++) {
+                    obj[ary[i]] = [{"@value": me.ceasnRegistryUriTransform(ary[i])}];
+                    var concept = EcConcept.getBlocking(ary[i]);
+                    if (concept["skos:narrower"]) {
+                        subURLs(concept["skos:narrower"]);
+                    }
+                }
+            };
+            if (this.framework["skos:hasTopConcept"]) {
+                subURLs(this.framework["skos:hasTopConcept"]);
+            }
+            return obj;
         }
     },
     methods: {
@@ -261,18 +302,21 @@ export default {
                 });
             })(id, depth);
         },
-        selectButton: function() {
+        selectButton: function(selectedArray) {
             var ary = [];
             var async = EcRemote.async;
             EcRemote.async = false;
-            for (var i = 0; i < this.selectedArray.length; i++) {
+            if (!selectedArray) {
+                selectedArray = this.selectedArray;
+            }
+            for (var i = 0; i < selectedArray.length; i++) {
                 if (this.queryParams.selectVerbose === "true" && this.queryParams.concepts !== "true") {
                     if (this.queryParams.selectExport === "ctdlasn") {
                         var link;
-                        if (EcRepository.shouldTryUrl(this.selectedArray[i]) === false) {
-                            link = this.repo.selectedServer + "ceasn/" + EcCrypto.md5(this.selectedArray[i]);
+                        if (EcRepository.shouldTryUrl(selectedArray[i]) === false) {
+                            link = this.repo.selectedServer + "ceasn/" + EcCrypto.md5(selectedArray[i]);
                         } else {
-                            link = this.selectedArray[i].replace("/data/", "/ceasn/");
+                            link = selectedArray[i].replace("/data/", "/ceasn/");
                         }
                         this.get(link, null, null, function(success) {
                             ary.push(JSON.parse(success));
@@ -280,18 +324,18 @@ export default {
                             console.log(failure);
                         });
                     } else {
-                        ary.push(JSON.parse(EcCompetency.getBlocking(this.selectedArray[i]).toJson()));
+                        ary.push(JSON.parse(EcCompetency.getBlocking(selectedArray[i]).toJson()));
                     }
                 } else if (this.queryParams.selectVerbose === "true") {
-                    ary.push(JSON.parse(EcConcept.getBlocking(this.selectedArray[i]).toJson()));
+                    ary.push(JSON.parse(EcConcept.getBlocking(selectedArray[i]).toJson()));
                 } else {
-                    ary.push(this.selectedArray[i]);
+                    ary.push(selectedArray[i]);
                 }
             }
             if (this.queryParams.selectRelations === "true" && this.framework.relation) {
                 for (var i = 0; i < this.framework.relation.length; i++) {
                     var relation = EcAlignment.getBlocking(this.framework.relation[i]);
-                    if (EcArray.has(this.selectedArray, relation.target)) {
+                    if (EcArray.has(selectedArray, relation.target)) {
                         if (this.queryParams.selectVerbose === "true") {
                             ary.push(JSON.parse((rld).toJson()));
                         } else {
@@ -330,24 +374,31 @@ export default {
             parent.postMessage(message, this.queryParams.origin);
             EcRemote.async = async;
         },
-        addLevel: function(selectedCompetency) {
-            var c = new EcLevel();
-            var me = this;
-            if (this.queryParams.newObjectEndpoint != null) {
-                c.generateShortId(this.queryParams.newObjectEndpoint);
+        addLevel: function(selectedCompetency, optionalLevelUrl) {
+            var c;
+            if (!optionalLevelUrl) {
+                c = new EcLevel();
+                var me = this;
+                if (this.queryParams.newObjectEndpoint != null) {
+                    c.generateShortId(this.queryParams.newObjectEndpoint);
+                } else {
+                    c.generateId(this.repo.selectedServer);
+                }
+                c["schema:dateCreated"] = new Date().toISOString();
+                c.name = "New Level";
+                c.competency = selectedCompetency;
             } else {
-                c.generateId(this.repo.selectedServer);
+                optionalLevelUrl = optionalLevelUrl[0];
+                var c = EcRepository.getBlocking(optionalLevelUrl);
+                if (!EcArray.isArray(c.competency)) {
+                    c.competency = [c.competency];
+                }
+                c.competency.push(selectedCompetency);
             }
-            c["schema:dateCreated"] = new Date().toISOString();
-            if (EcIdentityManager.ids.length > 0) {
-                c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-            }
-            c.name = "New Level";
-            c.competency = selectedCompetency;
-            if (this.queryParams.private === "true") {
-                c = EcEncryptedValue.toEncryptedValue(c);
+            this.framework["schema:dateModified"] = new Date().toISOString();
+            if (this.$store.state.editor.private === true) {
                 if (EcEncryptedValue.encryptOnSaveMap[this.framework.id] !== true) {
-                    framework = EcEncryptedValue.toEncryptedValue(framework);
+                    this.framework = EcEncryptedValue.toEncryptedValue(this.framework);
                 }
             }
             this.repo.saveTo(c, function() {
@@ -355,11 +406,45 @@ export default {
                 me.repo.saveTo(me.framework, function() {}, console.error);
             }, console.error);
         },
+        saveCheckedLevels: function(selectedCompetency, checkedOptions, allOptions) {
+            var competencyId = EcRemoteLinkedData.trimVersionFromUrl(selectedCompetency["@id"]);
+            for (var i = 0; i < allOptions.length; i++) {
+                if (!this.framework.level) {
+                    this.framework.level = [];
+                }
+                // If selected
+                if (checkedOptions.indexOf(allOptions[i].val) !== -1) {
+                    var level = EcLevel.getBlocking(allOptions[i].val);
+                    if (!EcArray.isArray(level.competency)) {
+                        level.competency = level.competency == null ? [] : [level.competency];
+                    }
+                    if (level.competency.indexOf(competencyId) === -1) {
+                        level.competency.push(competencyId);
+                        this.repo.saveTo(level, function() {}, console.error);
+                    }
+                    if (this.framework.level.indexOf(level.shortId()) === -1) {
+                        this.framework.addLevel(level.shortId());
+                    }
+                } else {
+                    // If not selected
+                    var level = EcLevel.getBlocking(allOptions[i].val);
+                    if (level.competency && level.competency.indexOf(competencyId) !== -1) {
+                        EcArray.setRemove(level.competency, competencyId);
+                        this.repo.saveTo(level, function() {}, console.error);
+                    }
+                    // If level doesn't have any competencies attached, remove it from the framework.
+                    if ((!level.competency || (level.competency && level.competency.length === 0)) && this.framework.level.indexOf(level.shortId()) !== -1) {
+                        EcArray.setRemove(this.framework.level, level.shortId());
+                    }
+                }
+            }
+            this.saveFramework();
+        },
         saveFramework: function() {
             this.framework["schema:dateModified"] = new Date().toISOString();
             var framework = this.framework;
             this.$store.commit('editor/framework', framework);
-            if (this.queryParams.private === "true" && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+            if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                 framework = EcEncryptedValue.toEncryptedValue(framework);
             }
             this.repo.saveTo(framework, function() {}, console.error);
@@ -371,8 +456,93 @@ export default {
         },
         addRelationsToFramework: function(selectedCompetency, property, values) {
             if (values.length > 0) {
-                this.$parent.addAlignments(values, selectedCompetency, property);
+                selectedCompetency = EcRepository.getBlocking(selectedCompetency);
+                this.addAlignments(values, selectedCompetency, property);
             }
+        },
+        addAlignments: function(targets, thing, relationType, allowSave) {
+            if (this.queryParams.concepts === "true") {
+                return this.addConceptAlignments(targets, thing, relationType);
+            }
+            if (relationType === "ceasn:skillEmbodied" || relationType === "ceasn:abilityEmbodied" || relationType === "ceasn:knowledgeEmbodied" || relationType === "ceasn:taskEmbodied") {
+                // This property is attached to competency, not a relation attached to framework
+                return this.addRelationAsCompetencyField(targets, thing, relationType, allowSave);
+            }
+            for (var i = 0; i < targets.length; i++) {
+                var r = new EcAlignment();
+                if (this.queryParams.newObjectEndpoint != null) {
+                    r.generateShortId(this.newObjectEndpoint);
+                } else {
+                    r.generateId(this.repo.selectedServer);
+                }
+                r["schema:dateCreated"] = new Date().toISOString();
+                r.target = EcRemoteLinkedData.trimVersionFromUrl(targets[i]);
+                if (thing.id) {
+                    r.source = thing.shortId();
+                } else {
+                    r.source = EcRemoteLinkedData.trimVersionFromUrl(thing["@id"]);
+                }
+                if (r.target === r.source) {
+                    return;
+                }
+                r.relationType = relationType;
+                if (r.relationType === "broadens") {
+                    var dosedo = r.target;
+                    r.target = r.source;
+                    r.source = dosedo;
+                    r.relationType = "narrows";
+                }
+                if (EcIdentityManager.ids.length > 0) {
+                    r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                }
+                var framework = this.$store.state.editor.framework;
+                if (framework.owner && framework.owner.length > 0) {
+                    for (var j = 0; j < framework.owner.length; j++) {
+                        var owner = framework.owner[j];
+                        r.addOwner(EcPk.fromPem(owner));
+                    }
+                }
+                if (this.$store.state.editor && this.$store.state.editor.configuration) {
+                    var config = this.$store.state.editor.configuration;
+                    if (config["defaultObjectOwners"]) {
+                        for (var k = 0; k < config["defaultObjectOwners"].length; k++) {
+                            r.addOwner(EcPk.fromPem(config["defaultObjectOwners"][k]));
+                        }
+                    }
+                    if (config["defaultObjectReaders"]) {
+                        for (var k = 0; k < config["defaultObjectReaders"].length; k++) {
+                            r.addReader(EcPk.fromPem(config["defaultObjectReaders"][k]));
+                        }
+                    }
+                }
+                if (this.$store.state.editor.private === true) {
+                    r = EcEncryptedValue.toEncryptedValue(r);
+                }
+                this.repo.saveTo(r, function() {}, console.error);
+                if (thing.type === 'Concept') {
+                    if (framework.relation == null) {
+                        framework.relation = [];
+                    }
+                    let isNew = true;
+                    let idx = 0;
+                    while (isNew && idx < framework.relation.length) {
+                        if (EcRemoteLinkedData.trimVersionFromUrl(framework.relation[idx]).equals(r.id)) {
+                            isNew = false;
+                        }
+                        idx++;
+                    }
+                    if (isNew) {
+                        framework.relation.push(r.id);
+                    }
+                } else {
+                    framework.addRelation(r.id);
+                }
+            }
+            this.$store.commit('editor/framework', framework);
+            if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                framework = EcEncryptedValue.toEncryptedValue(framework);
+            }
+            this.repo.saveTo(framework, function() {}, console.error);
         },
         removeRelationFromFramework: function(source, property, target) {
             var me = this;

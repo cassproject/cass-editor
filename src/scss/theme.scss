@@ -1,6 +1,4 @@
 @charset 'utf-8';
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,700,800|Oswald&display=swap');
-
 @import './variables.scss';
 
 $section-padding-small: .125rem .125rem;
@@ -8,7 +6,7 @@ $section-padding-basic: .25rem .75rem;
 $section-padding: 1rem 1rem;
 $section-padding-medium: 1.5rem 1.5rem;
 $section-padding-large: 3rem 1.5rem;
-$section-padding-tb: .125rem 0rem;
+$section-padding-tb: .5rem 0rem;
 
 $menu-item-color:$black;
 $menu-item-hover-color: $black;
@@ -28,12 +26,11 @@ $navbar-padding-vertical: 2rem;
 $box-padding: .75rem;
 $menu-list-link-padding: .5em 1em;
 
-.subtitle-2 {
-    font-family: $family-secondary;
-    color: $black;
-}
-$title-size: $size-3;
-$subtitle-weight: 300;
+$title-size: $size-2;
+$title-weight: 500;
+$subtitle-weight: 200;
+$subtitle-family: $family-primary;
+$subtitle-line-height: 1.75;
 /* side bad menu theme*/ 
 $menu-label-color: $white;
 $menu-label-font-size:1em;
@@ -42,6 +39,43 @@ $menu-label-spacing:1em;
 
 
 $button-text-hover-background-color: transparent;
+
+$label-color: $dark;
+$label-weight: 600;
+$label-size: .6rem;
+
+/* inputs 
+$control-radius: ;
+$control-radius-small: ;
+$control-padding-vertical:;
+$control-padding-horizontal:''
+
+
+$help-size:;*/
+$column-gap: 6px;
+
+
+$menu-item-color: $white;
+$menu-item-hover-color: $dark;
+$menu-item-hover-background-color: transparent !default;
+$menu-item-active-color: $primary !default;
+$menu-item-active-background-color: $link !default;
+
+$menu-list-border-left: 1px solid $dark !default;
+$menu-list-line-height: 1.25 !default;
+$menu-list-link-padding: 0.5em 0.75em !default;
+$menu-nested-list-margin: 0.75em !default;
+$menu-nested-list-padding-left: 0.75em !default;
+
+$menu-label-color: $light !default;
+$menu-label-font-size: 0.75em !default;
+$menu-label-letter-spacing: 0.1em !default;
+$menu-label-spacing: 1em !default;
+
+$breadcrumb-item-padding-vertial: .25rem;
+$breadcrumb-item-color: $cass-primary-down;
+$breadcrumb-item-hover-color: $cass-primary-down;
+$breadcrumb-item-active-color: $cass-primary-down;
 
 
 // utilities
@@ -52,6 +86,7 @@ $button-text-hover-background-color: transparent;
 @import "./../../node_modules/bulma/sass/form/_all.sass";
 @import "./../../node_modules/bulma/sass/grid/_all.sass";
 @import "./../../node_modules/bulma/sass/layout/_all.sass";
+@import "./../../node_modules/bulma-checkradio/src/sass/index.sass";
 
 @include desktop {
     .pagesRight {
@@ -95,11 +130,11 @@ $button-text-hover-background-color: transparent;
     padding: $section-padding-medium !important;
  }
  .has-dashed-border {
-    border:2px dashed $black !important;
+    border:2px dashed $dark !important;
     border-radius: 1rem;
     min-height: 200px;
     height: 100%;
-    div {
+    div:first {
         display: block;
         width: 100%;
         height: 100%;
@@ -117,45 +152,115 @@ $button-text-hover-background-color: transparent;
      font-weight: medium;
  }
 
-
-
-
-.e-Property {
-  
-    .fa {
-        font-size: $size-7;
-        color: $dark;
-    }
-    label {
-        font-size: $size-7;
-        font-weight: 500;
-    }
-    .e-name {
-        font-size: $size-4;
-        font-weight: 600;
-    }
+.label {
+    font-size: $label-size;
 }
 
-.e-Property-text{
-    border-radius: .25rem;
+.has-text-underlined{
+   border-bottom: solid 1px rgba($primary, .5);
 }
 
-.e-Property-ul{
-    border-radius: .25rem;
-    padding: 0rem .25rem;
-    font-size: .8rem;
-    color: rgba($dark, .9);
-    .button {
-        
-    }
-    .e-description {
-        font-weight: 400;
-        font-size: $size-7;
-    }
-    .e-name {
-        font-weight: 600;
-        font-size: $size-4;
-    }
-    
-    margin: .125em .5em;
+.tag.is-medium-grey {
+    background-color: tint($dark, 80%);
+}
+
+
+
+$key-shadow-umbra-colour: rgba(black, .14);
+$key-shadow-penumbra-colour: rgba(black, .12);
+$ambient-shadow-colour: rgba(black, .20);
+
+$key-shadow-umbra-map: (
+  1: 0 0 2px 0 $key-shadow-umbra-colour,
+  2: 0 0 4px 0 $key-shadow-umbra-colour,
+  3: 0 1px 6px 0 $key-shadow-umbra-colour,
+  4: 0 2px 4px 0 $key-shadow-umbra-colour,
+  5: 0 4px 6px 0 $key-shadow-umbra-colour,
+  6: 0 6px 10px 0 $key-shadow-umbra-colour,
+  7: 0 6px 10px 0 $key-shadow-umbra-colour,
+  8: 0 8px 10px 1px $key-shadow-umbra-colour,
+  9: 0 9px 12px 2px $key-shadow-umbra-colour,
+  10: 0 10px 13px 2px $key-shadow-umbra-colour,
+  11: 0 11px 14px 2px $key-shadow-umbra-colour,
+  12: 0 12px 16px 2px $key-shadow-umbra-colour,
+  13: 0 13px 18px 2px $key-shadow-umbra-colour,
+  14: 0 14px 21px 2px $key-shadow-umbra-colour,
+  15: 0 15px 22px 2px $key-shadow-umbra-colour,
+  16: 0 16px 23px 2px $key-shadow-umbra-colour,
+  17: 0 17px 24px 2px $key-shadow-umbra-colour,
+  18: 0 18px 25px 3px $key-shadow-umbra-colour,
+  19: 0 19px 26px 3px $key-shadow-umbra-colour,
+  20: 0 20px 28px 3px $key-shadow-umbra-colour,
+  21: 0 21px 30px 3px $key-shadow-umbra-colour,
+  22: 0 22px 32px 3px $key-shadow-umbra-colour,
+  23: 0 23px 36px 3px $key-shadow-umbra-colour,
+  24: 0 24px 38px 3px $key-shadow-umbra-colour
+);
+
+$key-shadow-penumbra-map: (
+  1: 0 2px 2px 0 $key-shadow-penumbra-colour,
+  2: 0 3px 4px 0 $key-shadow-penumbra-colour,
+  3: 0 3px 4px 0 $key-shadow-penumbra-colour,
+  4: 0 4px 5px 0 $key-shadow-penumbra-colour,
+  5: 0 4px 5px 0 $key-shadow-penumbra-colour,
+  6: 0 1px 18px 0 $key-shadow-penumbra-colour,
+  7: 0 2px 18px 1px $key-shadow-penumbra-colour,
+  8: 0 3px 14px 2px $key-shadow-penumbra-colour,
+  9: 0 3px 18px 3px $key-shadow-penumbra-colour,
+  10: 0 4px 16px 3px $key-shadow-penumbra-colour,
+  11: 0 4px 18px 3px $key-shadow-penumbra-colour,
+  12: 0 5px 22px 4px $key-shadow-penumbra-colour,
+  13: 0 5px 26px 4px $key-shadow-penumbra-colour,
+  14: 0 5px 29px 4px $key-shadow-penumbra-colour,
+  15: 0 6px 34px 5px $key-shadow-penumbra-colour,
+  16: 0 6px 30px 5px $key-shadow-penumbra-colour,
+  17: 0 6px 36px 5px $key-shadow-penumbra-colour,
+  18: 0 7px 33px 6px $key-shadow-penumbra-colour,
+  19: 0 7px 37px 6px $key-shadow-penumbra-colour,
+  20: 0 8px 34px 6px $key-shadow-penumbra-colour,
+  21: 0 8px 39px 7px $key-shadow-penumbra-colour,
+  22: 0 9px 38px 7px $key-shadow-penumbra-colour,
+  23: 0 9px 40px 7px $key-shadow-penumbra-colour,
+  24: 0 9px 46px 8px $key-shadow-penumbra-colour
+);
+
+$ambient-shadow-map: (
+  1: 0 1px 3px 0 $ambient-shadow-colour,
+  2: 0 1px 5px 0 $ambient-shadow-colour,
+  3: 0 1px 7px 0 $ambient-shadow-colour,
+  4: 0 1px 8px 0 $ambient-shadow-colour,
+  5: 0 1px 10px 0 $ambient-shadow-colour,
+  6: 0 3px 5px 0 $ambient-shadow-colour,
+  7: 0 3px 8px 0 $ambient-shadow-colour,
+  8: 0 4px 15px 0 $ambient-shadow-colour,
+  9: 0 5px 11px 0 $ambient-shadow-colour,
+  10: 0 5px 14px 0 $ambient-shadow-colour,
+  11: 0 6px 10px 0 $ambient-shadow-colour,
+  12: 0 6px 13px 0 $ambient-shadow-colour,
+  13: 0 7px 10px 0 $ambient-shadow-colour,
+  14: 0 7px 12px 0 $ambient-shadow-colour,
+  15: 0 7px 14px 0 $ambient-shadow-colour,
+  16: 0 8px 13px 0 $ambient-shadow-colour,
+  17: 0 8px 15px 0 $ambient-shadow-colour,
+  18: 0 9px 11px 0 $ambient-shadow-colour,
+  19: 0 9px 13px 0 $ambient-shadow-colour,
+  20: 0 9px 15px 0 $ambient-shadow-colour,
+  21: 0 10px 12px 0 $ambient-shadow-colour,
+  22: 0 10px 15px 0 $ambient-shadow-colour,
+  23: 0 11px 13px 0 $ambient-shadow-colour,
+  24: 0 11px 15px 0 $ambient-shadow-colour
+);
+
+// If you don't want all the classes can also just include this mixin and provide an elevation value in any class
+@mixin elevation ($elevation) {
+  box-shadow: map-get($key-shadow-umbra-map, $elevation),
+    map-get($key-shadow-penumbra-map, $elevation),
+    map-get($ambient-shadow-map, $elevation);
+}
+
+// This creates the classes for each elevation dp with numbers from 1 to 24
+@for $elevation from 1 through 24 {
+  .elevation-#{$elevation} {
+    @include elevation($elevation);
+  }
 }

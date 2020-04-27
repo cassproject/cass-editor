@@ -1,15 +1,26 @@
 @import './variables.scss';
 
-.page-framework-list {
+#search-selection__icon {
+    float: right;
+    position:fixed;
+    right: 8px;
+    display: flex;
+    height: 100%;
+    align-content: center;
+    .icon {
+        height: 100%;
+    }
+}
+.framework-list-page {
     label{
         display:none;
     }
-    .e-Property {	
-    padding: .25rem 0rem;	
+    .lode__Property {
+    padding: .5rem 0rem;
     }
 
-    .page {	
-        margin-top: 2rem;	
+    .page {
+        margin-top: 2rem;
     }
     .List {
         .button {
@@ -17,26 +28,31 @@
         }
         .list-ul {
              li.list-ul__item {
+                    padding: .5rem;
+                    background-color: white;
                     width: 100%;
                     display: flex;
+                    flex-wrap: wrap;
                     align-items: center;
                     .list-thing {
                         width: calc(100% - 56px);
                     }
-                    .icon {
-                        width: 56px;
-                        display: none;
-                        flex-direction: column;
-                    }
+
+            }
+            li.list-ul__item:hover {
+                background-color: $cass-lightest;
+                #arrow-icon {
+                    display:block;
+                }
             }
             .list-ul__item{
-                background-color:$white;
                 border-radius: $border-radius;
                 padding: .0rem .5rem .25rem .125rem;
                 margin-top: .5rem;
                 .framework-list-item__details {
                     color: rgba($dark, .6);
                     padding-right: .5rem;
+                    padding-left: 0rem;
                     font-size: $size-7;
                     .details-value {
 
@@ -45,37 +61,33 @@
                         font-weight: 600;
                     }
                 }
-            
+
             }
             .list-ul__item:hover {
-                background-color: rgba($dark, .1);
-                    .icon {
-                        width: 56px;
-                        display: flex;
-                        flex-direction: column;
-                    }
             }
-            .thing {
+            .lode__thing {
                 .bottom-actions, .top-actions {
                     display: none !important;
                 }
-                .e-Thing.e-Framework {
+                .lode__Framework {
                     transform: translateX(0);
                     cursor: pointer;
-                    .e-Framework {
-                       
+                    .lode__Framework {
+
                     }
-                    .e-Thing-ul {
+                    .lode__Thing-ul {
                         padding: 0rem .5rem;
                         width: 100%;
 
                     }
-                    
+
                 }
             }
         }
     }
-     .e-Framework, .page-framework-list .e-ConceptScheme {
+     .lode__Framework,
+     .framework-list-page
+     .lode__ConceptScheme {
         a {
             display:none;
         }
@@ -88,66 +100,73 @@
         .not-editable {
             display:inline;
         }
+        .field {
+            padding-left: 0;
+        }
     }
-    .e-name {
-        .e-Property-ul{
-            .property-value {
-                display: inline-block;
-            }
-            .property-value:nth-of-type(n + 3):not(:last-child) {
-                &::before {
-                    content: ", ";
+    .lode__name {
+        .field {
+            padding-left: 0;
+            display: inline-block;
+        }
+        .field:nth-of-type(n + 3) {
+            .field-body {
+                .field {
+                    padding-left: 0;
+                    &::before {
+                        content: ", ";
+                    }
                 }
             }
-            .property-value:first-child {
-                display: block;
-                font-weight: 500;
-                font-family: $family-secondary;
-                width: 100%;
-                font-size: $size-3;
-                .e-Property-text {
+        }
+        .field:first-of-type{
+            display: block;
+            .field-body {
+                .field {
+                    display: block;
+                    font-weight: 500;
+                    font-family: $family-secondary;
+                    width: 100%;
                     font-size: $size-3;
                 }
             }
         }
-        
+
+
+
         label {
             display:none;
         }
-        .e-Property-ul{	
-            border-radius: .25rem;	
-            padding: 0rem .0rem;	
-            font-size: .8rem;	
-            margin: .125em 0em;	
+        .lode__Property-ul{
+            border-radius: .25rem;
+            padding: 0rem .0rem;
+            font-size: .8rem;
+            margin: .125em 0em;
 
-            color: rgba($dark, .9);	
-            .button {	
+            color: rgba($dark, .9);
+            .button {
 
-            }	
-            .e-description {	
-                font-weight: 400;	
-                font-size: $size-7;	
-            }	
-            .e-name{	
-                font-weight: 600;	
-                font-size: $size-4;	
-            }	
-
-            .fa {	
-                font-size: $size-7;	
-                color: $dark;	
-            }	
-            label {	
-                font-size: $size-7;	
-                font-weight: 500;	
             }
-        }	
+            .lode__description {
+                font-weight: 400;
+                font-size: $size-7;
+            }
+            .lode__name{
+                font-weight: 600;
+                font-size: $size-4;
+            }
+
+            label {
+                font-size: $size-7;
+                font-weight: 500;
+            }
+        }
     }
-    .e-description {
-        .e-Property-text  {
+    .lode__description {
+        .lode__Property-text  {
             font-size: $size-6;
         }
-        .e-Property-ul {
+        .lode__Property-ul {
             margin: 0rem;
         }
     }

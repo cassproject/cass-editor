@@ -14,14 +14,14 @@
             ref="file"
             style="display: none;">
         <div class="section">
-            <div class="columns">
+            <div class="columns is-centered is-multiline">
                 <div class="column is-12">
-                    <p class="is-size-6">
+                    <p class="is-size-5">
                         Files to Upload
                     </p>
                 </div>
                 <div class="column is-12">
-                    <p class="is-size-7">
+                    <p class="is-size-6">
                         Drag and drop, or click to upload.
                     </p>
                 </div>
@@ -32,7 +32,7 @@
                             v-for="file in files"
                             :key="file"
                             style="display: inline; vertical-align: middle;">
-                            <span>
+                            <span class="has-text-weight-bold">
                                 {{ file.name }} ({{ file.size | kb }} kb)
                                 <button
                                     title="Remove"
@@ -47,17 +47,14 @@
                     </ul>
                 </div><div class="column is-12">
                     <button
-                        class="button is-info is-medium"
+                        class="button is-outlined is-primary is-medium"
                         :disabled="uploadDisabled"
-                        @click="upload">
+                        @click="process">
                         <span>
                             Process Files
                         </span>
-                        <span class="icon">
-                            <span class="fa-stack">
-                                <i class="fas fa-circle fa-stack-1x" />
-                                <i class="fas has-text-secondary fa-caret-right fa-stack-1x caret-icon-overlay-fix" />
-                            </span>
+                        <span class="icon is-large">
+                            <i class="fas fa-arrow-right" />
                         </span>
                     </button>
                 </div>
@@ -87,6 +84,9 @@ export default {
         kb: function(val) {
             return Math.floor(val / 1024);
         }
+    },
+    mounted: function() {
+        this.$store.commit('app/clearImportFiles');
     },
     methods: {
         handleDragEnter(e) {
@@ -135,10 +135,12 @@ export default {
             this.files = this.files.filter(f => {
                 return f !== file;
             });
+            this.$store.commit('');
             this.$emit('clearFiles');
         },
-        upload() {
-            this.$emit('dragAndDropEmitFiles', this.files);
+        process() {
+            this.$store.commit('app/importFiles', this.files);
+            this.$store.commit('app/importTransition', 'process');
         }
     }
 };

@@ -4,250 +4,34 @@
         class="has-background-white">
         <!-- nav bar navigation -->
         <cass-modal />
-        <nav
-            class="navbar is-black is-fixed-top"
-            role="navigation"
-            aria-label="main navigation">
-            <div class="navbar-brand">
-                <div class="navbar-item">
-                    <router-link to="/">
-                        <h2 class="has-text-white subtitle">
-                            Cass Editor
-                        </h2>
-                    </router-link>
-                </div>
-                <a
-                    role="button"
-                    class="navbar-burger burger"
-                    :class="{ 'is-active': navBarActive}"
-                    aria-label="menu"
-                    aria-expanded="false"
-                    data-target="mainDropDown"
-                    @click="navBarActive = !navBarActive">
-                    <span aria-hidden="true" />
-                    <span aria-hidden="true" />
-                    <span aria-hidden="true" />
-                </a>
-            </div>
-            <div class="navbar-menu">
-                <div class="navbar-start">
-                    <div class="navbar-item">
-                        <a
-                            class="has-text-light"
-                            @click="createNew">
-                            New
-                        </a>
-                    </div>
-                    <div class="navbar-item">
-                        <router-link
-                            class="has-text-light"
-                            :class="{'is-active': currentRoute === '/'}"
-                            to="/">
-                            Open
-                        </router-link>
-                    </div>
-                    <div class="navbar-item">
-                        <router-link
-                            class="has-text-light"
-                            :class="{'is-active': currentRoute === '/import'}"
-                            to="/import">
-                            Import
-                        </router-link>
-                    </div>
-                    <div
-                        class="navbar-item has-dropdown is-hoverable"
-                        v-if="$route.name=='framework'||$route.name=='conceptScheme'">
-                        <a class="navbar-link is-primary">
-                            Export
-                        </a>
-                        <div class="navbar-dropdown">
-                            <a
-                                class="navbar-item"
-                                @click="exportType='asn'"
-                                v-if="queryParams.concepts!=='true'">
-                                Achievement Standards Network (RDF+JSON)
-                            </a>
-                            <a
-                                class="navbar-item"
-                                @click="exportType='jsonld'">
-                                CaSS (JSON-LD)
-                            </a>
-                            <a
-                                class="navbar-item"
-                                @click="exportType='rdfQuads'">
-                                CaSS (RDF Quads)
-                            </a>
-                            <a
-                                class="navbar-item"
-                                @click="exportType='rdfJson'">
-                                CaSS (RDF+JSON)
-                            </a>
-                            <a
-                                class="navbar-item"
-                                @click="exportType='rdfXml'">
-                                CaSS (RDF+XML)
-                            </a>
-                            <a
-                                class="navbar-item"
-                                @click="exportType='turtle'">
-                                CaSS (Turtle)
-                            </a>
-                            <a
-                                class="navbar-item"
-                                @click="exportType='ctdlasnJsonld'">
-                                Credential Engine ASN (JSON-LD)
-                            </a>
-                            <a
-                                class="navbar-item"
-                                @click="exportType='ctdlasnCsv'"
-                                v-if="queryParams.concepts!=='true'">
-                                Credential Engine ASN (CSV)
-                            </a>
-                            <a
-                                class="navbar-item"
-                                @click="exportType='csv'"
-                                v-if="queryParams.concepts!=='true'">
-                                Table (CSV)
-                            </a>
-                            <a
-                                class="navbar-item"
-                                @click="exportType='case'"
-                                v-if="queryParams.concepts!=='true'">
-                                IMS Global CASE (JSON)
-                            </a>
-                        </div>
-                    </div>
-                    <!--<div class="navbar-item">
-                        <router-link
-                            class="has-text-light"
-                            to="/help">
-                            Help
-                        </router-link>
-                    </div>-->
-                </div>
-                <div class="navbar-end" />
-            </div>
-
-            <div
-                id="mainDropDown"
-                class="navbar-menu is-dark is-hoverable"
-                :class="{ 'is-active': navBarActive}">
-                <div class="navbar-end">
-                    <div
-                        class="navbar-item has-dropdown is-hidden-desktop"
-                        :class="{ 'is-active': navBarActive}">
-                        <div>
-                            <div class="navbar-item">
-                                <a @click="createNew">
-                                    New
-                                </a>
-                            </div>
-                            <div class="navbar-item">
-                                <router-link
-                                    to="/"
-                                    :class="{'is-active': currentRoute === '/'}">
-                                    Open
-                                </router-link>
-                            </div>
-                            <div class="navbar-item">
-                                <router-link
-                                    to="/import"
-                                    :class="{'is-active': currentRoute === '/import'}">
-                                    Import
-                                </router-link>
-                            </div>
-                            <div class="navbar-item">
-                                <router-link
-                                    to="/help"
-                                    :class="{'is-active': currentRoute === '/help'}">
-                                    Help
-                                </router-link>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- nav bar tablet and mobile drop down side navigation -->
-        </nav>
         <router-view
-            :exportType="exportType"
+            :showSideNav="showSideNav"
+            @sideBarEvent="onSidebarEvent"
+            name="topbar" />
+        <router-view
+            id="app-content"
+            :class="[{ 'clear-side-bar': showSideNav}, {'clear-right-aside': showRightAside}]"
             :queryParams="queryParams" />
+        <router-view
+            :showSideNav="showSideNav"
+            @createNewFramework="onCreateNewFramework"
+            name="sidebar" />
     </div>
 </template>
-<style scoped lang="scss">
 
-.pagesFull {
-    margin-top:40px;
-}
-.pagesRightFull {
-    width: calc(100% - 360px) !important;
-    margin-left: 360px;
-    margin-top:50px;
-}
-
-</style>
-<style lang="scss">
-    @import './scss/variables.scss';
-
-html {
-    font-family: $family-primary;
-    max-width: 100vw !important;
-    margin: 0px;
-    height: 100%;
-    padding: 0px;
-    overflow: hidden;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-size: 16px;
-}
-body{
-    overflow-y: hidden;
-    height: 100%;
-    background: $light;
-    background-repeat: no-repeat;
-    background-size: cover;
-    min-height: 100vh;
-}
-#app {
-    height: 100%;
-}
-
-
-.menu {
-    overflow-y: scroll;
-    height: 100vh;
-    padding: 1rem;
-    width: 300px;
-}
-
-.navbar-menu {
-    // override active links
-    .is-active{
-        color: rgba($light, .8) !important;
-
-    }
-}
-
-#mainDropDown {
-    .is-active{
-        color: rgba($dark, .7) !important;
-    }
-}
-
-</style>
 <script>
 import common from '@/mixins/common.js';
 import cassModal from './components/CassModal.vue';
 
 export default {
+    name: "App",
     data: function() {
         return {
             navBarActive: false,
-            exportType: null,
             queryParams: null,
             repo: window.repo,
-            itemsSaving: 0
+            itemsSaving: 0,
+            showNav: true
         };
     },
     mixins: [common],
@@ -315,28 +99,6 @@ export default {
                 }
             }
         });
-        var path = "&iframeRoot=" + (this.queryParams.editorRoot ? this.queryParams.editorRoot : "");
-        path += "&origin=" + window.location.origin;
-        path += this.queryParams.server ? "&server=" + this.queryParams.server : "";
-        path += this.queryParams.newObjectEndpoint ? "&newObjectEndpoint=" + this.queryParams.newObjectEndpoint : "";
-        path += this.queryParams.ceasnDataFields ? "&ceasnDataFields=" + this.queryParams.ceasnDataFields : "";
-        path += this.queryParams.webSocketOverride ? "&webSocketOverride=" + this.queryParams.webSocketOverride : "";
-        path += this.queryParams.inherit ? "&inherit=" + this.queryParams.inherit : "";
-        path += this.queryParams.css ? "&css=" + this.queryParams.css : "";
-        path += this.queryParams.selectVerbose ? "&selectVerbose=" + this.queryParams.selectVerbose : "";
-        path += this.queryParams.selectExport ? "&selectExport=" + this.queryParams.selectExport : "";
-        path += this.queryParams.user ? "&user=" + this.queryParams.user : "";
-        this.$store.commit('editor/commonPathIframe', path);
-        path = this.queryParams.editorRoot ? this.queryParams.editorRoot : "/";
-        path += "cass-editor/?select=Align with...&view=true&back=true";
-        path += this.$store.state.editor.commonPathIframe;
-        this.$store.commit('editor/iframeCompetencyPathInterframework', path);
-        path = this.queryParams.editorRoot ? this.queryParams.editorRoot : "/";
-        path += "cass-editor/?select=Add&concepts=true";
-        path += this.queryParams.conceptShow ? "&conceptShow=" + this.queryParams.conceptShow : "";
-        path += this.queryParams.editIframe !== "true" ? "&view=true" : "";
-        path += this.$store.state.editor.commonPathIframe;
-        this.$store.commit('editor/iframeConceptPath', path);
         if (parent !== window) {
             var oHead = document.getElementsByTagName("head")[0];
             var arrStyleSheets = parent.document.getElementsByTagName("*");
@@ -361,6 +123,12 @@ export default {
         }
     },
     methods: {
+        onSidebarEvent: function() {
+            this.showSideNav = !this.showSideNav;
+        },
+        onCreateNewFramework: function() {
+            this.createNew();
+        },
         cappend: function(event) {
             if (event.data.message === "selected") {
                 var selectedIds = [];
@@ -600,71 +368,6 @@ export default {
                 }, console.error);
             }
         },
-        addAlignments: function(targets, thing, relationType, allowSave) {
-            if (this.queryParams.concepts === "true") {
-                return this.addConceptAlignments(targets, thing, relationType);
-            }
-            if (relationType === "ceasn:skillEmbodied" || relationType === "ceasn:abilityEmbodied" || relationType === "ceasn:knowledgeEmbodied" || relationType === "ceasn:taskEmbodied") {
-                // This property is attached to competency, not a relation attached to framework
-                return this.addRelationAsCompetencyField(targets, thing, relationType, allowSave);
-            }
-            for (var i = 0; i < targets.length; i++) {
-                var r = new EcAlignment();
-                if (this.queryParams.newObjectEndpoint != null) {
-                    r.generateShortId(this.newObjectEndpoint);
-                } else {
-                    r.generateId(this.repo.selectedServer);
-                }
-                r["schema:dateCreated"] = new Date().toISOString();
-                r.target = EcRemoteLinkedData.trimVersionFromUrl(targets[i]);
-                if (thing.id) {
-                    r.source = thing.shortId();
-                } else {
-                    r.source = EcRemoteLinkedData.trimVersionFromUrl(thing["@id"]);
-                }
-                if (r.target === r.source) {
-                    return;
-                }
-                r.relationType = relationType;
-                if (r.relationType === "broadens") {
-                    var dosedo = r.target;
-                    r.target = r.source;
-                    r.source = dosedo;
-                    r.relationType = "narrows";
-                }
-                if (EcIdentityManager.ids.length > 0) {
-                    r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-                }
-                if (this.$store.state.editor.private === true) {
-                    r = EcEncryptedValue.toEncryptedValue(r);
-                }
-                this.repo.saveTo(r, function() {}, console.error);
-                var framework = this.$store.state.editor.framework;
-                if (thing.type === 'Concept') {
-                    if (framework.relation == null) {
-                        framework.relation = [];
-                    }
-                    let isNew = true;
-                    let idx = 0;
-                    while (isNew && idx < framework.relation.length) {
-                        if (EcRemoteLinkedData.trimVersionFromUrl(framework.relation[idx]).equals(r.id)) {
-                            isNew = false;
-                        }
-                        idx++;
-                    }
-                    if (isNew) {
-                        framework.relation.push(r.id);
-                    }
-                } else {
-                    framework.addRelation(r.id);
-                }
-            }
-            this.$store.commit('editor/framework', framework);
-            if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
-                framework = EcEncryptedValue.toEncryptedValue(framework);
-            }
-            this.repo.saveTo(framework, function() {}, console.error);
-        },
         loadIdentity: function(callback) {
             var identity;
             if (this.queryParams.user === "self") {
@@ -756,13 +459,11 @@ export default {
                     for (var key in data) {
                         d[key] = data[key];
                     }
+                    d["schema:dateModified"] = new Date().toISOString();
+                    if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[d.id] !== true) {
+                        d = EcEncryptedValue.toEncryptedValue(d);
+                    }
                     repo.saveTo(d, function(success) {
-                        // Force view framework page to update the framework since changes were made
-                        if (d.isAny(new EcFramework().getTypes()) || d.isAny(new EcConceptScheme().getTypes())) {
-                            if (me.$route.name === 'frameworks') {
-                                // To do: Refresh page
-                            }
-                        }
                         var message = {
                             action: "response",
                             message: "setOk"
@@ -953,7 +654,7 @@ export default {
                 }
             }
             resource["schema:dateModified"] = new Date().toISOString();
-            if (this.queryParams.private === "true" && EcEncryptedValue.encryptOnSaveMap[resource.id] !== true) {
+            if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[resource.id] !== true) {
                 resource = EcEncryptedValue.toEncryptedValue(resource);
             }
             this.repo.saveTo(resource, function() {}, console.error);
@@ -996,13 +697,33 @@ export default {
                         c.generateId(this.repo.selectedServer);
                     }
                     c["schema:dateCreated"] = new Date().toISOString();
+                    c["schema:dateModified"] = new Date().toISOString();
                     delete c.owner;
                     if (EcIdentityManager.ids.length > 0) {
                         c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                     }
+                    if (framework.owner && framework.owner.length > 0) {
+                        for (var j = 0; j < framework.owner.length; j++) {
+                            var owner = framework.owner[j];
+                            c.addOwner(EcPk.fromPem(owner));
+                        }
+                    }
+                    if (this.$store.state.editor && this.$store.state.editor.configuration) {
+                        var config = this.$store.state.editor.configuration;
+                        if (config["defaultObjectOwners"]) {
+                            for (var k = 0; k < config["defaultObjectOwners"].length; k++) {
+                                c.addOwner(EcPk.fromPem(config["defaultObjectOwners"][k]));
+                            }
+                        }
+                        if (config["defaultObjectReaders"]) {
+                            for (var k = 0; k < config["defaultObjectReaders"].length; k++) {
+                                c.addReader(EcPk.fromPem(config["defaultObjectReaders"][k]));
+                            }
+                        }
+                    }
                     c['ceasn:derivedFrom'] = thing.id;
                     copyDict[c['ceasn:derivedFrom']] = c;
-                    if (this.queryParams.private === "true" && EcEncryptedValue.encryptOnSaveMap[c.id] !== true) {
+                    if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[c.id] !== true) {
                         c = EcEncryptedValue.toEncryptedValue(c);
                     }
                     this.itemsSaving++;
@@ -1031,12 +752,9 @@ export default {
                     level["schema:dateCreated"] = new Date().toISOString();
                     level.competency = this.$store.state.editor.selectedCompetency.shortId();
                     delete level.owner;
-                    if (EcIdentityManager.ids.length > 0) {
-                        level.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-                    }
                     level['ceasn:derivedFrom'] = thing.id;
                     copyDict[level['ceasn:derivedFrom']] = level;
-                    if (this.queryParams.private === "true" && EcEncryptedValue.encryptOnSaveMap[level.id] !== true) {
+                    if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[level.id] !== true) {
                         level = EcEncryptedValue.toEncryptedValue(level);
                     }
                     this.itemsSaving++;
@@ -1078,10 +796,29 @@ export default {
                         if (EcIdentityManager.ids.length > 0) {
                             r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                         }
+                        if (framework.owner && framework.owner.length > 0) {
+                            for (var j = 0; j < framework.owner.length; j++) {
+                                var owner = framework.owner[j];
+                                r.addOwner(EcPk.fromPem(owner));
+                            }
+                        }
+                        if (this.$store.state.editor && this.$store.state.editor.configuration) {
+                            var config = this.$store.state.editor.configuration;
+                            if (config["defaultObjectOwners"]) {
+                                for (var k = 0; k < config["defaultObjectOwners"].length; k++) {
+                                    r.addOwner(EcPk.fromPem(config["defaultObjectOwners"][k]));
+                                }
+                            }
+                            if (config["defaultObjectReaders"]) {
+                                for (var k = 0; k < config["defaultObjectReaders"].length; k++) {
+                                    r.addReader(EcPk.fromPem(config["defaultObjectReaders"][k]));
+                                }
+                            }
+                        }
                         if (r.source !== r.target) {
                             framework["schema:dateModified"] = new Date().toISOString();
                             EcArray.setRemove(results, thing.source);
-                            if (this.queryParams.private === "true") {
+                            if (this.$store.state.editor.private === true) {
                                 r = EcEncryptedValue.toEncryptedValue(r);
                             }
                             this.itemsSaving++;
@@ -1125,11 +862,30 @@ export default {
                         if (EcIdentityManager.ids.length > 0) {
                             r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                         }
+                        if (framework.owner && framework.owner.length > 0) {
+                            for (var j = 0; j < framework.owner.length; j++) {
+                                var owner = framework.owner[j];
+                                r.addOwner(EcPk.fromPem(owner));
+                            }
+                        }
+                        if (this.$store.state.editor && this.$store.state.editor.configuration) {
+                            var config = this.$store.state.editor.configuration;
+                            if (config["defaultObjectOwners"]) {
+                                for (var k = 0; k < config["defaultObjectOwners"].length; k++) {
+                                    r.addOwner(EcPk.fromPem(config["defaultObjectOwners"][k]));
+                                }
+                            }
+                            if (config["defaultObjectReaders"]) {
+                                for (var k = 0; k < config["defaultObjectReaders"].length; k++) {
+                                    r.addReader(EcPk.fromPem(config["defaultObjectReaders"][k]));
+                                }
+                            }
+                        }
                         if (r.source !== r.target) {
                             this.itemsSaving++;
                             framework.addRelation(r.id);
                             framework["schema:dateModified"] = new Date().toISOString();
-                            if (this.queryParams.private === "true") {
+                            if (this.$store.state.editor.private === true) {
                                 r = EcEncryptedValue.toEncryptedValue(r);
                             }
                             (function(r) {
@@ -1155,7 +911,7 @@ export default {
             // loading(this.itemsSaving + " objects left to copy.");
             if (this.itemsSaving === 0) {
                 var framework = this.$store.state.editor.framework;
-                if (this.queryParams.private === "true" && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
                 }
                 this.repo.saveTo(framework, function() {}, console.error);
@@ -1208,10 +964,29 @@ export default {
                         if (EcIdentityManager.ids.length > 0) {
                             r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                         }
+                        if (framework.owner && framework.owner.length > 0) {
+                            for (var j = 0; j < framework.owner.length; j++) {
+                                var owner = framework.owner[j];
+                                r.addOwner(EcPk.fromPem(owner));
+                            }
+                        }
+                        if (this.$store.state.editor && this.$store.state.editor.configuration) {
+                            var config = this.$store.state.editor.configuration;
+                            if (config["defaultObjectOwners"]) {
+                                for (var k = 0; k < config["defaultObjectOwners"].length; k++) {
+                                    r.addOwner(EcPk.fromPem(config["defaultObjectOwners"][k]));
+                                }
+                            }
+                            if (config["defaultObjectReaders"]) {
+                                for (var k = 0; k < config["defaultObjectReaders"].length; k++) {
+                                    r.addReader(EcPk.fromPem(config["defaultObjectReaders"][k]));
+                                }
+                            }
+                        }
 
                         if (r.source !== r.target) {
                             framework.addRelation(r.id);
-                            if (this.queryParams.private === "true") {
+                            if (this.$store.state.editor.private === true) {
                                 r = EcEncryptedValue.toEncryptedValue(r);
                             }
                             this.repo.saveTo(r, function() {}, console.error);
@@ -1219,7 +994,7 @@ export default {
                     }
                 }
             }
-            if (this.queryParams.private === "true" && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+            if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                 framework = EcEncryptedValue.toEncryptedValue(framework);
             }
             this.repo.saveTo(framework, function() {
@@ -1228,24 +1003,19 @@ export default {
         },
         addRelationAsCompetencyField: function(targets, thing, relationType, allowSave) {
             var me = this;
-            var framework = this.$store.state.editor.framework;
             for (var i = 0; i < targets.length; i++) {
                 if (thing[relationType] == null) {
                     thing[relationType] = [];
                 }
                 thing[relationType].push(targets[i]);
             }
-            if (this.queryParams.private === "true") {
+            thing["schema:dateModified"] = new Date().toISOString();
+            if (this.$store.state.editor.private === true) {
                 if (EcEncryptedValue.encryptOnSaveMap[thing.id] !== true) {
                     thing = EcEncryptedValue.toEncryptedValue(thing);
                 }
-                if (EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
-                    framework = EcEncryptedValue.toEncryptedValue(framework);
-                }
             }
-            me.repo.saveTo(thing, function() {
-                me.repo.saveTo(framework, function() {}, console.error);
-            }, console.error);
+            me.repo.saveTo(thing, function() {}, console.error);
         },
         importParentStyles: function() {
             var parentStyleSheets = parent.document.styleSheets;
@@ -1272,12 +1042,22 @@ export default {
         }
     },
     computed: {
+        showRightAside: function() {
+            return this.$store.getters['app/showRightAside'];
+        },
+        showSideNav: function() {
+            return this.$store.getters['app/showSideNav'];
+        },
         currentRoute: function() {
             return this.$route.path;
+        },
+        currentPathIsLogin: function() {
+            if (this.$route.name === 'login') return true;
+            else return false;
         }
     },
     watch: {
-        $route(to, from) {
+        '$route'(to, from) {
             let navigationTo = to;
             if (navigationTo) {
                 this.navBarActive = false;
@@ -1286,3 +1066,73 @@ export default {
     }
 };
 </script>
+
+
+<style scoped lang="scss">
+ @import './scss/variables.scss';
+.pagesFull {
+    margin-top:40px;
+}
+.pagesRightFull {
+    width: calc(100% - 360px) !important;
+    margin-left: 360px;
+    margin-top:50px;
+}
+
+
+    html {
+        font-family: $family-primary;
+        max-width: 100vw !important;
+        margin: 0px;
+        height: 100%;
+        padding: 0px;
+        overflow: hidden;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        font-size: 16px;
+    }
+    body{
+        // Tom B.  Taking this out for now as it screws up the configuration editor and needing scrolling
+        //overflow-y: hidden;
+        height: 100%;
+        background: $light;
+        background-repeat: no-repeat;
+        background-size: cover;
+        min-height: 100vh;
+    }
+    #app {
+        height: 100%;
+    }
+    #app-content {
+
+    }
+    .clear-side-bar {
+        margin-left: 300px;
+    }
+    .clear-right-aside {
+        margin-right: 340px;
+    }
+
+
+    .menu {
+        overflow-y: scroll;
+        height: 100vh;
+        padding: 1rem;
+        width: 300px;
+    }
+
+    .navbar-menu {
+        // override active links
+        .is-active{
+            color: rgba($light, .8) !important;
+
+        }
+    }
+
+    #mainDropDown {
+        .is-active{
+            color: rgba($dark, .7) !important;
+        }
+    }
+
+</style>

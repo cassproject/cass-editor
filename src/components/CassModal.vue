@@ -1,14 +1,14 @@
 <template>
     <div
         class="modal is-small"
-        :class="[{'is-active': visible}, modalClass]">
+        :class="[{'is-active': visible}, type, modalClass]">
         <div class="modal-background" />
         <div class="modal-card">
             <header
                 class="modal-card-head"
                 :class="modalHeaderBackground">
                 <p
-                    class="subtitle is-size-3 modal-card-title"
+                    class="subtitle has-text-weight-bold is-size-3 modal-card-title"
                     :class="modalHeaderFontColor">
                     {{ title }}
 
@@ -84,7 +84,7 @@
                     class="buttons is-right"
                     style="width: 100%;">
                     <button
-                        class="button is-light"
+                        class="button is-outlined is-dark"
                         @click="cancel()">
                         <span>
                             Cancel
@@ -95,7 +95,8 @@
                     </button>
                     <button
                         v-if="type==='export'"
-                        class="button is-info"
+                        class="export-confirm button is-outlined is-info"
+                        :disabled="confirmDisabled"
                         @click="confirm">
                         <span>
                             Export file
@@ -106,7 +107,8 @@
                     </button>
                     <button
                         v-else
-                        class="button"
+                        class="confirm button is-outlined"
+                        :disabled="confirmDisabled"
                         :class="modalConfirmButton"
                         @click="confirm">
                         <span>
@@ -151,14 +153,31 @@ export default {
         };
     },
     computed: {
+        confirmDisabled: function() {
+            if (this.type === 'duplicate') {
+                if (this.options.length > 0 && this.selectedOption === "") {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else if (this.type === 'export') {
+                if (this.exportOptions.length > 0 && this.selectedExportOption === "") {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        },
         modalButtonIcons: function() {
             let modalClass = '';
             if (this.type === 'removeObject') {
-                modalClass = 'has-text-white';
+                modalClass = '';
             } else if (this.type === 'deleteObject') {
-                modalClass = 'has-text-white';
+                modalClass = '';
             } else {
-                modalClass = 'has-text-white';
+                modalClass = '';
             }
             return modalClass;
         },
@@ -169,40 +188,40 @@ export default {
             } else if (this.type === 'deleteObject') {
                 modalClass = 'warning-modal';
             } else {
-                modalClass = 'info-modal';
+                modalClass = '';
             }
             return modalClass;
         },
         modalHeaderFontColor: function() {
             let modalClass = '';
             if (this.type === 'removeObject') {
-                modalClass = 'has-text-warning';
+                modalClass = 'has-text-white';
             } else if (this.type === 'deleteObject') {
-                modalClass = 'has-text-danger';
+                modalClass = 'has-text-white';
             } else {
-                modalClass = 'has-text-dark';
+                modalClass = 'has-text-white';
             }
             return modalClass;
         },
         modalConfirmButton: function() {
             let modalClass = '';
             if (this.type === 'removeObject') {
-                modalClass = 'is-warning has-text-white';
+                modalClass = 'is-warning';
             } else if (this.type === 'deleteObject') {
-                modalClass = 'is-danger has-text-white';
+                modalClass = 'is-danger';
             } else {
-                modalClass = 'is-info has-text-white';
+                modalClass = 'is-primary';
             }
             return modalClass;
         },
         modalHeaderBackground: function() {
             let modalClass = '';
             if (this.type === 'removeObject') {
-                modalClass = 'has-background-light';
+                modalClass = 'has-background-primary has-text-white';
             } else if (this.type === 'deleteObject') {
-                modalClass = 'has-background-light';
+                modalClass = 'has-background-danger';
             } else {
-                modalClass = 'has-background-light';
+                modalClass = 'has-background-primary';
             }
             return modalClass;
         }
@@ -229,7 +248,11 @@ export default {
                     } else {
                         var uuid = new UUID(3, "nil", this.newName).format();
                         var f = new EcFramework();
-                        f.assignId(this.repo.selectedServer, uuid);
+                        if (me.queryParams && me.queryParams.newObjectEndpoint) {
+                            f.id = me.queryParams.newObjectEndpoint + uuid;
+                        } else {
+                            f.assignId(me.repo.selectedServer, uuid);
+                        }
                         this.repo.search("(@id:\"" + f.shortId() + "\") AND (@type:Framework)", function() {}, function(frameworks) {
                             if (frameworks.length > 0) {
                                 me.invalid = true;
