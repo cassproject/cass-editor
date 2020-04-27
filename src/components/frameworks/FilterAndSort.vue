@@ -79,12 +79,6 @@ export default {
                     id: 'lastEdited',
                     label: 'last edited',
                     enabled: true
-                },
-                // To do: enable after frameworks are associated with configs
-                {
-                    id: 'configMatchDefault',
-                    label: 'Configuration matches default',
-                    enabled: false
                 }
             ],
             quickFilters: [
@@ -100,17 +94,12 @@ export default {
                     label: 'Not owned by me',
                     enabled: true
                 },
+                // To do: enable after frameworks are associated with configs
                 {
-                    id: 'publishedByMe',
+                    id: 'configMatchDefault',
                     checked: false,
-                    label: 'Published by me',
-                    enabled: true
-                },
-                {
-                    id: 'authoredByMe',
-                    checked: false,
-                    label: 'Authored by me',
-                    enabled: true
+                    label: 'Configuration matches default',
+                    enabled: false
                 }
             ],
             applySearchTo: [
