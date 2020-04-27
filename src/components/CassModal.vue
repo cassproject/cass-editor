@@ -73,7 +73,7 @@
                 <input
                     class="input"
                     placeholder="Enter a new name"
-                    v-if="selectedOption==='Choose another name'"
+                    v-if="selectedOption==='Save import as a new framework'"
                     v-model="newName">
                 <div v-if="invalid">
                     The name you chose is already in the system. Please try a different name.
@@ -158,7 +158,7 @@ export default {
                 if (this.options.length > 0 && this.selectedOption === "") {
                     return true;
                 } else {
-                    if (this.selectedOption === 'Choose another name' && this.newName === '') {
+                    if (this.selectedOption === 'Save import as a new framework' && this.newName === '') {
                         return true;
                     } else {
                         return false;
@@ -189,7 +189,7 @@ export default {
             let modalClass = '';
             if (this.type === 'removeObject') {
                 modalClass = 'alert-modal';
-            } else if (this.type === 'deleteObject') {
+            } else if (this.type === 'deleteObject' || this.type === 'duplicate') {
                 modalClass = 'warning-modal';
             } else {
                 modalClass = '';
@@ -224,6 +224,8 @@ export default {
                 modalClass = 'has-background-primary has-text-white';
             } else if (this.type === 'deleteObject') {
                 modalClass = 'has-background-danger';
+            } else if (this.type === 'duplicate') {
+                modalClass = 'has-background-warning';
             } else {
                 modalClass = 'has-background-primary';
             }
@@ -317,7 +319,5 @@ export default {
 </script>
 
 <style lang="scss">
-.warning-modal {
 
-}
 </style>

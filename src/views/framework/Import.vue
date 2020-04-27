@@ -592,7 +592,7 @@ export default {
                     type: val,
                     title: "Duplicate framework",
                     text: "A framework has already been imported under the name " + data.name + ". Do you want to overwrite it?",
-                    options: ["Overwrite framework", "Choose another name"],
+                    options: ["Overwrite framework", "Save import as a new framework"],
                     currentName: data.name,
                     onConfirm: (newName) => {
                         return this.savePdfImport(data, newName);
