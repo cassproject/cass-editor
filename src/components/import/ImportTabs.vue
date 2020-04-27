@@ -8,7 +8,7 @@
     <!-- import drop area and tabs -->
     <div
         id="import-bottom-section"
-        class="section">
+        class="">
         <!-- types of import for tabs -->
         <div
             v-if="!importFramework || (importFramework && importType === 'text')"
@@ -81,6 +81,54 @@
                                         URL Source
                                     </div>
                                 </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="columns"
+                        v-if="importType === 'file'">
+                        <div class="column is-12">
+                            <div class="buttons is-centered">
+                                <div
+                                    @click="showImportModal('pdf')"
+                                    class="button is-outlined is-warning is-small">
+                                    <span
+                                        title="PDF files are experimentally supported. Click to Learn more."
+                                        class="icon">
+                                        <i class="fa fa-exclamation" />
+                                    </span>
+                                    <span>PDF</span>
+                                </div>
+                                <div
+                                    @click="showImportModal('docx')"
+                                    class="button is-outlined is-warning is-small">
+                                    <span
+                                        title="Word documents and Docx files are experimental. Click to learn more."
+                                        class="icon">
+                                        <i class="fa fa-exclamation" />
+                                    </span>
+                                    <span>DOCX/WORD</span>
+                                </div>
+                                <div
+                                    @click="showImportModal('csv')"
+                                    class="button is-outlined is-success is-small">
+                                    <span
+                                        title="CSV files are supported, click to learn more."
+                                        class="icon is-pulled-right">
+                                        <i class="fa fa-check" />
+                                    </span>
+                                    <span>CSV</span>
+                                </div>
+                                <div
+                                    @click="showImportModal('html')"
+                                    class="button is-outlined is-success is-small">
+                                    <span
+                                        title="html files are fully supported at this time"
+                                        class="icon is-pulled-right">
+                                        <i class="fa fa-check" />
+                                    </span>
+                                    <span>HTML</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -578,6 +626,13 @@ export default {
         }
     },
     methods: {
+        showImportModal: function(type) {
+            let modalObject = {
+                component: 'SupportedImportDetails',
+                documentContent: type
+            };
+            this.$store.commit('app/showModal', modalObject);
+        },
         prepareToImportNonPdf: function() {
             if (this.importFileType === 'csv') {
                 // prepare csv
