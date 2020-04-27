@@ -4,6 +4,8 @@
         class="has-background-white">
         <!-- nav bar navigation -->
         <cass-modal />
+        <DynamicModal />
+
         <router-view
             :showSideNav="showSideNav"
             @sideBarEvent="onSidebarEvent"
@@ -22,9 +24,13 @@
 <script>
 import common from '@/mixins/common.js';
 import cassModal from './components/CassModal.vue';
+import DynamicModal from './components/modals/DynamicModal.vue';
 
 export default {
     name: "App",
+    components: {
+        DynamicModal
+    },
     data: function() {
         return {
             navBarActive: false,
