@@ -327,6 +327,7 @@ export default {
                     framework.generateId(this.repo.selectedServer);
                 }
                 framework["schema:dateCreated"] = new Date().toISOString();
+                framework["schema:dateModified"] = new Date().toISOString();
                 if (EcIdentityManager.ids.length > 0) {
                     framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                 }
@@ -356,6 +357,7 @@ export default {
                 }
                 framework["dcterms:title"] = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Concept Scheme"};
                 framework["schema:dateCreated"] = new Date().toISOString();
+                framework["schema:dateModified"] = new Date().toISOString();
                 var saveFramework = framework;
                 if (this.queryParams.private === "true") {
                     saveFramework = EcEncryptedValue.toEncryptedValue(framework);
