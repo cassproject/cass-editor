@@ -18,273 +18,271 @@
 <template>
     <div
         id="page-import"
-        class="page-import container">
+        class="page-import ">
         <!--- main body section -->
         <!-- top section import information -->
         <div
-            class="has-background-white section">
-            <div class="">
+            class="has-background-white container">
+            <div class="section">
                 <div class="columns is-gapless is-multiline is-mobile">
-                    <div class="column is-narrow">
+                    <div class="column is">
                         <h1
-                            class="title is-size-2"
-                            v-if="queryParams.concepts === 'true'">
-                            Import a concept scheme
-                        </h1>
-                        <h1
-                            class="title is-2"
-                            v-else>
-                            Import a framework
+                            class="title is-size-2 has-text-black">
+                            <span v-if="queryParams.concepts === 'true'">
+                                Import a concept scheme
+                            </span>
+                            <span v-else>Import a framework</span>
                         </h1>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- ready state details -->
-        <div class="section">
-            <p
-                v-if="importTransition === 'upload' && !file && queryParams.concepts === 'true'"
-                class="is-size-6">
-                Upload documents to transform into CaSS Concept Schemes.
-            </p>
-            <p
-                v-else-if="importTransition === 'upload' && !file"
-                class="is-size-6">
-                Upload documents to transform into CaSS Competency Frameworks.
-            </p>
-            <p
-                v-if="importTransition === 'detail'"
-                class="is-size-6">
-                <span class="has-text-success has-text-weight-bold">
-                    CaSS has detected a framework!
-                </span>
-                <br><br>
-                We've gathered details about your competency framework and file.  Please review. Accept and approve to continue, cancel to review your file and re-import.
-            </p>
-            <p
-                v-if="importTransition === 'preview'"
-                class="">
-                <span class=" is-size-6 has-text-success has-text-weight-bold">
-                    Import success, {{ frameworkSize }} competencies ready to edit.
-                </span>
-                <br><br>
-                <!-- Please review the name and descriptions of the imported competencies. After making edits, "approve" the changes to view the imported competency details.-->
-            </p>
-            <p
-                v-if="importTransition === 'light'"
-                class="is-size-6">
-                <span class="has-text-success has-text-weight-bold">
-                    Your import is complete!
-                </span>
-                <br><br>
-            </p>
-        </div>
-        <!-- after importing framework: details and preview -->
-        <div
-            class="section"
-            v-if="showImportActions">
-            <div id="import-actions">
-                <div class="column is-12">
-                    <!-- import details options -->
-                    <div
-                        v-if="importTransition !== 'upload'"
-                        class="buttons is-small is-right">
-                        <!-- cancel button -->
-                        <div
-                            @click="clearImport"
-                            v-if="importTransition === 'detail' || importTransition === 'preview'"
-                            class=" button is-light is-small is-pulled-right is-dark is-outlined">
-                            <span>
-                                Cancel
-                            </span>
-                            <span class="icon">
-                                <i class="fa fa-times-circle" />
-                            </span>
-                        </div>
-                        <!-- export -->
-                        <div
-                            v-if="importTransition === 'light' && importType !== 'text'"
-                            class="button is-small is-dark is-outlined is-pulled-right"
-                            @click="showModal('export')">
-                            <span>
-                                Export
-                            </span>
-                            <span class="icon">
-                                <i class="fa fa-download" />
-                            </span>
-                        </div>
-                        <!--  start over -->
-                        <div
-                            v-if="importTransition === 'light' && importType !== 'text'"
-                            @click="clearImport"
-                            class="button is-small is-dark is-outlined is-pulled-right">
-                            <span>
-                                import again
-                            </span>
-                            <span class="icon">
-                                <i class="fa fa-redo-alt" />
-                            </span>
-                        </div>
-                        <!-- open in editor -->
-                        <div
-                            v-if="importFramework && importTransition === 'light' && importType !== 'text'"
-                            @click="openFramework"
-                            class="button is-small is-dark is-outlined is-pulled-right">
-                            <span>view in editor</span>
-                            <span class="icon">
-                                <i class="fa fa-edit" />
-                            </span>
-                        </div>
-                        <!--accept details -->
-                        <div
-                            @click="$store.commit('app/importTransition', 'preview')"
-                            v-if="importTransition === 'detail'"
-                            class="button is-small is-primary is-outlined is-pulled-right">
-                            <span>
-                                Accept Details & Review
-                            </span>
-                            <span class="icon is-small">
-                                <i class="fas fa-arrow-right" />
-                            </span>
-                        </div>
-                        <!--  accept preview -->
-                        <div
-                            @click="$store.commit('app/importTransition', 'light')"
-                            v-if="importTransition === 'preview'"
-                            class="button  is-small is-primary is-outlined is-pulled-right">
-                            <span>
-                                done editing
-                            </span>
-                            <span class="icon">
-                                <i class="fa fa-arrow-right" />
-                            </span>
-                        </div>
-                        <!--  home -->
-                        <router-link
-                            v-if="importTransition === 'light' && importType !== 'text'"
-                            class="button is-small is-primary is-outlined is -pulled-right"
-                            to="/">
-                            <span>
-                                Done
-                            </span>
-                            <span class="icon">
-                                <i class="fa fa-home" />
-                            </span>
-                        </router-link>
-                    </div>
-                </div>
+
+            <!-- ready state details -->
+            <div class="section">
+                <p
+                    v-if="importTransition === 'upload' && !file && queryParams.concepts === 'true'"
+                    class="is-size-6">
+                    Upload documents to transform into CaSS Concept Schemes.
+                </p>
+                <p
+                    v-else-if="importTransition === 'upload' && !file"
+                    class="is-size-6">
+                    Upload documents to transform into CaSS Competency Frameworks.
+                </p>
+                <p
+                    v-if="importTransition === 'detail'"
+                    class="is-size-6">
+                    <span class="has-text-success has-text-weight-bold">
+                        CaSS has detected a framework!
+                    </span>
+                    <br><br>
+                    We've gathered details about your competency framework and file.  Please review. Accept and approve to continue, cancel to review your file and re-import.
+                </p>
+                <p
+                    v-if="importTransition === 'preview'"
+                    class="">
+                    <span class=" is-size-6 has-text-success has-text-weight-bold">
+                        Import success, {{ frameworkSize }} competencies ready to edit.
+                    </span>
+                    <br><br>
+                    <!-- Please review the name and descriptions of the imported competencies. After making edits, "approve" the changes to view the imported competency details.-->
+                </p>
+                <p
+                    v-if="importTransition === 'light'"
+                    class="is-size-6">
+                    <span class="has-text-success has-text-weight-bold">
+                        Your import is complete!
+                    </span>
+                    <br><br>
+                </p>
             </div>
-        </div>
-        <!-- import tabs -->
-        <ImportTabs
-            v-if="!importFramework ||(importFramework && importType==='text')"
-            :q="queryParams"
-            :caseDocs="caseDocs"
-            :csvRelationFile="csvRelationFile"
-            :csvRelationColumns="csvRelationColumns"
-            :importCsvColumnSource="importCsvColumnSource"
-            :importCsvColumnRelationType="importCsvColumnRelationType"
-            :importCsvColumnTarget="importCsvColumnTarget"
-            :csvColumns="csvColumns"
-            @analyzeCsvRelation="analyzeCsvRelation($event)"
-            @importCase="handleImportFromTabs($event)" />
-        <!-- import details -->
-        <!--
-            we shouldn't need to check for isT3Type here, since this information
-            relies on the 'details' step, just skip this step and go
-            to preview in cases where we don't need to show details
-        -->
-        <ImportDetails
-            :detailsDetected="detailsDetected"
-            v-if="importTransition === 'detail'" />
-        <!-- import preview -->
-        <div
-            v-if="importFramework && importTransition === 'preview'"
-            class="import-preview">
-            <!-- loading section -- dummy content to show while loading dome elemnts -->
+            <!-- after importing framework: details and preview -->
             <div
                 class="section"
-                v-if="!hierarchyIsdoneLoading">
-                <ul class="processing-list">
-                    <li />
-                    <li />
-                    <ul>
-                        <li />
-                        <li />
-                        <li />
-                    </ul>
-                    <li />
-                    <li />
-                    <ul>
-                        <li />
-                        <li />
-                    </ul>
-                </ul>
+                v-if="showImportActions">
+                <div id="import-actions">
+                    <div class="column is-12">
+                        <!-- import details options -->
+                        <div
+                            v-if="importTransition !== 'upload'"
+                            class="buttons is-small is-right">
+                            <!-- cancel button -->
+                            <div
+                                @click="clearImport"
+                                v-if="importTransition === 'detail' || importTransition === 'preview'"
+                                class=" button is-light is-small is-pulled-right is-dark is-outlined">
+                                <span>
+                                    Cancel
+                                </span>
+                                <span class="icon">
+                                    <i class="fa fa-times-circle" />
+                                </span>
+                            </div>
+                            <!-- export -->
+                            <div
+                                v-if="importTransition === 'light' && importType !== 'text'"
+                                class="button is-small is-dark is-outlined is-pulled-right"
+                                @click="showModal('export')">
+                                <span>
+                                    Export
+                                </span>
+                                <span class="icon">
+                                    <i class="fa fa-download" />
+                                </span>
+                            </div>
+                            <!--  start over -->
+                            <div
+                                v-if="importTransition === 'light' && importType !== 'text'"
+                                @click="clearImport"
+                                class="button is-small is-dark is-outlined is-pulled-right">
+                                <span>
+                                    import again
+                                </span>
+                                <span class="icon">
+                                    <i class="fa fa-redo-alt" />
+                                </span>
+                            </div>
+                            <!-- open in editor -->
+                            <div
+                                v-if="importFramework && importTransition === 'light' && importType !== 'text'"
+                                @click="openFramework"
+                                class="button is-small is-dark is-outlined is-pulled-right">
+                                <span>view in editor</span>
+                                <span class="icon">
+                                    <i class="fa fa-edit" />
+                                </span>
+                            </div>
+                            <!--accept details -->
+                            <div
+                                @click="$store.commit('app/importTransition', 'preview')"
+                                v-if="importTransition === 'detail'"
+                                class="button is-small is-primary is-outlined is-pulled-right">
+                                <span>
+                                    Accept Details & Review
+                                </span>
+                                <span class="icon is-small">
+                                    <i class="fas fa-arrow-right" />
+                                </span>
+                            </div>
+                            <!--  accept preview -->
+                            <div
+                                @click="$store.commit('app/importTransition', 'light')"
+                                v-if="importTransition === 'preview'"
+                                class="button  is-small is-primary is-outlined is-pulled-right">
+                                <span>
+                                    done editing
+                                </span>
+                                <span class="icon">
+                                    <i class="fa fa-arrow-right" />
+                                </span>
+                            </div>
+                            <!--  home -->
+                            <router-link
+                                v-if="importTransition === 'light' && importType !== 'text'"
+                                class="button is-small is-primary is-outlined is -pulled-right"
+                                to="/">
+                                <span>
+                                    Done
+                                </span>
+                                <span class="icon">
+                                    <i class="fa fa-home" />
+                                </span>
+                            </router-link>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <Component
-                :is="dynamicThing"
-                @editNodeEvent="onEditNode"
-                @doneEditingNodeEvent="onDoneEditingNode"
-                :class="{'is-hidden': !hierarchyIsdoneLoading}"
-                :obj="importFramework"
-                :repo="repo"
-                class="framework-title"
-                :profile="t3FrameworkProfile"
-                :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
-                iframeText="Attach subitems from other sources to the selected item." />
+            <!-- import tabs -->
+            <ImportTabs
+                v-if="!importFramework ||(importFramework && importType==='text')"
+                :q="queryParams"
+                :caseDocs="caseDocs"
+                :csvRelationFile="csvRelationFile"
+                :csvRelationColumns="csvRelationColumns"
+                :importCsvColumnSource="importCsvColumnSource"
+                :importCsvColumnRelationType="importCsvColumnRelationType"
+                :importCsvColumnTarget="importCsvColumnTarget"
+                :csvColumns="csvColumns"
+                @analyzeCsvRelation="analyzeCsvRelation($event)"
+                @importCase="handleImportFromTabs($event)" />
+            <!-- import details -->
+            <!--
+                we shouldn't need to check for isT3Type here, since this information
+                relies on the 'details' step, just skip this step and go
+                to preview in cases where we don't need to show details
+            -->
+            <ImportDetails
+                :detailsDetected="detailsDetected"
+                v-if="importTransition === 'detail'" />
+            <!-- import preview -->
+            <div
+                v-if="importFramework && importTransition === 'preview'"
+                class="import-preview">
+                <!-- loading section -- dummy content to show while loading dome elemnts -->
+                <div
+                    class="section"
+                    v-if="!hierarchyIsdoneLoading">
+                    <ul class="processing-list">
+                        <li />
+                        <li />
+                        <ul>
+                            <li />
+                            <li />
+                            <li />
+                        </ul>
+                        <li />
+                        <li />
+                        <ul>
+                            <li />
+                            <li />
+                        </ul>
+                    </ul>
+                </div>
+                <Component
+                    :is="dynamicThing"
+                    @editNodeEvent="onEditNode"
+                    @doneEditingNodeEvent="onDoneEditingNode"
+                    :class="{'is-hidden': !hierarchyIsdoneLoading}"
+                    :obj="importFramework"
+                    :repo="repo"
+                    class="framework-title"
+                    :profile="t3FrameworkProfile"
+                    :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
+                    iframeText="Attach subitems from other sources to the selected item." />
 
-            <Hierarchy
-                :class="{'is-hidden': !hierarchyIsdoneLoading}"
-                v-if="importFramework"
-                @doneLoadingNodes="handleDoneLoading"
-                :container="importFramework"
-                containerType="Framework"
-                containerNodeProperty="competency"
-                containerEdgeProperty="relation"
-                nodeType="EcCompetency"
-                :profile="t3CompetencyProfile"
-                :viewOnly="false"
-                :isDraggable="true"
-                edgeType="EcAlignment"
-                edgeRelationProperty="relationType"
-                edgeRelationLiteral="narrows"
-                edgeSourceProperty="source"
-                edgeTargetProperty="target"
-                :repo="repo"
-                :newFramework="true"
-                @deleteObject="deleteObject" />
-        </div>
-        <!-- import light view -->
-        <div
-            v-else-if="importFramework && importTransition === 'light'"
-            class="import-light">
-            <Component
-                :is="dynamicThing"
-                :editingNode="editingNode"
-                :obj="importFramework"
-                :parentNotEditable="true"
-                class="framework-title"
-                :profile="t3FrameworkProfile"
-                :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
-                iframeText="Attach subitems from other sources to the selected item." />
-            <Hierarchy
-                v-if="importFramework"
-                :container="importFramework"
-                containerType="Framework"
-                containerNodeProperty="competency"
-                containerEdgeProperty="relation"
-                nodeType="EcCompetency"
-                :profile="t3CompetencyProfile"
-                :editable="false"
-                :viewOnly="true"
-                edgeType="EcAlignment"
-                edgeRelationProperty="relationType"
-                edgeRelationLiteral="narrows"
-                edgeSourceProperty="source"
-                edgeTargetProperty="target"
-                :repo="repo"
-                :newFramework="true"
-                @deleteObject="deleteObject" />
+                <Hierarchy
+                    :class="{'is-hidden': !hierarchyIsdoneLoading}"
+                    v-if="importFramework"
+                    @doneLoadingNodes="handleDoneLoading"
+                    :container="importFramework"
+                    containerType="Framework"
+                    containerNodeProperty="competency"
+                    containerEdgeProperty="relation"
+                    nodeType="EcCompetency"
+                    :profile="t3CompetencyProfile"
+                    :viewOnly="false"
+                    :isDraggable="true"
+                    edgeType="EcAlignment"
+                    edgeRelationProperty="relationType"
+                    edgeRelationLiteral="narrows"
+                    edgeSourceProperty="source"
+                    edgeTargetProperty="target"
+                    :repo="repo"
+                    :newFramework="true"
+                    @deleteObject="deleteObject" />
+            </div>
+            <!-- import light view -->
+            <div
+                v-else-if="importFramework && importTransition === 'light'"
+                class="import-light">
+                <Component
+                    :is="dynamicThing"
+                    :editingNode="editingNode"
+                    :obj="importFramework"
+                    :parentNotEditable="true"
+                    class="framework-title"
+                    :profile="t3FrameworkProfile"
+                    :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
+                    iframeText="Attach subitems from other sources to the selected item." />
+                <Hierarchy
+                    v-if="importFramework"
+                    :container="importFramework"
+                    containerType="Framework"
+                    containerNodeProperty="competency"
+                    containerEdgeProperty="relation"
+                    nodeType="EcCompetency"
+                    :profile="t3CompetencyProfile"
+                    :editable="false"
+                    :viewOnly="true"
+                    edgeType="EcAlignment"
+                    edgeRelationProperty="relationType"
+                    edgeRelationLiteral="narrows"
+                    edgeSourceProperty="source"
+                    edgeTargetProperty="target"
+                    :repo="repo"
+                    :newFramework="true"
+                    @deleteObject="deleteObject" />
+            </div>
         </div>
     </div>
 </template>
