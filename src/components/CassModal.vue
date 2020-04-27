@@ -158,7 +158,11 @@ export default {
                 if (this.options.length > 0 && this.selectedOption === "") {
                     return true;
                 } else {
-                    return false;
+                    if (this.selectedOption === 'Choose another name' && this.newName === '') {
+                        return true;
+                    } else {
+                        return false;
+                    }
                 }
             } else if (this.type === 'export') {
                 if (this.exportOptions.length > 0 && this.selectedExportOption === "") {
