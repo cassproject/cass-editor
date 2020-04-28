@@ -599,6 +599,14 @@ export default {
                 uuid = "ce-" + uuid;
             }
             return uuid;
+        },
+        canViewCommentsCurrentFramework: function() {
+            // TODO expand on this
+            return true;
+        },
+        canAddCommentsCurrentFramework: function() {
+            // TODO expand on this
+            return true;
         }
     }
 };

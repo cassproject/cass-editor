@@ -27,6 +27,7 @@ import cassModal from './components/CassModal.vue';
 import DynamicModal from './components/modals/DynamicModal.vue';
 
 export default {
+    mixins: [common],
     name: "App",
     components: {
         DynamicModal
@@ -40,7 +41,6 @@ export default {
             showNav: true
         };
     },
-    mixins: [common],
     $router: function(to, from) {
         if (to.path !== from.path) {
             this.navBarActive = false;
@@ -88,11 +88,15 @@ export default {
                     if (me.queryParams.concepts === "true") {
                         EcConceptScheme.get(me.queryParams.frameworkId, function(success) {
                             me.$store.commit('editor/framework', success);
+                            me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
+                            me.$store.commit('app/setCanAddComments', me.canViewCommentsCurrentFramework());
                             me.$router.push({name: "conceptScheme", params: {frameworkId: me.queryParams.frameworkId}});
                         }, console.error);
                     } else {
                         EcFramework.get(me.queryParams.frameworkId, function(success) {
                             me.$store.commit('editor/framework', success);
+                            me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
+                            me.$store.commit('app/setCanAddComments', me.canViewCommentsCurrentFramework());
                             me.$router.push({name: "framework", params: {frameworkId: me.queryParams.frameworkId}});
                         }, console.error);
                     }

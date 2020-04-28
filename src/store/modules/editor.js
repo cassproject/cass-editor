@@ -19,7 +19,8 @@ const state = {
     configuration: null,
     commonPathIframe: '',
     iframeCompetencyPathInterframework: '',
-    iframeConceptPath: ''
+    iframeConceptPath: '',
+    addCommentAboutId: ''
 };
 const mutations = {
     framework(state, f) {
@@ -66,6 +67,9 @@ const mutations = {
     },
     iframeConceptPath(state, val) {
         state.iframeConceptPath = val;
+    },
+    setAddCommentAboutId(state, val) {
+        state.addCommentAboutId = val;
     }
 };
 const actions = {
@@ -107,6 +111,9 @@ const getters = {
     },
     configuration: function(state) {
         return state.configuration;
+    },
+    addCommentAboutId: function(state) {
+        return state.addCommentAboutId;
     }
 };
 
