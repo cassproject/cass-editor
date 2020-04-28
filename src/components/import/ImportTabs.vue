@@ -154,7 +154,7 @@
                     </div>
                     <!-- file input -->
                     <div
-                        class="has-dashed-border columns has-text-centered"
+                        class="has-dashed-border columns is-vcentered has-text-centered"
                         id="drop-area"
                         v-if="importType=='file'">
                         <drag-and-drop
@@ -201,13 +201,14 @@
                                 <li />
                             </ul>
                             <div class="section">
-                                <div class="columns">
-                                    <div class="column is-4">
-                                        <div
-                                            @click="resetImport()"
-                                            class="button is-primary">
-                                            Start over
-                                        </div>
+                                <div class="buttons is-centered">
+                                    <div
+                                        @click="resetImport()"
+                                        class="button is-primary">
+                                        <span class="icon">
+                                            <i class="fa fa-redo" />
+                                        </span>
+                                        <span>start over</span>
                                     </div>
                                 </div>
                             </div>
