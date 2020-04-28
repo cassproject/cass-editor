@@ -5,7 +5,8 @@
                 <span class="title has-text-white">
                     Supported Import Types
                 </span>
-                <br><span class="subtitle has-text-white has-text-weight-medium">
+                <br>
+                <span class="subtitle has-text-white has-text-weight-medium">
                     Supported Import Files & Formats
                 </span>
             </p>
@@ -49,16 +50,22 @@
                     </li>
                 </ul>
             </div>
+            <!-- DOCX -->
             <div
                 v-if="tab === 'docx'"
                 class="section">
-                <h3 class=" has-text-weight-bold is-size-3">
-                    DOCX
+                <h3 class="title has-text-weight-bold is-size-2">
+                    WORD/DOCX
+                    <span class="icon is-pulled-right has-text-link">
+                        <i class="fa fa-exclamation-circle" />
+                    </span>
                 </h3>
                 <p>
-                    DOCX File imports are experimental in cass.
+                    CaSS experimentally supports the import of frameworks in Word and Docx document formats.  Because Word and Docx files come in many shapes and sizes there may be deviances when importing content.  The import interface allows you to review and make changes to the detected content before importing.
                 </p>
-                <div class="buttons is-right">
+                <div
+                    v-if="false"
+                    class="buttons is-right">
                     <div class="button is-small is-outlined is-primary">
                         <span
                             title=""
@@ -77,16 +84,22 @@
                     </div>
                 </div>
             </div>
+            <!-- HTML -->
             <div
                 v-if="tab === 'html'"
                 class="section">
-                <h3 class=" has-text-weight-bold is-size-3">
+                <h3 class="title has-text-weight-bold is-size-2">
                     HTML
+                    <span class="icon is-pulled-right has-text-link">
+                        <i class="fa fa-exclamation-circle" />
+                    </span>
                 </h3>
                 <p>
-                    DOCX File imports are experimental in cass.
+                    CaSS experimentally supports the import of frameworks in HTML document formats.  Because HTML files come in many shapes and sizes there may be deviances when importing content.  The import interface allows you to review and make changes to the detected content before importing.
                 </p>
-                <div class="buttons is-right">
+                <div
+                    v-if="false"
+                    class="buttons is-right">
                     <div class="button is-small is-outlined is-primary">
                         <span
                             title=""
@@ -105,16 +118,22 @@
                     </div>
                 </div>
             </div>
+            <!-- PDF -->
             <div
                 v-if="tab === 'pdf'"
                 class="section">
-                <h3 class=" has-text-weight-bold is-size-3">
+                <h3 class="title has-text-weight-bold is-size-2">
                     PDF
+                    <span class="icon is-pulled-right has-text-link">
+                        <i class="fa fa-exclamation-circle" />
+                    </span>
                 </h3>
                 <p>
-                    DOCX File imports are experimental in cass.
+                    CaSS experimentally supports the import of frameworks in PDF document format.  Because PDF files come in many shapes and sizes there may be deviances when importing content.  The import interface allows you to review and make changes to the detected content before importing.
                 </p>
-                <div class="buttons is-right">
+                <div
+                    v-if="false"
+                    class="buttons is-right">
                     <div class="button is-small is-outlined is-primary">
                         <span
                             title=""
@@ -133,17 +152,20 @@
                     </div>
                 </div>
             </div>
+            <!-- CSV -->
             <div
                 class="section"
                 v-if="tab === 'csv'">
-                <h2 class=" has-text-weight-bold is-size-2">
+                <h2 class="title has-text-weight-bold is-size-2">
                     CSV
+                    <span class="icon is-pulled-right has-text-success">
+                        <i class="fa fa-check-circle" />
+                    </span>
                 </h2>
                 <p>
                     CSV file imports are supported with CaSS.  In order to upload competencies as CSV files your framework CSV files need to be formatted in a CaSS readable format.
                 </p>
-                <br>
-                <h5 class="title is-size-4 has-text-weight-bold">
+                <h5 class="header is-size-4 has-text-weight-bold">
                     CaSS Formatted
                 </h5>
                 <p>
@@ -201,7 +223,7 @@
                         <span>Relations Template</span>
                     </a>
                 </div>
-                <h5 class="title is-size-4 has-text-weight-bold">
+                <h5 class="header is-size-4 has-text-weight-bold">
                     CTDL-ASN Formatted
                 </h5>
                 <p>
@@ -210,7 +232,6 @@
                     It is also important that the rows be sequenced correctly, with competency frameworks appearing before the competencies inside of them, and for a parent to be in a row above a child of that parent.
                     Any field with multiple values must be formatted as entry 1|entry 2.
                 </p>
-                <br>
                 <div class="buttons is-right">
                     <a
                         :href="ctdlAsnCsvExampleFile"
@@ -238,17 +259,20 @@
                     </a>
                 </div>
             </div>
+            <!-- XML -->
             <div
                 class="section"
                 v-if="tab === 'xml'">
-                <h2 class=" has-text-weight-bold is-size-2">
+                <h2 class="title has-text-weight-bold is-size-2">
                     XML
+                    <span class="icon is-pulled-right has-text-success">
+                        <i class="fa fa-check-circle" />
+                    </span>
                 </h2>
                 <p>
                     At this time CaSS supports XML imports in the Medbiquitous XML format.
                 </p>
-                <br>
-                <h5 class="title is-size-4 has-text-weight-bold">
+                <h5 class="header is-size-4 has-text-weight-bold">
                     Medbiquitous XML
                 </h5>
                 <p>
@@ -270,15 +294,18 @@
                     </a>
                 </div>
             </div>
+            <!-- JSON -->
             <div
                 class="section"
                 v-if="tab === 'json'">
-                <h2 class=" has-text-weight-bold is-size-2">
+                <h2 class="title has-text-weight-bold is-size-2">
                     JSON
+                    <span class="icon is-pulled-right has-text-success">
+                        <i class="fa fa-check-circle" />
+                    </span>
                 </h2>
-                <p />
-                <br>
-                <h5 class="title is-size-4 has-text-weight-bold">
+                <p>CaSS supports importing frameworks from JSON files in the below listed two formats.</p>
+                <h5 class="header is-size-4 has-text-weight-bold">
                     Achievement Standards Network RDF+JSON
                 </h5>
                 <p>
@@ -299,7 +326,7 @@
                         <span>Example</span>
                     </a>
                 </div>
-                <h5 class="title is-size-4 has-text-weight-bold">
+                <h5 class="header is-size-4 has-text-weight-bold">
                     CTDL-ASN formatted JSON-LD
                 </h5>
                 <p>
@@ -327,7 +354,7 @@
                 @click="$store.commit('app/closeModal')"
                 class="buttons is-right">
                 <div class="button is-primary is-large is-outlined">
-                    Done
+                    Back to import screen
                 </div>
             </div>
         </footer>
@@ -390,3 +417,17 @@ export default {
     }
 };
 </script>
+
+<style lang="scss">
+.modal-card {
+    .header  {
+        padding-top: 1.5rem;
+        padding-bottom: .5rem;
+    }
+    .buttons {
+        width: 100%;
+        padding-top: .5rem;
+    }
+}
+
+</style>
