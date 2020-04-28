@@ -119,17 +119,15 @@ ul.processing-list {
     
     .import-tab {
         margin-top: -40px;
-        height: 100px;
+        height: 120px;
         color: $dark;
         width: 100%;
-        max-width: 100px;
         display: flex;
         flex-direction: column;
         justify-items: center;
         justify-content: center;
         align-items: center;
         font-size: .7rem;
-        border-radius: 100px;
         background-color: transparent;
         a { 
             color: $dark;
@@ -140,10 +138,25 @@ ul.processing-list {
         
     }
     .is-active-tab{
-        background-color: $cass-lightest;
         color: $link;
         a {
+            height: 140px;
+            width: 140px;
+            padding-top: 40px;
+            border-radius: 100px;
             color: $secondary;
+            z-index: 2;
+        }
+        a::before {
+            height: 140px;
+            margin-top: -50px;
+            border-radius: 50%;
+            width: 140px;
+            transform: translateX(50%, 50%);
+            z-index: -2;
+            position: absolute;
+            background-color: $light;
+            content: '';
         }
 
         div {
@@ -259,6 +272,11 @@ ul.processing-list {
                 }
                 
             }
+    }
+    #import-bottom-section {
+        .tile {
+            min-height: 440px;
+        }
     }
     #import-top-section {
         padding: 1rem 1rem;

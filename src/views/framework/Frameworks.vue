@@ -43,12 +43,11 @@
                     </span>
                     <template class="">
                         <span
-                            v-for="filter in filteredSortResults"
-                            :key="filter"
+                            v-if="sortResults.label"
                             class="tag is-dark">
-                            {{ filter.label }}
+                            {{ sortResults.label }}
                             <button
-                                @click="removeFilter('sortResults', filter)"
+                                @click="clearSortBy"
                                 class="delete is-small" />
                         </span>
                     </template>
@@ -68,38 +67,6 @@
             <div
                 v-if="!queryParams.concepts==='true'"
                 class="section">
-                <!-- sort options -->
-                <div class="control">
-                    <label
-                        v-if="!queryParams.concepts==='true'"
-                        class="is-checkradio is-large"
-                        for="dcterms:title.keyword">
-                        <input
-                            type="radio"
-                            value="dcterms:title.keyword"
-                            id="dcterms:title.keyword"
-                            v-model="sortBy">
-                        Sort alphabetically</label>
-                    <label
-                        v-else
-                        class="radio"
-                        for="name.keyword">
-                        <input
-                            type="radio"
-                            value="name.keyword"
-                            id="name.keyword"
-                            v-model="sortBy">
-                        Sort alphabetically</label>
-                    <label
-                        class="radio"
-                        for="schema:dateModified">
-                        <input
-                            type="radio"
-                            value="schema:dateModified"
-                            id="schema:dateModified"
-                            v-model="sortBy">
-                        Sort by last modified</label>
-                </div>
                 <!-- show my frameworks radio -->
                 <div class="control">
                     <div v-if="queryParams.show !== 'mine' && queryParams.conceptShow !== 'mine' && numIdentities">
@@ -224,6 +191,7 @@ export default {
         return {
             repo: window.repo,
             showMine: false,
+            showNotMine: false,
             numIdentities: EcIdentityManager.ids.length,
             sortBy: null
         };
@@ -254,11 +222,6 @@ export default {
         sortResults: function() {
             return this.$store.getters['app/sortResults'];
         },
-        filteredSortResults: function() {
-            let filterValues = this.sortResults.filter(item => item.checked === true);
-            console.log('filtered value', filterValues);
-            return filterValues;
-        },
         showRightAside: function() {
             return this.$store.getters['app/showRightAside'];
         },
@@ -276,6 +239,18 @@ export default {
             if (this.showMine || (this.queryParams && this.queryParams.concepts !== "true" && this.queryParams.show === "mine") ||
                 (this.queryParams && this.queryParams.concepts === "true" && this.queryParams.conceptShow === "mine")) {
                 search += " AND (";
+                for (var i = 0; i < EcIdentityManager.ids.length; i++) {
+                    if (i !== 0) {
+                        search += " OR ";
+                    }
+                    var id = EcIdentityManager.ids[i];
+                    search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
+                    search += " OR @owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
+                }
+                search += ")";
+            }
+            if (this.showNotMine) {
+                search += " AND NOT (";
                 for (var i = 0; i < EcIdentityManager.ids.length; i++) {
                     if (i !== 0) {
                         search += " OR ";
@@ -304,6 +279,13 @@ export default {
     methods: {
         clearAllFilters: function() {
             this.$store.commit('app/clearSearchFilters');
+            this.clearSortBy();
+            this.showMine = false;
+            this.showNotMine = false;
+        },
+        clearSortBy: function() {
+            this.$store.commit('app/sortResults', []);
+            this.sortBy = this.queryParams.concepts === 'true' ? "dcterms:title.keyword" : "name.keyword";
         },
         removeFilter: function(filterType, val) {
             let storeCaller = 'app/' + filterType;
@@ -320,11 +302,15 @@ export default {
             if (this.queryParams.concepts === "true") {
                 EcConceptScheme.get(framework.id, function(success) {
                     me.$store.commit('editor/framework', success);
+                    me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
+                    me.$store.commit('app/setCanAddComments', me.canViewCommentsCurrentFramework());
                     me.$router.push({name: "conceptScheme", params: {frameworkId: framework.id}});
                 }, console.error);
             } else {
                 EcFramework.get(framework.id, function(success) {
                     me.$store.commit('editor/framework', success);
+                    me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
+                    me.$store.commit('app/setCanAddComments', me.canViewCommentsCurrentFramework());
                     me.$router.push({name: "framework", params: {frameworkId: framework.id}});
                 }, console.error);
             }
@@ -350,6 +336,27 @@ export default {
             // End public key line
             pem = pem.substring(0, length - 24) + "\n" + pem.substring(length - 24);
             return pem;
+        }
+    },
+    watch: {
+        sortResults: function() {
+            if (this.sortResults.id === "lastEdited") {
+                this.sortBy = "schema:dateModified";
+            } else if (this.sortResults.id === "dateCreated") {
+                this.sortBy = "schema:dateCreated";
+            }
+        },
+        filteredQuickFilters: function() {
+            this.showMine = false;
+            this.showNotMine = false;
+            for (var i = 0; i < this.filteredQuickFilters.length; i++) {
+                if (this.filteredQuickFilters[i].id === "ownedByMe") {
+                    this.showMine = true;
+                }
+                if (this.filteredQuickFilters[i].id === "notOwnedByMe") {
+                    this.showNotMine = true;
+                }
+            }
         }
     }
 };

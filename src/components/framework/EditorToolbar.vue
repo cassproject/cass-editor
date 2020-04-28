@@ -95,6 +95,7 @@
             <!-- hook this button up to add a new node at the top of the
             hierarchy in editing mode -->
             <div
+                v-if="showAddComments"
                 @click="$store.commit('app/showModal', { component: 'AddComment'})"
                 class="button is-text has-text-primary">
                 <span class="icon">
@@ -102,6 +103,7 @@
                 </span>
             </div>
             <div
+                v-if="showViewComments"
                 @click="$store.commit('app/showRightAside', 'Comments')"
                 class="button is-text has-text-dark">
                 <span class="icon">
@@ -150,6 +152,14 @@ export default {
             this.$emit('changeProperties', type);
             this.showPropertyViewDropDown = false;
             this.activeView = type;
+        }
+    },
+    computed: {
+        showAddComments() {
+            return this.$store.state.app.canAddComments;
+        },
+        showViewComments() {
+            return this.$store.state.app.canViewComments;
         }
     }
 };

@@ -7,6 +7,8 @@ const state = {
     showSideNav: false,
     showRightAside: false,
     rightAsideContent: '',
+    canViewComments: false,
+    canAddComments: false,
     framework: {
         showToolBar: true,
         commentsEnabled: true,
@@ -91,6 +93,12 @@ const mutations = {
     },
     importFiles: function(state, value) {
         state.import.files = value;
+    },
+    setCanViewComments: function(state, value) {
+        state.canViewComments = value;
+    },
+    setCanAddComments: function(state, value) {
+        state.canAddComments = value;
     },
     clearImportFiles: function(state) {
         state.import.files = [];
@@ -229,6 +237,12 @@ const actions = {
 
 };
 const getters = {
+    canViewComments: state => {
+        return state.canViewComments;
+    },
+    canAddComments: state => {
+        return state.canAddComments;
+    },
     sideNavEnabled: state => {
         return state.sideNavEnabled;
     },

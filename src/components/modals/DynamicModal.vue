@@ -25,6 +25,7 @@ import Share from '@/components/framework/Share.vue';
 import MultiEdit from '@/components/competency/MultiEdit.vue';
 import Search from '@/components/competency/Search.vue';
 import AddComment from '@/components/framework/AddComment.vue';
+import SupportedImportDetails from '@/components/import/SupportedImportDetails.vue';
 
 export default {
     name: 'DynamicModal',
@@ -32,7 +33,8 @@ export default {
         Share,
         MultiEdit,
         Search,
-        AddComment
+        AddComment,
+        SupportedImportDetails
     },
     data() {
         return {

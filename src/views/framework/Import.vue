@@ -18,273 +18,271 @@
 <template>
     <div
         id="page-import"
-        class="page-import container">
+        class="page-import ">
         <!--- main body section -->
         <!-- top section import information -->
         <div
-            class="has-background-white section">
-            <div class="">
+            class="has-background-white container">
+            <div class="section">
                 <div class="columns is-gapless is-multiline is-mobile">
-                    <div class="column is-narrow">
+                    <div class="column is">
                         <h1
-                            class="title is-size-2"
-                            v-if="queryParams.concepts === 'true'">
-                            Import a concept scheme
-                        </h1>
-                        <h1
-                            class="title is-2"
-                            v-else>
-                            Import a framework
+                            class="title is-size-2 has-text-black">
+                            <span v-if="queryParams.concepts === 'true'">
+                                Import a concept scheme
+                            </span>
+                            <span v-else>Import a framework</span>
                         </h1>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- ready state details -->
-        <div class="section">
-            <p
-                v-if="importTransition === 'upload' && !file && queryParams.concepts === 'true'"
-                class="is-size-6">
-                Upload documents to transform into CaSS Concept Schemes.
-            </p>
-            <p
-                v-else-if="importTransition === 'upload' && !file"
-                class="is-size-6">
-                Upload documents to transform into CaSS Competency Frameworks.
-            </p>
-            <p
-                v-if="importTransition === 'detail'"
-                class="is-size-6">
-                <span class="has-text-success has-text-weight-bold">
-                    CaSS has detected a framework!
-                </span>
-                <br><br>
-                We've gathered details about your competency framework and file.  Please review. Accept and approve to continue, cancel to review your file and re-import.
-            </p>
-            <p
-                v-if="importTransition === 'preview'"
-                class="">
-                <span class=" is-size-6 has-text-success has-text-weight-bold">
-                    Import success, {{ frameworkSize }} competencies ready to edit.
-                </span>
-                <br><br>
-                <!-- Please review the name and descriptions of the imported competencies. After making edits, "approve" the changes to view the imported competency details.-->
-            </p>
-            <p
-                v-if="importTransition === 'light'"
-                class="is-size-6">
-                <span class="has-text-success has-text-weight-bold">
-                    Your import is complete!
-                </span>
-                <br><br>
-            </p>
-        </div>
-        <!-- after importing framework: details and preview -->
-        <div
-            class="section"
-            v-if="showImportActions">
-            <div id="import-actions">
-                <div class="column is-12">
-                    <!-- import details options -->
-                    <div
-                        v-if="importTransition !== 'upload'"
-                        class="buttons is-small is-right">
-                        <!-- cancel button -->
-                        <div
-                            @click="clearImport"
-                            v-if="importTransition === 'detail' || importTransition === 'preview'"
-                            class=" button is-light is-small is-pulled-right is-dark is-outlined">
-                            <span>
-                                Cancel
-                            </span>
-                            <span class="icon">
-                                <i class="fa fa-times-circle" />
-                            </span>
-                        </div>
-                        <!-- export -->
-                        <div
-                            v-if="importTransition === 'light' && importType !== 'text'"
-                            class="button is-small is-dark is-outlined is-pulled-right"
-                            @click="showModal('export')">
-                            <span>
-                                Export
-                            </span>
-                            <span class="icon">
-                                <i class="fa fa-download" />
-                            </span>
-                        </div>
-                        <!--  start over -->
-                        <div
-                            v-if="importTransition === 'light' && importType !== 'text'"
-                            @click="clearImport"
-                            class="button is-small is-dark is-outlined is-pulled-right">
-                            <span>
-                                import again
-                            </span>
-                            <span class="icon">
-                                <i class="fa fa-redo-alt" />
-                            </span>
-                        </div>
-                        <!-- open in editor -->
-                        <div
-                            v-if="importFramework && importTransition === 'light' && importType !== 'text'"
-                            @click="openFramework"
-                            class="button is-small is-dark is-outlined is-pulled-right">
-                            <span>view in editor</span>
-                            <span class="icon">
-                                <i class="fa fa-edit" />
-                            </span>
-                        </div>
-                        <!--accept details -->
-                        <div
-                            @click="$store.commit('app/importTransition', 'preview')"
-                            v-if="importTransition === 'detail'"
-                            class="button is-small is-primary is-outlined is-pulled-right">
-                            <span>
-                                Accept Details & Review
-                            </span>
-                            <span class="icon is-small">
-                                <i class="fas fa-arrow-right" />
-                            </span>
-                        </div>
-                        <!--  accept preview -->
-                        <div
-                            @click="$store.commit('app/importTransition', 'light')"
-                            v-if="importTransition === 'preview'"
-                            class="button  is-small is-primary is-outlined is-pulled-right">
-                            <span>
-                                done editing
-                            </span>
-                            <span class="icon">
-                                <i class="fa fa-arrow-right" />
-                            </span>
-                        </div>
-                        <!--  home -->
-                        <router-link
-                            v-if="importTransition === 'light' && importType !== 'text'"
-                            class="button is-small is-primary is-outlined is -pulled-right"
-                            to="/">
-                            <span>
-                                Done
-                            </span>
-                            <span class="icon">
-                                <i class="fa fa-home" />
-                            </span>
-                        </router-link>
-                    </div>
-                </div>
+
+            <!-- ready state details -->
+            <div class="section">
+                <p
+                    v-if="importTransition === 'upload' && !importFile && queryParams.concepts === 'true'"
+                    class="is-size-6">
+                    Upload documents to transform into CaSS Concept Schemes.
+                </p>
+                <p
+                    v-else-if="importTransition === 'upload' && !importFile"
+                    class="is-size-6">
+                    Upload documents to transform into CaSS Competency Frameworks.
+                </p>
+                <p
+                    v-if="importTransition === 'detail'"
+                    class="is-size-6">
+                    <span class="has-text-success has-text-weight-bold">
+                        CaSS has detected a framework!
+                    </span>
+                    <br><br>
+                    We've gathered details about your competency framework and file.  Please review. Accept and approve to continue, cancel to review your file and re-import.
+                </p>
+                <p
+                    v-if="importTransition === 'preview'"
+                    class="">
+                    <span class=" is-size-6 has-text-success has-text-weight-bold">
+                        Import success, {{ frameworkSize }} competencies ready to edit.
+                    </span>
+                    <br><br>
+                    <!-- Please review the name and descriptions of the imported competencies. After making edits, "approve" the changes to view the imported competency details.-->
+                </p>
+                <p
+                    v-if="importTransition === 'light'"
+                    class="is-size-6">
+                    <span class="has-text-success has-text-weight-bold">
+                        Your import is complete!
+                    </span>
+                    <br><br>
+                </p>
             </div>
-        </div>
-        <!-- import tabs -->
-        <ImportTabs
-            v-if="!importFramework ||(importFramework && importType==='text')"
-            :q="queryParams"
-            :caseDocs="caseDocs"
-            :csvRelationFile="csvRelationFile"
-            :csvRelationColumns="csvRelationColumns"
-            :importCsvColumnSource="importCsvColumnSource"
-            :importCsvColumnRelationType="importCsvColumnRelationType"
-            :importCsvColumnTarget="importCsvColumnTarget"
-            :csvColumns="csvColumns"
-            @analyzeCsvRelation="analyzeCsvRelation($event)"
-            @importCase="handleImportFromTabs($event)" />
-        <!-- import details -->
-        <!--
-            we shouldn't need to check for isT3Type here, since this information
-            relies on the 'details' step, just skip this step and go
-            to preview in cases where we don't need to show details
-        -->
-        <ImportDetails
-            :detailsDetected="detailsDetected"
-            v-if="importTransition === 'detail'" />
-        <!-- import preview -->
-        <div
-            v-if="importFramework && importTransition === 'preview'"
-            class="import-preview">
-            <!-- loading section -- dummy content to show while loading dome elemnts -->
+            <!-- after importing framework: details and preview -->
             <div
                 class="section"
-                v-if="!hierarchyIsdoneLoading">
-                <ul class="processing-list">
-                    <li />
-                    <li />
-                    <ul>
-                        <li />
-                        <li />
-                        <li />
-                    </ul>
-                    <li />
-                    <li />
-                    <ul>
-                        <li />
-                        <li />
-                    </ul>
-                </ul>
+                v-if="showImportActions">
+                <div id="import-actions">
+                    <div class="column is-12">
+                        <!-- import details options -->
+                        <div
+                            v-if="importTransition !== 'upload'"
+                            class="buttons is-small is-right">
+                            <!-- cancel button -->
+                            <div
+                                @click="clearImport"
+                                v-if="importTransition === 'detail' || importTransition === 'preview'"
+                                class=" button is-light is-small is-pulled-right is-dark is-outlined">
+                                <span>
+                                    Cancel
+                                </span>
+                                <span class="icon">
+                                    <i class="fa fa-times-circle" />
+                                </span>
+                            </div>
+                            <!-- export -->
+                            <div
+                                v-if="importTransition === 'light' && importType !== 'text'"
+                                class="button is-small is-dark is-outlined is-pulled-right"
+                                @click="showModal('export')">
+                                <span>
+                                    Export
+                                </span>
+                                <span class="icon">
+                                    <i class="fa fa-download" />
+                                </span>
+                            </div>
+                            <!--  start over -->
+                            <div
+                                v-if="importTransition === 'light' && importType !== 'text'"
+                                @click="clearImport"
+                                class="button is-small is-dark is-outlined is-pulled-right">
+                                <span>
+                                    import again
+                                </span>
+                                <span class="icon">
+                                    <i class="fa fa-redo-alt" />
+                                </span>
+                            </div>
+                            <!-- open in editor -->
+                            <div
+                                v-if="importFramework && importTransition === 'light' && importType !== 'text'"
+                                @click="openFramework"
+                                class="button is-small is-dark is-outlined is-pulled-right">
+                                <span>view in editor</span>
+                                <span class="icon">
+                                    <i class="fa fa-edit" />
+                                </span>
+                            </div>
+                            <!--accept details -->
+                            <div
+                                @click="$store.commit('app/importTransition', 'preview')"
+                                v-if="importTransition === 'detail'"
+                                class="button is-small is-primary is-outlined is-pulled-right">
+                                <span>
+                                    Accept Details & Review
+                                </span>
+                                <span class="icon is-small">
+                                    <i class="fas fa-arrow-right" />
+                                </span>
+                            </div>
+                            <!--  accept preview -->
+                            <div
+                                @click="$store.commit('app/importTransition', 'light')"
+                                v-if="importTransition === 'preview'"
+                                class="button  is-small is-primary is-outlined is-pulled-right">
+                                <span>
+                                    done editing
+                                </span>
+                                <span class="icon">
+                                    <i class="fa fa-arrow-right" />
+                                </span>
+                            </div>
+                            <!--  home -->
+                            <router-link
+                                v-if="importTransition === 'light' && importType !== 'text'"
+                                class="button is-small is-primary is-outlined is -pulled-right"
+                                to="/">
+                                <span>
+                                    Done
+                                </span>
+                                <span class="icon">
+                                    <i class="fa fa-home" />
+                                </span>
+                            </router-link>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <Component
-                :is="dynamicThing"
-                @editNodeEvent="onEditNode"
-                @doneEditingNodeEvent="onDoneEditingNode"
-                :class="{'is-hidden': !hierarchyIsdoneLoading}"
-                :obj="importFramework"
-                :repo="repo"
-                class="framework-title"
-                :profile="t3FrameworkProfile"
-                :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
-                iframeText="Attach subitems from other sources to the selected item." />
+            <!-- import tabs -->
+            <ImportTabs
+                v-if="!importFramework ||(importFramework && importType==='text')"
+                :q="queryParams"
+                :caseDocs="caseDocs"
+                :csvRelationFile="csvRelationFile"
+                :csvRelationColumns="csvRelationColumns"
+                :importCsvColumnSource="importCsvColumnSource"
+                :importCsvColumnRelationType="importCsvColumnRelationType"
+                :importCsvColumnTarget="importCsvColumnTarget"
+                :csvColumns="csvColumns"
+                @analyzeCsvRelation="analyzeCsvRelation($event)"
+                @importCase="handleImportFromTabs($event)" />
+            <!-- import details -->
+            <!--
+                we shouldn't need to check for isT3Type here, since this information
+                relies on the 'details' step, just skip this step and go
+                to preview in cases where we don't need to show details
+            -->
+            <ImportDetails
+                :detailsDetected="detailsDetected"
+                v-if="importTransition === 'detail'" />
+            <!-- import preview -->
+            <div
+                v-if="importFramework && importTransition === 'preview'"
+                class="import-preview">
+                <!-- loading section -- dummy content to show while loading dome elemnts -->
+                <div
+                    class="section"
+                    v-if="!hierarchyIsdoneLoading">
+                    <ul class="processing-list">
+                        <li />
+                        <li />
+                        <ul>
+                            <li />
+                            <li />
+                            <li />
+                        </ul>
+                        <li />
+                        <li />
+                        <ul>
+                            <li />
+                            <li />
+                        </ul>
+                    </ul>
+                </div>
+                <Component
+                    :is="dynamicThing"
+                    @editNodeEvent="onEditNode"
+                    @doneEditingNodeEvent="onDoneEditingNode"
+                    :class="{'is-hidden': !hierarchyIsdoneLoading}"
+                    :obj="importFramework"
+                    :repo="repo"
+                    class="framework-title"
+                    :profile="t3FrameworkProfile"
+                    :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
+                    iframeText="Attach subitems from other sources to the selected item." />
 
-            <Hierarchy
-                :class="{'is-hidden': !hierarchyIsdoneLoading}"
-                v-if="importFramework"
-                @doneLoadingNodes="handleDoneLoading"
-                :container="importFramework"
-                containerType="Framework"
-                containerNodeProperty="competency"
-                containerEdgeProperty="relation"
-                nodeType="EcCompetency"
-                :profile="t3CompetencyProfile"
-                :viewOnly="false"
-                :isDraggable="true"
-                edgeType="EcAlignment"
-                edgeRelationProperty="relationType"
-                edgeRelationLiteral="narrows"
-                edgeSourceProperty="source"
-                edgeTargetProperty="target"
-                :repo="repo"
-                :newFramework="true"
-                @deleteObject="deleteObject" />
-        </div>
-        <!-- import light view -->
-        <div
-            v-else-if="importFramework && importTransition === 'light'"
-            class="import-light">
-            <Component
-                :is="dynamicThing"
-                :editingNode="editingNode"
-                :obj="importFramework"
-                :parentNotEditable="true"
-                class="framework-title"
-                :profile="t3FrameworkProfile"
-                :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
-                iframeText="Attach subitems from other sources to the selected item." />
-            <Hierarchy
-                v-if="importFramework"
-                :container="importFramework"
-                containerType="Framework"
-                containerNodeProperty="competency"
-                containerEdgeProperty="relation"
-                nodeType="EcCompetency"
-                :profile="t3CompetencyProfile"
-                :editable="false"
-                :viewOnly="true"
-                edgeType="EcAlignment"
-                edgeRelationProperty="relationType"
-                edgeRelationLiteral="narrows"
-                edgeSourceProperty="source"
-                edgeTargetProperty="target"
-                :repo="repo"
-                :newFramework="true"
-                @deleteObject="deleteObject" />
+                <Hierarchy
+                    :class="{'is-hidden': !hierarchyIsdoneLoading}"
+                    v-if="importFramework"
+                    @doneLoadingNodes="handleDoneLoading"
+                    :container="importFramework"
+                    containerType="Framework"
+                    containerNodeProperty="competency"
+                    containerEdgeProperty="relation"
+                    nodeType="EcCompetency"
+                    :profile="t3CompetencyProfile"
+                    :viewOnly="false"
+                    :isDraggable="true"
+                    edgeType="EcAlignment"
+                    edgeRelationProperty="relationType"
+                    edgeRelationLiteral="narrows"
+                    edgeSourceProperty="source"
+                    edgeTargetProperty="target"
+                    :repo="repo"
+                    :newFramework="true"
+                    @deleteObject="deleteObject" />
+            </div>
+            <!-- import light view -->
+            <div
+                v-else-if="importFramework && importTransition === 'light'"
+                class="import-light">
+                <Component
+                    :is="dynamicThing"
+                    :editingNode="editingNode"
+                    :obj="importFramework"
+                    :parentNotEditable="true"
+                    class="framework-title"
+                    :profile="t3FrameworkProfile"
+                    :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
+                    iframeText="Attach subitems from other sources to the selected item." />
+                <Hierarchy
+                    v-if="importFramework"
+                    :container="importFramework"
+                    containerType="Framework"
+                    containerNodeProperty="competency"
+                    containerEdgeProperty="relation"
+                    nodeType="EcCompetency"
+                    :profile="t3CompetencyProfile"
+                    :editable="false"
+                    :viewOnly="true"
+                    edgeType="EcAlignment"
+                    edgeRelationProperty="relationType"
+                    edgeRelationLiteral="narrows"
+                    edgeSourceProperty="source"
+                    edgeTargetProperty="target"
+                    :repo="repo"
+                    :newFramework="true"
+                    @deleteObject="deleteObject" />
+            </div>
         </div>
     </div>
 </template>
@@ -331,25 +329,8 @@ export default {
                 format: 'Department of Labor',
                 fileType: ''
             },
-            errors: [],
-            showErrors: false,
-            processingFile: false,
-            processingSuccess: false,
-            showCassCsv: false,
-            method: "file",
-            file: null,
             repo: window.repo,
-            status: "Ready",
-            processingStatus: '',
-            statusType: 'info',
             competencyCount: 0,
-            // importCsvColumnName: null,
-            // importCsvColumnDescription: "N/A",
-            // importCsvColumnScope: "N/A",
-            // importCsvColumnId: "N/A",
-            // importCsvColumnSource: null,
-            // importCsvColumnRelationType: null,
-            // importCsvColumnTarget: null,
             csvColumns: [],
             csvRelationFile: null,
             csvRelationColumns: [],
@@ -367,8 +348,7 @@ export default {
                 {name: "Credential Engine ASN (CSV)", value: "ctdlasnCsv"},
                 {name: "Table (CSV)", value: "csv"},
                 {name: "IMS Global CASE (JSON)", value: "case"}
-            ],
-            spin: true
+            ]
         };
     },
     computed: {
@@ -495,6 +475,14 @@ export default {
                 this.$store.commit('app/importTargetColumn', val);
             }
         },
+        firstImport: {
+            get() {
+                return this.$store.getters['app/firstImport'];
+            },
+            set(val) {
+                this.$store.commit('app/firstImport', val);
+            }
+        },
         text: function() {
             console.log(this.$store.getters['app/importText']);
             return this.$store.getters['app/importText'];
@@ -516,9 +504,9 @@ export default {
             this.caseDocs = [];
         },
         importTransition: function(val) {
-            if (val === 'process') {
+            if (val === 'processFiles') {
                 return this.uploadFiles(this.importFile);
-            } else if (val === 'uploadCsv' || val === 'uploadMedbiq') {
+            } else if (val === 'uploadCsv' || val === 'uploadMedbiq' || val === 'uploadOtherNonPdf') {
                 this.importFromFile();
             } else if (val === 'connectToServer') {
                 this.connectToServer();
@@ -592,7 +580,7 @@ export default {
                     type: val,
                     title: "Duplicate framework",
                     text: "A framework has already been imported under the name " + data.name + ". Do you want to overwrite it?",
-                    options: ["Overwrite framework", "Choose another name"],
+                    options: ["Overwrite framework", "Save import as a new framework"],
                     currentName: data.name,
                     onConfirm: (newName) => {
                         return this.savePdfImport(data, newName);
@@ -640,7 +628,7 @@ export default {
             this.$store.commit('app/importFileType', val);
             let error = "File type " + fileType + " is unsupported in this workflow";
             this.$store.commit('app/addImportError', error);
-            this.$store.commit('app/importTransition', 'upload');
+            me.$store.commit('app/importTransition', 'process');
         },
         /* When an import is "successful" */
         importSuccess: function() {
@@ -653,7 +641,7 @@ export default {
                     this.$store.commit('app/importTransition', 'preview');
                 }
             } else {
-                this.status = "Concept Scheme Imported.";
+                me.$store.commit('app/importStatus', "Concept Scheme Imported.");
                 this.$store.commit('app/importTransition', 'complete');
             }
         },
@@ -704,14 +692,17 @@ export default {
                         me.$store.commit('app/importFileType', 'conceptcsv');
                         feedback = "Import " + frameworkCount + " concept schemes and " + competencyCount + " concepts.";
                         me.$store.commit('app/importStatus', feedback);
+                        me.$store.commit('app/importTransition', 'info');
                     }, function(errorMsg) {
                         me.$store.commit('app/addImportError', errorMsg);
+                        me.$store.commit('app/importTransition', 'process');
                     });
                 } else {
                     CTDLASNCSVImport.analyzeFile(file, function(frameworkCount, competencyCount) {
                         me.$store.commit('app/importFileType', 'ctdlasncsv');
                         feedback = "Import " + frameworkCount + " frameworks and " + competencyCount + " competencies.";
                         me.$store.commit('app/importStatus', feedback);
+                        me.$store.commit('app/importTransition', 'info');
                     }, function(errorMsg) {
                         CSVImport.analyzeFile(file, function(data) {
                             me.$store.commit('app/importFileType', 'csv');
@@ -734,11 +725,11 @@ export default {
                                     me.importCsvColumnId = column;
                                 }
                             }
-                            // me.processingFile = false;
-                            me.status = (me.competencyCount = (data.length - 1)) + " Competencies Detected.";
+                            me.$store.commit('app/importStatus', (me.competencyCount = (data.length - 1)) + " Competencies Detected.");
+                            me.$store.commit('app/importTransition', 'info');
                         }, function(error) {
                             me.$store.commit('app/addImportError', error);
-                            // me.processingFile = false;
+                            me.$store.commit('app/importTransition', 'process');
                         });
                     });
                 }
@@ -752,20 +743,24 @@ export default {
                         if (me.queryParams.concepts === 'true') {
                             me.$store.commit('app/importStatus', "1 Concept Scheme Detected.");
                             me.$store.commit('app/importFileType', 'ctdlasnjsonld');
+                            me.$store.commit('app/importTransition', 'info');
                         } else {
-                            message = "Concept Schemes must be imported in the concept scheme editor.";
+                            var message = "Concept Schemes must be imported in the concept scheme editor.";
                             invalid = true;
-                            me.$store.commit('app/importError', message);
+                            me.$store.commit('app/addImportError', message);
+                            me.$store.commit('app/importTransition', 'process');
                         }
                     } else {
                         if (me.queryParams.concepts !== 'true') {
                             me.$store.commit('app/importFileType', 'ctdlasnjsonld');
                             feedback = "1 Framework and " + (EcObject.keys(data).length - 1) + " Competencies Detected.";
                             me.$store.commit('app/importStatus', feedback);
+                            me.$store.commit('app/importTransition', 'info');
                         } else {
                             error = "Frameworks must be imported in the competency editor.";
                             invalid = true;
-                            me.$store.commit('app/importError', error);
+                            me.$store.commit('app/addImportError', error);
+                            me.$store.commit('app/importTransition', 'process');
                         }
                     }
                     me.competencyCount = EcObject.keys(data).length;
@@ -773,47 +768,54 @@ export default {
                         // Do nothing
                     } else if (!invalid) {
                         let error = "Context is not CTDL-ASN";
-                        me.$store.commit('app/importError', error);
+                        me.$store.commit('app/addImportError', error);
+                        me.$store.commit('app/importTransition', 'process');
                     }
                 }, function() {
                     // If JSON-LD doesn't work, try JSON
                     ASNImport.analyzeFile(file, function(data) {
                         me.$store.commit('app/importFileType', 'asn');
-                        me.status = "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.";
+                        me.$store.commit('app/importStatus', "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.");
+                        me.$store.commit('app/importTransition', 'info');
                         me.competencyCount = EcObject.keys(data).length;
                     }, function(error) {
-                        me.$store.commit('app/importError', error);
+                        me.$store.commit('app/addImportError', error);
+                        me.$store.commit('app/importTransition', 'process');
                     });
                 });
             } else if (file.name.endsWith(".xml")) {
                 MedbiqImport.analyzeFile(file, function(data) {
                     me.$store.commit('app/importFileType', 'medbiq');
                     me.importFrameworkName = file.name.replace(".xml", "");
-                    me.status = "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.";
+                    me.$store.commit('app/importStatus', "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.");
                     me.competencyCount = EcObject.keys(data).length;
+                    me.$store.commit('app/importTransition', 'info');
                 }, function(error) {
-                    me.statusType = "error";
-                    me.status = error;
+                    me.$store.commit('app/importTransition', 'process');
+                    me.$store.commit('app/addImportError', error);
                 });
             } else if (file.name.endsWith(".pdf")) {
                 me.$store.commit('app/importFileType', 'pdf');
                 me.firstImport = false;
                 me.detailsDetected.fileType = "pdf";
                 me.$store.commit('app/importStatus', "File selected.");
+                me.$store.commit('app/importTransition', 'info');
             } else if (file.name.endsWith(".docx")) {
                 me.$store.commit('app/importFileType', "pdf");
                 me.firstImport = false;
                 me.$store.commit('app/importStatus', "File selected.");
+                me.$store.commit('app/importTransition', 'info');
             } else if (file.name.endsWith(".html")) {
                 me.$store.commit('app/importFileType', "pdf");
                 me.detailsDetected.fileType = "html";
                 me.firstImport = false;
                 me.$store.commit('app/importStatus', "File selected.");
+                me.$store.commit('app/importTransition', 'info');
             } else {
                 me.$store.commit('app/importFileType', '');
                 error = ("CaSS cannot read the file " + file.name + ". Please check that the file has the correct file extension.");
                 me.$store.commit('app/addImportError', error);
-                me.$store.commit('app/importTransition', 'upload');
+                me.$store.commit('app/importTransition', 'process');
                 return;
             }
             if (!me.firstImport) {
@@ -853,11 +855,9 @@ export default {
                 }
                 me.relationCount = (data.length - 1);
             }, function(error) {
-                me.showErrors = true;
-                me.status = error;
-                me.statusType = "error";
-                me.errors.push(error);
-                me.processingFile = false;
+                me.$store.commit('app/importStatus', error);
+                me.$store.commit('app/importTransition', 'process');
+                me.$store.commit('app/addImportError', error);
             });
         },
         analyzeJsonLdFramework: function(file, success, failure) {
@@ -900,6 +900,7 @@ export default {
                 f.generateId(this.queryParams.newObjectEndpoint == null ? this.repo.selectedServer : this.queryParams.newObjectEndpoint);
             }
             f["schema:dateCreated"] = new Date().toISOString();
+            console.log(this.importFrameworkName);
             f.setName(this.importFrameworkName);
             f.setDescription(this.importFrameworkDescription);
             let me = this;
@@ -918,27 +919,24 @@ export default {
                         me.spitEvent("importFinished", f.shortId(), "importPage");
                     }
                 }, function(failure) {
-                    me.showErrors = true;
-                    me.status = failure;
-                    me.statusType = "error";
-                    me.errors.push(failure);
-                    me.processingFile = false;
+                    me.$store.commit('app/importStatus', failure);
+                    me.$store.commit('app/importTransition', 'process');
+                    me.$store.commit('app/addImportError', failure);
                 });
             },
             function(failure) {
-                me.showErrors = true;
-                me.status = failure;
-                me.statusType = "error";
-                me.errors.push(failure);
-                me.processingFile = false;
+                me.$store.commit('app/importStatus', failure);
+                me.$store.commit('app/importTransition', 'process');
+                me.$store.commit('app/addImportError', failure);
             },
             function(increment) {
-                me.status = increment.competencies + "/" + me.competencyCount + " competencies imported.";
+                me.$store.commit('app/importStatus', increment.competencies + "/" + me.competencyCount + " competencies imported.");
             }, me.repo);
         },
         importAsn: function() {
             var identity = EcIdentityManager.ids[0];
             let me = this;
+            me.$store.commit('app/importTransition', 'process');
             ASNImport.importCompetencies(this.repo.selectedServer, identity, true, function(competencies, f) {
                 me.importFile.splice(0, 1);
                 if (me.importFile.length > 0) {
@@ -951,12 +949,11 @@ export default {
                 }
             },
             function(failure) {
-                me.statusType = "error";
-                me.status = failure;
+                me.$store.commit('app/importTransition', 'process');
+                me.$store.commit('app/addImportError', failure);
             },
             function(increment) {
-                me.statusType = "info";
-                me.status = increment.competencies + "/" + me.competencyCount + " competencies imported.";
+                me.$store.commit('app/importStatus', increment.competencies + "/" + me.competencyCount + " competencies imported.");
             }, me.repo);
         },
         importCtdlAsnCsv: function() {
@@ -975,8 +972,7 @@ export default {
                     }
                 }
                 var all = frameworks.concat(competencies).concat(relations);
-                me.statusType = "info";
-                me.status = "Saving " + all.length + " objects.";
+                me.$store.commit('app/importStatus', "Saving " + all.length + " objects.");
                 me.repo.multiput(all, function() {
                     for (var i = 0; i < frameworks.length; i++) {
                         me.$store.commit('app/importFramework', frameworks[i]);
@@ -989,36 +985,45 @@ export default {
                         me.analyzeImportFile();
                     }
                 }, function(failure) {
-                    console.log("failure", failure);
-                    me.showErrors = true;
-                    me.status = failure;
-                    me.statusType = "error";
-                    me.errors.push(failure);
-                    me.processingFile = false;
+                    me.$store.commit('app/importStatus', failure);
+                    me.$store.commit('app/importTransition', 'process');
+                    me.$store.commit('app/addImportError', failure);
                 });
             }, function(failure) {
-                console.log("failure", failure);
-                me.showErrors = true;
-                me.status = failure;
-                me.statusType = "error";
-                me.errors.push(failure);
-                me.processingFile = false;
+                me.$store.commit('app/importStatus', failure);
+                me.$store.commit('app/importTransition', 'process');
+                me.$store.commit('app/addImportError', failure);
             }, ceo);
         },
         importPdf: function() {
             var me = this;
-            me.status = 'importing framework...';
+            me.$store.commit('app/importStatus', 'importing framework...');
             var formData = new FormData();
             formData.append(me.importFile[0].name, me.importFile[0]);
-            me.status = 'importing file...';
-            EcRemote.postExpectingObject(
+            me.$store.commit('app/importStatus', 'importing file...');
+            EcRemote.postExpectingString(
                 "https://t3.cassproject.org/service/parse/",
                 "docx",
                 formData,
-                function(d) {
+                function(s) {
+                    var d = null;
+                    try {
+                        d = JSON.parse(s);
+                    } catch (ex) {
+                        me.$store.commit('app/importStatus', s);
+                        me.$store.commit('app/importTransition', 'process');
+                        me.$store.commit('app/addImportError', s);
+                        return;
+                    }
+                    if (d == null) {
+                        me.$store.commit('app/importStatus', s);
+                        me.$store.commit('app/importTransition', 'process');
+                        me.$store.commit('app/addImportError', s);
+                        return;
+                    }
                     var uuid = new UUID(3, "nil", d.name).format();
                     var f = new EcFramework();
-                    me.status = 'looking for existing framework...';
+                    me.$store.commit('app/importStatus', 'looking for existing framework...');
                     if (me.queryParams && me.queryParams.newObjectEndpoint) {
                         f.id = me.queryParams.newObjectEndpoint + uuid;
                     } else {
@@ -1026,37 +1031,33 @@ export default {
                     }
                     me.repo.search("(@id:\"" + f.shortId() + "\") AND (@type:Framework)", function() {}, function(frameworks) {
                         console.log(frameworks);
-                        me.status = 'looking for existing framwork...';
+                        me.$store.commit('app/importStatus', 'looking for existing framwork...');
                         if (frameworks.length > 0) {
-                            me.status = 'framework found...';
+                            me.$store.commit('app/importStatus', 'framework found...');
                             me.showModal('duplicate', d);
                         } else {
-                            me.status = 'no match, saving new framework...';
+                            me.$store.commit('app/importStatus', 'no match, saving new framework...');
                             me.savePdfImport(d);
                         } /* TO DO - ERROR HANDLING HERE */
                     }, function(error) {
-                        me.showErrors = true;
-                        me.status = error;
-                        me.statusType = "error";
-                        me.errors.push(error);
-                        me.processingFile = false;
+                        me.$store.commit('app/importStatus', error);
+                        me.$store.commit('app/importTransition', 'process');
+                        me.$store.commit('app/addImportError', error);
                     });
                 },
                 /* TO DO - ERROR HANDLING HERE */
                 function(error) {
-                    me.showErrors = true;
-                    me.status = error;
-                    me.statusType = "error";
-                    me.errors.push(error);
-                    me.processingFile = false;
+                    me.$store.commit('app/importStatus', error);
+                    me.$store.commit('app/importTransition', 'process');
+                    me.$store.commit('app/addImportError', error);
                 }
             );
-            me.statusType = "info";
-            me.status = 'processing file...';
+            me.$store.commit('app/importTransition', 'process');
+            me.$store.commit('app/importStatus', 'process file...');
         },
         savePdfImport: function(d, newName) {
             var me = this;
-            me.status = 'saving file...';
+            me.$store.commit('app/importStatus', 'saving file...');
             var toSave = [];
             var f = new EcFramework();
             var name = newName || d.name;
@@ -1079,11 +1080,9 @@ export default {
             console.log("message: ", JSON.parse(f.toJson()));
             var cs = {};
             if (!d.competencies) {
-                me.showErrors = true;
-                me.status = "Error importing competencies.";
-                me.statusType = "error";
-                me.errors.push("Error importing competencies, no competencies found in file.");
-                me.processingFile = false;
+                me.$store.commit('app/importStatus', "Error importing competencies.");
+                me.$store.commit('app/importTransition', 'process');
+                me.$store.commit('app/addImportError', "Error importing competencies, no competencies found in file.");
                 return;
             }
             me.detailsDetected.competencies = d.competencies.length;
@@ -1124,17 +1123,15 @@ export default {
                 me.$store.commit('app/importFramework', f);
                 me.$store.commit('editor/framework', f);
                 me.$store.commit('editor/t3Profile', true);
-                me.status = "";
+                me.$store.commit('app/importStatus', "");
                 me.importSuccess();
             }, function(error) {
-                me.showErrors = true;
-                me.status = error;
-                me.statusType = "error";
-                me.errors.push(error);
-                me.processingFile = false;
+                me.$store.commit('app/importStatus', error);
+                me.$store.commit('app/importTransition', 'process');
+                me.$store.commit('app/addImportError', error);
             });
-            me.statusType = "info";
-            me.status = 'saving import...';
+            me.$store.commit('app/importTransition', 'process');
+            me.$store.commit('app/importStatus', 'saving import...');
         },
         importCsv: function() {
             var file = this.importFile[0];
@@ -1157,14 +1154,14 @@ export default {
                 file,
                 endpoint,
                 identity,
-                this.importCsvColumnName.index,
-                this.importCsvColumnDescription.index,
-                this.importCsvColumnScope.index,
-                this.importCsvColumnId.index,
+                (this.importCsvColumnName ? this.importCsvColumnName.index : -1),
+                (this.importCsvColumnDescription ? this.importCsvColumnDescription.index : -1),
+                (this.importCsvColumnScope ? this.importCsvColumnScope.index : -1),
+                (this.importCsvColumnId ? this.importCsvColumnId.index : -1),
                 relations,
-                this.importCsvColumnSource.index,
-                this.importCsvColumnRelationType.index,
-                this.importCsvColumnTarget.index,
+                (this.importCsvColumnSource ? this.importCsvColumnSource.index : -1),
+                (this.importCsvColumnRelationType ? this.importCsvColumnRelationType.index : -1),
+                (this.importCsvColumnTarget ? this.importCsvColumnTarget.index : -1),
                 function(competencies, alignments) {
                     f.competency = [];
                     f.relation = [];
@@ -1185,27 +1182,22 @@ export default {
                             me.spitEvent("importFinished", f.shortId(), "importPage");
                         }
                     }, function(failure) {
-                        me.statusType = "error";
-                        me.status = failure;
+                        me.$store.commit('app/importTransition', 'process');
+                        me.$store.commit('app/addImportError', failure);
                     });
                 },
                 function(failure) {
-                    me.showErrors = true;
-                    me.status = failure;
-                    me.statusType = "error";
-                    me.errors.push(failure);
-                    me.processingFile = false;
+                    me.$store.commit('app/importStatus', failure);
+                    me.$store.commit('app/importTransition', 'process');
+                    me.$store.commit('app/addImportError', failure);
                 },
                 function(increment) {
                     if (increment.relations != null && increment.relations !== undefined) {
-                        me.statusType = "info";
-                        me.status = (increment.relations + "/" + me.relationCount + " relations imported.");
+                        me.$store.commit('app/importStatus', (increment.relations + "/" + me.relationCount + " relations imported."));
                     } else if (increment.competencies != null && increment.competencies !== undefined) {
-                        me.statusType = "info";
-                        me.status = (increment.competencies + "/" + me.competencyCount + " competencies imported.");
+                        me.$store.commit('app/importStatus', (increment.competencies + "/" + me.competencyCount + " competencies imported."));
                     } else {
-                        me.statusType = "info";
-                        me.status = "Importing...";
+                        me.$store.commit('app/importStatus', "Importing...");
                     }
                 }, false, me.repo);
         },
@@ -1248,17 +1240,15 @@ export default {
                     }
                 }
             }, function(failure) {
-                me.showErrors = true;
-                me.statusType = "error";
-                me.status = "Import failed. Check your import file for any errors.";
+                me.$store.commit('app/importTransition', 'process');
+                me.$store.commit('app/importStatus', "Import failed. Check your import file for any errors.");
                 console.log(failure.statusText);
-                me.errors.push(failure);
+                me.$store.commit('app/addImportError', failure);
             });
-            me.statusType = "info";
             if (me.queryParams.concepts === 'true') {
-                me.status = "Importing Concept Scheme";
+                me.$store.commit('app/importStatus', "Importing Concept Scheme");
             } else {
-                me.status = 'processing';
+                me.$store.commit('app/importStatus', 'Importing Framework');
             }
         },
         importCtdlAsnConceptCsv: function() {
@@ -1267,6 +1257,7 @@ export default {
             if (EcIdentityManager.ids.length > 0) {
                 ceo = EcIdentityManager.ids[0];
             }
+            me.$store.commit('app/importStatus', 'process');
             CTDLASNCSVConceptImport.importFrameworksAndCompetencies(me.repo, me.importFile[0], function(frameworks, competencies) {
                 if (me.queryParams.ceasnDataFields === 'true') {
                     for (var i = 0; i < frameworks.length; i++) {
@@ -1277,42 +1268,45 @@ export default {
                     }
                 }
                 var all = frameworks.concat(competencies);
-                me.status = "Saving " + all.length + " objects.";
+                me.$store.commit('app/importStatus', "Saving " + all.length + " objects.");
                 me.repo.multiput(all, function() {
                     for (var i = 0; i < frameworks.length; i++) {
                         me.spitEvent("importFinished", frameworks[i].shortId(), "importPage");
                     }
                     me.importSuccess();
                 }, function(failure) {
-                    me.statusType = "error";
-                    me.status = "Failed to save: " + failure;
+                    me.$store.commit('app/importTransition', 'process');
+                    me.$store.commit('app/addImportError', "Failed to save: " + failure);
                     console.error(failure);
                 });
             }, function(failure) {
-                me.statusType = "error";
+                me.$store.commit('app/importTransition', 'process');
+                me.$store.commit('app/addImportError', failure);
                 console.error(failure);
             }, ceo);
         },
         importFromFile: function() {
-            console.log("this.importFileType", this.importFileType);
-            if (this.importFileType === "csv") {
-                this.importCsv();
-            } else if (this.importFileType === "ctdlasncsv") {
-                this.importCtdlAsnCsv();
-            } else if (this.importFileType === "conceptcsv") {
-                this.importCtdlAsnConceptCsv();
-            } else if (this.importFileType === "ctdlasnjsonld") {
-                this.importJsonLd();
-            } else if (this.importFileType === "asn") {
-                this.importAsn();
-            } else if (this.importFileType === "pdf") {
-                this.importPdf();
-            } else if (this.importFileType === "medbiq") {
-                this.importMedbiq();
+            let me = this;
+            console.log("this.importFileType", me.importFileType);
+            me.$store.commit('app/importTransition', 'process');
+            if (me.importFileType === "csv") {
+                me.importCsv();
+            } else if (me.importFileType === "ctdlasncsv") {
+                me.importCtdlAsnCsv();
+            } else if (me.importFileType === "conceptcsv") {
+                me.importCtdlAsnConceptCsv();
+            } else if (me.importFileType === "ctdlasnjsonld") {
+                me.importJsonLd();
+            } else if (me.importFileType === "asn") {
+                me.importAsn();
+            } else if (me.importFileType === "pdf") {
+                me.importPdf();
+            } else if (me.importFileType === "medbiq") {
+                me.importMedbiq();
             } else {
-                let error = "Unsupported file type" + this.importFileType;
-                this.$store.commit('app/addImportError', error);
-                this.$store.commit('app/importTransition', 'upload');
+                let error = "Unsupported file type" + me.importFileType;
+                me.$store.commit('app/addImportError', error);
+                me.$store.commit('app/importTransition', 'process');
             }
         },
         connectToServer: function() {
@@ -1339,6 +1333,7 @@ export default {
             if (result.CFDocuments == null) {
                 error = "No frameworks found. Please check the URL and try again.";
                 this.$store.commit('app/addImportError', error);
+                me.$store.commit('app/importTransition', 'process');
             } else {
                 let message = result.CFDocuments.length + " frameworks detected.";
                 this.$store.commit('app/importStatus', message);
@@ -1363,8 +1358,8 @@ export default {
             EcRemote.getExpectingString(this.repo.selectedServer, "ims/case/getDocs?url=" + this.importServerUrl, function(success) {
                 me.caseGetDocsSuccess(success);
             }, function(failure) {
-                me.statusType = "error";
-                me.status = "No frameworks found. Please check the URL and try again.";
+                me.$store.commit('app/importTransition', 'process');
+                me.$store.commit('app/addImportError', "No frameworks found. Please check the URL and try again.");
             });
         },
         importCase: function() {
@@ -1387,8 +1382,8 @@ export default {
                     }
                 }
                 if (lis === 0) {
-                    this.statusType = "success";
-                    this.status = "Import finished.";
+                    this.importSuccess();
+                    this.$store.commit('app/importStatus', "Import finished.");
                 } else {
                     var me = this;
                     var id = this.caseDocs[firstIndex].id;
@@ -1402,7 +1397,6 @@ export default {
                         me.caseDocs[firstIndex].success = true;
                         EcFramework.get(id, function(f) {
                             me.$store.commit('app/importFramework', f);
-                            me.importSuccess();
                             me.spitEvent("importFinished", f.shortId(), "importPage");
                         }, console.error);
                         me.importCase();
@@ -1462,6 +1456,7 @@ export default {
             }, function(failure) {
                 console.log("failure", failure);
                 me.$store.commit('app/addImportError', failure);
+                me.$store.commit('app/importTransition', 'process');
             });
         },
         importFromUrl: function() {
@@ -1475,18 +1470,22 @@ export default {
                 } else {
                     error = "URL must have an '@graph' field at the top level.";
                     me.$store.commit('app/addImportError', error);
+                    me.$store.commit('app/importTransition', 'process');
                     return;
                 }
                 if (graph[0]["@type"].indexOf("Concept") !== -1) {
                     error = "Competency Editor cannot be used to import concept schemes.";
                     me.$store.commit('app/addImportError', error);
+                    me.$store.commit('app/importTransition', 'process');
                 }
             }, function(failure) {
                 if (!failure) {
                     error = "Import Error";
                     me.$store.commit('app/addImportError', error);
+                    me.$store.commit('app/importTransition', 'process');
                 } else {
                     me.$store.commit('app/addImportError', failure);
+                    me.$store.commit('app/importTransition', 'process');
                 }
             });
         }

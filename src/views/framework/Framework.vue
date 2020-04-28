@@ -1,6 +1,5 @@
 <template>
     <div id="page-framework">
-        <DynamicModal />
         <RightAside v-if="showRightAside" />
         <!-- begin framework -->
         <div class="">
@@ -103,7 +102,6 @@ import tlaProfile from '@/mixins/tlaProfile.js';
 
 import FrameworkEditorToolbar from '@/components/framework/EditorToolbar.vue';
 import RightAside from '@/components/framework/RightAside.vue';
-import DynamicModal from '@/components/modals/DynamicModal.vue';
 
 export default {
     name: "Framework",
@@ -451,8 +449,7 @@ export default {
         Thing,
         ThingEditing,
         FrameworkEditorToolbar,
-        RightAside,
-        DynamicModal
+        RightAside
     },
     created: function() {
         // Set configuration create() happens before mount, make sure framework exists in case

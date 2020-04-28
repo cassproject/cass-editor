@@ -4,6 +4,8 @@
         class="has-background-white">
         <!-- nav bar navigation -->
         <cass-modal />
+        <DynamicModal />
+
         <router-view
             :showSideNav="showSideNav"
             @sideBarEvent="onSidebarEvent"
@@ -22,9 +24,14 @@
 <script>
 import common from '@/mixins/common.js';
 import cassModal from './components/CassModal.vue';
+import DynamicModal from './components/modals/DynamicModal.vue';
 
 export default {
+    mixins: [common],
     name: "App",
+    components: {
+        DynamicModal
+    },
     data: function() {
         return {
             navBarActive: false,
@@ -34,7 +41,6 @@ export default {
             showNav: true
         };
     },
-    mixins: [common],
     $router: function(to, from) {
         if (to.path !== from.path) {
             this.navBarActive = false;
@@ -82,11 +88,15 @@ export default {
                     if (me.queryParams.concepts === "true") {
                         EcConceptScheme.get(me.queryParams.frameworkId, function(success) {
                             me.$store.commit('editor/framework', success);
+                            me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
+                            me.$store.commit('app/setCanAddComments', me.canViewCommentsCurrentFramework());
                             me.$router.push({name: "conceptScheme", params: {frameworkId: me.queryParams.frameworkId}});
                         }, console.error);
                     } else {
                         EcFramework.get(me.queryParams.frameworkId, function(success) {
                             me.$store.commit('editor/framework', success);
+                            me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
+                            me.$store.commit('app/setCanAddComments', me.canViewCommentsCurrentFramework());
                             me.$router.push({name: "framework", params: {frameworkId: me.queryParams.frameworkId}});
                         }, console.error);
                     }
@@ -327,6 +337,7 @@ export default {
                     framework.generateId(this.repo.selectedServer);
                 }
                 framework["schema:dateCreated"] = new Date().toISOString();
+                framework["schema:dateModified"] = new Date().toISOString();
                 if (EcIdentityManager.ids.length > 0) {
                     framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                 }
@@ -356,6 +367,7 @@ export default {
                 }
                 framework["dcterms:title"] = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Concept Scheme"};
                 framework["schema:dateCreated"] = new Date().toISOString();
+                framework["schema:dateModified"] = new Date().toISOString();
                 var saveFramework = framework;
                 if (this.queryParams.private === "true") {
                     saveFramework = EcEncryptedValue.toEncryptedValue(framework);

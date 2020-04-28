@@ -8,7 +8,7 @@
     <!-- import drop area and tabs -->
     <div
         id="import-bottom-section"
-        class="section">
+        class="">
         <!-- types of import for tabs -->
         <div
             v-if="!importFramework || (importFramework && importType === 'text')"
@@ -84,17 +84,85 @@
                             </div>
                         </div>
                     </div>
+                    <div
+                        class="columns"
+                        v-if="importType === 'file'">
+                        <div class="column is-12">
+                            <div class="buttons is-centered">
+                                <div
+                                    @click="showImportModal('pdf')"
+                                    class="button is-outlined is-warning is-small">
+                                    <span
+                                        title="PDF files are experimentally supported. Click to learn more."
+                                        class="icon">
+                                        <i class="fa fa-exclamation" />
+                                    </span>
+                                    <span>PDF</span>
+                                </div>
+                                <div
+                                    @click="showImportModal('docx')"
+                                    class="button is-outlined is-warning is-small">
+                                    <span
+                                        title="Word documents and Docx files are experimental. Click to learn more."
+                                        class="icon">
+                                        <i class="fa fa-exclamation" />
+                                    </span>
+                                    <span>DOCX/WORD</span>
+                                </div>
+                                <div
+                                    @click="showImportModal('csv')"
+                                    class="button is-outlined is-success is-small">
+                                    <span
+                                        title="CSV files are supported, click to learn more."
+                                        class="icon is-pulled-right">
+                                        <i class="fa fa-check" />
+                                    </span>
+                                    <span>CSV</span>
+                                </div>
+                                <div
+                                    @click="showImportModal('xml')"
+                                    class="button is-outlined is-success is-small">
+                                    <span
+                                        title="XML files are supported, click to learn more."
+                                        class="icon is-pulled-right">
+                                        <i class="fa fa-check" />
+                                    </span>
+                                    <span>XML</span>
+                                </div>
+                                <div
+                                    @click="showImportModal('json')"
+                                    class="button is-outlined is-success is-small">
+                                    <span
+                                        title="JSON files are supported, click to learn more."
+                                        class="icon is-pulled-right">
+                                        <i class="fa fa-check" />
+                                    </span>
+                                    <span>JSON</span>
+                                </div>
+                                <div
+                                    @click="showImportModal('html')"
+                                    class="button is-outlined is-success is-small">
+                                    <span
+                                        title="html files are fully supported at this time"
+                                        class="icon is-pulled-right">
+                                        <i class="fa fa-check" />
+                                    </span>
+                                    <span>HTML</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <!-- file input -->
                     <div
-                        class="has-dashed-border columns has-text-centered"
+                        class="has-dashed-border columns is-vcentered has-text-centered"
                         id="drop-area"
-                        v-if="importType=='file' && importFileType !== 'csv' && importFileType !== 'medbiq'">
+                        v-if="importType=='file'">
                         <drag-and-drop
                             class="column is-12"
                             v-if="importTransition === 'upload'"
                             @clearFiles="clearFiles" />
                         <div
-                            v-else-if="importTransition === 'process' && importErrors.length === 0"
+                            v-else-if="(importTransition === 'process' || importTransition === 'info') && importErrors.length === 0"
                             class="column is-12">
                             <span
                                 class="icon is-large"
@@ -133,13 +201,14 @@
                                 <li />
                             </ul>
                             <div class="section">
-                                <div class="columns">
-                                    <div class="column is-4">
-                                        <div
-                                            @click="cancelImport()"
-                                            class="button is-primary">
-                                            Start over
-                                        </div>
+                                <div class="buttons is-centered">
+                                    <div
+                                        @click="resetImport()"
+                                        class="button is-primary">
+                                        <span class="icon">
+                                            <i class="fa fa-redo" />
+                                        </span>
+                                        <span>start over</span>
                                     </div>
                                 </div>
                             </div>
@@ -250,7 +319,9 @@
                             </div>
                         </template>
                         <!-- handle non pdf imports -->
-                        <div class="control">
+                        <div
+                            v-if="importType === 'file' && importTransition === 'info'"
+                            class="control">
                             <div
                                 class="button is-pulled-right is-outlined is-primary"
                                 v-if="importFile && importType === 'file' && importFileType!=='pdf'"
@@ -578,6 +649,13 @@ export default {
         }
     },
     methods: {
+        showImportModal: function(type) {
+            let modalObject = {
+                component: 'SupportedImportDetails',
+                documentContent: type
+            };
+            this.$store.commit('app/showModal', modalObject);
+        },
         prepareToImportNonPdf: function() {
             if (this.importFileType === 'csv') {
                 // prepare csv
@@ -597,6 +675,8 @@ export default {
                 this.$store.commit('app/importFrameworkName', this.csvImportDetails.name.value);
                 this.$store.commit('app/importFrameworkDescription', this.csvImportDetails.description.value);
                 this.$store.commit('app/importTransition', 'uploadMedbiq');
+            } else if (this.importFileType !== 'pdf') {
+                this.$store.commit('app/importTransition', 'uploadOtherNonPdf');
             }
         },
         importFromFile: function() {
