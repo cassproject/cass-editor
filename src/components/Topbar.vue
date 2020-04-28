@@ -22,8 +22,8 @@
             </div>
             <div class="navbar-item">
                 <router-link to="/">
-                    <h2 class="has-text-white subtitle">
-                        Cass Editor
+                    <h2 class="has-text-white subtitle has-text-weight-bold">
+                        CaSS
                     </h2>
                 </router-link>
             </div>
