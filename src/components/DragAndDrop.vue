@@ -140,7 +140,7 @@ export default {
         },
         process() {
             this.$store.commit('app/importFiles', this.files);
-            this.$store.commit('app/importTransition', 'process');
+            this.$store.commit('app/importTransition', 'processFiles');
         }
     }
 };

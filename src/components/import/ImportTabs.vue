@@ -156,13 +156,13 @@
                     <div
                         class="has-dashed-border columns has-text-centered"
                         id="drop-area"
-                        v-if="importType=='file' && importFileType !== 'csv' && importFileType !== 'medbiq'">
+                        v-if="importType=='file'">
                         <drag-and-drop
                             class="column is-12"
                             v-if="importTransition === 'upload'"
                             @clearFiles="clearFiles" />
                         <div
-                            v-else-if="importTransition === 'process' && importErrors.length === 0"
+                            v-else-if="(importTransition === 'process' || importTransition === 'info') && importErrors.length === 0"
                             class="column is-12">
                             <span
                                 class="icon is-large"
@@ -672,6 +672,8 @@ export default {
                 this.$store.commit('app/importFrameworkName', this.csvImportDetails.name.value);
                 this.$store.commit('app/importFrameworkDescription', this.csvImportDetails.description.value);
                 this.$store.commit('app/importTransition', 'uploadMedbiq');
+            } else if (this.importFileType !== 'pdf') {
+                this.$store.commit('app/importTransition', 'uploadOtherNonPdf');
             }
         },
         importFromFile: function() {
