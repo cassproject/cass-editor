@@ -191,6 +191,7 @@ export default {
         return {
             repo: window.repo,
             showMine: false,
+            showNotMine: false,
             numIdentities: EcIdentityManager.ids.length,
             sortBy: null
         };
@@ -248,6 +249,18 @@ export default {
                 }
                 search += ")";
             }
+            if (this.showNotMine) {
+                search += " AND NOT (";
+                for (var i = 0; i < EcIdentityManager.ids.length; i++) {
+                    if (i !== 0) {
+                        search += " OR ";
+                    }
+                    var id = EcIdentityManager.ids[i];
+                    search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
+                    search += " OR @owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
+                }
+                search += ")";
+            }
             return search;
         },
         paramObj: function() {
@@ -267,6 +280,8 @@ export default {
         clearAllFilters: function() {
             this.$store.commit('app/clearSearchFilters');
             this.clearSortBy();
+            this.showMine = false;
+            this.showNotMine = false;
         },
         clearSortBy: function() {
             this.$store.commit('app/sortResults', []);
@@ -325,6 +340,18 @@ export default {
                 this.sortBy = "schema:dateModified";
             } else if (this.sortResults.id === "dateCreated") {
                 this.sortBy = "schema:dateCreated";
+            }
+        },
+        filteredQuickFilters: function() {
+            this.showMine = false;
+            this.showNotMine = false;
+            for (var i = 0; i < this.filteredQuickFilters.length; i++) {
+                if (this.filteredQuickFilters[i].id === "ownedByMe") {
+                    this.showMine = true;
+                }
+                if (this.filteredQuickFilters[i].id === "notOwnedByMe") {
+                    this.showNotMine = true;
+                }
             }
         }
     }

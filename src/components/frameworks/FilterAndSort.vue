@@ -124,7 +124,7 @@ export default {
                 {
                     id: 'competencyDescription',
                     checked: false,
-                    label: 'Competency name',
+                    label: 'Competency description',
                     enabled: true
                 },
                 {
