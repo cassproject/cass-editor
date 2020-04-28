@@ -319,7 +319,9 @@
                             </div>
                         </template>
                         <!-- handle non pdf imports -->
-                        <div class="control">
+                        <div
+                            v-if="importType === 'file' && importTransition === 'info'"
+                            class="control">
                             <div
                                 class="button is-pulled-right is-outlined is-primary"
                                 v-if="importFile && importType === 'file' && importFileType!=='pdf'"
