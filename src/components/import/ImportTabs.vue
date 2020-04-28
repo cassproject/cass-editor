@@ -93,7 +93,7 @@
                                     @click="showImportModal('pdf')"
                                     class="button is-outlined is-warning is-small">
                                     <span
-                                        title="PDF files are experimentally supported. Click to Learn more."
+                                        title="PDF files are experimentally supported. Click to learn more."
                                         class="icon">
                                         <i class="fa fa-exclamation" />
                                     </span>
@@ -118,6 +118,26 @@
                                         <i class="fa fa-check" />
                                     </span>
                                     <span>CSV</span>
+                                </div>
+                                <div
+                                    @click="showImportModal('xml')"
+                                    class="button is-outlined is-success is-small">
+                                    <span
+                                        title="XML files are supported, click to learn more."
+                                        class="icon is-pulled-right">
+                                        <i class="fa fa-check" />
+                                    </span>
+                                    <span>XML</span>
+                                </div>
+                                <div
+                                    @click="showImportModal('json')"
+                                    class="button is-outlined is-success is-small">
+                                    <span
+                                        title="JSON files are supported, click to learn more."
+                                        class="icon is-pulled-right">
+                                        <i class="fa fa-check" />
+                                    </span>
+                                    <span>JSON</span>
                                 </div>
                                 <div
                                     @click="showImportModal('html')"

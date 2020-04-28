@@ -65,7 +65,7 @@
                             class="icon">
                             <i class="fa fa-download" />
                         </span>
-                        <span> template</span>
+                        <span> Template</span>
                     </div>
                     <div class="button is-small is-outlined is-primary">
                         <span
@@ -73,7 +73,7 @@
                             class="icon">
                             <i class="fa fa-download" />
                         </span>
-                        <span> examples</span>
+                        <span> Examples</span>
                     </div>
                 </div>
             </div>
@@ -93,7 +93,7 @@
                             class="icon">
                             <i class="fa fa-download" />
                         </span>
-                        <span> template</span>
+                        <span> Template</span>
                     </div>
                     <div class="button is-small is-outlined is-primary">
                         <span
@@ -101,7 +101,7 @@
                             class="icon">
                             <i class="fa fa-download" />
                         </span>
-                        <span> examples</span>
+                        <span> Examples</span>
                     </div>
                 </div>
             </div>
@@ -121,7 +121,7 @@
                             class="icon">
                             <i class="fa fa-download" />
                         </span>
-                        <span>template</span>
+                        <span>Template</span>
                     </div>
                     <div class="button is-small is-outlined is-primary">
                         <span
@@ -129,7 +129,7 @@
                             class="icon">
                             <i class="fa fa-download" />
                         </span>
-                        <span> examples</span>
+                        <span> Examples</span>
                     </div>
                 </div>
             </div>
@@ -153,28 +153,52 @@
                 </p>
                 <div class="buttons is-right">
                     <a
-                        href="csvConceptExampleFile"
+                        :href="csvExampleCompetenciesFile"
                         target="_blank"
-                        download="csvConceptExampleFile.csv"
+                        download="CAP Software Engineering - Competencies.csv"
                         class="button is-small is-outlined is-primary">
                         <span
                             title=""
                             class="icon">
                             <i class="fa fa-download" />
                         </span>
-                        <span>example</span>
+                        <span>Competencies Example</span>
                     </a>
                     <a
-                        href="csvConceptTemplateFile"
+                        :href="csvTemplateCompetenciesFile"
                         target="_blank"
-                        download="csvConceptTemplateFile.csv"
+                        download="Template - Competencies.csv"
                         class="button is-small is-outlined is-primary">
                         <span
                             title=""
                             class="icon">
                             <i class="fa fa-download" />
                         </span>
-                        <span>template</span>
+                        <span>Competencies Template</span>
+                    </a>
+                    <a
+                        :href="csvExampleRelationsFile"
+                        target="_blank"
+                        download="CAP Software Engineering - Relations.csv"
+                        class="button is-small is-outlined is-primary">
+                        <span
+                            title=""
+                            class="icon">
+                            <i class="fa fa-download" />
+                        </span>
+                        <span>Relations Example</span>
+                    </a>
+                    <a
+                        :href="csvTemplateRelationsFile"
+                        target="_blank"
+                        download="Template - Relations.csv"
+                        class="button is-small is-outlined is-primary">
+                        <span
+                            title=""
+                            class="icon">
+                            <i class="fa fa-download" />
+                        </span>
+                        <span>Relations Template</span>
                     </a>
                 </div>
                 <h5 class="title is-size-4 has-text-weight-bold">
@@ -189,78 +213,28 @@
                 <br>
                 <div class="buttons is-right">
                     <a
-                        href="ctdlAsnCsvExample"
+                        :href="ctdlAsnCsvExampleFile"
                         target="_blank"
-                        download="ctdlAsnCsvExample.csv"
+                        download="CTDL-ASN.ONET.example.csv"
                         class="button is-small is-outlined is-primary">
                         <span
                             title=""
                             class="icon">
                             <i class="fa fa-download" />
                         </span>
-                        <span>Single File Example</span>
+                        <span>Example</span>
                     </a>
                     <a
-                        href="ctdlAsnCsvTemplate"
+                        :href="ctdlAsnCsvTemplateFile"
                         target="_blank"
-                        download="ctdlAsnCsvTemplate.csv"
+                        download="CTDL-ASN.ONET.template.csv"
                         class="button is-small is-outlined is-primary">
                         <span
                             title=""
                             class="icon">
                             <i class="fa fa-download" />
                         </span>
-                        <span>Single File Template</span>
-                    </a>
-                </div>
-                <div class="buttons is-right">
-                    <a
-                        href="csvExampleCompetencies"
-                        target="_blank"
-                        download="csvExampleCompetencies.csv"
-                        class="button is-small is-outlined is-primary">
-                        <span
-                            title=""
-                            class="icon">
-                            <i class="fa fa-download" />
-                        </span>
-                        <span>Competencies Example</span>
-                    </a>
-                    <a
-                        href="csvTemplateCompetencies"
-                        target="_blank"
-                        download="csvTemplateCompetencies.csv"
-                        class="button is-small is-outlined is-primary">
-                        <span
-                            title=""
-                            class="icon">
-                            <i class="fa fa-download" />
-                        </span>
-                        <span>Competencies Template</span>
-                    </a>
-                    <a
-                        href="csvExampleRelations"
-                        target="_blank"
-                        download="csvExampleRelations.csv"
-                        class="button is-small is-outlined is-primary">
-                        <span
-                            title=""
-                            class="icon">
-                            <i class="fa fa-download" />
-                        </span>
-                        <span>Relations Example</span>
-                    </a>
-                    <a
-                        href="csvTemplateRelations"
-                        target="_blank"
-                        download="csvTemplateRelations.csv"
-                        class="button is-small is-outlined is-primary">
-                        <span
-                            title=""
-                            class="icon">
-                            <i class="fa fa-download" />
-                        </span>
-                        <span>Relations Template</span>
+                        <span>Template</span>
                     </a>
                 </div>
             </div>
@@ -283,16 +257,16 @@
                 </p>
                 <div class="buttons is-right">
                     <a
-                        href="medbiquitousFile"
+                        :href="medbiquitousFile"
                         target="_blank"
-                        download="medbiquitousFile.xml"
+                        download="educational_achievement_sample_1June2012.xml"
                         class="button is-small is-outlined is-primary">
                         <span
                             title=""
                             class="icon">
                             <i class="fa fa-download" />
                         </span>
-                        <span> example</span>
+                        <span> Example</span>
                     </a>
                 </div>
             </div>
@@ -313,9 +287,9 @@
                 </p>
                 <div class="buttons is-right">
                     <a
-                        href="asnRdfJsonFile"
+                        :href="asnRdfJsonFile"
                         target="_blank"
-                        download="asnRdfJsonFile.json"
+                        download="D2695955.json"
                         class="button is-small is-outlined is-primary">
                         <span
                             title=""
@@ -334,9 +308,9 @@
                 </p>
                 <div class="buttons is-right">
                     <a
-                        href="ctdlAsnJsonldFile"
+                        :href="ctdlAsnJsonldFile"
                         target="_blank"
-                        download="ctdlAsnJsonld.jsonld"
+                        download="DQP.jsonld"
                         class="button is-small is-outlined is-primary">
                         <span
                             title=""
