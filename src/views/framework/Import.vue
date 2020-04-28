@@ -40,12 +40,12 @@
             <!-- ready state details -->
             <div class="section">
                 <p
-                    v-if="importTransition === 'upload' && !file && queryParams.concepts === 'true'"
+                    v-if="importTransition === 'upload' && !importFile && queryParams.concepts === 'true'"
                     class="is-size-6">
                     Upload documents to transform into CaSS Concept Schemes.
                 </p>
                 <p
-                    v-else-if="importTransition === 'upload' && !file"
+                    v-else-if="importTransition === 'upload' && !importFile"
                     class="is-size-6">
                     Upload documents to transform into CaSS Competency Frameworks.
                 </p>
@@ -329,25 +329,8 @@ export default {
                 format: 'Department of Labor',
                 fileType: ''
             },
-            errors: [],
-            showErrors: false,
-            processingFile: false,
-            processingSuccess: false,
-            showCassCsv: false,
-            method: "file",
-            file: null,
             repo: window.repo,
-            status: "Ready",
-            processingStatus: '',
-            statusType: 'info',
             competencyCount: 0,
-            // importCsvColumnName: null,
-            // importCsvColumnDescription: "N/A",
-            // importCsvColumnScope: "N/A",
-            // importCsvColumnId: "N/A",
-            // importCsvColumnSource: null,
-            // importCsvColumnRelationType: null,
-            // importCsvColumnTarget: null,
             csvColumns: [],
             csvRelationFile: null,
             csvRelationColumns: [],
@@ -365,8 +348,7 @@ export default {
                 {name: "Credential Engine ASN (CSV)", value: "ctdlasnCsv"},
                 {name: "Table (CSV)", value: "csv"},
                 {name: "IMS Global CASE (JSON)", value: "case"}
-            ],
-            spin: true
+            ]
         };
     },
     computed: {
@@ -638,7 +620,7 @@ export default {
             this.$store.commit('app/importFileType', val);
             let error = "File type " + fileType + " is unsupported in this workflow";
             this.$store.commit('app/addImportError', error);
-            this.$store.commit('app/importTransition', 'upload');
+            me.$store.commit('app/importTransition', 'processing');
         },
         /* When an import is "successful" */
         importSuccess: function() {
@@ -651,7 +633,7 @@ export default {
                     this.$store.commit('app/importTransition', 'preview');
                 }
             } else {
-                this.status = "Concept Scheme Imported.";
+                me.$store.commit('app/importStatus', "Concept Scheme Imported.");
                 this.$store.commit('app/importTransition', 'complete');
             }
         },
@@ -704,6 +686,7 @@ export default {
                         me.$store.commit('app/importStatus', feedback);
                     }, function(errorMsg) {
                         me.$store.commit('app/addImportError', errorMsg);
+                        me.$store.commit('app/importTransition', 'processing');
                     });
                 } else {
                     CTDLASNCSVImport.analyzeFile(file, function(frameworkCount, competencyCount) {
@@ -732,11 +715,10 @@ export default {
                                     me.importCsvColumnId = column;
                                 }
                             }
-                            // me.processingFile = false;
-                            me.status = (me.competencyCount = (data.length - 1)) + " Competencies Detected.";
+                            me.$store.commit('app/importStatus', (me.competencyCount = (data.length - 1)) + " Competencies Detected.");
                         }, function(error) {
                             me.$store.commit('app/addImportError', error);
-                            // me.processingFile = false;
+                            me.$store.commit('app/importTransition', 'processing');
                         });
                     });
                 }
@@ -751,9 +733,10 @@ export default {
                             me.$store.commit('app/importStatus', "1 Concept Scheme Detected.");
                             me.$store.commit('app/importFileType', 'ctdlasnjsonld');
                         } else {
-                            message = "Concept Schemes must be imported in the concept scheme editor.";
+                            var message = "Concept Schemes must be imported in the concept scheme editor.";
                             invalid = true;
-                            me.$store.commit('app/importError', message);
+                            me.$store.commit('app/addImportError', message);
+                            me.$store.commit('app/importTransition', 'processing');
                         }
                     } else {
                         if (me.queryParams.concepts !== 'true') {
@@ -763,7 +746,8 @@ export default {
                         } else {
                             error = "Frameworks must be imported in the competency editor.";
                             invalid = true;
-                            me.$store.commit('app/importError', error);
+                            me.$store.commit('app/addImportError', error);
+                            me.$store.commit('app/importTransition', 'processing');
                         }
                     }
                     me.competencyCount = EcObject.keys(data).length;
@@ -771,27 +755,29 @@ export default {
                         // Do nothing
                     } else if (!invalid) {
                         let error = "Context is not CTDL-ASN";
-                        me.$store.commit('app/importError', error);
+                        me.$store.commit('app/addImportError', error);
+                        me.$store.commit('app/importTransition', 'processing');
                     }
                 }, function() {
                     // If JSON-LD doesn't work, try JSON
                     ASNImport.analyzeFile(file, function(data) {
                         me.$store.commit('app/importFileType', 'asn');
-                        me.status = "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.";
+                        me.$store.commit('app/importStatus', "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.");
                         me.competencyCount = EcObject.keys(data).length;
                     }, function(error) {
-                        me.$store.commit('app/importError', error);
+                        me.$store.commit('app/addImportError', error);
+                        me.$store.commit('app/importTransition', 'processing');
                     });
                 });
             } else if (file.name.endsWith(".xml")) {
                 MedbiqImport.analyzeFile(file, function(data) {
                     me.$store.commit('app/importFileType', 'medbiq');
                     me.importFrameworkName = file.name.replace(".xml", "");
-                    me.status = "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.";
+                    me.$store.commit('app/importStatus', "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.");
                     me.competencyCount = EcObject.keys(data).length;
                 }, function(error) {
-                    me.statusType = "error";
-                    me.status = error;
+                    me.$store.commit('app/importTransition', 'processing');
+                    me.$store.commit('app/addImportError', error);
                 });
             } else if (file.name.endsWith(".pdf")) {
                 me.$store.commit('app/importFileType', 'pdf');
@@ -811,7 +797,7 @@ export default {
                 me.$store.commit('app/importFileType', '');
                 error = ("CaSS cannot read the file " + file.name + ". Please check that the file has the correct file extension.");
                 me.$store.commit('app/addImportError', error);
-                me.$store.commit('app/importTransition', 'upload');
+                me.$store.commit('app/importTransition', 'processing');
                 return;
             }
             if (!me.firstImport) {
@@ -851,11 +837,9 @@ export default {
                 }
                 me.relationCount = (data.length - 1);
             }, function(error) {
-                me.showErrors = true;
-                me.status = error;
-                me.statusType = "error";
-                me.errors.push(error);
-                me.processingFile = false;
+                me.$store.commit('app/importStatus', error);
+                me.$store.commit('app/importTransition', 'processing');
+                me.$store.commit('app/addImportError', error);
             });
         },
         analyzeJsonLdFramework: function(file, success, failure) {
@@ -916,22 +900,18 @@ export default {
                         me.spitEvent("importFinished", f.shortId(), "importPage");
                     }
                 }, function(failure) {
-                    me.showErrors = true;
-                    me.status = failure;
-                    me.statusType = "error";
-                    me.errors.push(failure);
-                    me.processingFile = false;
+                    me.$store.commit('app/importStatus', failure);
+                    me.$store.commit('app/importTransition', 'processing');
+                    me.$store.commit('app/addImportError', failure);
                 });
             },
             function(failure) {
-                me.showErrors = true;
-                me.status = failure;
-                me.statusType = "error";
-                me.errors.push(failure);
-                me.processingFile = false;
+                me.$store.commit('app/importStatus', failure);
+                me.$store.commit('app/importTransition', 'processing');
+                me.$store.commit('app/addImportError', failure);
             },
             function(increment) {
-                me.status = increment.competencies + "/" + me.competencyCount + " competencies imported.";
+                me.$store.commit('app/importStatus', increment.competencies + "/" + me.competencyCount + " competencies imported.");
             }, me.repo);
         },
         importAsn: function() {
@@ -949,12 +929,12 @@ export default {
                 }
             },
             function(failure) {
-                me.statusType = "error";
-                me.status = failure;
+                me.$store.commit('app/importTransition', 'processing');
+                me.$store.commit('app/addImportError', failure);
             },
             function(increment) {
-                me.statusType = "info";
-                me.status = increment.competencies + "/" + me.competencyCount + " competencies imported.";
+                me.$store.commit('app/importTransition', 'processing');
+                me.$store.commit('app/importStatus', increment.competencies + "/" + me.competencyCount + " competencies imported.");
             }, me.repo);
         },
         importCtdlAsnCsv: function() {
@@ -973,8 +953,8 @@ export default {
                     }
                 }
                 var all = frameworks.concat(competencies).concat(relations);
-                me.statusType = "info";
-                me.status = "Saving " + all.length + " objects.";
+                me.$store.commit('app/importTransition', 'processing');
+                me.$store.commit('app/importStatus', "Saving " + all.length + " objects.");
                 me.repo.multiput(all, function() {
                     for (var i = 0; i < frameworks.length; i++) {
                         me.$store.commit('app/importFramework', frameworks[i]);
@@ -987,36 +967,45 @@ export default {
                         me.analyzeImportFile();
                     }
                 }, function(failure) {
-                    console.log("failure", failure);
-                    me.showErrors = true;
-                    me.status = failure;
-                    me.statusType = "error";
-                    me.errors.push(failure);
-                    me.processingFile = false;
+                    me.$store.commit('app/importStatus', failure);
+                    me.$store.commit('app/importTransition', 'processing');
+                    me.$store.commit('app/addImportError', failure);
                 });
             }, function(failure) {
-                console.log("failure", failure);
-                me.showErrors = true;
-                me.status = failure;
-                me.statusType = "error";
-                me.errors.push(failure);
-                me.processingFile = false;
+                me.$store.commit('app/importStatus', failure);
+                me.$store.commit('app/importTransition', 'processing');
+                me.$store.commit('app/addImportError', failure);
             }, ceo);
         },
         importPdf: function() {
             var me = this;
-            me.status = 'importing framework...';
+            me.$store.commit('app/importStatus', 'importing framework...');
             var formData = new FormData();
             formData.append(me.importFile[0].name, me.importFile[0]);
-            me.status = 'importing file...';
-            EcRemote.postExpectingObject(
+            me.$store.commit('app/importStatus', 'importing file...');
+            EcRemote.postExpectingString(
                 "https://t3.cassproject.org/service/parse/",
                 "docx",
                 formData,
-                function(d) {
+                function(s) {
+                    var d = null;
+                    try {
+                        d = JSON.parse(s);
+                    } catch (ex) {
+                        me.$store.commit('app/importStatus', s);
+                        me.$store.commit('app/importTransition', 'processing');
+                        me.$store.commit('app/addImportError', s);
+                        return;
+                    }
+                    if (d == null) {
+                        me.$store.commit('app/importStatus', s);
+                        me.$store.commit('app/importTransition', 'processing');
+                        me.$store.commit('app/addImportError', s);
+                        return;
+                    }
                     var uuid = new UUID(3, "nil", d.name).format();
                     var f = new EcFramework();
-                    me.status = 'looking for existing framework...';
+                    me.$store.commit('app/importStatus', 'looking for existing framework...');
                     if (me.queryParams && me.queryParams.newObjectEndpoint) {
                         f.id = me.queryParams.newObjectEndpoint + uuid;
                     } else {
@@ -1024,37 +1013,33 @@ export default {
                     }
                     me.repo.search("(@id:\"" + f.shortId() + "\") AND (@type:Framework)", function() {}, function(frameworks) {
                         console.log(frameworks);
-                        me.status = 'looking for existing framwork...';
+                        me.$store.commit('app/importStatus', 'looking for existing framwork...');
                         if (frameworks.length > 0) {
-                            me.status = 'framework found...';
+                            me.$store.commit('app/importStatus', 'framework found...');
                             me.showModal('duplicate', d);
                         } else {
-                            me.status = 'no match, saving new framework...';
+                            me.$store.commit('app/importStatus', 'no match, saving new framework...');
                             me.savePdfImport(d);
                         } /* TO DO - ERROR HANDLING HERE */
                     }, function(error) {
-                        me.showErrors = true;
-                        me.status = error;
-                        me.statusType = "error";
-                        me.errors.push(error);
-                        me.processingFile = false;
+                        me.$store.commit('app/importStatus', error);
+                        me.$store.commit('app/importTransition', 'processing');
+                        me.$store.commit('app/addImportError', error);
                     });
                 },
                 /* TO DO - ERROR HANDLING HERE */
                 function(error) {
-                    me.showErrors = true;
-                    me.status = error;
-                    me.statusType = "error";
-                    me.errors.push(error);
-                    me.processingFile = false;
+                    me.$store.commit('app/importStatus', error);
+                    me.$store.commit('app/importTransition', 'processing');
+                    me.$store.commit('app/addImportError', error);
                 }
             );
-            me.statusType = "info";
-            me.status = 'processing file...';
+            me.$store.commit('app/importTransition', 'processing');
+            me.$store.commit('app/importStatus', 'processing file...');
         },
         savePdfImport: function(d, newName) {
             var me = this;
-            me.status = 'saving file...';
+            me.$store.commit('app/importStatus', 'saving file...');
             var toSave = [];
             var f = new EcFramework();
             var name = newName || d.name;
@@ -1077,11 +1062,9 @@ export default {
             console.log("message: ", JSON.parse(f.toJson()));
             var cs = {};
             if (!d.competencies) {
-                me.showErrors = true;
-                me.status = "Error importing competencies.";
-                me.statusType = "error";
-                me.errors.push("Error importing competencies, no competencies found in file.");
-                me.processingFile = false;
+                me.$store.commit('app/importStatus', "Error importing competencies.");
+                me.$store.commit('app/importTransition', 'processing');
+                me.$store.commit('app/addImportError', "Error importing competencies, no competencies found in file.");
                 return;
             }
             me.detailsDetected.competencies = d.competencies.length;
@@ -1122,17 +1105,15 @@ export default {
                 me.$store.commit('app/importFramework', f);
                 me.$store.commit('editor/framework', f);
                 me.$store.commit('editor/t3Profile', true);
-                me.status = "";
+                me.$store.commit('app/importStatus', "");
                 me.importSuccess();
             }, function(error) {
-                me.showErrors = true;
-                me.status = error;
-                me.statusType = "error";
-                me.errors.push(error);
-                me.processingFile = false;
+                me.$store.commit('app/importStatus', error);
+                me.$store.commit('app/importTransition', 'processing');
+                me.$store.commit('app/addImportError', error);
             });
-            me.statusType = "info";
-            me.status = 'saving import...';
+            me.$store.commit('app/importTransition', 'processing');
+            me.$store.commit('app/importStatus', 'saving import...');
         },
         importCsv: function() {
             var file = this.importFile[0];
@@ -1183,27 +1164,25 @@ export default {
                             me.spitEvent("importFinished", f.shortId(), "importPage");
                         }
                     }, function(failure) {
-                        me.statusType = "error";
-                        me.status = failure;
+                        me.$store.commit('app/importTransition', 'processing');
+                        me.$store.commit('app/addImportError', failure);
                     });
                 },
                 function(failure) {
-                    me.showErrors = true;
-                    me.status = failure;
-                    me.statusType = "error";
-                    me.errors.push(failure);
-                    me.processingFile = false;
+                    me.$store.commit('app/importStatus', failure);
+                    me.$store.commit('app/importTransition', 'processing');
+                    me.$store.commit('app/addImportError', failure);
                 },
                 function(increment) {
                     if (increment.relations != null && increment.relations !== undefined) {
-                        me.statusType = "info";
-                        me.status = (increment.relations + "/" + me.relationCount + " relations imported.");
+                        me.$store.commit('app/importTransition', 'processing');
+                        me.$store.commit('app/importStatus', (increment.relations + "/" + me.relationCount + " relations imported."));
                     } else if (increment.competencies != null && increment.competencies !== undefined) {
-                        me.statusType = "info";
-                        me.status = (increment.competencies + "/" + me.competencyCount + " competencies imported.");
+                        me.$store.commit('app/importTransition', 'processing');
+                        me.$store.commit('app/importStatus', (increment.competencies + "/" + me.competencyCount + " competencies imported."));
                     } else {
-                        me.statusType = "info";
-                        me.status = "Importing...";
+                        me.$store.commit('app/importTransition', 'processing');
+                        me.$store.commit('app/importStatus', "Importing...");
                     }
                 }, false, me.repo);
         },
@@ -1246,17 +1225,16 @@ export default {
                     }
                 }
             }, function(failure) {
-                me.showErrors = true;
-                me.statusType = "error";
-                me.status = "Import failed. Check your import file for any errors.";
+                me.$store.commit('app/importTransition', 'processing');
+                me.$store.commit('app/importStatus', "Import failed. Check your import file for any errors.");
                 console.log(failure.statusText);
-                me.errors.push(failure);
+                me.$store.commit('app/addImportError', failure);
             });
-            me.statusType = "info";
+            me.$store.commit('app/importTransition', 'processing');
             if (me.queryParams.concepts === 'true') {
-                me.status = "Importing Concept Scheme";
+                me.$store.commit('app/importStatus', "Importing Concept Scheme");
             } else {
-                me.status = 'processing';
+                me.$store.commit('app/importStatus', 'processing');
             }
         },
         importCtdlAsnConceptCsv: function() {
@@ -1275,42 +1253,54 @@ export default {
                     }
                 }
                 var all = frameworks.concat(competencies);
-                me.status = "Saving " + all.length + " objects.";
+                me.$store.commit('app/importStatus', "Saving " + all.length + " objects.");
                 me.repo.multiput(all, function() {
                     for (var i = 0; i < frameworks.length; i++) {
                         me.spitEvent("importFinished", frameworks[i].shortId(), "importPage");
                     }
                     me.importSuccess();
                 }, function(failure) {
-                    me.statusType = "error";
-                    me.status = "Failed to save: " + failure;
+                    me.$store.commit('app/importTransition', 'processing');
+                    me.$store.commit('app/addImportError', "Failed to save: " + failure);
                     console.error(failure);
                 });
             }, function(failure) {
-                me.statusType = "error";
+                me.$store.commit('app/importTransition', 'processing');
+                me.$store.commit('app/addImportError', failure);
                 console.error(failure);
             }, ceo);
         },
         importFromFile: function() {
-            console.log("this.importFileType", this.importFileType);
-            if (this.importFileType === "csv") {
-                this.importCsv();
-            } else if (this.importFileType === "ctdlasncsv") {
-                this.importCtdlAsnCsv();
-            } else if (this.importFileType === "conceptcsv") {
-                this.importCtdlAsnConceptCsv();
-            } else if (this.importFileType === "ctdlasnjsonld") {
-                this.importJsonLd();
-            } else if (this.importFileType === "asn") {
-                this.importAsn();
-            } else if (this.importFileType === "pdf") {
-                this.importPdf();
-            } else if (this.importFileType === "medbiq") {
-                this.importMedbiq();
+            let me = this;
+            let importNow = function() {
+                console.log("this.importFileType", me.importFileType);
+                if (me.importFileType === "csv") {
+                    me.importCsv();
+                } else if (me.importFileType === "ctdlasncsv") {
+                    me.importCtdlAsnCsv();
+                } else if (me.importFileType === "conceptcsv") {
+                    me.importCtdlAsnConceptCsv();
+                } else if (me.importFileType === "ctdlasnjsonld") {
+                    me.importJsonLd();
+                } else if (me.importFileType === "asn") {
+                    me.importAsn();
+                } else if (me.importFileType === "pdf") {
+                    me.importPdf();
+                } else if (me.importFileType === "medbiq") {
+                    me.importMedbiq();
+                } else {
+                    let error = "Unsupported file type" + me.importFileType;
+                    me.$store.commit('app/addImportError', error);
+                    me.$store.commit('app/importTransition', 'processing');
+                }
+            };
+            // Sometimes importFileType is not computed from the store yet when this is first called
+            if (!this.importFileType) {
+                setTimeout(function() {
+                    importNow();
+                }, 2000);
             } else {
-                let error = "Unsupported file type" + this.importFileType;
-                this.$store.commit('app/addImportError', error);
-                this.$store.commit('app/importTransition', 'upload');
+                importNow();
             }
         },
         connectToServer: function() {
@@ -1337,6 +1327,7 @@ export default {
             if (result.CFDocuments == null) {
                 error = "No frameworks found. Please check the URL and try again.";
                 this.$store.commit('app/addImportError', error);
+                me.$store.commit('app/importTransition', 'processing');
             } else {
                 let message = result.CFDocuments.length + " frameworks detected.";
                 this.$store.commit('app/importStatus', message);
@@ -1361,8 +1352,8 @@ export default {
             EcRemote.getExpectingString(this.repo.selectedServer, "ims/case/getDocs?url=" + this.importServerUrl, function(success) {
                 me.caseGetDocsSuccess(success);
             }, function(failure) {
-                me.statusType = "error";
-                me.status = "No frameworks found. Please check the URL and try again.";
+                me.$store.commit('app/importTransition', 'processing');
+                me.$store.commit('app/addImportError', "No frameworks found. Please check the URL and try again.");
             });
         },
         importCase: function() {
@@ -1385,8 +1376,8 @@ export default {
                     }
                 }
                 if (lis === 0) {
-                    this.statusType = "success";
-                    this.status = "Import finished.";
+                    this.importSuccess();
+                    this.$store.commit('app/importStatus', "Import finished.");
                 } else {
                     var me = this;
                     var id = this.caseDocs[firstIndex].id;
@@ -1400,7 +1391,6 @@ export default {
                         me.caseDocs[firstIndex].success = true;
                         EcFramework.get(id, function(f) {
                             me.$store.commit('app/importFramework', f);
-                            me.importSuccess();
                             me.spitEvent("importFinished", f.shortId(), "importPage");
                         }, console.error);
                         me.importCase();
@@ -1460,6 +1450,7 @@ export default {
             }, function(failure) {
                 console.log("failure", failure);
                 me.$store.commit('app/addImportError', failure);
+                me.$store.commit('app/importTransition', 'processing');
             });
         },
         importFromUrl: function() {
@@ -1473,18 +1464,22 @@ export default {
                 } else {
                     error = "URL must have an '@graph' field at the top level.";
                     me.$store.commit('app/addImportError', error);
+                    me.$store.commit('app/importTransition', 'processing');
                     return;
                 }
                 if (graph[0]["@type"].indexOf("Concept") !== -1) {
                     error = "Competency Editor cannot be used to import concept schemes.";
                     me.$store.commit('app/addImportError', error);
+                    me.$store.commit('app/importTransition', 'processing');
                 }
             }, function(failure) {
                 if (!failure) {
                     error = "Import Error";
                     me.$store.commit('app/addImportError', error);
+                    me.$store.commit('app/importTransition', 'processing');
                 } else {
                     me.$store.commit('app/addImportError', failure);
+                    me.$store.commit('app/importTransition', 'processing');
                 }
             });
         }

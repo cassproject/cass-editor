@@ -204,7 +204,7 @@
                                 <div class="columns">
                                     <div class="column is-4">
                                         <div
-                                            @click="cancelImport()"
+                                            @click="resetImport()"
                                             class="button is-primary">
                                             Start over
                                         </div>
