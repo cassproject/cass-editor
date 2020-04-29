@@ -13,16 +13,36 @@
                 aria-label="close" />
         </header>
         <section class="modal-card-body">
-            <div class="columns is-multiline">
+            <h3 class="header has-text-weight-bold">
+                Shareable link
+            </h3>
+            <div class="columns is-mobile">
                 <!-- share link -->
-                <div class="column is-12">
-                    {{ shareableFrameworkInEditor }}
-                    <button
-                        title="Copy URL to the clipboard."
-                        v-clipboard="shareableFrameworkInEditor">
-                        <i class="fa fa-copy" />
-                    </button>
+                <div class="column">
+                    <p class="share-url">
+                        {{ shareableFrameworkInEditor }}
+                    </p>
                 </div>
+                <div class="column is-narrow">
+                    <div
+                        class="button is-outlined is-large is-primary"
+                        title="Copy URL to the clipboard."
+                        v-clipboard="shareableFrameworkInEditor"
+                        v-clipboard:success="successfulClip"
+                        v-clipboard:error="errorClip">
+                        <i
+                            v-if="clipStatus === 'ready'"
+                            class="fa fa-copy" />
+                        <i
+                            v-if="clipStatus === 'success'"
+                            class="fa fa-check" />
+                        <i
+                            v-if="clipStatus === 'error'"
+                            class="fa fa-times" />
+                    </div>
+                </div>
+            </div>
+            <div class="columns is-multiline">
                 <!-- end share link -->
                 <!-- input new groups or users -->
                 <div class="column is-12">
@@ -173,6 +193,7 @@ export default {
     mixins: [ cassUtil ],
     data() {
         return {
+            clipStatus: 'ready',
             frameworkName: this.$store.state.editor.framework.getName(),
             frameworkId: this.$store.state.editor.framework.shortId(),
             viewOptions: [
@@ -213,6 +234,20 @@ export default {
         this.getPossibleOwnersAndReaders();
     },
     methods: {
+        successfulClip({value, event}) {
+            console.log('success', value);
+            this.clipStatus = 'success';
+            setTimeout(() => {
+                this.clipStatus = 'ready';
+            }, 1000);
+        },
+        errorClip({value, event}) {
+            console.log('error', value);
+            this.slipStatus = 'error';
+            setTimeout(() => {
+                this.clipStatus = 'ready';
+            }, 1000);
+        },
         getCurrentOwnersAndReaders: function() {
             var me = this;
             if (this.framework.owner) {
@@ -404,4 +439,10 @@ export default {
 
 
 <style>
+
+.share-url {
+    overflow-wrap: anywhere;
+    font-size: .8rem;
+    line-height: 1rem;
+}
 </style>
