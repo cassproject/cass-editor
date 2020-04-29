@@ -59,8 +59,8 @@
                         <tr>
                             <th><abbr title="Name">name</abbr></th>
                             <th><abbr title="Description">description</abbr></th>
-                            <th><abbr title="primary">primary</abbr></th>
-                            <th><abbr title="" />default</th>
+                            <th><abbr title="Instance Default">instance default</abbr></th>
+                            <th><abbr title="Browser Default" />browser default</th>
                             <th><abbr title="" />view/manage</th>
                         </tr>
                     </thead>
