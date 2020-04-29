@@ -93,7 +93,10 @@ export default {
     props: {
         isActive: Boolean,
         framework: Object,
-        queryParams: Object
+        queryParams: {
+            type: Object,
+            default: function() { return {}; }
+        }
     },
     components: {List},
     mixins: [common],

@@ -56,8 +56,7 @@
                         CaSS has detected a framework!
                     </span>
                     <br><br>
-                    We've gathered details about your competency framework and file.  Please review. Accept and approve to continue, cancel to review your file and re-import.
-                </p>
+                    Please review the competency framework and file details gathered below. To continue with the input of this competency framework, press Accept Details & Review. To cancel and review or change your input file, press cancel.                </p>
                 <p
                     v-if="importTransition === 'preview'"
                     class="">
@@ -667,10 +666,12 @@ export default {
         },
         openFramework: function() {
             if (this.queryParams.concepts === "true") {
-                this.$store.commit('editor/framework', this.importFramework);
+                var f = EcFramework.getBlocking(this.importFramework.shortId());
+                this.$store.commit('editor/framework', f);
                 this.$router.push({name: "conceptScheme", params: {frameworkId: this.importFramework.id}});
             } else {
-                this.$store.commit('editor/framework', this.importFramework);
+                var f = EcFramework.getBlocking(this.importFramework.shortId());
+                this.$store.commit('editor/framework', f);
                 this.$router.push({name: "framework", params: {frameworkId: this.importFramework.id}});
             }
         },

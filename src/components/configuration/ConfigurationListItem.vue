@@ -11,7 +11,7 @@
         </td>
         <td>
             <div
-                class="button is-outlined is-small"
+                class="button is-outlined is-primary is-small"
                 :disabled="defaultBrowserConfigId && defaultBrowserConfigId.equals(id)"
                 @click="$emit('setBrowserDefault', id)">
                 set as browser default

@@ -36,7 +36,7 @@ drag, drag, and chosen states
 
 
 .ghost-drag {
-    .lode__hierarchy-item .lode__thing:first{
+    .lode__hierarchy-item .lode__thing .lode__Competency{
         background-color: rgba($link, .1);
     }
     i.fa-hand-rock {
@@ -432,7 +432,6 @@ drag, drag, and chosen states
     }
 }
 
-
 .framework__info-bar {
     margin: 1rem .5rem;
 }
@@ -570,6 +569,21 @@ drag, drag, and chosen states
     }
     .lode__name {
         color: $link;
+    }
+    .lode__thing {
+        .comment-button {
+            display: none;
+        }
+         .lode__Competency {
+            .lode__thing-heading {
+                padding-left: 0rem !important; // related 
+                .lode__Property {
+                    .field {
+                        padding-left: .5rem;
+                    }
+                }
+            }
+        }
     }
 }
  

@@ -51,32 +51,34 @@
                     </span>
                 </div>
             </div>
-            <div
-                class="table is-fullwidth"
-                v-if="configViewMode.equals('list')">
-                <thead>
-                    <tr>
-                        <th><abbr title="Name">name</abbr></th>
-                        <th><abbr title="Description">description</abbr></th>
-                        <th><abbr title="primary">primary</abbr></th>
-                        <th><abbr title="" />default</th>
-                        <th><abbr title="" />view/manage</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <configuration-list-item
-                        v-for="config in configList"
-                        :id="config.id"
-                        :key="config"
-                        :name="config.name"
-                        :isDefault="config.isDefault"
-                        :description="config.description"
-                        :isOwned="config.isOwned"
-                        :defaultBrowserConfigId="localDefaultBrowserConfigId"
-                        @setBrowserDefault="setConfigAsBrowserDefault"
-                        @showDetails="showConfigDetails" />
-                </tbody>
-                <br>
+            <div class="table-container">
+                <table
+                    class="table is-fullwidth"
+                    v-if="configViewMode.equals('list')">
+                    <thead>
+                        <tr>
+                            <th><abbr title="Name">name</abbr></th>
+                            <th><abbr title="Description">description</abbr></th>
+                            <th><abbr title="primary">primary</abbr></th>
+                            <th><abbr title="" />default</th>
+                            <th><abbr title="" />view/manage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <configuration-list-item
+                            v-for="config in configList"
+                            :id="config.id"
+                            :key="config"
+                            :name="config.name"
+                            :isDefault="config.isDefault"
+                            :description="config.description"
+                            :isOwned="config.isOwned"
+                            :defaultBrowserConfigId="localDefaultBrowserConfigId"
+                            @setBrowserDefault="setConfigAsBrowserDefault"
+                            @showDetails="showConfigDetails" />
+                    </tbody>
+                    <br>
+                </table>
             </div>
             <div v-if="configViewMode.equals('detail')">
                 <configuration-details
