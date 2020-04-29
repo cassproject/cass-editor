@@ -24,6 +24,7 @@ import {mapState} from 'vuex';
 import Share from '@/components/framework/Share.vue';
 import MultiEdit from '@/components/competency/MultiEdit.vue';
 import Search from '@/components/competency/Search.vue';
+import Single from '@/components/competency/Single.vue';
 import AddComment from '@/components/framework/AddComment.vue';
 import SupportedImportDetails from '@/components/import/SupportedImportDetails.vue';
 
@@ -34,7 +35,8 @@ export default {
         MultiEdit,
         Search,
         AddComment,
-        SupportedImportDetails
+        SupportedImportDetails,
+        Single
     },
     data() {
         return {
