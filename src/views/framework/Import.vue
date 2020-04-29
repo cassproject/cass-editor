@@ -666,10 +666,12 @@ export default {
         },
         openFramework: function() {
             if (this.queryParams.concepts === "true") {
-                this.$store.commit('editor/framework', this.importFramework);
+                var f = EcFramework.getBlocking(this.importFramework.shortId());
+                this.$store.commit('editor/framework', f);
                 this.$router.push({name: "conceptScheme", params: {frameworkId: this.importFramework.id}});
             } else {
-                this.$store.commit('editor/framework', this.importFramework);
+                var f = EcFramework.getBlocking(this.importFramework.shortId());
+                this.$store.commit('editor/framework', f);
                 this.$router.push({name: "framework", params: {frameworkId: this.importFramework.id}});
             }
         },
