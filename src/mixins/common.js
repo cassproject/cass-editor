@@ -602,11 +602,15 @@ export default {
         },
         canViewCommentsCurrentFramework: function() {
             // TODO expand on this
-            return true;
+            let lop = this.$store.state.user.loggedOnPerson;
+            if (lop && lop.id && lop.id !== '') return true;
+            else return false;
         },
         canAddCommentsCurrentFramework: function() {
             // TODO expand on this
-            return true;
+            let lop = this.$store.state.user.loggedOnPerson;
+            if (lop && lop.id && lop.id !== '') return true;
+            else return false;
         }
     }
 };
