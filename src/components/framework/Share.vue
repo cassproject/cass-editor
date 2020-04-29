@@ -9,7 +9,7 @@
             </p>
             <button
                 class="delete"
-                @click="$emit('closeShareModalEvent')"
+                @click="$store.commit('app/closeModal')"
                 aria-label="close" />
         </header>
         <section class="modal-card-body">
@@ -147,7 +147,7 @@
                 <div class="column is-12">
                     <button
                         class="button is-left is-light"
-                        @click="$emit('closeShareModalEvent')">
+                        @click="$store.commit('app/closeModal')">
                         Cancel
                     </button>
                 </div>

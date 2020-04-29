@@ -1,28 +1,33 @@
 <template>
-    <div class="modal is-active">
-        <div class="modal-background" />
-        <div class="modal-card">
-            <header class="modal-card-head">
-                <p class="modal-card-title">
-                    Modal title
-                </p>
+    <div class="modal-card">
+        <header class="modal-card-head has-background-primary">
+            <h2 class="modal-card-title has-text-white is-size-2">
+                Title of Competency
+            </h2>
+            <button
+                @click="$store.commit('app/closeModal')"
+                class="delete"
+                aria-label="close" />
+        </header>
+        <section class="modal-card-body">
+            Thing goes here /// should include breadcrumbs
+            This should probbaly be handled like a regular
+            Should only be thing, no editing.  We will make the user
+            go to the main framework to edit.
+            <Component :is="Thing" />
+        </section>
+        <footer class="modal-card-foot">
+            <div class="buttons is-spaced is-fullwidth">
+                <button class="button is-outlined is-dark">
+                    Navigate to parent framework
+                </button>
                 <button
-                    class="delete"
-                    aria-label="close" />
-            </header>
-            <section class="modal-card-body">
-                Thing goes here  in editing mode
-                <Component :is="Thing" />
-            </section>
-            <footer class="modal-card-foot">
-                <button class="button is-outlined is-dark is-small">
-                    Cancel
+                    @click="$store.commit('app/closeModal')"
+                    class="button is-outlined is-primary">
+                    Close Competency
                 </button>
-                <button class="button is-outlined is-primary is-small">
-                    Save changes
-                </button>
-            </footer>
-        </div>
+            </div>
+        </footer>
     </div>
 </template>
 

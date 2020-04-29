@@ -78,8 +78,7 @@ drag, drag, and chosen states
             .add-new-node {
                 padding-left: 5rem;
             }
-            .lode__hierarchy-item {
-                                
+            .lode__hierarchy-item {                            
                 .add-node-section {
                     width: 100%;
                     display:block;
@@ -567,7 +566,7 @@ drag, drag, and chosen states
 .lode__Property.lode__broadens,
 .lode__Property.lode__Broadens,
 .lode__Property.lode__equal {
-    padding-left: 1rem;
+    padding-left: 2rem;
     .edit-button .icon {
         display: none;
         color: $link !important;
@@ -576,9 +575,26 @@ drag, drag, and chosen states
         color: $link;
     }
     .lode__thing {
-        .has-text-link {
-            cursor: pointer;
+        .click-to-load {
+            width: 100%;
+            .competency-as-property {
+                cursor: pointer;
+                font-size: .9rem;
+                color: $text;
+                vertical-align: super;
+            }
+            .icon {
+                font-size: .6rem;
+            }
+            .button {
+                margin-left: 1rem;
+                visibility: hidden;
+            }
         }
+        .click-to-load:hover .button {
+            visibility: visible;
+        }
+        
         padding-left: 0rem;
         .comment-button {
             display: none;
