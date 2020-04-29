@@ -637,7 +637,12 @@
                 <div
                     class="control"
                     v-if="!readOnly">
-                    <div class="select is-small">
+                    <span v-if="defaultConfigId && !defaultConfigId.equals(config.id)">
+                        {{ config.isDefault }}
+                    </span>
+                    <div
+                        class="select is-small"
+                        v-if="!defaultConfigId || defaultConfigId.equals(config.id)">
                         <select
                             v-model="config.isDefault">
                             <option :value="true">
