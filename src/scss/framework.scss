@@ -562,7 +562,12 @@ drag, drag, and chosen states
     font-size: $size-7;
     font-weight: 400;
 }
-.lode__Property.lode__narrows {
+.lode__Property.lode__narrows,
+.lode__Property.lode__Narrows,
+.lode__Property.lode__broadens,
+.lode__Property.lode__Broadens,
+.lode__Property.lode__equal {
+    padding-left: 1rem;
     .edit-button .icon {
         display: none;
         color: $link !important;
@@ -571,6 +576,10 @@ drag, drag, and chosen states
         color: $link;
     }
     .lode__thing {
+        .has-text-link {
+            cursor: pointer;
+        }
+        padding-left: 0rem;
         .comment-button {
             display: none;
         }
@@ -579,7 +588,7 @@ drag, drag, and chosen states
                 padding-left: 0rem !important; // related 
                 .lode__Property {
                     .field {
-                        padding-left: .5rem;
+                        padding-left: 0rem;
                     }
                 }
             }
@@ -687,8 +696,18 @@ drag, drag, and chosen states
 .lode__thing:hover {
     padding: .5rem;
     padding-right: 1rem;
-    .lode__Property.lode__name {
-        color: $primary;
+    .lode__Competency {
+        .lode__Property.lode__name{
+            color: $primary;
+        }
+        .lode__Property.lode__Broadens,
+        .lode__Property.lode__Narrows,
+        .lode__Property.lode__Equals
+        .lode__Property.lode__Similar {
+            .lode__Property.lode__name {
+                color: $link;
+            }
+        }
     }
     .edit-button, .handle.fa-hand-paper {
         visibility: visible;
