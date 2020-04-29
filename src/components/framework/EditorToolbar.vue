@@ -96,7 +96,7 @@
             hierarchy in editing mode -->
             <div
                 v-if="showAddComments"
-                @click="$store.commit('app/showModal', { component: 'AddComment'})"
+                @click="handleClickAddComment"
                 class="button is-text has-text-primary">
                 <span class="icon">
                     <i class="fas fa-comment-medical" />
@@ -142,6 +142,10 @@ export default {
         };
     },
     methods: {
+        handleClickAddComment: function() {
+            this.$store.commit('editor/setAddCommentAboutId', this.$store.getters['editor/framework'].shortId());
+            this.$store.commit('app/showModal', {component: 'AddComment'});
+        },
         showExportModal() {
             this.$store.commit('app/showModal', 'Export');
         },

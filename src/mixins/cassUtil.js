@@ -43,6 +43,14 @@ export const cassUtil = {
             }
             return null;
         },
+        addAllOwnersFromObjectToObject(fromObj, toObj) {
+            if (fromObj && fromObj.owner) {
+                for (let pkPem of fromObj.owner) {
+                    let ecPk = EcPk.fromPem(pkPem);
+                    toObj.addOwner(ecPk);
+                }
+            }
+        },
         setDefaultBrowserConfigId(configId) {
             localStorage.setItem("cassAuthoringToolDefaultBrowserConfigId", configId);
         },
