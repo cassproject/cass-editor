@@ -22,7 +22,7 @@ const state = {
     iframeConceptPath: '',
     addCommentAboutId: '',
     frameworkCommentList: [],
-    frameworkCommentPersonList: []
+    frameworkCommentPersonMap: {}
 };
 const mutations = {
     framework(state, f) {
@@ -75,13 +75,13 @@ const mutations = {
     },
     clearFrameworkCommentData(state) {
         state.frameworkCommentList = [];
-        state.frameworkCommentPersonList = [];
+        state.frameworkCommentPersonMap = {};
     },
     setFrameworkCommentList(state, val) {
         state.frameworkCommentList = val;
     },
-    setFrameworkCommentPersonList(state, val) {
-        state.frameworkCommentPersonList = val;
+    setFrameworkCommentPersonMap(state, val) {
+        state.frameworkCommentPersonMap = val;
     }
 };
 const actions = {
@@ -130,8 +130,8 @@ const getters = {
     frameworkCommentList: function(state) {
         return state.frameworkCommentList;
     },
-    frameworkCommentPersonList: function(state) {
-        return state.frameworkCommentPersonList;
+    frameworkCommentPersonMap: function(state) {
+        return state.frameworkCommentPersonMap;
     }
 };
 
