@@ -595,10 +595,10 @@ export default {
         // pulled over from Thing.vue in LODE - should be different for this case
         exportObject: function(type) {
             var guid;
-            if (EcRepository.shouldTryUrl(this.framework.id) === false) {
-                guid = EcCrypto.md5(this.framework.id);
+            if (EcRepository.shouldTryUrl(this.importFramework.id) === false) {
+                guid = EcCrypto.md5(this.importFramework.id);
             } else {
-                guid = this.framework.getGuid();
+                guid = this.importFramework.getGuid();
             }
             var link = this.repo.selectedServer + "data/" + guid;
             if (type === "asn") {
