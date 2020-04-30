@@ -20,7 +20,9 @@ const state = {
     commonPathIframe: '',
     iframeCompetencyPathInterframework: '',
     iframeConceptPath: '',
-    addCommentAboutId: ''
+    addCommentAboutId: '',
+    frameworkCommentList: [],
+    frameworkCommentPersonList: []
 };
 const mutations = {
     framework(state, f) {
@@ -70,13 +72,23 @@ const mutations = {
     },
     setAddCommentAboutId(state, val) {
         state.addCommentAboutId = val;
+    },
+    clearFrameworkCommentData(state) {
+        state.frameworkCommentList = [];
+        state.frameworkCommentPersonList = [];
+    },
+    setFrameworkCommentList(state, val) {
+        state.frameworkCommentList = val;
+    },
+    setFrameworkCommentPersonList(state, val) {
+        state.frameworkCommentPersonList = val;
     }
 };
 const actions = {
 
 };
 const getters = {
-    framework: function(sate) {
+    framework: function(state) {
         return state.framework;
     },
     organization: function(state) {
@@ -103,7 +115,7 @@ const getters = {
     newCompetency: function(state) {
         return state.newCompetency;
     },
-    t3Profile: function(staet) {
+    t3Profile: function(state) {
         return state.t3Profile;
     },
     changedObject: function(state) {
@@ -114,6 +126,12 @@ const getters = {
     },
     addCommentAboutId: function(state) {
         return state.addCommentAboutId;
+    },
+    frameworkCommentList: function(state) {
+        return state.frameworkCommentList;
+    },
+    frameworkCommentPersonList: function(state) {
+        return state.frameworkCommentPersonList;
     }
 };
 

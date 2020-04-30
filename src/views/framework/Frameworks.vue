@@ -302,6 +302,7 @@ export default {
             if (this.queryParams.concepts === "true") {
                 EcConceptScheme.get(framework.id, function(success) {
                     me.$store.commit('editor/framework', success);
+                    me.$store.commit('editor/clearFrameworkCommentData');
                     me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
                     me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "conceptScheme", params: {frameworkId: framework.id}});
@@ -309,6 +310,7 @@ export default {
             } else {
                 EcFramework.get(framework.id, function(success) {
                     me.$store.commit('editor/framework', success);
+                    me.$store.commit('editor/clearFrameworkCommentData');
                     me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
                     me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "framework", params: {frameworkId: framework.id}});
