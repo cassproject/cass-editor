@@ -563,20 +563,27 @@ drag, drag, and chosen states
 }
 .lode__Property.lode__narrows,
 .lode__Property.lode__Narrows,
+.lode__Property.lode__Level,
 .lode__Property.lode__broadens,
+.lode__Property.lode__desires,
+.lode__Property.lode__requires,
 .lode__Property.lode__Broadens,
-.lode__Property.lode__equal {
-    padding-left: 2rem;
+.lode__Property.lode__is_enabled_by,
+.lode__Property.lode__is_related_to,
+.lode__Property.lode__is_equivalent_to {
+    padding-left: 3rem;
     .edit-button .icon {
         display: none;
         color: $link !important;
     }
-    .lode__name {
-        color: $link;
-    }
     .lode__thing {
         .click-to-load {
+            display: flex;
+            justify-content: space-between;
             width: 100%;
+            .thing-as-property__text {
+                width: 100%;
+            }
             .competency-as-property {
                 cursor: pointer;
                 font-size: .9rem;
@@ -719,9 +726,9 @@ drag, drag, and chosen states
         .lode__Property.lode__Broadens,
         .lode__Property.lode__Narrows,
         .lode__Property.lode__Equals
+        .lode__Property.lode__Similar,
         .lode__Property.lode__Similar {
             .lode__Property.lode__name {
-                color: $link;
             }
         }
     }
