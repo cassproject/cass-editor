@@ -175,7 +175,7 @@ export default {
                         var range = me.addedPropertiesAndValues[j].range;
 
                         if (range.length === 1 && range[0].toLowerCase().indexOf("langstring") !== -1) {
-                            if (me.profile && me.profile[property] && me.profile[property]["onePerLanguage"] === 'true') {
+                            if (me.profile && me.profile[property] && (me.profile[property]["onePerLanguage"] === 'true' || me.profile[property]["onePerLanguage"] === true)) {
                                 var okayToSave = me.validateOnePerLanguage(expandedCompetency, property, competency);
                                 if (!okayToSave) {
                                     continue;
