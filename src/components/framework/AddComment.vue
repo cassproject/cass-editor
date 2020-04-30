@@ -36,6 +36,13 @@
                         row="3">
                 </div>
             </div>
+            <div
+                v-if="commentIsBusy"
+                class="has-text-centered">
+                <span class="icon is-large has-text-center has-text-link">
+                    <i class="fas fa-3x fa-spinner is-info fa-pulse" />
+                </span>
+            </div>
         </section>
         <footer class="modal-card-foot">
             <div class="buttons is-spaced">
@@ -45,6 +52,7 @@
                     Cancel
                 </button>
                 <button
+                    :disabled=commentIsBusy
                     class="button is-outlined is-primary"
                     @click="saveComment">
                     Save comment
@@ -67,7 +75,8 @@ export default {
             commentSubjectType: '',
             commentText: '',
             loggedInPersonEcPk: {},
-            commentToSave: {}
+            commentToSave: {},
+            commentIsBusy: false
         };
     },
     methods: {
@@ -87,11 +96,13 @@ export default {
             return commentObj;
         },
         saveCommentSuccess: function() {
-            // TODO ADD commentToSave to list
+            // TODO ADD commentToSave to list WHAT HAPPENS WHEN EDIT OCCURS...
             console.log("Save comment succeeded");
+            this.commentIsBusy = false;
             this.closeModal();
         },
         saveCommentFailed: function(msg) {
+            this.commentIsBusy = false;
             console.log("Save comment failed: " + msg);
         },
         saveComment: function() {
@@ -101,6 +112,7 @@ export default {
                     this.loggedInPersonEcPk = this.getPersonEcPk(this.loggedInPerson);
                     if (!this.loggedInPersonEcPk) console.log("Could not determine person EcPk for comment");
                     else {
+                        this.commentIsBusy = true;
                         this.commentToSave = this.buildCommentObject();
                         console.log("commentToSave");
                         console.log(this.commentToSave);

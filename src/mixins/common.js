@@ -1,3 +1,5 @@
+import dateFormat from 'dateformat';
+
 export default {
     computed: {
         levels: function() {
@@ -611,6 +613,10 @@ export default {
             let lop = this.$store.state.user.loggedOnPerson;
             if (lop && lop.id && lop.id !== '') return true;
             else return false;
+        },
+        toPrettyDateString: function(dateInMilliseconds) {
+            let d = new Date(dateInMilliseconds);
+            return dateFormat(d, "dddd, mmmm dS, yyyy, h:MM:ss TT");
         }
     }
 };
