@@ -5,7 +5,7 @@ with some adjustments to the modal-card classes to just card, this could be
 placed anywhere in a structured html element such as a <section> or a <div>
 -->
 <template>
-    <div class="modal-card">
+    <div class="search-modal modal-card">
         <header class="modal-card-head has-background-primary">
             <p class="modal-card-title">
                 <span class="title has-text-white">Search for {{ searchType }}</span>
@@ -26,6 +26,9 @@ placed anywhere in a structured html element such as a <section> or a <div>
                 aria-label="close" />
         </header>
         <section class="modal-card-body">
+            <div class="column is-12">
+                <SearchBar searchType="competency" />
+            </div>
             <div class="column is-12">
                 <List
                     v-if="$store.state.lode.competencySearchModalOpen"
@@ -87,7 +90,7 @@ placed anywhere in a structured html element such as a <section> or a <div>
 import List from '@/lode/components/lode/List.vue';
 import common from '@/mixins/common.js';
 import {mapState} from 'vuex';
-
+import SearchBar from '@/components/framework/SearchBar.vue';
 export default {
     name: 'CompetencySearch',
     props: {
@@ -98,7 +101,7 @@ export default {
             default: function() { return {}; }
         }
     },
-    components: {List},
+    components: {List, SearchBar},
     mixins: [common],
     data() {
         return {
@@ -582,6 +585,10 @@ export default {
 
 <style lang="scss">
     @import '@/scss/frameworks.scss';
+.search-modal {
+    max-height: 100%;
+    min-height: 600px;
+}
 .competency-search{
     .thing {
         padding: .125rem .25rem !important;
