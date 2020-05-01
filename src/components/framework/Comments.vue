@@ -50,9 +50,6 @@ export default {
     data() {
         return {
             COMMENT_SEARCH_SIZE: 10000,
-            isCommenter: true,
-            isAdmin: false,
-            isViewer: true,
             isCommentsBusy: false,
             localFrameworkCommentList: [],
             commentAboutMap: {},
@@ -72,9 +69,8 @@ export default {
         buildCommentWrapper: function(comment, aboutName, isTopLevel) {
             let commentWrapper = {};
             let commentCreatorPerson = this.frameworkCommentPersonMap[comment.creator];
-            // Dont think we really need these
-            // commentWrapper.comment = comment;
-            // commentWrapper.creator = commentCreatorPerson;
+            commentWrapper.comment = comment;
+            commentWrapper.creator = commentCreatorPerson;
             commentWrapper.aboutId = comment.about;
             commentWrapper.aboutName = aboutName;
             commentWrapper.commentId = comment.shortId();
@@ -104,14 +100,16 @@ export default {
             else return 'Unknown Competency';
         },
         buildCompetencyCommentWrappers: function() {
-            for (let fwkCompId of this.currentFramework.competency) {
-                let compComments = this.commentAboutMap[fwkCompId];
-                if (compComments && compComments.length > 0) {
-                    let compName = this.getCompetencyName(fwkCompId);
-                    for (let cc of compComments) {
-                        let cw = this.buildCommentWrapper(cc, compName, true);
-                        this.commentWrapperList.push(cw);
-                        this.commentWrapperMap[cc.shortId()] = cw;
+            if (this.currentFramework.competency) {
+                for (let fwkCompId of this.currentFramework.competency) {
+                    let compComments = this.commentAboutMap[fwkCompId];
+                    if (compComments && compComments.length > 0) {
+                        let compName = this.getCompetencyName(fwkCompId);
+                        for (let cc of compComments) {
+                            let cw = this.buildCommentWrapper(cc, compName, true);
+                            this.commentWrapperList.push(cw);
+                            this.commentWrapperMap[cc.shortId()] = cw;
+                        }
                     }
                 }
             }
@@ -126,7 +124,8 @@ export default {
         },
         buildReplyCommentWrappers: function() {
             let replyList = [];
-            for (let commentId of this.frameworkCommentList) {
+            for (let c of this.frameworkCommentList) {
+                let commentId = c.shortId();
                 let commentReplies = this.commentAboutMap[commentId];
                 if (commentReplies && commentReplies.length > 0) {
                     for (let cr of commentReplies) {
@@ -151,13 +150,16 @@ export default {
             }
         },
         parseComments: function() {
-            this.isCommentsBusy = true;
-            this.commentAboutMap = {};
-            this.commentWrapperList = [];
-            this.commentWrapperMap = {};
-            this.buildCommentAboutMap();
-            this.buildCommentDisplayStructures();
-            this.isCommentsBusy = false;
+            if (!this.currentFramework) this.clearAllFrameworkCommentData();
+            else {
+                this.isCommentsBusy = true;
+                this.commentAboutMap = {};
+                this.commentWrapperList = [];
+                this.commentWrapperMap = {};
+                this.buildCommentAboutMap();
+                this.buildCommentDisplayStructures();
+                this.isCommentsBusy = false;
+            }
         },
         buildFrameworkCommentPersonMapSuccess: function(ecPersonList) {
             let commentPersonMap = {};
@@ -198,14 +200,25 @@ export default {
             console.log('buildFrameworkCommentListFailure: ' + msg);
             this.isCommentsBusy = false;
         },
+        clearAllFrameworkCommentData: function() {
+            this.isCommentsBusy = false;
+            this.localFrameworkCommentList = [];
+            this.commentAboutMap = {};
+            this.commentWrapperList = [];
+            this.commentWrapperMap = {};
+            this.canReplyToComments = false;
+        },
         buildFrameworkCommentList: function() {
-            let paramObj = {};
-            paramObj.size = this.COMMENT_SEARCH_SIZE;
-            EcComment.search(window.repo,
-                'isBasedOn:"' + this.currentFramework.shortId() + '"',
-                this.buildFrameworkCommentListSuccess,
-                this.buildFrameworkCommentListFailure,
-                null);
+            if (!this.currentFramework) this.clearAllFrameworkCommentData();
+            else {
+                let paramObj = {};
+                paramObj.size = this.COMMENT_SEARCH_SIZE;
+                EcComment.search(window.repo,
+                    'isBasedOn:"' + this.currentFramework.shortId() + '"',
+                    this.buildFrameworkCommentListSuccess,
+                    this.buildFrameworkCommentListFailure,
+                    null);
+            }
         },
         buildCommentDataSet: function() {
             if (!this.frameworkCommentList || this.frameworkCommentList.length <= 0) {

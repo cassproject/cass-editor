@@ -2,9 +2,9 @@
     <div class="modal-card">
         <header class="modal-card-head has-background-primary">
             <p class="modal-card-title">
-                <span class="title has-text-white">New Comment</span>
-                <br><span class="subtitle has-text-white has-text-weight-medium">
-                    Add Comment
+                <span class="title has-text-white">
+                    <span v-if="isCommentNew || isCommentReply">New Comment</span>
+                    <span v-if="isCommentEdit">Edit Comment</span>
                 </span>
             </p>
             <button
@@ -13,10 +13,10 @@
                 aria-label="close" />
         </header>
         <section class="modal-card-body">
-            <h3 class="title is-size-4">
+            <h3 class="is-size-4">
                 <span v-if="isCommentNew">Commenting on</span>
-                <span v-if="isCommentReply">Replying to</span>
-                <span v-if="isCommentEdit">Editing comment</span>
+                <span v-if="isCommentReply">Replying to comments about</span>
+                <span v-if="isCommentEdit">Editing comment on</span>
             </h3>
             <p class="subtitle commentAbout">
                 <b>{{ commentFrameworkName }}</b>
@@ -24,11 +24,15 @@
                     <br>
                     <span class="commentAbout">{{ commentSubject.getName() }}</span>
                 </span>
-                <span v-if="isCommentReply">
-                    <br>
-                    <span class="commentAbout">TODO fill in original comment</span>
-                </span>
             </p>
+            <!--
+            I don't think this is needed.  The replies are single threaded so you are technically always replying to the top comment
+            <div
+                v-if="isCommentReply"
+                class="is-size-5 commentReply">
+                "{{ commentToReply.text }}"
+            </div>
+            -->
             <div class="field">
                 <div class="control">
                     <textarea
@@ -88,7 +92,8 @@ export default {
             let commentObj = new EcComment();
             commentObj.generateId(window.repo.selectedServer);
             commentObj.setCreator(this.loggedInPerson);
-            commentObj.setSubjectIds(this.commentFrameworkId, this.commentAboutId);
+            if (this.isCommentReply) commentObj.setSubjectIds(this.commentFrameworkId, this.commentToReply.shortId());
+            else commentObj.setSubjectIds(this.commentFrameworkId, this.commentAboutId);
             commentObj.setDateCreated(Date.now() + "");
             commentObj.text = this.commentText;
             commentObj.addOwner(this.loggedInPersonEcPk);
@@ -103,7 +108,7 @@ export default {
             return commentObj;
         },
         buildCommentObject: function() {
-            if (this.commentType.equalsIgnoreCase('edit')) return this.buildEditCommentObject();
+            if (this.isCommentEdit) return this.buildEditCommentObject();
             else return this.buildNewCommentObject();
         },
         updateStoredFrameworkCommentPersonMap() {
@@ -121,7 +126,7 @@ export default {
             this.$store.commit('editor/setFrameworkCommentList', newFcl);
         },
         updateStoreFrameworkCommentList() {
-            if (this.commentType.equalsIgnoreCase('edit')) {
+            if (this.isCommentEdit) {
                 this.insertEditedCommentObjectIntoStoreFrameworkCommentList();
             } else {
                 let fcl = this.$store.getters['editor/frameworkCommentList'];
@@ -218,6 +223,9 @@ export default {
             this.commentSubject = someObj;
             this.commentSubjectType = someObj.type.toLowerCase();
         }
+        if (this.isCommentEdit) {
+            this.commentText = this.commentToEdit.text;
+        }
     }
 };
 </script>
@@ -227,5 +235,10 @@ export default {
 
     .commentAbout {
         margin-left: 1rem;
+    }
+    .commentReply {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        font-style: italic;
     }
 </style>

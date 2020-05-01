@@ -81,6 +81,10 @@ export default {
                 font-size: .7rem;
                 font-weight: 600;
             }
+            .comment-list__reply_hr {
+                margin-top: 1rem;
+                margin-bottom: 1rem;
+            }
             .comment-list__nested {
                 padding-left: .5rem;
             }
