@@ -2,7 +2,7 @@
     <div class="single modal-card">
         <header class="modal-card-head has-background-primary">
             <p class="modal-card-title has-text-white is-size-2">
-                {{ dynamicModalContent.parentName['@value'] }}
+                <span>{{ dynamicModalContent.parentName['@value'] }}</span>
                 <br>
                 <br>
                 <b>{{ dynamicModalContent.type }}</b>
@@ -154,6 +154,9 @@ export default {
                 justify-content: space-between;
             }
         }
+    }
+    .modal-card-title {
+        max-width: 95%;
     }
 }
 </style>
