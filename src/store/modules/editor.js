@@ -21,6 +21,7 @@ const state = {
     iframeCompetencyPathInterframework: '',
     iframeConceptPath: '',
     addCommentAboutId: '',
+    addCommentType: '',
     frameworkCommentList: [],
     frameworkCommentPersonMap: {}
 };
@@ -72,6 +73,9 @@ const mutations = {
     },
     setAddCommentAboutId(state, val) {
         state.addCommentAboutId = val;
+    },
+    setAddCommentType(state, val) {
+        state.addCommentType = val;
     },
     clearFrameworkCommentData(state) {
         state.frameworkCommentList = [];
@@ -126,6 +130,9 @@ const getters = {
     },
     addCommentAboutId: function(state) {
         return state.addCommentAboutId;
+    },
+    addCommentType: function(state) {
+        return state.addCommentType;
     },
     frameworkCommentList: function(state) {
         return state.frameworkCommentList;

@@ -30,10 +30,10 @@
             </p>
             <div class="field">
                 <div class="control">
-                    <input
+                    <textarea
                         v-model="commentText"
                         class="textarea"
-                        row="3">
+                        row="3"/>
                 </div>
             </div>
             <div
