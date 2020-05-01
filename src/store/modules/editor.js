@@ -21,6 +21,10 @@ const state = {
     iframeCompetencyPathInterframework: '',
     iframeConceptPath: '',
     addCommentAboutId: '',
+    addCommentType: '',
+    commentToEdit: {},
+    commentToReply: {},
+    frameworkCommentDataLoaded: false,
     frameworkCommentList: [],
     frameworkCommentPersonMap: {}
 };
@@ -73,9 +77,22 @@ const mutations = {
     setAddCommentAboutId(state, val) {
         state.addCommentAboutId = val;
     },
+    setAddCommentType(state, val) {
+        state.addCommentType = val;
+    },
+    setCommentToEdit(state, val) {
+        state.commentToEdit = val;
+    },
+    setCommentToReply(state, val) {
+        state.commentToReply = val;
+    },
     clearFrameworkCommentData(state) {
+        state.frameworkCommentDataLoaded = false;
         state.frameworkCommentList = [];
         state.frameworkCommentPersonMap = {};
+    },
+    setFrameworkCommentDataLoaded(state, val) {
+        state.frameworkCommentDataLoaded = val;
     },
     setFrameworkCommentList(state, val) {
         state.frameworkCommentList = val;
@@ -126,6 +143,18 @@ const getters = {
     },
     addCommentAboutId: function(state) {
         return state.addCommentAboutId;
+    },
+    addCommentType: function(state) {
+        return state.addCommentType;
+    },
+    commentToEdit: function(state) {
+        return state.commentToEdit;
+    },
+    commentToReply: function(state) {
+        return state.commentToReply;
+    },
+    frameworkCommentDataLoaded: function(state) {
+        return state.frameworkCommentDataLoaded;
     },
     frameworkCommentList: function(state) {
         return state.frameworkCommentList;

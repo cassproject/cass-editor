@@ -2,9 +2,9 @@
     <div class="modal-card">
         <header class="modal-card-head has-background-primary">
             <p class="modal-card-title">
-                <span class="title has-text-white">New Comment</span>
-                <br><span class="subtitle has-text-white has-text-weight-medium">
-                    Add Comment
+                <span class="title has-text-white">
+                    <span v-if="isCommentNew || isCommentReply">New Comment</span>
+                    <span v-if="isCommentEdit">Edit Comment</span>
                 </span>
             </p>
             <button
@@ -13,9 +13,10 @@
                 aria-label="close" />
         </header>
         <section class="modal-card-body">
-            <h3 class="title is-size-4">
-                <span v-if="!isReply">Commenting on</span>
-                <span v-if="isReply">Replying to</span>
+            <h3 class="is-size-4">
+                <span v-if="isCommentNew">Commenting on</span>
+                <span v-if="isCommentReply">Replying to comments about</span>
+                <span v-if="isCommentEdit">Editing comment on</span>
             </h3>
             <p class="subtitle commentAbout">
                 <b>{{ commentFrameworkName }}</b>
@@ -23,18 +24,29 @@
                     <br>
                     <span class="commentAbout">{{ commentSubject.getName() }}</span>
                 </span>
-                <span v-if="isReply">
-                    <br>
-                    <span class="commentAbout">TODO fill in original comment</span>
-                </span>
             </p>
+            <!--
+            I don't think this is needed.  The replies are single threaded so you are technically always replying to the top comment
+            <div
+                v-if="isCommentReply"
+                class="is-size-5 commentReply">
+                "{{ commentToReply.text }}"
+            </div>
+            -->
             <div class="field">
                 <div class="control">
-                    <input
+                    <textarea
                         v-model="commentText"
                         class="textarea"
-                        row="3">
+                        row="3"/>
                 </div>
+            </div>
+            <div
+                v-if="commentIsBusy"
+                class="has-text-centered">
+                <span class="icon is-large has-text-center has-text-link">
+                    <i class="fas fa-3x fa-spinner is-info fa-pulse" />
+                </span>
             </div>
         </section>
         <footer class="modal-card-foot">
@@ -45,6 +57,7 @@
                     Cancel
                 </button>
                 <button
+                    :disabled=commentIsBusy
                     class="button is-outlined is-primary"
                     @click="saveComment">
                     Save comment
@@ -67,18 +80,20 @@ export default {
             commentSubjectType: '',
             commentText: '',
             loggedInPersonEcPk: {},
-            commentToSave: {}
+            commentToSave: {},
+            commentIsBusy: false
         };
     },
     methods: {
         closeModal: function() {
             this.$store.commit('app/closeModal');
         },
-        buildCommentObject: function() {
+        buildNewCommentObject: function() {
             let commentObj = new EcComment();
             commentObj.generateId(window.repo.selectedServer);
             commentObj.setCreator(this.loggedInPerson);
-            commentObj.setSubjectIds(this.commentFrameworkId, this.commentSubjectId);
+            if (this.isCommentReply) commentObj.setSubjectIds(this.commentFrameworkId, this.commentToReply.shortId());
+            else commentObj.setSubjectIds(this.commentFrameworkId, this.commentAboutId);
             commentObj.setDateCreated(Date.now() + "");
             commentObj.text = this.commentText;
             commentObj.addOwner(this.loggedInPersonEcPk);
@@ -86,12 +101,53 @@ export default {
             if (!this.isCommentOnFramework) this.addAllOwnersFromObjectToObject(this.commentSubject, commentObj);
             return commentObj;
         },
+        buildEditCommentObject: function() {
+            let commentObj = this.commentToEdit;
+            commentObj.text = this.commentText;
+            commentObj.lastEditDate = Date.now() + "";
+            return commentObj;
+        },
+        buildCommentObject: function() {
+            if (this.isCommentEdit) return this.buildEditCommentObject();
+            else return this.buildNewCommentObject();
+        },
+        updateStoredFrameworkCommentPersonMap() {
+            let cpm = this.$store.getters['editor/frameworkCommentPersonMap'];
+            cpm[this.loggedInPerson.shortId()] = this.loggedInPerson;
+            this.$store.commit('editor/setFrameworkCommentPersonMap', cpm);
+        },
+        insertEditedCommentObjectIntoStoreFrameworkCommentList() {
+            let newFcl = [];
+            let fcl = this.$store.getters['editor/frameworkCommentList'];
+            for (let c of fcl) {
+                if (c.shortId().equals(this.commentToSave.shortId())) newFcl.push(this.commentToSave);
+                else newFcl.push(c);
+            }
+            this.$store.commit('editor/setFrameworkCommentList', newFcl);
+        },
+        updateStoreFrameworkCommentList() {
+            if (this.isCommentEdit) {
+                this.insertEditedCommentObjectIntoStoreFrameworkCommentList();
+            } else {
+                let fcl = this.$store.getters['editor/frameworkCommentList'];
+                fcl.push(this.commentToSave);
+                this.$store.commit('editor/setFrameworkCommentList', fcl);
+            }
+        },
+        updateStoredFrameworkCommentData() {
+            if (this.frameworkCommentDataAlreadyLoaded) {
+                this.updateStoredFrameworkCommentPersonMap();
+                this.updateStoreFrameworkCommentList();
+            }
+        },
         saveCommentSuccess: function() {
-            // TODO ADD commentToSave to list
             console.log("Save comment succeeded");
+            this.updateStoredFrameworkCommentData();
+            this.commentIsBusy = false;
             this.closeModal();
         },
         saveCommentFailed: function(msg) {
+            this.commentIsBusy = false;
             console.log("Save comment failed: " + msg);
         },
         saveComment: function() {
@@ -101,6 +157,7 @@ export default {
                     this.loggedInPersonEcPk = this.getPersonEcPk(this.loggedInPerson);
                     if (!this.loggedInPersonEcPk) console.log("Could not determine person EcPk for comment");
                     else {
+                        this.commentIsBusy = true;
                         this.commentToSave = this.buildCommentObject();
                         console.log("commentToSave");
                         console.log(this.commentToSave);
@@ -124,11 +181,29 @@ export default {
             if (fw) return fw.shortId();
             else return 'Unknown';
         },
-        commentSubjectId: function() {
+        commentAboutId: function() {
             return this.$store.getters['editor/addCommentAboutId'];
         },
-        isReply: function() {
-            return this.commentSubjectType.equalsIgnoreCase('comment');
+        commentType: function() {
+            return this.$store.getters['editor/addCommentType'];
+        },
+        commentToEdit: function() {
+            return this.$store.getters['editor/commentToEdit'];
+        },
+        commentToReply: function() {
+            return this.$store.getters['editor/commentToReply'];
+        },
+        frameworkCommentDataAlreadyLoaded: function() {
+            return this.$store.getters['editor/frameworkCommentDataLoaded'];
+        },
+        isCommentReply: function() {
+            return this.commentType.equalsIgnoreCase('reply');
+        },
+        isCommentEdit: function() {
+            return this.commentType.equalsIgnoreCase('edit');
+        },
+        isCommentNew: function() {
+            return this.commentType.equalsIgnoreCase('new');
         },
         isCommentOnFramework: function() {
             return this.commentSubjectType.equalsIgnoreCase('framework');
@@ -141,12 +216,15 @@ export default {
         }
     },
     mounted: function() {
-        if (this.commentFrameworkId.equals(this.commentSubjectId)) {
+        if (this.commentFrameworkId.equals(this.commentAboutId)) {
             this.commentSubjectType = 'framework';
         } else {
-            let someObj = EcRepository.getBlocking(this.commentSubjectId);
+            let someObj = EcRepository.getBlocking(this.commentAboutId);
             this.commentSubject = someObj;
             this.commentSubjectType = someObj.type.toLowerCase();
+        }
+        if (this.isCommentEdit) {
+            this.commentText = this.commentToEdit.text;
         }
     }
 };
@@ -157,5 +235,10 @@ export default {
 
     .commentAbout {
         margin-left: 1rem;
+    }
+    .commentReply {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        font-style: italic;
     }
 </style>

@@ -138,6 +138,7 @@ export default {
     methods: {
         handleClickAddComment: function() {
             this.$store.commit('editor/setAddCommentAboutId', this.$store.getters['editor/framework'].shortId());
+            this.$store.commit('editor/setAddCommentType', 'new');
             this.$store.commit('app/showModal', {component: 'AddComment'});
         },
         showExportModal() {
