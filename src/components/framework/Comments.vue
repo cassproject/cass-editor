@@ -35,7 +35,7 @@
                     v-for="commentWrapper in commentWrapperList"
                     :comment="commentWrapper"
                     :canReply="canReplyToComments"
-                    :key="commentWrapper.text + commentWrapper.replies.length"/>
+                    :key="commentWrapper"/>
             </div>
         </div>
     </aside>
@@ -81,6 +81,7 @@ export default {
             commentWrapper.creatorName = commentCreatorPerson.name;
             commentWrapper.creatorEmail = commentCreatorPerson.email;
             commentWrapper.dateCreated = comment.dateCreated - 0;
+            if (comment.lastEditDate) commentWrapper.lastEditDate = comment.lastEditDate - 0;
             commentWrapper.commentText = comment.text;
             commentWrapper.isTopLevel = isTopLevel;
             commentWrapper.canModify = this.determineCanModifyComment(comment);
@@ -163,6 +164,7 @@ export default {
             for (let p of ecPersonList) {
                 commentPersonMap[p.shortId()] = p;
             }
+            this.$store.commit('editor/setFrameworkCommentDataLoaded', true);
             this.$store.commit('editor/setFrameworkCommentPersonMap', commentPersonMap);
             this.$store.commit('editor/setFrameworkCommentList', this.localFrameworkCommentList); // this SHOULD trigger parseComments
         },

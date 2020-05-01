@@ -73,6 +73,10 @@ export default {
                 font-size: .7rem;
                 margin-left: 1rem;
             }
+            .comment-list__message_edit {
+                font-size: .6rem;
+                font-style: italic;
+            }
             .comment-list__timestamp {
                 font-size: .7rem;
                 font-weight: 600;

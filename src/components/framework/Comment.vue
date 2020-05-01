@@ -12,25 +12,33 @@
         <li class="comment-list__timestamp">
             {{ toPrettyDateString(comment.dateCreated) }}
         </li>
+        <li
+            v-if="comment.lastEditDate"
+            class="comment-list__message_edit">
+            *Edited: {{ toPrettyDateString(comment.lastEditDate) }}
+        </li>
         <li class="comment-list__action">
             <div class="buttons is-right">
                 <div
                     v-if="canReply"
-                    class="button is-small is-text">
+                    class="button is-small is-text"
+                    title="reply">
                     <div class="icon">
                         <i class="fa fa-reply" />
                     </div>
                 </div>
                 <div
                     v-if="comment.canModify"
-                    class="button is-small is-text">
+                    class="button is-small is-text"
+                    title="delete">
                     <div class="icon">
                         <i class="fa fa-trash" />
                     </div>
                 </div>
                 <div
                     v-if="comment.canModify"
-                    class="button is-small is-text">
+                    class="button is-small is-text"
+                    title="edit">
                     <div class="icon">
                         <i class="fa fa-edit" />
                     </div>
@@ -61,6 +69,11 @@ export default {
             type: Boolean,
             default: false
         }
+    },
+    methods: {
+    },
+    computed: {
+
     }
 };
 </script>

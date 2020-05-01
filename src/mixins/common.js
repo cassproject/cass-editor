@@ -615,8 +615,12 @@ export default {
             else return false;
         },
         toPrettyDateString: function(dateInMilliseconds) {
-            let d = new Date(dateInMilliseconds);
-            return dateFormat(d, "dddd, mmmm dS, yyyy, h:MM:ss TT");
+            try {
+                let d = new Date(dateInMilliseconds);
+                return dateFormat(d, "dddd, mmmm dS, yyyy, h:MM:ss TT");
+            } catch (err) {
+                return 'unknown';
+            }
         }
     }
 };
