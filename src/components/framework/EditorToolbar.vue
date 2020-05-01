@@ -122,12 +122,6 @@
                     <i class="fas fa-history has-text-dark" />
                 </span>
             </div>
-            <div class="framework-search">
-                <input
-                    class="input"
-                    type="text"
-                    placeholder="Text input">
-            </div>
         </div>
     </div>
 </template>
@@ -188,7 +182,7 @@ export default {
         flex-direction: row;
         flex-wrap: nowrap;
         width: 100%;
-        justify-content: space-between;
+        justify-content: flex-start;
         justify-items: center;
         align-content: center;
         align-items: center;
