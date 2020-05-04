@@ -195,6 +195,17 @@ export default {
                 obj.ownership = 'me';
             }
             return obj;
+        },
+        sortResults: function() {
+            return this.$store.getters['app/sortResults'];
+        },
+        quickFilters: function() {
+            return this.$store.getters['app/quickFilters'];
+        },
+        filteredQuickFilters: function() {
+            let filterValues = this.quickFilters.filter(item => item.checked === true);
+            console.log('filtered value', filterValues);
+            return filterValues;
         }
     },
     components: {List, RightAside, SearchBar},
