@@ -100,7 +100,7 @@ export default {
     },
     methods: {
         goToFramework: function(framework) {
-            if (this.framework.shortId() === framework.url) {
+            if (this.framework.shortId() === framework.url && this.dynamicModalContent.type === "Competency") {
                 return this.goToCompetencyWithinThisFramework();
             }
             this.$store.commit('editor/framework', EcRepository.getBlocking(framework.url));
@@ -114,14 +114,25 @@ export default {
     },
     mounted() {
         var me = this;
-        EcFramework.search(this.repo, "competency:\"" + this.dynamicModalContent.uri + "\"", function(success) {
-            for (var i = 0; i < success.length; i++) {
-                me.parentFrameworks.push({name: success[i].getName(), url: success[i].shortId()});
-            }
-        }, function(failure) {
-            console.error(failure);
-            me.parentFrameworks = [];
-        }, null);
+        if (this.dynamicModalContent.type === "Competency") {
+            EcFramework.search(this.repo, "competency:\"" + this.dynamicModalContent.uri + "\"", function(success) {
+                for (var i = 0; i < success.length; i++) {
+                    me.parentFrameworks.push({name: success[i].getName(), url: success[i].shortId()});
+                }
+            }, function(failure) {
+                console.error(failure);
+                me.parentFrameworks = [];
+            }, null);
+        } else if (this.dynamicModalContent.type === "Level") {
+            EcFramework.search(this.repo, "level:\"" + this.dynamicModalContent.uri + "\"", function(success) {
+                for (var i = 0; i < success.length; i++) {
+                    me.parentFrameworks.push({name: success[i].getName(), url: success[i].shortId()});
+                }
+            }, function(failure) {
+                console.error(failure);
+                me.parentFrameworks = [];
+            }, null);
+        }
     }
 };
 </script>
