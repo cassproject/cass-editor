@@ -48,13 +48,14 @@
                 <div class="column is-12">
                     <label>Add users or groups</label>
                     <div class="field has-addons">
-                        <div class="control is-expanded">
+                        <div class="control is-expanded share auto-complete__control">
                             <input
+                                @blur="closeAutoComplete"
                                 type="text"
-                                class="input is-fullwidth"
+                                class="input share is-fullwidth is-small"
                                 v-model="search"
                                 @input="filterResults">
-                            <span class="auto-complete">
+                            <span class="auto-complete share">
                                 <ul v-show="isOpenAutocomplete">
                                     <li
                                         v-for="(result, i) in filtered"
@@ -66,7 +67,7 @@
                             </span>
                         </div>
                         <div class="control">
-                            <div class="select">
+                            <div class="select is-primary">
                                 <select v-model="selectViewOrAdmin">
                                     <option
                                         v-for="(option, index) in viewOptions"
@@ -76,6 +77,16 @@
                                     </option>
                                 </select>
                             </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div
+                            @click="saveSettings"
+                            class="button is-outlined is-primary">
+                            <span class="icon">
+                                <i class="fa fa-save" />
+                            </span>
+                            <span>Add Selected User/Group</span>
                         </div>
                     </div>
                 </div>
@@ -163,21 +174,12 @@
             </div>
         </section>
         <footer class="modal-card-foot">
-            <div class="columns is-12">
-                <div class="column is-12">
-                    <button
-                        class="button is-left is-light"
-                        @click="$store.commit('app/closeModal')">
-                        Cancel
-                    </button>
-                </div>
-                <div class="column is-12">
-                    <button
-                        class="button is-fullwidth is-success"
-                        @click="saveSettings">
-                        Save Framework Settings
-                    </button>
-                </div>
+            <div class="buttons is-spaced">
+                <button
+                    class="button is-dark is-outlined"
+                    @click="$store.commit('app/closeModal')">
+                    Done managing framework share settings
+                </button>
             </div>
         </footer>
     </div>
@@ -234,6 +236,9 @@ export default {
         this.getPossibleOwnersAndReaders();
     },
     methods: {
+        closeAutoComplete: function() {
+            this.isOpenAutocomplete = false;
+        },
         successfulClip({value, event}) {
             console.log('success', value);
             this.clipStatus = 'success';
