@@ -29,8 +29,7 @@
                         <a
                             :title="parentFramework.name"
                             class="single__li-a"
-                            :href="parentFramework.url"
-                            target="__blank">
+                            @click="goToFramework(parentFramework)">
                             <span>{{ parentFramework.name }}</span>
                             <div
                                 :title="parentFramework.name"
@@ -79,25 +78,8 @@ export default {
     data() {
         return {
             edit: false,
-            numberOfParentFrameworks: 4,
-            parentFrameworks: [
-                {
-                    name: 'this one',
-                    url: 'https://cool.com'
-                },
-                {
-                    name: 'this one',
-                    url: 'https://cool.com'
-                },
-                {
-                    name: 'this one',
-                    url: 'https://cool.com'
-                },
-                {
-                    name: 'this one',
-                    url: 'https://cool.com'
-                }
-            ]
+            parentFrameworks: [],
+            repo: window.repo
         };
     },
     computed: {
@@ -111,13 +93,33 @@ export default {
             } else {
                 return 'Thing';
             }
+        },
+        numberOfParentFrameworks: function() {
+            return this.parentFrameworks.length;
         }
     },
     methods: {
-
+        goToFramework: function(framework) {
+            if (this.framework.shortId() === framework.url) {
+                return goToCompetencyWithinThisFramework();
+            }
+            this.$store.commit('editor/framework', EcRepository.getBlocking(framework.url));
+            this.$store.commit('app/closeModal');
+        },
+        goToCompetencyWithinThisFramework: function() {
+            // Scroll to competency
+        }
     },
     mounted() {
-
+        var me = this;
+        EcFramework.search(this.repo, "competency:\"" + this.dynamicModalContent.uri + "\"", function(success) {
+            for (var i = 0; i < success.length; i++) {
+                me.parentFrameworks.push({name: success[i].getName(), url: success[i].shortId()});
+            }
+        }, function(failure) {
+            console.error(failure);
+            me.parentFrameworks = [];
+        }, null);
     }
 };
 </script>
