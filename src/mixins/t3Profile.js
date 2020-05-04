@@ -191,11 +191,27 @@ export default {
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEnabledBy", values); },
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isEnabledBy", target); }
                 },
-                "alwaysProperties": [
+                "primaryProperties": [
                     "https://purl.org/ctdlasn/terms/codedNotation",
                     "http://schema.org/name",
                     "http://schema.org/description"
-                ]
+                ],
+                "secondaryProperties": [
+                    "@id",
+                    "http://purl.org/dc/terms/type",
+                    "https://schema.cassproject.org/0.4/Competency/scope",
+                    "https://purl.org/ctdlasn/terms/conceptTerm",
+                    "https://schema.cassproject.org/0.4/Level",
+                    "narrows",
+                    "broadens",
+                    "isEquivalentTo",
+                    "isSimilarTo",
+                    "isPartiallySameAs",
+                    "isRelatedTo",
+                    "enables",
+                    "isEnabledBy"
+                ],
+                "tertiaryProperties": []
             };
         },
         t3FrameworkProfile: function() {
@@ -272,10 +288,18 @@ export default {
                     [{"@language": "en", "@value": "Date of creation of this resource."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Extraction Date"}]
                 },
-                "alwaysProperties": [
+                "primaryProperties": [
                     "http://schema.org/name",
                     "http://schema.org/description"
-                ]
+                ],
+                "secondaryProperties": [
+                    "@id",
+                    "https://schema.cassproject.org/0.4/level",
+                    "http://schema.org/publisher",
+                    "http://purl.org/dc/elements/1.1/source",
+                    "http://schema.org/dateCreated"
+                ],
+                "tertiaryProperties": []
             };
         }
     }

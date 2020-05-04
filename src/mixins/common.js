@@ -1,3 +1,5 @@
+import dateFormat from 'dateformat';
+
 export default {
     computed: {
         levels: function() {
@@ -602,11 +604,23 @@ export default {
         },
         canViewCommentsCurrentFramework: function() {
             // TODO expand on this
-            return true;
+            let lop = this.$store.state.user.loggedOnPerson;
+            if (lop && lop.id && lop.id !== '') return true;
+            else return false;
         },
         canAddCommentsCurrentFramework: function() {
             // TODO expand on this
-            return true;
+            let lop = this.$store.state.user.loggedOnPerson;
+            if (lop && lop.id && lop.id !== '') return true;
+            else return false;
+        },
+        toPrettyDateString: function(dateInMilliseconds) {
+            try {
+                let d = new Date(dateInMilliseconds);
+                return dateFormat(d, "dddd, mmmm dS, yyyy, h:MM:ss TT");
+            } catch (err) {
+                return 'unknown';
+            }
         }
     }
 };

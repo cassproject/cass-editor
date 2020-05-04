@@ -9,7 +9,7 @@
             <div class="framework-wrapper">
                 <Component
                     :is="dynamicThingComponent"
-                    :obj="framework"
+                    :obj="changedObj ? changedObj : framework"
                     :repo="repo"
                     :parentNotEditable="queryParams.view==='true'"
                     :profile="frameworkProfile"
@@ -145,7 +145,8 @@ export default {
             properties: "primary",
             config: null,
             privateFramework: false,
-            selectedArray: []
+            selectedArray: [],
+            changedObj: null
         };
     },
     computed: {
@@ -619,6 +620,7 @@ export default {
             this.editingFramework = true;
         },
         onDoneEditingNode: function() {
+            this.changedObj = EcRepository.getBlocking(this.framework.shortId());
             this.editingFramework = false;
         },
         onOpenComments: function() {

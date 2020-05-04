@@ -16,6 +16,7 @@
     "bulma-checkradio": "^1.1.1",
     "cassproject": "^2.11.7",
     "core-js": "^2.6.5",
+    "dateformat": "^3.0.3",
     "file-saver": "^2.0.2",
     "jsonld": "^1.8.1",
     "pure-uuid": "^1.6.0",

@@ -1,46 +1,106 @@
 <template>
     <ul class="comment-list">
-        <li class="comment-list__user">
-            user name
+        <li class="comment-list__user" :title="comment.creatorEmail">
+            {{ comment.creatorName }}
+        </li>
+        <li class="comment-list__about" :title="comment.aboutId">
+            {{ comment.aboutName }}
         </li>
         <li class="comment-list__message">
-            In vel auctor orci, a egestas nunc. Aenean
-            consectetur elementum risus, nec sodales
-            sem volutpat vitae. Donec scelerisque
-            lectus id tortor ultricies maximus. Nulla
-            mattis condimentum egestas. Cras facilisis
-            diam sit amet erat volutpat scelerisque.
-            Donec a vulputate elit. Nulla tempus massa
-            sed faucibus venenatis. Nulla feugiat quam
-            eu lectus tristique, id elementum lorem aliquam.
+            {{ comment.commentText }}
         </li>
         <li class="comment-list__timestamp">
-            Monday, July 12th 08:26 p.m.
+            {{ toPrettyDateString(comment.dateCreated) }}
+        </li>
+        <li
+            v-if="comment.lastEditDate"
+            class="comment-list__message_edit">
+            *Edited: {{ toPrettyDateString(comment.lastEditDate) }}
         </li>
         <li class="comment-list__action">
             <div class="buttons is-right">
                 <div
-                    v-if="isViewer || isAdmin"
-                    class="button is-small is-text">
+                    v-if="canReply && comment.replies.length <= 0"
+                    class="button is-small is-text"
+                    title="reply"
+                    @click="handleClickReply">
                     <div class="icon">
                         <i class="fa fa-reply" />
                     </div>
                 </div>
                 <div
-                    v-if="isCommenter || isAdmin"
-                    class="button is-small is-text">
+                    v-if="comment.canModify"
+                    class="button is-small is-text"
+                    title="delete"
+                    @click="handleClickDelete">
                     <div class="icon">
                         <i class="fa fa-trash" />
                     </div>
                 </div>
                 <div
-                    v-if="isCommenter"
-                    class="button is-small is-text">
+                    v-if="comment.canModify"
+                    class="button is-small is-text"
+                    title="edit"
+                    @click="handleClickEdit">
                     <div class="icon">
                         <i class="fa fa-edit" />
                     </div>
                 </div>
             </div>
+        </li>
+        <li v-if="comment.replies.length > 0">
+            <ul>
+                <div v-for="(reply, replyIdx) in comment.replies">
+                    <li class="comment-list__reply_hr">
+                        <hr>
+                    </li>
+                    <li class="comment-list__user" :title="reply.creatorEmail">
+                        {{ reply.creatorName }}
+                    </li>
+                    <li class="comment-list__message">
+                        {{ reply.commentText }}
+                    </li>
+                    <li class="comment-list__timestamp">
+                        {{ toPrettyDateString(reply.dateCreated) }}
+                    </li>
+                    <li
+                        v-if="reply.lastEditDate"
+                        class="comment-list__message_edit">
+                        *Edited: {{ toPrettyDateString(reply.lastEditDate) }}
+                    </li>
+                    <li class="comment-list__action">
+                        <div class="buttons is-right">
+                            <div
+                                v-if="canReply && ((replyIdx + 1) === comment.replies.length)"
+                                class="button is-small is-text"
+                                title="reply"
+                                @click="handleClickReply">
+                                <div class="icon">
+                                    <i class="fa fa-reply" />
+                                </div>
+                            </div>
+                            <div
+                                v-if="reply.canModify"
+                                class="button is-small is-text"
+                                title="delete"
+                                @click="handleClickDeleteReply(replyIdx)">
+                                <div class="icon">
+                                    <i class="fa fa-trash" />
+                                </div>
+                            </div>
+                            <div
+                                v-if="reply.canModify"
+                                class="button is-small is-text"
+                                title="edit"
+                                @click="handleClickEditReply(replyIdx)">
+                                <div class="icon">
+                                    <i class="fa fa-edit" />
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </div>
+            </ul>
         </li>
         <!-- can make this recursive for nested components
             don't turn on until you have a way to end the loop or else
@@ -50,14 +110,50 @@
 </template>
 
 <script>
+import common from '@/mixins/common.js';
+
 export default {
     name: 'Comment',
+    mixins: [common],
     components: {
     },
     props: {
-        isAdmin: Boolean,
-        isCommenter: Boolean,
-        isViewer: Boolean
+        comment: {
+            type: Object
+        },
+        canReply: {
+            type: Boolean,
+            default: false
+        }
+    },
+    methods: {
+        handleClickReply: function() {
+            this.$store.commit('editor/setAddCommentAboutId', this.comment.aboutId);
+            this.$store.commit('editor/setAddCommentType', 'reply');
+            this.$store.commit('editor/setCommentToReply', this.comment.comment);
+            this.$store.commit('app/showModal', {component: 'AddComment'});
+        },
+        handleClickEdit: function() {
+            this.$store.commit('editor/setAddCommentAboutId', this.comment.aboutId);
+            this.$store.commit('editor/setAddCommentType', 'edit');
+            this.$store.commit('editor/setCommentToEdit', this.comment.comment);
+            this.$store.commit('app/showModal', {component: 'AddComment'});
+        },
+        handleClickDelete: function() {
+            alert("TODO handleClickDelete");
+        },
+        handleClickEditReply: function(replyIdx) {
+            this.$store.commit('editor/setAddCommentAboutId', this.comment.aboutId);
+            this.$store.commit('editor/setAddCommentType', 'edit');
+            this.$store.commit('editor/setCommentToEdit', this.comment.replies[replyIdx].comment);
+            this.$store.commit('app/showModal', {component: 'AddComment'});
+        },
+        handleClickDeleteReply: function(replyIdx) {
+            alert("TODO handleClickEditReply: " + replyIdx);
+        }
+    },
+    computed: {
+
     }
 };
 </script>

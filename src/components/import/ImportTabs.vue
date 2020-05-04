@@ -321,7 +321,18 @@
                         <!-- handle non pdf imports -->
                         <div
                             v-if="importType === 'file' && importTransition === 'info'"
-                            class="control">
+                            class="buttons is-right">
+                            <div
+                                class="button is-pulled-right is-outlined is-dark"
+                                v-if="importFile && importType === 'file' && importFileType!=='pdf'"
+                                @click="resetImport">
+                                <span class="icon">
+                                    <i class="fas fa-times" />
+                                </span>
+                                <span>
+                                    Cancel
+                                </span>
+                            </div>
                             <div
                                 class="button is-pulled-right is-outlined is-primary"
                                 v-if="importFile && importType === 'file' && importFileType!=='pdf'"

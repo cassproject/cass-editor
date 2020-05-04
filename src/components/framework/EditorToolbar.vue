@@ -96,7 +96,7 @@
             hierarchy in editing mode -->
             <div
                 v-if="showAddComments"
-                @click="$store.commit('app/showModal', { component: 'AddComment'})"
+                @click="handleClickAddComment"
                 class="button is-text has-text-primary">
                 <span class="icon">
                     <i class="fas fa-comment-medical" />
@@ -122,12 +122,6 @@
                     <i class="fas fa-history has-text-dark" />
                 </span>
             </div>
-            <div class="framework-search">
-                <input
-                    class="input"
-                    type="text"
-                    placeholder="Text input">
-            </div>
         </div>
     </div>
 </template>
@@ -142,6 +136,11 @@ export default {
         };
     },
     methods: {
+        handleClickAddComment: function() {
+            this.$store.commit('editor/setAddCommentAboutId', this.$store.getters['editor/framework'].shortId());
+            this.$store.commit('editor/setAddCommentType', 'new');
+            this.$store.commit('app/showModal', {component: 'AddComment'});
+        },
         showExportModal() {
             this.$store.commit('app/showModal', 'Export');
         },
@@ -184,7 +183,7 @@ export default {
         flex-direction: row;
         flex-wrap: nowrap;
         width: 100%;
-        justify-content: space-between;
+        justify-content: flex-start;
         justify-items: center;
         align-content: center;
         align-items: center;

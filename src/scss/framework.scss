@@ -78,8 +78,7 @@ drag, drag, and chosen states
             .add-new-node {
                 padding-left: 5rem;
             }
-            .lode__hierarchy-item {
-                                
+            .lode__hierarchy-item {                            
                 .add-node-section {
                     width: 100%;
                     display:block;
@@ -562,15 +561,48 @@ drag, drag, and chosen states
     font-size: $size-7;
     font-weight: 400;
 }
-.lode__Property.lode__narrows {
+.lode__Property.lode__narrows,
+.lode__Property.lode__Narrows,
+.lode__Property.lode__Level,
+.lode__Property.lode__broadens,
+.lode__Property.lode__desires,
+.lode__Property.lode__requires,
+.lode__Property.lode__Broadens,
+.lode__Property.lode__is_enabled_by,
+.lode__Property.lode__is_related_to,
+.lode__Property.lode__is_equivalent_to {
+    padding-left: 3rem;
     .edit-button .icon {
         display: none;
         color: $link !important;
     }
-    .lode__name {
-        color: $link;
-    }
     .lode__thing {
+        .click-to-load {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            .thing-as-property__text {
+                width: 100%;
+            }
+            .competency-as-property {
+                cursor: pointer;
+                font-size: .9rem;
+                color: $text;
+                vertical-align: super;
+            }
+            .icon {
+                font-size: .6rem;
+            }
+            .button {
+                margin-left: 1rem;
+                visibility: hidden;
+            }
+        }
+        .click-to-load:hover .button {
+            visibility: visible;
+        }
+        
+        padding-left: 0rem;
         .comment-button {
             display: none;
         }
@@ -579,7 +611,7 @@ drag, drag, and chosen states
                 padding-left: 0rem !important; // related 
                 .lode__Property {
                     .field {
-                        padding-left: .5rem;
+                        padding-left: 0rem;
                     }
                 }
             }
@@ -687,8 +719,18 @@ drag, drag, and chosen states
 .lode__thing:hover {
     padding: .5rem;
     padding-right: 1rem;
-    .lode__Property.lode__name {
-        color: $primary;
+    .lode__Competency {
+        .lode__Property.lode__name{
+            color: $primary;
+        }
+        .lode__Property.lode__Broadens,
+        .lode__Property.lode__Narrows,
+        .lode__Property.lode__Equals
+        .lode__Property.lode__Similar,
+        .lode__Property.lode__Similar {
+            .lode__Property.lode__name {
+            }
+        }
     }
     .edit-button, .handle.fa-hand-paper {
         visibility: visible;
