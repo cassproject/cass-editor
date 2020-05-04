@@ -101,13 +101,15 @@ export default {
     methods: {
         goToFramework: function(framework) {
             if (this.framework.shortId() === framework.url) {
-                return goToCompetencyWithinThisFramework();
+                return this.goToCompetencyWithinThisFramework();
             }
             this.$store.commit('editor/framework', EcRepository.getBlocking(framework.url));
             this.$store.commit('app/closeModal');
         },
         goToCompetencyWithinThisFramework: function() {
             // Scroll to competency
+            this.$scrollTo("#scroll-" + this.dynamicModalContent.uri.split('/').pop());
+            this.$store.commit('app/closeModal');
         }
     },
     mounted() {
