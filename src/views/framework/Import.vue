@@ -772,17 +772,22 @@ export default {
                         me.$store.commit('app/addImportError', error);
                         me.$store.commit('app/importTransition', 'process');
                     }
-                }, function() {
-                    // If JSON-LD doesn't work, try JSON
-                    ASNImport.analyzeFile(file, function(data) {
-                        me.$store.commit('app/importFileType', 'asn');
-                        me.$store.commit('app/importStatus', "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.");
-                        me.$store.commit('app/importTransition', 'info');
-                        me.competencyCount = EcObject.keys(data).length;
-                    }, function(error) {
-                        me.$store.commit('app/addImportError', error);
+                }, function(failure) {
+                    if (file.name.endsWith(".json")) {
+                        // If JSON-LD doesn't work, try JSON
+                        ASNImport.analyzeFile(file, function(data) {
+                            me.$store.commit('app/importFileType', 'asn');
+                            me.$store.commit('app/importStatus', "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.");
+                            me.$store.commit('app/importTransition', 'info');
+                            me.competencyCount = EcObject.keys(data).length;
+                        }, function(error) {
+                            me.$store.commit('app/addImportError', error);
+                            me.$store.commit('app/importTransition', 'process');
+                        });
+                    } else {
+                        me.$store.commit('app/addImportError', failure);
                         me.$store.commit('app/importTransition', 'process');
-                    });
+                    }
                 });
             } else if (file.name.endsWith(".xml")) {
                 MedbiqImport.analyzeFile(file, function(data) {
