@@ -38,7 +38,7 @@
                     <textarea
                         v-model="commentText"
                         class="textarea"
-                        row="3"/>
+                        row="3" />
                 </div>
             </div>
             <div
@@ -57,7 +57,7 @@
                     Cancel
                 </button>
                 <button
-                    :disabled=commentIsBusy
+                    :disabled="commentIsBusy"
                     class="button is-outlined is-primary"
                     @click="saveComment">
                     Save comment
@@ -98,6 +98,7 @@ export default {
             commentObj.text = this.commentText;
             commentObj.addOwner(this.loggedInPersonEcPk);
             this.addAllOwnersFromObjectToObject(this.commentFramework, commentObj);
+            if (this.isCommentReply) this.addAllOwnersFromObjectToObject(this.commentToReply, commentObj);
             if (!this.isCommentOnFramework) this.addAllOwnersFromObjectToObject(this.commentSubject, commentObj);
             return commentObj;
         },

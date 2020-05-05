@@ -22,6 +22,8 @@
 </template>
 
 <script>
+import {mapState} from 'vuex';
+
 import common from '@/mixins/common.js';
 import cassModal from './components/CassModal.vue';
 import DynamicModal from './components/modals/DynamicModal.vue';
@@ -133,6 +135,9 @@ export default {
             ss.href = this.queryParams.css;
             document.getElementsByTagName("head")[0].appendChild(ss);
         }
+        /* if (!this.loggedInPerson) {
+            this.$router.push({name: 'login'});
+        }*/
     },
     methods: {
         onSidebarEvent: function() {
@@ -1068,7 +1073,10 @@ export default {
         currentPathIsLogin: function() {
             if (this.$route.name === 'login') return true;
             else return false;
-        }
+        },
+        ...mapState({
+            loggedInPerson: state => state.user.loggedInPerson
+        })
     },
     watch: {
         '$route'(to, from) {
@@ -1077,6 +1085,11 @@ export default {
                 this.navBarActive = false;
             }
         }
+        /* loggedInPerson: function(val) {
+            if (!val) {
+                this.$router.push({name: 'login'});
+            }
+        }*/
     }
 };
 </script>

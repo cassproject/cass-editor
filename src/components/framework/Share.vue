@@ -48,13 +48,14 @@
                 <div class="column is-12">
                     <label>Add users or groups</label>
                     <div class="field has-addons">
-                        <div class="control is-expanded">
+                        <div class="control is-expanded share auto-complete__control">
                             <input
+                                @blur="closeAutoComplete"
                                 type="text"
-                                class="input is-fullwidth"
+                                class="input share is-fullwidth is-small"
                                 v-model="search"
                                 @input="filterResults">
-                            <span class="auto-complete">
+                            <span class="auto-complete share">
                                 <ul v-show="isOpenAutocomplete">
                                     <li
                                         v-for="(result, i) in filtered"
@@ -66,7 +67,7 @@
                             </span>
                         </div>
                         <div class="control">
-                            <div class="select">
+                            <div class="select is-primary">
                                 <select v-model="selectViewOrAdmin">
                                     <option
                                         v-for="(option, index) in viewOptions"
@@ -76,6 +77,16 @@
                                     </option>
                                 </select>
                             </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div
+                            @click="saveSettings"
+                            class="button is-outlined is-primary">
+                            <span class="icon">
+                                <i class="fa fa-save" />
+                            </span>
+                            <span>Add Selected User/Group</span>
                         </div>
                     </div>
                 </div>
@@ -138,7 +149,7 @@
                                 <td>
                                     <select
                                         v-model="user.view"
-                                        @change="user.changed=true">
+                                        @change="user.changed=true;saveSettings()">
                                         <option
                                             :value="option.value"
                                             v-for="option in viewOptions"
@@ -163,21 +174,12 @@
             </div>
         </section>
         <footer class="modal-card-foot">
-            <div class="columns is-12">
-                <div class="column is-12">
-                    <button
-                        class="button is-left is-light"
-                        @click="$store.commit('app/closeModal')">
-                        Cancel
-                    </button>
-                </div>
-                <div class="column is-12">
-                    <button
-                        class="button is-fullwidth is-success"
-                        @click="saveSettings">
-                        Save Framework Settings
-                    </button>
-                </div>
+            <div class="buttons is-spaced">
+                <button
+                    class="button is-dark is-outlined"
+                    @click="$store.commit('app/closeModal')">
+                    Done managing framework share settings
+                </button>
             </div>
         </footer>
     </div>
@@ -234,6 +236,9 @@ export default {
         this.getPossibleOwnersAndReaders();
     },
     methods: {
+        closeAutoComplete: function() {
+            this.isOpenAutocomplete = false;
+        },
         successfulClip({value, event}) {
             console.log('success', value);
             this.clipStatus = 'success';
@@ -255,14 +260,18 @@ export default {
                     var pk = EcPk.fromPem(this.framework.owner[i]);
                     EcPerson.getByPk(window.repo, pk, function(success) {
                         console.log(success);
-                        var user = {header: success.name, view: "admin", id: success.shortId(), changed: false, pk: pk};
-                        me.users.push(user);
+                        if (success) {
+                            var user = {header: success.name, view: "admin", id: success.shortId(), changed: false, pk: pk};
+                            me.users.push(user);
+                        }
                     }, function(failure) {
                         // If it's not a Person, check organizations
-                        this.getOrganizationByEcPk(pk, function(success) {
+                        me.getOrganizationByEcPk(pk, function(success) {
                             console.log(success);
-                            var org = {header: success.name, view: "admin", id: success.shortId(), changed: false, pk: pk};
-                            me.groups.push(org);
+                            if (success) {
+                                var org = {header: success.name, view: "admin", id: success.shortId(), changed: false, pk: pk};
+                                me.groups.push(org);
+                            }
                         }, function(error) {
                             console.error(error);
                         });
@@ -274,14 +283,18 @@ export default {
                     var pk = EcPk.fromPem(this.framework.reader[i]);
                     EcPerson.getByPk(window.repo, pk, function(success) {
                         console.log(success);
-                        var user = {header: success.name, view: "view", id: success.shortId(), changed: false, pk: pk};
-                        me.users.push(user);
+                        if (success) {
+                            var user = {header: success.name, view: "view", id: success.shortId(), changed: false, pk: pk};
+                            me.users.push(user);
+                        }
                     }, function(failure) {
                         // If it's not a Person, check organizations
-                        this.getOrganizationByEcPk(pk, function(success) {
+                        me.getOrganizationByEcPk(pk, function(success) {
                             console.log(success);
-                            var org = {header: success.name, view: "view", id: success.shortId(), changed: false, pk: pk};
-                            me.groups.push(org);
+                            if (success) {
+                                var org = {header: success.name, view: "view", id: success.shortId(), changed: false, pk: pk};
+                                me.groups.push(org);
+                            }
                         }, function(error) {
                             console.error(error);
                         });
@@ -400,6 +413,8 @@ export default {
                         me.addAndRemoveFromFrameworkObject();
                     }
                 });
+            } else {
+                me.addAndRemoveFromFrameworkObject();
             }
         },
         addAndRemoveFromFrameworkObject: function() {
@@ -418,7 +433,8 @@ export default {
                 f.addOwner(me.addOwner[i]);
             }
             me.repo.saveTo(f, function() {
-                me.$emit('closeShareModalEvent');
+                me.resetVariables();
+                me.getCurrentOwnersAndReaders();
             }, function() {});
         },
         removeOwnerOrReader: function(userOrGroup, type) {
@@ -427,11 +443,18 @@ export default {
             } else if (userOrGroup.view === "admin") {
                 this.removeOwner.push(userOrGroup.pk);
             }
-            if (type === "user") {
-                EcArray.setRemove(this.users, userOrGroup);
-            } else if (type === "group") {
-                EcArray.setRemove(this.groups, userOrGroup);
-            }
+            this.saveSettings();
+        },
+        resetVariables: function() {
+            var me = this;
+            me.users.splice(0, me.users.length);
+            me.groups.splice(0, me.groups.length);
+            me.removeOwner.splice(0, me.removeOwner.length);
+            me.removeReader.splice(0, me.removeReader.length);
+            me.addOwner.splice(0, me.addOwner.length);
+            me.addReader.splice(0, me.addReader.length);
+            me.userOrGroupToAdd = null;
+            me.search = "";
         }
     }
 };
