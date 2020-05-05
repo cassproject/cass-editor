@@ -234,6 +234,9 @@ export default {
         currentFramework: function() {
             return this.$store.getters['editor/framework'];
         },
+        currentFrameworkCompetencies: function() {
+            return this.$store.getters['editor/framework'].competency;
+        },
         frameworkCommentList: function() {
             return this.$store.getters['editor/frameworkCommentList'];
         },
@@ -242,8 +245,10 @@ export default {
         }
     },
     watch: {
+        currentFrameworkCompetencies: function() {
+            this.parseComments();
+        },
         frameworkCommentList: function() {
-            // console.log("frameworkCommentList changed!!!!");
             this.parseComments();
         }
     },
