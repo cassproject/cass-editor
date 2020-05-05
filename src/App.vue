@@ -135,9 +135,9 @@ export default {
             ss.href = this.queryParams.css;
             document.getElementsByTagName("head")[0].appendChild(ss);
         }
-        if (!this.loggedInPerson) {
+        /* if (!this.loggedInPerson) {
             this.$router.push({name: 'login'});
-        }
+        }*/
     },
     methods: {
         onSidebarEvent: function() {
@@ -1084,12 +1084,12 @@ export default {
             if (navigationTo) {
                 this.navBarActive = false;
             }
-        },
-        loggedInPerson: function(val) {
+        }
+        /* loggedInPerson: function(val) {
             if (!val) {
                 this.$router.push({name: 'login'});
             }
-        }
+        }*/
     }
 };
 </script>
