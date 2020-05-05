@@ -232,9 +232,11 @@
 
                 <Hierarchy
                     :class="{'is-hidden': !hierarchyIsdoneLoading}"
+                    view="import"
                     v-if="importFramework"
                     @doneLoadingNodes="handleDoneLoading"
                     @searchThings="handleSearch($event)"
+                    @editMultipleEvent="onEditMultiple"
                     :container="importFramework"
                     containerType="Framework"
                     containerNodeProperty="competency"
@@ -249,6 +251,7 @@
                     edgeSourceProperty="source"
                     edgeTargetProperty="target"
                     :repo="repo"
+                    @selectedArray="selectedArrayEvent"
                     :newFramework="true"
                     @deleteObject="deleteObject" />
             </div>
@@ -267,6 +270,7 @@
                     iframeText="Attach subitems from other sources to the selected item." />
                 <Hierarchy
                     v-if="importFramework"
+                    view="import"
                     :container="importFramework"
                     containerType="Framework"
                     containerNodeProperty="competency"
@@ -338,6 +342,7 @@ export default {
             relationCount: 0,
             caseDocs: [],
             caseCancel: false,
+            selectedArray: [],
             frameworkExportOptions: [
                 {name: "Achievement Standards Network (RDF+JSON)", value: "asn"},
                 {name: "CASS (JSON-LD)", value: "jsonld"},
@@ -550,6 +555,18 @@ export default {
         this.spitEvent('viewChanged');
     },
     methods: {
+        selectedArrayEvent: function(ary) {
+            this.selectedArray = ary;
+        },
+        onEditMultiple: function() {
+            this.showEditMultiple = true;
+            var payload = {
+                profile: this.t3CompetencyProfile,
+                selectedCompetencies: this.selectedArray,
+                component: 'MultiEdit'
+            };
+            this.$store.commit('app/showModal', payload);
+        },
         handleSearch: function(e) {
             this.$store.commit('app/showModal', e);
         },
