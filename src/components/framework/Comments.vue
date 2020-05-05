@@ -1,7 +1,5 @@
 <!--
     This template is used to show the comments by framework
-    It uses the Comment.vue templae to serve comments
-    in a recursive manner for nested comments, much like Hierarchy.Node does
     This is controlled by an event sent from the EditorToolbar.vue template
     which triggers Framework.vue to open this component.
 -->
@@ -234,6 +232,9 @@ export default {
         currentFramework: function() {
             return this.$store.getters['editor/framework'];
         },
+        currentFrameworkCompetencies: function() {
+            return this.$store.getters['editor/framework'].competency;
+        },
         frameworkCommentList: function() {
             return this.$store.getters['editor/frameworkCommentList'];
         },
@@ -242,8 +243,10 @@ export default {
         }
     },
     watch: {
+        currentFrameworkCompetencies: function() {
+            this.parseComments();
+        },
         frameworkCommentList: function() {
-            // console.log("frameworkCommentList changed!!!!");
             this.parseComments();
         }
     },

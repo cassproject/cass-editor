@@ -26,7 +26,9 @@ const state = {
     commentToReply: {},
     frameworkCommentDataLoaded: false,
     frameworkCommentList: [],
-    frameworkCommentPersonMap: {}
+    frameworkCommentPersonMap: {},
+    commentsToDelete: [],
+    commentScrollTo: {}
 };
 const mutations = {
     framework(state, f) {
@@ -86,6 +88,9 @@ const mutations = {
     setCommentToReply(state, val) {
         state.commentToReply = val;
     },
+    setCommentsToDelete(state, val) {
+        state.commentsToDelete = val;
+    },
     clearFrameworkCommentData(state) {
         state.frameworkCommentDataLoaded = false;
         state.frameworkCommentList = [];
@@ -99,6 +104,9 @@ const mutations = {
     },
     setFrameworkCommentPersonMap(state, val) {
         state.frameworkCommentPersonMap = val;
+    },
+    setCommentScrollTo(state, val) {
+        state.commentScrollTo = val;
     }
 };
 const actions = {
@@ -153,6 +161,9 @@ const getters = {
     commentToReply: function(state) {
         return state.commentToReply;
     },
+    commentsToDelete: function(state) {
+        return state.commentsToDelete;
+    },
     frameworkCommentDataLoaded: function(state) {
         return state.frameworkCommentDataLoaded;
     },
@@ -161,6 +172,9 @@ const getters = {
     },
     frameworkCommentPersonMap: function(state) {
         return state.frameworkCommentPersonMap;
+    },
+    commentScrollTo: function(state) {
+        return state.commentScrollTo;
     }
 };
 
