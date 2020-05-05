@@ -8,7 +8,8 @@
             </li>
             <li
                 class="comment-list__about"
-                :title="comment.aboutId">
+                :title="comment.aboutId"
+                @click="setUpScroll">
                 {{ comment.aboutName }}
             </li>
             <li class="comment-list__message">
@@ -139,7 +140,10 @@ export default {
         };
     },
     methods: {
-
+        setUpScroll: function() {
+            let scrollObj = {ts: Date.now(), scrollId: '#scroll-' + this.comment.aboutId.split('/').pop()};
+            this.$store.commit('editor/setCommentScrollTo', scrollObj);
+        },
         handleClickReply: function() {
             this.$store.commit('editor/setAddCommentAboutId', this.comment.aboutId);
             this.$store.commit('editor/setAddCommentType', 'reply');

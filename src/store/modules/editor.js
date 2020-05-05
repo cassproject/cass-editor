@@ -27,7 +27,8 @@ const state = {
     frameworkCommentDataLoaded: false,
     frameworkCommentList: [],
     frameworkCommentPersonMap: {},
-    commentsToDelete: []
+    commentsToDelete: [],
+    commentScrollTo: {}
 };
 const mutations = {
     framework(state, f) {
@@ -103,6 +104,9 @@ const mutations = {
     },
     setFrameworkCommentPersonMap(state, val) {
         state.frameworkCommentPersonMap = val;
+    },
+    setCommentScrollTo(state, val) {
+        state.commentScrollTo = val;
     }
 };
 const actions = {
@@ -168,6 +172,9 @@ const getters = {
     },
     frameworkCommentPersonMap: function(state) {
         return state.frameworkCommentPersonMap;
+    },
+    commentScrollTo: function(state) {
+        return state.commentScrollTo;
     }
 };
 

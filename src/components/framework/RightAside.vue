@@ -68,6 +68,7 @@ export default {
                 font-size: .8rem;
                 font-weight: 600;
                 font-style: italic;
+                cursor: pointer;
             }
             .comment-list__message {
                 font-size: .7rem;
