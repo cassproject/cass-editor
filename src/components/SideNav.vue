@@ -55,7 +55,6 @@
             </li>
             <!-- hidding this for now -->
             <li
-                v-if="false"
                 class="has-text-white">
                 <router-link to="/crosswalk">
                     Crosswalk Frameworks

@@ -297,6 +297,11 @@ export default {
     };
     .crosswalk__double-hierarchy {
         height: 80vh;
+        .lode__hierarchy-item {
+                margin: .25rem 0rem !important;
+                border: solid 1px blue;
+            }
+        
         .columns {
             height: 100%;
             margin: .25rem;
@@ -306,7 +311,14 @@ export default {
             padding: 2rem;
             overflow: scroll;
             height: 100%;
+            .crosswalk-buttons {
+                position:absolute;
+                right: 0rem;
+                width: 100px;
+            }
         }
     }
+    
+    
 }
 </style>
