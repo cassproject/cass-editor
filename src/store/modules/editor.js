@@ -26,7 +26,8 @@ const state = {
     commentToReply: {},
     frameworkCommentDataLoaded: false,
     frameworkCommentList: [],
-    frameworkCommentPersonMap: {}
+    frameworkCommentPersonMap: {},
+    commentsToDelete: []
 };
 const mutations = {
     framework(state, f) {
@@ -85,6 +86,9 @@ const mutations = {
     },
     setCommentToReply(state, val) {
         state.commentToReply = val;
+    },
+    setCommentsToDelete(state, val) {
+        state.commentsToDelete = val;
     },
     clearFrameworkCommentData(state) {
         state.frameworkCommentDataLoaded = false;
@@ -152,6 +156,9 @@ const getters = {
     },
     commentToReply: function(state) {
         return state.commentToReply;
+    },
+    commentsToDelete: function(state) {
+        return state.commentsToDelete;
     },
     frameworkCommentDataLoaded: function(state) {
         return state.frameworkCommentDataLoaded;

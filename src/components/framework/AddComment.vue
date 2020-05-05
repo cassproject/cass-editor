@@ -98,6 +98,7 @@ export default {
             commentObj.text = this.commentText;
             commentObj.addOwner(this.loggedInPersonEcPk);
             this.addAllOwnersFromObjectToObject(this.commentFramework, commentObj);
+            if (this.isCommentReply) this.addAllOwnersFromObjectToObject(this.commentToReply, commentObj);
             if (!this.isCommentOnFramework) this.addAllOwnersFromObjectToObject(this.commentSubject, commentObj);
             return commentObj;
         },
