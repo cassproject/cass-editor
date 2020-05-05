@@ -110,10 +110,6 @@
                     </div>
                 </ul>
             </li>
-            <!-- can make this recursive for nested components
-                don't turn on until you have a way to end the loop or else
-                infinite but you probably know that... :)-->
-            <Comment v-if="false" />
         </ul>
     </div>
 </template>
