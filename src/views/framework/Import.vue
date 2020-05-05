@@ -234,6 +234,7 @@
                     :class="{'is-hidden': !hierarchyIsdoneLoading}"
                     v-if="importFramework"
                     @doneLoadingNodes="handleDoneLoading"
+                    @searchThings="handleSearch($event)"
                     :container="importFramework"
                     containerType="Framework"
                     containerNodeProperty="competency"
@@ -548,6 +549,9 @@ export default {
         this.spitEvent('viewChanged');
     },
     methods: {
+        handleSearch: function(e) {
+            this.$store.commit('app/showModal', e);
+        },
         handleImportFromTabs: function(e) {
             this.caseDocs = e;
             this.importCase();
