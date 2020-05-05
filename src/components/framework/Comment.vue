@@ -1,10 +1,14 @@
 <template>
     <div>
         <ul class="comment-list">
-            <li class="comment-list__user" :title="comment.creatorEmail">
+            <li
+                class="comment-list__user"
+                :title="comment.creatorEmail">
                 {{ comment.creatorName }}
             </li>
-            <li class="comment-list__about" :title="comment.aboutId">
+            <li
+                class="comment-list__about"
+                :title="comment.aboutId">
                 {{ comment.aboutName }}
             </li>
             <li class="comment-list__message">
@@ -55,7 +59,9 @@
                         <li class="comment-list__reply_hr">
                             <hr>
                         </li>
-                        <li class="comment-list__user" :title="reply.creatorEmail">
+                        <li
+                            class="comment-list__user"
+                            :title="reply.creatorEmail">
                             {{ reply.creatorName }}
                         </li>
                         <li class="comment-list__message">
