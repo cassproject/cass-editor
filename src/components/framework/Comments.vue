@@ -27,7 +27,7 @@
                 v-if="commentWrapperList.length <= 0"
                 class="has-text-centered">
                 <span class="has-text-center">
-                    <p><i class="fa fa-exclamation-circle"/> No comments available</p>
+                    <p><i class="fa fa-exclamation-circle" /> No comments available</p>
                 </span>
             </div>
             <div v-if="commentWrapperList.length > 0">
@@ -35,7 +35,7 @@
                     v-for="commentWrapper in commentWrapperList"
                     :comment="commentWrapper"
                     :canReply="canReplyToComments"
-                    :key="commentWrapper"/>
+                    :key="commentWrapper" />
             </div>
         </div>
     </aside>

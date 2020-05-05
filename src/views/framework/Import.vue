@@ -56,7 +56,8 @@
                         CaSS has detected a framework!
                     </span>
                     <br><br>
-                    Please review the competency framework and file details gathered below. To continue with the input of this competency framework, press Accept Details & Review. To cancel and review or change your input file, press cancel.                </p>
+                    Please review the competency framework and file details gathered below. To continue with the input of this competency framework, press Accept Details & Review. To cancel and review or change your input file, press cancel.
+                </p>
                 <p
                     v-if="importTransition === 'preview'"
                     class="">

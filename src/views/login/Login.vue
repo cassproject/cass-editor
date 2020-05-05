@@ -54,7 +54,7 @@
                                     class="input"
                                     v-model="password"
                                     placeholder="password"
-                                    v-on:keyup.enter="attemptCassLogin">
+                                    @keyup.enter="attemptCassLogin">
                             </div>
                         </div>
                         <div v-if="identityFetchFailed">

@@ -38,7 +38,7 @@
                     <textarea
                         v-model="commentText"
                         class="textarea"
-                        row="3"/>
+                        row="3" />
                 </div>
             </div>
             <div
@@ -57,7 +57,7 @@
                     Cancel
                 </button>
                 <button
-                    :disabled=commentIsBusy
+                    :disabled="commentIsBusy"
                     class="button is-outlined is-primary"
                     @click="saveComment">
                     Save comment
