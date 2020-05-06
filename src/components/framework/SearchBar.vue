@@ -5,7 +5,7 @@
                 <input
                     class="input is-large"
                     ref="text"
-                    :placeholder="'Search for '+type+'s...'"
+                    :placeholder="'Search for ' + (searchType === 'competency' ? 'competencie' : searchType)+ 's...'"
                     @change="updateSearchTerm($event)"
                     @keyup.enter="updateSearchTerm($event)">
                 <span
