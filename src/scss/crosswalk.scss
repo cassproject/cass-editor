@@ -94,6 +94,12 @@
                             }
                         }
                     }
+                    .is-selected-competency-source.lode__hierarchy-item {
+                        background-color: $light;
+                        .crosswalk-buttons {
+                            visibility: visible;
+                        }
+                    }
                     .lode__hierarchy-item:hover {
                         background-color: $light;
                         .crosswalk-buttons {

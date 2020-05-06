@@ -5,31 +5,52 @@ Vue.use(Vuex);
 
 const state = {
     step: 0,
-    frameworkA: null,
-    frameworkB: null
+    frameworkSource: null,
+    frameworkTarget: null,
+    competencySource: null,
+    alignmentType: '',
+    competencyTarget: []
 
 
 };
 const mutations = {
-    frameworkA(state, f) {
-        state.frameworkA = f;
+    frameworkSource(state, f) {
+        state.frameworkSource = f;
     },
-    frameworkB(state, f) {
-        state.frameworkB = f;
+    frameworkTarget(state, f) {
+        state.frameworkTarget = f;
     },
     step(state, val) {
         state.step = val;
+    },
+    competencySource(state, c) {
+        state.competencySource = c;
+    },
+    competencyTarget(state, c) {
+        state.competencyTarget.push(c);
+    },
+    alignmentType(state, a) {
+        state.alignmentType = a;
     }
 };
 const actions = {
 
 };
 const getters = {
-    frameworkA: function(state) {
-        return state.frameworkA;
+    frameworkSource: function(state) {
+        return state.frameworkSource;
     },
-    frameworkB: function(state) {
-        return state.frameworkB;
+    frameworkTarget: function(state) {
+        return state.frameworkTarget;
+    },
+    competencySource(state, c) {
+        return state.competencySource;
+    },
+    competencyTarget(state, c) {
+        return state.competencyTarget;
+    },
+    alignmentType(state, a) {
+        return state.alignmentType;
     }
 };
 

@@ -58,7 +58,7 @@
                             <List
                                 :type="type"
                                 :repo="repo"
-                                :click="frameworkClickA"
+                                :click="frameworkClickSource"
                                 :searchOptions="searchOptions"
                                 :paramObj="paramObj"
                                 :disallowEdits="true" />
@@ -76,7 +76,7 @@
                             <List
                                 :type="type"
                                 :repo="repo"
-                                :click="frameworkClickB"
+                                :click="frameworkClickTarget"
                                 :searchOptions="searchOptions"
                                 :paramObj="paramObj"
                                 :disallowEdits="true" />
@@ -94,7 +94,7 @@
                                 <div class="crosswalk__single-hierarchy__buttons">
                                     <div class="buttons">
                                         <div
-                                            @click="filterHierarchy('showAligned', 'a', frameworkA)"
+                                            @click="filterHierarchy('showAligned', 'source', frameworkSource)"
                                             class="button is-small is-outlined is-primary"
                                             :class="{'is-focused': filter.a === 'showAligned'}">
                                             <span class="icon">
@@ -102,7 +102,7 @@
                                             </span><span>show aligned</span>
                                         </div>
                                         <div
-                                            @click="filterHierarchy('showUnaligned', 'a', frameworkA)"
+                                            @click="filterHierarchy('showUnaligned', 'source', frameworkSource)"
                                             class="button is-small is-outlined is-primary"
                                             :class="{'is-focused': filter.a === 'showUnaligned'}">
                                             <span class="icon">
@@ -110,7 +110,7 @@
                                             </span><span>show unaligned</span>
                                         </div>
                                         <div
-                                            @click="filterHierarchy('showAll', 'a', frameworkA)"
+                                            @click="filterHierarchy('showAll', 'source', frameworkSource)"
                                             class="button is-outlined is-small is-primary"
                                             :class="{'is-focused': filter.a === 'showAll'}">
                                             <span class="icon">
@@ -120,8 +120,9 @@
                                     </div>
                                 </div>
                                 <Hierarchy
-                                    :container="frameworkA"
+                                    :container="frameworkSource"
                                     view="crosswalk"
+                                    subview="crosswalkSource"
                                     containerType="Framework"
                                     containerTypeGet="EcFramework"
                                     containerNodeProperty="competency"
@@ -144,7 +145,7 @@
                                 <div class="crosswalk__single-hierarchy__buttons">
                                     <div class="buttons">
                                         <div
-                                            @click="filterHierarchy('showAligned', 'b', frameworkB)"
+                                            @click="filterHierarchy('showAligned', 'target', frameworkTarget)"
                                             class="button is-small is-outlined is-primary"
                                             :class="{'is-focused': filter.b === 'showAligned'}">
                                             <span class="icon">
@@ -152,7 +153,7 @@
                                             </span><span>show aligned</span>
                                         </div>
                                         <div
-                                            @click="filterHierarchy('showUnaligned', 'b', frameworkB)"
+                                            @click="filterHierarchy('showUnaligned', 'target', frameworkTarget)"
                                             class="button is-small is-outlined is-primary"
                                             :class="{'is-focused': filter.b === 'showUnaligned'}">
                                             <span class="icon">
@@ -160,7 +161,7 @@
                                             </span><span>show unaligned</span>
                                         </div>
                                         <div
-                                            @click="filterHierarchy('showAlll', 'b', frameworkB)"
+                                            @click="filterHierarchy('showAlll', 'target', frameworkTarget)"
                                             class="button is-outlined is-small is-primary"
                                             :class="{'is-focused': filter.b === 'showAll'}">
                                             <span class="icon">
@@ -170,8 +171,9 @@
                                     </div>
                                 </div>
                                 <Hierarchy
-                                    :container="frameworkB"
+                                    :container="frameworkTarget"
                                     view="crosswalk"
+                                    subview="crosswalkTarget"
                                     containerType="Framework"
                                     containerTypeGet="EcFramework"
                                     containerNodeProperty="competency"
@@ -210,8 +212,8 @@ export default {
     data: () => ({
         repo: window.repo,
         filter: {
-            a: 'showAll',
-            b: 'showAll'
+            source: 'showAll',
+            target: 'showAll'
         },
         steps: [
             {
@@ -249,6 +251,9 @@ export default {
         this.$store.commit('crosswalk/step', 0);
     },
     watch: {
+        competencyTarget: function(val) {
+            console.log("val is: ", val);
+        },
         step: function(val) {
             console.log("step, ", val);
             console.log("steps, ", this.steps);
@@ -334,8 +339,11 @@ export default {
             filteredQuickFilters: state => state.app.filteredQuickFilters,
             frameworkSearchTerm: state => state.app.frameworkSearchTerm,
             showRightAside: state => state.app.showRightAside,
-            frameworkA: state => state.crosswalk.frameworkA,
-            frameworkB: state => state.crosswalk.frameworkB
+            frameworkSource: state => state.crosswalk.frameworkSource,
+            frameworkTarget: state => state.crosswalk.frameworkTarget,
+            competencySource: state => state.crosswalk.competencySource,
+            competencyTarget: state => state.crosswalk.competencyTarget,
+            alignmentType: state => state.crosswalk.alignmentType
         })
     },
     methods: {
@@ -344,20 +352,20 @@ export default {
             alert("To do: " + typeOfFilter + val + framework);
             this.filter[val] = typeOfFilter;
         },
-        frameworkClickA: function(framework) {
+        frameworkClickSource: function(framework) {
             var me = this;
             /* Should we exclude framework A from framework B options */
             EcFramework.get(framework.id, function(success) {
-                me.$store.commit('crosswalk/frameworkA', success);
+                me.$store.commit('crosswalk/frameworkSource', success);
                 me.$store.commit('crosswalk/step', 1);
             }, console.error);
             this.$store.commit('app/searchTerm', '');
         },
-        frameworkClickB: function(framework) {
+        frameworkClickTarget: function(framework) {
             var me = this;
             /* Should we exclude framework A from framework B options */
             EcFramework.get(framework.id, function(success) {
-                me.$store.commit('crosswalk/frameworkB', success);
+                me.$store.commit('crosswalk/frameworkTarget', success);
                 me.$store.commit('crosswalk/step', 2);
             }, console.error);
             this.$store.commit('app/searchTerm', '');
