@@ -149,7 +149,7 @@
                                 <td>
                                     <select
                                         v-model="user.view"
-                                        @change="user.changed=true">
+                                        @change="user.changed=true;saveSettings()">
                                         <option
                                             :value="option.value"
                                             v-for="option in viewOptions"
@@ -260,14 +260,18 @@ export default {
                     var pk = EcPk.fromPem(this.framework.owner[i]);
                     EcPerson.getByPk(window.repo, pk, function(success) {
                         console.log(success);
-                        var user = {header: success.name, view: "admin", id: success.shortId(), changed: false, pk: pk};
-                        me.users.push(user);
+                        if (success) {
+                            var user = {header: success.name, view: "admin", id: success.shortId(), changed: false, pk: pk};
+                            me.users.push(user);
+                        }
                     }, function(failure) {
                         // If it's not a Person, check organizations
-                        this.getOrganizationByEcPk(pk, function(success) {
+                        me.getOrganizationByEcPk(pk, function(success) {
                             console.log(success);
-                            var org = {header: success.name, view: "admin", id: success.shortId(), changed: false, pk: pk};
-                            me.groups.push(org);
+                            if (success) {
+                                var org = {header: success.name, view: "admin", id: success.shortId(), changed: false, pk: pk};
+                                me.groups.push(org);
+                            }
                         }, function(error) {
                             console.error(error);
                         });
@@ -279,14 +283,18 @@ export default {
                     var pk = EcPk.fromPem(this.framework.reader[i]);
                     EcPerson.getByPk(window.repo, pk, function(success) {
                         console.log(success);
-                        var user = {header: success.name, view: "view", id: success.shortId(), changed: false, pk: pk};
-                        me.users.push(user);
+                        if (success) {
+                            var user = {header: success.name, view: "view", id: success.shortId(), changed: false, pk: pk};
+                            me.users.push(user);
+                        }
                     }, function(failure) {
                         // If it's not a Person, check organizations
-                        this.getOrganizationByEcPk(pk, function(success) {
+                        me.getOrganizationByEcPk(pk, function(success) {
                             console.log(success);
-                            var org = {header: success.name, view: "view", id: success.shortId(), changed: false, pk: pk};
-                            me.groups.push(org);
+                            if (success) {
+                                var org = {header: success.name, view: "view", id: success.shortId(), changed: false, pk: pk};
+                                me.groups.push(org);
+                            }
                         }, function(error) {
                             console.error(error);
                         });
@@ -405,6 +413,8 @@ export default {
                         me.addAndRemoveFromFrameworkObject();
                     }
                 });
+            } else {
+                me.addAndRemoveFromFrameworkObject();
             }
         },
         addAndRemoveFromFrameworkObject: function() {
@@ -423,7 +433,8 @@ export default {
                 f.addOwner(me.addOwner[i]);
             }
             me.repo.saveTo(f, function() {
-                me.$emit('closeShareModalEvent');
+                me.resetVariables();
+                me.getCurrentOwnersAndReaders();
             }, function() {});
         },
         removeOwnerOrReader: function(userOrGroup, type) {
@@ -432,11 +443,18 @@ export default {
             } else if (userOrGroup.view === "admin") {
                 this.removeOwner.push(userOrGroup.pk);
             }
-            if (type === "user") {
-                EcArray.setRemove(this.users, userOrGroup);
-            } else if (type === "group") {
-                EcArray.setRemove(this.groups, userOrGroup);
-            }
+            this.saveSettings();
+        },
+        resetVariables: function() {
+            var me = this;
+            me.users.splice(0, me.users.length);
+            me.groups.splice(0, me.groups.length);
+            me.removeOwner.splice(0, me.removeOwner.length);
+            me.removeReader.splice(0, me.removeReader.length);
+            me.addOwner.splice(0, me.addOwner.length);
+            me.addReader.splice(0, me.addReader.length);
+            me.userOrGroupToAdd = null;
+            me.search = "";
         }
     }
 };

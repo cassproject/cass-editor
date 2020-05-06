@@ -223,7 +223,7 @@
                     @editNodeEvent="onEditNode"
                     @doneEditingNodeEvent="onDoneEditingNode"
                     :class="{'is-hidden': !hierarchyIsdoneLoading}"
-                    :obj="importFramework"
+                    :obj="changedObj ? changedObj : importFramework"
                     :repo="repo"
                     class="framework-title"
                     :profile="t3FrameworkProfile"
@@ -232,8 +232,11 @@
 
                 <Hierarchy
                     :class="{'is-hidden': !hierarchyIsdoneLoading}"
+                    view="import"
                     v-if="importFramework"
                     @doneLoadingNodes="handleDoneLoading"
+                    @searchThings="handleSearch($event)"
+                    @editMultipleEvent="onEditMultiple"
                     :container="importFramework"
                     containerType="Framework"
                     containerNodeProperty="competency"
@@ -248,6 +251,7 @@
                     edgeSourceProperty="source"
                     edgeTargetProperty="target"
                     :repo="repo"
+                    @selectedArray="selectedArrayEvent"
                     :newFramework="true"
                     @deleteObject="deleteObject" />
             </div>
@@ -258,7 +262,8 @@
                 <Component
                     :is="dynamicThing"
                     :editingNode="editingNode"
-                    :obj="importFramework"
+                    @doneEditingNodeEvent="onDoneEditingNode"
+                    :obj="changedObj ? changedObj : importFramework"
                     :parentNotEditable="true"
                     class="framework-title"
                     :profile="t3FrameworkProfile"
@@ -266,6 +271,7 @@
                     iframeText="Attach subitems from other sources to the selected item." />
                 <Hierarchy
                     v-if="importFramework"
+                    view="import"
                     :container="importFramework"
                     containerType="Framework"
                     containerNodeProperty="competency"
@@ -337,6 +343,7 @@ export default {
             relationCount: 0,
             caseDocs: [],
             caseCancel: false,
+            selectedArray: [],
             frameworkExportOptions: [
                 {name: "Achievement Standards Network (RDF+JSON)", value: "asn"},
                 {name: "CASS (JSON-LD)", value: "jsonld"},
@@ -348,7 +355,8 @@ export default {
                 {name: "Credential Engine ASN (CSV)", value: "ctdlasnCsv"},
                 {name: "Table (CSV)", value: "csv"},
                 {name: "IMS Global CASE (JSON)", value: "case"}
-            ]
+            ],
+            changedObj: null
         };
     },
     computed: {
@@ -534,6 +542,7 @@ export default {
                     }
                     me.$nextTick(function() {
                         me.$store.commit('app/importFramework', f);
+                        me.$store.commit('editor/framework', f);
                     });
                 }, function(status) {
                     me.$store.commit('app/importStatus', status);
@@ -548,6 +557,21 @@ export default {
         this.spitEvent('viewChanged');
     },
     methods: {
+        selectedArrayEvent: function(ary) {
+            this.selectedArray = ary;
+        },
+        onEditMultiple: function() {
+            this.showEditMultiple = true;
+            var payload = {
+                profile: this.t3CompetencyProfile,
+                selectedCompetencies: this.selectedArray,
+                component: 'MultiEdit'
+            };
+            this.$store.commit('app/showModal', payload);
+        },
+        handleSearch: function(e) {
+            this.$store.commit('app/showModal', e);
+        },
         handleImportFromTabs: function(e) {
             this.caseDocs = e;
             this.importCase();
@@ -556,6 +580,7 @@ export default {
             this.editingNode = true;
         },
         onDoneEditingNode: function() {
+            this.changedObj = EcRepository.getBlocking(this.importFramework.shortId());
             this.editingNode = false;
         },
         handleDoneLoading: function() {
@@ -922,6 +947,7 @@ export default {
                         me.analyzeImportFile();
                     } else {
                         me.$store.commit('app/importFramework', f);
+                        me.$store.commit('editor/framework', f);
                         me.importSuccess();
                         me.spitEvent("importFinished", f.shortId(), "importPage");
                     }
@@ -951,6 +977,7 @@ export default {
                     me.analyzeImportFile();
                 } else {
                     me.$store.commit('app/importFramework', f);
+                    me.$store.commit('editor/framework', f);
                     me.importSuccess();
                     me.spitEvent("importFinished", f.shortId(), "importPage");
                 }
@@ -983,6 +1010,7 @@ export default {
                 me.repo.multiput(all, function() {
                     for (var i = 0; i < frameworks.length; i++) {
                         me.$store.commit('app/importFramework', frameworks[i]);
+                        me.$store.commit('editor/framework', frameworks[i]);
                         me.importSuccess();
                         me.spitEvent("importFinished", frameworks[i].shortId(), "importPage");
                     }
@@ -1185,6 +1213,7 @@ export default {
                             me.analyzeImportFile();
                         } else {
                             me.$store.commit('app/importFramework', f);
+                            me.$store.commit('editor/framework', f);
                             me.importSuccess();
                             me.spitEvent("importFinished", f.shortId(), "importPage");
                         }
@@ -1233,6 +1262,7 @@ export default {
                     framework = EcFramework.getBlocking(data);
                     me.$store.commit('app/importFramework', framework);
                 }
+                me.$store.commit('editor/framework', framework);
                 me.spitEvent("importFinished", framework.shortId(), "importPage");
                 if (me.importFile != null) {
                     me.importFile.splice(0, 1);
@@ -1242,9 +1272,6 @@ export default {
                     me.analyzeImportFile();
                 } else {
                     me.importSuccess();
-                    if (me.queryParams.concepts !== "true") {
-                        me.$store.commit('app/importFramework', framework);
-                    }
                 }
             }, function(failure) {
                 me.$store.commit('app/importTransition', 'process');
@@ -1404,6 +1431,7 @@ export default {
                         me.caseDocs[firstIndex].success = true;
                         EcFramework.get(id, function(f) {
                             me.$store.commit('app/importFramework', f);
+                            me.$store.commit('editor/framework', framework);
                             me.spitEvent("importFinished", f.shortId(), "importPage");
                         }, console.error);
                         me.importCase();
