@@ -16,7 +16,7 @@
                                     <div class="step-icon__wrapper has-text-centered">
                                         <div
                                             class="step-icon icon is-large has-text-white"
-                                            :class="[{'has-background-primary': step.complete === false}, { 'has-background-success': step.complete}]">
+                                            :class="[{'has-background-grey': step.complete === false}, { 'has-background-success': step.complete}]">
                                             <h3
                                                 v-if="step.name === 'from'"
                                                 class="has-text-white">
@@ -39,7 +39,10 @@
                                                 v-if="step.complete"
                                                 class="icon">
                                                 <i class="fa fa-check" />
-                                            </span> {{ step.description }}
+                                            </span>
+                                            <span :class="[{'has-text-grey': step.complete === false}, { 'has-text-success': step.complete}]">
+                                                {{ step.description }}
+                                            </span>
                                         </p>
                                     </div>
                                 </div>

@@ -1,5 +1,11 @@
 @import './variables.scss';
 .crosswalk {
+    .fa-tilde:before {
+        font-family: Arial; /* your font family here! */
+        font-weight: bold;
+        font-size: 1.1rem;
+        content: '~';
+    }
     .crosswalk__double-hierarchy {
     // room for improvement, iterate over loop for max depth tabbing
     // possibly set tab value based on value in scss varaibles sheet
@@ -10,8 +16,22 @@
                     .add-new-node {
                         padding-left: 5rem;
                     }
-                    .lode__hierarchy-item {        
-                        .crosswalk-buttons {
+                    .lode__hierarchy-item {
+                        transform: translateX(0); 
+                        .crosswalk-buttons__source {
+                            background-color:rgba(white, .8);
+                            width: 260px;
+                            position: fixed;
+                            right: 0;
+                        } 
+                        .crosswalk-buttons__target {
+                            background-color:rgba(white, .8);
+                            position: fixed;
+                            right: 0;
+                            width: 260px;
+                        }
+                        .crosswalk-buttons__target,
+                        .crosswalk-buttons__source {
                             visibility: hidden;
                         }                    
                         .add-node-section {
@@ -102,7 +122,8 @@
                     }
                     .lode__hierarchy-item:hover {
                         background-color: $light;
-                        .crosswalk-buttons {
+                        .crosswalk-buttons__target,
+                        .crosswalk-buttons__source {
                             visibility: visible;
                         }
                     }
