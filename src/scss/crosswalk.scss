@@ -1,0 +1,324 @@
+@import './variables.scss';
+.crosswalk {
+    .crosswalk__double-hierarchy {
+    // room for improvement, iterate over loop for max depth tabbing
+    // possibly set tab value based on value in scss varaibles sheet
+        .lode__hierarchy {
+            
+            ul.lode__hierarchy-ul {
+                li.lode__hierarchy-li {
+                    .add-new-node {
+                        padding-left: 5rem;
+                    }
+                    .lode__hierarchy-item {        
+                        .crosswalk-buttons {
+                            visibility: hidden;
+                        }                    
+                        .add-node-section {
+                            width: 100%;
+                            display:block;
+                            max-width: 1300px;
+                            padding-left: 3rem;
+                            height: auto;
+                            cursor: pointer;
+                        }
+                        .add-node-section:hover .add-new-node__line, 
+                        .add-node-section:hover .button {
+                            opacity: 1;
+                            .add-node__options {
+                                padding: 0rem 0rem;
+                            }
+                        }
+                        .add-new-node__line {
+                            transition: opacity .2s;
+                            transition-delay: .2s;
+                            margin: 0rem;
+                            opacity: 0;
+                            padding-left: 4rem;
+                            height: 6px;
+                            width: 100%;
+                            display: flex;
+                            align-items: center;
+                            .button {
+                            }
+                            hr  {
+                                z-index: 2;
+                                width: 100%;
+                                display: inline-block;
+                                height: 1px;
+                                padding-left: -1px;
+                                margin-left: auto;
+                                margin-right: auto;
+                                border-width: 1px;
+                                background-color: rgba($primary, .5) !important;
+                                color: $black !important;
+                                border-color: $primary !important;
+                            }
+                        }
+                        .lode__thing {
+                            padding-left: 0rem;
+                            .lode__Competency {
+                                .lode__thing-heading {
+                                    max-width: 1300px;
+                                    margin: auto;
+                                }
+                            }
+                        }
+                        .lode__thing-editing {
+                            max-width: 1300px;
+                            margin: auto;
+                            background-color: $light;
+                        }
+                        .lode__name {
+                            .field {
+                                padding-left: 0rem;
+                                .field-body {
+                                    .field {
+                                        padding-left: 0rem;
+                                        font-size: 1rem !important; // top level competencies
+                                        font-weight: 600;
+                                    }
+                                }
+                            }
+                        }
+                        .lode__description {
+                            .field {
+                                padding-left: 0rem;
+                                .field-body {
+                                    .field {
+                                        padding-left: 0rem;
+                                        font-size: 1rem !important; // top level competencies
+                                        font-weight: 400;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .lode__hierarchy-item:hover {
+                        background-color: $light;
+                        .crosswalk-buttons {
+                            visibility: visible;
+                        }
+                    }
+                    ul.lode__hierarchy-sub-ul {
+                        li.lode__hierarchy-sub-li {
+                            .lode__hierarchy-item {
+                                .add-node-section {
+                                    padding-left: 2.5rem;
+                                    margin: auto;
+                                }
+                                .lode__thing {
+                                    .lode__Competency {
+                                        .lode__thing-heading {
+                                            padding-left: 2rem;
+                                            margin-bottom: .5rem;
+                                        }
+                                    }
+                                
+                                    .lode__thing  {
+                                        margin-left: 0;
+                                    }
+                                }
+                                .lode__thing-editing {
+                                    max-width: 1300px;
+                                    margin: auto;
+                                }
+                                .lode__name {
+                                    .field {
+                                        .field-body {
+                                            .field {
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            ul.lode__hierarchy-sub-ul {
+                                li.lode__hierarchy-sub-li {
+                                    .lode__hierarchy-item {
+                                        .add-node-section {
+                                            padding-left: 4rem;
+                                            margin: auto;
+                                        }
+                                        .lode__thing {
+                                            .lode__Competency {
+                                                .lode__thing-heading {
+                                                    padding-left: 3.5rem;
+                                                    margin-bottom: .5rem;
+                                                }
+                                            }
+                                            .lode__thing  {
+                                                margin-left: 0;
+                                            }
+                                        }
+                                        .lode__thing-editing {
+                                            max-width: 1300px;
+                                            margin: auto;
+                                        }
+                                        .lode__name {
+                                            .field {
+                                                .field-body {
+                                                    .field {
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    ul.lode__hierarchy-sub-ul {
+                                        li.lode__hierarchy-sub-li {
+                                            .lode__hierarchy-item {
+                                                .add-node-section {
+                                                    padding-left: 5.5rem;
+                                                    margin: auto;
+                                                }
+                                                .lode__thing {
+                                                    .lode__Competency {
+                                                        .lode__thing-heading {
+                                                            padding-left: 5rem;
+                                                            margin-bottom: .5rem;
+                                                        }
+                                                    }
+                                                    .thing  {
+                                                        margin-left: 0;
+                                                    }
+                                                }
+                                                .lode__thing-editing {
+                                                    max-width: 1300px;
+                                                    margin: auto;
+                                                }
+                                                .lode__name {
+                                                    .field {
+                                                        .field-body {
+                                                            .field {
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            ul.lode__hierarchy-sub-ul {
+                                                li.lode__hierarchy-sub-li {
+                                                    .lode__hierarchy-item {
+                                                        .add-node-section {
+                                                            padding-left: 7rem;
+                                                            margin: auto;
+                                                        }
+                                                        .lode__thing, .lode__thing-editing {
+                                                            .lode__Competency {
+                                                                .lode__thing-heading {
+                                                                    padding-left: 6.5rem;
+                                                                    margin-bottom: .5rem;
+                                                                }
+                                                            }
+                                                            .lode__thing  {
+                                                                margin-left: 0;
+                                                            }
+                                                        }
+                                                        .lode__name {
+                                                            .field {
+                                                                .field-body {
+                                                                    .field {
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    ul.lode__hierarchy-sub-ul {
+                                                        li.lode__hierarchy-sub-li {
+                                                            .lode__hierarchy-item {
+                                                                .add-node-section {
+                                                                    padding-left: 8.5rem;
+                                                                    margin: auto;
+                                                                }
+                                                                .lode__thing{
+                                                                    .lode__Competency {
+                                                                        .lode__thing-heading {
+                                                                            padding-left: 8rem;
+                                                                            margin-bottom: .5rem;
+                                                                        }
+                                                                    }
+                                                                    .lode__thing  {
+                                                                        margin-left: 0;
+                                                                    }
+                                                                }
+                                                                .lode__thing-editing  {
+                                                                    .lode__Competency {
+                                                                        margin-left: 8rem;
+                                                                    }
+                                                                }
+                                                                .lode__name {
+                                                                    .field {
+                                                                        .field-body {
+                                                                            .field {
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                            ul.lode__hierarchy-sub-ul {
+                                                                li.lode__hierarchy-sub-li {
+                                                                    .lode__hierarchy-item {
+                                                                        .add-node-section {
+                                                                            padding-left: 10rem;
+                                                                            margin: auto;
+                                                                        }
+                                                                        .lode__thing, .lode__thing-editing {
+                                                                            .lode__Competency {
+                                                                                .lode__thing-heading {
+                                                                                    padding-left: 9rem;
+                                                                                    margin-bottom: .5rem;
+                                                                                }
+                                                                            }
+                                                                            .lode__thing  {
+                                                                                margin-left: 0;
+                                                                            }
+                                                                        }
+                                                                        .lode__name {
+                                                                            .field {
+                                                                                .field-body {
+                                                                                    .field {
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    ul.lode__hierarchy-sub-ul {
+                                                                        li.lode__hierarchy-sub-li {
+                                                                            .lode__hierarchy-item {
+                                                                                .lode__thing, .lode__thing-editing {
+                                                                                    .lode__Competency {
+                                                                                        .lode__thing-heading {
+                                                                                            margin-left: 10.5rem;
+                                                                                            margin-bottom: .5rem;
+                                                                                        }
+                                                                                    }
+                                                                                    .lode__thing  {
+                                                                                        margin-left: 0;
+                                                                                    }
+                                                                                }
+                                                                                .lode__name {
+                                                                                    .field {
+                                                                                        .field-body {
+                                                                                            .field {
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }    
+                                                                }
+                                                            }    
+                                                        }
+                                                    }    
+                                                }
+                                            }    
+                                        }
+                                    }    
+                                }
+                            }    
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

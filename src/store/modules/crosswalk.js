@@ -6,7 +6,8 @@ Vue.use(Vuex);
 const state = {
     step: 0,
     frameworkA: null,
-    framewworkB: null
+    frameworkB: null
+
 
 };
 const mutations = {

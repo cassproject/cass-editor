@@ -48,72 +48,151 @@
                     </div>
                 </div>
                 <!-- step framework list for selecting a & b -->
-                <div
-                    v-if="step === 0 || step === 1"
-                    class="column is-12 crosswalk__list">
-                    <div class="section">
-                        <SearchBar searchType="framework" />
-                        <List
-                            :type="type"
-                            :repo="repo"
-                            :click="frameworkClick"
-                            :searchOptions="searchOptions"
-                            :paramObj="paramObj"
-                            :disallowEdits="true" />
+                <transition
+                    name="slide-fade">
+                    <div
+                        v-if="step === 0"
+                        class="column is-12 crosswalk__list">
+                        <div class="container">
+                            <SearchBar searchType="framework" />
+                            <List
+                                :type="type"
+                                :repo="repo"
+                                :click="frameworkClickA"
+                                :searchOptions="searchOptions"
+                                :paramObj="paramObj"
+                                :disallowEdits="true" />
+                        </div>
                     </div>
-                </div>
+                </transition>
+                <transition
+                    v-if="step === 1"
+                    name="slide-fade">
+                    <div
+
+                        class="column is-12 crosswalk__list">
+                        <div class="container">
+                            <SearchBar searchType="framework" />
+                            <List
+                                :type="type"
+                                :repo="repo"
+                                :click="frameworkClickB"
+                                :searchOptions="searchOptions"
+                                :paramObj="paramObj"
+                                :disallowEdits="true" />
+                        </div>
+                    </div>
+                </transition>
                 <!-- double hierarchy view -->
-                <div
-                    v-if="step === 2"
-                    class="column is-12 crosswalk__double-hierarchy">
-                    <div class="columns">
-                        <div class="column is-6 crosswalk__single-hierachy">
-                            <Hierarchy
-                                :container="frameworkA"
-                                view="crosswalk"
-                                containerType="Framework"
-                                containerTypeGet="EcFramework"
-                                containerNodeProperty="competency"
-                                containerEdgeProperty="relation"
-                                nodeType="EcCompetency"
-                                edgeType="EcAlignment"
-                                edgeRelationProperty="relationType"
-                                edgeRelationLiteral="narrows"
-                                edgeSourceProperty="source"
-                                edgeTargetProperty="target"
-                                :viewOnly="queryParams.view === 'true'"
-                                :repo="repo"
-                                :queryParams="queryParams"
-                                :exportOptions="[]"
-                                :highlightList="null"
-                                @searchThings="handleSearch($event)"
-                                properties="primary" />
-                        </div>
-                        <div class="column is-6 crosswalk__single-hierachy">
-                            <Hierarchy
-                                :container="frameworkB"
-                                view="crosswalk"
-                                containerType="Framework"
-                                containerTypeGet="EcFramework"
-                                containerNodeProperty="competency"
-                                containerEdgeProperty="relation"
-                                nodeType="EcCompetency"
-                                edgeType="EcAlignment"
-                                edgeRelationProperty="relationType"
-                                edgeRelationLiteral="narrows"
-                                edgeSourceProperty="source"
-                                edgeTargetProperty="target"
-                                :viewOnly="queryParams.view === 'true'"
-                                :repo="repo"
-                                :queryParams="queryParams"
-                                :exportOptions="[]"
-                                :highlightList="null"
-                                @searchThings="handleSearch($event)"
-                                properties="primary" />
+                <transition
+                    name="slide-fade">
+                    <div
+                        v-if="step === 2"
+                        class="column is-12 crosswalk__double-hierarchy">
+                        <div class="columns">
+                            <div class="column is-6 crosswalk__single-hierachy">
+                                <div class="crosswalk__single-hierarchy__buttons">
+                                    <div class="buttons">
+                                        <div
+                                            @click="filterHierarchy('showAligned', 'a', frameworkA)"
+                                            class="button is-small is-outlined is-primary"
+                                            :class="{'is-focused': filter.a === 'showAligned'}">
+                                            <span class="icon">
+                                                <i class="fa fa-link" />
+                                            </span><span>show aligned</span>
+                                        </div>
+                                        <div
+                                            @click="filterHierarchy('showUnaligned', 'a', frameworkA)"
+                                            class="button is-small is-outlined is-primary"
+                                            :class="{'is-focused': filter.a === 'showUnaligned'}">
+                                            <span class="icon">
+                                                <i class="fas fa-unlink" />
+                                            </span><span>show unaligned</span>
+                                        </div>
+                                        <div
+                                            @click="filterHierarchy('showAll', 'a', frameworkA)"
+                                            class="button is-outlined is-small is-primary"
+                                            :class="{'is-focused': filter.a === 'showAll'}">
+                                            <span class="icon">
+                                                <i class="fa fa-list-alt" />
+                                            </span><span>show all</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <Hierarchy
+                                    :container="frameworkA"
+                                    view="crosswalk"
+                                    containerType="Framework"
+                                    containerTypeGet="EcFramework"
+                                    containerNodeProperty="competency"
+                                    containerEdgeProperty="relation"
+                                    nodeType="EcCompetency"
+                                    edgeType="EcAlignment"
+                                    edgeRelationProperty="relationType"
+                                    edgeRelationLiteral="narrows"
+                                    edgeSourceProperty="source"
+                                    edgeTargetProperty="target"
+                                    :viewOnly="queryParams.view === 'true'"
+                                    :repo="repo"
+                                    :queryParams="queryParams"
+                                    :exportOptions="[]"
+                                    :highlightList="null"
+                                    @searchThings="handleSearch($event)"
+                                    properties="primary" />
+                            </div>
+                            <div class="column is-6 crosswalk__single-hierachy">
+                                <div class="crosswalk__single-hierarchy__buttons">
+                                    <div class="buttons">
+                                        <div
+                                            @click="filterHierarchy('showAligned', 'b', frameworkB)"
+                                            class="button is-small is-outlined is-primary"
+                                            :class="{'is-focused': filter.b === 'showAligned'}">
+                                            <span class="icon">
+                                                <i class="fa fa-link" />
+                                            </span><span>show aligned</span>
+                                        </div>
+                                        <div
+                                            @click="filterHierarchy('showUnaligned', 'b', frameworkB)"
+                                            class="button is-small is-outlined is-primary"
+                                            :class="{'is-focused': filter.b === 'showUnaligned'}">
+                                            <span class="icon">
+                                                <i class="fas fa-unlink" />
+                                            </span><span>show unaligned</span>
+                                        </div>
+                                        <div
+                                            @click="filterHierarchy('showAlll', 'b', frameworkB)"
+                                            class="button is-outlined is-small is-primary"
+                                            :class="{'is-focused': filter.b === 'showAll'}">
+                                            <span class="icon">
+                                                <i class="fa fa-list-alt" />
+                                            </span><span>show all</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <Hierarchy
+                                    :container="frameworkB"
+                                    view="crosswalk"
+                                    containerType="Framework"
+                                    containerTypeGet="EcFramework"
+                                    containerNodeProperty="competency"
+                                    containerEdgeProperty="relation"
+                                    nodeType="EcCompetency"
+                                    edgeType="EcAlignment"
+                                    edgeRelationProperty="relationType"
+                                    edgeRelationLiteral="narrows"
+                                    edgeSourceProperty="source"
+                                    edgeTargetProperty="target"
+                                    :viewOnly="queryParams.view === 'true'"
+                                    :repo="repo"
+                                    :queryParams="queryParams"
+                                    :exportOptions="[]"
+                                    :highlightList="null"
+                                    @searchThings="handleSearch($event)"
+                                    properties="primary" />
+                            </div>
                         </div>
                     </div>
-                    <!-- side by side view -->
-                </div>
+                </transition>
             </div>
         </div>
     </div>
@@ -130,6 +209,10 @@ export default {
     name: 'FrameworkCrosswalk',
     data: () => ({
         repo: window.repo,
+        filter: {
+            a: 'showAll',
+            b: 'showAll'
+        },
         steps: [
             {
                 name: 'from',
@@ -256,22 +339,28 @@ export default {
         })
     },
     methods: {
-        frameworkClick: function(framework) {
+        filterHierarchy: function(typeOfFilter, val, framework) {
+            // mightnot need val if I can watch something else for css updates on buttons
+            alert("To do: " + typeOfFilter + val + framework);
+            this.filter[val] = typeOfFilter;
+        },
+        frameworkClickA: function(framework) {
             var me = this;
-            if (this.step === 0) {
-                EcFramework.get(framework.id, function(success) {
-                    me.$store.commit('crosswalk/frameworkA', success);
-                    me.$store.commit('crosswalk/step', 1);
-                }, console.error);
-            } else {
-                if (this.step === 1) {
-                    /* Should we exclude framework A from framework B options */
-                    EcFramework.get(framework.id, function(success) {
-                        me.$store.commit('crosswalk/frameworkB', success);
-                        me.$store.commit('crosswalk/step', 2);
-                    }, console.error);
-                }
-            }
+            /* Should we exclude framework A from framework B options */
+            EcFramework.get(framework.id, function(success) {
+                me.$store.commit('crosswalk/frameworkA', success);
+                me.$store.commit('crosswalk/step', 1);
+            }, console.error);
+            this.$store.commit('app/searchTerm', '');
+        },
+        frameworkClickB: function(framework) {
+            var me = this;
+            /* Should we exclude framework A from framework B options */
+            EcFramework.get(framework.id, function(success) {
+                me.$store.commit('crosswalk/frameworkB', success);
+                me.$store.commit('crosswalk/step', 2);
+            }, console.error);
+            this.$store.commit('app/searchTerm', '');
         }
     }
 };
@@ -279,6 +368,17 @@ export default {
 
 <style lang="scss">
     @import './../../scss/crosswalk.scss';
+    .slide-fade-enter-active {
+  transition: all .3s ease;
+}
+.slide-fade-leave-active {
+  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-fade-enter, .slide-fade-leave-to
+/* .slide-fade-leave-active below version 2.1.8 */ {
+  transform: translateX(10px);
+  opacity: 0;
+}
 .crosswalk {
     height: calc(100vh - 52px);
     overflow: hidden;
@@ -299,9 +399,8 @@ export default {
         height: 80vh;
         .lode__hierarchy-item {
                 margin: .25rem 0rem !important;
-                border: solid 1px blue;
             }
-        
+
         .columns {
             height: 100%;
             margin: .25rem;
@@ -311,14 +410,9 @@ export default {
             padding: 2rem;
             overflow: scroll;
             height: 100%;
-            .crosswalk-buttons {
-                position:absolute;
-                right: 0rem;
-                width: 100px;
-            }
         }
     }
-    
-    
+
+
 }
 </style>
