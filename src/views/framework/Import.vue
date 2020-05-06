@@ -223,7 +223,7 @@
                     @editNodeEvent="onEditNode"
                     @doneEditingNodeEvent="onDoneEditingNode"
                     :class="{'is-hidden': !hierarchyIsdoneLoading}"
-                    :obj="importFramework"
+                    :obj="changedObj ? changedObj : importFramework"
                     :repo="repo"
                     class="framework-title"
                     :profile="t3FrameworkProfile"
@@ -262,7 +262,8 @@
                 <Component
                     :is="dynamicThing"
                     :editingNode="editingNode"
-                    :obj="importFramework"
+                    @doneEditingNodeEvent="onDoneEditingNode"
+                    :obj="changedObj ? changedObj : importFramework"
                     :parentNotEditable="true"
                     class="framework-title"
                     :profile="t3FrameworkProfile"
@@ -354,7 +355,8 @@ export default {
                 {name: "Credential Engine ASN (CSV)", value: "ctdlasnCsv"},
                 {name: "Table (CSV)", value: "csv"},
                 {name: "IMS Global CASE (JSON)", value: "case"}
-            ]
+            ],
+            changedObj: null
         };
     },
     computed: {
@@ -578,6 +580,7 @@ export default {
             this.editingNode = true;
         },
         onDoneEditingNode: function() {
+            this.changedObj = EcRepository.getBlocking(this.importFramework.shortId());
             this.editingNode = false;
         },
         handleDoneLoading: function() {
