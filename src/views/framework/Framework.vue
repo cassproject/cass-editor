@@ -74,7 +74,6 @@
                     edgeTargetProperty="target"
                     :viewOnly="queryParams.view === 'true'"
                     :repo="repo"
-                    :queryParams="queryParams"
                     :exportOptions="competencyExportOptions"
                     :highlightList="highlightCompetency"
                     :profile="competencyProfile"
@@ -107,7 +106,6 @@ import RightAside from '@/components/framework/RightAside.vue';
 export default {
     name: "Framework",
     props: {
-        queryParams: Object,
         profileOverride: Object
     },
     mixins: [common, exports, competencyEdits, ctdlasnProfile, t3Profile, tlaProfile],
@@ -151,6 +149,9 @@ export default {
         };
     },
     computed: {
+        queryParams: function() {
+            return this.$store.getters['editor/queryParams'];
+        },
         showRightAside: function() {
             return this.$store.getters['app/showRightAside'];
         },

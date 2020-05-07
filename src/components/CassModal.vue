@@ -153,6 +153,9 @@ export default {
         };
     },
     computed: {
+        queryParams: function() {
+            return this.$store.getters['editor/queryParams'];
+        },
         confirmDisabled: function() {
             if (this.type === 'duplicate') {
                 if (this.options.length > 0 && this.selectedOption === "") {

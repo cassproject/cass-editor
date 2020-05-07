@@ -510,7 +510,6 @@ export default {
     name: 'ImportTabs',
     components: {dragAndDrop},
     props: {
-        q: Object,
         caseDocs: {
             default: function() { return []; },
             type: Array
@@ -704,6 +703,9 @@ export default {
         }
     },
     computed: {
+        q: function() {
+            return this.$store.getters['editor/queryParams'];
+        },
         importText: {
             get() {
                 return this.$store.getters['app/importText'];

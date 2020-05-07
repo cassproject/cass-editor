@@ -64,7 +64,6 @@
             containerType="ConceptScheme"
             :editable="queryParams.view !== 'true'"
             :repo="repo"
-            :queryParams="queryParams"
             :exportOptions="conceptExportOptions"
             :highlightList="highlightCompetency"
             :selectMode="selectButtonText != null"
@@ -98,9 +97,6 @@ import DynamicModal from '@/components/modals/DynamicModal.vue';
 
 export default {
     name: "ConceptScheme",
-    props: {
-        queryParams: Object
-    },
     mixins: [common, ctdlasnProfile],
     data: function() {
         return {
@@ -137,6 +133,9 @@ export default {
     computed: {
         framework: function() {
             return this.$store.state.editor.framework;
+        },
+        queryParams: function() {
+            return this.$store.getters['editor/queryParams'];
         },
         timestamp: function() {
             if (this.framework.getTimestamp()) {

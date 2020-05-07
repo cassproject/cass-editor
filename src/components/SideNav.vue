@@ -251,8 +251,7 @@ export default {
         showSideNav: {
             default: false,
             type: Boolean
-        },
-        queryParams: Object
+        }
     },
     data() {
         return {
@@ -269,6 +268,9 @@ export default {
         }
     },
     computed: {
+        queryParams: function() {
+            return this.$store.getters['editor/queryParams'];
+        },
         amLoggedIn: function() {
             if (EcIdentityManager && EcIdentityManager.ids && EcIdentityManager.ids.length > 0) return true;
             else return false;

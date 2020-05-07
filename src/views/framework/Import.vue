@@ -175,7 +175,6 @@
             <!-- import tabs -->
             <ImportTabs
                 v-if="!importFramework ||(importFramework && importType==='text')"
-                :q="queryParams"
                 :caseDocs="caseDocs"
                 :csvRelationFile="csvRelationFile"
                 :csvRelationColumns="csvRelationColumns"
@@ -306,9 +305,6 @@ import ImportDetails from '@/components/import/ImportDetails.vue';
 
 export default {
     name: "Import",
-    props: {
-        queryParams: Object
-    },
     mixins: [
         common,
         exports,
@@ -360,6 +356,9 @@ export default {
         };
     },
     computed: {
+        queryParams: function() {
+            return this.$store.getters['editor/queryParams'];
+        },
         showImportActions: function() {
             if (this.importTransition === 'detail' ||
             this.importTransition === 'preview' ||

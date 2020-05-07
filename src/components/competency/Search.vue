@@ -94,11 +94,7 @@ import SearchBar from '@/components/framework/SearchBar.vue';
 export default {
     name: 'CompetencySearch',
     props: {
-        isActive: Boolean,
-        queryParams: {
-            type: Object,
-            default: function() { return {}; }
-        }
+        isActive: Boolean
     },
     components: {List, SearchBar},
     mixins: [common],
@@ -113,7 +109,8 @@ export default {
     computed: {
         ...mapState({
             selectedCompetency: state => state.editor.selectedCompetency,
-            framework: state => state.editor.framework
+            framework: state => state.editor.framework,
+            queryParams: state => state.editor.queryParams
         }),
         nameOfSelectedCompetency: function() {
             if (this.selectedCompetency) {

@@ -124,9 +124,6 @@ import common from '@/mixins/common.js';
 import SearchBar from '@/components/framework/SearchBar.vue';
 export default {
     name: "Frameworks",
-    props: {
-        queryParams: Object
-    },
     mixins: [common],
     data: function() {
         return {
@@ -149,6 +146,9 @@ export default {
         },
         frameworkSearchTerm: function() {
             return this.$store.getters['app/searchTerm'];
+        },
+        queryParams: function() {
+            return this.$store.getters['editor/queryParams'];
         },
         type: function() {
             return this.queryParams.concepts === 'true' ? "ConceptScheme" : "Framework";
