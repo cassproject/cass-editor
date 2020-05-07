@@ -61,6 +61,7 @@
                             <List
                                 :type="type"
                                 :repo="repo"
+                                :view="view"
                                 :click="frameworkClickSource"
                                 :searchOptions="searchOptions"
                                 :paramObj="paramObj"
@@ -79,6 +80,7 @@
                             <List
                                 :type="type"
                                 :repo="repo"
+                                :view="view"
                                 :click="frameworkClickTarget"
                                 :searchOptions="searchOptions"
                                 :paramObj="paramObj"
@@ -157,6 +159,7 @@ import common from '@/mixins/common.js';
 export default {
     name: 'FrameworkCrosswalk',
     data: () => ({
+        view: 'crosswalk',
         repo: window.repo,
         steps: [
             {

@@ -97,19 +97,7 @@
                             background-color:rgba(white, .8);
                             position: fixed;
                             right: 0;
-                        }
-                        .crosswalk-buttons__target,
-                        .crosswalk-buttons__source {
-                            .crosswalk-buttons__source__create {
-                                visibility: visible;
-                            }
-                            .crosswalk-buttons__source__select {
-                                visibility: visible;
-                            }
-                            .crosswalk-buttons__source__type {
-                                visibility: visible;
-                            }
-                        }                    
+                        }                   
                         .add-node-section {
                             width: 100%;
                             display:block;
@@ -199,8 +187,11 @@
                     .lode__hierarchy-item:hover {
                         background-color: $light;
                         .crosswalk-buttons__target,
+                        
                         .crosswalk-buttons__source {
-                            visibility: visible;
+                            .crosswalk-buttons__source__create {
+                                visibility: visible;
+                            }
                         }
                     }
                     ul.lode__hierarchy-sub-ul {
