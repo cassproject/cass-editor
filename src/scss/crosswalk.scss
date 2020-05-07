@@ -1,10 +1,63 @@
 @import './variables.scss';
+// required to adjust to side bar open
+.crosswalk.clear-side-bar {
+    .hierarchy-buttons {
+        width: calc(45vw - 150px);
+    }
+}
 .crosswalk {
+    height: calc(100vh - 52px);
+    overflow: hidden;
     .fa-tilde:before {
         font-family: Arial; /* your font family here! */
         font-weight: bold;
         font-size: 1.1rem;
         content: '~';
+    }
+    hr {
+        display: none;
+    }
+    .hierarchy-buttons {
+        padding-top: 1rem !important;
+        position: fixed;
+        background-color: white;
+        height: 42px !important;
+        padding-top: 0rem !important;
+        z-index: 5;
+        width: 45vw;
+        top: 22vh;
+        border-bottom: solid 1px black;
+    }
+
+    .step-icon__wrapper {
+        padding: .25rem;
+    }
+    .step-icon.icon {
+        border-radius: 100% !important;
+    }
+    .crosswalk__steps {
+        height: 18vh;
+    }
+    .crosswalk__list {
+        overflow: scroll;
+        height: calc(95vh - 52px);
+    };
+    .crosswalk__double-hierarchy {
+        height: 80vh;
+        .lode__hierarchy-item {
+                margin: .25rem 0rem !important;
+            }
+
+        .columns {
+            height: 100%;
+            margin: .25rem;
+        };
+        overflow: hidden;
+        .crosswalk__single-hierachy {
+            padding: 2rem;
+            overflow: scroll;
+            height: 100%;
+        }
     }
     .crosswalk__double-hierarchy {
     // room for improvement, iterate over loop for max depth tabbing
@@ -17,22 +70,45 @@
                         padding-left: 5rem;
                     }
                     .lode__hierarchy-item {
+                        min-height: 102px;
+                        padding: .25rem !important;
                         transform: translateX(0); 
                         .crosswalk-buttons__source {
                             background-color:rgba(white, .8);
-                            width: 260px;
                             position: fixed;
                             right: 0;
+                            margin: 4px;
+                            .columns {
+                                .column {
+                                    padding: 2px !important;
+                                }
+                            };
+                            .crosswalk-buttons__source__create {
+                                visibility: hidden;
+                            }
+                            .crosswalk-buttons__source__select {
+                                visibility: visible;
+                            }
+                            .crosswalk-buttons__source__type {
+                                visibility: visible;
+                            }
                         } 
                         .crosswalk-buttons__target {
                             background-color:rgba(white, .8);
                             position: fixed;
                             right: 0;
-                            width: 260px;
                         }
                         .crosswalk-buttons__target,
                         .crosswalk-buttons__source {
-                            visibility: hidden;
+                            .crosswalk-buttons__source__create {
+                                visibility: visible;
+                            }
+                            .crosswalk-buttons__source__select {
+                                visibility: visible;
+                            }
+                            .crosswalk-buttons__source__type {
+                                visibility: visible;
+                            }
                         }                    
                         .add-node-section {
                             width: 100%;
@@ -348,4 +424,19 @@
             }
         }
     }
+    .slide-fade-enter-active {
+        transition: all .3s ease;
+      }
+      .slide-fade-leave-active {
+        transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+      }
+      .slide-fade-enter, .slide-fade-leave-to
+      /* .slide-fade-leave-active below version 2.1.8 */ {
+        transform: translateX(10px);
+        opacity: 0;
+      }
 }
+     
+  
+  
+  

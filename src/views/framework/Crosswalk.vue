@@ -94,34 +94,6 @@
                         class="column is-12 crosswalk__double-hierarchy">
                         <div class="columns">
                             <div class="column is-6 crosswalk__single-hierachy">
-                                <div class="crosswalk__single-hierarchy__buttons">
-                                    <div class="buttons">
-                                        <div
-                                            @click="filterHierarchy('showAligned', 'source', frameworkSource)"
-                                            class="button is-small is-outlined is-primary"
-                                            :class="{'is-focused': filter.a === 'showAligned'}">
-                                            <span class="icon">
-                                                <i class="fa fa-link" />
-                                            </span><span>show aligned</span>
-                                        </div>
-                                        <div
-                                            @click="filterHierarchy('showUnaligned', 'source', frameworkSource)"
-                                            class="button is-small is-outlined is-primary"
-                                            :class="{'is-focused': filter.a === 'showUnaligned'}">
-                                            <span class="icon">
-                                                <i class="fas fa-unlink" />
-                                            </span><span>show unaligned</span>
-                                        </div>
-                                        <div
-                                            @click="filterHierarchy('showAll', 'source', frameworkSource)"
-                                            class="button is-outlined is-small is-primary"
-                                            :class="{'is-focused': filter.a === 'showAll'}">
-                                            <span class="icon">
-                                                <i class="fa fa-list-alt" />
-                                            </span><span>show all</span>
-                                        </div>
-                                    </div>
-                                </div>
                                 <Hierarchy
                                     :container="frameworkSource"
                                     view="crosswalk"
@@ -145,34 +117,6 @@
                                     properties="primary" />
                             </div>
                             <div class="column is-6 crosswalk__single-hierachy">
-                                <div class="crosswalk__single-hierarchy__buttons">
-                                    <div class="buttons">
-                                        <div
-                                            @click="filterHierarchy('showAligned', 'target', frameworkTarget)"
-                                            class="button is-small is-outlined is-primary"
-                                            :class="{'is-focused': filter.b === 'showAligned'}">
-                                            <span class="icon">
-                                                <i class="fa fa-link" />
-                                            </span><span>show aligned</span>
-                                        </div>
-                                        <div
-                                            @click="filterHierarchy('showUnaligned', 'target', frameworkTarget)"
-                                            class="button is-small is-outlined is-primary"
-                                            :class="{'is-focused': filter.b === 'showUnaligned'}">
-                                            <span class="icon">
-                                                <i class="fas fa-unlink" />
-                                            </span><span>show unaligned</span>
-                                        </div>
-                                        <div
-                                            @click="filterHierarchy('showAlll', 'target', frameworkTarget)"
-                                            class="button is-outlined is-small is-primary"
-                                            :class="{'is-focused': filter.b === 'showAll'}">
-                                            <span class="icon">
-                                                <i class="fa fa-list-alt" />
-                                            </span><span>show all</span>
-                                        </div>
-                                    </div>
-                                </div>
                                 <Hierarchy
                                     :container="frameworkTarget"
                                     view="crosswalk"
@@ -214,10 +158,6 @@ export default {
     name: 'FrameworkCrosswalk',
     data: () => ({
         repo: window.repo,
-        filter: {
-            source: 'showAll',
-            target: 'showAll'
-        },
         steps: [
             {
                 name: 'from',
@@ -254,7 +194,7 @@ export default {
         this.$store.commit('crosswalk/step', 0);
     },
     watch: {
-        competencyTarget: function(val) {
+        competencyTargets: function(val) {
             console.log("val is: ", val);
         },
         step: function(val) {
@@ -345,16 +285,11 @@ export default {
             frameworkSource: state => state.crosswalk.frameworkSource,
             frameworkTarget: state => state.crosswalk.frameworkTarget,
             competencySource: state => state.crosswalk.competencySource,
-            competencyTarget: state => state.crosswalk.competencyTarget,
+            competencyTargets: state => state.crosswalk.competencyTargets,
             alignmentType: state => state.crosswalk.alignmentType
         })
     },
     methods: {
-        filterHierarchy: function(typeOfFilter, val, framework) {
-            // mightnot need val if I can watch something else for css updates on buttons
-            alert("To do: " + typeOfFilter + val + framework);
-            this.filter[val] = typeOfFilter;
-        },
         frameworkClickSource: function(framework) {
             var me = this;
             /* Should we exclude framework A from framework B options */
@@ -379,51 +314,5 @@ export default {
 
 <style lang="scss">
     @import './../../scss/crosswalk.scss';
-    .slide-fade-enter-active {
-  transition: all .3s ease;
-}
-.slide-fade-leave-active {
-  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
-}
-.slide-fade-enter, .slide-fade-leave-to
-/* .slide-fade-leave-active below version 2.1.8 */ {
-  transform: translateX(10px);
-  opacity: 0;
-}
-.crosswalk {
-    height: calc(100vh - 52px);
-    overflow: hidden;
-    .step-icon__wrapper {
-        padding: .25rem;
-    }
-    .step-icon.icon {
-        border-radius: 100% !important;
-    }
-    .crosswalk__steps {
-        height: 18vh;
-    }
-    .crosswalk__list {
-        overflow: scroll;
-        height: calc(95vh - 52px);
-    };
-    .crosswalk__double-hierarchy {
-        height: 80vh;
-        .lode__hierarchy-item {
-                margin: .25rem 0rem !important;
-            }
 
-        .columns {
-            height: 100%;
-            margin: .25rem;
-        };
-        overflow: hidden;
-        .crosswalk__single-hierachy {
-            padding: 2rem;
-            overflow: scroll;
-            height: 100%;
-        }
-    }
-
-
-}
 </style>

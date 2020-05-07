@@ -9,7 +9,9 @@ const state = {
     frameworkTarget: null,
     competencySource: null,
     alignmentType: '',
-    competencyTarget: []
+    competencyTargets: [],
+    sourceState: 'ready',
+    targetState: 'ready'
 
 
 };
@@ -26,11 +28,17 @@ const mutations = {
     competencySource(state, c) {
         state.competencySource = c;
     },
-    competencyTarget(state, c) {
-        state.competencyTarget.push(c);
+    competencyTargets(state, c) {
+        state.competencyTargets.push(c);
     },
     alignmentType(state, a) {
         state.alignmentType = a;
+    },
+    sourceState(state, s) {
+        state.sourceState = s;
+    },
+    targetState(state, t) {
+        state.targetState = t;
     }
 };
 const actions = {
@@ -46,8 +54,8 @@ const getters = {
     competencySource(state, c) {
         return state.competencySource;
     },
-    competencyTarget(state, c) {
-        return state.competencyTarget;
+    competencyTargets(state, c) {
+        return state.competencyTargets;
     },
     alignmentType(state, a) {
         return state.alignmentType;
