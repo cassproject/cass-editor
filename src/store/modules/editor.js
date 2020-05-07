@@ -15,6 +15,7 @@ const state = {
     selectingCompetencies: false,
     private: false,
     newCompetency: null,
+    newFramework: null,
     t3Profile: false,
     changedObject: null,
     configuration: null,
@@ -61,6 +62,9 @@ const mutations = {
     },
     newCompetency(state, id) {
         state.newCompetency = id;
+    },
+    newFramework(state, id) {
+        state.newFramework = id;
     },
     t3Profile(state, bool) {
         state.t3Profile = bool;
@@ -146,6 +150,9 @@ const getters = {
     },
     newCompetency: function(state) {
         return state.newCompetency;
+    },
+    newFramework: function(state) {
+        return state.newFramework;
     },
     t3Profile: function(state) {
         return state.t3Profile;

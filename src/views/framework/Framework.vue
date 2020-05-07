@@ -156,7 +156,7 @@ export default {
             return this.$store.getters['app/showRightAside'];
         },
         dynamicThingComponent: function() {
-            if (this.editingFramework) {
+            if (this.editingFramework || (this.$store.getters['editor/newFramework'] === this.framework.shortId())) {
                 return 'ThingEditing';
             } else {
                 return 'Thing';
@@ -629,6 +629,7 @@ export default {
         },
         onDoneEditingNode: function() {
             this.changedObj = EcRepository.getBlocking(this.framework.shortId());
+            this.$store.commit('editor/newFramework', null);
             this.editingFramework = false;
         },
         onOpenComments: function() {
