@@ -57,6 +57,7 @@ export default {
         var me = this;
         if (this.$route.query) {
             this.queryParams = this.$route.query;
+            this.$store.commit('editor/queryParams', this.queryParams);
             if (this.queryParams.server) {
                 if (this.queryParams.server.endsWith && this.queryParams.server.endsWith("/") === false) {
                     this.queryParams.server += "/";
