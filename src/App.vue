@@ -12,8 +12,7 @@
             name="topbar" />
         <router-view
             id="app-content"
-            :class="[{ 'clear-side-bar': showSideNav}, {'clear-right-aside': showRightAside}]"
-            :queryParams="queryParams" />
+            :class="[{ 'clear-side-bar': showSideNav}, {'clear-right-aside': showRightAside}]" />
         <router-view
             :showSideNav="showSideNav"
             @createNewFramework="onCreateNewFramework"
@@ -37,7 +36,6 @@ export default {
     data: function() {
         return {
             navBarActive: false,
-            queryParams: null,
             repo: window.repo,
             itemsSaving: 0,
             showNav: true
@@ -56,7 +54,7 @@ export default {
         var servers = ["https://dev.api.cassproject.org/api/"];
         var me = this;
         if (this.$route.query) {
-            this.queryParams = this.$route.query;
+            this.$store.commit('editor/queryParams', this.$route.query);
             if (this.queryParams.server) {
                 if (this.queryParams.server.endsWith && this.queryParams.server.endsWith("/") === false) {
                     this.queryParams.server += "/";
@@ -1075,7 +1073,8 @@ export default {
             else return false;
         },
         ...mapState({
-            loggedInPerson: state => state.user.loggedInPerson
+            loggedInPerson: state => state.user.loggedInPerson,
+            queryParams: state => state.editor.queryParams
         })
     },
     watch: {

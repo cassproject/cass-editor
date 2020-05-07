@@ -42,7 +42,9 @@
                     </div>
                 </div>
             </div>
-            <div class="columns is-multiline">
+            <div
+                class="columns is-multiline"
+                v-if="canEditFramework">
                 <!-- end share link -->
                 <!-- input new groups or users -->
                 <div class="column is-12">
@@ -92,7 +94,9 @@
                 </div>
                 <!-- end input new users or groups -->
                 <!-- begin list of access -->
-                <div class="column is-12">
+                <div
+                    class="column is-12"
+                    vif="canEditFramework">
                     <table class="table is-fullwidth">
                         <thead>
                             <tr>
@@ -132,7 +136,9 @@
                     </table>
                 </div>
                 <!-- user table -->
-                <div class="column is-12">
+                <div
+                    class="column is-12"
+                    v-if="canEditFramework">
                     <table class="table is-fullwidth">
                         <thead>
                             <tr>
@@ -229,6 +235,17 @@ export default {
         },
         framework: function() {
             return this.$store.state.editor.framework;
+        },
+        queryParams: function() {
+            return this.$store.getters['editor/queryParams'];
+        },
+        canEditFramework: function() {
+            if (this.queryParams && this.queryParams.view === 'true') {
+                return false;
+            } else if (!this.framework.canEditAny(EcIdentityManager.getMyPks())) {
+                return false;
+            }
+            return true;
         }
     },
     mounted: function() {

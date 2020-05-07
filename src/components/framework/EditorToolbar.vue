@@ -86,8 +86,15 @@
                         </a>
                         <a
                             @click="showManageUsersModal(); showShareDropdown = false;"
-                            class="dropdown-item">
+                            class="dropdown-item"
+                            v-if="canEditFramework">
                             Manage Users
+                        </a>
+                        <a
+                            @click="showManageUsersModal(); showShareDropdown = false;"
+                            class="dropdown-item"
+                            v-else>
+                            Get Shareable Link
                         </a>
                     </div>
                 </div>
@@ -110,14 +117,17 @@
                     <i class="fas fa-comments" />
                 </span>
             </div>
-            <div class="button is-text has-text-dark">
+            <div
+                class="button is-text has-text-dark"
+                v-if="canEditFramework">
                 <span class="icon">
                     <i class="fas fa-undo-alt " />
                 </span>
             </div>
             <div
                 @click="$store.commit('app/showRightAside', 'Versions')"
-                class="button is-text">
+                class="button is-text"
+                v-if="canEditFramework">
                 <span class="icon">
                     <i class="fas fa-history has-text-dark" />
                 </span>
@@ -159,6 +169,20 @@ export default {
         },
         showViewComments() {
             return this.$store.state.app.canViewComments;
+        },
+        framework: function() {
+            return this.$store.state.editor.framework;
+        },
+        queryParams: function() {
+            return this.$store.getters['editor/queryParams'];
+        },
+        canEditFramework: function() {
+            if (this.queryParams && this.queryParams.view === 'true') {
+                return false;
+            } else if (!this.framework.canEditAny(EcIdentityManager.getMyPks())) {
+                return false;
+            }
+            return true;
         }
     }
 };

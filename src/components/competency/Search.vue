@@ -94,47 +94,12 @@ import SearchBar from '@/components/framework/SearchBar.vue';
 export default {
     name: 'CompetencySearch',
     props: {
-        isActive: Boolean,
-        framework: Object,
-        queryParams: {
-            type: Object,
-            default: function() { return {}; }
-        }
+        isActive: Boolean
     },
     components: {List, SearchBar},
     mixins: [common],
     data() {
         return {
-            viewOptions: [
-                {
-                    label: 'View',
-                    value: 'view'
-                },
-                {
-                    label: 'Admin',
-                    value: 'admin'
-                }
-            ],
-            groups: [
-                {
-                    header: 'group 1',
-                    view: 'admin'
-                },
-                {
-                    header: 'group 2',
-                    view: 'view'
-                }
-            ],
-            users: [
-                {
-                    header: 'user 1',
-                    view: 'admin'
-                },
-                {
-                    header: 'user 2',
-                    view: 'view'
-                }
-            ],
             repo: window.repo,
             selectedIds: [],
             itemsSaving: 0,
@@ -143,7 +108,9 @@ export default {
     },
     computed: {
         ...mapState({
-            selectedCompetency: state => state.editor.selectedCompetency
+            selectedCompetency: state => state.editor.selectedCompetency,
+            framework: state => state.editor.framework,
+            queryParams: state => state.editor.queryParams
         }),
         nameOfSelectedCompetency: function() {
             if (this.selectedCompetency) {
@@ -195,6 +162,25 @@ export default {
         },
         searchType: function() {
             return this.$store.state.lode.searchType;
+        }
+    },
+    mounted: function() {
+        this.displayFirst.splice(0, this.displayFirst.length);
+        if (!this.copyOrLink && this.searchType === "Competency" && this.framework.competency) {
+            for (var i = 0; i < this.framework.competency.length; i++) {
+                var comp = EcRepository.getBlocking(this.framework.competency[i]);
+                if (comp) {
+                    this.displayFirst.push(comp);
+                }
+            }
+        }
+        if (this.searchType === "Level" && this.framework.level) {
+            for (var i = 0; i < this.framework.level.length; i++) {
+                var comp = EcRepository.getBlocking(this.framework.level[i]);
+                if (comp) {
+                    this.displayFirst.push(comp);
+                }
+            }
         }
     },
     methods: {
@@ -553,29 +539,6 @@ export default {
                 this.addAlignments(ids, this.$store.state.editor.selectedCompetency, this.$store.state.editor.selectCompetencyRelation);
             } else {
                 this.attachUrlProperties(ids);
-            }
-        }
-    },
-    watch: {
-        isActive: function() {
-            if (this.isActive) {
-                this.displayFirst.splice(0, this.displayFirst.length);
-                if (!this.copyOrLink && this.searchType === "Competency" && this.framework.competency) {
-                    for (var i = 0; i < this.framework.competency.length; i++) {
-                        var comp = EcRepository.getBlocking(this.framework.competency[i]);
-                        if (comp) {
-                            this.displayFirst.push(comp);
-                        }
-                    }
-                }
-                if (this.searchType === "Level" && this.framework.level) {
-                    for (var i = 0; i < this.framework.level.length; i++) {
-                        var comp = EcRepository.getBlocking(this.framework.level[i]);
-                        if (comp) {
-                            this.displayFirst.push(comp);
-                        }
-                    }
-                }
             }
         }
     }

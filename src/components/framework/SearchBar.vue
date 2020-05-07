@@ -5,7 +5,7 @@
                 <input
                     class="input is-large"
                     ref="text"
-                    :placeholder="'Search for '+type+'s...'"
+                    :placeholder="'Search for ' + (searchType === 'competency' ? 'competencie' : searchType)+ 's...'"
                     @change="updateSearchTerm($event)"
                     @keyup.enter="updateSearchTerm($event)">
                 <span
@@ -73,10 +73,6 @@ export default {
         searchType: {
             type: String,
             default: ''
-        },
-        queryParams: {
-            type: Object,
-            default: function() { return {}; }
         }
     },
     methods: {
@@ -102,6 +98,9 @@ export default {
         }
     },
     computed: {
+        queryParams: function() {
+            return this.$store.getters['editor/queryParams'];
+        },
         type: function() {
             return this.queryParams.concepts === 'true' ? "ConceptScheme" : "Framework";
         },

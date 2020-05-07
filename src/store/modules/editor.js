@@ -8,6 +8,7 @@ const state = {
     framework: null,
     organization: null,
     selectedCompetency: null,
+    queryParams: {},
     defaultLanguage: null,
     webSocketBackoff: 100,
     selectCompetencyRelation: null,
@@ -39,6 +40,9 @@ const mutations = {
     },
     selectedCompetency(state, comp) {
         state.selectedCompetency = comp;
+    },
+    queryParams(state, params) {
+        state.queryParams = params;
     },
     defaultLanguage(state, lang) {
         state.defaultLanguage = lang;
@@ -121,6 +125,9 @@ const getters = {
     },
     selectedCompetency: function(state) {
         return state.selectedCompetency;
+    },
+    queryParams: function(state) {
+        return state.queryParams;
     },
     defaultLanguage: function(state) {
         return state.defaultLanguage;
