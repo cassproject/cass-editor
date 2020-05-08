@@ -119,6 +119,7 @@
             </div>
             <div
                 class="button is-text has-text-dark"
+                @click="onClickUndo"
                 v-if="canEditFramework">
                 <span class="icon">
                     <i class="fas fa-undo-alt " />
@@ -142,7 +143,8 @@ export default {
         return {
             showPropertyViewDropDown: false,
             showShareDropdown: false,
-            activeView: "primary"
+            activeView: "primary",
+            repo: window.repo
         };
     },
     methods: {
@@ -161,6 +163,46 @@ export default {
             this.$emit('changeProperties', type);
             this.showPropertyViewDropDown = false;
             this.activeView = type;
+        },
+        onClickUndo: function() {
+            this.$store.dispatch('editor/lastEditToUndo').then(editToUndo => {
+                if (editToUndo) {
+                    if (!EcArray.isArray(editToUndo)) {
+                        editToUndo = [editToUndo];
+                    }
+                    for (let i = 0; i < editToUndo.length; i++) {
+                        let editType = editToUndo[i].operation;
+                        if (editType === "addNew") {
+                            this.undoAdd(editToUndo[i].id);
+                        } else if (editType === "delete") {
+                            this.undoDelete(editToUndo[i].obj);
+                        } else if (editType === "update") {
+                            this.undoUpdate(editToUndo[i]);
+                        }
+                    }
+                }
+                this.$store.commit('editor/setLastEditToUndo', null);
+            });
+        },
+        undoAdd(id) {
+            // Delete
+            this.repo.deleteRegistered(EcRepository.getBlocking(id), function() {}, function(failure) {
+                console.log(failure);
+            });
+        },
+        undoDelete(obj) {
+            // Re-add
+        },
+        undoUpdate(update) {
+            // Revert to initial value
+            let me = this;
+            EcRepository.get(update.id, function(success) {
+                success[update.fieldChanged] = update.initialValue;
+                me.repo.saveTo(success, function() {}, function() {});
+                me.$store.commit('editor/changedObject', success.shortId());
+            }, function(error) {
+                console.error(error);
+            });
         }
     },
     computed: {
