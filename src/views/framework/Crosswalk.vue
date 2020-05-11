@@ -138,7 +138,7 @@
                         v-if="step === 2"
                         class="column is-12 crosswalk__double-hierarchy">
                         <div class="columns">
-                            <div class="column crosswalk__single-hierachy">
+                            <div class="column is-6 crosswalk__single-hierachy">
                                 <Hierarchy
                                     :container="frameworkSource"
                                     view="crosswalk"
@@ -162,7 +162,12 @@
                                     @doneLoadingNodes="loadFrameworkTarget = true"
                                     properties="primary" />
                             </div>
-                            <div class="column crosswalk__single-hierachy" v-if="loadFrameworkTarget">
+                            <div class="column is-6" v-if="!loadFrameworkTarget">
+                                <span class="icon is-large">
+                                    <i class="fa fa-spinner fa-2x fa-pulse"/>
+                                </span>
+                            </div>
+                            <div class="column is-6 crosswalk__single-hierachy" v-if="loadFrameworkTarget">
                                 <Hierarchy
                                     :container="frameworkTarget"
                                     view="crosswalk"
