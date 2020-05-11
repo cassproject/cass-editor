@@ -997,10 +997,8 @@ export default {
                 if (me.queryParams.ceasnDataFields === true) {
                     for (var i = 0; i < frameworks.length; i++) {
                         if (frameworks[i]["schema:inLanguage"] == null || frameworks[i]["schema:inLanguage"] === undefined) {
-                            /*
-                             * me.setDefaultLanguage();
-                             * frameworks[i]["schema:inLanguage"] = defaultLanguage;
-                             */
+                            me.setDefaultLanguage();
+                            frameworks[i]["schema:inLanguage"] = defaultLanguage;
                         }
                     }
                 }
