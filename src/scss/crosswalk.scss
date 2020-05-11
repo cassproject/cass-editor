@@ -1,4 +1,5 @@
 @import './variables.scss';
+@import './framework.scss';
 // required to adjust to side bar open
 .crosswalk.clear-side-bar {
     .hierarchy-buttons {
@@ -414,21 +415,19 @@
     }
       .slide-fade-enter-to, .slide-fade-leave {
         opacity: 1;
-        transform: translateX(50%);
       }
       .slide-fade-leave-active {
         transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
       }
       .slide-fade-enter-active {
         transition: all .3s ease;
-        opacity: .5;
+        opacity: .0;
       }
     .slide-fade-leave-to{
-        transform: translateX(50%);
-        opacity: .5;
+        opacity: .0;
       }
       .slide-fade-enter{
-        opacity: .5;
+        opacity: .0;
       }
 }
      
