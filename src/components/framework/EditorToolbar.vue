@@ -192,6 +192,9 @@ export default {
         },
         undoDelete(obj) {
             // Re-add
+            this.repo.saveTo(obj, function() {}, function(failure) {
+                console.log(failure);
+            });
         },
         undoUpdate(update) {
             // Revert to initial value
