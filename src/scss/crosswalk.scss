@@ -25,7 +25,7 @@
         padding-top: 0rem !important;
         z-index: 5;
         width: 45vw;
-        top: 30vh;
+        top: calc(52px + 100px + 196px);
         border-bottom: solid 1px black;
     }
 
@@ -36,17 +36,17 @@
         border-radius: 100% !important;
     }
     .crosswalk__steps {
-        height: 18vh;
+        height: 196px;
     }
     .crosswalk__feedback {
-        height: 8vh;
+        height: 100px;
     }
     .crosswalk__list {
         overflow: scroll;
-        height: calc(75vh - 52px);
+        height: calc(100vh - 52px - 196px - 100px);
     };
     .crosswalk__double-hierarchy {
-        height: 70vh;
+        height: calc(100vh - 52px - 196px - 100px);
         .lode__hierarchy-item {
                 margin: .25rem 0rem !important;
             }

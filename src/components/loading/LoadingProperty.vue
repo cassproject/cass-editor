@@ -1,12 +1,12 @@
 <template>
     <div class="loading-property">
-        Loading Property 
+        Loading Property
     </div>
 </template>
 <script>
 export default {
     name: 'LoadingProperty'
-}
+};
 </script>
 <style>
 

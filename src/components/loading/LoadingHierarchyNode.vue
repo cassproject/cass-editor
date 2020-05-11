@@ -1,13 +1,11 @@
 <template>
     <li class="loading-node has-text-dark">
-
         LOADING
-        
     </li>
 </template>
 <script>
 export default {
-    name: "LoadingHierarchyNode",
+    name: "LoadingHierarchyNode"
 };
 </script>
 
