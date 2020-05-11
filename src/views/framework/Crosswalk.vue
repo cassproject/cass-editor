@@ -50,6 +50,50 @@
                         </div>
                     </div>
                 </div>
+                <div class="column is-12 crosswalk__feedback">
+                    <div class="container">
+                        <div v-if="step == 0">
+                            <h2 class="title is-size-2">
+                                Step 1: Choose a framework source for your alignment
+                            </h2>
+                        </div>
+                        <div v-if="step == 1">
+                           <h2 class="title is-size-2">
+                                Step 2: Choose a framework target for your alignment
+                            </h2>
+                        </div>
+                        <div v-if="step == 2" class="columns is-mobile">
+                            <div class="column">
+                                <h2 class="title is-size-2">
+                                Step 3: Create alignments
+                            </h2>
+                            </div>
+                            <div class="column">
+                                <div class="buttons is-right">
+                                    <div class="button is-large is-outlined is-dark">
+                                        {{ tempAlignments.length }} alignments to save
+                                    </div>
+                                    <div @click="clearTempAlignment" v-if="competencyTargets.length !== 0" class="button is-large is-outlined is-dark">
+                                        clear current alignment
+                                    </div>
+                                    <div v-if="competencyTargets.length !== 0" @click="addTempAlignmentsToAlignmentList" class="button is-large is-outlined is-primary">
+                                        add current alignments
+                                    </div>
+                                     <div v-if="tempAlignments.length !== 0 && competencyTargets === []" class="button is-large is-outlined is-primary">
+                                        <span class="icon">
+                                            <i class="fa fa-save"/>
+                                        </span>
+                                        <span>save alignments</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div v-if="step == 3">
+                            Step 4: Review saved aligment 
+                        </div>
+                    </div>
+                </div>
                 <!-- step framework list for selecting a & b -->
                 <transition
                     name="slide-fade">
@@ -73,7 +117,6 @@
                     v-if="step === 1"
                     name="slide-fade">
                     <div
-
                         class="column is-12 crosswalk__list">
                         <div class="container">
                             <SearchBar searchType="framework" />
@@ -95,7 +138,7 @@
                         v-if="step === 2"
                         class="column is-12 crosswalk__double-hierarchy">
                         <div class="columns">
-                            <div class="column is-6 crosswalk__single-hierachy">
+                            <div class="column crosswalk__single-hierachy">
                                 <Hierarchy
                                     :container="frameworkSource"
                                     view="crosswalk"
@@ -116,9 +159,10 @@
                                     :exportOptions="[]"
                                     :highlightList="null"
                                     @searchThings="handleSearch($event)"
+                                    @doneLoadingNodes="loadFrameworkTarget = true"
                                     properties="primary" />
                             </div>
-                            <div class="column is-6 crosswalk__single-hierachy">
+                            <div class="column crosswalk__single-hierachy" v-if="loadFrameworkTarget">
                                 <Hierarchy
                                     :container="frameworkTarget"
                                     view="crosswalk"
@@ -161,6 +205,7 @@ export default {
     data: () => ({
         view: 'crosswalk',
         repo: window.repo,
+        loadFrameworkTarget: false,
         steps: [
             {
                 name: 'from',
@@ -186,7 +231,10 @@ export default {
     }),
     mixins: [common],
     props: {
-        queryParams: Object
+        queryParams: {
+            type: Object,
+            default: () => { return {};}
+        }
     },
     components: {
         List,
@@ -194,7 +242,7 @@ export default {
         Hierarchy
     },
     mounted() {
-        this.$store.commit('crosswalk/step', 0);
+        this.$store.commit('crosswalk/resetCrosswalk');
     },
     watch: {
         competencyTargets: function(val) {
@@ -287,18 +335,33 @@ export default {
             showRightAside: state => state.app.showRightAside,
             frameworkSource: state => state.crosswalk.frameworkSource,
             frameworkTarget: state => state.crosswalk.frameworkTarget,
-            competencySource: state => state.crosswalk.competencySource,
-            competencyTargets: state => state.crosswalk.competencyTargets,
-            alignmentType: state => state.crosswalk.alignmentType
+            competencySource: state => state.crosswalk.tempAlignment.source,
+            competencyTargets: state => state.crosswalk.tempAlignment.targets,
+            alignmentType: state => state.crosswalk.tempAlignment.type,
+            tempAlignment: state => state.crosswalk.tempAlignment,
+            tempAlignments: state => state.crosswalk.tempAlignments,
+            targetState: state => state.crosswalk.targetState,
+            sourceState: state => state.crosswalk.sourceState
         })
     },
     methods: {
+        clearTempAlignment: function() {
+            this.$store.commit('crosswalk/resetTempAlignment');
+        },
+        addTempAlignmentsToAlignmentList: function() {
+            this.$store.commit('crosswalk/addAlignmentToAlignmentsArray', this.tempAlignment);
+            this.$store.commit('crosswalk/resetTempAlignment');
+        },
         frameworkClickSource: function(framework) {
             var me = this;
             /* Should we exclude framework A from framework B options */
             EcFramework.get(framework.id, function(success) {
                 me.$store.commit('crosswalk/frameworkSource', success);
-                me.$store.commit('crosswalk/step', 1);
+                if(me.frameworkTarget) {
+                    me.$store.commit('crosswalk/step', 2);
+                } else {
+                    me.$store.commit('crosswalk/step', 1);
+                }
             }, console.error);
             this.$store.commit('app/searchTerm', '');
         },
