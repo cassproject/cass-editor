@@ -90,9 +90,6 @@
     </div>
 </template>
 <script>
-import Thing from '@/lode/components/lode/Thing.vue';
-import ThingEditing from '@/lode/components/lode/ThingEditing.vue';
-import Hierarchy from '@/lode/components/lode/Hierarchy.vue';
 import common from '@/mixins/common.js';
 import exports from '@/mixins/exports.js';
 import competencyEdits from '@/mixins/competencyEdits.js';
@@ -100,8 +97,6 @@ import ctdlasnProfile from '@/mixins/ctdlasnProfile.js';
 import t3Profile from '@/mixins/t3Profile.js';
 import tlaProfile from '@/mixins/tlaProfile.js';
 
-import FrameworkEditorToolbar from '@/components/framework/EditorToolbar.vue';
-import RightAside from '@/components/framework/RightAside.vue';
 
 export default {
     name: "Framework",
@@ -451,11 +446,11 @@ export default {
         }
     },
     components: {
-        Hierarchy,
-        Thing,
-        ThingEditing,
-        FrameworkEditorToolbar,
-        RightAside
+        Hierarchy: () => import('@/lode/components/lode/Hierarchy.vue'),
+        Thing: () => import('@/lode/components/lode/Thing.vue'),
+        ThingEditing: () => import('@/lode/components/lode/ThingEditing.vue'),
+        FrameworkEditorToolbar: () => import('@/components/framework/EditorToolbar.vue'),
+        RightAside: () => import('@/components/framework/RightAside.vue')
     },
     created: function() {
         // Set configuration create() happens before mount, make sure framework exists in case
