@@ -1,5 +1,6 @@
 @import './variables.scss';
 @import './framework.scss';
+@import './frameworks.scss';
 // required to adjust to side bar open
 .crosswalk.clear-side-bar {
     .hierarchy-buttons {
@@ -44,7 +45,7 @@
     }
     .crosswalk__list {
         overflow: scroll;
-        height: calc(100vh - 52px - 196px - 100px);
+        height: calc(90vh - 52px - 196px - 100px);
     };
     .crosswalk__double-hierarchy {
         height: calc(100vh - 52px - 196px - 100px);
