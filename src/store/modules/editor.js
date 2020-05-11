@@ -127,7 +127,6 @@ const mutations = {
 };
 const actions = {
     lastEditToUndo: function(context) {
-        console.log("dispatched");
         context.commit('setLastEditToUndo', context.state.editsToUndo.pop());
         return context.state.lastEditToUndo;
     }

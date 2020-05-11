@@ -197,7 +197,9 @@ export default {
             // Revert to initial value
             let me = this;
             EcRepository.get(update.id, function(success) {
-                success[update.fieldChanged] = update.initialValue;
+                for (var i = 0; i < update.fieldChanged.length; i++) {
+                    success[update.fieldChanged[i]] = update.initialValue[i];
+                }
                 me.repo.saveTo(success, function() {}, function() {});
                 me.$store.commit('editor/changedObject', success.shortId());
             }, function(error) {
