@@ -25,7 +25,7 @@
         padding-top: 0rem !important;
         z-index: 5;
         width: 45vw;
-        top: 22vh;
+        top: 30vh;
         border-bottom: solid 1px black;
     }
 
@@ -38,12 +38,15 @@
     .crosswalk__steps {
         height: 18vh;
     }
+    .crosswalk__feedback {
+        height: 8vh;
+    }
     .crosswalk__list {
         overflow: scroll;
-        height: calc(95vh - 52px);
+        height: calc(75vh - 52px);
     };
     .crosswalk__double-hierarchy {
-        height: 80vh;
+        height: 70vh;
         .lode__hierarchy-item {
                 margin: .25rem 0rem !important;
             }
@@ -70,14 +73,14 @@
                         padding-left: 5rem;
                     }
                     .lode__hierarchy-item {
-                        min-height: 102px;
                         padding: .25rem !important;
+                        border-radius: .25rem;
                         transform: translateX(0); 
                         .crosswalk-buttons__source {
                             background-color:rgba(white, .8);
                             position: fixed;
-                            right: 0;
-                            margin: 4px;
+                            right: 8px;
+                            top: 8px;
                             .columns {
                                 .column {
                                     padding: 2px !important;
@@ -96,7 +99,8 @@
                         .crosswalk-buttons__target {
                             background-color:rgba(white, .8);
                             position: fixed;
-                            right: 0;
+                            right: 8px;
+                            top: 8px;
                         }                   
                         .add-node-section {
                             width: 100%;
@@ -113,32 +117,6 @@
                                 padding: 0rem 0rem;
                             }
                         }
-                        .add-new-node__line {
-                            transition: opacity .2s;
-                            transition-delay: .2s;
-                            margin: 0rem;
-                            opacity: 0;
-                            padding-left: 4rem;
-                            height: 6px;
-                            width: 100%;
-                            display: flex;
-                            align-items: center;
-                            .button {
-                            }
-                            hr  {
-                                z-index: 2;
-                                width: 100%;
-                                display: inline-block;
-                                height: 1px;
-                                padding-left: -1px;
-                                margin-left: auto;
-                                margin-right: auto;
-                                border-width: 1px;
-                                background-color: rgba($primary, .5) !important;
-                                color: $black !important;
-                                border-color: $primary !important;
-                            }
-                        }
                         .lode__thing {
                             padding-left: 0rem;
                             .lode__Competency {
@@ -147,11 +125,6 @@
                                     margin: auto;
                                 }
                             }
-                        }
-                        .lode__thing-editing {
-                            max-width: 1300px;
-                            margin: auto;
-                            background-color: $light;
                         }
                         .lode__name {
                             .field {
@@ -178,11 +151,21 @@
                             }
                         }
                     }
-                    .is-selected-competency-source.lode__hierarchy-item {
-                        background-color: $light;
+                    .is-selected-competency-source.lode__hierarchy-item,
+                    .is-selected-competency-source.lode__hierarchy-item:hover {
+                        background-color: $primary;
+                        color: white !important;
                         .crosswalk-buttons {
                             visibility: visible;
                         }
+                    }
+                    .is-selected-competency-target.lode__hierarchy-item {
+                        background-color: $primary;
+                        color: white !important;
+                    }
+                    .is-selected-competency-target.lode__hierarchy-item:hover {
+                        background-color: $primary;
+                        color: white !important;
                     }
                     .lode__hierarchy-item:hover {
                         background-color: $light;
@@ -248,14 +231,6 @@
                                             max-width: 1300px;
                                             margin: auto;
                                         }
-                                        .lode__name {
-                                            .field {
-                                                .field-body {
-                                                    .field {
-                                                    }
-                                                }
-                                            }
-                                        }
                                     }
                                     ul.lode__hierarchy-sub-ul {
                                         li.lode__hierarchy-sub-li {
@@ -279,14 +254,6 @@
                                                     max-width: 1300px;
                                                     margin: auto;
                                                 }
-                                                .lode__name {
-                                                    .field {
-                                                        .field-body {
-                                                            .field {
-                                                            }
-                                                        }
-                                                    }
-                                                }
                                             }
                                             ul.lode__hierarchy-sub-ul {
                                                 li.lode__hierarchy-sub-li {
@@ -304,14 +271,6 @@
                                                             }
                                                             .lode__thing  {
                                                                 margin-left: 0;
-                                                            }
-                                                        }
-                                                        .lode__name {
-                                                            .field {
-                                                                .field-body {
-                                                                    .field {
-                                                                    }
-                                                                }
                                                             }
                                                         }
                                                     }
@@ -338,14 +297,6 @@
                                                                         margin-left: 8rem;
                                                                     }
                                                                 }
-                                                                .lode__name {
-                                                                    .field {
-                                                                        .field-body {
-                                                                            .field {
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
                                                             }
                                                             ul.lode__hierarchy-sub-ul {
                                                                 li.lode__hierarchy-sub-li {
@@ -365,14 +316,6 @@
                                                                                 margin-left: 0;
                                                                             }
                                                                         }
-                                                                        .lode__name {
-                                                                            .field {
-                                                                                .field-body {
-                                                                                    .field {
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        }
                                                                     }
                                                                     ul.lode__hierarchy-sub-ul {
                                                                         li.lode__hierarchy-sub-li {
@@ -386,14 +329,6 @@
                                                                                     }
                                                                                     .lode__thing  {
                                                                                         margin-left: 0;
-                                                                                    }
-                                                                                }
-                                                                                .lode__name {
-                                                                                    .field {
-                                                                                        .field-body {
-                                                                                            .field {
-                                                                                            }
-                                                                                        }
                                                                                     }
                                                                                 }
                                                                             }
@@ -415,16 +350,85 @@
             }
         }
     }
-    .slide-fade-enter-active {
-        transition: all .3s ease;
+    .List {
+        .button {
+            display: none;
+        }
+        .list-ul {
+             li.list-ul__item {
+                    padding: .5rem;
+                    background-color: white;
+                    width: 100%;
+                    display: flex;
+                    flex-wrap: wrap;
+                    align-items: center;
+                    .list-thing {
+                        width: calc(100% - 56px);
+                    }
+            }
+            li.list-ul__item:hover {
+                background-color: $cass-lightest;
+                #arrow-icon {
+                    display:block;
+                }
+            }
+            .list-ul__item{
+                border-radius: $border-radius;
+                padding: .0rem .5rem .25rem .125rem;
+                margin-top: .5rem;
+                .framework-list-item__details {
+                    color: rgba($dark, .6);
+                    padding-right: .5rem;
+                    padding-left: 0rem;
+                    font-size: $size-7;
+                    .details-value {
+
+                    }
+                    .details-label {
+                        font-weight: 600;
+                    }
+                }
+
+            }
+            .list-ul__item:hover {
+            }
+            .lode__thing {
+                .bottom-actions, .top-actions {
+                    display: none !important;
+                }
+                .lode__Framework {
+                    transform: translateX(0);
+                    cursor: pointer;
+                    .lode__Framework {
+
+                    }
+                    .lode__Thing-ul {
+                        padding: 0rem .5rem;
+                        width: 100%;
+
+                    }
+
+                }
+            }
+        }
+    }
+      .slide-fade-enter-to, .slide-fade-leave {
+        opacity: 1;
+        transform: translateX(50%);
       }
       .slide-fade-leave-active {
         transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
       }
-      .slide-fade-enter, .slide-fade-leave-to
-      /* .slide-fade-leave-active below version 2.1.8 */ {
-        transform: translateX(10px);
-        opacity: 0;
+      .slide-fade-enter-active {
+        transition: all .3s ease;
+        opacity: .5;
+      }
+    .slide-fade-leave-to{
+        transform: translateX(50%);
+        opacity: .5;
+      }
+      .slide-fade-enter{
+        opacity: .5;
       }
 }
      

@@ -386,21 +386,19 @@ drag, drag, and chosen states
     }
 }
 
-/* crosswalk hierarchy lives in crosswalk.js */
-
-
 .framework__info-bar {
     margin: 1rem .5rem;
 }
-.crosswalk-buttons {
-    padding-top: 1rem !important;
-    .header {
-        padding-left: .75rem;
-        font-weight: 600;
-    }
-}
 
-#page-framework {
+
+.framework-wrapper {
+    .lode__thing:hover {
+        .lode__Competency {
+            .lode__Property.lode__name{
+                color: $primary;
+            }
+        }
+    }
     .lode__thing {
         padding: .5rem;
         padding-right: 1rem;
@@ -603,8 +601,6 @@ drag, drag, and chosen states
         padding: .25rem .125rem;
         visibility: hidden;
         -webkit-backface-visibility: hidden;
-        .icon {
-        }
     }
     .edit-button:hover,
     .comment-button:hover,
@@ -632,7 +628,6 @@ drag, drag, and chosen states
     .lode__Framework {
         transform: translateX(0);
         width: 100%;
-        
         a {
             display:none;
         }
@@ -640,12 +635,7 @@ drag, drag, and chosen states
             padding: .5rem .5rem;
         }
         ul.lode__thing-always-ul.lode__thing-ul{
-            .lode__property-text{
-            }
             .lode__property {
-
-                label {
-                }
                 .property-buttons {
                     display: flex;
                     justify-content: space-evenly;
@@ -679,7 +669,6 @@ drag, drag, and chosen states
     padding-right: 1rem;
     .lode__Competency {
         .lode__Property.lode__name{
-            color: $primary;
         }
         .lode__Property.lode__Broadens,
         .lode__Property.lode__Narrows,
@@ -694,7 +683,6 @@ drag, drag, and chosen states
         visibility: visible;
     }
     .lode__Competency {
-        
         .edit-button {
             visibility: visible;
         }
