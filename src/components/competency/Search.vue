@@ -447,6 +447,12 @@ export default {
         appendCompetencies: function(results, newLink) {
             var selectedCompetency = this.$store.state.editor.selectedCompetency;
             var framework = this.$store.state.editor.framework;
+            var initialCompetencies = this.framework.competency ? this.framework.competency.slice() : null;
+            var initialRelations = this.framework.relation ? this.framework.relation.slice() : null;
+            var initialLevels = this.framework.level ? this.framework.level.slice() : null;
+            var initialLevelCompetency = [];
+            var afterLevelCompetency = [];
+            var addedNew = [];
             var me = this;
             for (var i = 0; i < results.length; i++) {
                 var thing = EcRepository.getBlocking(results[i]);
@@ -457,7 +463,10 @@ export default {
                     if (!EcArray.isArray(thing.competency)) {
                         thing.competency = [thing.competency];
                     }
+                    var thingId = thing.shortId();
+                    initialLevelCompetency.push({id: thingId, competency: thing.competency.splice()});
                     thing.competency.push(selectedCompetency.shortId());
+                    afterLevelCompetency.push({id: thingId, competency: thing.competency});
                     this.repo.saveTo(thing, function() {}, console.error);
                 }
             }
@@ -483,6 +492,7 @@ export default {
                         } else {
                             r.generateId(this.repo.selectedServer);
                         }
+                        addedNew.push(r.shortId());
                         r["schema:dateCreated"] = new Date().toISOString();
 
                         r.target = selectedCompetency.shortId();
@@ -521,6 +531,17 @@ export default {
                     }
                 }
             }
+            var changes = [];
+            for (var i = 0; i < addedNew.length; i++) {
+                changes.push({operation: "addNew", id: addedNew[i]});
+            }
+            if (initialLevelCompetency.length > 0) {
+                for (var i = 0; i < initialLevelCompetency.length; i++) {
+                    changes.push({operation: "update", id: initialLevelCompetency[i].id, fieldChanged: ["competency"], initialValue: [initialLevelCompetency[i].competency], changedValue: [afterLevelCompetency[i].competency]});
+                }
+            }
+            changes.push({operation: "update", id: framework.shortId(), fieldChanged: ["competency", "relation", "level"], initialValue: [initialCompetencies, initialRelations, initialLevels], changedValue: [framework.competency, framework.relation, framework.level]});
+            this.$store.commit('editor/addEditsToUndo', changes);
             if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                 framework = EcEncryptedValue.toEncryptedValue(framework);
             }
