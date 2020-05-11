@@ -7,9 +7,12 @@ const state = {
     step: 0,
     frameworkSource: null,
     frameworkTarget: null,
-    competencySource: null,
-    alignmentType: '',
-    competencyTargets: [],
+    tempAlignment: {
+        source: {},
+        targets: [],
+        type: ''
+    },
+    tempAlignments: [],
     sourceState: 'ready',
     targetState: 'ready'
 
@@ -26,19 +29,45 @@ const mutations = {
         state.step = val;
     },
     competencySource(state, c) {
-        state.competencySource = c;
+        state.tempAlignment.source = c;
     },
     competencyTargets(state, c) {
-        state.competencyTargets.push(c);
+        state.tempAlignment.targets.push(c);
     },
     alignmentType(state, a) {
-        state.alignmentType = a;
+        state.tempAlignment.type = a;
     },
     sourceState(state, s) {
         state.sourceState = s;
     },
     targetState(state, t) {
         state.targetState = t;
+    },
+    resetCrosswalk(state) {
+        state.step = 0;
+        state.tempAlignment.source = {};
+        state.tempAlignment.targets = [];
+        state.tempAlignment.type = '';
+        state.sourceState = 'ready';
+        state.targetState = 'ready';
+        state.tempAlignments = [];
+    },
+    resetTempAlignment(state) {
+        state.sourceState = 'ready';
+        state.targetState = 'ready';
+        state.tempAlignment = {
+            source: {},
+            targets: [],
+            type: ''
+        };
+    },
+    removeFromTargetsArray(state, id) {
+        let targets = state.tempAlignment.targets;
+        let filtered = targets.filter(target => target !== id);
+        state.tempAlignment.targets = filtered;
+    },
+    addAlignmentToAlignmentsArray(state, alignment) {
+        state.tempAlignments.push(alignment);
     }
 };
 const actions = {
@@ -51,14 +80,23 @@ const getters = {
     frameworkTarget: function(state) {
         return state.frameworkTarget;
     },
-    competencySource(state, c) {
-        return state.competencySource;
+    competencySource(state) {
+        return state.tempAlignment.source;
     },
-    competencyTargets(state, c) {
-        return state.competencyTargets;
+    competencyTargets(state) {
+        return state.tempAlignment.targets;
     },
     alignmentType(state, a) {
-        return state.alignmentType;
+        return state.tempAlignment.type;
+    },
+    sourceState(state) {
+        return state.sourceState;
+    },
+    targetState(state) {
+        return state.targetState;
+    },
+    tempAlignments(state) {
+        return state.tempAlignments;
     }
 };
 
