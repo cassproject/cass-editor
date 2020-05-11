@@ -20,6 +20,7 @@ $cass-success: #68C8DB;
 $cass-highlight: #EDAC5F;
 
 $cass-black: #47585C;
+$cass-medium: tint($cass-black, 80%);
 $cass-light: tint($cass-black, 96%);
 $cass-lightest:tint($cass-black, 97%);
 
@@ -74,4 +75,10 @@ $gap: 6px;
 
 .has-background-lightest {
     background-color:  $cass-lightest;
+}
+.has-text-medium {
+    color: $cass-medium;
+}
+.has-background-medium {
+    background-color: $cass-medium;
 }
