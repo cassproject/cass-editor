@@ -11,37 +11,37 @@
                             <div class="columns is-mobile">
                                 <div
                                     class="column is-3"
-                                    v-for="(step, index) in steps"
+                                    v-for="(item, index) in steps"
                                     :key="index">
                                     <div class="step-icon__wrapper has-text-centered">
                                         <div
                                             class="step-icon icon is-large has-text-white"
-                                            :class="[{'has-background-grey': step.complete === false}, { 'has-background-success': step.complete}]">
+                                            :class="[{'has-background-primary': index === step}, { 'has-background-success': step > index}, { 'has-background-medium': step < index}]">
                                             <h3
-                                                v-if="step.name === 'from'"
+                                                v-if="item.name === 'from'"
                                                 class="has-text-white">
                                                 A
                                             </h3>
                                             <h3
-                                                v-if="step.name === 'to'"
+                                                v-if="item.name === 'to'"
                                                 class="has-text-white">
                                                 A
                                             </h3>
                                             <i
-                                                v-if="step.name === 'align'"
+                                                v-if="item.name === 'align'"
                                                 class="fa fa-network-wired" />
                                             <i
-                                                v-if="step.name === 'review'"
+                                                v-if="item.name === 'review'"
                                                 class="fa fa-check" />
                                         </div>
-                                        <p class="label is-size-4 has-text-primary has-text-centered">
+                                        <p class="label is-size-4 has-text-success has-text-centered">
                                             <span
-                                                v-if="step.complete"
+                                                v-if="item.complete"
                                                 class="icon">
                                                 <i class="fa fa-check" />
                                             </span>
-                                            <span :class="[{'has-text-grey': step.complete === false}, { 'has-text-success': step.complete}]">
-                                                {{ step.description }}
+                                            <span :class="[{'has-text-primary has-text-bold': index === step}, { 'has-text-success': step > index}, { 'has-text-medium': step < index}]">
+                                                {{ item.description }}
                                             </span>
                                         </p>
                                     </div>
@@ -58,39 +58,48 @@
                             </h2>
                         </div>
                         <div v-if="step == 1">
-                           <h2 class="title is-size-2">
+                            <h2 class="title is-size-2">
                                 Step 2: Choose a framework target for your alignment
                             </h2>
                         </div>
-                        <div v-if="step == 2" class="columns is-mobile">
+                        <div
+                            v-if="step == 2"
+                            class="columns is-mobile">
                             <div class="column">
                                 <h2 class="title is-size-2">
-                                Step 3: Create alignments
-                            </h2>
+                                    Step 3: Create alignments
+                                </h2>
                             </div>
                             <div class="column">
                                 <div class="buttons is-right">
                                     <div class="button is-large is-outlined is-dark">
                                         {{ tempAlignments.length }} alignments to save
                                     </div>
-                                    <div @click="clearTempAlignment" v-if="competencyTargets.length !== 0" class="button is-large is-outlined is-dark">
+                                    <div
+                                        @click="clearTempAlignment"
+                                        v-if="competencyTargets.length !== 0"
+                                        class="button is-large is-outlined is-dark">
                                         clear current alignment
                                     </div>
-                                    <div v-if="competencyTargets.length !== 0" @click="addTempAlignmentsToAlignmentList" class="button is-large is-outlined is-primary">
+                                    <div
+                                        v-if="competencyTargets.length !== 0"
+                                        @click="addTempAlignmentsToAlignmentList"
+                                        class="button is-large is-outlined is-primary">
                                         add current alignments
                                     </div>
-                                     <div v-if="tempAlignments.length !== 0 && competencyTargets === []" class="button is-large is-outlined is-primary">
+                                    <div
+                                        v-if="tempAlignments.length !== 0 && competencyTargets === []"
+                                        class="button is-large is-outlined is-primary">
                                         <span class="icon">
-                                            <i class="fa fa-save"/>
+                                            <i class="fa fa-save" />
                                         </span>
                                         <span>save alignments</span>
                                     </div>
                                 </div>
                             </div>
-                            
                         </div>
                         <div v-if="step == 3">
-                            Step 4: Review saved aligment 
+                            Step 4: Review saved aligment
                         </div>
                     </div>
                 </div>
@@ -138,7 +147,16 @@
                         v-if="step === 2"
                         class="column is-12 crosswalk__double-hierarchy">
                         <div class="columns">
-                            <div class="column is-6 crosswalk__single-hierachy">
+                            <div
+                                class="column is-6 has-text-centered"
+                                v-if="!crosswalkSourceLoaded">
+                                <span class="icon is-large">
+                                    <i class="fa fa-spinner fa-2x fa-pulse" />
+                                </span>
+                            </div>
+                            <div
+                                v-show="crosswalkSourceLoaded"
+                                class="column is-6 crosswalk__single-hierachy">
                                 <Hierarchy
                                     :container="frameworkSource"
                                     view="crosswalk"
@@ -159,15 +177,19 @@
                                     :exportOptions="[]"
                                     :highlightList="null"
                                     @searchThings="handleSearch($event)"
-                                    @doneLoadingNodes="loadFrameworkTarget = true"
+                                    @doneLoadingNodes="prepareToLoadCrosswalkTarget"
                                     properties="primary" />
                             </div>
-                            <div class="column is-6" v-if="!loadFrameworkTarget">
+                            <div
+                                class="column is-6 has-text-centered"
+                                v-if="!loadCrosswalkTarget">
                                 <span class="icon is-large">
-                                    <i class="fa fa-spinner fa-2x fa-pulse"/>
+                                    <i class="fa fa-spinner fa-2x fa-pulse" />
                                 </span>
                             </div>
-                            <div class="column is-6 crosswalk__single-hierachy" v-if="loadFrameworkTarget">
+                            <div
+                                class="column is-6 crosswalk__single-hierachy"
+                                v-if="loadCrosswalkTarget">
                                 <Hierarchy
                                     :container="frameworkTarget"
                                     view="crosswalk"
@@ -209,8 +231,9 @@ export default {
     name: 'FrameworkCrosswalk',
     data: () => ({
         view: 'crosswalk',
+        loadCrosswalkTarget: false,
+        crosswalkSourceLoaded: false,
         repo: window.repo,
-        loadFrameworkTarget: false,
         steps: [
             {
                 name: 'from',
@@ -238,7 +261,7 @@ export default {
     props: {
         queryParams: {
             type: Object,
-            default: () => { return {};}
+            default: () => { return {}; }
         }
     },
     components: {
@@ -350,6 +373,12 @@ export default {
         })
     },
     methods: {
+        prepareToLoadCrosswalkTarget: function() {
+            this.crosswalkSourceLoaded = true;
+            setTimeout(() => {
+                this.loadCrosswalkTarget = true;
+            }, 2000);
+        },
         clearTempAlignment: function() {
             this.$store.commit('crosswalk/resetTempAlignment');
         },
@@ -362,7 +391,7 @@ export default {
             /* Should we exclude framework A from framework B options */
             EcFramework.get(framework.id, function(success) {
                 me.$store.commit('crosswalk/frameworkSource', success);
-                if(me.frameworkTarget) {
+                if (me.frameworkTarget) {
                     me.$store.commit('crosswalk/step', 2);
                 } else {
                     me.$store.commit('crosswalk/step', 1);
