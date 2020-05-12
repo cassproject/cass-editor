@@ -200,6 +200,9 @@ export default {
             // Revert to initial value
             let me = this;
             EcRepository.get(update.id, function(success) {
+                if (update.expandedProperty) {
+                    return me.undoUpdateWithExpandedProperty(update, success);
+                }
                 for (var i = 0; i < update.fieldChanged.length; i++) {
                     success[update.fieldChanged[i]] = update.initialValue[i];
                 }
@@ -208,6 +211,9 @@ export default {
             }, function(error) {
                 console.error(error);
             });
+        },
+        undoUpdateWithExpandedProperty(update, updatedObject) {
+            console.log(update);
         }
     },
     computed: {
