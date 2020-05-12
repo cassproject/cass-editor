@@ -1,0 +1,437 @@
+@import './variables.scss';
+@import './framework.scss';
+@import './frameworks.scss';
+// required to adjust to side bar open
+.crosswalk.clear-side-bar {
+    .hierarchy-buttons {
+        width: calc(45vw - 150px);
+    }
+}
+.crosswalk {
+    height: calc(100vh - 52px);
+    overflow: hidden;
+    .fa-tilde:before {
+        font-family: Arial; /* your font family here! */
+        font-weight: bold;
+        font-size: 1.1rem;
+        content: '~';
+    }
+    hr {
+        display: none;
+    }
+    .hierarchy-buttons {
+        padding-top: 1rem !important;
+        position: fixed;
+        background-color: white;
+        height: 42px !important;
+        padding-top: 0rem !important;
+        z-index: 5;
+        width: 45vw;
+        top: calc(52px + 100px + 196px);
+        border-bottom: solid 1px black;
+    }
+
+    .step-icon__wrapper {
+        padding: .25rem;
+    }
+    .step-icon.icon {
+        border-radius: 100% !important;
+    }
+    .crosswalk__steps {
+        height: 196px;
+    }
+    .crosswalk__feedback {
+        height: 100px;
+    }
+    .crosswalk__list {
+        overflow: scroll;
+        height: calc(90vh - 52px - 196px - 100px);
+    };
+    .crosswalk__double-hierarchy {
+        height: calc(100vh - 52px - 196px - 100px);
+        .lode__hierarchy-item {
+                margin: .25rem 0rem !important;
+            }
+
+        .columns {
+            height: 100%;
+            margin: .25rem;
+        };
+        overflow: hidden;
+        .crosswalk__single-hierachy {
+            padding: 2rem;
+            overflow: scroll;
+            height: 100%;
+        }
+    }
+    .crosswalk__double-hierarchy {
+    // room for improvement, iterate over loop for max depth tabbing
+    // possibly set tab value based on value in scss varaibles sheet
+        .lode__hierarchy {
+            
+            ul.lode__hierarchy-ul {
+                li.lode__hierarchy-li {
+                    .add-new-node {
+                        padding-left: 5rem;
+                    }
+                    .lode__hierarchy-item {
+                        padding: .25rem !important;
+                        border-radius: .25rem;
+                        transform: translateX(0); 
+                        .crosswalk-buttons__source {
+                            background-color:rgba(white, .8);
+                            position: fixed;
+                            right: 8px;
+                            top: 8px;
+                            .columns {
+                                .column {
+                                    padding: 2px !important;
+                                }
+                            };
+                            .crosswalk-buttons__source__create {
+                                visibility: hidden;
+                            }
+                            .crosswalk-buttons__source__select {
+                                visibility: visible;
+                            }
+                            .crosswalk-buttons__source__type {
+                                visibility: visible;
+                            }
+                        } 
+                        .crosswalk-buttons__target {
+                            background-color:rgba(white, .8);
+                            position: fixed;
+                            right: 8px;
+                            top: 8px;
+                        }                   
+                        .add-node-section {
+                            width: 100%;
+                            display:block;
+                            max-width: 1300px;
+                            padding-left: 3rem;
+                            height: auto;
+                            cursor: pointer;
+                        }
+                        .add-node-section:hover .add-new-node__line, 
+                        .add-node-section:hover .button {
+                            opacity: 1;
+                            .add-node__options {
+                                padding: 0rem 0rem;
+                            }
+                        }
+                        .lode__thing {
+                            padding-left: 0rem;
+                            .lode__Competency {
+                                .lode__thing-heading {
+                                    max-width: 1300px;
+                                    margin: auto;
+                                }
+                            }
+                        }
+                        .lode__name {
+                            .field {
+                                padding-left: 0rem;
+                                .field-body {
+                                    .field {
+                                        padding-left: 0rem;
+                                        font-size: 1rem !important; // top level competencies
+                                        font-weight: 600;
+                                    }
+                                }
+                            }
+                        }
+                        .lode__description {
+                            .field {
+                                padding-left: 0rem;
+                                .field-body {
+                                    .field {
+                                        padding-left: 0rem;
+                                        font-size: 1rem !important; // top level competencies
+                                        font-weight: 400;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .is-selected-competency-source.lode__hierarchy-item,
+                    .is-selected-competency-source.lode__hierarchy-item:hover {
+                        background-color: $primary;
+                        color: white !important;
+                        .crosswalk-buttons {
+                            visibility: visible;
+                        }
+                    }
+                    .is-selected-competency-target.lode__hierarchy-item {
+                        background-color: $primary;
+                        color: white !important;
+                    }
+                    .is-selected-competency-target.lode__hierarchy-item:hover {
+                        background-color: $primary;
+                        color: white !important;
+                    }
+                    .lode__hierarchy-item:hover {
+                        background-color: $light;
+                        .crosswalk-buttons__target,
+                        
+                        .crosswalk-buttons__source {
+                            .crosswalk-buttons__source__create {
+                                visibility: visible;
+                            }
+                        }
+                    }
+                    ul.lode__hierarchy-sub-ul {
+                        li.lode__hierarchy-sub-li {
+                            .lode__hierarchy-item {
+                                .add-node-section {
+                                    padding-left: 2.5rem;
+                                    margin: auto;
+                                }
+                                .lode__thing {
+                                    .lode__Competency {
+                                        .lode__thing-heading {
+                                            padding-left: 2rem;
+                                            margin-bottom: .5rem;
+                                        }
+                                    }
+                                
+                                    .lode__thing  {
+                                        margin-left: 0;
+                                    }
+                                }
+                                .lode__thing-editing {
+                                    max-width: 1300px;
+                                    margin: auto;
+                                }
+                                .lode__name {
+                                    .field {
+                                        .field-body {
+                                            .field {
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            ul.lode__hierarchy-sub-ul {
+                                li.lode__hierarchy-sub-li {
+                                    .lode__hierarchy-item {
+                                        .add-node-section {
+                                            padding-left: 4rem;
+                                            margin: auto;
+                                        }
+                                        .lode__thing {
+                                            .lode__Competency {
+                                                .lode__thing-heading {
+                                                    padding-left: 3.5rem;
+                                                    margin-bottom: .5rem;
+                                                }
+                                            }
+                                            .lode__thing  {
+                                                margin-left: 0;
+                                            }
+                                        }
+                                        .lode__thing-editing {
+                                            max-width: 1300px;
+                                            margin: auto;
+                                        }
+                                    }
+                                    ul.lode__hierarchy-sub-ul {
+                                        li.lode__hierarchy-sub-li {
+                                            .lode__hierarchy-item {
+                                                .add-node-section {
+                                                    padding-left: 5.5rem;
+                                                    margin: auto;
+                                                }
+                                                .lode__thing {
+                                                    .lode__Competency {
+                                                        .lode__thing-heading {
+                                                            padding-left: 5rem;
+                                                            margin-bottom: .5rem;
+                                                        }
+                                                    }
+                                                    .thing  {
+                                                        margin-left: 0;
+                                                    }
+                                                }
+                                                .lode__thing-editing {
+                                                    max-width: 1300px;
+                                                    margin: auto;
+                                                }
+                                            }
+                                            ul.lode__hierarchy-sub-ul {
+                                                li.lode__hierarchy-sub-li {
+                                                    .lode__hierarchy-item {
+                                                        .add-node-section {
+                                                            padding-left: 7rem;
+                                                            margin: auto;
+                                                        }
+                                                        .lode__thing, .lode__thing-editing {
+                                                            .lode__Competency {
+                                                                .lode__thing-heading {
+                                                                    padding-left: 6.5rem;
+                                                                    margin-bottom: .5rem;
+                                                                }
+                                                            }
+                                                            .lode__thing  {
+                                                                margin-left: 0;
+                                                            }
+                                                        }
+                                                    }
+                                                    ul.lode__hierarchy-sub-ul {
+                                                        li.lode__hierarchy-sub-li {
+                                                            .lode__hierarchy-item {
+                                                                .add-node-section {
+                                                                    padding-left: 8.5rem;
+                                                                    margin: auto;
+                                                                }
+                                                                .lode__thing{
+                                                                    .lode__Competency {
+                                                                        .lode__thing-heading {
+                                                                            padding-left: 8rem;
+                                                                            margin-bottom: .5rem;
+                                                                        }
+                                                                    }
+                                                                    .lode__thing  {
+                                                                        margin-left: 0;
+                                                                    }
+                                                                }
+                                                                .lode__thing-editing  {
+                                                                    .lode__Competency {
+                                                                        margin-left: 8rem;
+                                                                    }
+                                                                }
+                                                            }
+                                                            ul.lode__hierarchy-sub-ul {
+                                                                li.lode__hierarchy-sub-li {
+                                                                    .lode__hierarchy-item {
+                                                                        .add-node-section {
+                                                                            padding-left: 10rem;
+                                                                            margin: auto;
+                                                                        }
+                                                                        .lode__thing, .lode__thing-editing {
+                                                                            .lode__Competency {
+                                                                                .lode__thing-heading {
+                                                                                    padding-left: 9rem;
+                                                                                    margin-bottom: .5rem;
+                                                                                }
+                                                                            }
+                                                                            .lode__thing  {
+                                                                                margin-left: 0;
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    ul.lode__hierarchy-sub-ul {
+                                                                        li.lode__hierarchy-sub-li {
+                                                                            .lode__hierarchy-item {
+                                                                                .lode__thing, .lode__thing-editing {
+                                                                                    .lode__Competency {
+                                                                                        .lode__thing-heading {
+                                                                                            margin-left: 10.5rem;
+                                                                                            margin-bottom: .5rem;
+                                                                                        }
+                                                                                    }
+                                                                                    .lode__thing  {
+                                                                                        margin-left: 0;
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }    
+                                                                }
+                                                            }    
+                                                        }
+                                                    }    
+                                                }
+                                            }    
+                                        }
+                                    }    
+                                }
+                            }    
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .List {
+        .button {
+            display: none;
+        }
+        .list-ul {
+             li.list-ul__item {
+                    padding: .5rem;
+                    background-color: white;
+                    width: 100%;
+                    display: flex;
+                    flex-wrap: wrap;
+                    align-items: center;
+                    .list-thing {
+                        width: calc(100% - 56px);
+                    }
+            }
+            li.list-ul__item:hover {
+                background-color: $cass-lightest;
+                #arrow-icon {
+                    display:block;
+                }
+            }
+            .list-ul__item{
+                border-radius: $border-radius;
+                padding: .0rem .5rem .25rem .125rem;
+                margin-top: .5rem;
+                .framework-list-item__details {
+                    color: rgba($dark, .6);
+                    padding-right: .5rem;
+                    padding-left: 0rem;
+                    font-size: $size-7;
+                    .details-value {
+
+                    }
+                    .details-label {
+                        font-weight: 600;
+                    }
+                }
+
+            }
+            .list-ul__item:hover {
+            }
+            .lode__thing {
+                .bottom-actions, .top-actions {
+                    display: none !important;
+                }
+                .lode__Framework {
+                    transform: translateX(0);
+                    cursor: pointer;
+                    .lode__Framework {
+
+                    }
+                    .lode__Thing-ul {
+                        padding: 0rem .5rem;
+                        width: 100%;
+
+                    }
+
+                }
+            }
+        }
+    }
+      .slide-fade-enter-to, .slide-fade-leave {
+        opacity: 1;
+      }
+      .slide-fade-leave-active {
+        transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+      }
+      .slide-fade-enter-active {
+        transition: all .3s ease;
+        opacity: .0;
+      }
+    .slide-fade-leave-to{
+        opacity: .0;
+      }
+      .slide-fade-enter{
+        opacity: .0;
+      }
+}
+     
+  
+  
+  
