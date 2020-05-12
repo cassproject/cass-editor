@@ -3,7 +3,9 @@
         <RightAside v-if="showRightAside" />
         <!-- search field -->
         <div class="container is-fluid is-marginless is-paddingless">
-            <SearchBar searchType="framework" />
+            <SearchBar
+                searchType="framework"
+                filterSet="all" />
             <div
                 v-if="!queryParams.concepts==='true'"
                 class="section">
