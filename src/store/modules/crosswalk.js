@@ -31,8 +31,11 @@ const mutations = {
     competencySource(state, c) {
         state.tempAlignment.source = c;
     },
-    competencyTargets(state, c) {
+    addCompetencyTarget(state, c) {
         state.tempAlignment.targets.push(c);
+    },
+    competencyTargets(state, c) {
+        state.tempAlignment.targets = c;
     },
     alignmentType(state, a) {
         state.tempAlignment.type = a;
