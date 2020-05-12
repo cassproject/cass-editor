@@ -1,13 +1,10 @@
 <template>
     <div class="crosswalk section">
         <div class="container is-fluid">
-            <div class="columns is-multiline">
+            <div class="columns is-gapless is-paddiingless is-marginless is-multiline">
                 <div class="column is-12 crosswalk__steps">
                     <div class="section">
                         <div class="container">
-                            <h2 class="title is-size-1">
-                                Framework Crosswalk
-                            </h2>
                             <div class="columns is-mobile">
                                 <div
                                     class="column is-3"
@@ -50,56 +47,59 @@
                         </div>
                     </div>
                 </div>
-                <div class="column is-12 crosswalk__feedback">
+                <div class="column is-12 crosswalk__title">
                     <div class="container">
-                        <div v-if="step == 0">
-                            <h2 class="title is-size-2">
-                                Step 1: Choose a framework source for your alignment
-                            </h2>
-                        </div>
-                        <div v-if="step == 1">
-                            <h2 class="title is-size-2">
-                                Step 2: Choose a framework target for your alignment
-                            </h2>
-                        </div>
-                        <div
-                            v-if="step == 2"
-                            class="columns is-mobile">
-                            <div class="column">
-                                <h2 class="title is-size-2">
-                                    Step 3: Create alignments
+                        <div class="is-flex">
+                            <div class="crosswalk__title__title">
+                                <h2 class="is-size-2 has-text-weight-bold is-inline">
+                                    Framework Crosswalk:
+                                </h2>
+                                <h2
+                                    v-if="step == 0"
+                                    class="is-size-2 is-inline">
+                                    select source
+                                </h2>
+                                <h2
+                                    v-if="step == 1"
+                                    class="is-size-2 is-inline">
+                                    select target
+                                </h2>
+                                <h2 class="is-size-2 is-inline">
+                                    create alignments
                                 </h2>
                             </div>
-                            <div class="column">
-                                <div class="buttons is-right">
-                                    <div class="button is-large is-outlined is-dark">
-                                        {{ tempAlignments.length }} alignments to save
-                                    </div>
-                                    <div
-                                        @click="clearTempAlignment"
-                                        v-if="competencyTargets.length !== 0"
-                                        class="button is-large is-outlined is-dark">
-                                        clear current alignment
-                                    </div>
-                                    <div
-                                        v-if="competencyTargets.length !== 0"
-                                        @click="addTempAlignmentsToAlignmentList"
-                                        class="button is-large is-outlined is-primary">
+
+                            <div
+                                v-if="step == 2"
+                                class="buttons crosswalk__title__buttons">
+                                <div class="button is-outlined is-link">
+                                    {{ tempAlignments.length }} alignments to save
+                                </div>
+                                <div
+                                    v-if="competencyTargets.length !== 0"
+                                    @click="addTempAlignmentsToAlignmentList"
+                                    class="button is-outlined is-primary">
+                                    <span class="icon">
+                                        <i class="fa fa-plus" />
+                                    </span>
+                                    <span>
                                         add current alignments
-                                    </div>
-                                    <div
-                                        v-if="tempAlignments.length !== 0 && competencyTargets === []"
-                                        class="button is-large is-outlined is-primary">
-                                        <span class="icon">
-                                            <i class="fa fa-save" />
-                                        </span>
-                                        <span>save alignments</span>
-                                    </div>
+                                    </span>
+                                </div>
+                                <div
+                                    v-if="tempAlignments.length !== 0 && sourceState === 'ready'"
+                                    class="button is-outlined is-primary">
+                                    <span class="icon">
+                                        <i class="fa fa-save" />
+                                    </span>
+                                    <span>
+                                        save alignments
+                                    </span>
                                 </div>
                             </div>
-                        </div>
-                        <div v-if="step == 3">
-                            Step 4: Review saved aligment
+                            <h2 v-if="step == 3">
+                                Step 4: Review saved aligment
+                            </h2>
                         </div>
                     </div>
                 </div>
@@ -110,7 +110,9 @@
                         v-if="step === 0"
                         class="column is-12 crosswalk__list">
                         <div class="container">
-                            <SearchBar searchType="framework" />
+                            <SearchBar
+                                filterSet="basic"
+                                searchType="framework" />
                             <List
                                 :type="type"
                                 :repo="repo"
@@ -128,7 +130,9 @@
                     <div
                         class="column is-12 crosswalk__list">
                         <div class="container">
-                            <SearchBar searchType="framework" />
+                            <SearchBar
+                                filterSet="basic"
+                                searchType="framework" />
                             <List
                                 :type="type"
                                 :repo="repo"
@@ -237,22 +241,22 @@ export default {
         steps: [
             {
                 name: 'from',
-                description: 'Select framework to align from',
+                description: 'select source framework',
                 complete: false
             },
             {
                 name: 'to',
-                description: 'Select framework to align to',
+                description: 'select target framework',
                 complete: false
             },
             {
                 name: 'align',
-                description: 'Add alignments between frameworks',
+                description: 'create new alignments',
                 complete: false
             },
             {
                 name: 'review',
-                description: 'Save alignment and review',
+                description: 'save & review',
                 complete: false
             }
         ]
