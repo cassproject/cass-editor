@@ -30,7 +30,9 @@ const state = {
     frameworkCommentList: [],
     frameworkCommentPersonMap: {},
     commentsToDelete: [],
-    commentScrollTo: {}
+    commentScrollTo: {},
+    editsToUndo: [],
+    lastEditToUndo: null
 };
 const mutations = {
     framework(state, f) {
@@ -115,10 +117,19 @@ const mutations = {
     },
     setCommentScrollTo(state, val) {
         state.commentScrollTo = val;
+    },
+    addEditsToUndo(state, edits) {
+        state.editsToUndo.push(edits);
+    },
+    setLastEditToUndo(state, edit) {
+        state.lastEditToUndo = edit;
     }
 };
 const actions = {
-
+    lastEditToUndo: function(context) {
+        context.commit('setLastEditToUndo', context.state.editsToUndo.pop());
+        return context.state.lastEditToUndo;
+    }
 };
 const getters = {
     framework: function(state) {

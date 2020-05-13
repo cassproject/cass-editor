@@ -45,10 +45,17 @@ export default {
                 }, console.log);
             } else {
                 // Delete competency and relations
+                var initialCompetencies = this.framework.competency ? this.framework.competency.slice() : null;
+                var initialRelations = this.framework.relation ? this.framework.relation.slice() : null;
+                var initialLevels = this.framework.level ? this.framework.level.slice() : null;
                 this.$store.commit('editor/selectedCompetency', thing);
                 this.framework["schema:dateModified"] = new Date().toISOString();
                 this.framework.removeCompetency(thing.shortId(), function() {
                     me.framework.removeLevel(thing.shortId());
+                    me.$store.commit('editor/addEditsToUndo', [
+                        {operation: "delete", obj: thing},
+                        {operation: "update", id: me.framework.shortId(), fieldChanged: ["competency", "relation", "level"], initialValue: [initialCompetencies, initialRelations, initialLevels], changedValue: [me.framework.competency, me.framework.relation, me.framework.level]}
+                    ]);
                     me.conditionalDelete(thing.shortId());
                     me.spitEvent("competencyDeleted", thing.shortId(), "editFrameworkSection");
                     me.$store.commit('editor/selectedCompetency', null);
