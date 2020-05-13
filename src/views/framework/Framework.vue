@@ -252,13 +252,13 @@ export default {
                 return this.t3CompetencyProfile;
             }
             if (this.config) {
-                var profile = this.config.competencyConfig;
+                var profile = JSON.parse(JSON.stringify(this.config.competencyConfig));
                 if (this.config.levelsConfig) {
                     var me = this;
                     var key = EcObject.keys(this.config.levelsConfig);
                     key = key[0];
                     profile.secondaryProperties.push(key);
-                    profile[key] = this.config.levelsConfig[key];
+                    profile[key] = JSON.parse(JSON.stringify(this.config.levelsConfig[key]));
                     profile[key]["http://schema.org/rangeIncludes"] = [{"@id": "https://schema.cassproject.org/0.4/Level"}];
                     profile[key]["valuesIndexed"] = function() { return me.levels; };
                     if (!profile[key]["options"]) {
@@ -277,7 +277,7 @@ export default {
                         let key = keys[i];
                         var me = this;
                         profile.secondaryProperties.push(key);
-                        profile[key] = this.config.relationshipConfig[key];
+                        profile[key] = JSON.parse(JSON.stringify(this.config.relationshipConfig[key]));
                         profile[key]["http://schema.org/rangeIncludes"] = [{"@id": "https://schema.cassproject.org/0.4/Competency"}];
                         profile[key]["valuesIndexed"] = function() { return me.relations[key]; };
                         profile[key]["noTextEditing"] = 'true';
