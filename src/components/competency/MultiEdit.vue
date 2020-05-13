@@ -73,7 +73,8 @@ export default {
             repo: window.repo,
             saveCount: 0,
             errorMessage: [],
-            checkedOptions: []
+            checkedOptions: [],
+            changedItemsForUndo: []
         };
     },
     computed: {
@@ -162,6 +163,7 @@ export default {
                     return false;
                 }
             }
+            return true;
         },
         applyToMultiple: function() {
             var me = this;
@@ -169,10 +171,20 @@ export default {
                 var competencyId = this.selectedCompetencies[i];
                 var competency = EcCompetency.getBlocking(competencyId);
                 this.expand(competency, function(expandedCompetency) {
+                    var initialValues = [];
+                    var changedValues = [];
+                    var properties = [];
                     for (var j = 0; j < me.addedPropertiesAndValues.length; j++) {
                         var property = me.addedPropertiesAndValues[j].property.value;
                         var value = me.addedPropertiesAndValues[j].value;
                         var range = me.addedPropertiesAndValues[j].range;
+
+                        properties.push(property);
+                        if (expandedCompetency[property]) {
+                            initialValues.push(JSON.parse(JSON.stringify(expandedCompetency[property])));
+                        } else {
+                            initialValues.push([]);
+                        }
 
                         if (range.length === 1 && range[0].toLowerCase().indexOf("langstring") !== -1) {
                             if (me.profile && me.profile[property] && (me.profile[property]["onePerLanguage"] === 'true' || me.profile[property]["onePerLanguage"] === true)) {
@@ -211,10 +223,12 @@ export default {
                                 f();
                             }
                         }
+                        changedValues.push(expandedCompetency[property]);
                     }
                     if (me.errorMessage && me.errorMessage.length > 0) {
                         me.showModal();
                     }
+                    me.changedItemsForUndo.push({operation: "update", id: competencyId, fieldChanged: properties, initialValue: initialValues, changedValue: changedValues});
                     me.save(expandedCompetency);
                     me.saveCount++;
                 });
@@ -282,7 +296,8 @@ export default {
         saveCount: function() {
             if (this.saveCount === this.selectedCompetencies.length) {
                 // Done saving, close modal
-                this.$emit('cancelEditMultipleEvent');
+                this.$store.commit('editor/addEditsToUndo', this.changedItemsForUndo);
+                this.$store.commit('app/closeModal');
             }
         }
     }
