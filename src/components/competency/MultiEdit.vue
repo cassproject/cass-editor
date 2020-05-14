@@ -284,6 +284,21 @@ export default {
                 if (rld.owner && !EcArray.isArray(rld.owner)) {
                     rld.owner = [rld.owner];
                 }
+                if (rld.reader && !EcArray.isArray(rld.reader)) {
+                    rld.reader = [rld.reader];
+                }
+                if (rld.signature && !EcArray.isArray(rld.signature)) {
+                    rld.signature = [rld.signature];
+                }
+                if (rld.competency && !EcArray.isArray(rld.competency)) {
+                    rld.competency = [rld.competency];
+                }
+                if (rld.level && !EcArray.isArray(rld.level)) {
+                    rld.level = [rld.level];
+                }
+                if (rld.relation && !EcArray.isArray(rld.relation)) {
+                    rld.relation = [rld.relation];
+                }
                 rld["schema:dateModified"] = new Date().toISOString();
                 if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
                     rld = EcEncryptedValue.toEncryptedValue(rld);

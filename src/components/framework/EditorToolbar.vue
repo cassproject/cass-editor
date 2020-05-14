@@ -214,6 +214,69 @@ export default {
         },
         undoUpdateWithExpandedProperty(update, updatedObject) {
             console.log(update);
+            var me = this;
+            this.expand(updatedObject, function(expanded) {
+                for (var i = 0; i < update.fieldChanged.length; i++) {
+                    console.log("changing " + update.fieldChanged[i] + " to " + JSON.stringify(update.initialValue[i]) + " from " + JSON.stringify(update.changedValue[i]));
+                    expanded[update.fieldChanged[i]] = update.initialValue[i];
+                    if (expanded[update.fieldChanged[i]].length === 0) {
+                        delete expanded[update.fieldChanged[i]];
+                    }
+                    me.saveExpanded(expanded);
+                }
+            });
+        },
+        expand: function(o, after) {
+            var toExpand = JSON.parse(o.toJson());
+            if (toExpand["@context"] != null && toExpand["@context"].startsWith("http://")) {
+                toExpand["@context"] = toExpand["@context"].replace("http://", "https://");
+            }
+            if (toExpand["@context"] != null && toExpand["@context"].indexOf("skos") !== -1) {
+                toExpand["@context"] = "https://schema.cassproject.org/0.4/skos/";
+            }
+            jsonld.expand(toExpand, function(err, expanded) {
+                if (err == null) {
+                    after(expanded[0]);
+                } else {
+                    after(null);
+                }
+            });
+        },
+        saveExpanded: function(expandedCompetency) {
+            var me = this;
+            var context = "https://schema.cassproject.org/0.4";
+            jsonld.compact(expandedCompetency, this.$store.state.lode.rawSchemata[context], function(err, compacted) {
+                if (err != null) {
+                    console.error(err);
+                }
+                var rld = new EcRemoteLinkedData();
+                rld.copyFrom(compacted);
+                rld.context = context;
+                delete rld["@context"];
+                if (rld.owner && !EcArray.isArray(rld.owner)) {
+                    rld.owner = [rld.owner];
+                }
+                if (rld.reader && !EcArray.isArray(rld.reader)) {
+                    rld.reader = [rld.reader];
+                }
+                if (rld.signature && !EcArray.isArray(rld.signature)) {
+                    rld.signature = [rld.signature];
+                }
+                if (rld.competency && !EcArray.isArray(rld.competency)) {
+                    rld.competency = [rld.competency];
+                }
+                if (rld.level && !EcArray.isArray(rld.level)) {
+                    rld.level = [rld.level];
+                }
+                if (rld.relation && !EcArray.isArray(rld.relation)) {
+                    rld.relation = [rld.relation];
+                }
+                rld["schema:dateModified"] = new Date().toISOString();
+                if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
+                    rld = EcEncryptedValue.toEncryptedValue(rld);
+                }
+                me.repo.saveTo(rld, console.log, console.error);
+            });
         }
     },
     computed: {
