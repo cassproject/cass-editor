@@ -168,6 +168,7 @@ export default {
     },
     mounted: function() {
         this.displayFirst.splice(0, this.displayFirst.length);
+        this.$store.commit('app/searchTerm', "");
         if (!this.copyOrLink && this.searchType === "Competency" && this.framework.competency) {
             for (var i = 0; i < this.framework.competency.length; i++) {
                 var comp = EcRepository.getBlocking(this.framework.competency[i]);
