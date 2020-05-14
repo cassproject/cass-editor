@@ -623,7 +623,7 @@ export default {
                 var framework = me.framework;
                 edits.push({operation: "update", id: framework.shortId(), fieldChanged: ["relation"], initialValue: [initialRelations], changedValue: [framework.relation]});
                 me.$store.commit('editor/framework', framework);
-                this.$store.commit('editor/addEditsToUndo', edits);
+                me.$store.commit('editor/addEditsToUndo', edits);
                 if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
                 }
