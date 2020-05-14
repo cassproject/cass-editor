@@ -7,9 +7,11 @@
     <aside
         id="right-side-bar__comments"
         class="menu has-background-lightest">
-        <p class="subtitle is-size-4">
-            Comments
-        </p>
+        <div class="right-aside-bar__title">
+            <h3 class="title is-size-3">
+                Comments
+            </h3>
+        </div>
         <!-- for each comment in time sequence
             click to scroll to position in framework eventually -->
         <!-- for each response -->
@@ -28,13 +30,33 @@
                     <p><i class="fa fa-exclamation-circle" /> No comments available</p>
                 </span>
             </div>
-            <div v-if="commentWrapperList.length > 0">
-                <Comment
-                    v-for="commentWrapper in commentWrapperList"
-                    :comment="commentWrapper"
-                    :canReply="canReplyToComments"
-                    :key="commentWrapper" />
-            </div>
+            <template v-if="commentWrapperList.length > 0">
+                <div
+                    v-for="(commentWrapper, index) in commentWrapperList"
+                    :key="index"
+                    class="comment-list">
+                    <h4
+                        class="comment-list__about"
+                        @click="setUpScroll(commentWrapper)">
+                        {{ commentWrapper.aboutName }}
+                    </h4>
+                    <Comment
+                        :comment="commentWrapper"
+                        :key="commentWrapper.commentId"
+                        :canReply="canReplyToComments" />
+                    <div class="buttons is-right">
+                        <div
+                            class="button is-small is-outlined is-primary"
+                            title="reply"
+                            @click="handleClickReply(commentWrapper)">
+                            <span class="icon">
+                                <i class="fa fa-reply" />
+                            </span>
+                            <span>reply</span>
+                        </div>
+                    </div>
+                </div>
+            </template>
         </div>
     </aside>
 </template>
@@ -60,6 +82,16 @@ export default {
         Comment
     },
     methods: {
+        setUpScroll: function(comment) {
+            let scrollObj = {ts: Date.now(), scrollId: '#scroll-' + comment.aboutId.split('/').pop()};
+            this.$store.commit('editor/setCommentScrollTo', scrollObj);
+        },
+        handleClickReply: function(comment) {
+            this.$store.commit('editor/setAddCommentAboutId', comment.aboutId);
+            this.$store.commit('editor/setAddCommentType', 'reply');
+            this.$store.commit('editor/setCommentToReply', comment.comment);
+            this.$store.commit('app/showModal', {component: 'AddComment'});
+        },
         determineCanModifyComment: function(comment) {
             if (this.loggedOnPerson.shortId().equals(comment.creator)) return true;
             else return false;

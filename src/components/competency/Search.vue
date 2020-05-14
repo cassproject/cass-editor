@@ -27,7 +27,9 @@ placed anywhere in a structured html element such as a <section> or a <div>
         </header>
         <section class="modal-card-body">
             <div class="column is-12">
-                <SearchBar filterSet="basic" searchType="competency" />
+                <SearchBar
+                    filterSet="basic"
+                    searchType="competency" />
             </div>
             <div class="column is-12">
                 <List

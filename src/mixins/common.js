@@ -672,7 +672,7 @@ export default {
         toPrettyDateString: function(dateInMilliseconds) {
             try {
                 let d = new Date(dateInMilliseconds);
-                return dateFormat(d, "dddd, mmmm dS, yyyy, h:MM:ss TT");
+                return dateFormat(d, "mm/dd/yy, h:MM:ss TT");
             } catch (err) {
                 return 'unknown';
             }

@@ -1,62 +1,88 @@
 <template>
-    <div>
-        <ul class="comment-list">
-            <li
-                class="comment-list__user"
-                :title="comment.creatorEmail">
-                {{ comment.creatorName }}
-            </li>
-            <li
-                class="comment-list__about"
-                :title="comment.aboutId"
-                @click="setUpScroll">
-                {{ comment.aboutName }}
-            </li>
-            <li class="comment-list__message">
-                {{ comment.commentText }}
-            </li>
-            <li class="comment-list__timestamp">
-                {{ toPrettyDateString(comment.dateCreated) }}
-            </li>
-            <li
-                v-if="comment.lastEditDate"
-                class="comment-list__message_edit">
-                *Edited: {{ toPrettyDateString(comment.lastEditDate) }}
-            </li>
-            <li class="comment-list__action">
-                <div class="buttons is-right">
-                    <div
-                        v-if="canReply && comment.replies.length <= 0"
-                        class="button is-small is-text"
-                        title="reply"
-                        @click="handleClickReply">
-                        <div class="icon">
-                            <i class="fa fa-reply" />
-                        </div>
-                    </div>
-                    <div
-                        v-if="comment.canModify"
-                        class="button is-small is-text"
-                        title="delete"
-                        @click="handleClickDelete">
-                        <div class="icon">
-                            <i class="fa fa-trash" />
-                        </div>
-                    </div>
-                    <div
-                        v-if="comment.canModify"
-                        class="button is-small is-text"
-                        title="edit"
-                        @click="handleClickEdit">
-                        <div class="icon">
-                            <i class="fa fa-edit" />
-                        </div>
+    <ul class="comment-list-item">
+        <li
+            class="comment-list__user"
+            :title="comment.creatorEmail">
+            {{ comment.creatorName }}
+        </li>
+        <li class="comment-list__timestamp">
+            {{ toPrettyDateString(comment.dateCreated) }}
+        </li>
+        <li class="comment-list__message-container">
+            <div
+                v-if="comment.canModify"
+                class="dropdown"
+                :class="{ 'is-active': commentListDropDownActive}">
+                <div class="dropdown-trigger">
+                    <button
+                        @click="commentListDropDownActive = !commentListDropDownActive"
+                        aria-haspopup="true"
+                        aria-controls="dropdown-menu"
+                        class="button is-text has-text-dark">
+                        <span class="icon has-text-primary">
+                            <i class="fas fa-ellipsis-v" />
+                        </span>
+                    </button>
+                </div>
+                <div
+                    class="dropdown-menu"
+                    id="dropdown-menu"
+                    role="menu">
+                    <div class="dropdown-content">
+                        <a
+                            @click="handleClickEdit"
+                            href="#"
+                            class="dropdown-item">
+                            edit
+                        </a>
+                        <a
+                            @click="handleClickDelete"
+                            class="dropdown-item">
+                            delete
+                        </a>
                     </div>
                 </div>
-            </li>
-            <li v-if="comment.replies.length > 0">
-                <ul>
-                    <div v-for="(reply, replyIdx) in comment.replies">
+            </div>
+            <div
+                class="comment-list__message-container__message"
+                :class="{'show-more': showMore}">
+                {{ comment.commentText }}
+            </div>
+            <div
+                v-if="comment.commentText.length > 90"
+                class="buttons is-right">
+                <div
+                    v-if="showMore"
+                    @click="showMore=false"
+                    class="button is-text has-text-primary">
+                    show less
+                </div>
+                <div
+                    v-else
+                    @click="showMore=true"
+                    class="button is-text has-text-primary">
+                    show more
+                </div>
+            </div>
+        </li>
+        <li
+            v-if="comment.lastEditDate"
+            class="comment-list__message_edit">
+            *Edited: {{ toPrettyDateString(comment.lastEditDate) }}
+        </li>
+        <li class="comment-list__reply_hr">
+            <hr>
+        </li>
+        <li v-if="comment.replies.length > 0">
+            <comment
+                v-for="reply in comment.replies"
+                :key="reply.commentId"
+                :comment="reply"
+                :canReply="false" />
+        </li>
+        <!-- moved to comments.vue leaving for a commit to make sure everything is here -->
+        <!--<li><ul>
+                    <div v-for="(reply, replyIdx) in comment.replies" :key="reply.commentId">
                         <li class="comment-list__reply_hr">
                             <hr>
                         </li>
@@ -65,8 +91,37 @@
                             :title="reply.creatorEmail">
                             {{ reply.creatorName }}
                         </li>
-                        <li class="comment-list__message">
-                            {{ reply.commentText }}
+                        <li class="comment-list__message-container">
+                            <div class="dropdown" :class="{ 'is-active': commentListDropDownActive === reply.commentId}">
+                                <div class="dropdown-trigger">
+                                    <button @click="handleCommentDropDown(reply.commentId)" aria-haspopup="true" aria-controls="dropdown-menu" class="button is-text has-text-dark" >
+                                    <span class="icon has-text-primary" >
+                                        <i class="fas fa-ellipsis-v"/>
+                                    </span>
+                                    </button>
+                                </div>
+                                <div v-if="comment.canModify" class="dropdown-menu" id="dropdown-menu" role="menu">
+                                    <div class="dropdown-content">
+                                        <a @click="handleClickEditReply(replyIdx)" href="#" class="dropdown-item">
+                                            edit
+                                        </a>
+                                        <a @click="handleClickDeleteReply(replyIdx)" class="dropdown-item">
+                                            delete
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="comment-list__message-container__message">
+                                {{ reply.commentText }}
+                            </div>
+                            <div v-if="comment.commentText.length > 90" class="buttons is-right">
+                                <div v-if="showMore" @click="showMore=false" class="button is-text has-text-primary">
+                                    show more
+                                </div>
+                                <div v-else @click="showMore=true" class="button is-text has-text-primary">
+                                    show less
+                                </div>
+                            </div>
                         </li>
                         <li class="comment-list__timestamp">
                             {{ toPrettyDateString(reply.dateCreated) }}
@@ -80,38 +135,20 @@
                             <div class="buttons is-right">
                                 <div
                                     v-if="canReply && ((replyIdx + 1) === comment.replies.length)"
-                                    class="button is-small is-text"
+                                    class="button is-small is-outlined is-primary"
                                     title="reply"
                                     @click="handleClickReply">
-                                    <div class="icon">
+                                    <span class="icon">
                                         <i class="fa fa-reply" />
-                                    </div>
-                                </div>
-                                <div
-                                    v-if="reply.canModify"
-                                    class="button is-small is-text"
-                                    title="delete"
-                                    @click="handleClickDeleteReply(replyIdx)">
-                                    <div class="icon">
-                                        <i class="fa fa-trash" />
-                                    </div>
-                                </div>
-                                <div
-                                    v-if="reply.canModify"
-                                    class="button is-small is-text"
-                                    title="edit"
-                                    @click="handleClickEditReply(replyIdx)">
-                                    <div class="icon">
-                                        <i class="fa fa-edit" />
-                                    </div>
+                                    </span>
+                                    <span>reply</span>
                                 </div>
                             </div>
                         </li>
                     </div>
                 </ul>
-            </li>
-        </ul>
-    </div>
+            </li>-->
+    </ul>
 </template>
 
 <script>
@@ -121,6 +158,7 @@ export default {
     name: 'Comment',
     mixins: [common],
     components: {
+        comment: () => import('./Comment.vue')
     },
     props: {
         comment: {
@@ -133,13 +171,11 @@ export default {
     },
     data: function() {
         return {
+            showMore: false,
+            commentListDropDownActive: false
         };
     },
     methods: {
-        setUpScroll: function() {
-            let scrollObj = {ts: Date.now(), scrollId: '#scroll-' + this.comment.aboutId.split('/').pop()};
-            this.$store.commit('editor/setCommentScrollTo', scrollObj);
-        },
         handleClickReply: function() {
             this.$store.commit('editor/setAddCommentAboutId', this.comment.aboutId);
             this.$store.commit('editor/setAddCommentType', 'reply');
@@ -177,6 +213,9 @@ export default {
         }
     },
     computed: {
+        commentId: function() {
+            return this.comment.commentId;
+        }
     }
 };
 </script>

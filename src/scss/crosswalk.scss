@@ -55,17 +55,17 @@
         }
     }
     .crosswalk__steps {
-        height: 100px;
+        height: 124px;
     }
     .crosswalk__list {
         overflow: scroll;
-        height: calc(100vh - 270px);
+        height: calc(100vh - 294px);
     };
     .crosswalk__double-hierarchy {
-        height: calc(100vh - 270px);
+        height: calc(100vh - 294px);
         margin-top: 100px;
         .lode__hierarchy {
-            height: calc(100vh - 270px - 2.5rem);
+            height: calc(100vh - 294px - 2.5rem);
             overflow: scroll;
             margin-top: 2rem;
             padding: 0rem 1rem;
