@@ -228,7 +228,7 @@ export default {
                     if (me.errorMessage && me.errorMessage.length > 0) {
                         me.showModal();
                     }
-                    me.changedItemsForUndo.push({operation: "update", id: competencyId, fieldChanged: properties, initialValue: initialValues, changedValue: changedValues});
+                    me.changedItemsForUndo.push({operation: "update", id: EcRemoteLinkedData.trimVersionFromUrl(expandedCompetency["@id"]), fieldChanged: properties, initialValue: initialValues, changedValue: changedValues, expandedProperty: true});
                     me.save(expandedCompetency);
                     me.saveCount++;
                 });
