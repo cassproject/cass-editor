@@ -577,6 +577,24 @@ export default {
             }
             this.repo.saveTo(framework, function() {}, console.error);
         },
+        addRelationAsCompetencyField: function(targets, thing, relationType, allowSave) {
+            var me = this;
+            var initialValue = thing[relationType] ? thing[relationType].slice() : null;
+            for (var i = 0; i < targets.length; i++) {
+                if (thing[relationType] == null) {
+                    thing[relationType] = [];
+                }
+                thing[relationType].push(targets[i]);
+            }
+            this.$store.commit('editor/addEditsToUndo', [{operation: "update", id: thing.shortId(), fieldChanged: [relationType], initialValue: [initialValue], changedValue: [thing[relationType]]}]);
+            thing["schema:dateModified"] = new Date().toISOString();
+            if (this.$store.state.editor.private === true) {
+                if (EcEncryptedValue.encryptOnSaveMap[thing.id] !== true) {
+                    thing = EcEncryptedValue.toEncryptedValue(thing);
+                }
+            }
+            me.repo.saveTo(thing, function() {}, console.error);
+        },
         removeRelationFromFramework: function(source, property, target) {
             var me = this;
             var initialRelations = this.framework.relation ? this.framework.relation.slice() : null;

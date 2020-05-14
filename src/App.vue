@@ -1019,22 +1019,6 @@ export default {
                 me.$store.commit('editor/framework', EcFramework.getBlocking(framework.id));
             }, console.error);
         },
-        addRelationAsCompetencyField: function(targets, thing, relationType, allowSave) {
-            var me = this;
-            for (var i = 0; i < targets.length; i++) {
-                if (thing[relationType] == null) {
-                    thing[relationType] = [];
-                }
-                thing[relationType].push(targets[i]);
-            }
-            thing["schema:dateModified"] = new Date().toISOString();
-            if (this.$store.state.editor.private === true) {
-                if (EcEncryptedValue.encryptOnSaveMap[thing.id] !== true) {
-                    thing = EcEncryptedValue.toEncryptedValue(thing);
-                }
-            }
-            me.repo.saveTo(thing, function() {}, console.error);
-        },
         importParentStyles: function() {
             var parentStyleSheets = parent.document.styleSheets;
             var cssString = "";
