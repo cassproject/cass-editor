@@ -53,7 +53,7 @@
                 <button
                     @click="edit=true"
                     class="button is-outlined is-primary"
-                    v-if="dynamicModalContent.type==='Level'">
+                    v-if="dynamicModalContent.objectType==='Level'">
                     Edit {{ dynamicModalContent.type }}
                 </button>
                 <button
@@ -100,7 +100,7 @@ export default {
     },
     methods: {
         goToFramework: function(framework) {
-            if (this.framework.shortId() === framework.url && this.dynamicModalContent.type !== "Level") {
+            if (this.framework.shortId() === framework.url && this.dynamicModalContent.objectType !== "Level") {
                 return this.goToCompetencyWithinThisFramework();
             }
             this.$store.commit('editor/framework', EcRepository.getBlocking(framework.url));
@@ -114,7 +114,7 @@ export default {
     },
     mounted() {
         var me = this;
-        if (this.dynamicModalContent.type === "Level") {
+        if (this.dynamicModalContent.objectType === "Level") {
             EcFramework.search(this.repo, "level:\"" + this.dynamicModalContent.uri + "\"", function(success) {
                 for (var i = 0; i < success.length; i++) {
                     me.parentFrameworks.push({name: success[i].getName(), url: success[i].shortId()});
