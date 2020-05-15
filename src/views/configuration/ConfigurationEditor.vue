@@ -336,6 +336,7 @@ export default {
                 null);
         },
         buildCompetencyTypeConfigObject(compConf) {
+            if (!this.currentConfig.compEnforceTypes) this.currentConfig.compEnforcedTypes = [];
             let compTypeRequired = this.currentConfig.compTypeRequired;
             if (this.currentConfig.compEnforcedTypes && this.currentConfig.compEnforcedTypes.length > 0) compTypeRequired = true;
             compConf["http://purl.org/dc/terms/type"] = this.generatePropertyConfigObject(
