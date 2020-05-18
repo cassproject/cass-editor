@@ -29,7 +29,7 @@ placed anywhere in a structured html element such as a <section> or a <div>
             <div class="column is-12">
                 <SearchBar
                     filterSet="basic"
-                    searchType="competency" />
+                    :searchType="searchType" />
             </div>
             <div class="column is-12">
                 <List

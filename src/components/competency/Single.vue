@@ -19,7 +19,7 @@
                 :expandInModal="true" />
             <div class="section">
                 <h4 class="header">
-                    This <b>{{ dynamicModalContent.type }}</b> is listed in <b>{{ numberOfParentFrameworks }}</b> frameworks
+                    This <b>{{ dynamicModalContent.type }}</b> is listed in <b>{{ numberOfParentFrameworks }}</b> {{ dynamicModalContent.objectType === "Concept" ? "concept schemes" : "frameworks"}}
                 </h4>
                 <ul class="single__list">
                     <li
@@ -104,12 +104,39 @@ export default {
                 return this.goToCompetencyWithinThisFramework();
             }
             this.$store.commit('editor/framework', EcRepository.getBlocking(framework.url));
+            if (this.dynamicModalContent.objectType === "Concept") {
+                var queryParams = this.$store.state.editor.queryParams;
+                queryParams.concepts = "true";
+                this.$store.commit('editor/queryParams', queryParams);
+                this.$router.push({name: "conceptScheme", params: {frameworkId: framework.url}});
+            }
             this.$store.commit('app/closeModal');
         },
         goToCompetencyWithinThisFramework: function() {
             // Scroll to competency
             this.$scrollTo("#scroll-" + this.dynamicModalContent.uri.split('/').pop());
             this.$store.commit('app/closeModal');
+        },
+        findConceptTrail: function(conceptId) {
+            var concept = EcRepository.getBlocking(conceptId);
+            if (concept["skos:topConceptOf"]) {
+                var scheme = EcConceptScheme.getBlocking(concept["skos:topConceptOf"]);
+                this.parentFrameworks.push({name: this.getDisplayStringFrom(scheme["dcterms:title"]), url: scheme.shortId()});
+            } else if (concept["skos:broader"]) {
+                var parent = EcConcept.getBlocking(concept["skos:broader"]);
+                this.findConceptTrail(parent);
+            }
+        },
+        getDisplayStringFrom: function(n) {
+            if (n != null && EcArray.isArray(n)) {
+                if ((n).length > 0) {
+                    n = (n)[0];
+                }
+            }
+            if (n != null && EcObject.isObject(n) && (n).hasOwnProperty("@value")) {
+                return (n)["@value"];
+            }
+            return n;
         }
     },
     mounted() {
@@ -123,7 +150,7 @@ export default {
                 console.error(failure);
                 me.parentFrameworks = [];
             }, null);
-        } else {
+        } else if (this.dynamicModalContent.objectType === "Competency") {
             EcFramework.search(this.repo, "competency:\"" + this.dynamicModalContent.uri + "\"", function(success) {
                 for (var i = 0; i < success.length; i++) {
                     me.parentFrameworks.push({name: success[i].getName(), url: success[i].shortId()});
@@ -132,6 +159,8 @@ export default {
                 console.error(failure);
                 me.parentFrameworks = [];
             }, null);
+        } else {
+            this.findConceptTrail(this.dynamicModalContent.uri);
         }
     }
 };
