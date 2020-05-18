@@ -105,8 +105,13 @@ export default {
             repo: window.repo,
             selectedIds: [],
             itemsSaving: 0,
-            displayFirst: []
+            displayFirst: [],
+            showMine: false,
+            sortBy: null
         };
+    },
+    created: function() {
+        this.sortBy = this.queryParams.concepts === 'true' ? "dcterms:title.keyword" : "name.keyword";
     },
     computed: {
         ...mapState({
@@ -164,6 +169,21 @@ export default {
         },
         searchType: function() {
             return this.$store.state.lode.searchType;
+        },
+        sortResults: function() {
+            return this.$store.getters['app/sortResults'];
+        },
+        quickFilters: function() {
+            return this.$store.getters['app/quickFilters'];
+        },
+        filteredQuickFilters: function() {
+            if (this.quickFilters) {
+                let filterValues = this.quickFilters.filter(item => item.checked === true);
+                console.log('filtered value', filterValues);
+                return filterValues;
+            } else {
+                return [];
+            }
         }
     },
     mounted: function() {
@@ -577,6 +597,40 @@ export default {
                 this.addAlignments(ids, this.$store.state.editor.selectedCompetency, this.$store.state.editor.selectCompetencyRelation);
             } else {
                 this.attachUrlProperties(ids);
+            }
+        },
+        addNewlinesToId: function(pem) {
+            // Begin public key line
+            pem = pem.substring(0, 26) + "\n" + pem.substring(26);
+            var length = pem.length;
+            var start = 27;
+            while (start + 64 < length) {
+                pem = pem.substring(0, start + 64) + "\n" + pem.substring(start + 64);
+                start += 65;
+                length++;
+            }
+            // End public key line
+            pem = pem.substring(0, length - 24) + "\n" + pem.substring(length - 24);
+            return pem;
+        }
+    },
+    watch: {
+        sortResults: function() {
+            if (this.sortResults.id === "lastEdited") {
+                this.sortBy = "schema:dateModified";
+                this.displayFirst.splice(0, this.displayFirst.length);
+            } else {
+                this.sortBy = this.queryParams.concepts === 'true' ? "dcterms:title.keyword" : "name.keyword";
+                this.displayFirst.splice(0, this.displayFirst.length);
+            }
+        },
+        filteredQuickFilters: function() {
+            this.showMine = false;
+            for (var i = 0; i < this.filteredQuickFilters.length; i++) {
+                if (this.filteredQuickFilters[i].id === "ownedByMe") {
+                    this.showMine = true;
+                    this.displayFirst.splice(0, this.displayFirst.length);
+                }
             }
         }
     }
