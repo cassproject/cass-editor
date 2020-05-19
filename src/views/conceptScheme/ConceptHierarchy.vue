@@ -90,15 +90,6 @@
                             create new
                         </span>
                     </div>
-                    <div
-                        v-if="addingNode"
-                        @click="clickToSearch"
-                        class="button is-outlined is-small is-primary ">
-                        <span class="icon">
-                            <i class="fa fa-search" />
-                        </span>
-                        <span>search concepts</span>
-                    </div>
                 </div>
             </div>
         </div>
@@ -116,7 +107,7 @@
                     @createNewNodeEvent="onCreateNewNode"
                     :subview="subview"
                     @mountingNode="handleMountingNode"
-                    v-for="item in hierarchy"
+                    v-for="(item, index) in hierarchy"
                     :key="item.obj.id"
                     :obj="item.obj"
                     class="lode__hierarchy-li"
@@ -428,10 +419,10 @@ export default {
                     }
                     toContainer["schema:dateModified"] = new Date().toISOString();
                     moveComp["schema:dateModified"] = new Date().toISOString();
-                    if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[toContainer.id] !== true) {
+                    if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[toContainer.id] !== true) {
                         toContainer = EcEncryptedValue.toEncryptedValue(toContainer);
                     }
-                    if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[moveComp.id] !== true) {
+                    if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[moveComp.id] !== true) {
                         moveComp = EcEncryptedValue.toEncryptedValue(moveComp);
                     }
                     me.repo.saveTo(toContainer, function() {
@@ -523,6 +514,7 @@ export default {
                     }, console.error);
                 }, console.error);
             }
+            this.$store.commit("editor/newCompetency", c.shortId());
             console.log("Added node: ", JSON.parse(c.toJson()));
         },
         select: function(objId, checked) {
