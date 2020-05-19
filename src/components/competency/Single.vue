@@ -2,9 +2,10 @@
     <div class="single modal-card">
         <header class="modal-card-head has-background-primary">
             <p class="modal-card-title has-text-white is-size-2">
-                <span>{{ dynamicModalContent.parentName['@value'] }}</span>
-                <br>
-                <br>
+                <template v-if="dynamicModalContent.parentName['@value']">
+                    <span>{{ dynamicModalContent.parentName['@value'] }}</span>
+                    <br><br>
+                </template>
                 <b>{{ dynamicModalContent.type }}</b>
             </p>
             <button
@@ -19,7 +20,7 @@
                 :expandInModal="true" />
             <div class="section">
                 <h4 class="header">
-                    This <b>{{ dynamicModalContent.type }}</b> is listed in <b>{{ numberOfParentFrameworks }}</b> frameworks
+                    This competency is listed in <b>{{ numberOfParentFrameworks }}</b> framework<span v-if="numberOfParentFrameworks > 1">s</span>
                 </h4>
                 <ul class="single__list">
                     <li

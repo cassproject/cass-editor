@@ -47,6 +47,30 @@
                     <b>Header rows detected</b>
                 </li>
             </ul>
+             <!--accept details -->
+             <div class="buttons is-right">
+                 <div
+                    @click="$store.dispatch('app/clearImport')"
+                    class=" button is-light is-small is-pulled-right is-dark is-outlined">
+                    <span>
+                        Cancel
+                    </span>
+                    <span class="icon">
+                        <i class="fa fa-times-circle" />
+                    </span>
+                </div>
+                <div
+                    @click="$store.commit('app/importTransition', 'preview')"
+                    v-if="importTransition === 'detail'"
+                    class="button is-small is-primary is-outlined">
+                    <span>
+                        Accept Details & Review
+                    </span>
+                    <span class="icon is-small">
+                        <i class="fas fa-arrow-right" />
+                    </span>
+                </div>
+            </div>
         </div>
     </div>
 </template>

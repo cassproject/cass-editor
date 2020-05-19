@@ -311,7 +311,7 @@ export default {
     border-bottom: solid 1px $light;
     top: 52px;
     z-index: 10;
-    height: 36px;
+    height: 44px;
     display: fixed;
     width: 100%;
     padding: 4px;

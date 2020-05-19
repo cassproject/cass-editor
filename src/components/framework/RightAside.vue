@@ -65,6 +65,9 @@ export default {
             direction: ltr;
             padding-bottom: 1rem;
         }
+        .right-aside__filter-and-sort {
+            direction: ltr;
+        }
         .comment-list {
             direction: ltr;
             background-color: white;

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="right-aside__filter-and-sort">
         <h3 class="title is-size-3">
             Filter and Sort
         </h3>

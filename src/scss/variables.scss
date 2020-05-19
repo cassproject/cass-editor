@@ -43,6 +43,15 @@ $danger: $cass-error;
 $dark:$cass-black;
 $text: #222222;
 
+
+$size-1: 2rem;
+$size-2: 1.4rem;
+$size-3: 1.125rem;
+$size-4: 1rem;
+$size-5: .925rem;
+$size-6: .875rem;
+$size-7: .75rem;
+
 $weight-normal: 400;
 $family-code: $family-primary;
 $background-white: $white;
@@ -57,16 +66,11 @@ $title-size: 2.2rem !important;
 $subtitle-weight: 600;
 $title-color: $black;
 $title-family: $family-secondary;
+$title-size: $size-1;
 $subtitle-color: $black;
 $subtitle-family: $family-secondary;
 
-$size-1: 2rem;
-$size-2: 1.5rem;
-$size-3: 1.2rem;
-$size-4: 1rem;
-$size-5: .9rem;
-$size-6: .8rem;
-$size-7: .7rem;
+
 
 
 $border-radius: 4px;

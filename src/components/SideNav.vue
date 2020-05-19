@@ -5,7 +5,14 @@
         class="menu has-background-primary has-text-white">
         <div
             class="menu-label has-text-white is-size-3">
-            {{ displayName }}
+            <template v-if="displayName !== 'No user'">
+                {{ displayName }}
+            </template>
+            <template v-else>
+                <router-link class="button is-outlined is-link" to="/login">
+                    login
+                </router-link>
+            </template>
             <!-- might need later to close -->
             <div
                 v-if="false"
@@ -36,13 +43,11 @@
 
         <!-- GENERAL MENU -->
         <div
-            class="menu-label"
-            v-if="currentRoute === '/' || currentRoute === '/import'">
+            class="menu-label">
             Competencies & Frameworks
         </div>
         <ul
-            class="menu-list"
-            v-if="currentRoute === '/' || currentRoute === '/import'">
+            class="menu-list">
             <li class="has-text-white">
                 <router-link to="/">
                     Frameworks
@@ -66,20 +71,13 @@
                 </router-link>
             </li>
         </ul>
-        <div
-            class="menu-label"
-            v-if="currentRoute === '/'">
-            Activity
-        </div>
         <ul class="menu-list" />
         <div
-            class="menu-label"
-            v-if="currentRoute === '/' || currentRoute === '/import'">
+            class="menu-label">
             Configuration
         </div>
         <ul
-            class="menu-list"
-            v-if="currentRoute === '/' || currentRoute === '/import'">
+            class="menu-list" v-if="currentRoute !== '/config'">
             <li>
                 <router-link to="/config">
                     Configurations
@@ -91,150 +89,64 @@
                 </router-link>
             </li>
         </ul>
-        <!-- END GENERAL MENU -->
-
-        <!-- IMPORT OPTIONS -->
-        <div
-            class=""
-            v-if="false">
-            <h3 class="subtitle has-text-white is-size-3 has-text-weight-bold">
-                Import Options
-            </h3>
-            <div class="menu-label">
-                Supported File Type
-            </div>
-            <ul class="menu-list">
-                <li>
-                    <a title="PDF imports are experimental. While some may work, we are still working out the kinks.">
-                        <span>PDF</span>
-                        <span class="icon">
-                            <i class="fa fa-exclamation" />
-                        </span>
-                    </a>
-                </li>
-                <li>
-                    <a title="HTML imports are supported at this time.">HTML<span class="icon"><i class="fa fa-check" /></span></a>
-                </li>
-                <li>
-                    <a title="DOCX imports are experimental, while some may work, we are still working out the kinks.">DOCX<span class="icon"><i class="fa fa-check" /></span></a>
-                </li>
-            </ul>
-            <div class="menu-label">
-                Supported Framework Formats
-            </div>
-            <ul class="menu-list">
-                <li>
-                    <a
-                        href="https://www.careeronestop.org/competencymodel/home.aspx"
-                        target="_blank">
-                        Competency Model Clearinghouse
-                    </a>
-                </li>
-                <li>
-                    <a
-                        href="https://kctcs.edu/"
-                        target="_blank">
-                        Kentucky Community and Technical College System
-                    </a>
-                </li>
-                <li>
-                    <a
-                        href="https://act.org"
-                        target="_blank">
-                        ACT.org</a>
-                </li>
-                <li>
-                    <a
-                        href="https://www.nccco.org/"
-                        target="_blank">
-                        National Commission for the Certification of Crane Operators
-                    </a>
-                </li>
-                <li>
-                    <a
-                        href="https://www.dol.gov/agencies/eta"
-                        target="_blank">
-                        Department of Labor: Employment and Training Administration
-                    </a>
-                </li>
-                <li>
-                    <a
-                        href="https://www.urban.org/policy-centers/center-labor-human-services-and-population/projects/competency-based-occupational-frameworks-registered-apprenticeships"
-                        target="_blank">
-                        CBOF</a>
-                </li>
-            </ul>
-        </div>
-        <!-- END IMPORT CONTEXTUAL MENU -->
         <!-- CONFIG OPTIONS -->
-        <div
-            class=""
-            v-if="currentRoute === '/config'">
-            <h3 class="subtitle has-text-white is-size-3 has-text-weight-bold">
-                Configuration
-            </h3>
-            <div class="menu-label">
-                Configuration
-            </div>
-            <ul class="menu-list">
-                <li>
-                    <a v-scroll-to="'#configuration-details'">
-                        <span>Configuration Details</span>
-                    </a>
-                </li>
-                <li>
-                    <a
-                        href="#"
-                        v-scroll-to="'#framework-properties'">Framework Properties</a>
-                </li>
-                <li>
-                    <a
-                        href="#"
-                        v-scroll-to="'#competency-properties'">Competency Properties</a>
-                </li>
-                <li>
-                    <a
-                        href="#"
-                        v-scroll-to="'#enforce-competency-types'">Enforce Competency Types</a>
-                </li>
-                <li>
-                    <a
-                        href="#"
-                        v-scroll-to="'#allow-levels'">Allow Levels</a>
-                </li>
-                <li>
-                    <a
-                        href="#"
-                        v-scroll-to="'#enforce-level-values'">Enforce Level Values</a>
-                </li>
-                <li>
-                    <a
-                        href="#"
-                        v-scroll-to="'#competency-relationships'">Competency Relationships</a>
-                </li>
-                <li>
-                    <a
-                        href="#"
-                        v-scroll-to="'#resource-alignments'">Resource Alignments</a>
-                </li>
-                <li>
-                    <a
-                        href="#"
-                        v-scroll-to="'#default-owners'">Default Owners</a>
-                </li>
-                <li>
-                    <a
-                        href="#"
-                        v-scroll-to="'#default-readers'">Default Readers</a>
-                </li>
-                <li>
-                    <a
-                        href="#"
-                        v-scroll-to="'#default-commenters'">Default Commenters</a>
-                </li>
-            </ul>
-        </div>
-        <!-- END IMPORT CONTEXTUAL MENU -->
+        <ul v-if="currentRoute === '/config'" class="menu-list">
+            <li>
+                <a v-scroll-to="'#configuration-details'">
+                    <span>Configuration Details</span>
+                </a>
+            </li>
+            <li>
+                <a
+                    href="#"
+                    v-scroll-to="'#framework-properties'">Framework Properties</a>
+            </li>
+            <li>
+                <a
+                    href="#"
+                    v-scroll-to="'#competency-properties'">Competency Properties</a>
+            </li>
+            <li>
+                <a
+                    href="#"
+                    v-scroll-to="'#enforce-competency-types'">Enforce Competency Types</a>
+            </li>
+            <li>
+                <a
+                    href="#"
+                    v-scroll-to="'#allow-levels'">Allow Levels</a>
+            </li>
+            <li>
+                <a
+                    href="#"
+                    v-scroll-to="'#enforce-level-values'">Enforce Level Values</a>
+            </li>
+            <li>
+                <a
+                    href="#"
+                    v-scroll-to="'#competency-relationships'">Competency Relationships</a>
+            </li>
+            <li>
+                <a
+                    href="#"
+                    v-scroll-to="'#resource-alignments'">Resource Alignments</a>
+            </li>
+            <li>
+                <a
+                    href="#"
+                    v-scroll-to="'#default-owners'">Default Owners</a>
+            </li>
+            <li>
+                <a
+                    href="#"
+                    v-scroll-to="'#default-readers'">Default Readers</a>
+            </li>
+            <li>
+                <a
+                    href="#"
+                    v-scroll-to="'#default-commenters'">Default Commenters</a>
+            </li>
+        </ul>
     </aside>
 </template>
 
@@ -300,7 +212,7 @@ export default {
     top: 0;
     left:0;
     height: calc(100vh - 47px);
-    margin-top: 50px;
+    margin-top: 64px;
     bottom: 0;
     overflow-y: scroll;
 }
