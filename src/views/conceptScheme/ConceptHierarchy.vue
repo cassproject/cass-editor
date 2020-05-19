@@ -1,7 +1,109 @@
 <template>
-    <div class="e-Hierarchy">
-        <ul
-            class="e-Hierarchy-ul"
+    <div class="lode__hierarchy">
+        <div
+            class="hierarchy-buttons columns is-gapless is-paddingless is-mobile is-marginless is-paddingless">
+            <!-- CONTROLS FOR SELECT: ENABLED MULTI EDIT  -->
+            <div
+                v-if="view !== 'import'"
+                id="check-radio-all-column"
+                class="column is-narrow">
+                <div
+                    class="field">
+                    <input
+                        class="is-checkradio"
+                        id="selectAllCheckbox"
+                        type="checkbox"
+                        name="selectAllCheckbox"
+                        v-model="selectAll">
+                    <label for="selectAllCheckbox" />
+                </div>
+            </div>
+            <!-- CONTROLS FOR EXPAND  -->
+            <div class="column is-narrow">
+                <div
+                    v-if="expanded"
+                    class="icon is-vcentered"
+                    @click="expanded=false">
+                    <i class="fa fa-caret-down has-text-primary is-size-2" />
+                </div>
+                <div
+                    v-else-if="!expanded"
+                    class="icon is-vcentered"
+                    @click="expanded=true">
+                    <i class="fa fa-caret-right has-text-primary is-size-2" />
+                </div>
+                <div
+                    v-else
+                    class="icon is-vcentered">
+                    <i class="fa fa-circle is-size-7 has-text-light" />
+                </div>
+                <button
+                    v-if="selectButtonText"
+                    @click="$emit('selectButtonClick', selectedArray)">
+                    {{ selectButtonText }}
+                </button>
+            </div>
+            <!-- MULTI EDIT BUTTONS -->
+            <div class="column is-narrow">
+                <div
+                    class="buttons">
+                    <div
+                        v-if="multipleSelected && !addingNode && view !== 'import' && canEdit"
+                        @click="$emit('editMultipleEvent')"
+                        class="button is-small is-outlined is-primary">
+                        <span class="icon">
+                            <i class="fa fa-cog" />
+                        </span>
+                        <span>
+                            Edit multiple
+                        </span>
+                    </div>
+                    <!-- if multiple are selected allow for edit multiple -->
+                    <div
+                        @click="addingNode = true;"
+                        v-if="!addingNode && canEdit"
+                        class="button is-small is-outlined is-primary">
+                        <span class="icon">
+                            <i class="fa fa-plus-circle" />
+                        </span>
+                        <span>
+                            Add Concept
+                        </span>
+                    </div>
+                    <div
+                        v-if="addingNode"
+                        @click="addingNode = false;"
+                        class="button is-outlined is-small is-dark ">
+                        <span class="icon">
+                            <i class="fa fa-times" />
+                        </span>
+                        <span>cancel</span>
+                    </div>
+                    <div
+                        v-if="addingNode"
+                        @click="add(container.shortId(), null); addingNode = false;"
+                        class="button is-outlined is-small is-primary ">
+                        <span class="icon">
+                            <i class="fa fa-plus" />
+                        </span>
+                        <span>
+                            create new
+                        </span>
+                    </div>
+                    <div
+                        v-if="addingNode"
+                        @click="clickToSearch"
+                        class="button is-outlined is-small is-primary ">
+                        <span class="icon">
+                            <i class="fa fa-search" />
+                        </span>
+                        <span>search concepts</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <template
             v-if="hierarchy">
             <draggable
                 v-model="hierarchy"
@@ -10,17 +112,24 @@
                 @start="beginDrag"
                 @end="endDrag">
                 <HierarchyNode
+                    :view="view"
+                    @createNewNodeEvent="onCreateNewNode"
+                    :subview="subview"
+                    @mountingNode="handleMountingNode"
                     v-for="item in hierarchy"
                     :key="item.obj.id"
                     :obj="item.obj"
+                    class="lode__hierarchy-li"
                     :dragging="dragging"
                     :canEdit="canEdit"
                     :hasChild="item.children"
                     :profile="profile"
                     :exportOptions="exportOptions"
                     :highlightList="highlightList"
-                    :selectMode="selectMode"
                     :selectAll="selectAll"
+                    :newFramework="newFramework"
+                    :index="index"
+                    :frameworkEditable="canEdit"
                     @add="add"
                     @beginDrag="beginDrag"
                     @move="move"
@@ -28,27 +137,30 @@
                     @exportObject="exportObject"
                     @select="select"
                     :parentStructure="hierarchy"
-                    :parent="container">
-                    <template v-slot:copyURL="slotProps">
-                        <slot
-                            name="copyURL"
-                            :expandedProperty="slotProps.expandedProperty"
-                            :expandedValue="slotProps.expandedValue" />
-                    </template>
-                    <slot />
+                    :parent="container"
+                    @draggableCheck="onDraggableCheck"
+                    :properties="properties"
+                    :expandAll="expanded==true"
+                    :parentChecked="false">
+                    <div
+                        class="handle-button"
+                        v-if="canEdit">
+                        <div class="button is-text has-text-dark">
+                            <span class="icon is-size-5">
+                                <i class="fa handle fa-hand-paper" />
+                                <i class="fa handle fa-hand-rock" />
+                            </span>
+                        </div>
+                    </div>
                 </HierarchyNode>
             </draggable>
-        </ul>
-        <i
-            v-if="canEdit"
-            class="drag-footer fa fa-plus"
-            @click="add(container.shortId())" />
+        </template>
     </div>
 </template>
 <script>
-import HierarchyNode from '@/lode/components/lode/HierarchyNode.vue';
-import draggable from 'vuedraggable';
+
 import common from '@/mixins/common.js';
+var hierarchyTimeout;
 export default {
     name: 'ConceptHierarchy',
     props: {
@@ -60,17 +172,49 @@ export default {
         exportOptions: Array,
         highlightList: Array,
         selectMode: Boolean,
-        selectAll: Boolean
+        selectAll: Boolean,
+        containerTypeGet: String,
+        viewOnly: Boolean,
+        newFramework: Boolean,
+        properties: String,
+        view: {
+            type: String,
+            default: 'framework'
+        },
+        subview: {
+            type: String,
+            default: ''
+        }
     },
     data: function() {
         return {
             structure: [],
             once: true,
             dragging: false,
-            controlOnStart: false
+            controlOnStart: false,
+            filter: 'showAll',
+            dragIcon: 'fa-hand-paper',
+            dragOptions: {
+                delay: 100,
+                disabled: false,
+                ghostClass: 'ghost-drag',
+                chosenClass: 'chosen-drag',
+                dragClass: 'drag',
+                scrollSensitivity: 200,
+                forceFallback: true
+            },
+            multipleSelected: false,
+            addingNode: false,
+            selectedArray: [],
+            selectButtonText: null,
+            expanded: true,
+            isDraggable: true
         };
     },
-    components: {HierarchyNode, draggable},
+    components: {
+        HierarchyNode: () => import('@/lode/components/lode/HierarchyNode.vue'),
+        draggable: () => import('vuedraggable')
+    },
     mixins: [common],
     computed: {
         queryParams: function() {
@@ -94,7 +238,7 @@ export default {
         },
         // True if the current client can edit this object.
         canEdit: function() {
-            if (this.editable !== true) {
+            if (this.viewOnly === true) {
                 return false;
             }
             return this.container.canEditAny(EcIdentityManager.getMyPks());
@@ -106,9 +250,49 @@ export default {
                 this.once = true;
             },
             deep: true
+        },
+        selectedArray: function() {
+            if (this.selectedArray.length > 1) {
+                this.multipleSelected = true;
+            } else {
+                this.multipleSelected = false;
+            }
+            this.$emit('selectedArray', this.selectedArray);
+        }
+    },
+    mounted: function() {
+        if (this.queryParams) {
+            if (this.queryParams.singleSelect) {
+                this.selectButtonText = this.queryParams.singleSelect;
+            }
+            if (this.queryParams.select) {
+                if (this.queryParams.select !== "" && this.queryParams.select !== "select") {
+                    this.selectButtonText = this.queryParams.select;
+                }
+            }
         }
     },
     methods: {
+        onCreateNewNode: function(parentId, previousSiblingId) {
+            this.add(parentId, previousSiblingId);
+        },
+        /*
+         * when a child node is mounted it emits an event
+         * and a timeout is started
+         */
+        handleMountingNode: function() {
+            this.startTime();
+        },
+        /*
+         * each mount resets the timeout
+         * if the timeout length is met (no new nodes)
+         * the done loading event is triggered
+         */
+        startTime: function() {
+            hierarchyTimeout = setTimeout(() => {
+                this.$emit('doneLoadingNodes');
+            }, 1000);
+        },
         computeHierarchy: function() {
             this.structure.splice(0, this.structure.length);
             if (this.container == null) { return r; }
@@ -342,14 +526,27 @@ export default {
             console.log("Added node: ", JSON.parse(c.toJson()));
         },
         select: function(objId, checked) {
-            this.$emit('select', objId, checked);
+            if (checked) {
+                EcArray.setAdd(this.selectedArray, objId);
+            } else {
+                EcArray.setRemove(this.selectedArray, objId);
+            }
         },
         deleteObject: function(thing) {
             this.$emit('deleteObject', thing);
         },
         exportObject: function(thing, type) {
             this.$emit('exportObject', thing, type);
+        },
+        onDraggableCheck: function(checked) {
+            this.isDraggable = checked;
         }
     }
 };
 </script>
+
+<style lang="scss">
+    @import './../../scss/variables.scss';
+
+
+</style>

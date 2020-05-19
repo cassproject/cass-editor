@@ -980,5 +980,5 @@ export default {
 
 <style lang="scss">
     @import './../../scss/framework.scss';
-    
+
 </style>
