@@ -1,16 +1,16 @@
 <template>
     <div id="page-framework">
-        <DynamicModal />
         <RightAside v-if="showRightAside" />
         <!-- begin framework -->
-        <div class="container fluid is-marginless is-paddingless">
+        <div class="">
             <FrameworkEditorToolbar
                 @changeProperties="changeProperties"
-                @openExportModalEvent="onOpenExportModal()" />
-            <div class="section">
+                @openExportModalEvent="onOpenExportModal" />
+            <div class="framework-wrapper">
                 <Component
                     :is="dynamicThingComponent"
-                    :obj="framework"
+                    :id="'scroll-' + framework.shortId().split('/').pop()"
+                    :obj="changedObj ? changedObj : framework"
                     :repo="repo"
                     :parentNotEditable="queryParams.view==='true'"
                     @deleteObject="deleteObject"
@@ -18,47 +18,45 @@
                     @editNodeEvent="onEditNode()"
                     @doneEditingNodeEvent="onDoneEditingNode()"
                     :properties="properties">
-                    <template v-slot:copyURL="slotProps">
-                        <span v-if="slotProps.expandedProperty=='@id'">
-                            <button
-                                title="Copy URL to the clipboard."
-                                v-clipboard="slotProps.expandedValue[0]['@value']">
-                                <i class="fa fa-copy" />
-                            </button>
+                    <div class="lode__framework__info-bar">
+                        <span
+                            class="tag is-medium-grey has-text-dark"
+                            v-if="timestamp"
+                            :title="new Date(timestamp)">
+                            Last modified {{ lastModified }}
                         </span>
-                    </template>
+                        <span
+                            class="tag is-medium-grey has-text-dark"
+                            v-if="framework['schema:dateCreated']"
+                            :title="new Date(framework['schema:dateCreated'])">
+                            Created {{ $moment(framework['schema:dateCreated']).fromNow() }}
+                        </span>
+                        <span
+                            class="tag is-medium-grey has-text-dark"
+                            v-if="framework['Approved']"
+                            :title="framework['Approved']">
+                            Approved
+                        </span>
+                        <span
+                            class="tag is-medium-grey has-text-dark"
+                            v-if="framework['Published']"
+                            :title="framework['Published']">
+                            Published
+                        </span>
+                        <span v-if="loggedIn">
+                            Make private
+                            <input
+                                type="checkbox"
+                                v-model="privateFramework">
+                        </span>
+                    </div>
                 </Component>
-                <div class="lode__framework__info-bar">
-                    <span
-                        class="tag is-medium-grey has-text-dark"
-                        v-if="timestamp"
-                        :title="new Date(timestamp)">Last modified {{ lastModified }}</span>
-                    <span
-                        class="tag is-medium-grey has-text-dark"
-                        v-if="framework['schema:dateCreated']"
-                        :title="new Date(framework['schema:dateCreated'])">Created {{ $moment(framework['schema:dateCreated']).fromNow() }}</span>
-                    <span
-                        class="tag is-medium-grey has-text-dark"
-                        v-if="framework['Approved']"
-                        :title="framework['Approved']">Approved</span>
-                    <span
-                        class="tag is-medium-grey has-text-dark"
-                        v-if="framework['Published']"
-                        :title="framework['Published']">Published</span>
-                    <span v-if="loggedIn">
-                        Make private
-                        <input
-                            type="checkbox"
-                            v-model="privateFramework">
-                    </span>
-                </div>
                 <ConceptHierarchy
                     :container="framework"
                     containerType="ConceptScheme"
                     containerTypeGet="EcConceptScheme"
                     :viewOnly="queryParams.view === 'true'"
                     :repo="repo"
-                    :queryParams="queryParams"
                     :exportOptions="conceptExportOptions"
                     :highlightList="highlightCompetency"
                     :profile="conceptProfile"
@@ -68,32 +66,16 @@
                     @searchThings="handleSearch($event)"
                     @selectButtonClick="onSelectButtonClick"
                     :properties="properties"
-                    @selectedArray="selectedArrayEvent">
-                    <template v-slot:copyURL="slotProps">
-                        <span v-if="slotProps.expandedProperty=='@id'">
-                            <div
-                                class="button"
-                                title="Copy URL to the clipboard."
-                                v-clipboard="slotProps.expandedValue[0]['@value']">
-                                <i class="fa fa-copy" />
-                            </div>
-                        </span>
-                    </template>
-                </ConceptHierarchy>
+                    @selectedArray="selectedArrayEvent" />
             </div>
         </div>
     </div>
 </template>
 <script>
-import Thing from '@/lode/components/lode/Thing.vue';
-import ThingEditing from '@/lode/components/lode/ThingEditing.vue';
-import ConceptHierarchy from './ConceptHierarchy.vue';
+
 import saveAs from 'file-saver';
 import common from '@/mixins/common.js';
 import ctdlasnProfile from '@/mixins/ctdlasnProfile.js';
-import FrameworkEditorToolbar from '@/components/framework/EditorToolbar.vue';
-import RightAside from '@/components/framework/RightAside.vue';
-import DynamicModal from '@/components/modals/DynamicModal.vue';
 
 export default {
     name: "ConceptScheme",
@@ -103,7 +85,6 @@ export default {
             showVersionHistory: false,
             showEditMultiple: false,
             showClipboardSuccessModal: false,
-            showComments: false,
             repo: window.repo,
             schemeExportLink: null,
             schemeExportGuid: null,
@@ -128,7 +109,8 @@ export default {
             properties: "primary",
             config: null,
             privateFramework: false,
-            selectedArray: []
+            selectedArray: [],
+            changedObj: null
         };
     },
     computed: {
@@ -136,7 +118,7 @@ export default {
             return this.$store.getters['app/showRightAside'];
         },
         dynamicThingComponent: function() {
-            if (this.editingFramework) {
+            if (this.editingFramework || (this.$store.getters['editor/newFramework'] === this.framework.shortId())) {
                 return 'ThingEditing';
             } else {
                 return 'Thing';
@@ -651,12 +633,11 @@ export default {
         }
     },
     components: {
-        Thing,
-        ThingEditing,
-        ConceptHierarchy,
-        FrameworkEditorToolbar,
-        RightAside,
-        DynamicModal
+        Thing: () => import('@/lode/components/lode/Thing.vue'),
+        ThingEditing: () => import('@/lode/components/lode/ThingEditing.vue'),
+        FrameworkEditorToolbar: () => import('@/components/framework/EditorToolbar.vue'),
+        RightAside: () => import('@/components/framework/RightAside.vue'),
+        ConceptHierarchy: () => import('./ConceptHierarchy.vue')
     },
     created: function() {
         if (this.framework !== null) {
@@ -738,13 +719,9 @@ export default {
             this.editingFramework = true;
         },
         onDoneEditingNode: function() {
+            this.changedObj = EcRepository.getBlocking(this.framework.shortId());
+            this.$store.commit('editor/newFramework', null);
             this.editingFramework = false;
-        },
-        onOpenComments: function() {
-            this.showComments = true;
-        },
-        onCloseComments: function() {
-            this.showComments = false;
         },
         selectedArrayEvent: function(ary) {
             this.selectedArray = ary;
@@ -760,6 +737,7 @@ export default {
                 this.schemeExportGuid = this.framework.getGuid();
             }
             this.schemeExportLink = this.repo.selectedServer + "data/" + this.schemeExportGuid;
+            this.setDefaultLanguage();
             this.highlightCompetency = [];
             if (this.queryParams.highlightCompetency) {
                 if (!EcArray.isArray(highlightCompetency)) {
@@ -989,97 +967,18 @@ export default {
             };
             // reveal modal
             this.$modal.show(params);
+        },
+        changeProperties: function(type) {
+            this.properties = type;
+        },
+        onSelectButtonClick: function(ids) {
+            this.selectButton(ids);
         }
     }
 };
 </script>
 
-<style lang="scss" scoped>
-
-.page-framework{
-    .e-Thing-ul{
-
-        margin-top:0px;
-    }
-    .e-Thing-always-ul .e-title, .e-Thing-always-ul .e-prefLabel{
-        label{
-            display:none;
-        }
-    }
-
-    .e-Thing-always-ul .e-description, .e-Thing-always-ul .e-definition{
-        label{
-            display:none;
-        }
-        font-size:.8rem;
-    }
-
-    .e-ConceptScheme{
-        ul{
-            margin-left:0px;
-        }
-        a {
-            display:none;
-        }
-        >.expand{
-
-            }
-        >.compact{
-        }
-        >.editable{
-        }
-        >.delete-thing{
-        }
-        .e-Property-text{
-            font-size:larger;
-        }
-    }
-
-    .e-Concept{
-        a {display:none;}
-        >.expand{
-        }
-        >.compact{
-        }
-        >.editable {
-        }
-        >.delete-thing {
-        }
-        >.export {
-        }
-    }
-    .e-HierarchyNode{
-        >ul{
-            padding-left:1rem;
-            >div{
-                border:1px dashed whitesmoke;
-            }
-        }
-        >.icon{
-            width:0px;
-            height:0px;
-            margin:0px;
-            line-height:0px;
-            display:block;
-            position:relative;
-            left:-.5rem;
-            top:-2rem;
-        }
-        .highlighted{
-            background-color:yellow;
-        }
-        padding-left:1rem;
-    }
-    .dragging{
-        div{
-            border:1px dashed gray !important;
-            .drag-footer::before{
-                content:'' !important
-            }
-            .drag-footer{
-            }
-        }
-    }
-}
-
+<style lang="scss">
+    @import './../../scss/framework.scss';
+    
 </style>

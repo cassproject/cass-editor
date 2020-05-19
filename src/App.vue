@@ -374,6 +374,7 @@ export default {
                 framework["dcterms:title"] = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Concept Scheme"};
                 framework["schema:dateCreated"] = new Date().toISOString();
                 framework["schema:dateModified"] = new Date().toISOString();
+                this.$store.commit('editor/newFramework', framework.shortId());
                 var saveFramework = framework;
                 if (this.queryParams.private === "true") {
                     saveFramework = EcEncryptedValue.toEncryptedValue(framework);

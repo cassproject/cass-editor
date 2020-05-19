@@ -51,7 +51,9 @@
                         <span
                             class="tag is-medium-grey has-text-dark"
                             v-if="framework['Published']"
-                            :title="framework['Published']">Published</span>
+                            :title="framework['Published']">
+                            Published
+                        </span>
                         <span v-if="loggedIn">
                             Make private
                             <input
