@@ -50,94 +50,91 @@ export default {
         window.removeEventListener('message', this.cappend);
         window.removeEventListener("message", this.messageListener);
     },
-    created: function() {
-        var servers = ["https://dev.api.cassproject.org/api/"];
-        var me = this;
-        if (this.$route.query) {
-            this.$store.commit('editor/queryParams', this.$route.query);
-            if (this.queryParams.server) {
-                if (this.queryParams.server.endsWith && this.queryParams.server.endsWith("/") === false) {
-                    this.queryParams.server += "/";
-                }
-                servers = [this.queryParams.server];
-            }
-        }
-        for (var i = 0; i < servers.length; i++) {
-            var r = new EcRepository();
-            r.selectedServer = servers[i];
-            r.autoDetectRepository();
-            servers[i] = r;
-            window.repo = r;
-
-            try {
-                window.addEventListener('message', this.cappend, false);
-            } catch (e) {
-                console.error(e);
-            }
-
-            this.openWebSocket(r);
-        }
-        if (window.addEventListener) {
-            window.addEventListener("message", this.messageListener, false);
-        } else {
-            window.attachEvent("onmessage", this.messageListener);
-        }
-        this.loadIdentity(function() {
-            if (me.queryParams) {
-                if (me.queryParams.frameworkId) {
-                    if (me.queryParams.concepts === "true") {
-                        EcConceptScheme.get(me.queryParams.frameworkId, function(success) {
-                            me.$store.commit('editor/framework', success);
-                            me.$store.commit('editor/clearFrameworkCommentData');
-                            me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
-                            me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
-                            me.$router.push({name: "conceptScheme", params: {frameworkId: me.queryParams.frameworkId}});
-                        }, console.error);
-                    } else {
-                        EcFramework.get(me.queryParams.frameworkId, function(success) {
-                            me.$store.commit('editor/framework', success);
-                            me.$store.commit('editor/clearFrameworkCommentData');
-                            me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
-                            me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
-                            me.$router.push({name: "framework", params: {frameworkId: me.queryParams.frameworkId}});
-                        }, console.error);
-                    }
-                }
-                if (me.queryParams.action === "import") {
-                    me.$router.push({name: "import"});
-                }
-                if (me.queryParams.action === "add") {
-                    me.createNew();
-                }
-            }
-        });
-        if (parent !== window) {
-            var oHead = document.getElementsByTagName("head")[0];
-            var arrStyleSheets = parent.document.getElementsByTagName("*");
-            for (var i = 0; i < arrStyleSheets.length; i++) {
-                if (arrStyleSheets[i].tagName.toLowerCase() === "link" || arrStyleSheets[i].tagName.toLowerCase() === "style") {
-                    if (arrStyleSheets[i].attributes.inherit != null) {
-                        oHead.appendChild(arrStyleSheets[i].cloneNode(true));
-                    }
-                }
-            }
-            try {
-                this.importParentStyles();
-            // eslint-disable-next-line no-empty
-            } catch (e) {}
-        }
-        if (this.queryParams.css != null) {
-            var ss = document.createElement("link");
-            ss.type = "text/css";
-            ss.rel = "stylesheet";
-            ss.href = this.queryParams.css;
-            document.getElementsByTagName("head")[0].appendChild(ss);
-        }
-        /* if (!this.loggedInPerson) {
-            this.$router.push({name: 'login'});
-        }*/
-    },
     methods: {
+        initializeApp: function() {
+            var servers = ["https://dev.api.cassproject.org/api/"];
+            var me = this;
+            if (this.$route.query) {
+                this.$store.commit('editor/queryParams', this.$route.query);
+                if (this.queryParams.server) {
+                    if (this.queryParams.server.endsWith && this.queryParams.server.endsWith("/") === false) {
+                        this.queryParams.server += "/";
+                    }
+                    servers = [this.queryParams.server];
+                }
+            }
+            for (var i = 0; i < servers.length; i++) {
+                var r = new EcRepository();
+                r.selectedServer = servers[i];
+                r.autoDetectRepository();
+                servers[i] = r;
+                window.repo = r;
+
+                try {
+                    window.addEventListener('message', this.cappend, false);
+                } catch (e) {
+                    console.error(e);
+                }
+
+                this.openWebSocket(r);
+            }
+            if (window.addEventListener) {
+                window.addEventListener("message", this.messageListener, false);
+            } else {
+                window.attachEvent("onmessage", this.messageListener);
+            }
+            this.loadIdentity(function() {
+                if (me.queryParams) {
+                    if (me.queryParams.frameworkId) {
+                        if (me.queryParams.concepts === "true") {
+                            EcConceptScheme.get(me.queryParams.frameworkId, function(success) {
+                                me.$store.commit('editor/framework', success);
+                                me.$store.commit('editor/clearFrameworkCommentData');
+                                me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
+                                me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                                me.$router.push({name: "conceptScheme", params: {frameworkId: me.queryParams.frameworkId}});
+                            }, console.error);
+                        } else {
+                            EcFramework.get(me.queryParams.frameworkId, function(success) {
+                                me.$store.commit('editor/framework', success);
+                                me.$store.commit('editor/clearFrameworkCommentData');
+                                me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
+                                me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                                me.$router.push({name: "framework", params: {frameworkId: me.queryParams.frameworkId}});
+                            }, console.error);
+                        }
+                    }
+                    if (me.queryParams.action === "import") {
+                        me.$router.push({name: "import"});
+                    }
+                    if (me.queryParams.action === "add") {
+                        me.createNew();
+                    }
+                }
+            });
+            if (parent !== window) {
+                var oHead = document.getElementsByTagName("head")[0];
+                var arrStyleSheets = parent.document.getElementsByTagName("*");
+                for (var i = 0; i < arrStyleSheets.length; i++) {
+                    if (arrStyleSheets[i].tagName.toLowerCase() === "link" || arrStyleSheets[i].tagName.toLowerCase() === "style") {
+                        if (arrStyleSheets[i].attributes.inherit != null) {
+                            oHead.appendChild(arrStyleSheets[i].cloneNode(true));
+                        }
+                    }
+                }
+                try {
+                    this.importParentStyles();
+                // eslint-disable-next-line no-empty
+                } catch (e) {}
+            }
+            if (this.queryParams.css != null) {
+                var ss = document.createElement("link");
+                ss.type = "text/css";
+                ss.rel = "stylesheet";
+                ss.href = this.queryParams.css;
+                document.getElementsByTagName("head")[0].appendChild(ss);
+            }
+        },
         onSidebarEvent: function() {
             this.showSideNav = !this.showSideNav;
         },
@@ -1068,6 +1065,10 @@ export default {
             let navigationTo = to;
             if (navigationTo) {
                 this.navBarActive = false;
+            }
+            // First load, can't access this.$route.query before this
+            if (!from.name) {
+                this.initializeApp();
             }
         }
         /* loggedInPerson: function(val) {
