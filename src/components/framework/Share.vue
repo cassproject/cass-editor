@@ -9,32 +9,55 @@
             </p>
             <button
                 class="delete"
-                @click="$emit('closeShareModalEvent')"
+                @click="$store.commit('app/closeModal')"
                 aria-label="close" />
         </header>
         <section class="modal-card-body">
-            <div class="columns is-multiline">
+            <h3 class="header has-text-weight-bold">
+                Shareable link
+            </h3>
+            <div class="columns is-mobile">
                 <!-- share link -->
-                <div class="column is-12">
-                    {{ shareableFrameworkInEditor }}
-                    <button
-                        title="Copy URL to the clipboard."
-                        v-clipboard="shareableFrameworkInEditor">
-                        <i class="fa fa-copy" />
-                    </button>
+                <div class="column">
+                    <p class="share-url">
+                        {{ shareableFrameworkInEditor }}
+                    </p>
                 </div>
+                <div class="column is-narrow">
+                    <div
+                        class="button is-outlined is-large is-primary"
+                        title="Copy URL to the clipboard."
+                        v-clipboard="shareableFrameworkInEditor"
+                        v-clipboard:success="successfulClip"
+                        v-clipboard:error="errorClip">
+                        <i
+                            v-if="clipStatus === 'ready'"
+                            class="fa fa-copy" />
+                        <i
+                            v-if="clipStatus === 'success'"
+                            class="fa fa-check" />
+                        <i
+                            v-if="clipStatus === 'error'"
+                            class="fa fa-times" />
+                    </div>
+                </div>
+            </div>
+            <div
+                class="columns is-multiline"
+                v-if="canEditFramework">
                 <!-- end share link -->
                 <!-- input new groups or users -->
                 <div class="column is-12">
                     <label>Add users or groups</label>
                     <div class="field has-addons">
-                        <div class="control is-expanded">
+                        <div class="control is-expanded share auto-complete__control">
                             <input
+                                @blur="closeAutoComplete"
                                 type="text"
-                                class="input is-fullwidth"
+                                class="input share is-fullwidth is-small"
                                 v-model="search"
                                 @input="filterResults">
-                            <span class="auto-complete">
+                            <span class="auto-complete share">
                                 <ul v-show="isOpenAutocomplete">
                                     <li
                                         v-for="(result, i) in filtered"
@@ -46,7 +69,7 @@
                             </span>
                         </div>
                         <div class="control">
-                            <div class="select">
+                            <div class="select is-primary">
                                 <select v-model="selectViewOrAdmin">
                                     <option
                                         v-for="(option, index) in viewOptions"
@@ -58,10 +81,22 @@
                             </div>
                         </div>
                     </div>
+                    <div class="field">
+                        <div
+                            @click="saveSettings"
+                            class="button is-outlined is-primary">
+                            <span class="icon">
+                                <i class="fa fa-save" />
+                            </span>
+                            <span>Add Selected User/Group</span>
+                        </div>
+                    </div>
                 </div>
                 <!-- end input new users or groups -->
                 <!-- begin list of access -->
-                <div class="column is-12">
+                <div
+                    class="column is-12"
+                    vif="canEditFramework">
                     <table class="table is-fullwidth">
                         <thead>
                             <tr>
@@ -101,7 +136,9 @@
                     </table>
                 </div>
                 <!-- user table -->
-                <div class="column is-12">
+                <div
+                    class="column is-12"
+                    v-if="canEditFramework">
                     <table class="table is-fullwidth">
                         <thead>
                             <tr>
@@ -118,7 +155,7 @@
                                 <td>
                                     <select
                                         v-model="user.view"
-                                        @change="user.changed=true">
+                                        @change="user.changed=true;saveSettings()">
                                         <option
                                             :value="option.value"
                                             v-for="option in viewOptions"
@@ -143,21 +180,12 @@
             </div>
         </section>
         <footer class="modal-card-foot">
-            <div class="columns is-12">
-                <div class="column is-12">
-                    <button
-                        class="button is-left is-light"
-                        @click="$emit('closeShareModalEvent')">
-                        Cancel
-                    </button>
-                </div>
-                <div class="column is-12">
-                    <button
-                        class="button is-fullwidth is-success"
-                        @click="saveSettings">
-                        Save Framework Settings
-                    </button>
-                </div>
+            <div class="buttons is-spaced">
+                <button
+                    class="button is-dark is-outlined"
+                    @click="$store.commit('app/closeModal')">
+                    Done managing framework share settings
+                </button>
             </div>
         </footer>
     </div>
@@ -173,6 +201,7 @@ export default {
     mixins: [ cassUtil ],
     data() {
         return {
+            clipStatus: 'ready',
             frameworkName: this.$store.state.editor.framework.getName(),
             frameworkId: this.$store.state.editor.framework.shortId(),
             viewOptions: [
@@ -206,6 +235,17 @@ export default {
         },
         framework: function() {
             return this.$store.state.editor.framework;
+        },
+        queryParams: function() {
+            return this.$store.getters['editor/queryParams'];
+        },
+        canEditFramework: function() {
+            if (this.queryParams && this.queryParams.view === 'true') {
+                return false;
+            } else if (!this.framework.canEditAny(EcIdentityManager.getMyPks())) {
+                return false;
+            }
+            return true;
         }
     },
     mounted: function() {
@@ -213,6 +253,23 @@ export default {
         this.getPossibleOwnersAndReaders();
     },
     methods: {
+        closeAutoComplete: function() {
+            this.isOpenAutocomplete = false;
+        },
+        successfulClip({value, event}) {
+            console.log('success', value);
+            this.clipStatus = 'success';
+            setTimeout(() => {
+                this.clipStatus = 'ready';
+            }, 1000);
+        },
+        errorClip({value, event}) {
+            console.log('error', value);
+            this.slipStatus = 'error';
+            setTimeout(() => {
+                this.clipStatus = 'ready';
+            }, 1000);
+        },
         getCurrentOwnersAndReaders: function() {
             var me = this;
             if (this.framework.owner) {
@@ -220,14 +277,18 @@ export default {
                     var pk = EcPk.fromPem(this.framework.owner[i]);
                     EcPerson.getByPk(window.repo, pk, function(success) {
                         console.log(success);
-                        var user = {header: success.name, view: "admin", id: success.shortId(), changed: false, pk: pk};
-                        me.users.push(user);
+                        if (success) {
+                            var user = {header: success.name, view: "admin", id: success.shortId(), changed: false, pk: pk};
+                            me.users.push(user);
+                        }
                     }, function(failure) {
                         // If it's not a Person, check organizations
-                        this.getOrganizationByEcPk(pk, function(success) {
+                        me.getOrganizationByEcPk(pk, function(success) {
                             console.log(success);
-                            var org = {header: success.name, view: "admin", id: success.shortId(), changed: false, pk: pk};
-                            me.groups.push(org);
+                            if (success) {
+                                var org = {header: success.name, view: "admin", id: success.shortId(), changed: false, pk: pk};
+                                me.groups.push(org);
+                            }
                         }, function(error) {
                             console.error(error);
                         });
@@ -239,14 +300,18 @@ export default {
                     var pk = EcPk.fromPem(this.framework.reader[i]);
                     EcPerson.getByPk(window.repo, pk, function(success) {
                         console.log(success);
-                        var user = {header: success.name, view: "view", id: success.shortId(), changed: false, pk: pk};
-                        me.users.push(user);
+                        if (success) {
+                            var user = {header: success.name, view: "view", id: success.shortId(), changed: false, pk: pk};
+                            me.users.push(user);
+                        }
                     }, function(failure) {
                         // If it's not a Person, check organizations
-                        this.getOrganizationByEcPk(pk, function(success) {
+                        me.getOrganizationByEcPk(pk, function(success) {
                             console.log(success);
-                            var org = {header: success.name, view: "view", id: success.shortId(), changed: false, pk: pk};
-                            me.groups.push(org);
+                            if (success) {
+                                var org = {header: success.name, view: "view", id: success.shortId(), changed: false, pk: pk};
+                                me.groups.push(org);
+                            }
                         }, function(error) {
                             console.error(error);
                         });
@@ -365,6 +430,8 @@ export default {
                         me.addAndRemoveFromFrameworkObject();
                     }
                 });
+            } else {
+                me.addAndRemoveFromFrameworkObject();
             }
         },
         addAndRemoveFromFrameworkObject: function() {
@@ -383,7 +450,8 @@ export default {
                 f.addOwner(me.addOwner[i]);
             }
             me.repo.saveTo(f, function() {
-                me.$emit('closeShareModalEvent');
+                me.resetVariables();
+                me.getCurrentOwnersAndReaders();
             }, function() {});
         },
         removeOwnerOrReader: function(userOrGroup, type) {
@@ -392,11 +460,18 @@ export default {
             } else if (userOrGroup.view === "admin") {
                 this.removeOwner.push(userOrGroup.pk);
             }
-            if (type === "user") {
-                EcArray.setRemove(this.users, userOrGroup);
-            } else if (type === "group") {
-                EcArray.setRemove(this.groups, userOrGroup);
-            }
+            this.saveSettings();
+        },
+        resetVariables: function() {
+            var me = this;
+            me.users.splice(0, me.users.length);
+            me.groups.splice(0, me.groups.length);
+            me.removeOwner.splice(0, me.removeOwner.length);
+            me.removeReader.splice(0, me.removeReader.length);
+            me.addOwner.splice(0, me.addOwner.length);
+            me.addReader.splice(0, me.addReader.length);
+            me.userOrGroupToAdd = null;
+            me.search = "";
         }
     }
 };
@@ -404,4 +479,10 @@ export default {
 
 
 <style>
+
+.share-url {
+    overflow-wrap: anywhere;
+    font-size: .8rem;
+    line-height: 1rem;
+}
 </style>

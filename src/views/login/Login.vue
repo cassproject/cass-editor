@@ -53,7 +53,8 @@
                                     type="password"
                                     class="input"
                                     v-model="password"
-                                    placeholder="password">
+                                    placeholder="password"
+                                    @keyup.enter="attemptCassLogin">
                             </div>
                         </div>
                         <div v-if="identityFetchFailed">
@@ -260,7 +261,7 @@ export default {
     methods: {
         goToAppHome: function() {
             this.loginBusy = false;
-            this.$router.push({path: '/config'});
+            this.$router.push({path: '/'});
         },
         addGroupIdentity(group) {
             console.log("Adding group identity: " + "(" + group.shortId() + ") - " + group.getName());

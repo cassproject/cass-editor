@@ -1,7 +1,7 @@
 <template>
     <div
         class="modal is-small"
-        :class="[{'is-active': visible}, modalClass]">
+        :class="[{'is-active': visible}, type, modalClass]">
         <div class="modal-background" />
         <div class="modal-card">
             <header
@@ -73,7 +73,7 @@
                 <input
                     class="input"
                     placeholder="Enter a new name"
-                    v-if="selectedOption==='Choose another name'"
+                    v-if="selectedOption==='Save import as a new framework'"
                     v-model="newName">
                 <div v-if="invalid">
                     The name you chose is already in the system. Please try a different name.
@@ -95,7 +95,8 @@
                     </button>
                     <button
                         v-if="type==='export'"
-                        class="button is-outlined is-info"
+                        class="export-confirm button is-outlined is-info"
+                        :disabled="confirmDisabled"
                         @click="confirm">
                         <span>
                             Export file
@@ -106,7 +107,8 @@
                     </button>
                     <button
                         v-else
-                        class="button is-outlined"
+                        class="confirm button is-outlined"
+                        :disabled="confirmDisabled"
                         :class="modalConfirmButton"
                         @click="confirm">
                         <span>
@@ -151,6 +153,30 @@ export default {
         };
     },
     computed: {
+        queryParams: function() {
+            return this.$store.getters['editor/queryParams'];
+        },
+        confirmDisabled: function() {
+            if (this.type === 'duplicate') {
+                if (this.options.length > 0 && this.selectedOption === "") {
+                    return true;
+                } else {
+                    if (this.selectedOption === 'Save import as a new framework' && this.newName === '') {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            } else if (this.type === 'export') {
+                if (this.exportOptions.length > 0 && this.selectedExportOption === "") {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        },
         modalButtonIcons: function() {
             let modalClass = '';
             if (this.type === 'removeObject') {
@@ -166,7 +192,7 @@ export default {
             let modalClass = '';
             if (this.type === 'removeObject') {
                 modalClass = 'alert-modal';
-            } else if (this.type === 'deleteObject') {
+            } else if (this.type === 'deleteObject' || this.type === 'duplicate') {
                 modalClass = 'warning-modal';
             } else {
                 modalClass = '';
@@ -201,6 +227,8 @@ export default {
                 modalClass = 'has-background-primary has-text-white';
             } else if (this.type === 'deleteObject') {
                 modalClass = 'has-background-danger';
+            } else if (this.type === 'duplicate') {
+                modalClass = 'has-background-warning';
             } else {
                 modalClass = 'has-background-primary';
             }
@@ -294,7 +322,5 @@ export default {
 </script>
 
 <style lang="scss">
-.warning-modal {
 
-}
 </style>

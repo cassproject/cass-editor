@@ -1,39 +1,14 @@
 <template>
     <div class="framework-list-page">
-        <div class="container fluid is-marginless is-paddingless">
-            <div class="section">
-                <!-- sort options -->
-                <div class="control">
-                    <label
-                        v-if="queryParams.concepts==='true'"
-                        class="radio is-large"
-                        for="dcterms:title.keyword">
-                        <input
-                            type="radio"
-                            value="dcterms:title.keyword"
-                            id="dcterms:title.keyword"
-                            v-model="sortBy">
-                        Sort alphabetically</label>
-                    <label
-                        v-else
-                        class="radio"
-                        for="name.keyword">
-                        <input
-                            type="radio"
-                            value="name.keyword"
-                            id="name.keyword"
-                            v-model="sortBy">
-                        Sort alphabetically</label>
-                    <label
-                        class="radio"
-                        for="schema:dateModified">
-                        <input
-                            type="radio"
-                            value="schema:dateModified"
-                            id="schema:dateModified"
-                            v-model="sortBy">
-                        Sort by last modified</label>
-                </div>
+        <RightAside v-if="showRightAside" />
+        <!-- search field -->
+        <div class="container is-fluid is-marginless is-paddingless">
+            <SearchBar
+                searchType="framework"
+                filterSet="all" />
+            <div
+                v-if="!queryParams.concepts==='true'"
+                class="section">
                 <!-- show my frameworks radio -->
                 <div class="control">
                     <div v-if="queryParams.show !== 'mine' && queryParams.conceptShow !== 'mine' && numIdentities">
@@ -146,17 +121,17 @@
 </template>
 <script>
 import List from '@/lode/components/lode/List.vue';
+import RightAside from '@/components/framework/RightAside.vue';
 import common from '@/mixins/common.js';
+import SearchBar from '@/components/framework/SearchBar.vue';
 export default {
     name: "Frameworks",
-    props: {
-        queryParams: Object
-    },
     mixins: [common],
     data: function() {
         return {
             repo: window.repo,
             showMine: false,
+            showNotMine: false,
             numIdentities: EcIdentityManager.ids.length,
             sortBy: null
         };
@@ -168,6 +143,15 @@ export default {
         this.spitEvent('viewChanged');
     },
     computed: {
+        showRightAside: function() {
+            return this.$store.getters['app/showRightAside'];
+        },
+        frameworkSearchTerm: function() {
+            return this.$store.getters['app/searchTerm'];
+        },
+        queryParams: function() {
+            return this.$store.getters['editor/queryParams'];
+        },
         type: function() {
             return this.queryParams.concepts === 'true' ? "ConceptScheme" : "Framework";
         },
@@ -179,6 +163,18 @@ export default {
             if (this.showMine || (this.queryParams && this.queryParams.concepts !== "true" && this.queryParams.show === "mine") ||
                 (this.queryParams && this.queryParams.concepts === "true" && this.queryParams.conceptShow === "mine")) {
                 search += " AND (";
+                for (var i = 0; i < EcIdentityManager.ids.length; i++) {
+                    if (i !== 0) {
+                        search += " OR ";
+                    }
+                    var id = EcIdentityManager.ids[i];
+                    search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
+                    search += " OR @owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
+                }
+                search += ")";
+            }
+            if (this.showNotMine) {
+                search += " AND NOT (";
                 for (var i = 0; i < EcIdentityManager.ids.length; i++) {
                     if (i !== 0) {
                         search += " OR ";
@@ -201,20 +197,37 @@ export default {
                 obj.ownership = 'me';
             }
             return obj;
+        },
+        sortResults: function() {
+            return this.$store.getters['app/sortResults'];
+        },
+        quickFilters: function() {
+            return this.$store.getters['app/quickFilters'];
+        },
+        filteredQuickFilters: function() {
+            let filterValues = this.quickFilters.filter(item => item.checked === true);
+            console.log('filtered value', filterValues);
+            return filterValues;
         }
     },
-    components: {List},
+    components: {List, RightAside, SearchBar},
     methods: {
         frameworkClick: function(framework) {
             var me = this;
             if (this.queryParams.concepts === "true") {
                 EcConceptScheme.get(framework.id, function(success) {
                     me.$store.commit('editor/framework', success);
+                    me.$store.commit('editor/clearFrameworkCommentData');
+                    me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
+                    me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "conceptScheme", params: {frameworkId: framework.id}});
                 }, console.error);
             } else {
                 EcFramework.get(framework.id, function(success) {
                     me.$store.commit('editor/framework', success);
+                    me.$store.commit('editor/clearFrameworkCommentData');
+                    me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
+                    me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "framework", params: {frameworkId: framework.id}});
                 }, console.error);
             }
@@ -240,6 +253,27 @@ export default {
             // End public key line
             pem = pem.substring(0, length - 24) + "\n" + pem.substring(length - 24);
             return pem;
+        }
+    },
+    watch: {
+        sortResults: function() {
+            if (this.sortResults.id === "lastEdited") {
+                this.sortBy = "schema:dateModified";
+            } else if (this.sortResults.id === "dateCreated") {
+                this.sortBy = "schema:dateCreated";
+            }
+        },
+        filteredQuickFilters: function() {
+            this.showMine = false;
+            this.showNotMine = false;
+            for (var i = 0; i < this.filteredQuickFilters.length; i++) {
+                if (this.filteredQuickFilters[i].id === "ownedByMe") {
+                    this.showMine = true;
+                }
+                if (this.filteredQuickFilters[i].id === "notOwnedByMe") {
+                    this.showNotMine = true;
+                }
+            }
         }
     }
 };

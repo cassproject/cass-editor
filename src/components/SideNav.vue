@@ -24,7 +24,7 @@
         <!-- OPTION TO NAVIGATE BACK -->
         <div
             class="menu-label has-text-white"
-            v-if="currentRoute !== '/'">
+            :class="[{'is-hidden': currentRoute == '/'}]">
             <router-link to="/">
                 <span class="icon">
                     <i class="fa fa-arrow-left" />
@@ -37,12 +37,12 @@
         <!-- GENERAL MENU -->
         <div
             class="menu-label"
-            v-if="currentRoute === '/'">
+            v-if="currentRoute === '/' || currentRoute === '/import'">
             Competencies & Frameworks
         </div>
         <ul
             class="menu-list"
-            v-if="currentRoute === '/'">
+            v-if="currentRoute === '/' || currentRoute === '/import'">
             <li class="has-text-white">
                 <router-link to="/">
                     Frameworks
@@ -53,7 +53,9 @@
                 @click="$emit('createNewFramework')">
                 <a> New Framework</a>
             </li>
-            <li class="has-text-white">
+            <!-- hidding this for now -->
+            <li
+                class="has-text-white">
                 <router-link to="/crosswalk">
                     Crosswalk Frameworks
                 </router-link>
@@ -72,12 +74,12 @@
         <ul class="menu-list" />
         <div
             class="menu-label"
-            v-if="currentRoute === '/'">
+            v-if="currentRoute === '/' || currentRoute === '/import'">
             Configuration
         </div>
         <ul
             class="menu-list"
-            v-if="currentRoute === '/'">
+            v-if="currentRoute === '/' || currentRoute === '/import'">
             <li>
                 <router-link to="/config">
                     Configurations
@@ -94,7 +96,7 @@
         <!-- IMPORT OPTIONS -->
         <div
             class=""
-            v-if="currentRoute === '/import'">
+            v-if="false">
             <h3 class="subtitle has-text-white is-size-3 has-text-weight-bold">
                 Import Options
             </h3>
@@ -248,8 +250,7 @@ export default {
         showSideNav: {
             default: false,
             type: Boolean
-        },
-        queryParams: Object
+        }
     },
     data() {
         return {
@@ -266,6 +267,9 @@ export default {
         }
     },
     computed: {
+        queryParams: function() {
+            return this.$store.getters['editor/queryParams'];
+        },
         amLoggedIn: function() {
             if (EcIdentityManager && EcIdentityManager.ids && EcIdentityManager.ids.length > 0) return true;
             else return false;

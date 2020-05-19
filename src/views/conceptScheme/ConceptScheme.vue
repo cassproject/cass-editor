@@ -97,9 +97,6 @@ import DynamicModal from '@/components/modals/DynamicModal.vue';
 
 export default {
     name: "ConceptScheme",
-    props: {
-        queryParams: Object
-    },
     mixins: [common, ctdlasnProfile],
     data: function() {
         return {
@@ -147,6 +144,9 @@ export default {
         },
         framework: function() {
             return this.$store.getters['editor/framework'];
+        },
+        queryParams: function() {
+            return this.$store.getters['editor/queryParams'];
         },
         timestamp: function() {
             if (this.framework.getTimestamp()) {

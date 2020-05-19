@@ -20,12 +20,13 @@ $cass-success: #68C8DB;
 $cass-highlight: #EDAC5F;
 
 $cass-black: #47585C;
+$cass-medium: tint($cass-black, 80%);
 $cass-light: tint($cass-black, 96%);
 $cass-lightest:tint($cass-black, 97%);
 
 $family-primary: 'Assistant',
 'sans-serif';
-$family-secondary: 'Roboto',
+$family-secondary: 'Roboto Condensed',
 'sans-serif';
 
 $black: $cass-black;
@@ -40,7 +41,7 @@ $warning: $cass-highlight;
 $danger: $cass-error;
 
 $dark:$cass-black;
-$text: $cass-black;
+$text: #222222;
 
 $weight-normal: 400;
 $family-code: $family-primary;
@@ -74,4 +75,10 @@ $gap: 6px;
 
 .has-background-lightest {
     background-color:  $cass-lightest;
+}
+.has-text-medium {
+    color: $cass-medium;
+}
+.has-background-medium {
+    background-color: $cass-medium;
 }

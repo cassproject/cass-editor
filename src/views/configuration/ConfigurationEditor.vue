@@ -51,32 +51,34 @@
                     </span>
                 </div>
             </div>
-            <div
-                class="table is-fullwidth"
-                v-if="configViewMode.equals('list')">
-                <thead>
-                    <tr>
-                        <th><abbr title="Name">name</abbr></th>
-                        <th><abbr title="Description">description</abbr></th>
-                        <th><abbr title="primary">primary</abbr></th>
-                        <th><abbr title="" />default</th>
-                        <th><abbr title="" />view/manage</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <configuration-list-item
-                        v-for="config in configList"
-                        :id="config.id"
-                        :key="config"
-                        :name="config.name"
-                        :isDefault="config.isDefault"
-                        :description="config.description"
-                        :isOwned="config.isOwned"
-                        :defaultBrowserConfigId="localDefaultBrowserConfigId"
-                        @setBrowserDefault="setConfigAsBrowserDefault"
-                        @showDetails="showConfigDetails" />
-                </tbody>
-                <br>
+            <div class="table-container">
+                <table
+                    class="table is-fullwidth"
+                    v-if="configViewMode.equals('list')">
+                    <thead>
+                        <tr>
+                            <th><abbr title="Name">name</abbr></th>
+                            <th><abbr title="Description">description</abbr></th>
+                            <th><abbr title="Instance Default">instance default</abbr></th>
+                            <th><abbr title="Browser Default" />browser default</th>
+                            <th><abbr title="" />view/manage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <configuration-list-item
+                            v-for="config in configList"
+                            :id="config.id"
+                            :key="config"
+                            :name="config.name"
+                            :isDefault="config.isDefault"
+                            :description="config.description"
+                            :isOwned="config.isOwned"
+                            :defaultBrowserConfigId="localDefaultBrowserConfigId"
+                            @setBrowserDefault="setConfigAsBrowserDefault"
+                            @showDetails="showConfigDetails" />
+                    </tbody>
+                    <br>
+                </table>
             </div>
             <div v-if="configViewMode.equals('detail')">
                 <configuration-details
@@ -281,14 +283,17 @@ export default {
             compConf.primaryProperties.push("http://schema.org/name");
             if (this.currentConfig.compIdPriorty.equalsIgnoreCase("primary")) compConf.primaryProperties.push("@id");
             if (this.currentConfig.compDescPriority.equalsIgnoreCase("primary")) compConf.primaryProperties.push("http://schema.org/description");
+            if (this.currentConfig.compTypePriority.equalsIgnoreCase("primary")) compConf.primaryProperties.push("http://purl.org/dc/terms/type");
             this.addCustomPropertiesToPriorityArray(this.currentConfig.compCustomProperties, compConf.primaryProperties, "primary");
             compConf.secondaryProperties = [];
             if (this.currentConfig.compIdPriorty.equalsIgnoreCase("secondary")) compConf.secondaryProperties.push("@id");
             if (this.currentConfig.compDescPriority.equalsIgnoreCase("secondary")) compConf.secondaryProperties.push("http://schema.org/description");
+            if (this.currentConfig.compTypePriority.equalsIgnoreCase("secondary")) compConf.secondaryProperties.push("http://purl.org/dc/terms/type");
             this.addCustomPropertiesToPriorityArray(this.currentConfig.compCustomProperties, compConf.secondaryProperties, "secondary");
             compConf.tertiaryProperties = [];
             if (this.currentConfig.compIdPriorty.equalsIgnoreCase("tertiary")) compConf.tertiaryProperties.push("@id");
             if (this.currentConfig.compDescPriority.equalsIgnoreCase("tertiary")) compConf.tertiaryProperties.push("http://schema.org/description");
+            if (this.currentConfig.compTypePriority.equalsIgnoreCase("tertiary")) compConf.tertiaryProperties.push("http://purl.org/dc/terms/type");
             this.addCustomPropertiesToPriorityArray(this.currentConfig.compCustomProperties, compConf.tertiaryProperties, "tertiary");
         },
         buildCompetencyIdConfigObject(compConf) {
@@ -331,6 +336,7 @@ export default {
                 null);
         },
         buildCompetencyTypeConfigObject(compConf) {
+            if (!this.currentConfig.compEnforceTypes) this.currentConfig.compEnforcedTypes = [];
             let compTypeRequired = this.currentConfig.compTypeRequired;
             if (this.currentConfig.compEnforcedTypes && this.currentConfig.compEnforcedTypes.length > 0) compTypeRequired = true;
             compConf["http://purl.org/dc/terms/type"] = this.generatePropertyConfigObject(

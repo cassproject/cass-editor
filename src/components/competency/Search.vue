@@ -5,7 +5,7 @@ with some adjustments to the modal-card classes to just card, this could be
 placed anywhere in a structured html element such as a <section> or a <div>
 -->
 <template>
-    <div class="modal-card">
+    <div class="search-modal modal-card">
         <header class="modal-card-head has-background-primary">
             <p class="modal-card-title">
                 <span class="title has-text-white">Search for {{ searchType }}</span>
@@ -26,6 +26,11 @@ placed anywhere in a structured html element such as a <section> or a <div>
                 aria-label="close" />
         </header>
         <section class="modal-card-body">
+            <div class="column is-12">
+                <SearchBar
+                    filterSet="basic"
+                    :searchType="searchType" />
+            </div>
             <div class="column is-12">
                 <List
                     v-if="$store.state.lode.competencySearchModalOpen"
@@ -87,57 +92,32 @@ placed anywhere in a structured html element such as a <section> or a <div>
 import List from '@/lode/components/lode/List.vue';
 import common from '@/mixins/common.js';
 import {mapState} from 'vuex';
-
+import SearchBar from '@/components/framework/SearchBar.vue';
 export default {
     name: 'CompetencySearch',
     props: {
-        isActive: Boolean,
-        framework: Object,
-        queryParams: Object
+        isActive: Boolean
     },
-    components: {List},
+    components: {List, SearchBar},
     mixins: [common],
     data() {
         return {
-            viewOptions: [
-                {
-                    label: 'View',
-                    value: 'view'
-                },
-                {
-                    label: 'Admin',
-                    value: 'admin'
-                }
-            ],
-            groups: [
-                {
-                    header: 'group 1',
-                    view: 'admin'
-                },
-                {
-                    header: 'group 2',
-                    view: 'view'
-                }
-            ],
-            users: [
-                {
-                    header: 'user 1',
-                    view: 'admin'
-                },
-                {
-                    header: 'user 2',
-                    view: 'view'
-                }
-            ],
             repo: window.repo,
             selectedIds: [],
             itemsSaving: 0,
-            displayFirst: []
+            displayFirst: [],
+            showMine: false,
+            sortBy: null
         };
+    },
+    created: function() {
+        this.sortBy = this.queryParams.concepts === 'true' ? "dcterms:title.keyword" : "name.keyword";
     },
     computed: {
         ...mapState({
-            selectedCompetency: state => state.editor.selectedCompetency
+            selectedCompetency: state => state.editor.selectedCompetency,
+            framework: state => state.editor.framework,
+            queryParams: state => state.editor.queryParams
         }),
         nameOfSelectedCompetency: function() {
             if (this.selectedCompetency) {
@@ -189,6 +169,41 @@ export default {
         },
         searchType: function() {
             return this.$store.state.lode.searchType;
+        },
+        sortResults: function() {
+            return this.$store.getters['app/sortResults'];
+        },
+        quickFilters: function() {
+            return this.$store.getters['app/quickFilters'];
+        },
+        filteredQuickFilters: function() {
+            if (this.quickFilters) {
+                let filterValues = this.quickFilters.filter(item => item.checked === true);
+                console.log('filtered value', filterValues);
+                return filterValues;
+            } else {
+                return [];
+            }
+        }
+    },
+    mounted: function() {
+        this.displayFirst.splice(0, this.displayFirst.length);
+        this.$store.commit('app/searchTerm', "");
+        if (!this.copyOrLink && this.searchType === "Competency" && this.framework.competency) {
+            for (var i = 0; i < this.framework.competency.length; i++) {
+                var comp = EcRepository.getBlocking(this.framework.competency[i]);
+                if (comp) {
+                    this.displayFirst.push(comp);
+                }
+            }
+        }
+        if (this.searchType === "Level" && this.framework.level) {
+            for (var i = 0; i < this.framework.level.length; i++) {
+                var comp = EcRepository.getBlocking(this.framework.level[i]);
+                if (comp) {
+                    this.displayFirst.push(comp);
+                }
+            }
         }
     },
     methods: {
@@ -206,6 +221,10 @@ export default {
         copyCompetencies: function(results) {
             var copyDict = {};
             var framework = this.$store.state.editor.framework;
+            var initialCompetencies = this.framework.competency ? this.framework.competency.slice() : null;
+            var initialRelations = this.framework.relation ? this.framework.relation.slice() : null;
+            var initialLevels = this.framework.level ? this.framework.level.slice() : null;
+            var addedNew = [];
             var me = this;
             for (var i = 0; i < results.length; i++) {
                 var thing = EcRepository.getBlocking(results[i]);
@@ -217,6 +236,7 @@ export default {
                     } else {
                         c.generateId(this.repo.selectedServer);
                     }
+                    addedNew.push(c.shortId());
                     c["schema:dateCreated"] = new Date().toISOString();
                     c["schema:dateModified"] = new Date().toISOString();
                     delete c.owner;
@@ -251,13 +271,13 @@ export default {
                     (function(c) {
                         Task.asyncImmediate(function(callback) {
                             me.repo.saveTo(c, function() {
-                                framework.addCompetency(c.id);
+                                framework.addCompetency(c.shortId());
                                 me.$store.commit('editor/framework', framework);
-                                me.afterCopy();
+                                me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                 callback();
                             }, function(error) {
                                 console.error(error);
-                                me.afterCopy();
+                                me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                 callback();
                             });
                         });
@@ -270,6 +290,7 @@ export default {
                     } else {
                         level.generateId(this.repo.selectedServer);
                     }
+                    addedNew.push(level.shortId());
                     level["schema:dateCreated"] = new Date().toISOString();
                     level.competency = this.$store.state.editor.selectedCompetency.shortId();
                     delete level.owner;
@@ -282,13 +303,13 @@ export default {
                     (function(level) {
                         Task.asyncImmediate(function(callback) {
                             me.repo.saveTo(level, function() {
-                                framework.addLevel(level.id);
+                                framework.addLevel(level.shortId());
                                 me.$store.commit('editor/framework', framework);
-                                me.afterCopy();
+                                me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                 callback();
                             }, function(error) {
                                 console.error(error);
-                                me.afterCopy();
+                                me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                 callback();
                             });
                         });
@@ -309,6 +330,7 @@ export default {
                         } else {
                             r.generateId(this.repo.selectedServer);
                         }
+                        addedNew.push(r.shortId());
                         r["schema:dateCreated"] = new Date().toISOString();
 
                         r.target = parent.shortId();
@@ -348,12 +370,12 @@ export default {
                                     me.repo.saveTo(r, function() {
                                         framework.addRelation(r.id);
                                         me.$store.commit('editor/framework', framework);
-                                        me.afterCopy();
+                                        me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                         callback();
                                     },
                                     function(error) {
                                         console.error(error);
-                                        me.afterCopy();
+                                        me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                         callback();
                                     });
                                 });
@@ -373,6 +395,7 @@ export default {
                         } else {
                             r.generateId(this.repo.selectedServer);
                         }
+                        addedNew.push(r.shortId());
                         r["schema:dateCreated"] = new Date().toISOString();
 
                         var child = copyDict[thing.id];
@@ -412,12 +435,12 @@ export default {
                             (function(r) {
                                 Task.asyncImmediate(function(callback) {
                                     me.repo.saveTo(r, function() {
-                                        me.afterCopy();
+                                        me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                         callback();
                                     },
                                     function(error) {
                                         console.error(error);
-                                        me.afterCopy();
+                                        me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                         callback();
                                     });
                                 });
@@ -427,11 +450,17 @@ export default {
                 }
             }
         },
-        afterCopy: function() {
+        afterCopy: function(initialCompetencies, initialRelations, initialLevels, addedNew) {
             this.itemsSaving--;
             // loading(this.itemsSaving + " objects left to copy.");
             if (this.itemsSaving === 0) {
                 var framework = this.$store.state.editor.framework;
+                var changes = [];
+                for (var i = 0; i < addedNew.length; i++) {
+                    changes.push({operation: "addNew", id: addedNew[i]});
+                }
+                changes.push({operation: "update", id: framework.shortId(), fieldChanged: ["competency", "relation", "level"], initialValue: [initialCompetencies, initialRelations, initialLevels], changedValue: [framework.competency, framework.relation, framework.level]});
+                this.$store.commit('editor/addEditsToUndo', changes);
                 if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
                 }
@@ -441,6 +470,12 @@ export default {
         appendCompetencies: function(results, newLink) {
             var selectedCompetency = this.$store.state.editor.selectedCompetency;
             var framework = this.$store.state.editor.framework;
+            var initialCompetencies = this.framework.competency ? this.framework.competency.slice() : null;
+            var initialRelations = this.framework.relation ? this.framework.relation.slice() : null;
+            var initialLevels = this.framework.level ? this.framework.level.slice() : null;
+            var initialLevelCompetency = [];
+            var afterLevelCompetency = [];
+            var addedNew = [];
             var me = this;
             for (var i = 0; i < results.length; i++) {
                 var thing = EcRepository.getBlocking(results[i]);
@@ -451,7 +486,10 @@ export default {
                     if (!EcArray.isArray(thing.competency)) {
                         thing.competency = [thing.competency];
                     }
+                    var thingId = thing.shortId();
+                    initialLevelCompetency.push({id: thingId, competency: thing.competency.splice()});
                     thing.competency.push(selectedCompetency.shortId());
+                    afterLevelCompetency.push({id: thingId, competency: thing.competency});
                     this.repo.saveTo(thing, function() {}, console.error);
                 }
             }
@@ -477,6 +515,7 @@ export default {
                         } else {
                             r.generateId(this.repo.selectedServer);
                         }
+                        addedNew.push(r.shortId());
                         r["schema:dateCreated"] = new Date().toISOString();
 
                         r.target = selectedCompetency.shortId();
@@ -515,6 +554,17 @@ export default {
                     }
                 }
             }
+            var changes = [];
+            for (var i = 0; i < addedNew.length; i++) {
+                changes.push({operation: "addNew", id: addedNew[i]});
+            }
+            if (initialLevelCompetency.length > 0) {
+                for (var i = 0; i < initialLevelCompetency.length; i++) {
+                    changes.push({operation: "update", id: initialLevelCompetency[i].id, fieldChanged: ["competency"], initialValue: [initialLevelCompetency[i].competency], changedValue: [afterLevelCompetency[i].competency]});
+                }
+            }
+            changes.push({operation: "update", id: framework.shortId(), fieldChanged: ["competency", "relation", "level"], initialValue: [initialCompetencies, initialRelations, initialLevels], changedValue: [framework.competency, framework.relation, framework.level]});
+            this.$store.commit('editor/addEditsToUndo', changes);
             if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                 framework = EcEncryptedValue.toEncryptedValue(framework);
             }
@@ -548,27 +598,38 @@ export default {
             } else {
                 this.attachUrlProperties(ids);
             }
+        },
+        addNewlinesToId: function(pem) {
+            // Begin public key line
+            pem = pem.substring(0, 26) + "\n" + pem.substring(26);
+            var length = pem.length;
+            var start = 27;
+            while (start + 64 < length) {
+                pem = pem.substring(0, start + 64) + "\n" + pem.substring(start + 64);
+                start += 65;
+                length++;
+            }
+            // End public key line
+            pem = pem.substring(0, length - 24) + "\n" + pem.substring(length - 24);
+            return pem;
         }
     },
     watch: {
-        isActive: function() {
-            if (this.isActive) {
+        sortResults: function() {
+            if (this.sortResults.id === "lastEdited") {
+                this.sortBy = "schema:dateModified";
                 this.displayFirst.splice(0, this.displayFirst.length);
-                if (!this.copyOrLink && this.searchType === "Competency" && this.framework.competency) {
-                    for (var i = 0; i < this.framework.competency.length; i++) {
-                        var comp = EcRepository.getBlocking(this.framework.competency[i]);
-                        if (comp) {
-                            this.displayFirst.push(comp);
-                        }
-                    }
-                }
-                if (this.searchType === "Level" && this.framework.level) {
-                    for (var i = 0; i < this.framework.level.length; i++) {
-                        var comp = EcRepository.getBlocking(this.framework.level[i]);
-                        if (comp) {
-                            this.displayFirst.push(comp);
-                        }
-                    }
+            } else {
+                this.sortBy = this.queryParams.concepts === 'true' ? "dcterms:title.keyword" : "name.keyword";
+                this.displayFirst.splice(0, this.displayFirst.length);
+            }
+        },
+        filteredQuickFilters: function() {
+            this.showMine = false;
+            for (var i = 0; i < this.filteredQuickFilters.length; i++) {
+                if (this.filteredQuickFilters[i].id === "ownedByMe") {
+                    this.showMine = true;
+                    this.displayFirst.splice(0, this.displayFirst.length);
                 }
             }
         }
@@ -579,6 +640,10 @@ export default {
 
 <style lang="scss">
     @import '@/scss/frameworks.scss';
+.search-modal {
+    max-height: 100%;
+    min-height: 600px;
+}
 .competency-search{
     .thing {
         padding: .125rem .25rem !important;

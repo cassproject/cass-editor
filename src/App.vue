@@ -4,14 +4,15 @@
         class="has-background-white">
         <!-- nav bar navigation -->
         <cass-modal />
+        <DynamicModal />
+
         <router-view
             :showSideNav="showSideNav"
             @sideBarEvent="onSidebarEvent"
             name="topbar" />
         <router-view
             id="app-content"
-            :class="{ 'clear-side-bar': showSideNav}"
-            :queryParams="queryParams" />
+            :class="[{ 'clear-side-bar': showSideNav}, {'clear-right-aside': showRightAside}]" />
         <router-view
             :showSideNav="showSideNav"
             @createNewFramework="onCreateNewFramework"
@@ -20,21 +21,26 @@
 </template>
 
 <script>
+import {mapState} from 'vuex';
+
 import common from '@/mixins/common.js';
 import cassModal from './components/CassModal.vue';
+import DynamicModal from './components/modals/DynamicModal.vue';
 
 export default {
+    mixins: [common],
     name: "App",
+    components: {
+        DynamicModal
+    },
     data: function() {
         return {
             navBarActive: false,
-            queryParams: null,
             repo: window.repo,
             itemsSaving: 0,
             showNav: true
         };
     },
-    mixins: [common],
     $router: function(to, from) {
         if (to.path !== from.path) {
             this.navBarActive = false;
@@ -48,7 +54,7 @@ export default {
         var servers = ["https://dev.api.cassproject.org/api/"];
         var me = this;
         if (this.$route.query) {
-            this.queryParams = this.$route.query;
+            this.$store.commit('editor/queryParams', this.$route.query);
             if (this.queryParams.server) {
                 if (this.queryParams.server.endsWith && this.queryParams.server.endsWith("/") === false) {
                     this.queryParams.server += "/";
@@ -82,11 +88,17 @@ export default {
                     if (me.queryParams.concepts === "true") {
                         EcConceptScheme.get(me.queryParams.frameworkId, function(success) {
                             me.$store.commit('editor/framework', success);
+                            me.$store.commit('editor/clearFrameworkCommentData');
+                            me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
+                            me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
                             me.$router.push({name: "conceptScheme", params: {frameworkId: me.queryParams.frameworkId}});
                         }, console.error);
                     } else {
                         EcFramework.get(me.queryParams.frameworkId, function(success) {
                             me.$store.commit('editor/framework', success);
+                            me.$store.commit('editor/clearFrameworkCommentData');
+                            me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
+                            me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
                             me.$router.push({name: "framework", params: {frameworkId: me.queryParams.frameworkId}});
                         }, console.error);
                     }
@@ -121,6 +133,9 @@ export default {
             ss.href = this.queryParams.css;
             document.getElementsByTagName("head")[0].appendChild(ss);
         }
+        /* if (!this.loggedInPerson) {
+            this.$router.push({name: 'login'});
+        }*/
     },
     methods: {
         onSidebarEvent: function() {
@@ -327,10 +342,12 @@ export default {
                     framework.generateId(this.repo.selectedServer);
                 }
                 framework["schema:dateCreated"] = new Date().toISOString();
+                framework["schema:dateModified"] = new Date().toISOString();
                 if (EcIdentityManager.ids.length > 0) {
                     framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                 }
                 framework.name = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Framework"};
+                this.$store.commit('editor/newFramework', framework.shortId());
                 if (this.queryParams.ceasnDataFields === "true") {
                     framework["schema:inLanguage"] = [this.$store.state.editor.defaultLanguage];
                 }
@@ -356,6 +373,7 @@ export default {
                 }
                 framework["dcterms:title"] = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Concept Scheme"};
                 framework["schema:dateCreated"] = new Date().toISOString();
+                framework["schema:dateModified"] = new Date().toISOString();
                 var saveFramework = framework;
                 if (this.queryParams.private === "true") {
                     saveFramework = EcEncryptedValue.toEncryptedValue(framework);
@@ -1001,22 +1019,6 @@ export default {
                 me.$store.commit('editor/framework', EcFramework.getBlocking(framework.id));
             }, console.error);
         },
-        addRelationAsCompetencyField: function(targets, thing, relationType, allowSave) {
-            var me = this;
-            for (var i = 0; i < targets.length; i++) {
-                if (thing[relationType] == null) {
-                    thing[relationType] = [];
-                }
-                thing[relationType].push(targets[i]);
-            }
-            thing["schema:dateModified"] = new Date().toISOString();
-            if (this.$store.state.editor.private === true) {
-                if (EcEncryptedValue.encryptOnSaveMap[thing.id] !== true) {
-                    thing = EcEncryptedValue.toEncryptedValue(thing);
-                }
-            }
-            me.repo.saveTo(thing, function() {}, console.error);
-        },
         importParentStyles: function() {
             var parentStyleSheets = parent.document.styleSheets;
             var cssString = "";
@@ -1042,6 +1044,9 @@ export default {
         }
     },
     computed: {
+        showRightAside: function() {
+            return this.$store.getters['app/showRightAside'];
+        },
         showSideNav: function() {
             return this.$store.getters['app/showSideNav'];
         },
@@ -1051,7 +1056,11 @@ export default {
         currentPathIsLogin: function() {
             if (this.$route.name === 'login') return true;
             else return false;
-        }
+        },
+        ...mapState({
+            loggedInPerson: state => state.user.loggedInPerson,
+            queryParams: state => state.editor.queryParams
+        })
     },
     watch: {
         '$route'(to, from) {
@@ -1060,6 +1069,11 @@ export default {
                 this.navBarActive = false;
             }
         }
+        /* loggedInPerson: function(val) {
+            if (!val) {
+                this.$router.push({name: 'login'});
+            }
+        }*/
     }
 };
 </script>
@@ -1105,6 +1119,9 @@ export default {
     }
     .clear-side-bar {
         margin-left: 300px;
+    }
+    .clear-right-aside {
+        margin-right: 340px;
     }
 
 

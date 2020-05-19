@@ -1,3 +1,5 @@
+import dateFormat from 'dateformat';
+
 export default {
     computed: {
         levels: function() {
@@ -376,6 +378,7 @@ export default {
         },
         addLevel: function(selectedCompetency, optionalLevelUrl) {
             var c;
+            var initialLevels = this.framework.level ? this.framework.level.slice() : null;
             if (!optionalLevelUrl) {
                 c = new EcLevel();
                 var me = this;
@@ -403,11 +406,20 @@ export default {
             }
             this.repo.saveTo(c, function() {
                 me.framework.addLevel(c.shortId());
+                var edits = [];
+                if (!optionalLevelUrl) {
+                    edits.push({operation: "addNew", id: c.shortId()});
+                }
+                edits.push({operation: "update", id: me.framework.shortId(), fieldChanged: ["level"], initialValue: [initialLevels], changedValue: [me.framework.level]});
+                me.$store.commit('editor/addEditsToUndo', edits);
                 me.repo.saveTo(me.framework, function() {}, console.error);
             }, console.error);
         },
         saveCheckedLevels: function(selectedCompetency, checkedOptions, allOptions) {
             var competencyId = EcRemoteLinkedData.trimVersionFromUrl(selectedCompetency["@id"]);
+            var initialLevels = this.framework.level ? this.framework.level.slice() : null;
+            var frameworkChanged = false;
+            var edits = [];
             for (var i = 0; i < allOptions.length; i++) {
                 if (!this.framework.level) {
                     this.framework.level = [];
@@ -415,30 +427,40 @@ export default {
                 // If selected
                 if (checkedOptions.indexOf(allOptions[i].val) !== -1) {
                     var level = EcLevel.getBlocking(allOptions[i].val);
+                    var initialComp = JSON.parse(JSON.stringify(level.competency));
                     if (!EcArray.isArray(level.competency)) {
                         level.competency = level.competency == null ? [] : [level.competency];
                     }
                     if (level.competency.indexOf(competencyId) === -1) {
                         level.competency.push(competencyId);
+                        edits.push({operation: "update", id: level.shortId(), fieldChanged: ["competency"], initialValue: [initialComp], changedValue: [level.competency]});
                         this.repo.saveTo(level, function() {}, console.error);
                     }
                     if (this.framework.level.indexOf(level.shortId()) === -1) {
                         this.framework.addLevel(level.shortId());
+                        frameworkChanged = true;
                     }
                 } else {
                     // If not selected
                     var level = EcLevel.getBlocking(allOptions[i].val);
+                    var initialComp = JSON.parse(JSON.stringify(level.competency));
                     if (level.competency && level.competency.indexOf(competencyId) !== -1) {
                         EcArray.setRemove(level.competency, competencyId);
+                        edits.push({operation: "update", id: level.shortId(), fieldChanged: ["competency"], initialValue: [initialComp], changedValue: [level.competency]});
                         this.repo.saveTo(level, function() {}, console.error);
                     }
                     // If level doesn't have any competencies attached, remove it from the framework.
                     if ((!level.competency || (level.competency && level.competency.length === 0)) && this.framework.level.indexOf(level.shortId()) !== -1) {
                         EcArray.setRemove(this.framework.level, level.shortId());
+                        frameworkChanged = true;
                     }
                 }
             }
-            this.saveFramework();
+            if (frameworkChanged) {
+                edits.push({operation: "update", id: this.framework.shortId(), fieldChanged: ["level"], initialValue: [initialLevels], changedValue: [this.framework.level]});
+                this.saveFramework();
+            }
+            this.$store.commit('editor/addEditsToUndo', edits);
         },
         saveFramework: function() {
             this.framework["schema:dateModified"] = new Date().toISOString();
@@ -450,7 +472,13 @@ export default {
             this.repo.saveTo(framework, function() {}, console.error);
         },
         removeLevelFromFramework: function(levelId) {
+            var initialLevels = this.framework.level ? this.framework.level.slice() : null;
             this.framework.removeLevel(levelId);
+            var level = EcRepository.getBlocking(levelId);
+            this.$store.commit('editor/addEditsToUndo', [
+                {operation: "delete", obj: level},
+                {operation: "update", id: this.framework.shortId(), fieldChanged: [this.framework.level], initialValue: [initialLevels], changedValue: [this.framework.level]}
+            ]);
             this.conditionalDelete(levelId);
             this.saveFramework();
         },
@@ -468,6 +496,9 @@ export default {
                 // This property is attached to competency, not a relation attached to framework
                 return this.addRelationAsCompetencyField(targets, thing, relationType, allowSave);
             }
+            var framework = this.$store.state.editor.framework;
+            var edits = [];
+            var initialRelations = framework.relation ? framework.relation.slice() : null;
             for (var i = 0; i < targets.length; i++) {
                 var r = new EcAlignment();
                 if (this.queryParams.newObjectEndpoint != null) {
@@ -475,6 +506,7 @@ export default {
                 } else {
                     r.generateId(this.repo.selectedServer);
                 }
+                edits.push({operation: "addNew", id: r.shortId()});
                 r["schema:dateCreated"] = new Date().toISOString();
                 r.target = EcRemoteLinkedData.trimVersionFromUrl(targets[i]);
                 if (thing.id) {
@@ -495,7 +527,6 @@ export default {
                 if (EcIdentityManager.ids.length > 0) {
                     r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                 }
-                var framework = this.$store.state.editor.framework;
                 if (framework.owner && framework.owner.length > 0) {
                     for (var j = 0; j < framework.owner.length; j++) {
                         var owner = framework.owner[j];
@@ -538,19 +569,42 @@ export default {
                     framework.addRelation(r.id);
                 }
             }
+            edits.push({operation: "update", id: framework.shortId(), fieldChanged: ["relation"], initialValue: [initialRelations], changedValue: [framework.relation]});
+            this.$store.commit('editor/addEditsToUndo', edits);
             this.$store.commit('editor/framework', framework);
             if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                 framework = EcEncryptedValue.toEncryptedValue(framework);
             }
             this.repo.saveTo(framework, function() {}, console.error);
         },
+        addRelationAsCompetencyField: function(targets, thing, relationType, allowSave) {
+            var me = this;
+            var initialValue = thing[relationType] ? thing[relationType].slice() : null;
+            for (var i = 0; i < targets.length; i++) {
+                if (thing[relationType] == null) {
+                    thing[relationType] = [];
+                }
+                thing[relationType].push(targets[i]);
+            }
+            this.$store.commit('editor/addEditsToUndo', [{operation: "update", id: thing.shortId(), fieldChanged: [relationType], initialValue: [initialValue], changedValue: [thing[relationType]]}]);
+            thing["schema:dateModified"] = new Date().toISOString();
+            if (this.$store.state.editor.private === true) {
+                if (EcEncryptedValue.encryptOnSaveMap[thing.id] !== true) {
+                    thing = EcEncryptedValue.toEncryptedValue(thing);
+                }
+            }
+            me.repo.saveTo(thing, function() {}, console.error);
+        },
         removeRelationFromFramework: function(source, property, target) {
             var me = this;
+            var initialRelations = this.framework.relation ? this.framework.relation.slice() : null;
+            var edits = [];
             new EcAsyncHelper().each(this.framework.relation, function(relation, callback) {
                 EcAlignment.get(relation, function(r) {
                     if (property === "broadens") {
                         if (r.target === source && r.source === target && r.relationType === "narrows") {
                             me.framework.removeRelation(r.shortId());
+                            edits.push({operation: "delete", obj: r});
                             me.conditionalDelete(r.shortId());
                             callback();
                         } else {
@@ -558,6 +612,7 @@ export default {
                         }
                     } else if (r.source === source && r.target === target && r.relationType === property) {
                         me.framework.removeRelation(r.shortId());
+                        edits.push({operation: "delete", obj: r});
                         me.conditionalDelete(r.shortId());
                         callback();
                     } else {
@@ -566,7 +621,9 @@ export default {
                 }, callback);
             }, function() {
                 var framework = me.framework;
+                edits.push({operation: "update", id: framework.shortId(), fieldChanged: ["relation"], initialValue: [initialRelations], changedValue: [framework.relation]});
                 me.$store.commit('editor/framework', framework);
+                me.$store.commit('editor/addEditsToUndo', edits);
                 if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
                 }
@@ -599,6 +656,26 @@ export default {
                 uuid = "ce-" + uuid;
             }
             return uuid;
+        },
+        canViewCommentsCurrentFramework: function() {
+            // TODO expand on this
+            let lop = this.$store.state.user.loggedOnPerson;
+            if (lop && lop.id && lop.id !== '') return true;
+            else return false;
+        },
+        canAddCommentsCurrentFramework: function() {
+            // TODO expand on this
+            let lop = this.$store.state.user.loggedOnPerson;
+            if (lop && lop.id && lop.id !== '') return true;
+            else return false;
+        },
+        toPrettyDateString: function(dateInMilliseconds) {
+            try {
+                let d = new Date(dateInMilliseconds);
+                return dateFormat(d, "mm/dd/yy, h:MM:ss TT");
+            } catch (err) {
+                return 'unknown';
+            }
         }
     }
 };

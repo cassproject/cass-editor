@@ -8,6 +8,7 @@ import Modal from './plugins/modalPlugin.js';
 import Clipboard from 'v-clipboard';
 import store from './store/index.js';
 var VueScrollTo = require('vue-scrollto');
+export const EventBus = new Vue();
 require("cassproject");
 
 Vue.use(Modal);

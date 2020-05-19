@@ -57,7 +57,6 @@ export default {
         editable: Boolean,
         repo: Object,
         profile: Object,
-        queryParams: Object,
         exportOptions: Array,
         highlightList: Array,
         selectMode: Boolean,
@@ -74,6 +73,9 @@ export default {
     components: {HierarchyNode, draggable},
     mixins: [common],
     computed: {
+        queryParams: function() {
+            return this.$store.getters['editor/queryParams'];
+        },
         hierarchy: function() {
             var me = this;
             if (this.container == null) return null;

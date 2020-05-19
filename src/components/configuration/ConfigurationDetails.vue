@@ -35,7 +35,7 @@
                             placeholder="user/group filter">
                     </div>
                     <div class="table-container">
-                        <div class="table">
+                        <table class="table is-hoverable is-fullwidth">
                             <thead>
                                 <tr>
                                     <th />
@@ -72,7 +72,7 @@
                                     </td>
                                 </tr>
                             </tbody>
-                        </div>
+                        </table>
                     </div>
                 </div>
                 <footer class="modal-card-foot has-background-light">
@@ -174,7 +174,7 @@
                     </div>
                     <div v-else>
                         <div class="table-container">
-                            <div class="table">
+                            <table class="table is-hoverable is-fullwidth">
                                 <thead>
                                     <th />
                                     <th>
@@ -206,7 +206,7 @@
                                         </td>
                                     </tr>
                                 </tbody>
-                            </div>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -484,7 +484,7 @@
                         <div
                             class="table-container"
                             v-if="customPropertyPermittedValues.length > 0">
-                            <div class="table">
+                            <table class="table is-hoverable is-fullwidth">
                                 <thead>
                                     <th>display</th>
                                     <th>value</th>
@@ -534,7 +534,7 @@
                                         </td>
                                     </tr>
                                 </tbody>
-                            </div>
+                            </table>
                         </div>
                     </template>
                     <br>
@@ -637,7 +637,12 @@
                 <div
                     class="control"
                     v-if="!readOnly">
-                    <div class="select is-small">
+                    <span v-if="defaultConfigId && !defaultConfigId.equals(config.id)">
+                        {{ config.isDefault }}
+                    </span>
+                    <div
+                        class="select is-small"
+                        v-if="!defaultConfigId || defaultConfigId.equals(config.id)">
                         <select
                             v-model="config.isDefault">
                             <option :value="true">
@@ -659,7 +664,7 @@
                 Framework Properties
             </h5>
             <div class="table-container">
-                <div class="table">
+                <table class="table is-hoverable is-fullwidth">
                     <thead>
                         <tr>
                             <th><abbr title="property" />property</th>
@@ -726,7 +731,7 @@
                             @manage="manageCustomFrameworkCompetencyProperty"
                             @delete="deleteCustomFrameworkCompetencyProperty" />
                     </tbody>
-                </div>
+                </table>
             </div>
             <div
                 class="field"
@@ -749,7 +754,7 @@
             id="competency-properties">
             <h5>Competency Properties</h5>
             <div class="table-container">
-                <div class="table">
+                <table class="table is-hoverable is-fullwidth">
                     <thead>
                         <tr>
                             <th><abbr title="property" />property</th>
@@ -828,7 +833,7 @@
                             @manage="manageCustomFrameworkCompetencyProperty"
                             @delete="deleteCustomFrameworkCompetencyProperty" />
                     </tbody>
-                </div>
+                </table>
             </div>
 
             <div
@@ -888,7 +893,7 @@
             <div
                 v-if="config.compEnforceTypes"
                 class="table-container">
-                <div class="table">
+                <table class="table is-hoverable is-fullwidth">
                     <thead>
                         <tr>
                             <th>
@@ -936,7 +941,7 @@
                             </td>
                         </tr>
                     </tbody>
-                </div>
+                </table>
             </div>
         </div>
         <div
@@ -990,7 +995,7 @@
                 </div>
             </div>
         </div>
-        <!-- enforce levels -->
+        <!-- ************************************** Enforce Levels ************************************************ -->
         <div
             v-if="config.compAllowLevels"
             class="section"
@@ -1025,7 +1030,7 @@
             <div
                 v-if="config.enforceLevelValues"
                 class="table-container">
-                <div class="table">
+                <table class="table is-hoverable is-fullwidth">
                     <thead>
                         <tr>
                             <th>
@@ -1048,7 +1053,7 @@
                             </td>
                         </tr>
                     </tbody>
-                </div>
+                </table>
             </div>
         </div>
         <!-- ************************************** Competency Relationships ************************************************ -->
@@ -1057,7 +1062,7 @@
             id="competency-relationships">
             <h5>Competency Relationships</h5>
             <div class="table-container">
-                <div class="table">
+                <table class="table is-hoverable is-fullwidth">
                     <thead>
                         <tr>
                             <td>
@@ -1081,7 +1086,7 @@
                             :readOnly="readOnly"
                             @change="updateRelationshipProperty" />
                     </tbody>
-                </div>
+                </table>
             </div>
         </div>
         <div
@@ -1090,7 +1095,7 @@
             <!-- ************************************** Resource Alignments ************************************************ -->
             <h5>Resource Alignment</h5>
             <div class="table-container">
-                <div class="table">
+                <table class="table is-hoverable is-fullwidth">
                     <thead>
                         <tr>
                             <th>
@@ -1169,7 +1174,7 @@
                             </td>
                         </tr>
                     </tbody>
-                </div>
+                </table>
             </div>
         </div>
         <div
@@ -1186,7 +1191,7 @@
             <div
                 v-if="localDefaultOwners.length > 0"
                 class="table-container">
-                <div class="table">
+                <table class="table is-hoverable is-fullwidth">
                     <thead>
                         <tr>
                             <th>
@@ -1222,7 +1227,7 @@
                             </td>
                         </tr>
                     </tbody>
-                </div>
+                </table>
             </div>
         </div>
         <div
@@ -1239,7 +1244,7 @@
             <div
                 v-if="localDefaultReaders.length > 0"
                 class="table-container">
-                <div class="table">
+                <table class="table is-hoverable is-fullwidth">
                     <thead>
                         <tr>
                             <th>
@@ -1275,7 +1280,7 @@
                             </td>
                         </tr>
                     </tbody>
-                </div>
+                </table>
             </div>
         </div>
         <div
@@ -1292,7 +1297,7 @@
             <div
                 v-if="localDefaultCommenters.length > 0"
                 class="table-container">
-                <div class="table">
+                <table class="table is-hoverable is-fullwidth">
                     <thead>
                         <tr>
                             <th>
@@ -1328,7 +1333,7 @@
                             </td>
                         </tr>
                     </tbody>
-                </div>
+                </table>
             </div>
         </div>
         <!-- ************************************** Validation ************************************************ -->

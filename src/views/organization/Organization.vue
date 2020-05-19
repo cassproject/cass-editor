@@ -31,8 +31,7 @@ import common from '@/mixins/common.js';
 export default {
     name: "Organization",
     props: {
-        exportType: String,
-        queryParams: Object
+        exportType: String
     },
     mixins: [common],
     data: function() {

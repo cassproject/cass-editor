@@ -73,7 +73,8 @@ export default {
             repo: window.repo,
             saveCount: 0,
             errorMessage: [],
-            checkedOptions: []
+            checkedOptions: [],
+            changedItemsForUndo: []
         };
     },
     computed: {
@@ -162,6 +163,7 @@ export default {
                     return false;
                 }
             }
+            return true;
         },
         applyToMultiple: function() {
             var me = this;
@@ -169,13 +171,23 @@ export default {
                 var competencyId = this.selectedCompetencies[i];
                 var competency = EcCompetency.getBlocking(competencyId);
                 this.expand(competency, function(expandedCompetency) {
+                    var initialValues = [];
+                    var changedValues = [];
+                    var properties = [];
                     for (var j = 0; j < me.addedPropertiesAndValues.length; j++) {
                         var property = me.addedPropertiesAndValues[j].property.value;
                         var value = me.addedPropertiesAndValues[j].value;
                         var range = me.addedPropertiesAndValues[j].range;
 
+                        properties.push(property);
+                        if (expandedCompetency[property]) {
+                            initialValues.push(JSON.parse(JSON.stringify(expandedCompetency[property])));
+                        } else {
+                            initialValues.push([]);
+                        }
+
                         if (range.length === 1 && range[0].toLowerCase().indexOf("langstring") !== -1) {
-                            if (me.profile && me.profile[property] && me.profile[property]["onePerLanguage"] === 'true') {
+                            if (me.profile && me.profile[property] && (me.profile[property]["onePerLanguage"] === 'true' || me.profile[property]["onePerLanguage"] === true)) {
                                 var okayToSave = me.validateOnePerLanguage(expandedCompetency, property, competency);
                                 if (!okayToSave) {
                                     continue;
@@ -211,10 +223,12 @@ export default {
                                 f();
                             }
                         }
+                        changedValues.push(expandedCompetency[property]);
                     }
                     if (me.errorMessage && me.errorMessage.length > 0) {
                         me.showModal();
                     }
+                    me.changedItemsForUndo.push({operation: "update", id: EcRemoteLinkedData.trimVersionFromUrl(expandedCompetency["@id"]), fieldChanged: properties, initialValue: initialValues, changedValue: changedValues, expandedProperty: true});
                     me.save(expandedCompetency);
                     me.saveCount++;
                 });
@@ -270,6 +284,21 @@ export default {
                 if (rld.owner && !EcArray.isArray(rld.owner)) {
                     rld.owner = [rld.owner];
                 }
+                if (rld.reader && !EcArray.isArray(rld.reader)) {
+                    rld.reader = [rld.reader];
+                }
+                if (rld.signature && !EcArray.isArray(rld.signature)) {
+                    rld.signature = [rld.signature];
+                }
+                if (rld.competency && !EcArray.isArray(rld.competency)) {
+                    rld.competency = [rld.competency];
+                }
+                if (rld.level && !EcArray.isArray(rld.level)) {
+                    rld.level = [rld.level];
+                }
+                if (rld.relation && !EcArray.isArray(rld.relation)) {
+                    rld.relation = [rld.relation];
+                }
                 rld["schema:dateModified"] = new Date().toISOString();
                 if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
                     rld = EcEncryptedValue.toEncryptedValue(rld);
@@ -282,7 +311,8 @@ export default {
         saveCount: function() {
             if (this.saveCount === this.selectedCompetencies.length) {
                 // Done saving, close modal
-                this.$emit('cancelEditMultipleEvent');
+                this.$store.commit('editor/addEditsToUndo', this.changedItemsForUndo);
+                this.$store.commit('app/closeModal');
             }
         }
     }
