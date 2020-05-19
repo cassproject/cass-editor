@@ -262,6 +262,13 @@ export default {
             }
             if (this.config) {
                 var profile = JSON.parse(JSON.stringify(this.config.competencyConfig));
+                var compKeys = EcObject.keys(profile);
+                for (var i = 0; i < compKeys.length; i++) {
+                    let key = compKeys[i];
+                    if (profile[key] && profile[key]["http://schema.org/rangeIncludes"] && profile[key]["http://schema.org/rangeIncludes"][0]["@id"] === "https://schema.cassproject.org/0.4/skos/Concept") {
+                        profile[key]["noTextEditing"] = 'true';
+                    }
+                }
                 if (this.config.levelsConfig) {
                     var me = this;
                     var key = EcObject.keys(this.config.levelsConfig);

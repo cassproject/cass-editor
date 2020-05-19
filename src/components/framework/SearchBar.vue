@@ -18,7 +18,7 @@
                 <input
                     class="input is-large"
                     ref="text"
-                    :placeholder="'Search for ' + (searchType === 'competency' ? 'competencie' : searchType)+ 's...'"
+                    :placeholder="'Search for ' + (searchType === 'Competency' ? 'competencie' : searchType)+ 's...'"
                     @change="updateSearchTerm($event)"
                     @keyup.enter="updateSearchTerm($event)">
                 <span
@@ -139,10 +139,24 @@ export default {
     },
     watch: {
         basicSort: function(val) {
-            this.$store.commit("app/sortResults", val);
+            console.log(val);
+            this.$store.commit("app/sortResults", {id: val});
         },
         basicFilter: function(val) {
-            this.$store.commit("app/quickFilters", val);
+            console.log(val);
+            var filter;
+            if (val === true) {
+                filter = {
+                    id: 'ownedByMe',
+                    checked: true
+                };
+            } else {
+                filter = {
+                    id: 'ownedByMe',
+                    checked: false
+                };
+            }
+            this.$store.commit("app/quickFilters", [filter]);
         }
     },
     methods: {
