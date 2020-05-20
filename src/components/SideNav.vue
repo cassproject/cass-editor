@@ -9,7 +9,9 @@
                 {{ displayName }}
             </template>
             <template v-else>
-                <router-link class="button is-outlined is-link" to="/login">
+                <router-link
+                    class="button is-outlined is-link"
+                    to="/login">
                     login
                 </router-link>
             </template>
@@ -77,7 +79,8 @@
             Configuration
         </div>
         <ul
-            class="menu-list" v-if="currentRoute !== '/config'">
+            class="menu-list"
+            v-if="currentRoute !== '/config'">
             <li>
                 <router-link to="/config">
                     Configurations
@@ -90,7 +93,9 @@
             </li>
         </ul>
         <!-- CONFIG OPTIONS -->
-        <ul v-if="currentRoute === '/config'" class="menu-list">
+        <ul
+            v-if="currentRoute === '/config'"
+            class="menu-list">
             <li>
                 <a v-scroll-to="'#configuration-details'">
                     <span>Configuration Details</span>

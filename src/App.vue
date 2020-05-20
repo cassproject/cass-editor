@@ -3,7 +3,7 @@
         id="app"
         class="has-background-white">
         <!-- nav bar navigation -->
-        <cass-modal class="cass-modal"/>
+        <cass-modal class="cass-modal" />
         <DynamicModal />
 
         <router-view

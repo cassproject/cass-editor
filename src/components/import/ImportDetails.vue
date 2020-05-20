@@ -47,9 +47,9 @@
                     <b>Header rows detected</b>
                 </li>
             </ul>
-             <!--accept details -->
-             <div class="buttons is-right">
-                 <div
+            <!--accept details -->
+            <div class="buttons is-right">
+                <div
                     @click="$store.dispatch('app/clearImport')"
                     class=" button is-light is-small is-pulled-right is-dark is-outlined">
                     <span>

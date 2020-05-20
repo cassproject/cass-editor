@@ -20,7 +20,9 @@
                         Files to Upload
                     </p>
                 </div>
-                <div v-if="files.length  === 0" class="column is-12">
+                <div
+                    v-if="files.length === 0"
+                    class="column is-12">
                     <p class="is-size-6">
                         Drag and drop, or click to upload.
                     </p>

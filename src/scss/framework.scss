@@ -93,10 +93,6 @@ drag, drag, and chosen states
         .lode__thing-heading {
             padding: 0rem 6rem 0rem .5rem;
         }
-        .lode__framework__info-bar {
-            padding: .5rem;
-            margin-left: 1.5rem;
-        }
         .lode__Property.lode__name {
             font-size: 1.2rem;
             font-family: $family-secondary;
@@ -292,7 +288,7 @@ drag, drag, and chosen states
         }
         .lode__Property.lode__name {
             font-size: 1.2rem;
-            font-family: $family-secondary;
+            font-family: $family-primary;
             font-weight: 600;
         }
     }
@@ -302,54 +298,61 @@ drag, drag, and chosen states
 
 // room for improvement, iterate over loop for max depth tabbing
 // possibly set tab value based on value in scss varaibles sheet
+
 .lode__hierarchy {
-    .check-radio-column,
-    .expand-column {
-        
+    .check-radio-all-column label {
+        padding-left: 0rem !important;
+        margin-right: 1.25rem !important;
+        vertical-align: -webkit-baseline-middle;
+        vertical-align: middle;
     }
     ul.lode__hierarchy-ul {
+        .check-radio-column label {
+            padding-left: .5rem !important;
+            margin-right: .75rem !important;
+            vertical-align: -webkit-baseline-middle;
+            vertical-align: middle;
+        }
         margin-top: .5rem;
         margin-bottom: .25rem;
         li.lode__hierarchy-li {
+            padding-bottom: .5rem;
             .add-new-node {
-                padding-left: 5rem;
             }
-            .lode__hierarchy-item {                            
+            .lode__hierarchy-item {
                 .add-node-section {
                     width: 100%;
                     display:block;
                     max-width: 1300px;
-                    padding-left: 3rem;
                     height: auto;
                     cursor: pointer;
+                }
+                .add-node-section:hover .add-new-node__line {
+                    height: 48px !important;
+                    padding-top: 1rem;
                 }
                 .add-node-section:hover .add-new-node__line, 
                 .add-node-section:hover .button {
                     opacity: 1;
-                    .add-node__options {
-                        padding: 0rem 0rem;
-                    }
+                }
+                .add-node__options {
                 }
                 .add-new-node__line {
-                    transition: opacity .2s;
-                    transition-delay: .2s;
+                    transition: all .3s;
+                    padding-top: 0rem;
+                    transition-delay: .7s;
                     margin: 0rem;
                     opacity: 0;
-                    padding-left: 4rem;
                     height: 6px;
                     width: 100%;
                     display: flex;
                     align-items: center;
-                    .button {
-                    }
                     hr  {
                         z-index: 2;
-                        width: 100%;
+                        margin-right: 2rem;
+                        margin-left: 2rem;
                         display: inline-block;
                         height: 1px;
-                        padding-left: -1px;
-                        margin-left: auto;
-                        margin-right: auto;
                         border-width: 1px;
                         background-color: rgba($primary, .5) !important;
                         color: $black !important;
@@ -365,13 +368,12 @@ drag, drag, and chosen states
                         }
                     }
                     .lode__name {
-                        font-size: 1.1rem; // top level competencies
-                        font-weight: 600;   
-                        font-family: $family-secondary;
-                        text-transform: lowercase !important; 
+                        font-size: 1.2rem; // top level competencies
+                        font-weight: 700;
+                        color: rgba($text, .95);   
                     }
                     .lode__description {
-                        font-size: 1rem; // top level competencies
+                        font-size: .9rem; // top level competencies
                         font-weight: 400;   
                         font-family: $family-primary;
                     }
@@ -380,24 +382,32 @@ drag, drag, and chosen states
                 }
                 
             }
+            ul.lode__hierarchy-sub-ul:first {
+            }
             ul.lode__hierarchy-sub-ul {
-                margin-left: 1.25rem;
-                padding-bottom: .5rem;
-                margin-top: .25rem;
+                margin-left: 1.25rem;                
+                padding: .25rem;
                 li.lode__hierarchy-sub-li {
-                    .lode__hierarchy-item {
-                        .add-node-section {
-                            padding-left: 2.5rem;
-                            margin: auto;
-                        }
-                        .lode__thing-editing {
-                        }
-                        
+                    .lode__name {
+                        font-size: 1rem; // top level competencies
+                        color: rgba($text, .95);
+                        font-weight: 700;   
                     }
                     
                 }
             }
         }
+    }
+}
+
+.framework-content {
+    .lode__thing .lode__Framework {
+        padding: .5rem;
+    }
+    .lode__framework__info-bar {
+        margin-left: 0rem;
+        margin-bottom: 1rem;
+        margin-top: 1rem;
     }
 }
 /* End hierarchy styles */

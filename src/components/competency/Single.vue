@@ -20,11 +20,7 @@
                 :expandInModal="true" />
             <div class="section">
                 <h4 class="header">
-<<<<<<< HEAD
-                    This competency is listed in <b>{{ numberOfParentFrameworks }}</b> framework<span v-if="numberOfParentFrameworks > 1">s</span>
-=======
-                    This <b>{{ dynamicModalContent.type }}</b> is listed in <b>{{ numberOfParentFrameworks }}</b> {{ dynamicModalContent.objectType === "Concept" ? "concept schemes" : "frameworks"}}
->>>>>>> dev
+                    This item is listed in <b>{{ numberOfParentFrameworks }}</b> {{ dynamicModalContent.objectType === "Concept" ? "concept scheme" : "framework" }}<span v-if="numberOfParentFrameworks > 1">s</span>
                 </h4>
                 <ul class="single__list">
                     <li

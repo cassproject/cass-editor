@@ -25,65 +25,64 @@
             class="columns is-multiline import-flex is-marginless is-gapless is-paddingless">
             <div class="column is-12 import-top-flex">
                 <div class="section">
-                <div class="container">
-                    <div class="columns is-multiline is-mobile">
-                        <div class="column is-12">
-                            <h1
-                                class="title is-size-1 has-text-black">
-                                <span v-if="queryParams.concepts === 'true'">
-                                    Import a concept scheme
-                                </span>
-                                <span v-else>Import a framework</span>
-                            </h1>
-                        </div>
+                    <div class="container">
+                        <div class="columns is-multiline is-mobile">
+                            <div class="column is-12">
+                                <h1
+                                    class="title is-size-1 has-text-black">
+                                    <span v-if="queryParams.concepts === 'true'">
+                                        Import a concept scheme
+                                    </span>
+                                    <span v-else>Import a framework</span>
+                                </h1>
+                            </div>
 
-                        <!-- ready state details -->
-                        <div class="column is-12">
-                            <p
-                                v-if="importTransition === 'upload' && !importFile && queryParams.concepts === 'true'"
-                                class="is-size-6">
-                                Upload documents to transform into CaSS Concept Schemes.
-                            </p>
-                            <p
-                                v-else-if="importTransition === 'upload' && !importFile"
-                                class="is-size-6">
-                                Upload documents to transform into CaSS Competency Frameworks.
-                            </p>
-                            <p
-                                v-if="importTransition === 'detail'"
-                                class="is-size-6">
-                                <span class="has-text-success has-text-weight-bold">
-                                    CaSS has detected a framework!
-                                </span>
-                                <br><br>
-                                Please review the competency framework and file details gathered below. To continue with the input of this competency framework, press Accept Details & Review. To cancel and review or change your input file, press cancel.
-                            </p>
-                            <p
-                                v-if="importTransition === 'preview'"
-                                class="">
-                                <span class=" is-size-6 has-text-success has-text-weight-bold">
-                                    Import success, {{ frameworkSize }} competencies ready to edit.
-                                </span>
-                                <br><br>
+                            <!-- ready state details -->
+                            <div class="column is-12">
+                                <p
+                                    v-if="importTransition === 'upload' && !importFile && queryParams.concepts === 'true'"
+                                    class="is-size-6">
+                                    Upload documents to transform into CaSS Concept Schemes.
+                                </p>
+                                <p
+                                    v-else-if="importTransition === 'upload' && !importFile"
+                                    class="is-size-6">
+                                    Upload documents to transform into CaSS Competency Frameworks.
+                                </p>
+                                <p
+                                    v-if="importTransition === 'detail'"
+                                    class="is-size-6">
+                                    <span class="has-text-success has-text-weight-bold">
+                                        CaSS has detected a framework!
+                                    </span>
+                                    <br><br>
+                                    Please review the competency framework and file details gathered below. To continue with the input of this competency framework, press Accept Details & Review. To cancel and review or change your input file, press cancel.
+                                </p>
+                                <p
+                                    v-if="importTransition === 'preview'"
+                                    class="">
+                                    <span class=" is-size-6 has-text-success has-text-weight-bold">
+                                        Import success, {{ frameworkSize }} competencies ready to edit.
+                                    </span>
+                                    <br><br>
                                 <!-- Please review the name and descriptions of the imported competencies. After making edits, "approve" the changes to view the imported competency details.-->
-                            </p>
-                            <p
-                                v-if="importTransition === 'light'"
-                                class="is-size-6">
-                                <span class="has-text-success has-text-weight-bold">
-                                    Your import is complete!
-                                </span>
-                                <br><br>
-                            </p>
-                        </div>
-                    
-                        <!-- after importing framework: details and preview -->
-                        <div
-                            class="column is-12 import-feedback"
-                            v-if="showImportActions">
+                                </p>
+                                <p
+                                    v-if="importTransition === 'light'"
+                                    class="is-size-6">
+                                    <span class="has-text-success has-text-weight-bold">
+                                        Your import is complete!
+                                    </span>
+                                    <br><br>
+                                </p>
+                            </div>
+
+                            <!-- after importing framework: details and preview -->
+                            <div
+                                class="column is-12 import-feedback"
+                                v-if="showImportActions" />
                         </div>
                     </div>
-                </div>
                 </div>
             </div>
             <div class="column is-12 import-bottom-flex">
