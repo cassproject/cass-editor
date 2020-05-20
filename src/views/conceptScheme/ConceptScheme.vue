@@ -5,7 +5,7 @@
         <div class="">
             <FrameworkEditorToolbar
                 @changeProperties="changeProperties"
-                @openExportModalEvent="onOpenExportModal" />
+                @showExportModal="onOpenExportModal" />
             <div class="framework-wrapper">
                 <Component
                     :is="dynamicThingComponent"
