@@ -433,7 +433,7 @@ export default {
             }
             this.dragging = false;
         },
-        add: function(containerId) {
+        add: function(containerId, previousSibling) {
             var me = this;
             var c = new EcConcept();
             if (this.queryParams.newObjectEndpoint) {
@@ -472,7 +472,13 @@ export default {
                 if (!EcArray.isArray(this.container["skos:hasTopConcept"])) {
                     this.container["skos:hasTopConcept"] = [];
                 }
-                this.container["skos:hasTopConcept"].unshift(c.shortId());
+                if (previousSibling == null || previousSibling === undefined) {
+                    this.container["skos:hasTopConcept"].unshift(c.shortId());
+                } else {
+                    // Insert immediately after the sibling
+                    var index = this.container["skos:hasTopConcept"].indexOf(previousSibling);
+                    this.container["skos:hasTopConcept"].splice(index + 1, 0, c.shortId());
+                }
                 c["skos:topConceptOf"] = this.container.shortId();
                 this.container["schema:dateModified"] = new Date().toISOString();
                 c["schema:dateModified"] = new Date().toISOString();
@@ -493,7 +499,13 @@ export default {
                 if (!EcArray.isArray(parent["skos:narrower"])) {
                     parent["skos:narrower"] = [];
                 }
-                parent["skos:narrower"].unshift(c.shortId());
+                if (previousSibling == null || previousSibling === undefined) {
+                    parent["skos:narrower"].unshift(c.shortId());
+                } else {
+                    // Insert immediately after the sibling
+                    var index = parent["skos:narrower"].indexOf(previousSibling);
+                    parent["skos:narrower"].splice(index + 1, 0, c.shortId());
+                }
                 this.container["schema:dateModified"] = new Date().toISOString();
                 c["schema:dateModified"] = new Date().toISOString();
                 parent["schema:dateModified"] = new Date().toISOString();
