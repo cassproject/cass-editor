@@ -22,7 +22,7 @@
                                             <h3
                                                 v-if="item.name === 'to'"
                                                 class="has-text-white">
-                                                A
+                                                B
                                             </h3>
                                             <i
                                                 v-if="item.name === 'align'"
@@ -57,37 +57,40 @@
                                 <h2
                                     v-if="step == 0"
                                     class="is-size-2 is-inline">
-                                    select source
+                                    select source framework
                                 </h2>
                                 <h2
                                     v-if="step == 1"
                                     class="is-size-2 is-inline">
-                                    select target
+                                    select target framework
                                 </h2>
-                                <h2 class="is-size-2 is-inline">
+                                <h2
+                                    v-if="step == 2"
+                                    class="is-size-2 is-inline">
                                     create alignments
+                                    <a @click="testHighlight">Test Highlight</a>
+                                    <a @click="clearHighlight">Clear Highlight</a>
                                 </h2>
                             </div>
-
                             <div
                                 v-if="step == 2"
                                 class="buttons crosswalk__title__buttons">
                                 <div class="button is-outlined is-link">
-                                    {{ tempAlignments.length }} alignments to save
+                                    {{ alignmentsToSave.length }} alignments to save
                                 </div>
                                 <div
                                     v-if="competencyTargets.length !== 0"
-                                    @click="addTempAlignmentsToAlignmentList"
+                                    @click="addTempAlignmentsToAlignmentsToSave"
                                     class="button is-outlined is-primary">
                                     <span class="icon">
                                         <i class="fa fa-plus" />
                                     </span>
                                     <span>
-                                        add current alignments
+                                        add current alignments ({{ competencyTargets.length }})
                                     </span>
                                 </div>
                                 <div
-                                    v-if="tempAlignments.length !== 0 && sourceState === 'ready'"
+                                    v-if="alignmentsToSave.length !== 0 && sourceState === 'ready'"
                                     class="button is-outlined is-primary">
                                     <span class="icon">
                                         <i class="fa fa-save" />
@@ -276,6 +279,10 @@ export default {
     mounted() {
         this.$store.commit('crosswalk/resetCrosswalk');
     },
+    beforeDestroy: function() {
+        this.$store.commit('crosswalk/resetCrosswalk');
+        this.$store.commit('crosswalk/resetCrosswalkFrameworks');
+    },
     watch: {
         competencyTargets: function(val) {
             console.log("val is: ", val);
@@ -288,11 +295,13 @@ export default {
                 this.steps[1].complete = false;
                 this.steps[2].complete = false;
                 this.steps[3].complete = false;
+                this.$store.commit('crosswalk/resetCrosswalkAlignmentsAndState');
             } else if (val === 1) {
                 this.steps[0].complete = true;
                 this.steps[1].complete = false;
                 this.steps[2].complete = false;
                 this.steps[3].complete = false;
+                this.$store.commit('crosswalk/resetCrosswalkAlignmentsAndState');
             } else if (val === 2) {
                 this.steps[0].complete = true;
                 this.steps[1].complete = true;
@@ -371,12 +380,23 @@ export default {
             competencyTargets: state => state.crosswalk.tempAlignment.targets,
             alignmentType: state => state.crosswalk.tempAlignment.type,
             tempAlignment: state => state.crosswalk.tempAlignment,
-            tempAlignments: state => state.crosswalk.tempAlignments,
+            alignmentsToSave: state => state.crosswalk.alignmentsToSave,
             targetState: state => state.crosswalk.targetState,
-            sourceState: state => state.crosswalk.sourceState
+            sourceState: state => state.crosswalk.sourceState,
+            targetNodesToHighlight: state => state.crosswalk.targetNodesToHighlight
         })
     },
     methods: {
+        testHighlight: function() {
+            let tha = [];
+            tha.push('https://dev.api.cassproject.org/api/data/schema.cassproject.org.0.4.Competency/bd0b84bf-fccc-49b7-aaff-f0178bafb166');
+            tha.push('https://dev.api.cassproject.org/api/data/schema.cassproject.org.0.4.Competency/22cc45ab-a0de-4d19-bc74-8ba86519ca15');
+            this.$store.commit('crosswalk/targetNodesToHighlight', tha);
+        },
+        clearHighlight: function() {
+            let tha = [];
+            this.$store.commit('crosswalk/targetNodesToHighlight', tha);
+        },
         prepareToLoadCrosswalkTarget: function() {
             this.crosswalkSourceLoaded = true;
             setTimeout(() => {
@@ -386,8 +406,8 @@ export default {
         clearTempAlignment: function() {
             this.$store.commit('crosswalk/resetTempAlignment');
         },
-        addTempAlignmentsToAlignmentList: function() {
-            this.$store.commit('crosswalk/addAlignmentToAlignmentsArray', this.tempAlignment);
+        addTempAlignmentsToAlignmentsToSave: function() {
+            this.$store.commit('crosswalk/appendAlignmentsToSave', this.tempAlignment);
             this.$store.commit('crosswalk/resetTempAlignment');
         },
         frameworkClickSource: function(framework) {

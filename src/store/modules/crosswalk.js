@@ -12,13 +12,16 @@ const state = {
         targets: [],
         type: ''
     },
-    tempAlignments: [],
+    alignmentsToSave: [],
     sourceState: 'ready',
-    targetState: 'ready'
-
-
+    targetState: 'ready',
+    targetNodesToHighlight: []
 };
+
 const mutations = {
+    targetNodesToHighlight(state, f) {
+        state.targetNodesToHighlight = f;
+    },
     frameworkSource(state, f) {
         state.frameworkSource = f;
     },
@@ -46,6 +49,18 @@ const mutations = {
     targetState(state, t) {
         state.targetState = t;
     },
+    resetCrosswalkFrameworks(state) {
+        state.frameworkSource = null;
+        state.frameworkTarget = null;
+    },
+    resetCrosswalkAlignmentsAndState(state) {
+        state.tempAlignment.source = {};
+        state.tempAlignment.targets = [];
+        state.tempAlignment.type = '';
+        state.sourceState = 'ready';
+        state.targetState = 'ready';
+        state.alignmentsToSave = [];
+    },
     resetCrosswalk(state) {
         state.step = 0;
         state.tempAlignment.source = {};
@@ -53,7 +68,7 @@ const mutations = {
         state.tempAlignment.type = '';
         state.sourceState = 'ready';
         state.targetState = 'ready';
-        state.tempAlignments = [];
+        state.alignmentsToSave = [];
     },
     resetTempAlignment(state) {
         state.sourceState = 'ready';
@@ -69,8 +84,16 @@ const mutations = {
         let filtered = targets.filter(target => target !== id);
         state.tempAlignment.targets = filtered;
     },
-    addAlignmentToAlignmentsArray(state, alignment) {
-        state.tempAlignments.push(alignment);
+    appendAlignmentsToSave(state, alignment) {
+        if (alignment.targets && alignment.targets.length > 0) {
+            for (let at of alignment.targets) {
+                let newAlignmentToSave = {};
+                newAlignmentToSave.source = alignment.source;
+                newAlignmentToSave.target = at;
+                newAlignmentToSave.type = alignment.type;
+                state.alignmentsToSave.push(newAlignmentToSave);
+            }
+        }
     }
 };
 const actions = {
@@ -98,8 +121,8 @@ const getters = {
     targetState(state) {
         return state.targetState;
     },
-    tempAlignments(state) {
-        return state.tempAlignments;
+    alignmentsToSave(state) {
+        return state.alignmentsToSave;
     }
 };
 
