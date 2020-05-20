@@ -281,9 +281,15 @@ export default {
     },
     computed: {
         showAddComments() {
+            if (this.queryParams.concepts === "true") {
+                return false;
+            }
             return this.$store.state.app.canAddComments;
         },
         showViewComments() {
+            if (this.queryParams.concepts === "true") {
+                return false;
+            }
             return this.$store.state.app.canViewComments;
         },
         framework: function() {
