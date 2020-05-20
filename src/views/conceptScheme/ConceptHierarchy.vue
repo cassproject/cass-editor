@@ -97,10 +97,14 @@
         <template
             v-if="hierarchy">
             <draggable
+                v-bind="dragOptions"
                 v-model="hierarchy"
-                :disabled="canEdit != true"
+                tag="ul"
+                class="lode__hierarchy-ul"
+                :disabled="canEdit != true || !isDraggable"
                 :group="{ name: 'test' }"
                 @start="beginDrag"
+                handle=".handle"
                 @end="endDrag">
                 <HierarchyNode
                     :view="view"

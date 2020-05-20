@@ -39,6 +39,9 @@ drag, drag, and chosen states
     .lode__hierarchy-item .lode__thing .lode__Competency{
         background-color: rgba($link, .1);
     }
+    .lode__hierarchy-item .lode__thing .lode__Concept{
+        background-color: rgba($link, .1);
+    }
     i.fa-hand-rock {
         visibility: visible;
     }
@@ -127,6 +130,12 @@ drag, drag, and chosen states
                             margin: auto;
                         }
                     }
+                    .lode__Concept {
+                        .lode__thing-heading {
+                            max-width: 1300px;
+                            margin: auto;
+                        }
+                    }
                 }
                 .lode__thing-editing {
                     max-width: 1300px;
@@ -153,6 +162,12 @@ drag, drag, and chosen states
                         }
                         .lode__thing {
                             .lode__Competency {
+                                .lode__thing-heading {
+                                    padding-left: 2rem;
+                                    margin-bottom: .5rem;
+                                }
+                            }
+                            .lode__Concept {
                                 .lode__thing-heading {
                                     padding-left: 2rem;
                                     margin-bottom: .5rem;
@@ -193,6 +208,12 @@ drag, drag, and chosen states
                                             margin-bottom: .5rem;
                                         }
                                     }
+                                    .lode__Concept {
+                                        .lode__thing-heading {
+                                            padding-left: 3.5rem;
+                                            margin-bottom: .5rem;
+                                        }
+                                    }
                                     .lode__thing  {
                                         margin-left: 0;
                                     }
@@ -222,6 +243,12 @@ drag, drag, and chosen states
                                         }
                                         .lode__thing {
                                             .lode__Competency {
+                                                .lode__thing-heading {
+                                                    padding-left: 5rem;
+                                                    margin-bottom: .5rem;
+                                                }
+                                            }
+                                            .lode__Concept {
                                                 .lode__thing-heading {
                                                     padding-left: 5rem;
                                                     margin-bottom: .5rem;
@@ -261,6 +288,12 @@ drag, drag, and chosen states
                                                             margin-bottom: .5rem;
                                                         }
                                                     }
+                                                    .lode__Concept {
+                                                        .lode__thing-heading {
+                                                            padding-left: 6.5rem;
+                                                            margin-bottom: .5rem;
+                                                        }
+                                                    }
                                                     .lode__thing  {
                                                         margin-left: 0;
                                                     }
@@ -291,12 +324,21 @@ drag, drag, and chosen states
                                                                     margin-bottom: .5rem;
                                                                 }
                                                             }
+                                                            .lode__Concept {
+                                                                .lode__thing-heading {
+                                                                    padding-left: 8rem;
+                                                                    margin-bottom: .5rem;
+                                                                }
+                                                            }
                                                             .lode__thing  {
                                                                 margin-left: 0;
                                                             }
                                                         }
                                                         .lode__thing-editing  {
                                                             .lode__Competency {
+                                                                margin-left: 8rem;
+                                                            }
+                                                            .lode__Concept {
                                                                 margin-left: 8rem;
                                                             }
                                                         }
@@ -326,6 +368,12 @@ drag, drag, and chosen states
                                                                             margin-bottom: .5rem;
                                                                         }
                                                                     }
+                                                                    .lode__Concept {
+                                                                        .lode__thing-heading {
+                                                                            padding-left: 9rem;
+                                                                            margin-bottom: .5rem;
+                                                                        }
+                                                                    }
                                                                     .lode__thing  {
                                                                         margin-left: 0;
                                                                     }
@@ -347,6 +395,12 @@ drag, drag, and chosen states
                                                                     .lode__hierarchy-item {
                                                                         .lode__thing, .lode__thing-editing {
                                                                             .lode__Competency {
+                                                                                .lode__thing-heading {
+                                                                                    margin-left: 10.5rem;
+                                                                                    margin-bottom: .5rem;
+                                                                                }
+                                                                            }
+                                                                            .lode__Concept {
                                                                                 .lode__thing-heading {
                                                                                     margin-left: 10.5rem;
                                                                                     margin-bottom: .5rem;
@@ -398,6 +452,11 @@ drag, drag, and chosen states
                 color: $primary;
             }
         }
+        .lode__Concept {
+            .lode__Property.lode__name{
+                color: $primary;
+            }
+        }
     }
     .lode__thing {
         padding: .5rem;
@@ -422,6 +481,7 @@ drag, drag, and chosen states
             }
         }
         .lode__Competency,
+        .lode__Concept,
         .lode__Framework {
             .lode__thing-heading {
                 padding: 0rem 6rem 0rem .5rem;
@@ -442,6 +502,9 @@ drag, drag, and chosen states
     }
     padding: .5rem !important;
     .lode__thing.lode__Competency {
+        background-color: $cass-lightest;
+    }
+    .lode__thing.lode__Concept {
         background-color: $cass-lightest;
     }
     .handle-button {
@@ -572,6 +635,16 @@ drag, drag, and chosen states
                 }
             }
         }
+        .lode__Concept {
+            .lode__thing-heading {
+                padding-left: 0rem !important; // related 
+                .lode__Property {
+                    .field {
+                        padding-left: 0rem;
+                    }
+                }
+            }
+        }
     }
 }
  
@@ -625,6 +698,7 @@ drag, drag, and chosen states
         }
     }
     .lode__Competency,
+    .lode__Concept,
     .lode__Framework {
         transform: translateX(0);
         width: 100%;
@@ -690,6 +764,14 @@ drag, drag, and chosen states
             visibility: visible;
         }
     }
+    .lode__Concept {
+        .edit-button {
+            visibility: visible;
+        }
+        .comment-button {
+            visibility: visible;
+        }
+    }
     
 }
 
@@ -700,7 +782,7 @@ drag, drag, and chosen states
         border-left: none;
         margin: 0rem;
     }
-    .lode__Competency {
+    .lode__Competency, .lode__Concept {
         transform: translateX(0);
         border-left: none;
         a {
