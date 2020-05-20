@@ -120,8 +120,10 @@ export default {
             queryParams: state => state.editor.queryParams
         }),
         nameOfSelectedCompetency: function() {
-            if (this.selectedCompetency) {
+            if (this.selectedCompetency && this.selectedCompetency.name) {
                 return this.selectedCompetency.getName();
+            } else if (this.selectedCompetency) {
+                return Thing.getDisplayStringFrom(this.selectedCompetency["skos:prefLabel"]);
             } else {
                 return '';
             }
@@ -580,6 +582,10 @@ export default {
             for (var i = 0; i < results.length; i++) {
                 var thing = EcRepository.getBlocking(results[i]);
                 if (thing.isAny(new EcConcept().getTypes())) {
+                    var relation = this.$store.state.editor.selectCompetencyRelation;
+                    if (relation.indexOf("skos") !== -1) {
+                        relation = ("skos:" + relation.split('#')[1]);
+                    }
                     if (!EcArray.isArray(resource[this.$store.state.editor.selectCompetencyRelation])) {
                         resource[this.$store.state.editor.selectCompetencyRelation] = [];
                     }
