@@ -245,6 +245,9 @@ export default {
         saveExpanded: function(expandedCompetency) {
             var me = this;
             var context = "https://schema.cassproject.org/0.4";
+            if (expandedCompetency["@type"][0].toLowerCase().indexOf("concept") !== -1) {
+                context = "https://schema.cassproject.org/0.4/skos";
+            }
             jsonld.compact(expandedCompetency, this.$store.state.lode.rawSchemata[context], function(err, compacted) {
                 if (err != null) {
                     console.error(err);
