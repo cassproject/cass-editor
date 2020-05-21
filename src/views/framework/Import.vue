@@ -61,8 +61,15 @@
                 <p
                     v-if="importTransition === 'preview'"
                     class="">
-                    <span class=" is-size-6 has-text-success has-text-weight-bold">
+                    <span
+                        class=" is-size-6 has-text-success has-text-weight-bold"
+                        v-if="frameworkSize !== null">
                         Import success, {{ frameworkSize }} competencies ready to edit.
+                    </span>
+                    <span
+                        class=" is-size-6 has-text-success has-text-weight-bold"
+                        v-else>
+                        Import success, concepts ready to edit.
                     </span>
                     <br><br>
                     <!-- Please review the name and descriptions of the imported competencies. After making edits, "approve" the changes to view the imported competency details.-->
@@ -225,14 +232,12 @@
                     :obj="changedObj ? changedObj : importFramework"
                     :repo="repo"
                     class="framework-title"
-                    :profile="t3FrameworkProfile"
-                    :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
-                    iframeText="Attach subitems from other sources to the selected item." />
+                    :profile="queryParams.concepts === 'true' ? null : t3FrameworkProfile" />
 
                 <Hierarchy
                     :class="{'is-hidden': !hierarchyIsdoneLoading}"
                     view="import"
-                    v-if="importFramework"
+                    v-if="importFramework && queryParams.concepts !== 'true'"
                     @doneLoadingNodes="handleDoneLoading"
                     @searchThings="handleSearch($event)"
                     @editMultipleEvent="onEditMultiple"
@@ -253,6 +258,21 @@
                     @selectedArray="selectedArrayEvent"
                     :newFramework="true"
                     @deleteObject="deleteObject" />
+                <ConceptHierarchy
+                    :class="{'is-hidden': !hierarchyIsdoneLoading}"
+                    view="import"
+                    v-if="importFramework && queryParams.concepts === 'true'"
+                    @doneLoadingNodes="handleDoneLoading"
+                    @searchThings="handleSearch($event)"
+                    @editMultipleEvent="onEditMultiple"
+                    :container="importFramework"
+                    containerType="ConceptScheme"
+                    :viewOnly="false"
+                    :isDraggable="true"
+                    :repo="repo"
+                    @selectedArray="selectedArrayEvent"
+                    :newFramework="true"
+                    @deleteObject="deleteObject" />
             </div>
             <!-- import light view -->
             <div
@@ -265,11 +285,9 @@
                     :obj="changedObj ? changedObj : importFramework"
                     :parentNotEditable="true"
                     class="framework-title"
-                    :profile="t3FrameworkProfile"
-                    :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
-                    iframeText="Attach subitems from other sources to the selected item." />
+                    :profile="queryParams.concepts === 'true' ? null : t3FrameworkProfile" />
                 <Hierarchy
-                    v-if="importFramework"
+                    v-if="importFramework && queryParams.concepts !== 'true'"
                     view="import"
                     :container="importFramework"
                     containerType="Framework"
@@ -287,6 +305,17 @@
                     :repo="repo"
                     :newFramework="true"
                     @deleteObject="deleteObject" />
+                <ConceptHierarchy
+                    :class="{'is-hidden': !hierarchyIsdoneLoading}"
+                    view="import"
+                    v-if="importFramework && queryParams.concepts === 'true'"
+                    :container="importFramework"
+                    containerType="ConceptScheme"
+                    :viewOnly="true"
+                    :repo="repo"
+                    @selectedArray="selectedArrayEvent"
+                    :newFramework="true"
+                    @deleteObject="deleteObject" />
             </div>
         </div>
     </div>
@@ -302,6 +331,7 @@ import Thing from '@/lode/components/lode/Thing.vue';
 import ThingEditing from '@/lode/components/lode/ThingEditing.vue';
 import ImportTabs from '@/components/import/ImportTabs.vue';
 import ImportDetails from '@/components/import/ImportDetails.vue';
+import ConceptHierarchy from '@/views/conceptScheme/ConceptHierarchy.vue';
 
 export default {
     name: "Import",
@@ -316,7 +346,8 @@ export default {
         Thing,
         ThingEditing,
         ImportTabs,
-        ImportDetails
+        ImportDetails,
+        ConceptHierarchy
     },
     data: function() {
         return {
@@ -412,6 +443,9 @@ export default {
         },
         frameworkSize: function() {
             if (this.importFramework) {
+                if (this.queryParams.concepts === 'true') {
+                    return null;
+                }
                 return this.importFramework.competency.length;
             } else {
                 return 0;
@@ -665,8 +699,8 @@ export default {
                     this.$store.commit('app/importTransition', 'preview');
                 }
             } else {
-                me.$store.commit('app/importStatus', "Concept Scheme Imported.");
-                this.$store.commit('app/importTransition', 'complete');
+                this.$store.commit('app/importStatus', "Concept Scheme Imported.");
+                this.$store.commit('app/importTransition', 'preview');
             }
         },
         importDetailsAccept: function() {
@@ -691,7 +725,7 @@ export default {
         },
         openFramework: function() {
             if (this.queryParams.concepts === "true") {
-                var f = EcFramework.getBlocking(this.importFramework.shortId());
+                var f = EcConceptScheme.getBlocking(this.importFramework.shortId());
                 this.$store.commit('editor/framework', f);
                 this.$router.push({name: "conceptScheme", params: {frameworkId: this.importFramework.id}});
             } else {
@@ -1260,6 +1294,7 @@ export default {
                     me.$store.commit('app/importFramework', framework);
                 }
                 me.$store.commit('editor/framework', framework);
+                me.$store.commit('app/importFramework', framework);
                 me.spitEvent("importFinished", framework.shortId(), "importPage");
                 if (me.importFile != null) {
                     me.importFile.splice(0, 1);
@@ -1304,6 +1339,8 @@ export default {
                     for (var i = 0; i < frameworks.length; i++) {
                         me.spitEvent("importFinished", frameworks[i].shortId(), "importPage");
                     }
+                    me.$store.commit('editor/framework', frameworks[0]);
+                    me.$store.commit('app/importFramework', frameworks[0]);
                     me.importSuccess();
                 }, function(failure) {
                     me.$store.commit('app/importTransition', 'process');

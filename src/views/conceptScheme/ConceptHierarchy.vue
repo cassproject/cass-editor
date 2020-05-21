@@ -161,7 +161,6 @@ export default {
     props: {
         container: Object,
         containerType: String,
-        editable: Boolean,
         repo: Object,
         profile: Object,
         exportOptions: Array,
