@@ -192,7 +192,12 @@ export default {
         },
         undoDelete(obj) {
             // Re-add
-            this.repo.saveTo(obj, function() {}, function(failure) {
+            var toSave = obj;
+            if (obj.type === "Concept") {
+                toSave = new EcConcept();
+                toSave.copyFrom(obj);
+            }
+            this.repo.saveTo(toSave, function() {}, function(failure) {
                 console.log(failure);
             });
         },

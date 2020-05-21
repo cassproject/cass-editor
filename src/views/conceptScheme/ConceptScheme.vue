@@ -110,7 +110,8 @@ export default {
             config: null,
             privateFramework: false,
             selectedArray: [],
-            changedObj: null
+            changedObj: null,
+            editsToUndo: []
         };
     },
     computed: {
@@ -843,7 +844,6 @@ export default {
             } else {
                 // Delete concept and fields
                 this.deleteConceptInner(thing);
-                this.spitEvent("conceptDeleted", thing.shortId(), "editFrameworkPage");
 
                 this.framework["schema:dateModified"] = new Date().toISOString();
                 this.$store.commit('editor/selectedCompetency', null);
@@ -854,8 +854,10 @@ export default {
             if (c["skos:broader"] != null) {
                 for (var i = 0; i < c["skos:broader"].length; i++) {
                     EcConcept.get(c["skos:broader"][i], function(concept) {
+                        var initialValue = concept["skos:narrower"].slice();
                         EcArray.setRemove(concept["skos:narrower"], c.shortId());
                         concept["schema:dateModified"] = new Date().toISOString();
+                        me.editsToUndo.push({operation: "update", id: concept.shortId(), fieldChanged: ["skos:narrower"], initialValue: [initialValue]});
                         if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[concept.id] !== true) {
                             concept = EcEncryptedValue.toEncryptedValue(concept);
                         }
@@ -873,7 +875,9 @@ export default {
                 }
             }
             if (c["skos:topConceptOf"] != null) {
+                var initialValue = this.framework["skos:hasTopConcept"].slice();
                 EcArray.setRemove(this.framework["skos:hasTopConcept"], c.shortId());
+                me.editsToUndo.push({operation: "update", id: this.framework.shortId(), fieldChanged: ["skos:hasTopConcept"], initialValue: [initialValue]});
                 var framework = this.framework;
                 framework["schema:dateModified"] = new Date().toISOString();
                 if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
@@ -883,8 +887,12 @@ export default {
                     me.$store.commit('editor/framework', me.framework);
                 }, console.error);
             }
+            this.spitEvent("conceptDeleted", c.shortId(), "editFrameworkPage");
+            me.editsToUndo.push({operation: "delete", obj: c});
             repo.deleteRegistered(c, function() {
                 me.$store.commit('editor/framework', me.framework);
+                me.$store.commit('editor/addEditsToUndo', JSON.parse(JSON.stringify(me.editsToUndo)));
+                me.editsToUndo.splice(0, me.editsToUndo.length);
             }, console.error);
         },
         exportObject: function(concept, exportType) {
