@@ -77,14 +77,14 @@
                                     {{ alignmentsToSave.length }} alignments to save
                                 </div>
                                 <div
-                                    v-if="competencyTargets.length !== 0"
-                                    @click="addTempAlignmentsToAlignmentsToSave"
+                                    v-if="workingAlignmentsTargets.length !== 0"
+                                    @click="applyWorkingAlignmentChanges"
                                     class="button is-outlined is-primary">
                                     <span class="icon">
                                         <i class="fa fa-plus" />
                                     </span>
                                     <span>
-                                        add current alignments ({{ competencyTargets.length }})
+                                        apply alignments changes TODO TAKE DELETIONS INTO ACCOUNT
                                     </span>
                                 </div>
                                 <div
@@ -285,9 +285,6 @@ export default {
         this.$store.commit('crosswalk/resetCrosswalkFrameworks');
     },
     watch: {
-        competencyTargets: function(val) {
-            console.log("val is: ", val);
-        },
         step: function(val) {
             console.log("step, ", val);
             console.log("steps, ", this.steps);
@@ -381,10 +378,10 @@ export default {
             frameworkTarget: state => state.crosswalk.frameworkTarget,
             frameworkSourceRelationships: state => state.crosswalk.frameworkSourceRelationships,
             frameworkTargetRelationships: state => state.crosswalk.frameworkTargetRelationships,
-            competencySource: state => state.crosswalk.tempAlignment.source,
-            competencyTargets: state => state.crosswalk.tempAlignment.targets,
-            alignmentType: state => state.crosswalk.tempAlignment.type,
-            tempAlignment: state => state.crosswalk.tempAlignment,
+            workingAlignmentsSource: state => state.crosswalk.workingAlignmentsMap.source,
+            workingAlignmentsTargets: state => state.crosswalk.workingAlignmentsMap.targets,
+            workingAlignmentsType: state => state.crosswalk.workingAlignmentsMap.type,
+            workingAlignmentsMap: state => state.crosswalk.workingAlignmentsMap,
             alignmentsToSave: state => state.crosswalk.alignmentsToSave,
             targetState: state => state.crosswalk.targetState,
             sourceState: state => state.crosswalk.sourceState,
@@ -460,12 +457,14 @@ export default {
                 this.loadCrosswalkTarget = true;
             }, 2000);
         },
-        clearTempAlignment: function() {
-            this.$store.commit('crosswalk/resetTempAlignment');
-        },
-        addTempAlignmentsToAlignmentsToSave: function() {
-            this.$store.commit('crosswalk/appendAlignmentsToSave', this.tempAlignment);
-            this.$store.commit('crosswalk/resetTempAlignment');
+        // clearTempAlignment: function() {
+        //     this.$store.commit('crosswalk/resetTempAlignment');
+        // },
+        applyWorkingAlignmentChanges: function() {
+            // TODO implement
+            alert('redo this: applyWorkingAlignmentChanges');
+            // this.$store.commit('crosswalk/appendAlignmentsToSave', this.tempAlignment);
+            // this.$store.commit('crosswalk/resetTempAlignment');
         },
         buildRelevantRelationships() {
             if (this.frameworkSourceRelationships && this.frameworkTargetRelationships) {
