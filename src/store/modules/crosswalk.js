@@ -9,7 +9,7 @@ const state = {
     frameworkSourceRelationships: null,
     frameworkTarget: null,
     frameworkTargetRelationships: null,
-    relevantExistingAlignments: null,
+    relevantExistingAlignmentsMap: null,
     workingAlignmentsMap: {
         source: '',
         targets: [],
@@ -38,6 +38,9 @@ const mutations = {
     frameworkTargetRelationships(state, f) {
         state.frameworkTargetRelationships = f;
     },
+    relevantExistingAlignmentsMap(state, f) {
+        state.relevantExistingAlignmentsMap = f;
+    },
     step(state, val) {
         state.step = val;
     },
@@ -61,15 +64,18 @@ const mutations = {
     },
     resetFrameworkSourceRelationships(state) {
         state.frameworkSourceRelationships = null;
+        state.relevantExistingAlignmentsMap = null;
     },
     resetFrameworkTargetRelationships(state) {
         state.frameworkTargetRelationships = null;
+        state.relevantExistingAlignmentsMap = null;
     },
     resetCrosswalkFrameworks(state) {
         state.frameworkSource = null;
         state.frameworkTarget = null;
         state.frameworkSourceRelationships = null;
         state.frameworkTargetRelationships = null;
+        state.relevantExistingAlignmentsMap = null;
     },
     resetCrosswalkAlignmentsAndState(state) {
         state.workingAlignmentsMap.source = '';
@@ -97,7 +103,7 @@ const mutations = {
             type: ''
         };
     },
-    removeFromTargetsArray(state, id) {
+    removeWorkingAlignmentsTarget(state, id) {
         let targets = state.workingAlignmentsMap.targets;
         let filtered = targets.filter(target => target !== id);
         state.workingAlignmentsMap.targets = filtered;
@@ -129,6 +135,9 @@ const getters = {
     },
     frameworkTargetRelationships: function(state) {
         return state.frameworkTargetRelationships;
+    },
+    relevantExistingAlignmentsMap: function(state) {
+        return state.relevantExistingAlignmentsMap;
     },
     workingAlignmentsSource(state) {
         return state.workingAlignmentsMap.source;

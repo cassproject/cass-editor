@@ -378,6 +378,7 @@ export default {
             frameworkTarget: state => state.crosswalk.frameworkTarget,
             frameworkSourceRelationships: state => state.crosswalk.frameworkSourceRelationships,
             frameworkTargetRelationships: state => state.crosswalk.frameworkTargetRelationships,
+            relevantExistingAlignmentsMap: state => state.crosswalk.relevantExistingAlignmentsMap,
             workingAlignmentsSource: state => state.crosswalk.workingAlignmentsMap.source,
             workingAlignmentsTargets: state => state.crosswalk.workingAlignmentsMap.targets,
             workingAlignmentsType: state => state.crosswalk.workingAlignmentsMap.type,
@@ -466,16 +467,31 @@ export default {
             // this.$store.commit('crosswalk/appendAlignmentsToSave', this.tempAlignment);
             // this.$store.commit('crosswalk/resetTempAlignment');
         },
-        buildRelevantRelationships() {
-            if (this.frameworkSourceRelationships && this.frameworkTargetRelationships) {
-                // TODO implement
-                console.log('!!!!!! WOULD HAVE buildRelevantRelationships');
+        addRelationshipListToRelevantAlignments(relArray, processedRelationshipIds, relAlignmentMap) {
+            for (let r of relArray) {
+                if (!processedRelationshipIds.includes(r.shortId)) {
+                    processedRelationshipIds.push(r.shortId());
+                    if (this.frameworkSource.competency.includes(r.source) && this.frameworkTarget.competency.includes(r.target)) {
+                        if (!relAlignmentMap[r.source]) relAlignmentMap[r.source] = {};
+                        if (!relAlignmentMap[r.source][r.relationType]) relAlignmentMap[r.source][r.relationType] = {};
+                        if (!relAlignmentMap[r.source][r.relationType][r.target]) relAlignmentMap[r.source][r.relationType][r.target] = r;
+                    }
+                }
             }
+        },
+        buildRelevantAlignmentsMap() {
+            let processedRelationshipIds = [];
+            let relAlignmentMap = {};
+            if (this.frameworkSourceRelationships && this.frameworkTargetRelationships) {
+                this.addRelationshipListToRelevantAlignments(this.frameworkSourceRelationships, processedRelationshipIds, relAlignmentMap);
+                this.addRelationshipListToRelevantAlignments(this.frameworkTargetRelationships, processedRelationshipIds, relAlignmentMap);
+            }
+            this.$store.commit('crosswalk/relevantExistingAlignmentsMap', relAlignmentMap);
         },
         handleBuildFrameworkTargetRelationshipsSuccess(ecrlda) {
             console.log("Building framework target relationship list...");
             this.$store.commit('crosswalk/frameworkTargetRelationships', this.buildEcAlignmentsFromRemoteLinkedData(ecrlda));
-            this.buildRelevantRelationships();
+            this.buildRelevantAlignmentsMap();
             this.$store.commit('crosswalk/step', 2);
         },
         buildFrameworkTargetRelationships() {
@@ -493,7 +509,7 @@ export default {
         handleBuildFrameworkSourceRelationshipsSuccess(ecrlda) {
             console.log("Building framework source relationship list...");
             this.$store.commit('crosswalk/frameworkSourceRelationships', this.buildEcAlignmentsFromRemoteLinkedData(ecrlda));
-            this.buildRelevantRelationships();
+            this.buildRelevantAlignmentsMap();
             if (this.frameworkTarget) this.$store.commit('crosswalk/step', 2);
             else this.$store.commit('crosswalk/step', 1);
         },
