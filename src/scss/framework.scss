@@ -424,11 +424,16 @@ drag, drag, and chosen states
                 color: $primary;
             }
         }
+        .lode__Concept {
+            .lode__Property.lode__name{
+                color: $primary;
+            }
+        }
     }
     .lode__thing {
         padding: .125rem;
         padding-right: 1rem;
-        .lode__Framework {
+        .lode__Framework, .lode__ConceptScheme {
             max-width: 1300px;
         }
     }
@@ -536,6 +541,16 @@ drag, drag, and chosen states
                 }
             }
         }
+        .lode__Concept {
+            .lode__thing-heading {
+                padding-left: 0rem !important; // related 
+                .lode__Property {
+                    .field {
+                        padding-left: 0rem;
+                    }
+                }
+            }
+        }
     }
 }
  
@@ -550,7 +565,7 @@ drag, drag, and chosen states
         border-left: none;
         margin: 0rem;
     }
-    .lode__Competency {
+    .lode__Competency, .lode__Concept {
         transform: translateX(0);
         border-left: none;
         a {

@@ -91,7 +91,8 @@
                             <div class="buttons is-centered">
                                 <div
                                     @click="showImportModal('pdf')"
-                                    class="button is-outlined is-warning is-small">
+                                    class="button is-outlined is-warning is-small"
+                                    v-if="q.concepts !== 'true'">
                                     <span
                                         title="PDF files are experimentally supported. Click to learn more."
                                         class="icon">
@@ -101,7 +102,8 @@
                                 </div>
                                 <div
                                     @click="showImportModal('docx')"
-                                    class="button is-outlined is-warning is-small">
+                                    class="button is-outlined is-warning is-small"
+                                    v-if="q.concepts !== 'true'">
                                     <span
                                         title="Word documents and Docx files are experimental. Click to learn more."
                                         class="icon">
@@ -121,7 +123,8 @@
                                 </div>
                                 <div
                                     @click="showImportModal('xml')"
-                                    class="button is-outlined is-success is-small">
+                                    class="button is-outlined is-success is-small"
+                                    v-if="q.concepts !== 'true'">
                                     <span
                                         title="XML files are supported, click to learn more."
                                         class="icon is-pulled-right">
@@ -141,7 +144,8 @@
                                 </div>
                                 <div
                                     @click="showImportModal('html')"
-                                    class="button is-outlined is-success is-small">
+                                    class="button is-outlined is-success is-small"
+                                    v-if="q.concepts !== 'true'">
                                     <span
                                         title="html files are fully supported at this time"
                                         class="icon is-pulled-right">

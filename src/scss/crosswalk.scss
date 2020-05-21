@@ -57,6 +57,10 @@ html {
             }
         }
     }
+    .crosswalk__align_link {
+        float: right;
+        cursor: pointer;
+    }
     .crosswalk__steps {
         height: 124px;
     }
@@ -99,7 +103,7 @@ html {
                         padding: .125rem !important;
                         border-radius: .25rem;
                         min-height: 50px;
-                        transform: translateX(0); 
+                        transform: translateX(0);
                         .crosswalk-buttons__source {
                             position: fixed;
                             right: 8px;
@@ -196,7 +200,6 @@ html {
                     .lode__hierarchy-item:hover {
                         background-color: $light;
                         .crosswalk-buttons__target,
-                        
                         .crosswalk-buttons__source {
                             .crosswalk-buttons__source__create {
                                 visibility: visible;

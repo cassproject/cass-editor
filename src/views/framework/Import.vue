@@ -219,6 +219,7 @@ import Thing from '@/lode/components/lode/Thing.vue';
 import ThingEditing from '@/lode/components/lode/ThingEditing.vue';
 import ImportTabs from '@/components/import/ImportTabs.vue';
 import ImportDetails from '@/components/import/ImportDetails.vue';
+import ConceptHierarchy from '@/views/conceptScheme/ConceptHierarchy.vue';
 
 export default {
     name: "Import",
@@ -232,7 +233,8 @@ export default {
         Thing,
         ThingEditing,
         ImportTabs,
-        ImportDetails
+        ImportDetails,
+        ConceptHierarchy
     },
     data: function() {
         return {
@@ -328,6 +330,9 @@ export default {
         },
         frameworkSize: function() {
             if (this.importFramework) {
+                if (this.queryParams.concepts === 'true') {
+                    return null;
+                }
                 return this.importFramework.competency.length;
             } else {
                 return 0;
@@ -552,8 +557,8 @@ export default {
                     this.$store.commit('app/importTransition', 'preview');
                 }
             } else {
-                me.$store.commit('app/importStatus', "Concept Scheme Imported.");
-                this.$store.commit('app/importTransition', 'complete');
+                this.$store.commit('app/importStatus', "Concept Scheme Imported.");
+                this.$store.commit('app/importTransition', 'preview');
             }
         },
         importDetailsAccept: function() {
@@ -1140,6 +1145,7 @@ export default {
                     me.$store.commit('app/importFramework', framework);
                 }
                 me.$store.commit('editor/framework', framework);
+                me.$store.commit('app/importFramework', framework);
                 me.spitEvent("importFinished", framework.shortId(), "importPage");
                 if (me.importFile != null) {
                     me.importFile.splice(0, 1);
@@ -1184,6 +1190,8 @@ export default {
                     for (var i = 0; i < frameworks.length; i++) {
                         me.spitEvent("importFinished", frameworks[i].shortId(), "importPage");
                     }
+                    me.$store.commit('editor/framework', frameworks[0]);
+                    me.$store.commit('app/importFramework', frameworks[0]);
                     me.importSuccess();
                 }, function(failure) {
                     me.$store.commit('app/importTransition', 'process');

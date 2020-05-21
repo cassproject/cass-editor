@@ -1,26 +1,130 @@
 <template>
-    <div class="e-Hierarchy">
-        <ul
-            class="e-Hierarchy-ul"
+    <div class="lode__hierarchy">
+        <div
+            class="hierarchy-buttons columns is-gapless is-paddingless is-mobile is-marginless is-paddingless">
+            <!-- CONTROLS FOR SELECT: ENABLED MULTI EDIT  -->
+            <div
+                v-if="view !== 'import'"
+                id="check-radio-all-column"
+                class="column is-narrow">
+                <div
+                    class="field">
+                    <input
+                        class="is-checkradio"
+                        id="selectAllCheckbox"
+                        type="checkbox"
+                        name="selectAllCheckbox"
+                        v-model="selectAll">
+                    <label for="selectAllCheckbox" />
+                </div>
+            </div>
+            <!-- CONTROLS FOR EXPAND  -->
+            <div class="column is-narrow">
+                <div
+                    v-if="expanded"
+                    class="icon is-vcentered"
+                    @click="expanded=false">
+                    <i class="fa fa-caret-down has-text-primary is-size-2" />
+                </div>
+                <div
+                    v-else-if="!expanded"
+                    class="icon is-vcentered"
+                    @click="expanded=true">
+                    <i class="fa fa-caret-right has-text-primary is-size-2" />
+                </div>
+                <div
+                    v-else
+                    class="icon is-vcentered">
+                    <i class="fa fa-circle is-size-7 has-text-light" />
+                </div>
+                <button
+                    v-if="selectButtonText"
+                    @click="$emit('selectButtonClick', selectedArray)">
+                    {{ selectButtonText }}
+                </button>
+            </div>
+            <!-- MULTI EDIT BUTTONS -->
+            <div class="column is-narrow">
+                <div
+                    class="buttons">
+                    <div
+                        v-if="multipleSelected && !addingNode && view !== 'import' && canEdit"
+                        @click="$emit('editMultipleEvent')"
+                        class="button is-small is-outlined is-primary">
+                        <span class="icon">
+                            <i class="fa fa-cog" />
+                        </span>
+                        <span>
+                            Edit multiple
+                        </span>
+                    </div>
+                    <!-- if multiple are selected allow for edit multiple -->
+                    <div
+                        @click="addingNode = true;"
+                        v-if="!addingNode && canEdit"
+                        class="button is-small is-outlined is-primary">
+                        <span class="icon">
+                            <i class="fa fa-plus-circle" />
+                        </span>
+                        <span>
+                            Add Concept
+                        </span>
+                    </div>
+                    <div
+                        v-if="addingNode"
+                        @click="addingNode = false;"
+                        class="button is-outlined is-small is-dark ">
+                        <span class="icon">
+                            <i class="fa fa-times" />
+                        </span>
+                        <span>cancel</span>
+                    </div>
+                    <div
+                        v-if="addingNode"
+                        @click="add(container.shortId(), null); addingNode = false;"
+                        class="button is-outlined is-small is-primary ">
+                        <span class="icon">
+                            <i class="fa fa-plus" />
+                        </span>
+                        <span>
+                            create new
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <template
             v-if="hierarchy">
             <draggable
+                v-bind="dragOptions"
                 v-model="hierarchy"
-                :disabled="canEdit != true"
+                tag="ul"
+                class="lode__hierarchy-ul"
+                :disabled="canEdit != true || !isDraggable"
                 :group="{ name: 'test' }"
                 @start="beginDrag"
+                handle=".handle"
                 @end="endDrag">
                 <HierarchyNode
-                    v-for="item in hierarchy"
+                    :view="view"
+                    @createNewNodeEvent="onCreateNewNode"
+                    :subview="subview"
+                    @mountingNode="handleMountingNode"
+                    v-for="(item, index) in hierarchy"
                     :key="item.obj.id"
                     :obj="item.obj"
+                    class="lode__hierarchy-li"
                     :dragging="dragging"
                     :canEdit="canEdit"
                     :hasChild="item.children"
                     :profile="profile"
                     :exportOptions="exportOptions"
                     :highlightList="highlightList"
-                    :selectMode="selectMode"
                     :selectAll="selectAll"
+                    :newFramework="newFramework"
+                    :index="index"
+                    :frameworkEditable="canEdit"
                     @add="add"
                     @beginDrag="beginDrag"
                     @move="move"
@@ -28,49 +132,83 @@
                     @exportObject="exportObject"
                     @select="select"
                     :parentStructure="hierarchy"
-                    :parent="container">
-                    <template v-slot:copyURL="slotProps">
-                        <slot
-                            name="copyURL"
-                            :expandedProperty="slotProps.expandedProperty"
-                            :expandedValue="slotProps.expandedValue" />
-                    </template>
-                    <slot />
+                    :parent="container"
+                    @draggableCheck="onDraggableCheck"
+                    :properties="properties"
+                    :expandAll="expanded==true"
+                    :parentChecked="false">
+                    <div
+                        class="handle-button"
+                        v-if="canEdit">
+                        <div class="button is-text has-text-dark">
+                            <span class="icon is-size-5">
+                                <i class="fa handle fa-hand-paper" />
+                                <i class="fa handle fa-hand-rock" />
+                            </span>
+                        </div>
+                    </div>
                 </HierarchyNode>
             </draggable>
-        </ul>
-        <i
-            v-if="canEdit"
-            class="drag-footer fa fa-plus"
-            @click="add(container.shortId())" />
+        </template>
     </div>
 </template>
 <script>
-import HierarchyNode from '@/lode/components/lode/HierarchyNode.vue';
-import draggable from 'vuedraggable';
+
 import common from '@/mixins/common.js';
+var hierarchyTimeout;
 export default {
     name: 'ConceptHierarchy',
     props: {
         container: Object,
         containerType: String,
-        editable: Boolean,
         repo: Object,
         profile: Object,
         exportOptions: Array,
         highlightList: Array,
         selectMode: Boolean,
-        selectAll: Boolean
+        selectAll: Boolean,
+        containerTypeGet: String,
+        viewOnly: Boolean,
+        newFramework: Boolean,
+        properties: String,
+        view: {
+            type: String,
+            default: 'framework'
+        },
+        subview: {
+            type: String,
+            default: ''
+        }
     },
     data: function() {
         return {
             structure: [],
             once: true,
             dragging: false,
-            controlOnStart: false
+            controlOnStart: false,
+            filter: 'showAll',
+            dragIcon: 'fa-hand-paper',
+            dragOptions: {
+                delay: 100,
+                disabled: false,
+                ghostClass: 'ghost-drag',
+                chosenClass: 'chosen-drag',
+                dragClass: 'drag',
+                scrollSensitivity: 200,
+                forceFallback: true
+            },
+            multipleSelected: false,
+            addingNode: false,
+            selectedArray: [],
+            selectButtonText: null,
+            expanded: true,
+            isDraggable: true
         };
     },
-    components: {HierarchyNode, draggable},
+    components: {
+        HierarchyNode: () => import('@/lode/components/lode/HierarchyNode.vue'),
+        draggable: () => import('vuedraggable')
+    },
     mixins: [common],
     computed: {
         queryParams: function() {
@@ -94,7 +232,7 @@ export default {
         },
         // True if the current client can edit this object.
         canEdit: function() {
-            if (this.editable !== true) {
+            if (this.viewOnly === true) {
                 return false;
             }
             return this.container.canEditAny(EcIdentityManager.getMyPks());
@@ -106,9 +244,49 @@ export default {
                 this.once = true;
             },
             deep: true
+        },
+        selectedArray: function() {
+            if (this.selectedArray.length > 1) {
+                this.multipleSelected = true;
+            } else {
+                this.multipleSelected = false;
+            }
+            this.$emit('selectedArray', this.selectedArray);
+        }
+    },
+    mounted: function() {
+        if (this.queryParams) {
+            if (this.queryParams.singleSelect) {
+                this.selectButtonText = this.queryParams.singleSelect;
+            }
+            if (this.queryParams.select) {
+                if (this.queryParams.select !== "" && this.queryParams.select !== "select") {
+                    this.selectButtonText = this.queryParams.select;
+                }
+            }
         }
     },
     methods: {
+        onCreateNewNode: function(parentId, previousSiblingId) {
+            this.add(parentId, previousSiblingId);
+        },
+        /*
+         * when a child node is mounted it emits an event
+         * and a timeout is started
+         */
+        handleMountingNode: function() {
+            this.startTime();
+        },
+        /*
+         * each mount resets the timeout
+         * if the timeout length is met (no new nodes)
+         * the done loading event is triggered
+         */
+        startTime: function() {
+            hierarchyTimeout = setTimeout(() => {
+                this.$emit('doneLoadingNodes');
+            }, 1000);
+        },
         computeHierarchy: function() {
             this.structure.splice(0, this.structure.length);
             if (this.container == null) { return r; }
@@ -174,6 +352,7 @@ export default {
                     container = this.container;
                     property = "skos:hasTopConcept";
                 }
+                var initialValue = container[property] ? container[property].slice() : null;
                 var fromIndex = container[property].indexOf(fromId);
                 container[property].splice(fromIndex, 1);
                 if (toId == null || toId === undefined) {
@@ -185,6 +364,7 @@ export default {
                     var toIndex = container[property].indexOf(toId);
                     container[property].splice(toIndex, 0, fromId);
                 }
+                me.$store.commit('editor/addEditsToUndo', [{operation: "update", id: container.shortId(), fieldChanged: [property], initialValue: [initialValue]}]);
                 container["schema:dateModified"] = new Date().toISOString();
                 if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[container.id] !== true) {
                     container = EcEncryptedValue.toEncryptedValue(container);
@@ -211,6 +391,10 @@ export default {
                     toProperty2 = "skos:topConceptOf";
                 }
                 var fromIndex = fromContainer[fromProperty].indexOf(fromId);
+                var fromPropInitialValue = fromContainer[fromProperty].slice();
+                var fromProp2InitialValue = moveComp[fromProperty2] ? moveComp[fromProperty2].slice() : null;
+                var toPropInitialValue = toContainer[toProperty] ? toContainer[toProperty].slice() : null;
+                var toProp2InitialValue = moveComp[toProperty2] ? moveComp[toProperty2].slice() : null;
                 fromContainer[fromProperty].splice(fromIndex, 1);
                 if (fromContainerId && moveComp[fromProperty2]) {
                     EcArray.setRemove(moveComp[fromProperty2], fromContainerId);
@@ -242,12 +426,17 @@ export default {
                     } else {
                         moveComp[toProperty2].push(me.container.shortId());
                     }
+                    me.$store.commit('editor/addEditsToUndo', [
+                        {operation: "update", id: fromContainer.shortId(), fieldChanged: [fromProperty], initialValue: [fromPropInitialValue]},
+                        {operation: "update", id: toContainer.shortId(), fieldChanged: [toProperty], initialValue: [toPropInitialValue]},
+                        {operation: "update", id: moveComp.shortId(), fieldChanged: [fromProperty2, toProperty2], initialValue: [fromProp2InitialValue, toProp2InitialValue]}
+                    ]);
                     toContainer["schema:dateModified"] = new Date().toISOString();
                     moveComp["schema:dateModified"] = new Date().toISOString();
-                    if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[toContainer.id] !== true) {
+                    if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[toContainer.id] !== true) {
                         toContainer = EcEncryptedValue.toEncryptedValue(toContainer);
                     }
-                    if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[moveComp.id] !== true) {
+                    if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[moveComp.id] !== true) {
                         moveComp = EcEncryptedValue.toEncryptedValue(moveComp);
                     }
                     me.repo.saveTo(toContainer, function() {
@@ -258,7 +447,7 @@ export default {
             }
             this.dragging = false;
         },
-        add: function(containerId) {
+        add: function(containerId, previousSibling) {
             var me = this;
             var c = new EcConcept();
             if (this.queryParams.newObjectEndpoint) {
@@ -294,11 +483,22 @@ export default {
             c["skos:prefLabel"] = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Concept"};
             c["skos:inScheme"] = this.container.shortId();
             if (containerId === this.container.shortId()) {
+                var initialValue = this.container["skos:hasTopConcept"] ? this.container["skos:hasTopConcept"].slice() : null;
                 if (!EcArray.isArray(this.container["skos:hasTopConcept"])) {
                     this.container["skos:hasTopConcept"] = [];
                 }
-                this.container["skos:hasTopConcept"].unshift(c.shortId());
+                if (previousSibling == null || previousSibling === undefined) {
+                    this.container["skos:hasTopConcept"].unshift(c.shortId());
+                } else {
+                    // Insert immediately after the sibling
+                    var index = this.container["skos:hasTopConcept"].indexOf(previousSibling);
+                    this.container["skos:hasTopConcept"].splice(index + 1, 0, c.shortId());
+                }
                 c["skos:topConceptOf"] = this.container.shortId();
+                me.$store.commit('editor/addEditsToUndo', [
+                    {operation: "addNew", id: c.shortId()},
+                    {operation: "update", id: this.container.shortId(), fieldChanged: ["skos:hasTopConcept"], initialValue: [initialValue]}
+                ]);
                 this.container["schema:dateModified"] = new Date().toISOString();
                 c["schema:dateModified"] = new Date().toISOString();
                 if (this.$store.state.editor.private === true) {
@@ -315,10 +515,21 @@ export default {
             } else {
                 c["skos:broader"] = [containerId];
                 var parent = EcConcept.getBlocking(containerId);
+                var initialValue = parent["skos:narrower"] ? parent["skos:narrower"].slice() : null;
                 if (!EcArray.isArray(parent["skos:narrower"])) {
                     parent["skos:narrower"] = [];
                 }
-                parent["skos:narrower"].unshift(c.shortId());
+                if (previousSibling == null || previousSibling === undefined) {
+                    parent["skos:narrower"].unshift(c.shortId());
+                } else {
+                    // Insert immediately after the sibling
+                    var index = parent["skos:narrower"].indexOf(previousSibling);
+                    parent["skos:narrower"].splice(index + 1, 0, c.shortId());
+                }
+                me.$store.commit('editor/addEditsToUndo', [
+                    {operation: "addNew", id: c.shortId()},
+                    {operation: "update", id: parent.shortId(), fieldChanged: ["skos:narrower"], initialValue: [initialValue]}
+                ]);
                 this.container["schema:dateModified"] = new Date().toISOString();
                 c["schema:dateModified"] = new Date().toISOString();
                 parent["schema:dateModified"] = new Date().toISOString();
@@ -339,17 +550,31 @@ export default {
                     }, console.error);
                 }, console.error);
             }
+            this.$store.commit("editor/newCompetency", c.shortId());
             console.log("Added node: ", JSON.parse(c.toJson()));
         },
         select: function(objId, checked) {
-            this.$emit('select', objId, checked);
+            if (checked) {
+                EcArray.setAdd(this.selectedArray, objId);
+            } else {
+                EcArray.setRemove(this.selectedArray, objId);
+            }
         },
         deleteObject: function(thing) {
             this.$emit('deleteObject', thing);
         },
         exportObject: function(thing, type) {
             this.$emit('exportObject', thing, type);
+        },
+        onDraggableCheck: function(checked) {
+            this.isDraggable = checked;
         }
     }
 };
 </script>
+
+<style lang="scss">
+    @import './../../scss/variables.scss';
+
+
+</style>

@@ -6,39 +6,57 @@ Vue.use(Vuex);
 const state = {
     step: 0,
     frameworkSource: null,
+    frameworkSourceRelationships: null,
     frameworkTarget: null,
-    tempAlignment: {
-        source: {},
+    frameworkTargetRelationships: null,
+    relevantExistingAlignmentsMap: null,
+    workingAlignmentsMap: {
+        source: '',
         targets: [],
+        initialTargets: [],
+        removedTargets: [],
         type: ''
     },
-    tempAlignments: [],
+    alignmentsToSave: [],
+    alignmentsToDelete: [],
     sourceState: 'ready',
-    targetState: 'ready'
-
-
+    targetState: 'ready',
+    targetNodesToHighlight: []
 };
+
 const mutations = {
+    targetNodesToHighlight(state, f) {
+        state.targetNodesToHighlight = f;
+    },
     frameworkSource(state, f) {
         state.frameworkSource = f;
     },
     frameworkTarget(state, f) {
         state.frameworkTarget = f;
     },
+    frameworkSourceRelationships(state, f) {
+        state.frameworkSourceRelationships = f;
+    },
+    frameworkTargetRelationships(state, f) {
+        state.frameworkTargetRelationships = f;
+    },
+    relevantExistingAlignmentsMap(state, f) {
+        state.relevantExistingAlignmentsMap = f;
+    },
     step(state, val) {
         state.step = val;
     },
-    competencySource(state, c) {
-        state.tempAlignment.source = c;
+    workingAlignmentsSource(state, c) {
+        state.workingAlignmentsMap.source = c;
     },
-    addCompetencyTarget(state, c) {
-        state.tempAlignment.targets.push(c);
+    addWorkingAlignmentsTarget(state, c) {
+        state.workingAlignmentsMap.targets.push(c);
     },
-    competencyTargets(state, c) {
-        state.tempAlignment.targets = c;
+    workingAlignmentsTargets(state, c) {
+        state.workingAlignmentsMap.targets = c;
     },
-    alignmentType(state, a) {
-        state.tempAlignment.type = a;
+    workingAlignmentsType(state, a) {
+        state.workingAlignmentsMap.type = a;
     },
     sourceState(state, s) {
         state.sourceState = s;
@@ -46,31 +64,79 @@ const mutations = {
     targetState(state, t) {
         state.targetState = t;
     },
+    populateWorkingAlignmentMap(state) {
+        if (state.relevantExistingAlignmentsMap[state.workingAlignmentsMap.source] &&
+            state.relevantExistingAlignmentsMap[state.workingAlignmentsMap.source][state.workingAlignmentsMap.type]) {
+            let sourceTypeAlignMap = state.relevantExistingAlignmentsMap[state.workingAlignmentsMap.source][state.workingAlignmentsMap.type];
+            let targetIds = Object.keys(sourceTypeAlignMap);
+            for (let ti of targetIds) {
+                state.workingAlignmentsMap.targets.push(ti);
+                state.workingAlignmentsMap.initialTargets.push(ti);
+            }
+        }
+    },
+    resetFrameworkSourceRelationships(state) {
+        state.frameworkSourceRelationships = null;
+        state.relevantExistingAlignmentsMap = null;
+    },
+    resetFrameworkTargetRelationships(state) {
+        state.frameworkTargetRelationships = null;
+        state.relevantExistingAlignmentsMap = null;
+    },
+    resetCrosswalkFrameworks(state) {
+        state.frameworkSource = null;
+        state.frameworkTarget = null;
+        state.frameworkSourceRelationships = null;
+        state.frameworkTargetRelationships = null;
+        state.relevantExistingAlignmentsMap = null;
+    },
+    resetCrosswalkAlignmentsAndState(state) {
+        state.workingAlignmentsMap.source = '';
+        state.workingAlignmentsMap.targets = [];
+        state.workingAlignmentsMap.initialTargets = [];
+        state.workingAlignmentsMap.removedTargets = [];
+        state.workingAlignmentsMap.type = '';
+        state.sourceState = 'ready';
+        state.targetState = 'ready';
+        state.alignmentsToSave = [];
+    },
     resetCrosswalk(state) {
         state.step = 0;
-        state.tempAlignment.source = {};
-        state.tempAlignment.targets = [];
-        state.tempAlignment.type = '';
+        state.workingAlignmentsMap.source = '';
+        state.workingAlignmentsMap.targets = [];
+        state.workingAlignmentsMap.initialTargets = [];
+        state.workingAlignmentsMap.removedTargets = [];
+        state.workingAlignmentsMap.type = '';
         state.sourceState = 'ready';
         state.targetState = 'ready';
-        state.tempAlignments = [];
+        state.alignmentsToSave = [];
     },
-    resetTempAlignment(state) {
+    resetWorkingAlignmentsMap(state) {
         state.sourceState = 'ready';
         state.targetState = 'ready';
-        state.tempAlignment = {
-            source: {},
+        state.workingAlignmentsMap = {
+            source: '',
             targets: [],
+            initialTargets: [],
+            removedTargets: [],
             type: ''
         };
     },
-    removeFromTargetsArray(state, id) {
-        let targets = state.tempAlignment.targets;
+    removeWorkingAlignmentsTarget(state, id) {
+        let targets = state.workingAlignmentsMap.targets;
         let filtered = targets.filter(target => target !== id);
-        state.tempAlignment.targets = filtered;
+        state.workingAlignmentsMap.targets = filtered;
     },
-    addAlignmentToAlignmentsArray(state, alignment) {
-        state.tempAlignments.push(alignment);
+    appendAlignmentsToSave(state, alignment) {
+        if (alignment.targets && alignment.targets.length > 0) {
+            for (let at of alignment.targets) {
+                let newAlignmentToSave = {};
+                newAlignmentToSave.source = alignment.source;
+                newAlignmentToSave.target = at;
+                newAlignmentToSave.type = alignment.type;
+                state.alignmentsToSave.push(newAlignmentToSave);
+            }
+        }
     }
 };
 const actions = {
@@ -83,14 +149,23 @@ const getters = {
     frameworkTarget: function(state) {
         return state.frameworkTarget;
     },
-    competencySource(state) {
-        return state.tempAlignment.source;
+    frameworkSourceRelationships: function(state) {
+        return state.frameworkSourceRelationships;
     },
-    competencyTargets(state) {
-        return state.tempAlignment.targets;
+    frameworkTargetRelationships: function(state) {
+        return state.frameworkTargetRelationships;
     },
-    alignmentType(state, a) {
-        return state.tempAlignment.type;
+    relevantExistingAlignmentsMap: function(state) {
+        return state.relevantExistingAlignmentsMap;
+    },
+    workingAlignmentsSource(state) {
+        return state.workingAlignmentsMap.source;
+    },
+    workingAlignmentsTargets(state) {
+        return state.workingAlignmentsMap.targets;
+    },
+    workingAlignmentsType(state, a) {
+        return state.workingAlignmentsMap.type;
     },
     sourceState(state) {
         return state.sourceState;
@@ -98,8 +173,8 @@ const getters = {
     targetState(state) {
         return state.targetState;
     },
-    tempAlignments(state) {
-        return state.tempAlignments;
+    alignmentsToSave(state) {
+        return state.alignmentsToSave;
     }
 };
 

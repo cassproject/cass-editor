@@ -21,6 +21,7 @@
             <div class="section">
                 <h4 class="header">
                     This item is listed in <b>{{ numberOfParentFrameworks }}</b> {{ dynamicModalContent.objectType === "Concept" ? "concept scheme" : "framework" }}<span v-if="numberOfParentFrameworks > 1">s</span>
+
                 </h4>
                 <ul class="single__list">
                     <li
@@ -124,8 +125,7 @@ export default {
                 var scheme = EcConceptScheme.getBlocking(concept["skos:topConceptOf"]);
                 this.parentFrameworks.push({name: this.getDisplayStringFrom(scheme["dcterms:title"]), url: scheme.shortId()});
             } else if (concept["skos:broader"]) {
-                var parent = EcConcept.getBlocking(concept["skos:broader"]);
-                this.findConceptTrail(parent);
+                this.findConceptTrail(concept["skos:broader"]);
             }
         },
         getDisplayStringFrom: function(n) {

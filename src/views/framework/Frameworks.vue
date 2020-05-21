@@ -4,8 +4,9 @@
         <!-- search field -->
         <div class="section is-medium">
             <SearchBar
-                searchType="framework"
-                filterSet="all" />
+                filterSet="all"
+                :searchType="type === 'ConceptScheme' ? 'concept scheme' : 'framework'"
+                 />
             <div
                 v-if="!queryParams.concepts==='true'"
                 class="container is-fluid">
@@ -253,6 +254,24 @@ export default {
             // End public key line
             pem = pem.substring(0, length - 24) + "\n" + pem.substring(length - 24);
             return pem;
+        }
+    },
+    mounted: function() {
+        // Keep sorting/filtering in sync with the store on back button
+        if (this.sortResults.id === "lastEdited") {
+            this.sortBy = "schema:dateModified";
+        } else if (this.sortResults.id === "dateCreated") {
+            this.sortBy = "schema:dateCreated";
+        }
+        this.showMine = false;
+        this.showNotMine = false;
+        for (var i = 0; i < this.filteredQuickFilters.length; i++) {
+            if (this.filteredQuickFilters[i].id === "ownedByMe") {
+                this.showMine = true;
+            }
+            if (this.filteredQuickFilters[i].id === "notOwnedByMe") {
+                this.showNotMine = true;
+            }
         }
     },
     watch: {

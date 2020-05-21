@@ -25,11 +25,13 @@
                     </li>
                     <li
                         @click="newTab = 'html'"
+                        v-if="!conceptMode"
                         :class="[tab === 'html' ? 'is-active' : '', '']">
                         <a>HTML</a>
                     </li>
                     <li
                         @click="newTab = 'xml'"
+                        v-if="!conceptMode"
                         :class="[tab === 'xml' ? 'is-active' : '', '']">
                         <a>XML</a>
                     </li>
@@ -40,11 +42,13 @@
                     </li>
                     <li
                         @click="newTab = 'pdf'"
+                        v-if="!conceptMode"
                         :class="[tab === 'pdf' ? 'is-active' : '', '']">
                         <a>PDF</a>
                     </li>
                     <li
                         @click="newTab = 'docx'"
+                        v-if="!conceptMode"
                         :class="[tab === 'docx' ? 'is-active' : '', '']">
                         <a>DOCX</a>
                     </li>
@@ -155,7 +159,7 @@
             <!-- CSV -->
             <div
                 class="section"
-                v-if="tab === 'csv'">
+                v-if="tab === 'csv' && !conceptMode">
                 <h2 class="title has-text-weight-bold is-size-2">
                     CSV
                     <span class="icon is-pulled-right has-text-success">
@@ -259,6 +263,54 @@
                     </a>
                 </div>
             </div>
+            <!-- CSV Concepts -->
+            <div
+                class="section"
+                v-if="tab === 'csv' && conceptMode">
+                <h2 class="title has-text-weight-bold is-size-2">
+                    CSV
+                    <span class="icon is-pulled-right has-text-success">
+                        <i class="fa fa-check-circle" />
+                    </span>
+                </h2>
+                <p>
+                    CSV file imports are supported with CaSS.  In order to upload concept schemes as CSV files your concept scheme CSV files need to be formatted in a CaSS readable format.
+                </p>
+                <h5 class="header is-size-4 has-text-weight-bold">
+                    CTDL-ASN Formatted
+                </h5>
+                <p>
+                    For this import, you use one CSV. Each row in the CSV will represent one object, whether that be a concept, or a concept scheme. Particular fields will be used to determine hierarchy.
+                    Using this format, you can import several concept schemes, each with their own concepts. Concepts may not be shared across schemes, and each concept may only have one parent.
+                    It is also important that any field with multiple values be formatted exactly as in the sample file, e.g. entry 1|entry 2.
+                </p>
+                <div class="buttons is-right">
+                    <a
+                        :href="csvConceptExampleFile"
+                        target="_blank"
+                        download="Concept Scheme Example.csv"
+                        class="button is-small is-outlined is-primary">
+                        <span
+                            title=""
+                            class="icon">
+                            <i class="fa fa-download" />
+                        </span>
+                        <span>Example</span>
+                    </a>
+                    <a
+                        :href="csvConceptTemplateFile"
+                        target="_blank"
+                        download="Concept Scheme Template.csv"
+                        class="button is-small is-outlined is-primary">
+                        <span
+                            title=""
+                            class="icon">
+                            <i class="fa fa-download" />
+                        </span>
+                        <span>Template</span>
+                    </a>
+                </div>
+            </div>
             <!-- XML -->
             <div
                 class="section"
@@ -297,7 +349,7 @@
             <!-- JSON -->
             <div
                 class="section"
-                v-if="tab === 'json'">
+                v-if="tab === 'json' && !conceptMode">
                 <h2 class="title has-text-weight-bold is-size-2">
                     JSON
                     <span class="icon is-pulled-right has-text-success">
@@ -338,6 +390,39 @@
                         :href="ctdlAsnJsonldFile"
                         target="_blank"
                         download="DQP.jsonld"
+                        class="button is-small is-outlined is-primary">
+                        <span
+                            title=""
+                            class="icon">
+                            <i class="fa fa-download" />
+                        </span>
+                        <span>Example</span>
+                    </a>
+                </div>
+            </div>
+            <!-- JSON Concepts -->
+            <div
+                class="section"
+                v-if="tab === 'json' && conceptMode">
+                <h2 class="title has-text-weight-bold is-size-2">
+                    JSON
+                    <span class="icon is-pulled-right has-text-success">
+                        <i class="fa fa-check-circle" />
+                    </span>
+                </h2>
+                <p>CaSS supports importing concept schemes from JSON files in the below listed format.</p>
+                <h5 class="header is-size-4 has-text-weight-bold">
+                    CTDL-ASN formatted JSON-LD
+                </h5>
+                <p>
+                    For this import, you use one JSON-LD file that includes a graph of the concept scheme and all of its concepts.
+                    Using this format, you can import a concept scheme and concepts from a system that exports CTDL-ASN formatted JSON-LD.
+                </p>
+                <div class="buttons is-right">
+                    <a
+                        :href="ctdlAsnJsonldConceptsFile"
+                        target="_blank"
+                        download="ConnectingCredentialsLevels.jsonld"
                         class="button is-small is-outlined is-primary">
                         <span
                             title=""
@@ -413,6 +498,9 @@ export default {
             } else {
                 return this.content;
             }
+        },
+        conceptMode: function() {
+            return this.$store.getters['editor/queryParams'].concepts === 'true';
         }
     }
 };

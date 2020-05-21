@@ -192,7 +192,12 @@ export default {
         },
         undoDelete(obj) {
             // Re-add
-            this.repo.saveTo(obj, function() {}, function(failure) {
+            var toSave = obj;
+            if (obj.type === "Concept") {
+                toSave = new EcConcept();
+                toSave.copyFrom(obj);
+            }
+            this.repo.saveTo(toSave, function() {}, function(failure) {
                 console.log(failure);
             });
         },
@@ -245,6 +250,9 @@ export default {
         saveExpanded: function(expandedCompetency) {
             var me = this;
             var context = "https://schema.cassproject.org/0.4";
+            if (expandedCompetency["@type"][0].toLowerCase().indexOf("concept") !== -1) {
+                context = "https://schema.cassproject.org/0.4/skos";
+            }
             jsonld.compact(expandedCompetency, this.$store.state.lode.rawSchemata[context], function(err, compacted) {
                 if (err != null) {
                     console.error(err);
@@ -281,9 +289,15 @@ export default {
     },
     computed: {
         showAddComments() {
+            if (this.queryParams.concepts === "true") {
+                return false;
+            }
             return this.$store.state.app.canAddComments;
         },
         showViewComments() {
+            if (this.queryParams.concepts === "true") {
+                return false;
+            }
             return this.$store.state.app.canViewComments;
         },
         framework: function() {
