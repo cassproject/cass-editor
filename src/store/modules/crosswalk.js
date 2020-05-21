@@ -6,7 +6,9 @@ Vue.use(Vuex);
 const state = {
     step: 0,
     frameworkSource: null,
+    frameworkSourceRelationships: null,
     frameworkTarget: null,
+    frameworkTargetRelationships: null,
     tempAlignment: {
         source: {},
         targets: [],
@@ -27,6 +29,12 @@ const mutations = {
     },
     frameworkTarget(state, f) {
         state.frameworkTarget = f;
+    },
+    frameworkSourceRelationships(state, f) {
+        state.frameworkSourceRelationships = f;
+    },
+    frameworkTargetRelationships(state, f) {
+        state.frameworkTargetRelationships = f;
     },
     step(state, val) {
         state.step = val;
@@ -49,9 +57,17 @@ const mutations = {
     targetState(state, t) {
         state.targetState = t;
     },
+    resetFrameworkSourceRelationships(state) {
+        state.frameworkSourceRelationships = null;
+    },
+    resetFrameworkTargetRelationships(state) {
+        state.frameworkTargetRelationships = null;
+    },
     resetCrosswalkFrameworks(state) {
         state.frameworkSource = null;
         state.frameworkTarget = null;
+        state.frameworkSourceRelationships = null;
+        state.frameworkTargetRelationships = null;
     },
     resetCrosswalkAlignmentsAndState(state) {
         state.tempAlignment.source = {};
@@ -105,6 +121,12 @@ const getters = {
     },
     frameworkTarget: function(state) {
         return state.frameworkTarget;
+    },
+    frameworkSourceRelationships: function(state) {
+        return state.frameworkSourceRelationships;
+    },
+    frameworkTargetRelationships: function(state) {
+        return state.frameworkTargetRelationships;
     },
     competencySource(state) {
         return state.tempAlignment.source;

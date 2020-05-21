@@ -69,7 +69,6 @@ export const cassUtil = {
             if (EcIdentityManager && EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
                 for (let i = 0; i < EcIdentityManager.ids.length; i++) {
                     obj.addOwner(EcIdentityManager.ids[i].ppk.toPk());
-                    obj.addOwner(EcIdentityManager.ids[i].ppk.toPk());
                 }
             }
         },
@@ -116,6 +115,15 @@ export const cassUtil = {
                 }
             }
             return false;
+        },
+        buildEcAlignmentsFromRemoteLinkedData(ecrlda) {
+            let ecaa = [];
+            for (let ecrld of ecrlda) {
+                let eca = new EcAlignment();
+                eca.copyFrom(ecrld);
+                ecaa.push(eca);
+            }
+            return ecaa;
         }
     },
     computed: {
