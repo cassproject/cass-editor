@@ -24,7 +24,7 @@
         <div
             class="columns is-multiline import-flex is-marginless is-gapless is-paddingless">
             <div class="column is-12 import-top-flex">
-                <div class="section">
+                <div class="section is-medium">
                     <div class="container">
                         <div class="columns is-multiline is-mobile">
                             <div class="column is-12">
@@ -36,7 +36,6 @@
                                     <span v-else>Import a framework</span>
                                 </h1>
                             </div>
-
                             <!-- ready state details -->
                             <div class="column is-12">
                                 <p
@@ -86,122 +85,124 @@
                 </div>
             </div>
             <div class="column is-12 import-bottom-flex">
-                <div class="container">
-                    <!-- import tabs -->
-                    <ImportTabs
-                        v-if="!importFramework ||(importFramework && importType==='text')"
-                        :caseDocs="caseDocs"
-                        :csvRelationFile="csvRelationFile"
-                        :csvRelationColumns="csvRelationColumns"
-                        :importCsvColumnSource="importCsvColumnSource"
-                        :importCsvColumnRelationType="importCsvColumnRelationType"
-                        :importCsvColumnTarget="importCsvColumnTarget"
-                        :csvColumns="csvColumns"
-                        @analyzeCsvRelation="analyzeCsvRelation($event)"
-                        @importCase="handleImportFromTabs($event)" />
-                    <!-- import details -->
-                    <!--
-                        we shouldn't need to check for isT3Type here, since this information
-                        relies on the 'details' step, just skip this step and go
-                        to preview in cases where we don't need to show details
-                    -->
-                    <ImportDetails
-                        :detailsDetected="detailsDetected"
-                        v-if="importTransition === 'detail'" />
-                    <!-- import preview -->
-                    <div
-                        v-if="importFramework && importTransition === 'preview'"
-                        class="import-preview">
-                        <!-- loading section -- dummy content to show while loading dome elemnts -->
+                <div class="section">
+                    <div class="container">
+                        <!-- import tabs -->
+                        <ImportTabs
+                            v-if="!importFramework ||(importFramework && importType==='text')"
+                            :caseDocs="caseDocs"
+                            :csvRelationFile="csvRelationFile"
+                            :csvRelationColumns="csvRelationColumns"
+                            :importCsvColumnSource="importCsvColumnSource"
+                            :importCsvColumnRelationType="importCsvColumnRelationType"
+                            :importCsvColumnTarget="importCsvColumnTarget"
+                            :csvColumns="csvColumns"
+                            @analyzeCsvRelation="analyzeCsvRelation($event)"
+                            @importCase="handleImportFromTabs($event)" />
+                        <!-- import details -->
+                        <!--
+                            we shouldn't need to check for isT3Type here, since this information
+                            relies on the 'details' step, just skip this step and go
+                            to preview in cases where we don't need to show details
+                        -->
+                        <ImportDetails
+                            :detailsDetected="detailsDetected"
+                            v-if="importTransition === 'detail'" />
+                        <!-- import preview -->
                         <div
-                            class="section"
-                            v-if="!hierarchyIsdoneLoading">
-                            <ul class="processing-list">
-                                <li />
-                                <li />
-                                <ul>
+                            v-if="importFramework && importTransition === 'preview'"
+                            class="import-preview">
+                            <!-- loading section -- dummy content to show while loading dome elemnts -->
+                            <div
+                                class="section"
+                                v-if="!hierarchyIsdoneLoading">
+                                <ul class="processing-list">
                                     <li />
                                     <li />
+                                    <ul>
+                                        <li />
+                                        <li />
+                                        <li />
+                                    </ul>
                                     <li />
+                                    <li />
+                                    <ul>
+                                        <li />
+                                        <li />
+                                    </ul>
                                 </ul>
-                                <li />
-                                <li />
-                                <ul>
-                                    <li />
-                                    <li />
-                                </ul>
-                            </ul>
-                        </div>
-                        <Component
-                            :is="dynamicThing"
-                            @editNodeEvent="onEditNode"
-                            @doneEditingNodeEvent="onDoneEditingNode"
-                            :class="{'is-hidden': !hierarchyIsdoneLoading}"
-                            :obj="changedObj ? changedObj : importFramework"
-                            :repo="repo"
-                            class="framework-title"
-                            :profile="t3FrameworkProfile"
-                            :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
-                            iframeText="Attach subitems from other sources to the selected item." />
+                            </div>
+                            <Component
+                                :is="dynamicThing"
+                                @editNodeEvent="onEditNode"
+                                @doneEditingNodeEvent="onDoneEditingNode"
+                                :class="{'is-hidden': !hierarchyIsdoneLoading}"
+                                :obj="changedObj ? changedObj : importFramework"
+                                :repo="repo"
+                                class="framework-title"
+                                :profile="t3FrameworkProfile"
+                                :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
+                                iframeText="Attach subitems from other sources to the selected item." />
 
-                        <Hierarchy
-                            :class="{'is-hidden': !hierarchyIsdoneLoading}"
-                            view="importPreview"
-                            v-if="importFramework"
-                            @doneLoadingNodes="handleDoneLoading"
-                            @searchThings="handleSearch($event)"
-                            @editMultipleEvent="onEditMultiple"
-                            :container="importFramework"
-                            containerType="Framework"
-                            containerNodeProperty="competency"
-                            containerEdgeProperty="relation"
-                            nodeType="EcCompetency"
-                            :profile="t3CompetencyProfile"
-                            :viewOnly="false"
-                            :isDraggable="true"
-                            edgeType="EcAlignment"
-                            edgeRelationProperty="relationType"
-                            edgeRelationLiteral="narrows"
-                            edgeSourceProperty="source"
-                            edgeTargetProperty="target"
-                            :repo="repo"
-                            @selectedArray="selectedArrayEvent"
-                            :newFramework="true"
-                            @deleteObject="deleteObject" />
-                    </div>
-                    <!-- import light view -->
-                    <div
-                        v-else-if="importFramework && importTransition === 'light'"
-                        class="import-light">
-                        <Component
-                            :is="dynamicThing"
-                            :editingNode="editingNode"
-                            @doneEditingNodeEvent="onDoneEditingNode"
-                            :obj="changedObj ? changedObj : importFramework"
-                            :parentNotEditable="true"
-                            class="framework-title"
-                            :profile="t3FrameworkProfile"
-                            :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
-                            iframeText="Attach subitems from other sources to the selected item." />
-                        <Hierarchy
-                            v-if="importFramework"
-                            view="importLight"
-                            :container="importFramework"
-                            containerType="Framework"
-                            containerNodeProperty="competency"
-                            containerEdgeProperty="relation"
-                            nodeType="EcCompetency"
-                            :profile="t3CompetencyProfile"
-                            :editable="false"
-                            :viewOnly="true"
-                            edgeType="EcAlignment"
-                            edgeRelationProperty="relationType"
-                            edgeRelationLiteral="narrows"
-                            edgeSourceProperty="source"
-                            edgeTargetProperty="target"
-                            :repo="repo"
-                            :newFramework="true"
-                            @deleteObject="deleteObject" />
+                            <Hierarchy
+                                :class="{'is-hidden': !hierarchyIsdoneLoading}"
+                                view="importPreview"
+                                v-if="importFramework"
+                                @doneLoadingNodes="handleDoneLoading"
+                                @searchThings="handleSearch($event)"
+                                @editMultipleEvent="onEditMultiple"
+                                :container="importFramework"
+                                containerType="Framework"
+                                containerNodeProperty="competency"
+                                containerEdgeProperty="relation"
+                                nodeType="EcCompetency"
+                                :profile="t3CompetencyProfile"
+                                :viewOnly="false"
+                                :isDraggable="true"
+                                edgeType="EcAlignment"
+                                edgeRelationProperty="relationType"
+                                edgeRelationLiteral="narrows"
+                                edgeSourceProperty="source"
+                                edgeTargetProperty="target"
+                                :repo="repo"
+                                @selectedArray="selectedArrayEvent"
+                                :newFramework="true"
+                                @deleteObject="deleteObject" />
+                        </div>
+                        <!-- import light view -->
+                        <div
+                            v-else-if="importFramework && importTransition === 'light'"
+                            class="import-light">
+                            <Component
+                                :is="dynamicThing"
+                                :editingNode="editingNode"
+                                @doneEditingNodeEvent="onDoneEditingNode"
+                                :obj="changedObj ? changedObj : importFramework"
+                                :parentNotEditable="true"
+                                class="framework-title"
+                                :profile="t3FrameworkProfile"
+                                :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
+                                iframeText="Attach subitems from other sources to the selected item." />
+                            <Hierarchy
+                                v-if="importFramework"
+                                view="importLight"
+                                :container="importFramework"
+                                containerType="Framework"
+                                containerNodeProperty="competency"
+                                containerEdgeProperty="relation"
+                                nodeType="EcCompetency"
+                                :profile="t3CompetencyProfile"
+                                :editable="false"
+                                :viewOnly="true"
+                                edgeType="EcAlignment"
+                                edgeRelationProperty="relationType"
+                                edgeRelationLiteral="narrows"
+                                edgeSourceProperty="source"
+                                edgeTargetProperty="target"
+                                :repo="repo"
+                                :newFramework="true"
+                                @deleteObject="deleteObject" />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -954,13 +955,17 @@ export default {
                 },
                 /* TO DO - ERROR HANDLING HERE */
                 function(error) {
+                    console.log("error here");
+                    if (error === "") {
+                        error = "Server unresponsive.";
+                    }
                     me.$store.commit('app/importStatus', error);
                     me.$store.commit('app/importTransition', 'process');
                     me.$store.commit('app/addImportError', error);
                 }
             );
             me.$store.commit('app/importTransition', 'process');
-            me.$store.commit('app/importStatus', 'process file...');
+            me.$store.commit('app/importStatus', 'processing file...');
         },
         savePdfImport: function(d, newName) {
             var me = this;

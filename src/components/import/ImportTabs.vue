@@ -163,20 +163,16 @@
                             @clearFiles="clearFiles" />
                         <div
                             v-else-if="(importTransition === 'process' || importTransition === 'info') && importErrors.length === 0"
-                            class="column is-12">
-                            <span
-                                class="icon is-large"
-                                v-if="importTransition === 'process'">
-                                <i class="fa fa-spinner fa-pulse fa-2x" />
-                            </span>
+                            class="column">
+                            <div class="section">
+                                <span
+                                    class="icon is-large"
+                                    v-if="importTransition === 'process'">
+                                    <i class="fa fa-spinner fa-pulse fa-2x" />
+                                </span>
+                            </div>
                             <div class="section">
                                 <p
-                                    v-if="importTransition !== 'process'"
-                                    class="is-size-6">
-                                    {{ importStatus }}
-                                </p>
-                                <p
-                                    v-if="importTransition === 'process'"
                                     class="is-size-6">
                                     {{ importStatus }}
                                 </p>
@@ -185,7 +181,7 @@
                         <!-- import errors -->
                         <div
                             v-else-if="importErrors.length > 0"
-                            class="column is-12 has-text-warning">
+                            class="column has-text-danger">
                             <ul>
                                 <li
                                     class="is-size-6"
@@ -786,3 +782,9 @@ export default {
     }
 };
 </script>
+
+<style>
+.is-vcentered {
+    display: flex;
+}
+</style>

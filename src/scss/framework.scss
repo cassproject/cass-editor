@@ -15,12 +15,12 @@ drag, drag, and chosen states
 */
 .handle-button {
     visibility: hidden;
-    i.fa-hand-rock {
+    i.fa-arrows-alt {
     cursor: move !important;
       cursor: -webkit-grabbing !important;
         position:absolute;
     }
-    i.fa-hand-paper {
+    i.fa-arrows-alt {
         cursor: move !important;
       cursor: -webkit-grabbing !important;
         position:absolute;
@@ -29,30 +29,31 @@ drag, drag, and chosen states
 
 
 .ghost-drag {
-    .lode__hierarchy-item .lode__thing .lode__Competency{
+    .lode__hierarchy-item {
         background-color: rgba($link, .1);
     }
-    i.fa-hand-rock {
+    i.fa-arrows-alt{
         visibility: visible;
+    }
+    .add-node-section {
+        visibility: hidden !important;
     }
 }
 .chosen-drag {
-    i.fa-hand-rock {
+    i.fa-arrows-alt {
         visibility: visible;
     }
-    i.fa-hand-paper {
-        display: none;
+    .add-node-section {
+        visibility: hidden !important;
     }
 }
 .drag {
-    margin: .25rem;
-    i.fa-hand-paper {
-        visibility: hidden;
-        color: $cass-primary-down;
-    }
-     i.fa-hand-rock {
+     i.fa-arrows-alt{
         visibility: visible;
         color: $cass-primary-down;
+    }
+    .add-node-section {
+        display: none !important;
     }
 }
 
@@ -210,7 +211,7 @@ drag, drag, and chosen states
             }
         }
     }
-    .edit-button, .handle.fa-hand-paper {
+    .edit-button, .handle.fa-arrows-alt {
         visibility: visible;
     }
     .lode__Competency {
@@ -300,6 +301,9 @@ drag, drag, and chosen states
 // possibly set tab value based on value in scss varaibles sheet
 
 .lode__hierarchy {
+    .hierarchy-buttons {
+        padding: .25rem .5rem !important;
+    }
     .check-radio-all-column label {
         padding-left: 0rem !important;
         margin-right: 1.25rem !important;
@@ -320,6 +324,7 @@ drag, drag, and chosen states
             .add-new-node {
             }
             .lode__hierarchy-item {
+                padding: .25rem .5rem !important;
                 .add-node-section {
                     width: 100%;
                     display:block;
