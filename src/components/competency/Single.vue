@@ -19,7 +19,7 @@
                 :expandInModal="true" />
             <div class="section">
                 <h4 class="header">
-                    This <b>{{ dynamicModalContent.type }}</b> is listed in <b>{{ numberOfParentFrameworks }}</b> {{ dynamicModalContent.objectType === "Concept" ? "concept schemes" : "frameworks"}}
+                    This <b>{{ dynamicModalContent.type }}</b> is listed in <b>{{ numberOfParentFrameworks }}</b> {{ dynamicModalContent.objectType === "Concept" ? "concept schemes" : "frameworks" }}
                 </h4>
                 <ul class="single__list">
                     <li

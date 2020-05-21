@@ -330,7 +330,7 @@ export default {
             var order = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "asc" : "desc";
             obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "long",  "missing" : "_last"}} ]';
             if (this.queryParams && ((this.queryParams.concepts !== "true" && this.queryParams.show === 'mine') ||
-            (this.queryParams.concepts === "true" && this.queryParams.conceptShow === "mine"))) {
+                    (this.queryParams.concepts === "true" && this.queryParams.conceptShow === "mine"))) {
                 obj.ownership = 'me';
             }
             return obj;
@@ -341,7 +341,7 @@ export default {
                 search += " AND (" + this.queryParams.filter + ")";
             }
             if (this.showMine || (this.queryParams && this.queryParams.concepts !== "true" && this.queryParams.show === "mine") ||
-            (this.queryParams && this.queryParams.concepts === "true" && this.queryParams.conceptShow === "mine")) {
+                    (this.queryParams && this.queryParams.concepts === "true" && this.queryParams.conceptShow === "mine")) {
                 search += " AND (";
                 for (var i = 0; i < EcIdentityManager.ids.length; i++) {
                     if (i !== 0) {

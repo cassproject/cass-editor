@@ -13,6 +13,8 @@ const state = {
     workingAlignmentsMap: {
         source: '',
         targets: [],
+        initialTargets: [],
+        removedTargets: [],
         type: ''
     },
     alignmentsToSave: [],
@@ -62,6 +64,17 @@ const mutations = {
     targetState(state, t) {
         state.targetState = t;
     },
+    populateWorkingAlignmentMap(state) {
+        if (state.relevantExistingAlignmentsMap[state.workingAlignmentsMap.source] &&
+            state.relevantExistingAlignmentsMap[state.workingAlignmentsMap.source][state.workingAlignmentsMap.type]) {
+            let sourceTypeAlignMap = state.relevantExistingAlignmentsMap[state.workingAlignmentsMap.source][state.workingAlignmentsMap.type];
+            let targetIds = Object.keys(sourceTypeAlignMap);
+            for (let ti of targetIds) {
+                state.workingAlignmentsMap.targets.push(ti);
+                state.workingAlignmentsMap.initialTargets.push(ti);
+            }
+        }
+    },
     resetFrameworkSourceRelationships(state) {
         state.frameworkSourceRelationships = null;
         state.relevantExistingAlignmentsMap = null;
@@ -80,6 +93,8 @@ const mutations = {
     resetCrosswalkAlignmentsAndState(state) {
         state.workingAlignmentsMap.source = '';
         state.workingAlignmentsMap.targets = [];
+        state.workingAlignmentsMap.initialTargets = [];
+        state.workingAlignmentsMap.removedTargets = [];
         state.workingAlignmentsMap.type = '';
         state.sourceState = 'ready';
         state.targetState = 'ready';
@@ -89,6 +104,8 @@ const mutations = {
         state.step = 0;
         state.workingAlignmentsMap.source = '';
         state.workingAlignmentsMap.targets = [];
+        state.workingAlignmentsMap.initialTargets = [];
+        state.workingAlignmentsMap.removedTargets = [];
         state.workingAlignmentsMap.type = '';
         state.sourceState = 'ready';
         state.targetState = 'ready';
@@ -100,6 +117,8 @@ const mutations = {
         state.workingAlignmentsMap = {
             source: '',
             targets: [],
+            initialTargets: [],
+            removedTargets: [],
             type: ''
         };
     },
