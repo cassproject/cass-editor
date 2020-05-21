@@ -138,7 +138,10 @@ export default {
                 }
             }
         },
-        validateOnePerLanguage: function(expandedCompetency, property, competency) {
+        validateOnePerLanguage: function(expandedCompetency, property, competency, value) {
+            if (!expandedCompetency[property]) {
+                return true;
+            }
             var languagesUsed = [];
             for (var k = 0; k < expandedCompetency[property].length; k++) {
                 if (languagesUsed.includes(expandedCompetency[property][k]["@language"].toLowerCase())) {
@@ -146,6 +149,11 @@ export default {
                     return false;
                 }
                 languagesUsed.push(expandedCompetency[property][k]["@language"].toLowerCase());
+            }
+            // Check new value being added
+            if (languagesUsed.includes(value["@language"].toLowerCase())) {
+                this.addErrorMessage(property + " can only have one entry per language. Competency " + competency.getName() + " was not saved.");
+                return false;
             }
             return true;
         },
@@ -169,7 +177,7 @@ export default {
             var me = this;
             for (var i = 0; i < this.selectedCompetencies.length; i++) {
                 var competencyId = this.selectedCompetencies[i];
-                var competency = EcCompetency.getBlocking(competencyId);
+                var competency = EcRepository.getBlocking(competencyId);
                 this.expand(competency, function(expandedCompetency) {
                     var initialValues = [];
                     var changedValues = [];
@@ -188,7 +196,7 @@ export default {
 
                         if (range.length === 1 && range[0].toLowerCase().indexOf("langstring") !== -1) {
                             if (me.profile && me.profile[property] && (me.profile[property]["onePerLanguage"] === 'true' || me.profile[property]["onePerLanguage"] === true)) {
-                                var okayToSave = me.validateOnePerLanguage(expandedCompetency, property, competency);
+                                var okayToSave = me.validateOnePerLanguage(expandedCompetency, property, competency, value);
                                 if (!okayToSave) {
                                     continue;
                                 }
@@ -273,6 +281,9 @@ export default {
         save: function(expandedCompetency) {
             var me = this;
             var context = "https://schema.cassproject.org/0.4";
+            if (this.$store.getters['editor/queryParams'].concepts === "true") {
+                context += "/skos";
+            }
             jsonld.compact(expandedCompetency, this.$store.state.lode.rawSchemata[context], function(err, compacted) {
                 if (err != null) {
                     console.error(err);

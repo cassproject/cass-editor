@@ -123,8 +123,7 @@ export default {
                 var scheme = EcConceptScheme.getBlocking(concept["skos:topConceptOf"]);
                 this.parentFrameworks.push({name: this.getDisplayStringFrom(scheme["dcterms:title"]), url: scheme.shortId()});
             } else if (concept["skos:broader"]) {
-                var parent = EcConcept.getBlocking(concept["skos:broader"]);
-                this.findConceptTrail(parent);
+                this.findConceptTrail(concept["skos:broader"]);
             }
         },
         getDisplayStringFrom: function(n) {

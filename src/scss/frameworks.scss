@@ -69,7 +69,7 @@
                 .bottom-actions, .top-actions {
                     display: none !important;
                 }
-                .lode__Framework {
+                .lode__Framework, .lode__ConceptScheme {
                     transform: translateX(0);
                     cursor: pointer;
                     .lode__Framework {
@@ -86,7 +86,7 @@
         }
     }
      .lode__Framework,
-     .framework-list-page
+     .framework-list-page,
      .lode__ConceptScheme {
         a {
             display:none;

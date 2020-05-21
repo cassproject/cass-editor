@@ -4,7 +4,7 @@
         <!-- search field -->
         <div class="container is-fluid is-marginless is-paddingless">
             <SearchBar
-                searchType="framework"
+                :searchType="type === 'ConceptScheme' ? 'concept scheme' : 'framework'"
                 filterSet="all" />
             <div
                 v-if="!queryParams.concepts==='true'"

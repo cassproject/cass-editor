@@ -202,7 +202,6 @@ export default {
     data() {
         return {
             clipStatus: 'ready',
-            frameworkName: this.$store.state.editor.framework.getName(),
             frameworkId: this.$store.state.editor.framework.shortId(),
             viewOptions: [
                 {
@@ -226,15 +225,27 @@ export default {
             removeOwner: [],
             addReader: [],
             addOwner: [],
-            repo: window.repo
+            repo: window.repo,
+            conceptsProcessed: 0,
+            conceptsToProcess: 0
         };
     },
     computed: {
         shareableFrameworkInEditor: function() {
+            if (this.queryParams.concepts === "true") {
+                return window.location.href + "?concepts=true&frameworkId=" + this.frameworkId;
+            }
             return window.location.href + "?frameworkId=" + this.frameworkId;
         },
         framework: function() {
             return this.$store.state.editor.framework;
+        },
+        frameworkName: function() {
+            if (this.framework.name) {
+                return this.framework.getName();
+            } else {
+                return Thing.getDisplayStringFrom(this.framework["dcterms:title"]);
+            }
         },
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];
@@ -388,6 +399,9 @@ export default {
         },
         addAndRemoveFromAllObjects: function() {
             let me = this;
+            if (this.queryParams.concepts === "true") {
+                return this.addAndRemoveFromAllConceptObjects();
+            }
             if (this.framework.competency && this.framework.competency.length > 0) {
                 new EcAsyncHelper().each(this.framework.competency, function(competencyId, done) {
                     EcCompetency.get(competencyId, function(c) {
@@ -454,6 +468,36 @@ export default {
                 me.getCurrentOwnersAndReaders();
             }, function() {});
         },
+        addAndRemoveFromAllConceptObjects: function() {
+            if (this.framework["skos:hasTopConcept"]) {
+                this.addAndRemoveFromConceptArray(this.framework["skos:hasTopConcept"]);
+            }
+        },
+        addAndRemoveFromConceptArray(concepts) {
+            this.conceptsToProcess += concepts.length;
+            var me = this;
+            new EcAsyncHelper().each(concepts, function(conceptId, done) {
+                EcConcept.get(conceptId, function(c) {
+                    for (let i = 0; i < me.removeReader.length; i++) {
+                        c.removeReader(me.removeReader[i]);
+                    }
+                    for (let i = 0; i < me.removeOwner.length; i++) {
+                        c.removeOwner(me.removeOwner[i]);
+                    }
+                    for (let i = 0; i < me.addReader.length; i++) {
+                        c.addReader(me.addReader[i]);
+                    }
+                    for (let i = 0; i < me.addOwner.length; i++) {
+                        c.addOwner(me.addOwner[i]);
+                    }
+                    if (c["skos:narrower"]) {
+                        me.addAndRemoveFromConceptArray(c["skos:narrower"]);
+                    }
+                    me.conceptsProcessed++;
+                    me.repo.saveTo(c, done, done);
+                }, done);
+            }, function() {});
+        },
         removeOwnerOrReader: function(userOrGroup, type) {
             if (userOrGroup.view === "view") {
                 this.removeReader.push(userOrGroup.pk);
@@ -472,6 +516,15 @@ export default {
             me.addReader.splice(0, me.addReader.length);
             me.userOrGroupToAdd = null;
             me.search = "";
+            me.conceptsProcessed = 0;
+            me.conceptsToProcess = 0;
+        }
+    },
+    watch: {
+        conceptsProcessed: function() {
+            if (this.conceptsToProcess && this.conceptsProcessed === this.conceptsToProcess) {
+                this.addAndRemoveFromFrameworkObject();
+            }
         }
     }
 };
