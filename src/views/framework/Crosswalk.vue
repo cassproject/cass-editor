@@ -22,7 +22,7 @@
                                             <h3
                                                 v-if="item.name === 'to'"
                                                 class="has-text-white">
-                                                A
+                                                B
                                             </h3>
                                             <i
                                                 v-if="item.name === 'align'"
@@ -57,37 +57,39 @@
                                 <h2
                                     v-if="step == 0"
                                     class="is-size-2 is-inline">
-                                    select source
+                                    select source framework
                                 </h2>
                                 <h2
                                     v-if="step == 1"
                                     class="is-size-2 is-inline">
-                                    select target
+                                    select target framework
                                 </h2>
-                                <h2 class="is-size-2 is-inline">
+                                <h2
+                                    v-if="step == 2"
+                                    class="is-size-2 is-inline">
                                     create alignments
                                 </h2>
                             </div>
-
                             <div
                                 v-if="step == 2"
                                 class="buttons crosswalk__title__buttons">
                                 <div class="button is-outlined is-link">
-                                    {{ tempAlignments.length }} alignments to save
+                                    {{ alignmentsToSave.length }} alignments to save
                                 </div>
                                 <div
                                     v-if="competencyTargets.length !== 0"
-                                    @click="addTempAlignmentsToAlignmentList"
+                                    @click="addTempAlignmentsToAlignmentsToSave"
                                     class="button is-outlined is-primary">
                                     <span class="icon">
                                         <i class="fa fa-plus" />
                                     </span>
                                     <span>
-                                        add current alignments
+                                        add current alignments ({{ competencyTargets.length }})
                                     </span>
                                 </div>
                                 <div
-                                    v-if="tempAlignments.length !== 0 && sourceState === 'ready'"
+                                    v-if="alignmentsToSave.length !== 0 && sourceState === 'ready'"
+                                    @click="saveAlignments"
                                     class="button is-outlined is-primary">
                                     <span class="icon">
                                         <i class="fa fa-save" />
@@ -230,6 +232,7 @@ import List from '@/lode/components/lode/List.vue';
 import Hierarchy from '@/lode/components/lode/Hierarchy.vue';
 import SearchBar from '@/components/framework/SearchBar.vue';
 import common from '@/mixins/common.js';
+import {cassUtil} from '@/mixins/cassUtil.js';
 
 export default {
     name: 'FrameworkCrosswalk',
@@ -261,7 +264,7 @@ export default {
             }
         ]
     }),
-    mixins: [common],
+    mixins: [common, cassUtil],
     props: {
         queryParams: {
             type: Object,
@@ -275,6 +278,11 @@ export default {
     },
     mounted() {
         this.$store.commit('crosswalk/resetCrosswalk');
+        this.$store.commit('crosswalk/resetCrosswalkFrameworks');
+    },
+    beforeDestroy: function() {
+        this.$store.commit('crosswalk/resetCrosswalk');
+        this.$store.commit('crosswalk/resetCrosswalkFrameworks');
     },
     watch: {
         competencyTargets: function(val) {
@@ -288,11 +296,15 @@ export default {
                 this.steps[1].complete = false;
                 this.steps[2].complete = false;
                 this.steps[3].complete = false;
+                this.$store.commit('crosswalk/resetFrameworkSourceRelationships');
+                this.$store.commit('crosswalk/resetCrosswalkAlignmentsAndState');
             } else if (val === 1) {
                 this.steps[0].complete = true;
                 this.steps[1].complete = false;
                 this.steps[2].complete = false;
                 this.steps[3].complete = false;
+                this.$store.commit('crosswalk/resetFrameworkTargetRelationships');
+                this.$store.commit('crosswalk/resetCrosswalkAlignmentsAndState');
             } else if (val === 2) {
                 this.steps[0].complete = true;
                 this.steps[1].complete = true;
@@ -367,16 +379,81 @@ export default {
             showRightAside: state => state.app.showRightAside,
             frameworkSource: state => state.crosswalk.frameworkSource,
             frameworkTarget: state => state.crosswalk.frameworkTarget,
+            frameworkSourceRelationships: state => state.crosswalk.frameworkSourceRelationships,
+            frameworkTargetRelationships: state => state.crosswalk.frameworkTargetRelationships,
             competencySource: state => state.crosswalk.tempAlignment.source,
             competencyTargets: state => state.crosswalk.tempAlignment.targets,
             alignmentType: state => state.crosswalk.tempAlignment.type,
             tempAlignment: state => state.crosswalk.tempAlignment,
-            tempAlignments: state => state.crosswalk.tempAlignments,
+            alignmentsToSave: state => state.crosswalk.alignmentsToSave,
             targetState: state => state.crosswalk.targetState,
-            sourceState: state => state.crosswalk.sourceState
+            sourceState: state => state.crosswalk.sourceState,
+            targetNodesToHighlight: state => state.crosswalk.targetNodesToHighlight
         })
     },
     methods: {
+        genPartialIdPiece(compId) {
+            if (compId.lastIndexOf("/") <= -1) return compId;
+            return compId.substr(compId.lastIndexOf("/") + 1);
+        },
+        generateRelationId(relType, sourceId, targetId) {
+            return 'crswlk' + '---' + this.genPartialIdPiece(sourceId) + '-' + relType + '-' + this.genPartialIdPiece(targetId);
+        },
+        generateAlignmentObjectsFromAlignmentToSaveObjects() {
+            let ecaa = [];
+            for (let ats of this.alignmentsToSave) {
+                let eca = new EcAlignment();
+                // eca.generateId(window.repo.selectedServer);
+                eca.assignId(window.repo.selectedServer, this.generateRelationId(ats.type, ats.source, ats.target));
+                this.addAllIdentityPksAsOwners(eca);
+                eca.target = ats.target;
+                eca.source = ats.source;
+                eca.relationType = ats.type;
+                ecaa.push(eca);
+            }
+            return ecaa;
+        },
+        saveAlignments: function() {
+            // TODO expand on this...this is just a temporary thing to get some data in the system for development
+            // let ecaa = this.generateAlignmentObjectsFromAlignmentToSaveObjects();
+            // let fso = EcRepository.getBlocking(this.frameworkSource.shortId());
+            // let fs = new EcFramework();
+            // fs.copyFrom(fso);
+            // let fto = EcRepository.getBlocking(this.frameworkTarget.shortId());
+            // let ft = new EcFramework();
+            // ft.copyFrom(fto);
+            // for (let eca of ecaa) {
+            //     fs.addRelation(eca.shortId());
+            //     ft.addRelation(eca.shortId());
+            // }
+            // let repo = window.repo;
+            // repo.multiput(ecaa,
+            //     function(msg) {
+            //         console.log('Alignments saved: ' + msg);
+            //         fs.save(
+            //             function(msg) {
+            //                 console.log('Source framework saved: ' + msg);
+            //             },
+            //             function(msg) {
+            //                 console.log('Source framework NOT SAVED: ' + msg);
+            //             },
+            //             window.repo
+            //         );
+            //         ft.save(
+            //             function(msg) {
+            //                 console.log('Source target saved: ' + msg);
+            //             },
+            //             function(msg) {
+            //                 console.log('Source target NOT SAVED: ' + msg);
+            //             },
+            //             window.repo
+            //         );
+            //     },
+            //     function(msg) {
+            //         console.log('Alignments NOT SAVED: ' + msg);
+            //     }
+            // );
+        },
         prepareToLoadCrosswalkTarget: function() {
             this.crosswalkSourceLoaded = true;
             setTimeout(() => {
@@ -386,29 +463,70 @@ export default {
         clearTempAlignment: function() {
             this.$store.commit('crosswalk/resetTempAlignment');
         },
-        addTempAlignmentsToAlignmentList: function() {
-            this.$store.commit('crosswalk/addAlignmentToAlignmentsArray', this.tempAlignment);
+        addTempAlignmentsToAlignmentsToSave: function() {
+            this.$store.commit('crosswalk/appendAlignmentsToSave', this.tempAlignment);
             this.$store.commit('crosswalk/resetTempAlignment');
+        },
+        buildRelevantRelationships() {
+            if (this.frameworkSourceRelationships && this.frameworkTargetRelationships) {
+                // TODO implement
+                console.log('!!!!!! WOULD HAVE buildRelevantRelationships');
+            }
+        },
+        handleBuildFrameworkTargetRelationshipsSuccess(ecrlda) {
+            console.log("Building framework target relationship list...");
+            this.$store.commit('crosswalk/frameworkTargetRelationships', this.buildEcAlignmentsFromRemoteLinkedData(ecrlda));
+            this.buildRelevantRelationships();
+            this.$store.commit('crosswalk/step', 2);
+        },
+        buildFrameworkTargetRelationships() {
+            let repo = window.repo;
+            if (this.frameworkTarget.relation && this.frameworkTarget.relation.length > 0) {
+                let me = this;
+                repo.multiget(this.frameworkTarget.relation,
+                    me.handleBuildFrameworkTargetRelationshipsSuccess,
+                    function(msg) {
+                        console.error("buildFrameworkTargetRelationships failed: " + msg);
+                    }
+                );
+            } else this.handleBuildFrameworkTargetRelationshipsSuccess([]);
+        },
+        handleBuildFrameworkSourceRelationshipsSuccess(ecrlda) {
+            console.log("Building framework source relationship list...");
+            this.$store.commit('crosswalk/frameworkSourceRelationships', this.buildEcAlignmentsFromRemoteLinkedData(ecrlda));
+            this.buildRelevantRelationships();
+            if (this.frameworkTarget) this.$store.commit('crosswalk/step', 2);
+            else this.$store.commit('crosswalk/step', 1);
+        },
+        buildFrameworkSourceRelationships() {
+            let repo = window.repo;
+            if (this.frameworkSource.relation && this.frameworkSource.relation.length > 0) {
+                let me = this;
+                repo.multiget(this.frameworkSource.relation,
+                    me.handleBuildFrameworkSourceRelationshipsSuccess,
+                    function(msg) {
+                        console.error("buildFrameworkSourceRelationships failed: " + msg);
+                    }
+                );
+            } else this.handleBuildFrameworkSourceRelationshipsSuccess([]);
         },
         frameworkClickSource: function(framework) {
             var me = this;
+            this.$store.commit('crosswalk/resetFrameworkSourceRelationships');
             /* Should we exclude framework A from framework B options */
             EcFramework.get(framework.id, function(success) {
                 me.$store.commit('crosswalk/frameworkSource', success);
-                if (me.frameworkTarget) {
-                    me.$store.commit('crosswalk/step', 2);
-                } else {
-                    me.$store.commit('crosswalk/step', 1);
-                }
+                me.buildFrameworkSourceRelationships();
             }, console.error);
             this.$store.commit('app/searchTerm', '');
         },
         frameworkClickTarget: function(framework) {
             var me = this;
+            this.$store.commit('crosswalk/resetFrameworkTargetRelationships');
             /* Should we exclude framework A from framework B options */
             EcFramework.get(framework.id, function(success) {
                 me.$store.commit('crosswalk/frameworkTarget', success);
-                me.$store.commit('crosswalk/step', 2);
+                me.buildFrameworkTargetRelationships();
             }, console.error);
             this.$store.commit('app/searchTerm', '');
         }

@@ -6,24 +6,35 @@ Vue.use(Vuex);
 const state = {
     step: 0,
     frameworkSource: null,
+    frameworkSourceRelationships: null,
     frameworkTarget: null,
+    frameworkTargetRelationships: null,
     tempAlignment: {
         source: {},
         targets: [],
         type: ''
     },
-    tempAlignments: [],
+    alignmentsToSave: [],
     sourceState: 'ready',
-    targetState: 'ready'
-
-
+    targetState: 'ready',
+    targetNodesToHighlight: []
 };
+
 const mutations = {
+    targetNodesToHighlight(state, f) {
+        state.targetNodesToHighlight = f;
+    },
     frameworkSource(state, f) {
         state.frameworkSource = f;
     },
     frameworkTarget(state, f) {
         state.frameworkTarget = f;
+    },
+    frameworkSourceRelationships(state, f) {
+        state.frameworkSourceRelationships = f;
+    },
+    frameworkTargetRelationships(state, f) {
+        state.frameworkTargetRelationships = f;
     },
     step(state, val) {
         state.step = val;
@@ -46,6 +57,26 @@ const mutations = {
     targetState(state, t) {
         state.targetState = t;
     },
+    resetFrameworkSourceRelationships(state) {
+        state.frameworkSourceRelationships = null;
+    },
+    resetFrameworkTargetRelationships(state) {
+        state.frameworkTargetRelationships = null;
+    },
+    resetCrosswalkFrameworks(state) {
+        state.frameworkSource = null;
+        state.frameworkTarget = null;
+        state.frameworkSourceRelationships = null;
+        state.frameworkTargetRelationships = null;
+    },
+    resetCrosswalkAlignmentsAndState(state) {
+        state.tempAlignment.source = {};
+        state.tempAlignment.targets = [];
+        state.tempAlignment.type = '';
+        state.sourceState = 'ready';
+        state.targetState = 'ready';
+        state.alignmentsToSave = [];
+    },
     resetCrosswalk(state) {
         state.step = 0;
         state.tempAlignment.source = {};
@@ -53,7 +84,7 @@ const mutations = {
         state.tempAlignment.type = '';
         state.sourceState = 'ready';
         state.targetState = 'ready';
-        state.tempAlignments = [];
+        state.alignmentsToSave = [];
     },
     resetTempAlignment(state) {
         state.sourceState = 'ready';
@@ -69,8 +100,16 @@ const mutations = {
         let filtered = targets.filter(target => target !== id);
         state.tempAlignment.targets = filtered;
     },
-    addAlignmentToAlignmentsArray(state, alignment) {
-        state.tempAlignments.push(alignment);
+    appendAlignmentsToSave(state, alignment) {
+        if (alignment.targets && alignment.targets.length > 0) {
+            for (let at of alignment.targets) {
+                let newAlignmentToSave = {};
+                newAlignmentToSave.source = alignment.source;
+                newAlignmentToSave.target = at;
+                newAlignmentToSave.type = alignment.type;
+                state.alignmentsToSave.push(newAlignmentToSave);
+            }
+        }
     }
 };
 const actions = {
@@ -82,6 +121,12 @@ const getters = {
     },
     frameworkTarget: function(state) {
         return state.frameworkTarget;
+    },
+    frameworkSourceRelationships: function(state) {
+        return state.frameworkSourceRelationships;
+    },
+    frameworkTargetRelationships: function(state) {
+        return state.frameworkTargetRelationships;
     },
     competencySource(state) {
         return state.tempAlignment.source;
@@ -98,8 +143,8 @@ const getters = {
     targetState(state) {
         return state.targetState;
     },
-    tempAlignments(state) {
-        return state.tempAlignments;
+    alignmentsToSave(state) {
+        return state.alignmentsToSave;
     }
 };
 
