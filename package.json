@@ -12,7 +12,7 @@
   },
   "main": "/theme.scss",
   "dependencies": {
-    "bulma": "^0.7.5",
+    "bulma": "^0.8.2",
     "bulma-checkradio": "^1.1.1",
     "cassproject": "^2.11.7",
     "core-js": "^2.6.5",
