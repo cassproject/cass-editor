@@ -10,7 +10,7 @@
                 <Component
                     :is="dynamicThingComponent"
                     :id="'scroll-' + framework.shortId().split('/').pop()"
-                    :obj="changedObj ? changedObj : framework"
+                    :obj="framework"
                     :repo="repo"
                     :parentNotEditable="queryParams.view==='true'"
                     :profile="frameworkProfile"
@@ -141,8 +141,7 @@ export default {
             properties: "primary",
             config: null,
             privateFramework: false,
-            selectedArray: [],
-            changedObj: null
+            selectedArray: []
         };
     },
     computed: {
@@ -632,7 +631,7 @@ export default {
             this.editingFramework = true;
         },
         onDoneEditingNode: function() {
-            this.changedObj = EcRepository.getBlocking(this.framework.shortId());
+            this.$store.commit('editor/framework', EcRepository.getBlocking(this.framework.shortId()));
             this.$store.commit('editor/newFramework', null);
             this.editingFramework = false;
         },
