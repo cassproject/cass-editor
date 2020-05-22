@@ -15,6 +15,7 @@ const state = {
         targets: [],
         initialTargets: [],
         removedTargets: [],
+        changed: false,
         type: ''
     },
     alignmentsToSave: [],
@@ -49,9 +50,6 @@ const mutations = {
     workingAlignmentsSource(state, c) {
         state.workingAlignmentsMap.source = c;
     },
-    addWorkingAlignmentsTarget(state, c) {
-        state.workingAlignmentsMap.targets.push(c);
-    },
     workingAlignmentsTargets(state, c) {
         state.workingAlignmentsMap.targets = c;
     },
@@ -74,6 +72,7 @@ const mutations = {
                 state.workingAlignmentsMap.initialTargets.push(ti);
             }
         }
+        state.workingAlignmentsMap.changed = false;
     },
     resetFrameworkSourceRelationships(state) {
         state.frameworkSourceRelationships = null;
@@ -95,6 +94,7 @@ const mutations = {
         state.workingAlignmentsMap.targets = [];
         state.workingAlignmentsMap.initialTargets = [];
         state.workingAlignmentsMap.removedTargets = [];
+        state.workingAlignmentsMap.changed = false;
         state.workingAlignmentsMap.type = '';
         state.sourceState = 'ready';
         state.targetState = 'ready';
@@ -106,6 +106,7 @@ const mutations = {
         state.workingAlignmentsMap.targets = [];
         state.workingAlignmentsMap.initialTargets = [];
         state.workingAlignmentsMap.removedTargets = [];
+        state.workingAlignmentsMap.changed = false;
         state.workingAlignmentsMap.type = '';
         state.sourceState = 'ready';
         state.targetState = 'ready';
@@ -119,13 +120,45 @@ const mutations = {
             targets: [],
             initialTargets: [],
             removedTargets: [],
+            changed: false,
             type: ''
         };
+    },
+    addWorkingAlignmentsTarget(state, id) {
+        let remTargets = state.workingAlignmentsMap.removedTargets;
+        let filteredRemovedTargets = remTargets.filter(remTargets => remTargets !== id);
+        state.workingAlignmentsMap.removedTargets = filteredRemovedTargets;
+        state.workingAlignmentsMap.targets.push(id);
+        if (state.workingAlignmentsMap.removedTargets.length > 0) state.workingAlignmentsMap.changed = true;
+        else {
+            let shouldSetToChanged = false;
+            for (let t of state.workingAlignmentsMap.targets) {
+                if (!state.workingAlignmentsMap.initialTargets.includes(t)) {
+                    shouldSetToChanged = true;
+                    break;
+                }
+            }
+            if (shouldSetToChanged) state.workingAlignmentsMap.changed = true;
+            else state.workingAlignmentsMap.changed = false;
+        }
     },
     removeWorkingAlignmentsTarget(state, id) {
         let targets = state.workingAlignmentsMap.targets;
         let filtered = targets.filter(target => target !== id);
         state.workingAlignmentsMap.targets = filtered;
+        if (state.workingAlignmentsMap.initialTargets.includes(id)) state.workingAlignmentsMap.removedTargets.push(id);
+        if (state.workingAlignmentsMap.removedTargets.length > 0) state.workingAlignmentsMap.changed = true;
+        else {
+            let shouldSetToChanged = false;
+            for (let t of state.workingAlignmentsMap.targets) {
+                if (!state.workingAlignmentsMap.initialTargets.includes(t)) {
+                    shouldSetToChanged = true;
+                    break;
+                }
+            }
+            if (shouldSetToChanged) state.workingAlignmentsMap.changed = true;
+            else state.workingAlignmentsMap.changed = false;
+        }
     },
     appendAlignmentsToSave(state, alignment) {
         if (alignment.targets && alignment.targets.length > 0) {

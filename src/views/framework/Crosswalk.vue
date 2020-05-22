@@ -77,14 +77,14 @@
                                     {{ alignmentsToSave.length }} alignments to save
                                 </div>
                                 <div
-                                    v-if="workingAlignmentsTargets.length !== 0"
+                                    v-if="workingAlignmentsChanged"
                                     @click="applyWorkingAlignmentChanges"
                                     class="button is-outlined is-primary">
                                     <span class="icon">
                                         <i class="fa fa-plus" />
                                     </span>
                                     <span>
-                                        apply alignments changes TODO TAKE DELETIONS INTO ACCOUNT
+                                        apply alignments changes
                                     </span>
                                 </div>
                                 <div
@@ -381,6 +381,7 @@ export default {
             relevantExistingAlignmentsMap: state => state.crosswalk.relevantExistingAlignmentsMap,
             workingAlignmentsSource: state => state.crosswalk.workingAlignmentsMap.source,
             workingAlignmentsTargets: state => state.crosswalk.workingAlignmentsMap.targets,
+            workingAlignmentsChanged: state => state.crosswalk.workingAlignmentsMap.changed,
             workingAlignmentsType: state => state.crosswalk.workingAlignmentsMap.type,
             workingAlignmentsMap: state => state.crosswalk.workingAlignmentsMap,
             alignmentsToSave: state => state.crosswalk.alignmentsToSave,
