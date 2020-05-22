@@ -73,8 +73,15 @@
                             <div
                                 v-if="step == 2"
                                 class="buttons crosswalk__title__buttons">
-                                <div class="button is-outlined is-link">
-                                    {{ alignmentsToSave.length }} alignments to save
+                                <div
+                                    v-if="alignmentsToDelete.length > 0"
+                                    class="button is-outlined is-warning">
+                                    {{ alignmentsToDelete.length }} alignments to remove
+                                </div>
+                                <div
+                                    v-if="alignmentsToSave.length > 0"
+                                    class="button is-outlined is-primary">
+                                    {{ alignmentsToSave.length }} alignments to add
                                 </div>
                                 <div
                                     v-if="workingAlignmentsChanged"
@@ -88,7 +95,7 @@
                                     </span>
                                 </div>
                                 <div
-                                    v-if="alignmentsToSave.length !== 0 && sourceState === 'ready'"
+                                    v-if="(alignmentsToSave.length > 0 || alignmentsToDelete.length > 0) && sourceState === 'ready'"
                                     @click="saveAlignments"
                                     class="button is-outlined is-primary">
                                     <span class="icon">
@@ -381,37 +388,19 @@ export default {
             relevantExistingAlignmentsMap: state => state.crosswalk.relevantExistingAlignmentsMap,
             workingAlignmentsSource: state => state.crosswalk.workingAlignmentsMap.source,
             workingAlignmentsTargets: state => state.crosswalk.workingAlignmentsMap.targets,
+            workingAlignmentsInitialTargets: state => state.crosswalk.workingAlignmentsMap.initialTargets,
+            workingAlignmentsRemovedTargets: state => state.crosswalk.workingAlignmentsMap.removedTargets,
             workingAlignmentsChanged: state => state.crosswalk.workingAlignmentsMap.changed,
             workingAlignmentsType: state => state.crosswalk.workingAlignmentsMap.type,
             workingAlignmentsMap: state => state.crosswalk.workingAlignmentsMap,
             alignmentsToSave: state => state.crosswalk.alignmentsToSave,
+            alignmentsToDelete: state => state.crosswalk.alignmentsToDelete,
             targetState: state => state.crosswalk.targetState,
             sourceState: state => state.crosswalk.sourceState,
             targetNodesToHighlight: state => state.crosswalk.targetNodesToHighlight
         })
     },
     methods: {
-        genPartialIdPiece(compId) {
-            if (compId.lastIndexOf("/") <= -1) return compId;
-            return compId.substr(compId.lastIndexOf("/") + 1);
-        },
-        generateRelationId(relType, sourceId, targetId) {
-            return 'crswlk' + '---' + this.genPartialIdPiece(sourceId) + '-' + relType + '-' + this.genPartialIdPiece(targetId);
-        },
-        generateAlignmentObjectsFromAlignmentToSaveObjects() {
-            let ecaa = [];
-            for (let ats of this.alignmentsToSave) {
-                let eca = new EcAlignment();
-                // eca.generateId(window.repo.selectedServer);
-                eca.assignId(window.repo.selectedServer, this.generateRelationId(ats.type, ats.source, ats.target));
-                this.addAllIdentityPksAsOwners(eca);
-                eca.target = ats.target;
-                eca.source = ats.source;
-                eca.relationType = ats.type;
-                ecaa.push(eca);
-            }
-            return ecaa;
-        },
         saveAlignments: function() {
             // TODO expand on this...this is just a temporary thing to get some data in the system for development
             // let ecaa = this.generateAlignmentObjectsFromAlignmentToSaveObjects();
@@ -459,14 +448,77 @@ export default {
                 this.loadCrosswalkTarget = true;
             }, 2000);
         },
-        // clearTempAlignment: function() {
-        //     this.$store.commit('crosswalk/resetTempAlignment');
-        // },
+        getEcAlignmentObjectFromRelevantAlignmentsMap(source, target, type) {
+            let ret = null;
+            if (this.relevantExistingAlignmentsMap[source]) {
+                if (this.relevantExistingAlignmentsMap[source][type]) {
+                    if (this.relevantExistingAlignmentsMap[source][type][target]) {
+                        ret = this.relevantExistingAlignmentsMap[source][type][target];
+                    }
+                }
+            }
+            return ret;
+        },
+        applyRemovedWorkingAlignmentChanges: function() {
+            for (let wart of this.workingAlignmentsRemovedTargets) {
+                let ecaObj = this.getEcAlignmentObjectFromRelevantAlignmentsMap(this.workingAlignmentsSource, wart, this.workingAlignmentsType);
+                if (ecaObj && ecaObj.id && ecaObj.id.trim() !== '') this.$store.commit('crosswalk/appendAlignmentsToDelete', ecaObj);
+                let alignProps = {};
+                alignProps.source = this.workingAlignmentsSource;
+                alignProps.target = wart;
+                alignProps.type = this.workingAlignmentsType;
+                this.$store.commit('crosswalk/removeAlignmentFromRelevantAlignmentsMap', alignProps);
+                this.$store.commit('crosswalk/removeAlignmentFromAlignmentsToSave', alignProps);
+            }
+        },
+        getAndRemoveEcAlignmentObjectFromAlignmentsToDelete(alignProps) {
+            let ret = null;
+            for (let a of this.alignmentsToDelete) {
+                if (a.source === alignProps.source && a.target === alignProps.target && a.relationType === alignProps.type) {
+                    ret = a;
+                }
+            }
+            if (ret) this.$store.commit('crosswalk/removeAlignmentFromAlignmentsToDelete', alignProps);
+            return ret;
+        },
+        genPartialIdPiece(compId) {
+            if (compId.lastIndexOf("/") <= -1) return compId;
+            return compId.substr(compId.lastIndexOf("/") + 1);
+        },
+        generateRelationId(relType, sourceId, targetId) {
+            return 'crswlk' + '-' + Date.now() + '---' + this.genPartialIdPiece(sourceId) + '-' + relType + '-' + this.genPartialIdPiece(targetId);
+        },
+        generateAlignmentObjectFromAlignProps(alignProps) {
+            let eca = new EcAlignment();
+            this.addAllIdentityPksAsOwners(eca);
+            // leave the id blank for now
+            // eca.assignId(window.repo.selectedServer, this.generateRelationId(alignProps.type, alignProps.source, alignProps.target));
+            eca.target = alignProps.target;
+            eca.source = alignProps.source;
+            eca.relationType = alignProps.type;
+            return eca;
+        },
+        applyAddedWorkingAlignmentChanges: function() {
+            let newTargets = this.workingAlignmentsTargets.filter(x => !this.workingAlignmentsInitialTargets.includes(x));
+            for (let nt of newTargets) {
+                let alignProps = {};
+                alignProps.source = this.workingAlignmentsSource;
+                alignProps.target = nt;
+                alignProps.type = this.workingAlignmentsType;
+                let ecaObj = this.getAndRemoveEcAlignmentObjectFromAlignmentsToDelete(alignProps);
+                if (!ecaObj) ecaObj = this.generateAlignmentObjectFromAlignProps(alignProps);
+                if (!ecaObj.id || ecaObj.id.trim() === '') this.$store.commit('crosswalk/appendAlignmentsToSave', ecaObj);
+                this.$store.commit('crosswalk/addAlignmentToRelevantAlignmentsMap', ecaObj);
+            }
+        },
         applyWorkingAlignmentChanges: function() {
-            // TODO implement
-            alert('redo this: applyWorkingAlignmentChanges');
-            // this.$store.commit('crosswalk/appendAlignmentsToSave', this.tempAlignment);
-            // this.$store.commit('crosswalk/resetTempAlignment');
+            if (this.workingAlignmentsChanged) {
+                this.applyRemovedWorkingAlignmentChanges();
+                this.applyAddedWorkingAlignmentChanges();
+                this.$store.commit('crosswalk/relevantExistingAlignmentsMapLastUpdate', Date.now());
+            }
+            this.$store.commit('crosswalk/sourceState', 'ready');
+            this.$store.commit('crosswalk/resetWorkingAlignmentsMap');
         },
         addRelationshipListToRelevantAlignments(relArray, processedRelationshipIds, relAlignmentMap) {
             for (let r of relArray) {
@@ -554,3 +606,4 @@ export default {
     @import './../../scss/crosswalk.scss';
 
 </style>
+
