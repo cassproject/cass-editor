@@ -349,8 +349,10 @@ drag, drag, and chosen states
                     margin: 0rem;
                     opacity: 0;
                     height: 6px;
-                    width: 100%;
+                    padding-right: 2rem;
                     display: flex;
+                    flex-direction: row;
+                    flex-wrap: nowrap;
                     align-items: center;
                     hr  {
                         z-index: 2;
