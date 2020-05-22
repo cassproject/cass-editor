@@ -236,6 +236,9 @@ export default {
                 return false;
             }
             return this.container.canEditAny(EcIdentityManager.getMyPks());
+        },
+        recomputeHierarchy: function() {
+            return this.$store.getters['editor/recomputeHierarchy'];
         }
     },
     watch: {
@@ -252,6 +255,13 @@ export default {
                 this.multipleSelected = false;
             }
             this.$emit('selectedArray', this.selectedArray);
+        },
+        // Concepts can't just depend on fields on the container object like frameworks can for reactivity
+        recomputeHierarchy: function() {
+            if (this.recomputeHierarchy) {
+                this.once = true;
+                this.$store.commit('editor/recomputeHierarchy', false);
+            }
         }
     },
     mounted: function() {
@@ -293,9 +303,11 @@ export default {
             if (this.container["skos:hasTopConcept"] !== null && this.container["skos:hasTopConcept"] !== undefined) {
                 for (var i = 0; i < this.container["skos:hasTopConcept"].length; i++) {
                     var c = EcConcept.getBlocking(this.container["skos:hasTopConcept"][i]);
-                    this.structure.push({"obj": c, "children": []});
-                    if (c["skos:narrower"]) {
-                        this.addChildren(this.structure, c, i);
+                    if (c) {
+                        this.structure.push({"obj": c, "children": []});
+                        if (c["skos:narrower"]) {
+                            this.addChildren(this.structure, c, i);
+                        }
                     }
                 }
             }

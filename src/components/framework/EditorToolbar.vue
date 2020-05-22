@@ -144,7 +144,9 @@ export default {
             showPropertyViewDropDown: false,
             showShareDropdown: false,
             activeView: "primary",
-            repo: window.repo
+            repo: window.repo,
+            editsFinishedCounter: 0,
+            totalEditsCounter: 0
         };
     },
     methods: {
@@ -170,6 +172,7 @@ export default {
                     if (!EcArray.isArray(editToUndo)) {
                         editToUndo = [editToUndo];
                     }
+                    this.totalEditsCounter += editToUndo.length;
                     for (let i = 0; i < editToUndo.length; i++) {
                         let editType = editToUndo[i].operation;
                         if (editType === "addNew") {
@@ -186,19 +189,27 @@ export default {
         },
         undoAdd(id) {
             // Delete
-            this.repo.deleteRegistered(EcRepository.getBlocking(id), function() {}, function(failure) {
+            var me = this;
+            this.repo.deleteRegistered(EcRepository.getBlocking(id), function() {
+                me.editsFinishedCounter++;
+            }, function(failure) {
                 console.log(failure);
+                me.editsFinishedCounter++;
             });
         },
         undoDelete(obj) {
             // Re-add
             var toSave = obj;
+            var me = this;
             if (obj.type === "Concept") {
                 toSave = new EcConcept();
                 toSave.copyFrom(obj);
             }
-            this.repo.saveTo(toSave, function() {}, function(failure) {
+            this.repo.saveTo(toSave, function() {
+                me.editsFinishedCounter++;
+            }, function(failure) {
                 console.log(failure);
+                me.editsFinishedCounter++;
             });
         },
         undoUpdate(update) {
@@ -211,18 +222,21 @@ export default {
                 for (var i = 0; i < update.fieldChanged.length; i++) {
                     success[update.fieldChanged[i]] = update.initialValue[i];
                 }
-                me.repo.saveTo(success, function() {}, function() {});
+                me.repo.saveTo(success, function() {
+                    me.editsFinishedCounter++;
+                }, function() {
+                    me.editsFinishedCounter++;
+                });
                 me.$store.commit('editor/changedObject', success.shortId());
             }, function(error) {
                 console.error(error);
+                me.editsFinishedCounter++;
             });
         },
         undoUpdateWithExpandedProperty(update, updatedObject) {
-            console.log(update);
             var me = this;
             this.expand(updatedObject, function(expanded) {
                 for (var i = 0; i < update.fieldChanged.length; i++) {
-                    console.log("changing " + update.fieldChanged[i] + " to " + JSON.stringify(update.initialValue[i]) + " from " + JSON.stringify(update.changedValue[i]));
                     expanded[update.fieldChanged[i]] = update.initialValue[i];
                     if (expanded[update.fieldChanged[i]].length === 0) {
                         delete expanded[update.fieldChanged[i]];
@@ -261,30 +275,32 @@ export default {
                 rld.copyFrom(compacted);
                 rld.context = context;
                 delete rld["@context"];
-                if (rld.owner && !EcArray.isArray(rld.owner)) {
-                    rld.owner = [rld.owner];
-                }
-                if (rld.reader && !EcArray.isArray(rld.reader)) {
-                    rld.reader = [rld.reader];
-                }
-                if (rld.signature && !EcArray.isArray(rld.signature)) {
-                    rld.signature = [rld.signature];
-                }
-                if (rld.competency && !EcArray.isArray(rld.competency)) {
-                    rld.competency = [rld.competency];
-                }
-                if (rld.level && !EcArray.isArray(rld.level)) {
-                    rld.level = [rld.level];
-                }
-                if (rld.relation && !EcArray.isArray(rld.relation)) {
-                    rld.relation = [rld.relation];
-                }
+                rld = me.turnFieldsBackIntoArrays(rld);
                 rld["schema:dateModified"] = new Date().toISOString();
                 if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
                     rld = EcEncryptedValue.toEncryptedValue(rld);
                 }
-                me.repo.saveTo(rld, console.log, console.error);
+                me.repo.saveTo(rld, function() {
+                    me.editsFinishedCounter++;
+                }, function(error) {
+                    console.error(error);
+                    me.editsFinishedCounter++;
+                });
             });
+        },
+        // Compact operation removes arrays when length is 1, but some fields need to be arrays in the data that's saved
+        turnFieldsBackIntoArrays: function(rld) {
+            var fields = [
+                "owner", "reader", "signature", "competency", "level", "relation", "skos:hasTopConcept", "skos:narrower", "skos:broader", "skos:broadMatch", "skos:closeMatch",
+                "skos:exactMatch", "skos:narrowMatch", "skos:related"
+            ];
+            for (var i = 0; i < fields.length; i++) {
+                var field = fields[i];
+                if (rld[field] && !EcArray.isArray(rld[field])) {
+                    rld[field] = [rld[field]];
+                }
+            }
+            return rld;
         }
     },
     computed: {
@@ -313,6 +329,18 @@ export default {
                 return false;
             }
             return true;
+        }
+    },
+    watch: {
+        editsFinishedCounter: function() {
+            if (this.editsFinishedCounter && this.editsFinishedCounter === this.totalEditsCounter) {
+                this.editsFinishedCounter = 0;
+                this.totalEditsCounter = 0;
+                // If changes were made to the framework, make sure they get into the store.
+                var framework = this.$store.getters['editor/framework'];
+                this.$store.commit('editor/framework', EcRepository.getBlocking(framework.shortId()));
+                this.$store.commit('editor/recomputeHierarchy', true);
+            }
         }
     }
 };
