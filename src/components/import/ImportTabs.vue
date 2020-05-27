@@ -8,7 +8,7 @@
     <!-- import drop area and tabs -->
     <div
         id="import-bottom-section"
-        class="">
+        class="container">
         <!-- types of import for tabs -->
         <div
             v-if="!importFramework || (importFramework && importType === 'text')"
@@ -167,21 +167,17 @@
                             @clearFiles="clearFiles" />
                         <div
                             v-else-if="(importTransition === 'process' || importTransition === 'info') && importErrors.length === 0"
-                            class="column is-12">
-                            <span
-                                class="icon is-large"
-                                v-if="importTransition === 'process'">
-                                <i class="fa fa-spinner fa-pulse fa-2x" />
-                            </span>
+                            class="column">
+                            <div class="section">
+                                <span
+                                    class="icon is-large"
+                                    v-if="importTransition === 'process'">
+                                    <i class="fa fa-spinner fa-pulse fa-2x" />
+                                </span>
+                            </div>
                             <div class="section">
                                 <p
-                                    v-if="importTransition !== 'process'"
-                                    class="is-size-7">
-                                    {{ importStatus }}
-                                </p>
-                                <p
-                                    v-if="importTransition === 'process'"
-                                    class="is-size-7">
+                                    class="is-size-6">
                                     {{ importStatus }}
                                 </p>
                             </div>
@@ -189,10 +185,10 @@
                         <!-- import errors -->
                         <div
                             v-else-if="importErrors.length > 0"
-                            class="column is-12 has-text-warning">
+                            class="column has-text-danger">
                             <ul>
                                 <li
-                                    class="is-size-7"
+                                    class="is-size-6"
                                     v-for="(error, index) in importErrors"
                                     :key="index">
                                     <span class="">
@@ -508,7 +504,7 @@
 </template>
 
 <script>
-import dragAndDrop from './../../components/DragAndDrop.vue';
+import dragAndDrop from './../../components/import/DragAndDrop.vue';
 
 export default {
     name: 'ImportTabs',
@@ -790,3 +786,9 @@ export default {
     }
 };
 </script>
+
+<style>
+.is-vcentered {
+    display: flex;
+}
+</style>

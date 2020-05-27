@@ -35,6 +35,7 @@ placed anywhere in a structured html element such as a <section> or a <div>
                 <List
                     v-if="$store.state.lode.competencySearchModalOpen"
                     :type="searchType"
+                    view="search"
                     :repo="repo"
                     :click="select"
                     :searchOptions="searchOptions"
@@ -666,13 +667,13 @@ export default {
     }
 
     .list-ul__item:hover {
-        padding-top: .25rem;
+        padding-top: .5rem;
         background-color: $cass-lightest;
     }
     .list-ul__item {
         margin-top: .25rem;
         border-radius: 3px;
-        padding-top: .25rem;
+        padding: .5rem;
     }
 }
 

@@ -2,13 +2,14 @@
     <div class="framework-list-page">
         <RightAside v-if="showRightAside" />
         <!-- search field -->
-        <div class="container is-fluid is-marginless is-paddingless">
+        <div class="section is-medium">
             <SearchBar
+                filterSet="all"
                 :searchType="type === 'ConceptScheme' ? 'concept scheme' : 'framework'"
-                filterSet="all" />
+                 />
             <div
                 v-if="!queryParams.concepts==='true'"
-                class="section">
+                class="container is-fluid">
                 <!-- show my frameworks radio -->
                 <div class="control">
                     <div v-if="queryParams.show !== 'mine' && queryParams.conceptShow !== 'mine' && numIdentities">
@@ -24,7 +25,7 @@
                     </div>
                 </div>
             </div>
-            <div class="section">
+            <div class="container is-fluid">
                 <List
                     :type="type"
                     :repo="repo"

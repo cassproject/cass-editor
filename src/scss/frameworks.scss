@@ -11,12 +11,16 @@
         height: 100%;
     }
 }
+.lode__hierarchy {
+    padding: 1rem;
+}
 .framework-list-page {
+    
     label{
         display:none;
     }
     .lode__Property {
-    padding: .5rem 0rem;
+    padding: .125rem 0rem;
     }
 
     .page {
@@ -50,10 +54,10 @@
                 padding: .0rem .5rem .25rem .125rem;
                 margin-top: .5rem;
                 .framework-list-item__details {
-                    color: rgba($dark, .6);
-                    padding-right: .5rem;
-                    padding-left: 0rem;
+                    color: $text;
+                    font-weight: 300;
                     font-size: $size-7;
+                    font-family: $family-primary;
                     .details-value {
 
                     }
@@ -72,6 +76,8 @@
                 .lode__Framework, .lode__ConceptScheme {
                     transform: translateX(0);
                     cursor: pointer;
+                    font-weight: 600;
+                    font-size: 1rem;
                     .lode__Framework {
 
                     }

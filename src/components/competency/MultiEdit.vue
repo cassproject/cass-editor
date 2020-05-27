@@ -17,9 +17,7 @@
                     :profile="profile"
                     :editingMultipleCompetencies="true"
                     @propertyStringUpdated="propertyStringUpdated"
-                    :idx="idx"
-                    @removeValueAtIndex="removeValueAtIndex"
-                    @checkedOptions="onCheckedOptions" />
+                    :idx="idx" />
                 <span v-if="item['error']">
                     {{ item['error'] }}
                 </span>
@@ -91,6 +89,12 @@ export default {
                 }
             }
             return false;
+        },
+        removeAddingValueAtIndex: function() {
+            return this.$store.getters['lode/removeAddingValueAtIndex'];
+        },
+        addingChecked: function() {
+            return this.$store.getters['lode/addingChecked'];
         }
     },
     methods: {
@@ -107,9 +111,6 @@ export default {
         },
         addErrorMessage: function(msg) {
             this.errorMessage.push(msg);
-        },
-        onCheckedOptions: function(options) {
-            this.checkedOptions = options;
         },
         propertyStringUpdated: function(property, value, range, index) {
             this.addedPropertiesAndValues[index].property = property;
@@ -321,6 +322,17 @@ export default {
                 // Done saving, close modal
                 this.$store.commit('editor/addEditsToUndo', this.changedItemsForUndo);
                 this.$store.commit('app/closeModal');
+            }
+        },
+        removeAddingValueAtIndex: function() {
+            if (this.removeAddingValueAtIndex) {
+                this.removeValueAtIndex(this.removeAddingValueAtIndex);
+                this.$store.commit('lode/removeAddingValueAtIndex', null);
+            }
+        },
+        addingChecked: function() {
+            if (this.addingChecked && this.addingChecked.length > 0) {
+                this.checkedOptions = this.addingChecked;
             }
         }
     }

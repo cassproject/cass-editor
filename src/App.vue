@@ -3,7 +3,7 @@
         id="app"
         class="has-background-white">
         <!-- nav bar navigation -->
-        <cass-modal />
+        <cass-modal class="cass-modal" />
         <DynamicModal />
 
         <router-view
@@ -1092,30 +1092,6 @@ export default {
     margin-top:50px;
 }
 
-
-    html {
-        font-family: $family-primary;
-        max-width: 100vw !important;
-        margin: 0px;
-        height: 100%;
-        padding: 0px;
-        overflow: hidden;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        font-size: 16px;
-    }
-    body{
-        // Tom B.  Taking this out for now as it screws up the configuration editor and needing scrolling
-        //overflow-y: hidden;
-        height: 100%;
-        background: $light;
-        background-repeat: no-repeat;
-        background-size: cover;
-        min-height: 100vh;
-    }
-    #app {
-        height: 100%;
-    }
     #app-content {
 
     }
@@ -1146,6 +1122,9 @@ export default {
         .is-active{
             color: rgba($dark, .7) !important;
         }
+    }
+    .cass-modal {
+        z-index:100;
     }
 
 </style>
