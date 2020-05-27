@@ -60,8 +60,15 @@
                                 <p
                                     v-if="importTransition === 'preview'"
                                     class="">
-                                    <span class=" is-size-6 has-text-success has-text-weight-bold">
+                                    <span
+                                        class=" is-size-6 has-text-success has-text-weight-bold"
+                                        v-if="frameworkSize !== null">
                                         Import success, {{ frameworkSize }} competencies ready to edit.
+                                    </span>
+                                    <span
+                                        class=" is-size-6 has-text-success has-text-weight-bold"
+                                        v-else>
+                                        Import success, concepts ready to edit.
                                     </span>
                                     <br><br>
                                 <!-- Please review the name and descriptions of the imported competencies. After making edits, "approve" the changes to view the imported competency details.-->
@@ -140,14 +147,12 @@
                                 :obj="changedObj ? changedObj : importFramework"
                                 :repo="repo"
                                 class="framework-title"
-                                :profile="t3FrameworkProfile"
-                                :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
-                                iframeText="Attach subitems from other sources to the selected item." />
+                                :profile="queryParams.concepts === 'true' ? null : t3FrameworkProfile" />
 
                             <Hierarchy
                                 :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                 view="importPreview"
-                                v-if="importFramework"
+                                v-if="importFramework && queryParams.concepts !== 'true'"
                                 @doneLoadingNodes="handleDoneLoading"
                                 @searchThings="handleSearch($event)"
                                 @editMultipleEvent="onEditMultiple"
@@ -168,6 +173,21 @@
                                 @selectedArray="selectedArrayEvent"
                                 :newFramework="true"
                                 @deleteObject="deleteObject" />
+                            <ConceptHierarchy
+                                :class="{'is-hidden': !hierarchyIsdoneLoading}"
+                                view="import"
+                                v-if="importFramework && queryParams.concepts === 'true'"
+                                @doneLoadingNodes="handleDoneLoading"
+                                @searchThings="handleSearch($event)"
+                                @editMultipleEvent="onEditMultiple"
+                                :container="importFramework"
+                                containerType="ConceptScheme"
+                                :viewOnly="false"
+                                :isDraggable="true"
+                                :repo="repo"
+                                @selectedArray="selectedArrayEvent"
+                                :newFramework="true"
+                                @deleteObject="deleteObject" />
                         </div>
                         <!-- import light view -->
                         <div
@@ -180,11 +200,9 @@
                                 :obj="changedObj ? changedObj : importFramework"
                                 :parentNotEditable="true"
                                 class="framework-title"
-                                :profile="t3FrameworkProfile"
-                                :iframePath="$store.state.editor.iframeCompetencyPathInterframework"
-                                iframeText="Attach subitems from other sources to the selected item." />
+                                :profile="queryParams.concepts === 'true' ? null : t3FrameworkProfile" />
                             <Hierarchy
-                                v-if="importFramework"
+                                v-if="importFramework && queryParams.concepts !== 'true'"
                                 view="importLight"
                                 :container="importFramework"
                                 containerType="Framework"
@@ -200,6 +218,17 @@
                                 edgeSourceProperty="source"
                                 edgeTargetProperty="target"
                                 :repo="repo"
+                                :newFramework="true"
+                                @deleteObject="deleteObject" />
+                            <ConceptHierarchy
+                                :class="{'is-hidden': !hierarchyIsdoneLoading}"
+                                view="import"
+                                v-if="importFramework && queryParams.concepts === 'true'"
+                                :container="importFramework"
+                                containerType="ConceptScheme"
+                                :viewOnly="true"
+                                :repo="repo"
+                                @selectedArray="selectedArrayEvent"
                                 :newFramework="true"
                                 @deleteObject="deleteObject" />
                         </div>
