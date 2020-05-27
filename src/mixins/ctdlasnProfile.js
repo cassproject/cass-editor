@@ -296,7 +296,36 @@ export default {
                     "max": 1,
                     "heading": "Rights"
                 },
-                "headings": ["Keys", "General", "Tagging", "Connections", "Context", "Rights"]
+                "headings": ["Keys", "General", "Tagging", "Connections", "Context", "Rights"],
+                "primaryProperties": [
+                    "@id",
+                    "registryURL",
+                    "ctid",
+                    "http://schema.org/name",
+                    "http://schema.org/description"
+                ],
+                "secondaryProperties": [
+                    "http://schema.org/creator",
+                    "https://purl.org/ctdlasn/terms/publisherName",
+                    "http://schema.org/publisher",
+                    "http://schema.org/inLanguage",
+                    "http://schema.org/keywords",
+                    "https://purl.org/ctdlasn/terms/conceptTerm",
+                    "https://purl.org/ctdlasn/terms/derivedFrom",
+                    "https://purl.org/ctdlasn/terms/isVersionOf",
+                    "http://purl.org/dc/elements/1.1/source",
+                    "https://purl.org/ctdlasn/terms/educationLevelType"
+                ],
+                "tertiaryProperties": [
+                    "http://schema.org/validFrom",
+                    "http://schema.org/validThrough",
+                    "https://purl.org/ctdlasn/terms/publicationStatusType",
+                    "http://schema.org/identifier",
+                    "http://schema.org/copyrightYear",
+                    "http://schema.org/license",
+                    "http://purl.org/dc/elements/1.1/rights",
+                    "http://schema.org/copyrightHolder"
+                ]
             };
         },
         ctdlAsnCompetencyProfile: function() {
@@ -633,7 +662,41 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Task Embodied"}],
                     "heading": "Connections"
                 },
-                "headings": ["Keys", "General", "Context", "Tagging", "Scales", "Connections"]
+                "headings": ["Keys", "General", "Context", "Tagging", "Scales", "Connections"],
+                "primaryProperties": [
+                    "@id",
+                    "registryURL",
+                    "ctid",
+                    "https://purl.org/ctdlasn/terms/competencyLabel",
+                    "http://schema.org/name",
+                    "http://schema.org/description",
+                    "http://purl.org/dc/terms/type",
+                    "https://purl.org/ctdlasn/terms/listId",
+                    "https://purl.org/ctdlasn/terms/codedNotation"
+                ],
+                "secondaryProperties": [
+                    "hasChild",
+                    "isChildOf",
+                    "narrows",
+                    "broadens",
+                    "isEquivalentTo",
+                    "majorRelated",
+                    "minorRelated",
+                    "requires",
+                    "https://purl.org/ctdlasn/terms/abilityEmbodied",
+                    "https://purl.org/ctdlasn/terms/knowledgeEmbodied",
+                    "https://purl.org/ctdlasn/terms/skillEmbodied",
+                    "https://purl.org/ctdlasn/terms/taskEmbodied"
+                ],
+                "tertiaryProperties": [
+                    "https://purl.org/ctdlasn/terms/educationLevelType",
+                    "https://purl.org/ctdlasn/terms/derivedFrom",
+                    "http://schema.org/identifier",
+                    "http://schema.org/keywords",
+                    "https://purl.org/ctdlasn/terms/conceptTerm",
+                    "https://purl.org/ctdlasn/terms/complexityLevel",
+                    "https://purl.org/ctdlasn/terms/weight"
+                ]
             };
         },
         ctdlAsnConceptSchemeProfile: function() {
@@ -1020,7 +1083,32 @@ export default {
                     "heading": "Rights",
                     "max": 1
                 },
-                "headings": ["Keys", "General", "Tagging", "Context", "Rights"]
+                "headings": ["Keys", "General", "Tagging", "Context", "Rights"],
+                "primaryProperties": [
+                    "@id",
+                    "registryURL",
+                    "ctid",
+                    "http://purl.org/dc/terms/title",
+                    "http://purl.org/dc/terms/description"
+                ],
+                "secondaryProperties": [
+                    "http://purl.org/dc/terms/creator",
+                    "http://purl.org/dc/terms/publisher",
+                    "https://purl.org/ctdlasn/terms/publisherName",
+                    "http://purl.org/dc/terms/language",
+                    "http://purl.org/dc/elements/1.1/source"
+                ],
+                "tertiaryProperties": [
+                    "https://purl.org/ctdlasn/terms/conceptKeyword",
+                    "https://purl.org/ctdlasn/terms/conceptTerm",
+                    "http://www.w3.org/2004/02/skos/core#changeNote",
+                    "http://www.w3.org/2004/02/skos/core#historyNote",
+                    "https://purl.org/ctdlasn/terms/publicationStatusType",
+                    "http://purl.org/dc/terms/dateCopyrighted",
+                    "http://purl.org/dc/terms/license",
+                    "http://purl.org/dc/terms/rights",
+                    "http://purl.org/dc/terms/rightsHolder"
+                ]
             };
         },
         ctdlAsnConceptProfile: function() {
@@ -1376,7 +1464,30 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Related"}],
                     "heading": "Connections"
                 },
-                "headings": ["Keys", "General", "Other Labels", "Documentation", "Connections"]
+                "headings": ["Keys", "General", "Other Labels", "Documentation", "Connections"],
+                "primaryProperties": [
+                    "@id",
+                    "registryURL",
+                    "ctid",
+                    "http://www.w3.org/2004/02/skos/core#prefLabel",
+                    "http://www.w3.org/2004/02/skos/core#definition",
+                    "http://www.w3.org/2004/02/skos/core#notation"
+                ],
+                "secondaryProperties": [
+                    "http://www.w3.org/2004/02/skos/core#broader",
+                    "http://www.w3.org/2004/02/skos/core#narrower",
+                    "http://www.w3.org/2004/02/skos/core#broadMatch",
+                    "http://www.w3.org/2004/02/skos/core#closeMatch",
+                    "http://www.w3.org/2004/02/skos/core#exactMatch",
+                    "http://www.w3.org/2004/02/skos/core#narrowMatch",
+                    "http://www.w3.org/2004/02/skos/core#related"
+                ],
+                "tertiaryProperties": [
+                    "http://www.w3.org/2004/02/skos/core#altLabel",
+                    "http://www.w3.org/2004/02/skos/core#hiddenLabel",
+                    "http://www.w3.org/2004/02/skos/core#note",
+                    "http://www.w3.org/2004/02/skos/core#changeNote"
+                ]
             };
         }
     }

@@ -188,7 +188,8 @@ export default {
                     [{"@language": "en", "@value": "The name or title of this resource."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Title"}],
                     "heading": "General",
-                    "onePerLanguage": "true"
+                    "onePerLanguage": "true",
+                    "required": "true"
                 },
                 "http://purl.org/dc/terms/description": {
                     "@id": "http://purl.org/dc/terms/description",
@@ -315,7 +316,20 @@ export default {
                     "heading": "General",
                     "max": 1
                 },
-                "headings": ["Keys", "General"]
+                "headings": ["Keys", "General"],
+                "primaryProperties": [
+                    "@id",
+                    "http://purl.org/dc/terms/title",
+                    "http://purl.org/dc/terms/description"
+                ],
+                "secondaryProperties": [
+                    "http://purl.org/dc/terms/creator",
+                    "http://purl.org/dc/terms/publisher",
+                    "https://purl.org/ctdlasn/terms/publisherName",
+                    "http://purl.org/dc/terms/language",
+                    "http://purl.org/dc/elements/1.1/source"
+                ],
+                "tertiaryProperties": []
             };
         },
         conceptProfile: function() {
@@ -647,7 +661,28 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Related"}],
                     "heading": "Connections"
                 },
-                "headings": ["Keys", "General", "Other Labels", "Documentation", "Connections"]
+                "headings": ["Keys", "General", "Other Labels", "Documentation", "Connections"],
+                "primaryProperties": [
+                    "@id",
+                    "http://www.w3.org/2004/02/skos/core#prefLabel",
+                    "http://www.w3.org/2004/02/skos/core#definition",
+                    "http://www.w3.org/2004/02/skos/core#notation"
+                ],
+                "secondaryProperties": [
+                    "http://www.w3.org/2004/02/skos/core#altLabel",
+                    "http://www.w3.org/2004/02/skos/core#hiddenLabel",
+                    "http://www.w3.org/2004/02/skos/core#note",
+                    "http://www.w3.org/2004/02/skos/core#changeNote",
+                    "http://www.w3.org/2004/02/skos/core#broader",
+                    "http://www.w3.org/2004/02/skos/core#narrower"
+                ],
+                "tertiaryProperties": [
+                    "http://www.w3.org/2004/02/skos/core#broadMatch",
+                    "http://www.w3.org/2004/02/skos/core#closeMatch",
+                    "http://www.w3.org/2004/02/skos/core#exactMatch",
+                    "http://www.w3.org/2004/02/skos/core#narrowMatch",
+                    "http://www.w3.org/2004/02/skos/core#related"
+                ]
             };
         }
     },

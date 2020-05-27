@@ -251,7 +251,14 @@ export default {
                     "heading": "General",
                     "onePerLanguage": "true"
                 },
-                "headings": ["Keys", "General"]
+                "headings": ["Keys", "General"],
+                "primaryProperties": [
+                    "@id",
+                    "http://schema.org/name",
+                    "http://schema.org/description"
+                ],
+                "secondaryProperties": [],
+                "tertiaryProperties": []
             };
         },
         competencyProfile: function() {
@@ -454,7 +461,25 @@ export default {
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "desires", target); },
                         "heading": "Connections"
                     },
-                    "headings": ["Keys", "General", "Connections"]
+                    "headings": ["Keys", "General", "Connections"],
+                    "primaryProperties": [
+                        "@id",
+                        "http://schema.org/name",
+                        "http://schema.org/description"
+                    ],
+                    "secondaryProperties": [
+                        "https://schema.cassproject.org/0.4/scope",
+                        "https://schema.cassproject.org/0.4/Level"
+                    ],
+                    "tertiaryProperties": [
+                        "narrows",
+                        "broadens",
+                        "isEquivalentTo",
+                        "requires",
+                        "isEnabledBy",
+                        "isRelatedTo",
+                        "desires"
+                    ]
                 };
             }
         }

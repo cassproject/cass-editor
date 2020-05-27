@@ -268,7 +268,34 @@ export default {
                     "max": 1,
                     "heading": "Rights"
                 },
-                "headings": ["Keys", "General", "Tagging", "Connections", "Context", "Rights"]
+                "headings": ["Keys", "General", "Tagging", "Connections", "Context", "Rights"],
+                "primaryProperties": [
+                    "@id",
+                    "http://schema.org/name",
+                    "http://schema.org/description"
+                ],
+                "secondaryProperties": [
+                    "http://schema.org/creator",
+                    "https://purl.org/ctdlasn/terms/publisherName",
+                    "http://schema.org/publisher",
+                    "http://schema.org/inLanguage",
+                    "http://schema.org/keywords",
+                    "https://purl.org/ctdlasn/terms/conceptTerm",
+                    "https://purl.org/ctdlasn/terms/derivedFrom",
+                    "https://purl.org/ctdlasn/terms/isVersionOf",
+                    "http://purl.org/dc/elements/1.1/source",
+                    "https://purl.org/ctdlasn/terms/educationLevelType"
+                ],
+                "tertiaryProperties": [
+                    "http://schema.org/validFrom",
+                    "http://schema.org/validThrough",
+                    "https://purl.org/ctdlasn/terms/publicationStatusType",
+                    "http://schema.org/identifier",
+                    "http://schema.org/copyrightYear",
+                    "http://schema.org/license",
+                    "http://purl.org/dc/elements/1.1/rights",
+                    "http://schema.org/copyrightHolder"
+                ]
             };
         },
         tlaCompetencyProfile: function() {
@@ -542,7 +569,35 @@ export default {
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "desires", target); },
                     "heading": "Connections"
                 },
-                "headings": ["Keys", "General", "Context", "Tagging", "Scales", "Connections"]
+                "headings": ["Keys", "General", "Context", "Tagging", "Scales", "Connections"],
+                "primaryProperties": [
+                    "@id",
+                    "http://schema.org/name",
+                    "http://schema.org/description"
+                ],
+                "secondaryProperties": [
+                    "https://schema.cassproject.org/0.4/scope",
+                    "https://schema.cassproject.org/0.4/Level",
+                    "http://purl.org/dc/terms/type",
+                    "https://purl.org/ctdlasn/terms/educationLevelType",
+                    "https://purl.org/ctdlasn/terms/listId",
+                    "https://purl.org/ctdlasn/terms/codedNotation",
+                    "https://purl.org/ctdlasn/terms/derivedFrom",
+                    "http://schema.org/identifier",
+                    "http://schema.org/keywords",
+                    "https://purl.org/ctdlasn/terms/conceptTerm",
+                    "https://purl.org/ctdlasn/terms/complexityLevel",
+                    "https://purl.org/ctdlasn/terms/weight"
+                ],
+                "tertiaryProperties": [
+                    "narrows",
+                    "broadens",
+                    "isEquivalentTo",
+                    "requires",
+                    "isEnabledBy",
+                    "isRelatedTo",
+                    "desires"
+                ]
             };
         }
     }
