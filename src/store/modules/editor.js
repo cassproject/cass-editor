@@ -32,7 +32,8 @@ const state = {
     commentsToDelete: [],
     commentScrollTo: {},
     editsToUndo: [],
-    lastEditToUndo: null
+    lastEditToUndo: null,
+    recomputeHierarchy: false
 };
 const mutations = {
     framework(state, f) {
@@ -123,6 +124,9 @@ const mutations = {
     },
     setLastEditToUndo(state, edit) {
         state.lastEditToUndo = edit;
+    },
+    recomputeHierarchy(state, boolean) {
+        state.recomputeHierarchy = boolean;
     }
 };
 const actions = {
@@ -200,6 +204,9 @@ const getters = {
     },
     commentScrollTo: function(state) {
         return state.commentScrollTo;
+    },
+    recomputeHierarchy: function(state) {
+        return state.recomputeHierarchy;
     }
 };
 

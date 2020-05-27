@@ -10,11 +10,13 @@ const state = {
     frameworkTarget: null,
     frameworkTargetRelationships: null,
     relevantExistingAlignmentsMap: null,
+    relevantExistingAlignmentsMapLastUpdate: null,
     workingAlignmentsMap: {
         source: '',
         targets: [],
         initialTargets: [],
         removedTargets: [],
+        changed: false,
         type: ''
     },
     alignmentsToSave: [],
@@ -43,14 +45,14 @@ const mutations = {
     relevantExistingAlignmentsMap(state, f) {
         state.relevantExistingAlignmentsMap = f;
     },
+    relevantExistingAlignmentsMapLastUpdate(state, f) {
+        state.relevantExistingAlignmentsMapLastUpdate = f;
+    },
     step(state, val) {
         state.step = val;
     },
     workingAlignmentsSource(state, c) {
         state.workingAlignmentsMap.source = c;
-    },
-    addWorkingAlignmentsTarget(state, c) {
-        state.workingAlignmentsMap.targets.push(c);
     },
     workingAlignmentsTargets(state, c) {
         state.workingAlignmentsMap.targets = c;
@@ -74,6 +76,7 @@ const mutations = {
                 state.workingAlignmentsMap.initialTargets.push(ti);
             }
         }
+        state.workingAlignmentsMap.changed = false;
     },
     resetFrameworkSourceRelationships(state) {
         state.frameworkSourceRelationships = null;
@@ -95,10 +98,12 @@ const mutations = {
         state.workingAlignmentsMap.targets = [];
         state.workingAlignmentsMap.initialTargets = [];
         state.workingAlignmentsMap.removedTargets = [];
+        state.workingAlignmentsMap.changed = false;
         state.workingAlignmentsMap.type = '';
         state.sourceState = 'ready';
         state.targetState = 'ready';
         state.alignmentsToSave = [];
+        state.alignmentsToDelete = [];
     },
     resetCrosswalk(state) {
         state.step = 0;
@@ -106,10 +111,12 @@ const mutations = {
         state.workingAlignmentsMap.targets = [];
         state.workingAlignmentsMap.initialTargets = [];
         state.workingAlignmentsMap.removedTargets = [];
+        state.workingAlignmentsMap.changed = false;
         state.workingAlignmentsMap.type = '';
         state.sourceState = 'ready';
         state.targetState = 'ready';
         state.alignmentsToSave = [];
+        state.alignmentsToDelete = [];
     },
     resetWorkingAlignmentsMap(state) {
         state.sourceState = 'ready';
@@ -119,24 +126,87 @@ const mutations = {
             targets: [],
             initialTargets: [],
             removedTargets: [],
+            changed: false,
             type: ''
         };
+    },
+    addWorkingAlignmentsTarget(state, id) {
+        let remTargets = state.workingAlignmentsMap.removedTargets;
+        let filteredRemovedTargets = remTargets.filter(remTargets => remTargets !== id);
+        state.workingAlignmentsMap.removedTargets = filteredRemovedTargets;
+        state.workingAlignmentsMap.targets.push(id);
+        if (state.workingAlignmentsMap.removedTargets.length > 0) state.workingAlignmentsMap.changed = true;
+        else {
+            let shouldSetToChanged = false;
+            for (let t of state.workingAlignmentsMap.targets) {
+                if (!state.workingAlignmentsMap.initialTargets.includes(t)) {
+                    shouldSetToChanged = true;
+                    break;
+                }
+            }
+            if (shouldSetToChanged) state.workingAlignmentsMap.changed = true;
+            else state.workingAlignmentsMap.changed = false;
+        }
     },
     removeWorkingAlignmentsTarget(state, id) {
         let targets = state.workingAlignmentsMap.targets;
         let filtered = targets.filter(target => target !== id);
         state.workingAlignmentsMap.targets = filtered;
+        if (state.workingAlignmentsMap.initialTargets.includes(id)) state.workingAlignmentsMap.removedTargets.push(id);
+        if (state.workingAlignmentsMap.removedTargets.length > 0) state.workingAlignmentsMap.changed = true;
+        else {
+            let shouldSetToChanged = false;
+            for (let t of state.workingAlignmentsMap.targets) {
+                if (!state.workingAlignmentsMap.initialTargets.includes(t)) {
+                    shouldSetToChanged = true;
+                    break;
+                }
+            }
+            if (shouldSetToChanged) state.workingAlignmentsMap.changed = true;
+            else state.workingAlignmentsMap.changed = false;
+        }
     },
-    appendAlignmentsToSave(state, alignment) {
-        if (alignment.targets && alignment.targets.length > 0) {
-            for (let at of alignment.targets) {
-                let newAlignmentToSave = {};
-                newAlignmentToSave.source = alignment.source;
-                newAlignmentToSave.target = at;
-                newAlignmentToSave.type = alignment.type;
-                state.alignmentsToSave.push(newAlignmentToSave);
+    removeAlignmentFromRelevantAlignmentsMap(state, alignProps) {
+        if (state.relevantExistingAlignmentsMap[alignProps.source]) {
+            if (state.relevantExistingAlignmentsMap[alignProps.source][alignProps.type]) {
+                if (state.relevantExistingAlignmentsMap[alignProps.source][alignProps.type][alignProps.target]) {
+                    let ream = state.relevantExistingAlignmentsMap;
+                    delete ream[alignProps.source][alignProps.type][alignProps.target];
+                    state.relevantExistingAlignmentsMap = ream;
+                }
             }
         }
+    },
+    addAlignmentToRelevantAlignmentsMap(state, ecaObj) {
+        let ream = state.relevantExistingAlignmentsMap;
+        if (!ream[ecaObj.source]) ream[ecaObj.source] = {};
+        if (!ream[ecaObj.source][ecaObj.relationType]) ream[ecaObj.source][ecaObj.relationType] = {};
+        if (!ream[ecaObj.source][ecaObj.relationType][ecaObj.target]) ream[ecaObj.source][ecaObj.relationType][ecaObj.target] = ecaObj;
+        state.relevantExistingAlignmentsMap = ream;
+    },
+    removeAlignmentFromAlignmentsToSave(state, alignProps) {
+        let newAts = [];
+        for (let a of state.alignmentsToSave) {
+            if (!(a.source === alignProps.source && a.target === alignProps.target && a.relationType === alignProps.type)) {
+                newAts.push(a);
+            }
+        }
+        state.alignmentsToSave = newAts;
+    },
+    removeAlignmentFromAlignmentsToDelete(state, alignProps) {
+        let newAtd = [];
+        for (let a of state.alignmentsToDelete) {
+            if (!(a.source === alignProps.source && a.target === alignProps.target && a.relationType === alignProps.type)) {
+                newAtd.push(a);
+            }
+        }
+        state.alignmentsToDelete = newAtd;
+    },
+    appendAlignmentsToDelete(state, alignment) {
+        state.alignmentsToDelete.push(alignment);
+    },
+    appendAlignmentsToSave(state, alignment) {
+        state.alignmentsToSave.push(alignment);
     }
 };
 const actions = {
@@ -158,6 +228,9 @@ const getters = {
     relevantExistingAlignmentsMap: function(state) {
         return state.relevantExistingAlignmentsMap;
     },
+    relevantExistingAlignmentsMapLastUpdate: function(state) {
+        return state.relevantExistingAlignmentsMapLastUpdate;
+    },
     workingAlignmentsSource(state) {
         return state.workingAlignmentsMap.source;
     },
@@ -175,6 +248,9 @@ const getters = {
     },
     alignmentsToSave(state) {
         return state.alignmentsToSave;
+    },
+    alignmentsToDelete(state) {
+        return state.alignmentsToDelete;
     }
 };
 
