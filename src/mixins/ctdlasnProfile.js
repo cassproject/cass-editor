@@ -752,7 +752,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}],
                     "heading": "General",
                     "onePerLanguage": "true",
-                    "required": "true"
+                    "isRequired": "true"
                 },
                 "http://purl.org/dc/terms/description": {
                     "@id": "https://purl.org/ctdlasn/terms/description",
@@ -1175,7 +1175,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Preferred Label"}],
                     "heading": "General",
                     "onePerLanguage": "true",
-                    "required": "true"
+                    "isRequired": "true"
                 },
                 "http://www.w3.org/2004/02/skos/core#definition": {
                     "@id": "http://www.w3.org/2004/02/skos/core#definition",
