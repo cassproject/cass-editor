@@ -20,7 +20,8 @@
                     :editingMultipleCompetencies="true"
                     @propertyStringUpdated="propertyStringUpdated"
                     :idx="idx"
-                    @isSearching="isSearching=true" />
+                    @isSearching="isSearching=true"
+                    :addedPropertiesAndValuesFromSearching="item" />
                 <span v-if="item['error']">
                     {{ item['error'] }}
                 </span>
@@ -43,7 +44,7 @@
         <footer class="modal-card-foot">
             <div class="buttons is-spaced">
                 <button
-                    @click="$store.commit('app/closeModal');"
+                    @click="onCancel"
                     class="button is-outlined is-dark">
                     <span class="icon">
                         <i class="fa fa-times" />
@@ -63,6 +64,7 @@
             </div>
             <template v-if="isSearching">
                 <div
+                    @click="addSelected"
                     title="Add Competency as Property"
                     class="button is-outlined is-primary is-small">
                     <span class="is-small export icon">
@@ -130,6 +132,13 @@ export default {
             };
             // reveal modal
             this.$modal.show(params);
+        },
+        onCancel: function() {
+            if (this.isSearching) {
+                this.isSearching = false;
+            } else {
+                this.$store.commit('app/closeModal');
+            }
         },
         addErrorMessage: function(msg) {
             this.errorMessage.push(msg);
@@ -200,69 +209,71 @@ export default {
             var me = this;
             for (var i = 0; i < this.selectedCompetencies.length; i++) {
                 var competencyId = this.selectedCompetencies[i];
-                var competency = EcRepository.getBlocking(competencyId);
-                this.expand(competency, function(expandedCompetency) {
-                    var initialValues = [];
-                    var changedValues = [];
-                    var properties = [];
-                    for (var j = 0; j < me.addedPropertiesAndValues.length; j++) {
-                        var property = me.addedPropertiesAndValues[j].property.value;
-                        var value = me.addedPropertiesAndValues[j].value;
-                        var range = me.addedPropertiesAndValues[j].range;
+                EcRepository.get(competencyId, function(competency) {
+                    me.expand(competency, function(expandedCompetency) {
+                        var initialValues = [];
+                        var changedValues = [];
+                        var properties = [];
+                        for (var j = 0; j < me.addedPropertiesAndValues.length; j++) {
+                            var property = me.addedPropertiesAndValues[j].property.value;
+                            var value = me.addedPropertiesAndValues[j].value;
+                            var range = me.addedPropertiesAndValues[j].range;
+                            console.log("adding " + property + " " + JSON.stringify(expandedCompetency));
 
-                        properties.push(property);
-                        if (expandedCompetency[property]) {
-                            initialValues.push(JSON.parse(JSON.stringify(expandedCompetency[property])));
-                        } else {
-                            initialValues.push([]);
-                        }
+                            properties.push(property);
+                            if (expandedCompetency[property]) {
+                                initialValues.push(JSON.parse(JSON.stringify(expandedCompetency[property])));
+                            } else {
+                                initialValues.push([]);
+                            }
 
-                        if (range.length === 1 && range[0].toLowerCase().indexOf("langstring") !== -1) {
-                            if (me.profile && me.profile[property] && (me.profile[property]["onePerLanguage"] === 'true' || me.profile[property]["onePerLanguage"] === true)) {
-                                var okayToSave = me.validateOnePerLanguage(expandedCompetency, property, competency, value);
+                            if (range.length === 1 && range[0].toLowerCase().indexOf("langstring") !== -1) {
+                                if (me.profile && me.profile[property] && (me.profile[property]["onePerLanguage"] === 'true' || me.profile[property]["onePerLanguage"] === true)) {
+                                    var okayToSave = me.validateOnePerLanguage(expandedCompetency, property, competency, value);
+                                    if (!okayToSave) {
+                                        continue;
+                                    }
+                                }
+                            }
+
+                            // If one value is allowed for a property and it already exists, the user cannot add another
+                            if (me.profile[property]["max"] === 1) {
+                                var okayToSave = me.validateMax(expandedCompetency, property, competencyId, competency);
                                 if (!okayToSave) {
                                     continue;
                                 }
                             }
-                        }
 
-                        // If one value is allowed for a property and it already exists, the user cannot add another
-                        if (me.profile[property]["max"] === 1) {
-                            var okayToSave = me.validateMax(expandedCompetency, property, competencyId, competency);
-                            if (!okayToSave) {
-                                continue;
-                            }
-                        }
-
-                        if (me.profile && me.profile[property]["add"]) {
-                            var f = me.profile[property]["add"];
-                            if (f !== "checkedOptions") {
-                                var shortId = EcRemoteLinkedData.trimVersionFromUrl(competencyId);
-                                f(shortId, [value]);
-                            }
-                        } else {
-                            if (!value["@value"]) {
-                                value = {"@value": value};
-                            }
-                            expandedCompetency = me.add(property, value, expandedCompetency);
-                        }
-                        if (me.profile && me.profile[property]["save"]) {
-                            var f = me.profile[property]["save"];
-                            if (me.checkedOptions) {
-                                f(expandedCompetency, me.checkedOptions, me.profile[property]["options"]);
+                            if (me.profile && me.profile[property]["add"]) {
+                                var f = me.profile[property]["add"];
+                                if (f !== "checkedOptions") {
+                                    var shortId = EcRemoteLinkedData.trimVersionFromUrl(expandedCompetency["@id"]);
+                                    f(shortId, [value]);
+                                }
                             } else {
-                                f();
+                                if (!value["@value"]) {
+                                    value = {"@value": value};
+                                }
+                                expandedCompetency = me.add(property, value, expandedCompetency);
                             }
+                            if (me.profile && me.profile[property]["save"]) {
+                                var f = me.profile[property]["save"];
+                                if (me.checkedOptions) {
+                                    f(expandedCompetency, me.checkedOptions, me.profile[property]["options"]);
+                                } else {
+                                    f();
+                                }
+                            }
+                            changedValues.push(expandedCompetency[property]);
                         }
-                        changedValues.push(expandedCompetency[property]);
-                    }
-                    if (me.errorMessage && me.errorMessage.length > 0) {
-                        me.showModal();
-                    }
-                    me.changedItemsForUndo.push({operation: "update", id: EcRemoteLinkedData.trimVersionFromUrl(expandedCompetency["@id"]), fieldChanged: properties, initialValue: initialValues, changedValue: changedValues, expandedProperty: true});
-                    me.save(expandedCompetency);
-                    me.saveCount++;
-                });
+                        if (me.errorMessage && me.errorMessage.length > 0) {
+                            me.showModal();
+                        }
+                        me.changedItemsForUndo.push({operation: "update", id: EcRemoteLinkedData.trimVersionFromUrl(expandedCompetency["@id"]), fieldChanged: properties, initialValue: initialValues, changedValue: changedValues, expandedProperty: true});
+                        me.save(expandedCompetency);
+                        me.saveCount++;
+                    });
+                }, function() {});
             }
         },
         removeValueAtIndex: function(index) {
@@ -336,6 +347,19 @@ export default {
                 }
             }
             return rld;
+        },
+        addSelected: function() {
+            var ids = this.$store.getters['editor/selectedCompetenciesAsProperties'];
+            for (var i = 0; i < ids.length; i++) {
+                if (this.addedPropertiesAndValues[this.addedPropertiesAndValues.length - 1].property.length !== 0) {
+                    this.addAnotherProperty();
+                }
+                var property = this.$store.getters['editor/selectCompetencyRelation'];
+                this.addedPropertiesAndValues[this.addedPropertiesAndValues.length - 1].value = ids[i];
+                this.addedPropertiesAndValues[this.addedPropertiesAndValues.length - 1].property = {value: property, label: this.profile[property]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"]};
+                this.addedPropertiesAndValues[this.addedPropertiesAndValues.length - 1].range = this.$store.getters['lode/addingRange'];
+            }
+            this.isSearching = false;
         }
     },
     watch: {
