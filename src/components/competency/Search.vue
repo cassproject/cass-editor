@@ -5,8 +5,10 @@ with some adjustments to the modal-card classes to just card, this could be
 placed anywhere in a structured html element such as a <section> or a <div>
 -->
 <template>
-    <div class="search-modal modal-card">
-        <header class="modal-card-head has-background-primary">
+    <div :class="[{'search-modal modal-card': view !== 'thing-editing'}, {'columns is-multiline': view === 'thing-editing'}]">
+        <header
+            v-if="view !== 'thing-editing'"
+            :class="{'modal-card-head has-background-primary': view !== 'thing-editing'}">
             <p class="modal-card-title">
                 <span class="title has-text-white">Search for {{ searchType }}</span>
                 <br><span
@@ -25,7 +27,9 @@ placed anywhere in a structured html element such as a <section> or a <div>
                 @click="resetModal();"
                 aria-label="close" />
         </header>
-        <section class="modal-card-body">
+        <section
+            v-if="view !== 'thing-editing'"
+            class="modal-card-body">
             <div class="column is-12">
                 <SearchBar
                     filterSet="basic"
@@ -46,7 +50,30 @@ placed anywhere in a structured html element such as a <section> or a <div>
                     :displayFirst="displayFirst" />
             </div>
         </section>
-        <footer class="modal-card-foot">
+        <template v-if="view === 'thing-editing'">
+            <div class="column is-12">
+                <SearchBar
+                    filterSet="basic"
+                    :searchType="searchType" />
+            </div>
+            <div class="column is-12">
+                <List
+                    v-if="$store.state.lode.competencySearchModalOpen"
+                    :type="searchType"
+                    view="search"
+                    :repo="repo"
+                    :click="select"
+                    :searchOptions="searchOptions"
+                    :paramObj="paramObj"
+                    :disallowEdits="true"
+                    :selectingCompetency="true"
+                    :selected="selectedIds"
+                    :displayFirst="displayFirst" />
+            </div>
+        </template>
+        <footer
+            v-if="view !== 'thing-editing'"
+            class="modal-card-foot">
             <div class="buttons">
                 <button
                     class="button is-outlined is-dark"
@@ -97,7 +124,11 @@ import SearchBar from '@/components/framework/SearchBar.vue';
 export default {
     name: 'CompetencySearch',
     props: {
-        isActive: Boolean
+        isActive: Boolean,
+        view: {
+            type: String,
+            default: 'modal'
+        }
     },
     components: {List, SearchBar},
     mixins: [common],
