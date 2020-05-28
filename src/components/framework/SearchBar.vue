@@ -100,7 +100,7 @@
                         name="alphabeticalSort"
                         checked="checked">
                     <label for="alphabeticalSort">
-                        Sort Alphabetical
+                        Alphabetical
                     </label>
                     <input
                         v-model="basicSort"
@@ -110,7 +110,7 @@
                         type="radio"
                         name="lastDateModifiedSort">
                     <label for="lastDateModifiedSort">
-                        Sort by Last date modified
+                        Date modified
                     </label>
                 </div>
             </div>
