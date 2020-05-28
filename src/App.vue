@@ -334,7 +334,7 @@ export default {
             if (this.queryParams.concepts !== "true") {
                 var framework = new EcFramework();
                 if (this.queryParams.newObjectEndpoint != null) {
-                    framework.generateShortId(this.repo.newObjectEndpoint);
+                    framework.generateShortId(this.queryParams.newObjectEndpoint);
                 } else {
                     framework.generateId(this.repo.selectedServer);
                 }
