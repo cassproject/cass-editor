@@ -204,11 +204,11 @@ export default {
             if (this.$store.state.editor.t3Profile === true) {
                 return this.t3FrameworkProfile;
             }
-            if (this.config) {
-                return this.config.frameworkConfig;
-            }
             if (this.queryParams.ceasnDataFields === "true") {
                 return this.ctdlAsnFrameworkProfile;
+            }
+            if (this.config) {
+                return this.config.frameworkConfig;
             }
             if (this.queryParams.tlaProfile === "true") {
                 return this.tlaFrameworkProfile;
@@ -264,6 +264,8 @@ export default {
         competencyProfile: function() {
             if (this.$store.state.editor.t3Profile === true) {
                 return this.t3CompetencyProfile;
+            } else if (this.queryParams.ceasnDataFields === "true") {
+                return this.ctdlAsnCompetencyProfile;
             }
             if (this.config) {
                 var profile = JSON.parse(JSON.stringify(this.config.competencyConfig));
@@ -310,8 +312,6 @@ export default {
             }
             if (this.profileOverride) {
                 return this.profileOverride;
-            } else if (this.queryParams.ceasnDataFields === "true") {
-                return this.ctdlAsnCompetencyProfile;
             } else if (this.queryParams.tlaProfile === "true") {
                 return this.tlaCompetencyProfile;
             } else {

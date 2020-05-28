@@ -29,7 +29,7 @@ export default {
             var relations = {};
             for (var i = 0; i < this.framework.relation.length; i++) {
                 var a = EcAlignment.getBlocking(this.framework.relation[i]);
-                if (a) {
+                if (a && a.source && a.target) {
                     var relationType = a.relationType;
                     var reciprocalRelation = null;
                     if (this.queryParams.ceasnDataFields === "true" && relationType === "narrows") {
