@@ -1,6 +1,8 @@
 @import './variables.scss';
 
-#search-selection__icon {
+#search-selection__icon,
+#search-selection__add-icon
+ {
     float: right;
     position:fixed;
     right: 8px;
@@ -10,6 +12,9 @@
     .icon {
         height: 100%;
     }
+}
+#search-selection__add-icon {
+    visibility: hidden;
 }
 .lode__hierarchy {
     padding: 1rem;
@@ -178,4 +183,19 @@
     }
 }
 
+.lode__thing-editing {
+    .List {
+        .list-ul {
+            .list-ul__item {
+                padding: .25rem;
+            }
+            .list-ul__item:hover {
+                background-color: rgba($light, .5);
+                #search-selection__add-icon {
+                    visibility: visible;
+                }
+            }
+        }
+    }
+}
 
