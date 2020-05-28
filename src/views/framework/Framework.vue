@@ -54,12 +54,6 @@
                                     class="tag is-medium-grey has-text-dark"
                                     v-if="framework['Published']"
                                     :title="framework['Published']">Published</span>
-                                <span v-if="loggedIn">
-                                    Make private
-                                    <input
-                                        type="checkbox"
-                                        v-model="privateFramework">
-                                </span>
                             </div>
                         </Component>
                     </div>
