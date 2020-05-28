@@ -22,7 +22,6 @@
             <div class="section">
                 <h4 class="header">
                     This item is listed in <b>{{ numberOfParentFrameworks }}</b> {{ dynamicModalContent.objectType === "Concept" ? "concept scheme" : "framework" }}<span v-if="numberOfParentFrameworks > 1">s</span>
-
                 </h4>
                 <ul class="single__list">
                     <li
