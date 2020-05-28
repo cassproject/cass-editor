@@ -9,7 +9,9 @@
                 aria-label="close"
                 @click="$store.commit('app/closeModal')" />
         </header>
-        <section class="modal-card-body">
+        <section
+            class="modal-card-body"
+            v-if="!isSearching">
             <div
                 v-for="(item,idx) in addedPropertiesAndValues"
                 :key="item">
@@ -17,7 +19,8 @@
                     :profile="profile"
                     :editingMultipleCompetencies="true"
                     @propertyStringUpdated="propertyStringUpdated"
-                    :idx="idx" />
+                    :idx="idx"
+                    @isSearching="isSearching=true" />
                 <span v-if="item['error']">
                     {{ item['error'] }}
                 </span>
@@ -31,6 +34,9 @@
                     <span @click="addAnotherProperty">Add another property</span>
                 </div>
             </div>
+        </section>
+        <section v-if="isSearching">
+            <Search />
         </section>
         <footer class="modal-card-foot">
             <div class="buttons is-spaced">
@@ -57,10 +63,12 @@
 </template>
 <script>
 import AddProperty from '@/lode/components/lode/AddProperty.vue';
+import Search from './Search.vue';
 export default {
     name: 'MultiEdit',
     components: {
-        AddProperty
+        AddProperty,
+        Search
     },
     props: {
         content: Object
@@ -72,7 +80,8 @@ export default {
             saveCount: 0,
             errorMessage: [],
             checkedOptions: [],
-            changedItemsForUndo: []
+            changedItemsForUndo: [],
+            isSearching: false
         };
     },
     computed: {
