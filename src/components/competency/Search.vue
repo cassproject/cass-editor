@@ -105,12 +105,6 @@ placed anywhere in a structured html element such as a <section> or a <div>
                         Link {{ searchType }}
                     </span>
                 </button>
-                <button
-                    v-if="!copyOrLink"
-                    class="button is-outlined is-primary"
-                    @click="addSelected(selectedIds); resetModal();">
-                    Add Selected
-                </button>
             </div>
         </footer>
     </div>
@@ -250,6 +244,9 @@ export default {
                 this.selectedIds.push(competency.shortId());
             } else {
                 EcArray.setRemove(this.selectedIds, competency.shortId());
+            }
+            if (!this.copyOrLink) {
+                this.$store.commit('editor/selectedCompetenciesAsProperties', this.selectedIds);
             }
         },
         copyCompetencies: function(results) {
@@ -605,37 +602,6 @@ export default {
             this.repo.saveTo(framework, function() {
                 me.$store.commit('editor/framework', EcFramework.getBlocking(framework.id));
             }, console.error);
-        },
-        attachUrlProperties: function(results) {
-            var resource = this.$store.state.editor.framework;
-            if (this.$store.state.editor.selectedCompetency != null) {
-                resource = this.$store.state.editor.selectedCompetency;
-            }
-            for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
-                if (thing.isAny(new EcConcept().getTypes())) {
-                    var relation = this.$store.state.editor.selectCompetencyRelation;
-                    if (relation.indexOf("skos") !== -1) {
-                        relation = ("skos:" + relation.split('#')[1]);
-                    }
-                    if (!EcArray.isArray(resource[this.$store.state.editor.selectCompetencyRelation])) {
-                        resource[this.$store.state.editor.selectCompetencyRelation] = [];
-                    }
-                    EcArray.setAdd(resource[this.$store.state.editor.selectCompetencyRelation], thing.shortId());
-                }
-            }
-            resource["schema:dateModified"] = new Date().toISOString();
-            if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[resource.id] !== true) {
-                resource = EcEncryptedValue.toEncryptedValue(resource);
-            }
-            this.repo.saveTo(resource, function() {}, console.error);
-        },
-        addSelected: function(ids) {
-            if (this.searchType === "Competency") {
-                this.addAlignments(ids, this.$store.state.editor.selectedCompetency, this.$store.state.editor.selectCompetencyRelation);
-            } else {
-                this.attachUrlProperties(ids);
-            }
         },
         addNewlinesToId: function(pem) {
             // Begin public key line

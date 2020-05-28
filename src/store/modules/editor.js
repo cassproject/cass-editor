@@ -33,7 +33,8 @@ const state = {
     commentScrollTo: {},
     editsToUndo: [],
     lastEditToUndo: null,
-    recomputeHierarchy: false
+    recomputeHierarchy: false,
+    selectedCompetenciesAsProperties: null
 };
 const mutations = {
     framework(state, f) {
@@ -127,6 +128,9 @@ const mutations = {
     },
     recomputeHierarchy(state, boolean) {
         state.recomputeHierarchy = boolean;
+    },
+    selectedCompetenciesAsProperties(state, comps) {
+        state.selectedCompetenciesAsProperties = comps;
     }
 };
 const actions = {
@@ -207,6 +211,9 @@ const getters = {
     },
     recomputeHierarchy: function(state) {
         return state.recomputeHierarchy;
+    },
+    selectedCompetenciesAsProperties: function(state) {
+        return state.selectedCompetenciesAsProperties;
     }
 };
 

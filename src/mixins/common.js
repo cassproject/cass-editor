@@ -489,7 +489,7 @@ export default {
             }
         },
         addAlignments: function(targets, thing, relationType, allowSave) {
-            if (this.queryParams.concepts === "true") {
+            if (this.$store.getters['editor/queryParams'].concepts === "true") {
                 return this.addConceptAlignments(targets, thing, relationType);
             }
             if (relationType === "ceasn:skillEmbodied" || relationType === "ceasn:abilityEmbodied" || relationType === "ceasn:knowledgeEmbodied" || relationType === "ceasn:taskEmbodied") {
@@ -501,7 +501,7 @@ export default {
             var initialRelations = framework.relation ? framework.relation.slice() : null;
             for (var i = 0; i < targets.length; i++) {
                 var r = new EcAlignment();
-                if (this.queryParams.newObjectEndpoint != null) {
+                if (this.$store.getters['editor/queryParams'].newObjectEndpoint != null) {
                     r.generateShortId(this.newObjectEndpoint);
                 } else {
                     r.generateId(this.repo.selectedServer);
