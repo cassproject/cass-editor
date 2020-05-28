@@ -5,10 +5,10 @@ with some adjustments to the modal-card classes to just card, this could be
 placed anywhere in a structured html element such as a <section> or a <div>
 -->
 <template>
-    <div :class="[{'search-modal modal-card': view !== 'thing-editing'}, {'columns is-multiline': view === 'thing-editing'}]">
+    <div :class="[{'search-modal modal-card': view !== 'thing-editing' && view !== 'multi-edit'}, {'columns is-multiline': view === 'thing-editing' || view === 'multi-edit'}]">
         <header
-            v-if="view !== 'thing-editing'"
-            :class="{'modal-card-head has-background-primary': view !== 'thing-editing'}">
+            v-if="view !== 'thing-editing' && view !== 'multi-edit'"
+            :class="{'modal-card-head has-background-primary': view !== 'thing-editing' && view !== 'multi-edit'}">
             <p class="modal-card-title">
                 <span class="title has-text-white">Search for {{ searchType }}</span>
                 <br><span
@@ -28,7 +28,7 @@ placed anywhere in a structured html element such as a <section> or a <div>
                 aria-label="close" />
         </header>
         <section
-            v-if="view !== 'thing-editing'"
+            v-if="view !== 'thing-editing' && view !== 'multi-edit'"
             class="modal-card-body">
             <div class="column is-12">
                 <SearchBar
@@ -50,7 +50,7 @@ placed anywhere in a structured html element such as a <section> or a <div>
                     :displayFirst="displayFirst" />
             </div>
         </section>
-        <template v-if="view === 'thing-editing'">
+        <template v-if="view === 'thing-editing' || view === 'multi-edit'">
             <div class="column is-12">
                 <SearchBar
                     filterSet="basic"
@@ -72,7 +72,7 @@ placed anywhere in a structured html element such as a <section> or a <div>
             </div>
         </template>
         <footer
-            v-if="view !== 'thing-editing'"
+            v-if="view !== 'thing-editing' && view !== 'multi-edit'"
             class="modal-card-foot">
             <div class="buttons">
                 <button

@@ -35,8 +35,10 @@
                 </div>
             </div>
         </section>
-        <section v-if="isSearching">
-            <Search />
+        <section
+            v-if="isSearching"
+            class="modal-card-body">
+            <Search view="multi-edit" />
         </section>
         <footer class="modal-card-foot">
             <div class="buttons is-spaced">
@@ -49,6 +51,7 @@
                     <span>cancel</span>
                 </button>
                 <button
+                    v-if="!isSearching"
                     class="button is-outlined is-success"
                     @click="applyToMultiple"
                     :disabled="disableApplyButton">
@@ -58,6 +61,16 @@
                     <span>Apply to multiple</span>
                 </button>
             </div>
+            <template v-if="isSearching">
+                <div
+                    title="Add Competency as Property"
+                    class="button is-outlined is-primary is-small">
+                    <span class="is-small export icon">
+                        <i class="fa fa-check" />
+                    </span>
+                    <span>Add Selected</span>
+                </div>
+            </template>
         </footer>
     </div>
 </template>
