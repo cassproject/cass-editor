@@ -441,7 +441,6 @@ export default {
             }
         },
         text: function() {
-            console.log(this.$store.getters['app/importText']);
             return this.$store.getters['app/importText'];
         }
     },
@@ -473,7 +472,7 @@ export default {
             var me = this;
             TabStructuredImport.importCompetencies(
                 newText,
-                this.repo.selectedServer,
+                this.queryParams.newObjectEndpoint ? this.queryParams.newObjectEndpoint : this.repo.selectedServer,
                 EcIdentityManager.ids[0],
                 function(competencies, relations) {
                     me.$store.commit('app/importTransition', 'light');
@@ -498,7 +497,7 @@ export default {
                 },
                 console.error,
                 this.repo,
-                true);
+                false);
         }
     },
     created: function() {
