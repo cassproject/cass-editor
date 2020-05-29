@@ -113,6 +113,13 @@
                             v-else-if="slotProps.item['schema:creator'] && getName(slotProps.item['schema:creator'])">
                             {{ getName(slotProps.item['schema:creator']) }}
                         </span>
+                        <span
+                            class="framework-list-item__details"
+                            v-if="canEditItem(slotProps.item)">
+                            <span class="details-label">
+                                Editable
+                            </span>
+                        </span>
                     </template>
                 </List>
             </div>
@@ -212,6 +219,9 @@ export default {
     },
     components: {List, RightAside, SearchBar},
     methods: {
+        canEditItem: function(item) {
+            return item.canEditAny(EcIdentityManager.getMyPks());
+        },
         frameworkClick: function(framework) {
             var me = this;
             if (this.queryParams.concepts === "true") {
