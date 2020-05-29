@@ -30,8 +30,8 @@
                 Confirm make public
             </h2>
             <p>
-                Making this framework public means anyone with a link can access, read, edit, and comment
-                on this framework. Only those with admin access will be able to delete the framework.
+                Making this framework public means anyone with a link can access and read this framework.
+                Only those with admin access will be able to edit or delete the framework.
             </p>
         </section>
         <section
@@ -78,8 +78,10 @@
                         <div class="column">
                             <label class="label is-size-4">Add users or groups</label>
                         </div>
-                        <div class="column is-narrow">
-                            <div class="buttons  has-addons is-pulled-right">
+                        <div
+                            class="column is-narrow"
+                            v-if="loggedIn">
+                            <div class="buttons has-addons is-pulled-right">
                                 <button
                                     @click="handlePublicClick"
                                     :class="{'is-outlined': privateFramework}"
