@@ -5,8 +5,7 @@
         <div class="section is-medium">
             <SearchBar
                 filterSet="all"
-                :searchType="type === 'ConceptScheme' ? 'concept scheme' : 'framework'"
-                 />
+                :searchType="type === 'ConceptScheme' ? 'concept scheme' : 'framework'" />
             <div
                 v-if="!queryParams.concepts==='true'"
                 class="container is-fluid">
