@@ -1384,6 +1384,8 @@ export default {
                 this.importFramework.generateId(this.repo.selectedServer);
             }
             this.importFramework.name = this.importFrameworkName;
+            this.importFramework["schema:dateCreated"] = new Date().toISOString();
+            this.importFramework["schema:dateModified"] = new Date().toISOString();
             var toSave = [this.importFramework];
             for (var i = 0; i < this.importFramework.competency.length; i++) {
                 var comp = EcRepository.cache[this.importFramework.competency[i]];
