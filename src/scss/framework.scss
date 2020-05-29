@@ -61,141 +61,7 @@ drag, drag, and chosen states
     word-break: break-all;
 }
 
-// top level items outside of Hierarchy
-.lode__thing {
-    padding: 0rem;
-    padding-right: 0rem;
-    .lode__Competency {
-        .lode__thing-heading {
-            width: calc(100% - 7rem);
-            .lode__Property {
-                .property-section {
-                    .expanded-view__has-language {
-                        .language {
-                            display: none;
-                        }
-                        .value {
 
-                        }
-                    }
-                }
-            }
-        }
-        .lode__type {
-
-        }
-        .lode__thing-heading {
-            .lode__Property {
-
-            }
-        }
-    }
-    .lode__Framework {
-        .lode__thing-heading {
-            padding: 0rem 6rem 0rem .5rem;
-        }
-        .lode__Property.lode__name {
-            font-size: 1.2rem;
-            font-family: $family-secondary;
-            font-weight: 600;
-        }
-    }
-    .lode__Competency,
-    .lode__Framework {
-        
-    }
-    .lode__thing-editing,
-    .framework__info-bar {
-        margin: 1rem .5rem;
-    }
-    
-    a {
-        display:none;
-    }
-    transform: translateX(0); // make room for add node
-    .edit-button {
-        position: absolute;
-        right: 0rem;
-        padding:.125rem;
-        visibility: hidden;
-    }
-    .handle-button {
-        position: absolute;
-        right: 2rem;
-        padding: .125rem;
-        visibility: hidden !important;
-    }
-    .comment-button {
-        position: absolute;
-        color: $dark;
-        right: 4rem;
-        top: 0;
-        padding: .25rem .125rem;
-        visibility: hidden;
-        -webkit-backface-visibility: hidden;
-    }
-    .edit-button:hover,
-    .comment-button:hover,
-    .handle-button:hover {
-        visibility: visible;
-        color: $primary;
-        .icon {
-            color: $primary;
-        }
-    }
-    .drag-button {
-        position: absolute;
-        right: 32px;
-        visibility: visible;
-        .button {
-            color: $cass-primary-down;
-        }
-    }
-    .drag-button:hover {
-        .button {
-            color: $primary !important;
-        }
-    }
-    .lode__Competency,
-    .lode__Framework {
-        transform: translateX(0);
-        width: 100%;
-        a {
-            display:none;
-        }
-        .top-actions, .bottom-actions {
-            padding: .5rem .5rem;
-        }
-        ul.lode__thing-always-ul.lode__thing-ul{
-            .lode__property {
-                .property-buttons {
-                    display: flex;
-                    justify-content: space-evenly;
-                    align-items: center;
-                    align-content: center;
-                    width: 96px;
-                }
-                .property-buttons.general {
-                    align-items: flex-end;
-                    padding-bottom: .5rem;
-                }
-                .lode__property-ul {
-    
-                    li {
-                        display: flex;
-                        flex-direction: row;
-                        justify-content: space-between;
-                        width: 100%;
-                        flex-wrap: nowrap;
-                    }
-                }
-                .lode__property-ul.unsaved {
-                    width: 100%;
-                }
-            }
-        }
-    }
-}
 .lode__thing:hover {
     padding: 0rem;
     padding-right: 0rem;
@@ -295,12 +161,8 @@ drag, drag, and chosen states
     }
     
 }
-/* End top level things outside of hierarchty */
-
-// room for improvement, iterate over loop for max depth tabbing
-// possibly set tab value based on value in scss varaibles sheet
-
 .lode__hierarchy {
+    padding: 0rem .5rem;
     .hierarchy-buttons {
         padding: .25rem .5rem !important;
     }
@@ -335,21 +197,23 @@ drag, drag, and chosen states
                 .add-node-section:hover .add-new-node__line {
                     height: 48px !important;
                     padding-top: 1rem;
+                    padding-right: 2rem;
                 }
                 .add-node-section:hover .add-new-node__line, 
                 .add-node-section:hover .button {
                     opacity: 1;
                 }
                 .add-node__options {
+                    padding-top: .7rem;
                 }
                 .add-new-node__line {
-                    transition: all .3s;
+                    transition: visibility height .3s;
                     padding-top: 0rem;
                     transition-delay: .7s;
                     margin: 0rem;
+                    padding-right: 2rem;
                     opacity: 0;
                     height: 6px;
-                    padding-right: 2rem;
                     display: flex;
                     flex-direction: row;
                     flex-wrap: nowrap;
@@ -416,6 +280,141 @@ drag, drag, and chosen states
         margin-bottom: 1rem;
         margin-top: 1rem;
     }
+    // top level items outside of Hierarchy
+    .lode__thing {
+        padding: 0rem;
+        padding-right: 0rem;
+        .lode__Competency {
+            .lode__thing-heading {
+                width: calc(100% - 7rem);
+                .lode__Property {
+                    .property-section {
+                        .expanded-view__has-language {
+                            .language {
+                                display: none;
+                            }
+                            .value {
+
+                            }
+                        }
+                    }
+                }
+            }
+            .lode__type {
+
+            }
+            .lode__thing-heading {
+                .lode__Property {
+
+                }
+            }
+        }
+        .lode__Framework {
+            .lode__thing-heading {
+                padding: 0rem 6rem 0rem .5rem;
+            }
+            .lode__Property.lode__name {
+                font-size: 1.2rem;
+                font-family: $family-secondary;
+                font-weight: 600;
+            }
+        }
+        .lode__Competency,
+        .lode__Framework {
+            
+        }
+        .lode__thing-editing,
+        .framework__info-bar {
+            margin: 1rem .5rem;
+        }
+        
+        a {
+            display:none;
+        }
+        transform: translateX(0); // make room for add node
+        .edit-button {
+            position: absolute;
+            right: 0rem;
+            padding:.125rem;
+            visibility: hidden;
+        }
+        .handle-button {
+            position: absolute;
+            right: 2rem;
+            padding: .125rem;
+            visibility: hidden !important;
+        }
+        .comment-button {
+            position: absolute;
+            color: $dark;
+            right: 4rem;
+            top: 0;
+            padding: .25rem .125rem;
+            visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .edit-button:hover,
+        .comment-button:hover,
+        .handle-button:hover {
+            visibility: visible;
+            color: $primary;
+            .icon {
+                color: $primary;
+            }
+        }
+        .drag-button {
+            position: absolute;
+            right: 32px;
+            visibility: visible;
+            .button {
+                color: $cass-primary-down;
+            }
+        }
+        .drag-button:hover {
+            .button {
+                color: $primary !important;
+            }
+        }
+        .lode__Competency,
+        .lode__Framework {
+            transform: translateX(0);
+            width: 100%;
+            a {
+                display:none;
+            }
+            .top-actions, .bottom-actions {
+                padding: .5rem .5rem;
+            }
+            ul.lode__thing-always-ul.lode__thing-ul{
+                .lode__property {
+                    .property-buttons {
+                        display: flex;
+                        justify-content: space-evenly;
+                        align-items: center;
+                        align-content: center;
+                        width: 96px;
+                    }
+                    .property-buttons.general {
+                        align-items: flex-end;
+                        padding-bottom: .5rem;
+                    }
+                    .lode__property-ul {
+        
+                        li {
+                            display: flex;
+                            flex-direction: row;
+                            justify-content: space-between;
+                            width: 100%;
+                            flex-wrap: nowrap;
+                        }
+                    }
+                    .lode__property-ul.unsaved {
+                        width: 100%;
+                    }
+                }
+            }
+        }
+    }
 }
 /* End hierarchy styles */
 
@@ -460,105 +459,104 @@ drag, drag, and chosen states
         padding: 1rem 0rem;
     }
 }
-
-.lode__Property {
-    .control {
-        font-size: $size-6;
-    }
-    
-}
-.lode__Property.lode__name {
-    .control {
-        font-size: $size-6;
-    }
-
-}
-.lode__Property.lode__id {
-    .control {
-        font-size: $size-7;
-    }
-}
-.lode__Property.lode__description .field {
-    .control {
-        font-size: $size-6;
-    }
-}
-
-/* relationships as properties */
-.lode__Property.lode__competencyCategory {
-    color: orange;
-}
-.lode__Property.lode__narrows,
-.lode__Property.lode__Narrows,
-.lode__Property.lode__Level,
-.lode__Property.lode__broadens,
-.lode__Property.lode__desires,
-.lode__Property.lode__requires,
-.lode__Property.lode__Broadens,
-.lode__Property.lode__is_enabled_by,
-.lode__Property.lode__is_related_to,
-.lode__Property.lode__is_equivalent_to {
-    padding-left: 3rem;
-    .edit-button .icon {
-        display: none;
-        color: $link !important;
-    }
-    .lode__thing {
-        .click-to-load {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            .thing-as-property__text {
-                width: 100%;
-            }
-            .competency-as-property {
-                cursor: pointer;
-                font-size: .9rem;
-                color: $text;
-                vertical-align: super;
-            }
-            .icon {
-                font-size: .6rem;
-            }
-            .button {
-                margin-left: 1rem;
-                visibility: hidden;
-            }
-        }
-        .click-to-load:hover .button {
-            visibility: visible;
+.lode__Hierarchy {
+    .lode__Property {
+        .control {
+            font-size: $size-6;
         }
         
-        padding-left: 0rem;
-        .comment-button {
-            display: none;
+    }
+    .lode__Property.lode__name {
+        .control {
+            font-size: $size-6;
         }
-         .lode__Competency {
-            .lode__thing-heading {
-                padding-left: 0rem !important; // related 
-                .lode__Property {
-                    .field {
-                        padding-left: 0rem;
+
+    }
+    .lode__Property.lode__id {
+        .control {
+            font-size: $size-7;
+        }
+    }
+    .lode__Property.lode__description .field {
+        .control {
+            font-size: $size-6;
+        }
+    }
+
+    /* relationships as properties */
+    .lode__Property.lode__competencyCategory {
+        color: orange;
+    }
+    .lode__Property.lode__narrows,
+    .lode__Property.lode__Narrows,
+    .lode__Property.lode__Level,
+    .lode__Property.lode__broadens,
+    .lode__Property.lode__desires,
+    .lode__Property.lode__requires,
+    .lode__Property.lode__Broadens,
+    .lode__Property.lode__is_enabled_by,
+    .lode__Property.lode__is_related_to,
+    .lode__Property.lode__is_equivalent_to {
+        padding-left: 3rem;
+        .edit-button .icon {
+            display: none;
+            color: $link !important;
+        }
+        .lode__thing {
+            .click-to-load {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+                .thing-as-property__text {
+                    width: 100%;
+                }
+                .competency-as-property {
+                    cursor: pointer;
+                    font-size: .9rem;
+                    color: $text;
+                    vertical-align: super;
+                }
+                .icon {
+                    font-size: .6rem;
+                }
+                .button {
+                    margin-left: 1rem;
+                    visibility: hidden;
+                }
+            }
+            .click-to-load:hover .button {
+                visibility: visible;
+            }
+            
+            padding-left: 0rem;
+            .comment-button {
+                display: none;
+            }
+            .lode__Competency {
+                .lode__thing-heading {
+                    padding-left: 0rem !important; // related 
+                    .lode__Property {
+                        .field {
+                            padding-left: 0rem;
+                        }
                     }
                 }
             }
-        }
-        .lode__Concept {
-            .lode__thing-heading {
-                padding-left: 0rem !important; // related 
-                .lode__Property {
-                    .field {
-                        padding-left: 0rem;
+            .lode__Concept {
+                .lode__thing-heading {
+                    padding-left: 0rem !important; // related 
+                    .lode__Property {
+                        .field {
+                            padding-left: 0rem;
+                        }
                     }
                 }
             }
         }
     }
 }
- 
+
 /* end relationships as properties */
-
-
 
 // list of competencies 
 .lode__Hierarchy {

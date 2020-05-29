@@ -16,18 +16,14 @@
 #search-selection__add-icon {
     visibility: hidden;
 }
-.lode__hierarchy {
-    padding: 1rem;
-}
+
 .framework-list-page {
-    
     label{
         display:none;
     }
     .lode__Property {
-    padding: .125rem 0rem;
+        padding: .125rem 0rem;
     }
-
     .page {
         margin-top: 2rem;
     }
@@ -83,6 +79,7 @@
                     cursor: pointer;
                     font-weight: 600;
                     font-size: 1rem;
+                    font-family: $family-secondary;
                     .lode__Framework {
 
                     }
@@ -183,6 +180,7 @@
     }
 }
 
+/* handles search */
 .lode__thing-editing {
     .List {
         .list-ul {
