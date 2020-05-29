@@ -13,7 +13,19 @@
                 aria-label="close" />
         </header>
         <section
-            v-if="confirmMakePrivate"
+            v-if="isProcessing"
+            class="modal-card-body">
+            <h2 class="header has-text-centered">
+                Processing request...
+            </h2>
+            <div class="section has-background-white has-text-centered">
+                <span class="icon is-large">
+                    <i class="fa fa-spinner fa-2x fa-pulse" />
+                </span>
+            </div>
+        </section>
+        <section
+            v-else-if="confirmMakePrivate"
             class="modal-card-body">
             <h2 class="header is-size-3">
                 Confirm make private
@@ -24,7 +36,7 @@
             </p>
         </section>
         <section
-            v-if="confirmMakePublic"
+            v-else-if="confirmMakePublic"
             class="modal-card-body">
             <h2 class="header is-size-3">
                 Confirm make public
@@ -35,7 +47,7 @@
             </p>
         </section>
         <section
-            v-if="!confirmMakePublic && !confirmMakePrivate"
+            v-else-if="!confirmMakePublic && !confirmMakePrivate"
             class="modal-card-body">
             <div class="columns box is-mobile is-multiline">
                 <!-- share link -->
@@ -247,16 +259,18 @@
                 v-if="!confirmMakePrivate && !confirmMakePublic"
                 class="buttons is-spaced">
                 <button
+                    :disabled="isProcessing"
                     class="button is-primary is-outlined"
                     @click="$store.commit('app/closeModal')">
-                    Done managing framework share settings
+                    Done
                 </button>
             </div>
             <div
                 v-if="confirmMakePrivate"
-                class="buttons">
+                class="buttons is-centered">
                 <div
                     @click="confirmMakePrivate = false"
+                    :disabled="isProcessing"
                     class="button is-dark is-outlined">
                     <span class="icon">
                         <i class="fa fa-times" />
@@ -264,6 +278,7 @@
                 </div>
                 <div
                     class="button is-primary is-outlined"
+                    :disabled="isProcessing"
                     @click="makePrivate">
                     <span class="icon">
                         <i class="fa fa-check" />
@@ -275,6 +290,7 @@
                 class="buttons is-centered">
                 <div
                     @click="confirmMakePublic = false"
+                    :disabled="isProcessing"
                     class="button is-dark is-outlined">
                     <span class="icon">
                         <i class="fa fa-times" />
@@ -282,6 +298,7 @@
                 </div>
                 <div
                     class="button is-primary is-outlined"
+                    :disabled="isProcessing"
                     @click="makePublic">
                     <span class="icon">
                         <i class="fa fa-check" />
@@ -302,6 +319,7 @@ export default {
     mixins: [ cassUtil ],
     data() {
         return {
+            isProcessing: false,
             confirmMakePrivate: false,
             confirmMakePublic: false,
             clipStatus: 'ready',
@@ -653,6 +671,7 @@ export default {
         },
         makePrivate: function() {
             var me = this;
+            this.isProcessing = true;
             var framework = this.framework;
             if (this.queryParams.concepts === 'true') {
                 this.handleMakePrivateConceptScheme();
@@ -692,6 +711,7 @@ export default {
         },
         makePublic: function() {
             var me = this;
+            this.isProcessing = true;
             var framework = this.framework;
             if (this.queryParams.concepts === 'true') {
                 this.handleMakePublicConceptScheme();
@@ -745,13 +765,16 @@ export default {
                                 }, done);
                             }, function(relationIds) {
                                 me.confirmMakePublic = false;
+                                me.isProcessing = false;
                             });
                         } else {
                             me.confirmMakePublic = false;
+                            me.isProcessing = false;
                         }
                     });
                 } else {
                     this.confirmMakePublic = false;
+                    this.isProcessing = false;
                 }
             }
         },
@@ -766,6 +789,7 @@ export default {
             f = EcEncryptedValue.toEncryptedValue(f);
             this.repo.saveTo(f, function() {
                 me.confirmMakePrivate = false;
+                me.isProcessing = false;
             }, console.error);
         },
         handleMakePrivateConceptScheme: function() {
@@ -785,6 +809,7 @@ export default {
                     me.encryptConcepts(framework);
                 } else {
                     me.confirmMakePrivate = false;
+                    me.isProcessing = false;
                 }
             }, console.error);
         },
@@ -807,6 +832,7 @@ export default {
                     me.decryptConcepts(cs);
                 } else {
                     me.confirmMakePublic = false;
+                    me.isProcessing = false;
                 }
             }, console.error);
         },
@@ -832,6 +858,7 @@ export default {
                     me.repo.saveTo(toSave[i], function() {}, console.error);
                 }
                 me.confirmMakePrivate = false;
+                me.isProcessing = false;
             });
         },
         decryptConcepts: function(c) {
@@ -858,6 +885,7 @@ export default {
                 }, done);
             }, function(conceptIds) {
                 me.confirmMakePublic = false;
+                me.isProcessing = false;
             });
         }
     },
