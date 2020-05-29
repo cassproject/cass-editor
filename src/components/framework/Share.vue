@@ -723,7 +723,10 @@ export default {
                 f["schema:dateModified"] = new Date().toISOString();
                 delete f.reader;
                 EcEncryptedValue.encryptOnSave(f.id, false);
-                me.repo.saveTo(f, function() {}, console.error);
+                me.repo.saveTo(f, function() {
+                    me.confirmMakePublic = false;
+                    me.isProcessing = false;
+                }, console.error);
                 framework = f;
                 if (framework.competency && framework.competency.length > 0) {
                     new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
@@ -764,17 +767,9 @@ export default {
                                     me.repo.saveTo(r, done, done);
                                 }, done);
                             }, function(relationIds) {
-                                me.confirmMakePublic = false;
-                                me.isProcessing = false;
                             });
-                        } else {
-                            me.confirmMakePublic = false;
-                            me.isProcessing = false;
                         }
                     });
-                } else {
-                    this.confirmMakePublic = false;
-                    this.isProcessing = false;
                 }
             }
         },
@@ -900,6 +895,7 @@ export default {
         },
         confirmMakePrivate: function() {
             this.checkIsPrivate();
+            this.resetVariables();
             this.getCurrentOwnersAndReaders();
         }
     }
