@@ -2,7 +2,7 @@
     <div id="page-framework">
         <RightAside v-if="showRightAside" />
         <!-- begin framework -->
-        <div class="">
+        <div class="framework-content">
             <FrameworkEditorToolbar
                 @changeProperties="changeProperties"
                 @showExportModal="onOpenExportModal" />

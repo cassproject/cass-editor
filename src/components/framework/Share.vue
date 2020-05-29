@@ -596,6 +596,7 @@ export default {
             }
             me.repo.saveTo(f, function() {
                 me.resetVariables();
+                me.$store.commit('editor/framework', f);
                 me.getCurrentOwnersAndReaders();
             }, function() {});
         },
@@ -759,6 +760,8 @@ export default {
             var f = new EcFramework();
             f.copyFrom(framework);
             f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            // Make sure new owner gets into store
+            this.$store.commit('editor/framework', f);
             f["schema:dateModified"] = new Date().toISOString();
             f = EcEncryptedValue.toEncryptedValue(f);
             this.repo.saveTo(f, function() {
@@ -772,6 +775,7 @@ export default {
             var cs = new EcConceptScheme();
             cs.copyFrom(framework);
             cs.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            this.$store.commit('editor/framework', cs);
             var name = cs["dcterms:title"];
             cs["schema:dateModified"] = new Date().toISOString();
             cs = EcEncryptedValue.toEncryptedValue(cs);
@@ -790,6 +794,9 @@ export default {
             this.$store.commit('editor/private', false);
             framework = EcEncryptedValue.toEncryptedValue(framework);
             var cs = new EcConceptScheme();
+            console.log(framework);
+            console.log(framework.decryptIntoObject());
+            console.log(cs);
             cs.copyFrom(framework.decryptIntoObject());
             delete cs.reader;
             framework = cs;
@@ -824,7 +831,7 @@ export default {
                 for (var i = 0; i < toSave.length; i++) {
                     me.repo.saveTo(toSave[i], function() {}, console.error);
                 }
-                this.confirmMakePrivate = false;
+                me.confirmMakePrivate = false;
             });
         },
         decryptConcepts: function(c) {
@@ -850,7 +857,7 @@ export default {
                     me.repo.saveTo(concept, done, done);
                 }, done);
             }, function(conceptIds) {
-                this.confirmMakePublic = false;
+                me.confirmMakePublic = false;
             });
         }
     },
@@ -865,6 +872,7 @@ export default {
         },
         confirmMakePrivate: function() {
             this.checkIsPrivate();
+            this.getCurrentOwnersAndReaders();
         }
     }
 };
