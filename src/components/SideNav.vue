@@ -6,7 +6,15 @@
         <div
             class="menu-label has-text-white is-size-3">
             <template v-if="displayName !== 'No user'">
-                {{ displayName }}
+                <h3 class="is-size-2 has-text-weight-semibold">
+                    {{ displayName }}
+                </h3>
+                <p class="is-size-5">
+                    {{ loggedOnPerson.email }}
+                </p>
+                <p class="is-size-5">
+                    {{ loggedOnPerson.type }}
+                </p>
             </template>
             <template v-else>
                 <router-link
@@ -21,13 +29,6 @@
                 class="icon is-pulled-right">
                 <i class="fa fa-caret-right" />
             </div>
-        </div>
-
-        <div>
-            Role title
-        </div>
-        <div>
-            Organization Name
         </div>
         <hr>
         <!-- OPTION TO NAVIGATE BACK -->
@@ -45,7 +46,7 @@
 
         <!-- GENERAL MENU -->
         <div
-            class="menu-label">
+            class="menu-label has-text-weight-bold">
             Competencies & Frameworks
         </div>
         <ul
@@ -75,7 +76,7 @@
         </ul>
         <ul class="menu-list" />
         <div
-            class="menu-label">
+            class="menu-label has-text-weight-bold">
             Configuration
         </div>
         <ul
