@@ -262,7 +262,9 @@
                         <i class="fa fa-times" />
                     </span><span>cancel</span>
                 </div>
-                <div class="button is-primary is-outlined">
+                <div
+                    class="button is-primary is-outlined"
+                    @click="makePrivate">
                     <span class="icon">
                         <i class="fa fa-check" />
                     </span><span>confirm make private</span>
@@ -278,7 +280,9 @@
                         <i class="fa fa-times" />
                     </span><span>cancel</span>
                 </div>
-                <div class="button is-primary is-outlined">
+                <div
+                    class="button is-primary is-outlined"
+                    @click="makePublic">
                     <span class="icon">
                         <i class="fa fa-check" />
                     </span><span>confirm make public</span>
@@ -368,6 +372,7 @@ export default {
     mounted: function() {
         this.getCurrentOwnersAndReaders();
         this.getPossibleOwnersAndReaders();
+        this.checkIsPrivate();
     },
     methods: {
         handlePrivateClick: function() {
@@ -377,12 +382,13 @@ export default {
         },
         handlePublicClick: function() {
             if (this.privateFramework) {
-                this.confirmMakePubilc = true;
+                this.confirmMakePublic = true;
             }
         },
         checkIsPrivate: function() {
-            if (EcRepository.getBlocking(this.framework.id)) {
-                if (EcRepository.getBlocking(this.framework.id).type === "EncryptedValue") {
+            delete EcRepository.cache[this.framework.shortId()];
+            if (EcRepository.getBlocking(this.framework.shortId())) {
+                if (EcRepository.getBlocking(this.framework.shortId()).type === "EncryptedValue") {
                     this.privateFramework = true;
                 } else {
                     this.privateFramework = false;
@@ -643,13 +649,13 @@ export default {
             me.search = "";
             me.conceptsProcessed = 0;
             me.conceptsToProcess = 0;
-        }
-    },
-    watch: {
-        privateFramework: function() {
+        },
+        makePrivate: function() {
             var me = this;
             var framework = this.framework;
-            if (this.privateFramework === true) {
+            if (this.queryParams.concepts === 'true') {
+                this.handleMakePrivateConceptScheme();
+            } else {
                 this.$store.commit('editor/private', true);
                 if (framework.competency && framework.competency.length > 0) {
                     new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
@@ -681,6 +687,13 @@ export default {
                 } else {
                     me.encryptFramework(framework);
                 }
+            }
+        },
+        makePublic: function() {
+            var me = this;
+            var framework = this.framework;
+            if (this.queryParams.concepts === 'true') {
+                this.handleMakePublicConceptScheme();
             } else {
                 this.$store.commit('editor/private', false);
                 framework = EcEncryptedValue.toEncryptedValue(framework);
@@ -730,16 +743,128 @@ export default {
                                     me.repo.saveTo(r, done, done);
                                 }, done);
                             }, function(relationIds) {
+                                me.confirmMakePublic = false;
                             });
+                        } else {
+                            me.confirmMakePublic = false;
                         }
                     });
+                } else {
+                    this.confirmMakePublic = false;
                 }
             }
         },
+        encryptFramework: function(framework) {
+            var me = this;
+            var f = new EcFramework();
+            f.copyFrom(framework);
+            f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            f["schema:dateModified"] = new Date().toISOString();
+            f = EcEncryptedValue.toEncryptedValue(f);
+            this.repo.saveTo(f, function() {
+                me.confirmMakePrivate = false;
+            }, console.error);
+        },
+        handleMakePrivateConceptScheme: function() {
+            var me = this;
+            var framework = this.framework;
+            this.$store.commit('editor/private', true);
+            var cs = new EcConceptScheme();
+            cs.copyFrom(framework);
+            cs.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            var name = cs["dcterms:title"];
+            cs["schema:dateModified"] = new Date().toISOString();
+            cs = EcEncryptedValue.toEncryptedValue(cs);
+            cs["dcterms:title"] = name;
+            me.repo.saveTo(cs, function() {
+                if (framework["skos:hasTopConcept"]) {
+                    me.encryptConcepts(framework);
+                } else {
+                    me.confirmMakePrivate = false;
+                }
+            }, console.error);
+        },
+        handleMakePublicConceptScheme: function() {
+            var me = this;
+            var framework = this.framework;
+            this.$store.commit('editor/private', false);
+            framework = EcEncryptedValue.toEncryptedValue(framework);
+            var cs = new EcConceptScheme();
+            cs.copyFrom(framework.decryptIntoObject());
+            delete cs.reader;
+            framework = cs;
+            EcEncryptedValue.encryptOnSave(cs.id, false);
+            cs["schema:dateModified"] = new Date().toISOString();
+            me.repo.saveTo(cs, function() {
+                if (cs["skos:hasTopConcept"]) {
+                    me.decryptConcepts(cs);
+                } else {
+                    me.confirmMakePublic = false;
+                }
+            }, console.error);
+        },
+        encryptConcepts: function(c) {
+            var toSave = [];
+            var me = this;
+            var concepts = c["skos:hasTopConcept"] ? c["skos:hasTopConcept"] : c["skos:narrower"];
+            new EcAsyncHelper().each(concepts, function(conceptId, done) {
+                EcRepository.get(conceptId, function(concept) {
+                    concept.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    concept["schema:dateModified"] = new Date().toISOString();
+                    if (concept["skos:narrower"] && concept["skos:narrower"].length > 0) {
+                        me.encryptConcepts(concept);
+                    }
+                    if (EcEncryptedValue.encryptOnSaveMap[concept.id] !== true) {
+                        concept = EcEncryptedValue.toEncryptedValue(concept);
+                    }
+                    toSave.push(concept);
+                    done();
+                }, done);
+            }, function(conceptIds) {
+                for (var i = 0; i < toSave.length; i++) {
+                    me.repo.saveTo(toSave[i], function() {}, console.error);
+                }
+                this.confirmMakePrivate = false;
+            });
+        },
+        decryptConcepts: function(c) {
+            var me = this;
+            var concepts = c["skos:hasTopConcept"] ? c["skos:hasTopConcept"] : c["skos:narrower"];
+            new EcAsyncHelper().each(concepts, function(conceptId, done) {
+                EcRepository.get(conceptId, function(concept) {
+                    var v;
+                    if (concept.isAny(new EcEncryptedValue().getTypes())) {
+                        v = new EcEncryptedValue();
+                        v.copyFrom(concept);
+                    } else {
+                        v = EcEncryptedValue.toEncryptedValue(concept);
+                    }
+                    concept = new EcConcept();
+                    concept.copyFrom(v.decryptIntoObject());
+                    delete concept.reader;
+                    EcEncryptedValue.encryptOnSave(concept.id, false);
+                    if (concept["skos:narrower"]) {
+                        me.decryptConcepts(concept);
+                    }
+                    concept["schema:dateModified"] = new Date().toISOString();
+                    me.repo.saveTo(concept, done, done);
+                }, done);
+            }, function(conceptIds) {
+                this.confirmMakePublic = false;
+            });
+        }
+    },
+    watch: {
         conceptsProcessed: function() {
             if (this.conceptsToProcess && this.conceptsProcessed === this.conceptsToProcess) {
                 this.addAndRemoveFromFrameworkObject();
             }
+        },
+        confirmMakePublic: function() {
+            this.checkIsPrivate();
+        },
+        confirmMakePrivate: function() {
+            this.checkIsPrivate();
         }
     }
 };

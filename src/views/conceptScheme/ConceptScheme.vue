@@ -43,12 +43,6 @@
                             :title="framework['Published']">
                             Published
                         </span>
-                        <span v-if="loggedIn">
-                            Make private
-                            <input
-                                type="checkbox"
-                                v-model="privateFramework">
-                        </span>
                     </div>
                 </Component>
                 <ConceptHierarchy
@@ -108,7 +102,6 @@ export default {
             editingFramework: false,
             properties: "primary",
             config: null,
-            privateFramework: false,
             selectedArray: [],
             editsToUndo: []
         };
@@ -702,60 +695,16 @@ export default {
     mounted: function() {
         if (!this.framework) {
             this.$router.push({name: "frameworks"});
-        } else {
-            this.checkIsPrivate();
         }
     },
     watch: {
         shortId: function() {
             this.refreshPage();
-        },
-        privateFramework: function() {
-            var me = this;
-            var framework = this.framework;
-            if (this.privateFramework === true) {
-                this.$store.commit('editor/private', true);
-                var cs = new EcConceptScheme();
-                cs.copyFrom(framework);
-                cs.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-                var name = cs["dcterms:title"];
-                cs["schema:dateModified"] = new Date().toISOString();
-                cs = EcEncryptedValue.toEncryptedValue(cs);
-                cs["dcterms:title"] = name;
-                me.repo.saveTo(cs, function() {
-                    if (framework["skos:hasTopConcept"]) {
-                        me.encryptConcepts(framework);
-                    }
-                }, console.error);
-            } else {
-                this.$store.commit('editor/private', false);
-                framework = EcEncryptedValue.toEncryptedValue(framework);
-                var cs = new EcConceptScheme();
-                cs.copyFrom(framework.decryptIntoObject());
-                delete cs.reader;
-                framework = cs;
-                EcEncryptedValue.encryptOnSave(cs.id, false);
-                cs["schema:dateModified"] = new Date().toISOString();
-                me.repo.saveTo(cs, function() {
-                    if (cs["skos:hasTopConcept"]) {
-                        me.decryptConcepts(cs);
-                    }
-                }, console.error);
-            }
         }
     },
     methods: {
         handleSearch: function(e) {
             this.$store.commit('app/showModal', e);
-        },
-        checkIsPrivate: function() {
-            if (EcRepository.getBlocking(this.framework.id)) {
-                if (EcRepository.getBlocking(this.framework.id).type === "EncryptedValue") {
-                    this.privateFramework = true;
-                } else {
-                    this.privateFramework = false;
-                }
-            }
         },
         onCancelEditMultiple: function() {
             this.showEditMultiple = false;
@@ -963,54 +912,6 @@ export default {
             } else if (exportType === "ctdlasnJsonld") {
                 this.exportCtdlasnJsonld(this.schemeExportLink);
             }
-        },
-        encryptConcepts: function(c) {
-            var toSave = [];
-            var me = this;
-            var concepts = c["skos:hasTopConcept"] ? c["skos:hasTopConcept"] : c["skos:narrower"];
-            new EcAsyncHelper().each(concepts, function(conceptId, done) {
-                EcRepository.get(conceptId, function(concept) {
-                    concept.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-                    concept["schema:dateModified"] = new Date().toISOString();
-                    if (concept["skos:narrower"] && concept["skos:narrower"].length > 0) {
-                        me.encryptConcepts(concept);
-                    }
-                    if (EcEncryptedValue.encryptOnSaveMap[concept.id] !== true) {
-                        concept = EcEncryptedValue.toEncryptedValue(concept);
-                    }
-                    toSave.push(concept);
-                    done();
-                }, done);
-            }, function(conceptIds) {
-                for (var i = 0; i < toSave.length; i++) {
-                    me.repo.saveTo(toSave[i], function() {}, console.error);
-                }
-            });
-        },
-        decryptConcepts: function(c) {
-            var me = this;
-            var concepts = c["skos:hasTopConcept"] ? c["skos:hasTopConcept"] : c["skos:narrower"];
-            new EcAsyncHelper().each(concepts, function(conceptId, done) {
-                EcRepository.get(conceptId, function(concept) {
-                    var v;
-                    if (concept.isAny(new EcEncryptedValue().getTypes())) {
-                        v = new EcEncryptedValue();
-                        v.copyFrom(concept);
-                    } else {
-                        v = EcEncryptedValue.toEncryptedValue(concept);
-                    }
-                    concept = new EcConcept();
-                    concept.copyFrom(v.decryptIntoObject());
-                    delete concept.reader;
-                    EcEncryptedValue.encryptOnSave(concept.id, false);
-                    if (concept["skos:narrower"]) {
-                        me.decryptConcepts(concept);
-                    }
-                    concept["schema:dateModified"] = new Date().toISOString();
-                    me.repo.saveTo(concept, done, done);
-                }, done);
-            }, function(conceptIds) {
-            });
         },
         onOpenExportModal() {
             let params = {};
