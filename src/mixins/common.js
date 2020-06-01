@@ -3,6 +3,10 @@ import dateFormat from 'dateformat';
 export default {
     computed: {
         levels: function() {
+            // Make reactive when the same level is applied to multiple competencies in the same framework
+            if (this.$store.getters['editor/refreshLevels'] === true) {
+                this.$store.commit('editor/refreshLevels', false);
+            }
             var levels = {};
             if (!this.framework.level) {
                 return null;
@@ -378,10 +382,11 @@ export default {
         },
         addLevel: function(selectedCompetency, optionalLevelUrl) {
             var c;
-            var initialLevels = this.framework.level ? this.framework.level.slice() : null;
+            var me = this;
+            var framework = this.framework ? this.framework : this.$store.getters['editor/framework'];
+            var initialLevels = framework.level ? framework.level.slice() : null;
             if (!optionalLevelUrl) {
                 c = new EcLevel();
-                var me = this;
                 if (this.queryParams.newObjectEndpoint != null) {
                     c.generateShortId(this.queryParams.newObjectEndpoint);
                 } else {
@@ -398,22 +403,24 @@ export default {
                 }
                 c.competency.push(selectedCompetency);
             }
-            this.framework["schema:dateModified"] = new Date().toISOString();
-            if (this.$store.state.editor.private === true) {
-                if (EcEncryptedValue.encryptOnSaveMap[this.framework.id] !== true) {
-                    this.framework = EcEncryptedValue.toEncryptedValue(this.framework);
-                }
-            }
+            framework["schema:dateModified"] = new Date().toISOString();
             this.repo.saveTo(c, function() {
-                me.framework.addLevel(c.shortId());
+                framework.addLevel(c.shortId());
                 var edits = [];
                 if (!optionalLevelUrl) {
                     edits.push({operation: "addNew", id: c.shortId()});
                 }
-                edits.push({operation: "update", id: me.framework.shortId(), fieldChanged: ["level"], initialValue: [initialLevels], changedValue: [me.framework.level]});
+                edits.push({operation: "update", id: framework.shortId(), fieldChanged: ["level"], initialValue: [initialLevels], changedValue: [framework.level]});
                 me.$store.commit('editor/addEditsToUndo', edits);
-                me.repo.saveTo(me.framework, function() {
+                me.$store.commit('editor/framework', framework);
+                if (me.$store.state.editor.private === true) {
+                    if (EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                        framework = EcEncryptedValue.toEncryptedValue(framework);
+                    }
+                }
+                me.repo.saveTo(framework, function() {
                     me.$store.commit('lode/setIsAddingProperty', false);
+                    me.$store.commit('editor/refreshLevels', true);
                 }, console.error);
             }, console.error);
         },
@@ -465,6 +472,7 @@ export default {
             this.$store.commit('editor/addEditsToUndo', edits);
             this.$store.commit('lode/setAddingChecked', []);
             this.$store.commit('lode/setIsAddingProperty', false);
+            this.$store.commit('editor/refreshLevels', true);
         },
         saveFramework: function() {
             this.framework["schema:dateModified"] = new Date().toISOString();

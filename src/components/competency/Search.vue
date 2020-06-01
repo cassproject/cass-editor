@@ -245,7 +245,7 @@ export default {
             } else {
                 EcArray.setRemove(this.selectedIds, competency.shortId());
             }
-            if (!this.copyOrLink) {
+            if (!this.copyOrLink || this.searchType === "Level") {
                 this.$store.commit('editor/selectedCompetenciesAsProperties', this.selectedIds);
             }
         },
