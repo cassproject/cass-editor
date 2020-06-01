@@ -29,8 +29,6 @@ Vue.use(VueScrollTo, {
 });
 
 EcRepository.caching = true;
-window.repo = new EcRepository();
-window.repo.selectedServer = "https://dev.api.cassproject.org/api/";
 
 global.jsonld = require('jsonld');
 global.base64 = require('base64-arraybuffer');
