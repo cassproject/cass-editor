@@ -16,14 +16,23 @@ export default new Router({
     },
     routes: [
         {
+            path: '/',
+            name: 'welcome',
+            components: {
+                default: () => import('./views/Welcome.vue'),
+                sidebar: () => import('./components/SideNav.vue'),
+                topbar: () => import('./components/Topbar.vue')
+            },
+            alias: '/cass-editor/'
+        },
+        {
             path: '/frameworks',
             name: 'frameworks',
             components: {
                 default: () => import('./views/framework/Frameworks.vue'),
                 sidebar: () => import('./components/SideNav.vue'),
                 topbar: () => import('./components/Topbar.vue')
-            },
-            alias: '/cass-editor/'
+            }
         },
         {
             path: '/concepts',
@@ -32,8 +41,7 @@ export default new Router({
                 default: () => import('./views/framework/Frameworks.vue'),
                 sidebar: () => import('./components/SideNav.vue'),
                 topbar: () => import('./components/Topbar.vue')
-            },
-            alias: '/cass-editor/'
+            }
         },
         {
             path: '/login',
