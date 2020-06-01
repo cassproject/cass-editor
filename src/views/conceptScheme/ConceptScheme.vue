@@ -941,6 +941,6 @@ export default {
 </script>
 
 <style lang="scss">
-    @import './../../scss/framework.scss';
+    @import '@/scss/framework.scss';
 
 </style>
