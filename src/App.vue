@@ -1083,10 +1083,10 @@ export default {
             if (!from.name) {
                 this.initializeApp();
             }
-            if(to.name === 'concepts') {
-                this.$store.commit('editor/queryParams', { 'concepts': 'true'});
+            if (to.name === 'concepts') {
+                this.$store.commit('editor/queryParams', {'concepts': 'true'});
             }
-            if(to.name === 'frameworks') {
+            if (to.name === 'frameworks') {
                 this.$store.commit('editor/queryParams', {'concepts': 'false'});
             }
         }
