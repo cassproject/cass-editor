@@ -34,7 +34,8 @@ const state = {
     editsToUndo: [],
     lastEditToUndo: null,
     recomputeHierarchy: false,
-    selectedCompetenciesAsProperties: null
+    selectedCompetenciesAsProperties: null,
+    refreshLevels: false
 };
 const mutations = {
     framework(state, f) {
@@ -131,6 +132,9 @@ const mutations = {
     },
     selectedCompetenciesAsProperties(state, comps) {
         state.selectedCompetenciesAsProperties = comps;
+    },
+    refreshLevels(state, boolean) {
+        state.refreshLevels = boolean;
     }
 };
 const actions = {
@@ -214,6 +218,9 @@ const getters = {
     },
     selectedCompetenciesAsProperties: function(state) {
         return state.selectedCompetenciesAsProperties;
+    },
+    refreshLevels: function(state) {
+        return state.refreshLevels;
     }
 };
 

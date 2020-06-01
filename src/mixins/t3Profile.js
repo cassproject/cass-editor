@@ -125,6 +125,7 @@ export default {
                     "valuesIndexed": function() { return me.relations["narrows"]; },
                     "noTextEditing": "true",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "narrows", values); },
+                    "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "narrows", target); }
                 },
                 "broadens": {
@@ -135,6 +136,7 @@ export default {
                     "valuesIndexed": function() { return me.relations["broadens"]; },
                     "noTextEditing": "true",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "broadens", values); },
+                    "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "broadens", target); }
                 },
                 "isEquivalentTo": {
@@ -145,6 +147,7 @@ export default {
                     "valuesIndexed": function() { return me.relations["isEquivalentTo"]; },
                     "noTextEditing": "true",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEquivalentTo", values); },
+                    "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isEquivalentTo", target); }
                 },
                 "isSimilarTo": {
@@ -153,6 +156,7 @@ export default {
                     "valuesIndexed": function() { return me.relations["isSimilarTo"]; },
                     "noTextEditing": "true",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isSimilarTo", values); },
+                    "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isSimilarTo", target); }
                 },
                 "isPartiallySameAs": {
@@ -161,6 +165,7 @@ export default {
                     "valuesIndexed": function() { return me.relations["isPartiallySameAs"]; },
                     "noTextEditing": "true",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isPartiallySameAs", values); },
+                    "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isPartiallySameAs", target); }
                 },
                 "isRelatedTo": {
@@ -171,6 +176,7 @@ export default {
                     "valuesIndexed": function() { return me.relations["isRelatedTo"]; },
                     "noTextEditing": "true",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isRelatedTo", values); },
+                    "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isRelatedTo", target); }
                 },
                 "enables": {
@@ -179,6 +185,7 @@ export default {
                     "valuesIndexed": function() { return me.relations["enables"]; },
                     "noTextEditing": "true",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "enables", values); },
+                    "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "enables", target); }
                 },
                 "isEnabledBy": {
@@ -189,6 +196,7 @@ export default {
                     "valuesIndexed": function() { return me.relations["isEnabledBy"]; },
                     "noTextEditing": "true",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEnabledBy", values); },
+                    "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isEnabledBy", target); }
                 },
                 "primaryProperties": [

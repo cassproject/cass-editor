@@ -299,6 +299,7 @@ export default {
                         profile[key]["noTextEditing"] = 'true';
                         profile[key]["remove"] = function(source, target) { me.removeRelationFromFramework(source, key, target); };
                         profile[key]["add"] = function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, key, values); };
+                        profile[key]["save"] = function() {};
                     }
                 }
                 return profile;
@@ -385,6 +386,7 @@ export default {
                         "valuesIndexed": function() { return me.relations["narrows"]; },
                         "noTextEditing": "true",
                         "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "narrows", values); },
+                        "save": function() {},
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "narrows", target); },
                         "heading": "Connections"
                     },
@@ -396,6 +398,7 @@ export default {
                         "valuesIndexed": function() { return me.relations["broadens"]; },
                         "noTextEditing": "true",
                         "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "broadens", values); },
+                        "save": function() {},
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "broadens", target); },
                         "heading": "Connections"
                     },
@@ -407,6 +410,7 @@ export default {
                         "valuesIndexed": function() { return me.relations["isEquivalentTo"]; },
                         "noTextEditing": "true",
                         "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEquivalentTo", values); },
+                        "save": function() {},
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "isEquivalentTo", target); },
                         "heading": "Connections"
                     },
@@ -418,6 +422,7 @@ export default {
                         "valuesIndexed": function() { return me.relations["requires"]; },
                         "noTextEditing": "true",
                         "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "requires", values); },
+                        "save": function() {},
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "requires", target); },
                         "heading": "Connections"
                     },
@@ -429,6 +434,7 @@ export default {
                         "valuesIndexed": function() { return me.relations["isEnabledBy"]; },
                         "noTextEditing": "true",
                         "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEnabledBy", values); },
+                        "save": function() {},
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "isEnabledBy", target); },
                         "heading": "Connections"
                     },
@@ -440,6 +446,7 @@ export default {
                         "valuesIndexed": function() { return me.relations["isRelatedTo"]; },
                         "noTextEditing": "true",
                         "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isRelatedTo", values); },
+                        "save": function() {},
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "isRelatedTo", target); },
                         "heading": "Connections"
                     },
@@ -451,6 +458,7 @@ export default {
                         "valuesIndexed": function() { return me.relations["desires"]; },
                         "noTextEditing": "true",
                         "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "desires", values); },
+                        "save": function() {},
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "desires", target); },
                         "heading": "Connections"
                     },
