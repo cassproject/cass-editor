@@ -65,7 +65,7 @@ drag, drag, and chosen states
 .lode__thing:hover {
     padding: 0rem;
     padding-right: 0rem;
-    .lode__Competency {
+    .lode__Competency, .lode__Concept {
         .lode__Property.lode__name{
         }
         .lode__Property.lode__Broadens,
@@ -80,7 +80,7 @@ drag, drag, and chosen states
     .edit-button, .handle.fa-arrows-alt {
         visibility: visible;
     }
-    .lode__Competency {
+    .lode__Competency, .lode__Concept  {
         .edit-button {
             visibility: visible;
         }
@@ -110,7 +110,8 @@ drag, drag, and chosen states
     .drag-footer {
         display: none;
     }
-    .lode__thing.lode__Competency {
+    .lode__thing.lode__Competency,
+    .lode__thing.lode__Concept {
     }
     .handle-button {
         display: none;
@@ -145,7 +146,7 @@ drag, drag, and chosen states
     .lode__Property {
         padding-left: 0rem !important;
     }
-    .lode__Framework {
+    .lode__Framework, .lode__ConceptScheme {
         .header {
             padding: .5rem;
         }
@@ -154,7 +155,7 @@ drag, drag, and chosen states
             margin-left: 0rem;
         }
         .lode__Property.lode__name {
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-family: $family-primary;
             font-weight: 600;
         }
@@ -231,7 +232,7 @@ drag, drag, and chosen states
                     }
                 }
                 .lode__thing {
-                    .lode__Competency {
+                    .lode__Competency, .lode__Concept {
                         max-width: 1300px;
                         margin: auto;
                         .lode__thing-heading {
@@ -239,7 +240,12 @@ drag, drag, and chosen states
                         }
                     }
                     .lode__name {
-                        font-size: 1.2rem; // top level competencies
+                        font-size: 1.1rem; // top level competencies
+                        font-weight: 700;
+                        color: rgba($text, .95);   
+                    }
+                    .lode__prefLabel {
+                        font-size: 1.1rem; // top level competencies
                         font-weight: 700;
                         color: rgba($text, .95);   
                     }
@@ -272,7 +278,8 @@ drag, drag, and chosen states
 }
 
 .framework-content {
-    .lode__thing .lode__Framework {
+    .lode__thing .lode__Framework,
+    .lode__thing .lode__ConceptScheme {
         padding: .5rem;
     }
     .lode__framework__info-bar {
@@ -284,9 +291,13 @@ drag, drag, and chosen states
     .lode__thing {
         padding: 0rem;
         padding-right: 0rem;
-        .lode__Competency {
+        .lode__Competency, .lode__Concept {
             .lode__thing-heading {
                 width: calc(100% - 7rem);
+                h3 {
+                    font-weight: 600;
+                    font-size: $size-3;
+                }
                 .lode__Property {
                     .property-section {
                         .expanded-view__has-language {
@@ -300,12 +311,9 @@ drag, drag, and chosen states
                     }
                 }
             }
-            .lode__type {
-
-            }
-            .lode__thing-heading {
-                .lode__Property {
-
+            .lode__thing-heading:not(:first-of-type) {
+                h3 {
+                    padding-top: .25rem;
                 }
             }
         }
@@ -314,14 +322,10 @@ drag, drag, and chosen states
                 padding: 0rem 6rem 0rem .5rem;
             }
             .lode__Property.lode__name {
-                font-size: 1.2rem;
+                font-size: 1.1rem;
                 font-family: $family-secondary;
                 font-weight: 600;
             }
-        }
-        .lode__Competency,
-        .lode__Framework {
-            
         }
         .lode__thing-editing,
         .framework__info-bar {
@@ -376,6 +380,8 @@ drag, drag, and chosen states
             }
         }
         .lode__Competency,
+        .lode__Concept,
+        .lode__ConceptScheme
         .lode__Framework {
             transform: translateX(0);
             width: 100%;
@@ -420,7 +426,7 @@ drag, drag, and chosen states
 
 .framework-wrapper {
     .lode__thing:hover {
-        .lode__Competency {
+        .lode__Competency, .lode__Concept {
             .lode__Property.lode__name{
                 color: $primary;
             }
@@ -502,64 +508,59 @@ drag, drag, and chosen states
             display: none;
             color: $link !important;
         }
-        .lode__thing {
-            .click-to-load {
-                display: flex;
-                justify-content: space-between;
-                width: 100%;
-                .thing-as-property__text {
-                    width: 100%;
-                }
-                .competency-as-property {
-                    cursor: pointer;
-                    font-size: .9rem;
-                    color: $text;
-                    vertical-align: super;
-                }
-                .icon {
-                    font-size: .6rem;
-                }
-                .button {
-                    margin-left: 1rem;
-                    visibility: hidden;
-                }
+    }
+    
+    
+}
+
+.lode__thing.lode__property {
+    .click-to-load {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        .thing-as-property__text {
+            width: 100%;
+        }
+        .competency-as-property {
+            cursor: pointer;
+            font-size: .9rem;
+            color: $text;
+            vertical-align: super;
+        }
+        .icon {
+            font-size: .6rem;
+        }
+        .button {
+            margin-left: 1rem;
+            visibility: hidden;
+        }
+    }
+    .click-to-load:hover .button {
+        visibility: visible;
+    }
+    
+    padding-left: 0rem;
+    .comment-button {
+        display: none;
+    }
+    .lode__Competency, .lode__Concept {
+        .lode__thing-heading {
+            padding-left: 0rem !important; // related 
+            h3 {
+                font-size: $size-3;
+                font-weight: 600;
             }
-            .click-to-load:hover .button {
-                visibility: visible;
-            }
-            
-            padding-left: 0rem;
-            .comment-button {
-                display: none;
-            }
-            .lode__Competency {
-                .lode__thing-heading {
-                    padding-left: 0rem !important; // related 
-                    .lode__Property {
-                        .field {
-                            padding-left: 0rem;
-                        }
-                    }
-                }
-            }
-            .lode__Concept {
-                .lode__thing-heading {
-                    padding-left: 0rem !important; // related 
-                    .lode__Property {
-                        .field {
-                            padding-left: 0rem;
-                        }
-                    }
+            .lode__Property {
+                .field {
+                    padding-left: 0rem;
                 }
             }
         }
     }
 }
 
-/* end relationships as properties */
-
 // list of competencies 
-.lode__Hierarchy {
+.lode__hierarchy {
     padding: 0rem 1rem;
     .lode__HierarchyNode {
         border-left: none;
