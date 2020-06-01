@@ -9,11 +9,13 @@
                 aria-label="close"
                 @click="$store.commit('app/closeModal')" />
         </header>
-        <section v-if="isProcessing" class="modal-card-body">
+        <section
+            v-if="isProcessing"
+            class="modal-card-body">
             <div class="section has-text-centered">
-            <span class="icon is-large">
-                <i class="fa fa-spinner fa-2x fa-pulse" />
-            </span>
+                <span class="icon is-large">
+                    <i class="fa fa-spinner fa-2x fa-pulse" />
+                </span>
             </div>
         </section>
         <section
