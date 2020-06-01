@@ -101,7 +101,7 @@
                 v-model="hierarchy"
                 tag="ul"
                 class="lode__hierarchy-ul"
-                :disabled="canEdit != true || !isDraggable"
+                :disabled="canEdit !== true || !isDraggable"
                 :group="{ name: 'test' }"
                 @start="beginDrag"
                 handle=".handle"
@@ -142,8 +142,8 @@
                         v-if="canEdit">
                         <div class="button is-text has-text-dark">
                             <span class="icon is-size-5">
-                                <i class="fa handle fa-hand-paper" />
-                                <i class="fa handle fa-hand-rock" />
+                                <i class="fas handle fa-arrows-alt" />
+                                <i class="fas handle fa-arrows-alt" />
                             </span>
                         </div>
                     </div>
@@ -187,7 +187,7 @@ export default {
             dragging: false,
             controlOnStart: false,
             filter: 'showAll',
-            dragIcon: 'fa-hand-paper',
+            dragIcon: 'fa-arrows-alt',
             dragOptions: {
                 delay: 100,
                 disabled: false,
