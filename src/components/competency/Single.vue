@@ -107,9 +107,7 @@ export default {
             }
             this.$store.commit('editor/framework', EcRepository.getBlocking(framework.url));
             if (this.dynamicModalContent.objectType === "Concept") {
-                var queryParams = this.$store.state.editor.queryParams;
-                queryParams.concepts = "true";
-                this.$store.commit('editor/queryParams', queryParams);
+                this.$store.commit('editor/conceptMode', true);
                 this.$router.push({name: "conceptScheme", params: {frameworkId: framework.url}});
             }
             this.$store.commit('app/closeModal');

@@ -30,7 +30,7 @@
                             <div class="column is-12">
                                 <h1
                                     class="title is-size-1 has-text-black">
-                                    <span v-if="queryParams.concepts === 'true'">
+                                    <span v-if="conceptMode">
                                         Import a concept scheme
                                     </span>
                                     <span v-else>Import a framework</span>
@@ -39,7 +39,7 @@
                             <!-- ready state details -->
                             <div class="column is-12">
                                 <p
-                                    v-if="importTransition === 'upload' && !importFile && queryParams.concepts === 'true'"
+                                    v-if="importTransition === 'upload' && !importFile && conceptMode"
                                     class="is-size-6">
                                     Upload documents to transform into CaSS Concept Schemes.
                                 </p>
@@ -147,12 +147,12 @@
                                 :obj="changedObj ? changedObj : importFramework"
                                 :repo="repo"
                                 class="framework-title"
-                                :profile="queryParams.concepts === 'true' ? null : t3FrameworkProfile" />
+                                :profile="conceptMode ? null : t3FrameworkProfile" />
 
                             <Hierarchy
                                 :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                 view="importPreview"
-                                v-if="importFramework && queryParams.concepts !== 'true'"
+                                v-if="importFramework && !conceptMode"
                                 @doneLoadingNodes="handleDoneLoading"
                                 @searchThings="handleSearch($event)"
                                 @editMultipleEvent="onEditMultiple"
@@ -176,7 +176,7 @@
                             <ConceptHierarchy
                                 :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                 view="import"
-                                v-if="importFramework && queryParams.concepts === 'true'"
+                                v-if="importFramework && conceptMode"
                                 @doneLoadingNodes="handleDoneLoading"
                                 @searchThings="handleSearch($event)"
                                 @editMultipleEvent="onEditMultiple"
@@ -200,9 +200,9 @@
                                 :obj="changedObj ? changedObj : importFramework"
                                 :parentNotEditable="true"
                                 class="framework-title"
-                                :profile="queryParams.concepts === 'true' ? null : t3FrameworkProfile" />
+                                :profile="conceptMode ? null : t3FrameworkProfile" />
                             <Hierarchy
-                                v-if="importFramework && queryParams.concepts !== 'true'"
+                                v-if="importFramework && !conceptMode"
                                 view="importLight"
                                 :container="importFramework"
                                 containerType="Framework"
@@ -223,7 +223,7 @@
                             <ConceptHierarchy
                                 :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                 view="import"
-                                v-if="importFramework && queryParams.concepts === 'true'"
+                                v-if="importFramework && conceptMode"
                                 :container="importFramework"
                                 containerType="ConceptScheme"
                                 :viewOnly="true"
@@ -306,6 +306,9 @@ export default {
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];
         },
+        conceptMode: function() {
+            return this.$store.getters['editor/conceptMode'];
+        },
         showImportActions: function() {
             if (this.importTransition === 'detail' ||
             this.importTransition === 'preview' ||
@@ -359,7 +362,7 @@ export default {
         },
         frameworkSize: function() {
             if (this.importFramework) {
-                if (this.queryParams.concepts === 'true') {
+                if (this.conceptMode) {
                     return null;
                 }
                 return this.importFramework.competency.length;
@@ -577,7 +580,7 @@ export default {
         },
         /* When an import is "successful" */
         importSuccess: function() {
-            if (this.queryParams.concepts !== "true") {
+            if (!conceptMode) {
                 let feedback = "Competency detected";
                 this.$store.commit('app/importStatus', feedback);
                 if (this.isT3Import) {
@@ -623,7 +626,7 @@ export default {
             console.log("file is", file);
             var feedback;
             if (file.name.endsWith(".csv")) {
-                if (this.queryParams.concepts === 'true') {
+                if (this.conceptMode) {
                     CTDLASNCSVConceptImport.analyzeFile(file, function(frameworkCount, competencyCount) {
                         me.$store.commit('app/importFileType', 'conceptcsv');
                         feedback = "Import " + frameworkCount + " concept schemes and " + competencyCount + " concepts.";
@@ -676,7 +679,7 @@ export default {
                     var error;
                     var feedback;
                     if (ctdlasn === "ctdlasnConcept") {
-                        if (me.queryParams.concepts === 'true') {
+                        if (me.conceptMode) {
                             me.$store.commit('app/importStatus', "1 Concept Scheme Detected.");
                             me.$store.commit('app/importFileType', 'ctdlasnjsonld');
                             me.$store.commit('app/importTransition', 'info');
@@ -687,7 +690,7 @@ export default {
                             me.$store.commit('app/importTransition', 'process');
                         }
                     } else {
-                        if (me.queryParams.concepts !== 'true') {
+                        if (!me.conceptMode) {
                             me.$store.commit('app/importFileType', 'ctdlasnjsonld');
                             feedback = "1 Framework and " + (EcObject.keys(data).length - 1) + " Competencies Detected.";
                             me.$store.commit('app/importStatus', feedback);
@@ -1167,7 +1170,7 @@ export default {
                     data = data1 + "data" + data2;
                 }
                 var framework;
-                if (me.queryParams.concepts === 'true') {
+                if (me.conceptMode) {
                     framework = EcConceptScheme.getBlocking(data);
                 } else {
                     framework = EcFramework.getBlocking(data);
@@ -1191,7 +1194,7 @@ export default {
                 console.log(failure.statusText);
                 me.$store.commit('app/addImportError', failure);
             });
-            if (me.queryParams.concepts === 'true') {
+            if (me.conceptMode) {
                 me.$store.commit('app/importStatus', "Importing Concept Scheme");
             } else {
                 me.$store.commit('app/importStatus', 'Importing Framework');

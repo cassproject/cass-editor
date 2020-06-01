@@ -221,7 +221,7 @@ export default {
             return this.$route.path;
         },
         supportedFiles: function() {
-            return this.queryParams.concepts === 'true' ? this.supportedConceptFileTypes : this.supportedFileTypes;
+            return this.$store.getters['editor/conceptMode'] === true ? this.supportedConceptFileTypes : this.supportedFileTypes;
         },
         loggedOnPerson: function() {
             return this.$store.getters['user/loggedOnPerson'];

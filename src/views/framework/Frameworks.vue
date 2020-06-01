@@ -7,7 +7,7 @@
                 filterSet="all"
                 :searchType="type === 'ConceptScheme' ? 'concept scheme' : 'framework'" />
             <div
-                v-if="!queryParams.concepts==='true'"
+                v-if="!conceptMode"
                 class="container is-fluid">
                 <!-- show my frameworks radio -->
                 <div class="control">
@@ -37,7 +37,7 @@
                         v-slot:frameworkTags="slotProps">
                         <span
                             class="framework-list-item__details is-light"
-                            v-if="queryParams.concepts!=='true'">
+                            v-if="!conceptMode">
                             <span>
                                 Items:
                             </span>
@@ -144,7 +144,7 @@ export default {
         };
     },
     created: function() {
-        this.sortBy = this.queryParams.concepts === 'true' ? "dcterms:title.keyword" : "name.keyword";
+        this.sortBy = this.conceptMode ? "dcterms:title.keyword" : "name.keyword";
         this.$store.commit("editor/t3Profile", false);
         this.$store.commit('editor/framework', null);
         this.spitEvent('viewChanged');
@@ -160,15 +160,15 @@ export default {
             return this.$store.getters['editor/queryParams'];
         },
         type: function() {
-            return this.queryParams.concepts === 'true' ? "ConceptScheme" : "Framework";
+            return this.conceptMode ? "ConceptScheme" : "Framework";
         },
         searchOptions: function() {
             let search = "";
             if (this.queryParams && this.queryParams.filter != null) {
                 search += " AND (" + this.queryParams.filter + ")";
             }
-            if (this.showMine || (this.queryParams && this.queryParams.concepts !== "true" && this.queryParams.show === "mine") ||
-                (this.queryParams && this.queryParams.concepts === "true" && this.queryParams.conceptShow === "mine")) {
+            if (this.showMine || (this.queryParams && this.conceptMode && this.queryParams.show === "mine") ||
+                (this.queryParams && this.conceptMode && this.queryParams.conceptShow === "mine")) {
                 search += " AND (";
                 for (var i = 0; i < EcIdentityManager.ids.length; i++) {
                     if (i !== 0) {
@@ -199,8 +199,8 @@ export default {
             obj.size = 20;
             var order = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "asc" : "desc";
             obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "long",  "missing" : "_last"}} ]';
-            if (this.queryParams && ((this.queryParams.concepts !== "true" && this.queryParams.show === 'mine') ||
-                (this.queryParams.concepts === "true" && this.queryParams.conceptShow === "mine"))) {
+            if (this.queryParams && ((!this.conceptMode && this.queryParams.show === 'mine') ||
+                (this.conceptMode && this.queryParams.conceptShow === "mine"))) {
                 obj.ownership = 'me';
             }
             return obj;
@@ -215,6 +215,9 @@ export default {
             let filterValues = this.quickFilters.filter(item => item.checked === true);
             console.log('filtered value', filterValues);
             return filterValues;
+        },
+        conceptMode: function() {
+            return this.$store.getters['editor/conceptMode'];
         }
     },
     components: {List, RightAside, SearchBar},
@@ -224,7 +227,7 @@ export default {
         },
         frameworkClick: function(framework) {
             var me = this;
-            if (this.queryParams.concepts === "true") {
+            if (this.conceptMode) {
                 EcConceptScheme.get(framework.id, function(success) {
                     me.$store.commit('editor/framework', success);
                     me.$store.commit('editor/clearFrameworkCommentData');

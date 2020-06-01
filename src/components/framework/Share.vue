@@ -360,7 +360,7 @@ export default {
             return false;
         },
         shareableFrameworkInEditor: function() {
-            if (this.queryParams.concepts === "true") {
+            if (this.$store.getters['editor/conceptMode'] === true) {
                 return window.location.href + "?concepts=true&frameworkId=" + this.frameworkId;
             }
             return window.location.href + "?frameworkId=" + this.frameworkId;
@@ -548,7 +548,7 @@ export default {
         },
         addAndRemoveFromAllObjects: function() {
             let me = this;
-            if (this.queryParams.concepts === "true") {
+            if (this.$store.getters['editor/conceptMode'] === true) {
                 return this.addAndRemoveFromAllConceptObjects();
             }
             if (this.framework.competency && this.framework.competency.length > 0) {
@@ -673,7 +673,7 @@ export default {
             var me = this;
             this.isProcessing = true;
             var framework = this.framework;
-            if (this.queryParams.concepts === 'true') {
+            if (this.$store.getters['editor/conceptMode'] === true) {
                 this.handleMakePrivateConceptScheme();
             } else {
                 this.$store.commit('editor/private', true);
@@ -713,7 +713,7 @@ export default {
             var me = this;
             this.isProcessing = true;
             var framework = this.framework;
-            if (this.queryParams.concepts === 'true') {
+            if (this.$store.getters['editor/conceptMode'] === true) {
                 this.handleMakePublicConceptScheme();
             } else {
                 this.$store.commit('editor/private', false);

@@ -63,6 +63,9 @@ export default {
                     }
                     servers = [this.queryParams.server];
                 }
+                if (this.queryParams.concepts === 'true') {
+                    this.$store.commit('editor/conceptMode', true);
+                }
             }
             for (var i = 0; i < servers.length; i++) {
                 var r = new EcRepository();
@@ -87,7 +90,7 @@ export default {
             this.loadIdentity(function() {
                 if (me.queryParams) {
                     if (me.queryParams.frameworkId) {
-                        if (me.queryParams.concepts === "true") {
+                        if (me.$store.getters['editor/conceptMode'] === true) {
                             EcConceptScheme.get(me.queryParams.frameworkId, function(success) {
                                 me.$store.commit('editor/framework', success);
                                 me.$store.commit('editor/clearFrameworkCommentData');
@@ -156,7 +159,7 @@ export default {
                 }
                 console.log("I got " + event.data.selected.length + " selected items from the iframe");
                 console.log(event.data.selected);
-                if (this.queryParams.concepts === "true" && event.data.type === 'Concept' && this.$store.state.editor.selectCompetencyRelation) {
+                if (this.$store.getters['editor/conceptMode'] === true && event.data.type === 'Concept' && this.$store.state.editor.selectCompetencyRelation) {
                     this.addAlignments(selectedIds, selectedCompetency, this.$store.state.editor.selectCompetencyRelation);
                 } else if (event.data.type === 'Concept') {
                     this.attachUrlProperties(selectedIds);
@@ -389,7 +392,7 @@ export default {
         createNew: function() {
             this.setDefaultLanguage();
             var me = this;
-            if (this.queryParams.concepts !== "true") {
+            if (me.$store.getters['editor/conceptMode'] === true) {
                 this.createNewConceptScheme();
             } else {
                 this.createNewFramework();
@@ -1084,10 +1087,10 @@ export default {
                 this.initializeApp();
             }
             if (to.name === 'concepts') {
-                this.$store.commit('editor/queryParams', {'concepts': 'true'});
+                this.$store.commit('editor/conceptMode', true);
             }
             if (to.name === 'frameworks') {
-                this.$store.commit('editor/queryParams', {'concepts': 'false'});
+                this.$store.commit('editor/conceptMode', false);
             }
         }
         /* loggedInPerson: function(val) {

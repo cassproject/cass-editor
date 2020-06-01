@@ -329,15 +329,15 @@ export default {
     },
     computed: {
         type: function() {
-            return this.queryParams.concepts === 'true' ? "ConceptScheme" : "Framework";
+            return this.$store.getters['editor/conceptMode'] === true ? "ConceptScheme" : "Framework";
         },
         paramObj: function() {
             let obj = {};
             obj.size = 20;
             var order = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "asc" : "desc";
             obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "long",  "missing" : "_last"}} ]';
-            if (this.queryParams && ((this.queryParams.concepts !== "true" && this.queryParams.show === 'mine') ||
-                    (this.queryParams.concepts === "true" && this.queryParams.conceptShow === "mine"))) {
+            if (this.queryParams && ((this.$store.getters['editor/conceptMode'] === true && this.queryParams.show === 'mine') ||
+                    (this.$store.getters['editor/conceptMode'] === true && this.queryParams.conceptShow === "mine"))) {
                 obj.ownership = 'me';
             }
             return obj;
@@ -347,8 +347,8 @@ export default {
             if (this.queryParams && this.queryParams.filter != null) {
                 search += " AND (" + this.queryParams.filter + ")";
             }
-            if (this.showMine || (this.queryParams && this.queryParams.concepts !== "true" && this.queryParams.show === "mine") ||
-                    (this.queryParams && this.queryParams.concepts === "true" && this.queryParams.conceptShow === "mine")) {
+            if (this.showMine || (this.queryParams && this.$store.getters['editor/conceptMode'] === true && this.queryParams.show === "mine") ||
+                    (this.queryParams && this.$store.getters['editor/conceptMode'] === true && this.queryParams.conceptShow === "mine")) {
                 search += " AND (";
                 for (var i = 0; i < EcIdentityManager.ids.length; i++) {
                     if (i !== 0) {

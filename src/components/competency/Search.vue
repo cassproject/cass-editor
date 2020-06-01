@@ -137,7 +137,7 @@ export default {
         };
     },
     created: function() {
-        this.sortBy = this.queryParams.concepts === 'true' ? "dcterms:title.keyword" : "name.keyword";
+        this.sortBy = this.$store.getters['editor/conceptMode'] === true ? "dcterms:title.keyword" : "name.keyword";
     },
     computed: {
         ...mapState({
@@ -169,8 +169,8 @@ export default {
             if (this.queryParams && this.queryParams.filter != null) {
                 search += " AND (" + this.queryParams.filter + ")";
             }
-            if (this.showMine || (this.queryParams && this.queryParams.concepts !== "true" && this.queryParams.show === "mine") ||
-                (this.queryParams && this.queryParams.concepts === "true" && this.queryParams.conceptShow === "mine")) {
+            if (this.showMine || (this.queryParams && this.$store.getters['editor/conceptMode'] === true && this.queryParams.show === "mine") ||
+                (this.queryParams && this.$store.getters['editor/conceptMode'] === true && this.queryParams.conceptShow === "mine")) {
                 search += " AND (";
                 for (var i = 0; i < EcIdentityManager.ids.length; i++) {
                     if (i !== 0) {
@@ -189,8 +189,8 @@ export default {
             obj.size = 20;
             var order = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "asc" : "desc";
             obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "long",  "missing" : "_last"}} ]';
-            if (this.queryParams && ((this.queryParams.concepts !== "true" && this.queryParams.show === 'mine') ||
-                (this.queryParams.concepts === "true" && this.queryParams.conceptShow === "mine"))) {
+            if (this.queryParams && ((this.$store.getters['editor/conceptMode'] === true && this.queryParams.show === 'mine') ||
+                (this.$store.getters['editor/conceptMode'] === true && this.queryParams.conceptShow === "mine"))) {
                 obj.ownership = 'me';
             }
             return obj;
@@ -624,7 +624,7 @@ export default {
                 this.sortBy = "schema:dateModified";
                 this.displayFirst.splice(0, this.displayFirst.length);
             } else {
-                this.sortBy = this.queryParams.concepts === 'true' ? "dcterms:title.keyword" : "name.keyword";
+                this.sortBy = this.$store.getters['editor/conceptMode'] === true ? "dcterms:title.keyword" : "name.keyword";
                 this.displayFirst.splice(0, this.displayFirst.length);
             }
         },

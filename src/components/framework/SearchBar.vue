@@ -168,7 +168,7 @@ export default {
         },
         clearSortBy: function() {
             this.$store.commit('app/sortResults', []);
-            this.sortBy = this.queryParams.concepts === 'true' ? "dcterms:title.keyword" : "name.keyword";
+            this.sortBy = this.$store.getters['editor/conceptMode'] === true ? "dcterms:title.keyword" : "name.keyword";
         },
         removeFilter: function(filterType, val) {
             let storeCaller = 'app/' + filterType;
@@ -186,7 +186,7 @@ export default {
             return this.$store.getters['editor/queryParams'];
         },
         type: function() {
-            return this.queryParams.concepts === 'true' ? "ConceptScheme" : "Framework";
+            return this.$store.getters['editor/conceptMode'] === true ? "ConceptScheme" : "Framework";
         },
         applySearchTo: function() {
             return this.$store.getters['app/applySearchTo'];

@@ -35,7 +35,8 @@ const state = {
     lastEditToUndo: null,
     recomputeHierarchy: false,
     selectedCompetenciesAsProperties: null,
-    refreshLevels: false
+    refreshLevels: false,
+    conceptMode: false
 };
 const mutations = {
     framework(state, f) {
@@ -135,6 +136,9 @@ const mutations = {
     },
     refreshLevels(state, boolean) {
         state.refreshLevels = boolean;
+    },
+    conceptMode(state, boolean) {
+        state.conceptMode = boolean;
     }
 };
 const actions = {
@@ -221,6 +225,9 @@ const getters = {
     },
     refreshLevels: function(state) {
         return state.refreshLevels;
+    },
+    conceptMode: function(state) {
+        return state.conceptMode;
     }
 };
 
