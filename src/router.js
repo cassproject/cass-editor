@@ -16,8 +16,18 @@ export default new Router({
     },
     routes: [
         {
-            path: '/',
+            path: '/frameworks',
             name: 'frameworks',
+            components: {
+                default: () => import('./views/framework/Frameworks.vue'),
+                sidebar: () => import('./components/SideNav.vue'),
+                topbar: () => import('./components/Topbar.vue')
+            },
+            alias: '/cass-editor/'
+        },
+        {
+            path: '/concepts',
+            name: 'concepts',
             components: {
                 default: () => import('./views/framework/Frameworks.vue'),
                 sidebar: () => import('./components/SideNav.vue'),
