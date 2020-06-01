@@ -16,6 +16,7 @@
         <router-view
             :showSideNav="showSideNav"
             @createNewFramework="onCreateNewFramework"
+            @createNewConceptScheme="createNewConceptScheme"
             name="sidebar" />
     </div>
 </template>
@@ -328,60 +329,70 @@ export default {
             returnObject.copyFrom(v.decryptIntoObject());
             return returnObject;
         },
+        createNewFramework: function() {
+            let me = this;
+            this.setDefaultLanguage();
+            var framework = new EcFramework();
+            if (this.queryParams.newObjectEndpoint != null) {
+                framework.generateShortId(this.queryParams.newObjectEndpoint);
+            } else {
+                framework.generateId(this.repo.selectedServer);
+            }
+            framework["schema:dateCreated"] = new Date().toISOString();
+            framework["schema:dateModified"] = new Date().toISOString();
+            if (EcIdentityManager.ids.length > 0) {
+                framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            }
+            framework.name = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Framework"};
+            this.$store.commit('editor/newFramework', framework.shortId());
+            if (this.queryParams.ceasnDataFields === "true") {
+                framework["schema:inLanguage"] = [this.$store.state.editor.defaultLanguage];
+            }
+            var saveFramework = framework;
+            if (this.queryParams.private === "true") {
+                saveFramework = EcEncryptedValue.toEncryptedValue(framework);
+            }
+            this.repo.saveTo(saveFramework, function() {
+                me.$store.commit('editor/framework', framework);
+                if (me.$route.name !== 'framework') {
+                    me.$router.push({name: "framework"});
+                }
+            }, console.error);
+        },
+        createNewConceptScheme: function() {
+            let me = this;
+            this.setDefaultLanguage();
+            var framework = new EcConceptScheme();
+            if (this.queryParams.newObjectEndpoint != null) {
+                framework.generateShortId(newObjectEndpoint);
+            } else {
+                framework.generateId(this.repo.selectedServer);
+            }
+            if (EcIdentityManager.ids.length > 0) {
+                framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            }
+            framework["dcterms:title"] = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Concept Scheme"};
+            framework["schema:dateCreated"] = new Date().toISOString();
+            framework["schema:dateModified"] = new Date().toISOString();
+            this.$store.commit('editor/newFramework', framework.shortId());
+            var saveFramework = framework;
+            if (this.queryParams.private === "true") {
+                saveFramework = EcEncryptedValue.toEncryptedValue(framework);
+            }
+            this.repo.saveTo(saveFramework, function() {
+                me.$store.commit('editor/framework', framework);
+                if (me.$route.name !== 'conceptScheme') {
+                    me.$router.push({name: "conceptScheme"});
+                }
+            }, console.error);
+        },
         createNew: function() {
             this.setDefaultLanguage();
             var me = this;
             if (this.queryParams.concepts !== "true") {
-                var framework = new EcFramework();
-                if (this.queryParams.newObjectEndpoint != null) {
-                    framework.generateShortId(this.queryParams.newObjectEndpoint);
-                } else {
-                    framework.generateId(this.repo.selectedServer);
-                }
-                framework["schema:dateCreated"] = new Date().toISOString();
-                framework["schema:dateModified"] = new Date().toISOString();
-                if (EcIdentityManager.ids.length > 0) {
-                    framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-                }
-                framework.name = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Framework"};
-                this.$store.commit('editor/newFramework', framework.shortId());
-                if (this.queryParams.ceasnDataFields === "true") {
-                    framework["schema:inLanguage"] = [this.$store.state.editor.defaultLanguage];
-                }
-                var saveFramework = framework;
-                if (this.queryParams.private === "true") {
-                    saveFramework = EcEncryptedValue.toEncryptedValue(framework);
-                }
-                this.repo.saveTo(saveFramework, function() {
-                    me.$store.commit('editor/framework', framework);
-                    if (me.$route.name !== 'framework') {
-                        me.$router.push({name: "framework"});
-                    }
-                }, console.error);
+                this.createNewConceptScheme();
             } else {
-                var framework = new EcConceptScheme();
-                if (this.queryParams.newObjectEndpoint != null) {
-                    framework.generateShortId(newObjectEndpoint);
-                } else {
-                    framework.generateId(this.repo.selectedServer);
-                }
-                if (EcIdentityManager.ids.length > 0) {
-                    framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-                }
-                framework["dcterms:title"] = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Concept Scheme"};
-                framework["schema:dateCreated"] = new Date().toISOString();
-                framework["schema:dateModified"] = new Date().toISOString();
-                this.$store.commit('editor/newFramework', framework.shortId());
-                var saveFramework = framework;
-                if (this.queryParams.private === "true") {
-                    saveFramework = EcEncryptedValue.toEncryptedValue(framework);
-                }
-                this.repo.saveTo(saveFramework, function() {
-                    me.$store.commit('editor/framework', framework);
-                    if (me.$route.name !== 'conceptScheme') {
-                        me.$router.push({name: "conceptScheme"});
-                    }
-                }, console.error);
+                this.createNewFramework();
             }
         },
         loadIdentity: function(callback) {
@@ -1071,6 +1082,12 @@ export default {
             // First load, can't access this.$route.query before this
             if (!from.name) {
                 this.initializeApp();
+            }
+            if(to.name === 'concepts') {
+                this.$store.commit('editor/queryParams', { 'concepts': 'true'});
+            }
+            if(to.name === 'frameworks') {
+                this.$store.commit('editor/queryParams', {'concepts': 'false'});
             }
         }
         /* loggedInPerson: function(val) {
