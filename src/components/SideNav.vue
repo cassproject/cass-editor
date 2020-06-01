@@ -35,7 +35,7 @@
         <div
             class="menu-label has-text-white"
             :class="[{'is-hidden': currentRoute == '/'}]">
-            <router-link to="/">
+            <router-link to="/frameworks">
                 <span class="icon">
                     <i class="fa fa-arrow-left" />
                 </span>
@@ -52,7 +52,7 @@
         <ul
             class="menu-list">
             <li class="has-text-white">
-                <router-link to="/">
+                <router-link to="/frameworks">
                     Frameworks
                 </router-link>
             </li>
@@ -72,6 +72,24 @@
                 <router-link to="/import">
                     Import
                 </router-link>
+            </li>
+        </ul>
+        <!-- CONCEPT SCHEMES -->
+        <div
+            class="menu-label has-text-weight-bold">
+            Concept Schemes
+        </div>
+        <ul
+            class="menu-list">
+            <li class="has-text-white">
+                <router-link to="/concepts">
+                    Concepts
+                </router-link>
+            </li>
+            <li
+                class="has-text-white"
+                @click="$emit('createNewConceptScheme')">
+                <a> New Concept Scheme</a>
             </li>
         </ul>
         <ul class="menu-list" />
