@@ -412,7 +412,9 @@ export default {
                 }
                 edits.push({operation: "update", id: me.framework.shortId(), fieldChanged: ["level"], initialValue: [initialLevels], changedValue: [me.framework.level]});
                 me.$store.commit('editor/addEditsToUndo', edits);
-                me.repo.saveTo(me.framework, function() {}, console.error);
+                me.repo.saveTo(me.framework, function() {
+                    me.$store.commit('lode/setIsAddingProperty', false);
+                }, console.error);
             }, console.error);
         },
         saveCheckedLevels: function(selectedCompetency, checkedOptions, allOptions) {
@@ -461,6 +463,8 @@ export default {
                 this.saveFramework();
             }
             this.$store.commit('editor/addEditsToUndo', edits);
+            this.$store.commit('lode/setAddingChecked', []);
+            this.$store.commit('lode/setIsAddingProperty', false);
         },
         saveFramework: function() {
             this.framework["schema:dateModified"] = new Date().toISOString();
