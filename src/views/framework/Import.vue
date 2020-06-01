@@ -580,7 +580,7 @@ export default {
         },
         /* When an import is "successful" */
         importSuccess: function() {
-            if (!conceptMode) {
+            if (!this.conceptMode) {
                 let feedback = "Competency detected";
                 this.$store.commit('app/importStatus', feedback);
                 if (this.isT3Import) {
@@ -1348,7 +1348,7 @@ export default {
                         me.caseDocs[firstIndex].success = true;
                         EcFramework.get(id, function(f) {
                             me.$store.commit('app/importFramework', f);
-                            me.$store.commit('editor/framework', framework);
+                            // me.$store.commit('editor/framework', me.framework);
                             me.spitEvent("importFinished", f.shortId(), "importPage");
                         }, console.error);
                         me.importCase();
