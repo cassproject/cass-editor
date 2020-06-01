@@ -15,7 +15,7 @@
             :class="[{ 'clear-side-bar': showSideNav}, {'clear-right-aside': showRightAside}]" />
         <router-view
             :showSideNav="showSideNav"
-            @createNewFramework="onCreateNewFramework"
+            @createNewFramework="createNewFramework"
             @createNewConceptScheme="createNewConceptScheme"
             name="sidebar" />
     </div>
@@ -141,9 +141,6 @@ export default {
         },
         onSidebarEvent: function() {
             this.showSideNav = !this.showSideNav;
-        },
-        onCreateNewFramework: function() {
-            this.createNew();
         },
         cappend: function(event) {
             if (event.data.message === "selected") {
