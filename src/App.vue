@@ -73,6 +73,7 @@ export default {
                 r.autoDetectRepository();
                 servers[i] = r;
                 window.repo = r;
+                this.repo = r;
 
                 try {
                     window.addEventListener('message', this.cappend, false);
