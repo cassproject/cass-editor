@@ -464,7 +464,7 @@ export default {
             var me = this;
             var c = new EcConcept();
             if (this.queryParams.newObjectEndpoint) {
-                c.generateShortId(newObjectEndpoint);
+                c.generateShortId(this.queryParams.newObjectEndpoint);
             } else {
                 c.generateId(this.repo.selectedServer);
             }
