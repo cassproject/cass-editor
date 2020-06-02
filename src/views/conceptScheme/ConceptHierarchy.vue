@@ -37,11 +37,12 @@
                     class="icon is-vcentered">
                     <i class="fa fa-circle is-size-7 has-text-light" />
                 </div>
-                <button
+                <div
                     v-if="selectButtonText"
-                    @click="$emit('selectButtonClick', selectedArray)">
+                    @click="$emit('selectButtonClick', selectedArray)"
+                    class="button is-small is-outlined is-primary">
                     {{ selectButtonText }}
-                </button>
+                </div>
             </div>
             <!-- MULTI EDIT BUTTONS -->
             <div class="column is-narrow">
