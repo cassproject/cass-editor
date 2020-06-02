@@ -179,6 +179,9 @@ export default {
             padding-left: .25rem;
         }
     }
+    .comment-button {
+        display: none;
+    }
     .lode__thing:hover {
         padding-lefT: 0rem;
         color: $dark;
