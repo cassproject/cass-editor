@@ -379,6 +379,9 @@ export default {
             return this.$store.getters['editor/queryParams'];
         },
         canEditFramework: function() {
+            if (!this.loggedIn) {
+                return false;
+            }
             if (this.queryParams && this.queryParams.view === 'true') {
                 return false;
             } else if (!this.framework.canEditAny(EcIdentityManager.getMyPks())) {
