@@ -2,7 +2,7 @@
     <div class="single modal-card">
         <header class="modal-card-head has-background-primary">
             <p class="modal-card-title has-text-white is-size-2">
-                <template v-if="dynamicModalContent.parentName['@value']">
+                <template v-if="dynamicModalContent.parentName && dynamicModalContent.parentName['@value']">
                     <span>{{ dynamicModalContent.parentName['@value'] }}</span>
                     <br><br>
                 </template>
