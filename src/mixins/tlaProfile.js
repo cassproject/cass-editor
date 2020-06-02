@@ -108,6 +108,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual resources contextually."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Concept Terms"}],
+                    "noTextEditing": "true",
                     "heading": "Tagging"
                 },
                 "https://purl.org/ctdlasn/terms/derivedFrom": {
@@ -166,6 +167,7 @@ export default {
                                 Alternatively, a more specific statement of the location of the audience in terms of its progression through an education or training context.`}
                         ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Education Level Type"}],
+                    "noTextEditing": "true",
                     "heading": "Context"
                 },
                 "http://schema.org/validFrom": {
@@ -394,6 +396,7 @@ export default {
                                 through an education or training context.`}
                         ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Education Level"}],
+                    "noTextEditing": "true",
                     "heading": "General"
                 },
                 "https://purl.org/ctdlasn/terms/listId": {
@@ -467,6 +470,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual resources contextually."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Concept Terms"}],
+                    "noTextEditing": "true",
                     "heading": "Tagging"
                 },
                 "https://purl.org/ctdlasn/terms/complexityLevel": {
@@ -478,6 +482,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "The expected performance level of a learner or professional as defined by a competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Complexity Level"}],
+                    "noTextEditing": "true",
                     "heading": "Scales"
                 },
                 "https://purl.org/ctdlasn/terms/weight": {

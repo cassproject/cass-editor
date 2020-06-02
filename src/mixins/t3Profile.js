@@ -71,6 +71,7 @@ export default {
                     "http://schema.org/domainIncludes":
                         [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                     "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/skos/Concept"}],
+                    "noTextEditing": "true",
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual resources contextually."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Context"}]
