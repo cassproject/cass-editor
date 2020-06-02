@@ -10,6 +10,9 @@
 
 <script>
 export default {
-    name: 'Welcome'
+    name: 'Welcome',
+    mounted: function() {
+        this.$store.commit('app/showSideNav');
+    }
 };
 </script>
