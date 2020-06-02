@@ -189,7 +189,7 @@ export default {
             obj.size = 20;
             var order = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "asc" : "desc";
             obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "long",  "missing" : "_last"}} ]';
-            if (this.queryParams && ((this.$store.getters['editor/conceptMode'] === true && this.queryParams.show === 'mine') ||
+            if (EcIdentityManager.ids.length > 0 && this.queryParams && ((this.$store.getters['editor/conceptMode'] === true && this.queryParams.show === 'mine') ||
                 (this.$store.getters['editor/conceptMode'] === true && this.queryParams.conceptShow === "mine"))) {
                 obj.ownership = 'me';
             }
