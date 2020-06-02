@@ -27,7 +27,6 @@ drag, drag, and chosen states
     }
 }
 
-
 .ghost-drag {
     .lode__hierarchy-item {
         background-color: rgba($link, .1);
@@ -56,34 +55,26 @@ drag, drag, and chosen states
         display: none !important;
     }
 }
-
 .uneditable {
     word-break: break-all;
 }
 
-
 .lode__thing:hover {
     padding: 0rem;
     padding-right: 0rem;
-    .lode__Competency, .lode__Concept {
-        .lode__Property.lode__name{
-        }
-        .lode__Property.lode__Broadens,
-        .lode__Property.lode__Narrows,
-        .lode__Property.lode__Equals
-        .lode__Property.lode__Similar,
-        .lode__Property.lode__Similar {
-            .lode__Property.lode__name {
-            }
-        }
-    }
     .edit-button, .handle.fa-arrows-alt {
         visibility: visible;
     }
-    .lode__Competency, .lode__Concept  {
+    .lode__Competency,
+    .lode__Concept,
+    .lode__Framework,
+    .lode__ConceptScheme  {
         .edit-button {
             visibility: visible;
         }
+    }
+    .lode__Competency,
+    .lode__Framework {
         .comment-button {
             visibility: visible;
         }
@@ -291,7 +282,7 @@ drag, drag, and chosen states
     .lode__thing {
         padding: 0rem;
         padding-right: 0rem;
-        .lode__Competency, .lode__Concept {
+        .lode__Competency, .lode__Concept, .lode__Framework {
             .lode__thing-heading {
                 width: calc(100% - 7rem);
                 h3 {
@@ -304,9 +295,6 @@ drag, drag, and chosen states
                             .language {
                                 display: none;
                             }
-                            .value {
-
-                            }
                         }
                     }
                 }
@@ -318,6 +306,9 @@ drag, drag, and chosen states
             }
         }
         .lode__Framework {
+            .comment-button {
+                top: 16px;
+            }
             .lode__thing-heading {
                 padding: 0rem 6rem 0rem .5rem;
             }
@@ -337,23 +328,13 @@ drag, drag, and chosen states
         }
         transform: translateX(0); // make room for add node
         .edit-button {
-            position: absolute;
-            right: 0rem;
-            padding:.125rem;
             visibility: hidden;
         }
         .handle-button {
-            position: absolute;
-            right: 2rem;
-            padding: .125rem;
             visibility: hidden !important;
         }
         .comment-button {
-            position: absolute;
             color: $dark;
-            right: 4rem;
-            top: 0;
-            padding: .25rem .125rem;
             visibility: hidden;
             -webkit-backface-visibility: hidden;
         }
@@ -367,8 +348,6 @@ drag, drag, and chosen states
             }
         }
         .drag-button {
-            position: absolute;
-            right: 32px;
             visibility: visible;
             .button {
                 color: $cass-primary-down;
@@ -421,29 +400,43 @@ drag, drag, and chosen states
             }
         }
     }
-}
-/* End hierarchy styles */
-
-.framework-wrapper {
     .lode__thing:hover {
-        .lode__Competency, .lode__Concept {
-            .lode__Property.lode__name{
-                color: $primary;
+        .edit-button {
+            visibility: visible;
+        }
+    }
+}
+
+.framework-content {
+    .lode__thing {
+        padding: .125rem;
+        padding-right: 1rem;
+        .lode__Framework,
+        .lode__ConceptScheme {
+            max-width: 1300px;
+            .hierarchy-item__buttons {
+                display: flex;
+                position: absolute;
+                right: 0;
+                top: 16px;
             }
         }
+        .hierarchy-item__buttons {
+            display: flex;
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+    }
+    .lode__thing:hover {
+        .lode__Competency,
         .lode__Concept {
             .lode__Property.lode__name{
                 color: $primary;
             }
         }
     }
-    .lode__thing {
-        padding: .125rem;
-        padding-right: 1rem;
-        .lode__Framework, .lode__ConceptScheme {
-            max-width: 1300px;
-        }
-    }
+   
 }
 
 
@@ -488,7 +481,6 @@ drag, drag, and chosen states
             font-size: $size-6;
         }
     }
-
     /* relationships as properties */
     .lode__Property.lode__competencyCategory {
         color: orange;
@@ -509,8 +501,6 @@ drag, drag, and chosen states
             color: $link !important;
         }
     }
-    
-    
 }
 
 .lode__thing.lode__property {
@@ -538,7 +528,6 @@ drag, drag, and chosen states
     .click-to-load:hover .button {
         visibility: visible;
     }
-    
     padding-left: 0rem;
     .comment-button {
         display: none;
@@ -586,12 +575,6 @@ drag, drag, and chosen states
         .lode__thing-ul, .lode__thing-ul, .lode__thing-always-ul{
             .lode__property {
                 padding: .125rem 0rem;
-                .lode__property-ul {
-                }
-                label {
-                }
-                .thing-label {
-                }
                 .active {
                     color: $link;
                 }
@@ -606,18 +589,6 @@ drag, drag, and chosen states
         // contains properties
         .lode__thing-view-ul .lode__thing-ul {
             width: 100%;
-            li .lode__property {
-                label {
-    
-                }
-                span .button {
-                }
-            }
-
-        }
-        // global properties
-        .lode__thing-possible-ul .lode__thing-ul {
-
         }
     }
 }
