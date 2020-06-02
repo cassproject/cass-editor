@@ -11,6 +11,7 @@ const state = {
     frameworkTargetRelationships: null,
     relevantExistingAlignmentsMap: null,
     relevantExistingAlignmentsMapLastUpdate: null,
+    alignedCompetenciesList: [],
     workingAlignmentsMap: {
         source: '',
         targets: [],
@@ -48,6 +49,9 @@ const mutations = {
     relevantExistingAlignmentsMapLastUpdate(state, f) {
         state.relevantExistingAlignmentsMapLastUpdate = f;
     },
+    alignedCompetenciesList(state, f) {
+        state.alignedCompetenciesList = f;
+    },
     step(state, val) {
         state.step = val;
     },
@@ -65,6 +69,23 @@ const mutations = {
     },
     targetState(state, t) {
         state.targetState = t;
+    },
+    populateAlignedCompetenciesList(state) {
+        if (state.relevantExistingAlignmentsMap) {
+            let alignedCompetencies = [];
+            let sourceComps = Object.keys(state.relevantExistingAlignmentsMap);
+            for (let sc of sourceComps) {
+                alignedCompetencies.push(sc);
+                let alignTypes = Object.keys(state.relevantExistingAlignmentsMap[sc]);
+                for (let scAt of alignTypes) {
+                    let targetIds = Object.keys(state.relevantExistingAlignmentsMap[sc][scAt]);
+                    for (let ti of targetIds) {
+                        alignedCompetencies.push(ti);
+                    }
+                }
+            }
+            state.alignedCompetenciesList = alignedCompetencies;
+        }
     },
     populateWorkingAlignmentMap(state) {
         if (state.relevantExistingAlignmentsMap[state.workingAlignmentsMap.source] &&
@@ -251,6 +272,9 @@ const getters = {
     },
     alignmentsToDelete(state) {
         return state.alignmentsToDelete;
+    },
+    alignedCompetenciesList(state) {
+        return state.alignedCompetenciesList;
     }
 };
 

@@ -73,6 +73,7 @@ export default {
                 r.autoDetectRepository();
                 servers[i] = r;
                 window.repo = r;
+                this.repo = r;
 
                 try {
                     window.addEventListener('message', this.cappend, false);
@@ -364,7 +365,7 @@ export default {
             this.setDefaultLanguage();
             var framework = new EcConceptScheme();
             if (this.queryParams.newObjectEndpoint != null) {
-                framework.generateShortId(newObjectEndpoint);
+                framework.generateShortId(this.queryParams.newObjectEndpoint);
             } else {
                 framework.generateId(this.repo.selectedServer);
             }

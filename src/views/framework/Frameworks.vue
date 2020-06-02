@@ -167,20 +167,22 @@ export default {
             if (this.queryParams && this.queryParams.filter != null) {
                 search += " AND (" + this.queryParams.filter + ")";
             }
-            if (this.showMine || (this.queryParams && this.conceptMode && this.queryParams.show === "mine") ||
+            if (this.showMine || (this.queryParams && !this.conceptMode && this.queryParams.show === "mine") ||
                 (this.queryParams && this.conceptMode && this.queryParams.conceptShow === "mine")) {
-                search += " AND (";
-                for (var i = 0; i < EcIdentityManager.ids.length; i++) {
-                    if (i !== 0) {
-                        search += " OR ";
+                if (EcIdentityManager.ids.length > 0) {
+                    search += " AND (";
+                    for (var i = 0; i < EcIdentityManager.ids.length; i++) {
+                        if (i !== 0) {
+                            search += " OR ";
+                        }
+                        var id = EcIdentityManager.ids[i];
+                        search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
+                        search += " OR @owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
                     }
-                    var id = EcIdentityManager.ids[i];
-                    search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
-                    search += " OR @owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
+                    search += ")";
                 }
-                search += ")";
             }
-            if (this.showNotMine) {
+            if (this.showNotMine && EcIdentityManager.ids.length > 0) {
                 search += " AND NOT (";
                 for (var i = 0; i < EcIdentityManager.ids.length; i++) {
                     if (i !== 0) {
@@ -199,7 +201,7 @@ export default {
             obj.size = 20;
             var order = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "asc" : "desc";
             obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "long",  "missing" : "_last"}} ]';
-            if (this.queryParams && ((!this.conceptMode && this.queryParams.show === 'mine') ||
+            if (EcIdentityManager.ids.length > 0 && this.queryParams && ((!this.conceptMode && this.queryParams.show === 'mine') ||
                 (this.conceptMode && this.queryParams.conceptShow === "mine"))) {
                 obj.ownership = 'me';
             }
