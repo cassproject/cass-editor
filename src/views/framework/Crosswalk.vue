@@ -69,6 +69,11 @@
                                     class="is-size-2 is-inline">
                                     create alignments
                                 </h2>
+                                <h2
+                                    v-if="step == 3"
+                                    class="is-size-2 is-inline">
+                                    save alignments
+                                </h2>
                             </div>
                             <div
                                 v-if="step == 2"
@@ -107,7 +112,7 @@
                                 </div>
                             </div>
                             <h2 v-if="step == 3">
-                                Step 4: Review saved aligment
+                                Step 4: Save alignment changes
                             </h2>
                         </div>
                     </div>
@@ -225,6 +230,15 @@
                                     @searchThings="handleSearch($event)"
                                     properties="primary" />
                             </div>
+                        </div>
+                    </div>
+                </transition>
+                <transition
+                    v-if="step === 3"
+                    name="slide-fade">
+                    <div class="column is-12">
+                        <div class="container">
+                            Test Save Screen
                         </div>
                     </div>
                 </transition>
@@ -402,6 +416,7 @@ export default {
     },
     methods: {
         saveAlignments: function() {
+            this.$store.commit('crosswalk/step', 3);
             // TODO expand on this...this is just a temporary thing to get some data in the system for development
             // let ecaa = this.generateAlignmentObjectsFromAlignmentToSaveObjects();
             // let fso = EcRepository.getBlocking(this.frameworkSource.shortId());
@@ -516,6 +531,7 @@ export default {
                 this.applyRemovedWorkingAlignmentChanges();
                 this.applyAddedWorkingAlignmentChanges();
                 this.$store.commit('crosswalk/relevantExistingAlignmentsMapLastUpdate', Date.now());
+                this.$store.commit('crosswalk/populateAlignedCompetenciesList');
             }
             this.$store.commit('crosswalk/sourceState', 'ready');
             this.$store.commit('crosswalk/resetWorkingAlignmentsMap');
@@ -540,6 +556,7 @@ export default {
                 this.addRelationshipListToRelevantAlignments(this.frameworkTargetRelationships, processedRelationshipIds, relAlignmentMap);
             }
             this.$store.commit('crosswalk/relevantExistingAlignmentsMap', relAlignmentMap);
+            this.$store.commit('crosswalk/populateAlignedCompetenciesList');
         },
         handleBuildFrameworkTargetRelationshipsSuccess(ecrlda) {
             console.log("Building framework target relationship list...");
