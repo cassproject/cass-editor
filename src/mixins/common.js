@@ -514,7 +514,7 @@ export default {
             for (var i = 0; i < targets.length; i++) {
                 var r = new EcAlignment();
                 if (this.$store.getters['editor/queryParams'].newObjectEndpoint != null) {
-                    r.generateShortId(this.newObjectEndpoint);
+                    r.generateShortId(this.$store.getters['editor/queryParams'].newObjectEndpoint);
                 } else {
                     r.generateId(this.repo.selectedServer);
                 }
