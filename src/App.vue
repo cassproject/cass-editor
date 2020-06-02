@@ -365,7 +365,7 @@ export default {
             this.setDefaultLanguage();
             var framework = new EcConceptScheme();
             if (this.queryParams.newObjectEndpoint != null) {
-                framework.generateShortId(newObjectEndpoint);
+                framework.generateShortId(this.queryParams.newObjectEndpoint);
             } else {
                 framework.generateId(this.repo.selectedServer);
             }
