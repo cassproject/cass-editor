@@ -408,6 +408,12 @@ drag, drag, and chosen states
 }
 
 .framework-content {
+    .hierarchy-item__buttons {
+                display: flex;
+                position: absolute;
+                right: 0;
+                top: 16px;
+            }
     .lode__thing {
         padding: .125rem;
         padding-right: 1rem;

@@ -4,6 +4,24 @@
 textarea {
     resize: vertical !important;
 }
+.page-import {
+    .lode__Competency:hover {
+        .hierarchy-item__buttons {
+            display: flex;
+            visibility: visible;
+            position: absolute;
+            right: 0;
+            top: 16px;
+        }
+    }
+    .hierarchy-item__buttons {
+        display: flex;
+        visibility: hidden;
+        position: absolute;
+        right: 0;
+        top: 16px;
+    }
+}
 ul.processing-list {
     height: 100%;
     width: 100%;
