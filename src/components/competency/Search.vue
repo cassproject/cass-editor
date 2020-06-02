@@ -137,7 +137,7 @@ export default {
         };
     },
     created: function() {
-        this.sortBy = this.$store.getters['editor/conceptMode'] === true ? "dcterms:title.keyword" : "name.keyword";
+        this.sortBy = (this.$store.getters['editor/conceptMode'] === true || this.searchType === "Concept") ? "dcterms:title.keyword" : "name.keyword";
     },
     computed: {
         ...mapState({
@@ -624,7 +624,7 @@ export default {
                 this.sortBy = "schema:dateModified";
                 this.displayFirst.splice(0, this.displayFirst.length);
             } else {
-                this.sortBy = this.$store.getters['editor/conceptMode'] === true ? "dcterms:title.keyword" : "name.keyword";
+                this.sortBy = (this.$store.getters['editor/conceptMode'] === true || this.searchType === "Concept") ? "dcterms:title.keyword" : "name.keyword";
                 this.displayFirst.splice(0, this.displayFirst.length);
             }
         },
