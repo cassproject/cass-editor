@@ -316,7 +316,7 @@ export default {
                 selectedArray = this.selectedArray;
             }
             for (var i = 0; i < selectedArray.length; i++) {
-                if (this.queryParams.selectVerbose === "true" && this.$store.getters['editor/conceptMode'] === true) {
+                if (this.queryParams.selectVerbose === "true" && this.$store.getters['editor/conceptMode'] !== true) {
                     if (this.queryParams.selectExport === "ctdlasn") {
                         var link;
                         if (EcRepository.shouldTryUrl(selectedArray[i]) === false) {
@@ -351,7 +351,7 @@ export default {
                 }
             }
             var currentFramework = this.framework;
-            if (this.queryParams.selectExport === "ctdlasn" && this.$store.getters['editor/conceptMode'] === true) {
+            if (this.queryParams.selectExport === "ctdlasn" && this.$store.getters['editor/conceptMode'] !== true) {
                 if (this.framework != null) {
                     var link;
                     if (EcRepository.shouldTryUrl(this.framework.id) === false) {
