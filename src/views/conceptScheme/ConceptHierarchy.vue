@@ -137,8 +137,7 @@
                     @draggableCheck="onDraggableCheck"
                     :properties="properties"
                     :expandAll="expanded==true"
-                    :parentChecked="false">
-                </HierarchyNode>
+                    :parentChecked="false" />
             </draggable>
         </template>
     </div>

@@ -1,22 +1,5 @@
 @import './variables.scss';
 
-#search-selection__icon,
-#search-selection__add-icon
- {
-    float: right;
-    position:fixed;
-    right: 8px;
-    display: flex;
-    height: 100%;
-    align-content: center;
-    .icon {
-        height: 100%;
-    }
-}
-#search-selection__add-icon {
-    visibility: hidden;
-}
-
 .framework-list-page {
     label{
         display:none;
@@ -41,6 +24,12 @@
                     align-items: center;
                     .list-thing {
                         width: calc(100% - 56px);
+                    }
+                    .lode__type {
+                        display: none;
+                    }
+                    .language {
+                        display: none;
                     }
 
             }
@@ -178,16 +167,33 @@
 }
 
 /* handles search */
-.lode__thing-editing {
+.lode__thing-editing, .lode__thing {
     .List {
         .list-ul {
             .list-ul__item {
                 padding: .25rem;
+
+                .search-selection__icon,
+                .search-selection__add-icon
+                {
+                    float: right;
+                    right: 16px;
+                    display: flex;
+                    height: 100%;
+                    align-content: center;
+                    .icon {
+                        height: 100%;
+                        padding-right: 16px;
+                    }
+                }
+                .search-selection__add-icon {
+                    visibility: hidden;
+                }
             }
             .list-ul__item:hover {
                 background-color: rgba($light, .5);
-                #search-selection__add-icon {
-                    visibility: visible;
+                .lode__Competency .search-selection__add-icon {
+                    visibility: visible !important;
                 }
             }
         }

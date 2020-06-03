@@ -646,34 +646,78 @@ export default {
 
 <style lang="scss">
     @import '@/scss/frameworks.scss';
-.search-modal {
+.search-modal, .modal.lode__thing-editing {
     max-height: 100%;
     min-height: 600px;
-}
-.competency-search{
-    .thing {
-        padding: .125rem .25rem !important;
+    .breadcrumb {
+        padding-left: .125rem;
     }
-    .thing .list-thing:hover {
-        background-color: none;
-    }
-    .Thing__heading {
-        padding-left: .25rem !important;
-        margin-right: 2rem;
-    }
-    .edit-button {
+    .lode__type {
         display: none;
     }
+    .competency-search{
+        .thing {
+            padding: .125rem .25rem !important;
+        }
+        .thing .list-thing:hover {
+            background-color: none;
+        }
+        .Thing__heading {
+            padding-left: .25rem !important;
+            margin-right: 2rem;
+        }
+        .edit-button {
+            display: none;
+        }
 
-    .list-ul__item:hover {
-        padding-top: .5rem;
-        background-color: $cass-lightest;
+        .list-ul__item:hover {
+            padding-top: .5rem;
+            background-color: $cass-lightest;
+        }
+        .list-ul__item {
+            margin-top: .25rem;
+            border-radius: 3px;
+            padding: .5rem;
+        }
     }
-    .list-ul__item {
-        margin-top: .25rem;
-        border-radius: 3px;
-        padding: .5rem;
+    .property-section {
+        padding-top: 0rem !important;
+        padding-bottom: 0rem !important;
     }
+
+    .List {
+        .list-ul {
+            .list-ul__item {
+
+                padding: .5rem .25rem;
+
+                .search-selection__icon,
+                .search-selection__add-icon
+                {
+                    float: right;
+                    right: 16px;
+                    display: flex;
+                    height: 100%;
+                    align-content: center;
+                    .icon {
+                        height: 100%;
+                        padding-right: 16px;
+                    }
+                }
+                .search-selection__add-icon {
+                    visibility: hidden;
+                }
+            }
+            .list-ul__item:hover {
+                background-color: rgba($light, .5);
+                .lode__Competency .search-selection__add-icon {
+                    visibility: visible !important;
+                }
+            }
+        }
+    }
+
 }
+
 
 </style>
