@@ -571,6 +571,24 @@ export default {
                         return this.clearImport();
                     }
                 };
+            } else if (val === 'duplicateOverwriteOnly') {
+                params = {
+                    type: val,
+                    title: "Duplicate framework",
+                    text: (data[0].name ? ("The framework " + data[0].name) : "This framework") + " has already been imported. If you're a framework admin you can overwrite it. Do you want to overwrite it?",
+                    onConfirm: () => {
+                        if (this.importType === "url") {
+                            return this.importJsonLd(data[0]);
+                        }
+                        return this.continueCaseImport(data);
+                    },
+                    onCancel: () => {
+                        if (this.importType === "url") {
+                            return this.clearImport();
+                        }
+                        return this.importCase(data);
+                    }
+                };
             }
             // reveal modal
             this.$modal.show(params);
@@ -1318,7 +1336,13 @@ export default {
                 me.$store.commit('app/addImportError', "No frameworks found. Please check the URL and try again.");
             });
         },
-        importCase: function() {
+        importCase: function(dataArray) {
+            if (dataArray) {
+                // User has clicked cancel on this import item
+                var firstIndex = dataArray[1];
+                this.caseDocs[firstIndex].loading = false;
+                this.caseDocs[firstIndex].error = true;
+            }
             for (var i = this.caseDocs.length - 1; i >= 0; i--) {
                 if (!this.caseDocs[i].checked) {
                     this.caseDocs.splice(i, 1);
@@ -1338,32 +1362,57 @@ export default {
                     }
                 }
                 if (lis === 0) {
+                    this.$store.commit('app/importFramework', this.$store.getters['editor/framework']);
                     this.importSuccess();
                     this.$store.commit('app/importStatus', "Import finished.");
                 } else {
                     var me = this;
                     var id = this.caseDocs[firstIndex].id;
-                    var uuid = this.caseDocs[firstIndex].identifier;
-
-                    var identity = EcIdentityManager.ids[0];
-                    var formData = new FormData();
-                    if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
-                    EcRemote.postInner(this.repo.selectedServer, "ims/case/harvest?caseEndpoint=" + this.importServerUrl + "&dId=" + uuid, formData, null, function(success) {
-                        me.caseDocs[firstIndex].loading = false;
-                        me.caseDocs[firstIndex].success = true;
-                        EcFramework.get(id, function(f) {
-                            me.$store.commit('app/importFramework', f);
-                            // me.$store.commit('editor/framework', me.framework);
-                            me.spitEvent("importFinished", f.shortId(), "importPage");
-                        }, console.error);
-                        me.importCase();
-                    }, function(failure) {
-                        me.caseDocs[firstIndex].loading = false;
-                        me.caseDocs[firstIndex].error = true;
-                        me.importCase();
+                    me.repo.search("(@id:\"" + id + "\") AND (@type:Framework)", function() {}, function(frameworks) {
+                        console.log(frameworks);
+                        if (frameworks.length > 0) {
+                            me.$store.commit('app/importStatus', 'framework found...');
+                            me.showModal('duplicateOverwriteOnly', [me.caseDocs[firstIndex], firstIndex]);
+                        } else {
+                            me.$store.commit('app/importStatus', 'no match, saving new framework...');
+                            me.continueCaseImport([me.caseDocs[firstIndex], firstIndex]);
+                        } /* TO DO - ERROR HANDLING HERE */
+                    }, function(error) {
+                        me.$store.commit('app/importStatus', error);
+                        me.$store.commit('app/importTransition', 'process');
+                        me.$store.commit('app/addImportError', error);
                     });
                 }
             }// if not canceled
+        },
+        continueCaseImport: function(dataArray) {
+            var data = dataArray[0];
+            var firstIndex = dataArray[1];
+            var me = this;
+            var id = data.id;
+            var uuid = data.identifier;
+            var identity = EcIdentityManager.ids[0];
+            var formData = new FormData();
+            if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
+            EcRemote.postInner(this.repo.selectedServer, "ims/case/harvest?caseEndpoint=" + this.importServerUrl + "&dId=" + uuid, formData, null, function(success) {
+                me.caseDocs[firstIndex].loading = false;
+                me.caseDocs[firstIndex].success = true;
+                console.log(id);
+                EcFramework.get(id, function(f) {
+                    // me.$store.commit('app/importFramework', f);
+                    // Preserve the framework so we can set it as importFramework when they're all done
+                    me.$store.commit('editor/framework', f);
+                    me.spitEvent("importFinished", f.shortId(), "importPage");
+                    me.importCase();
+                }, function(error) {
+                    console.error(error);
+                    me.importCase();
+                });
+            }, function(failure) {
+                me.caseDocs[firstIndex].loading = false;
+                me.caseDocs[firstIndex].error = true;
+                me.importCase();
+            });
         },
         cancelCase: function() {
             this.caseCancel = true;
@@ -1425,7 +1474,25 @@ export default {
                 result = JSON.parse(result);
                 var graph = result["@graph"];
                 if (graph != null) {
-                    me.importJsonLd(result);
+                    var id = graph[0]["@id"];
+                    if (id) {
+                        me.repo.search("(@id:\"" + id + "\") AND (@type:Framework)", function() {}, function(frameworks) {
+                            console.log(frameworks);
+                            if (frameworks.length > 0) {
+                                me.$store.commit('app/importStatus', 'framework found...');
+                                me.showModal('duplicateOverwriteOnly', [result]);
+                            } else {
+                                me.$store.commit('app/importStatus', 'no match, saving new framework...');
+                                me.importJsonLd(result);
+                            } /* TO DO - ERROR HANDLING HERE */
+                        }, function(error) {
+                            me.$store.commit('app/importStatus', error);
+                            me.$store.commit('app/importTransition', 'process');
+                            me.$store.commit('app/addImportError', error);
+                        });
+                    } else {
+                        me.importJsonLd(result);
+                    }
                 } else {
                     error = "URL must have an '@graph' field at the top level.";
                     me.$store.commit('app/addImportError', error);
