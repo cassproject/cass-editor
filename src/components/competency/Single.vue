@@ -2,9 +2,10 @@
     <div class="single modal-card">
         <header class="modal-card-head has-background-primary">
             <p class="modal-card-title has-text-white is-size-2">
-                <span>{{ dynamicModalContent.parentName['@value'] }}</span>
-                <br>
-                <br>
+                <template v-if="dynamicModalContent.parentName && dynamicModalContent.parentName['@value']">
+                    <span>{{ dynamicModalContent.parentName['@value'] }}</span>
+                    <br><br>
+                </template>
                 <b>{{ dynamicModalContent.type }}</b>
             </p>
             <button
@@ -16,10 +17,11 @@
             <Component
                 :is="dynamicThing"
                 :uri="dynamicModalContent.uri"
-                :expandInModal="true" />
+                :expandInModal="true"
+                @doneEditingNodeEvent="doneEditing" />
             <div class="section">
                 <h4 class="header">
-                    This <b>{{ dynamicModalContent.type }}</b> is listed in <b>{{ numberOfParentFrameworks }}</b> frameworks
+                    This item is listed in <b>{{ numberOfParentFrameworks }}</b> {{ dynamicModalContent.objectType === "Concept" ? "concept scheme" : "framework" }}<span v-if="numberOfParentFrameworks > 1">s</span>
                 </h4>
                 <ul class="single__list">
                     <li
@@ -53,7 +55,7 @@
                 <button
                     @click="edit=true"
                     class="button is-outlined is-primary"
-                    v-if="dynamicModalContent.type==='Level'">
+                    v-if="dynamicModalContent.objectType==='Level'">
                     Edit {{ dynamicModalContent.type }}
                 </button>
                 <button
@@ -100,21 +102,48 @@ export default {
     },
     methods: {
         goToFramework: function(framework) {
-            if (this.framework.shortId() === framework.url && this.dynamicModalContent.type !== "Level") {
+            if (this.framework.shortId() === framework.url && this.dynamicModalContent.objectType !== "Level") {
                 return this.goToCompetencyWithinThisFramework();
             }
             this.$store.commit('editor/framework', EcRepository.getBlocking(framework.url));
+            if (this.dynamicModalContent.objectType === "Concept") {
+                this.$store.commit('editor/conceptMode', true);
+                this.$router.push({name: "conceptScheme", params: {frameworkId: framework.url}});
+            }
             this.$store.commit('app/closeModal');
         },
         goToCompetencyWithinThisFramework: function() {
             // Scroll to competency
             this.$scrollTo("#scroll-" + this.dynamicModalContent.uri.split('/').pop());
             this.$store.commit('app/closeModal');
+        },
+        findConceptTrail: function(conceptId) {
+            var concept = EcRepository.getBlocking(conceptId);
+            if (concept["skos:topConceptOf"]) {
+                var scheme = EcConceptScheme.getBlocking(concept["skos:topConceptOf"]);
+                this.parentFrameworks.push({name: this.getDisplayStringFrom(scheme["dcterms:title"]), url: scheme.shortId()});
+            } else if (concept["skos:broader"]) {
+                this.findConceptTrail(concept["skos:broader"]);
+            }
+        },
+        getDisplayStringFrom: function(n) {
+            if (n != null && EcArray.isArray(n)) {
+                if ((n).length > 0) {
+                    n = (n)[0];
+                }
+            }
+            if (n != null && EcObject.isObject(n) && (n).hasOwnProperty("@value")) {
+                return (n)["@value"];
+            }
+            return n;
+        },
+        doneEditing: function() {
+            this.edit = false;
         }
     },
     mounted() {
         var me = this;
-        if (this.dynamicModalContent.type === "Level") {
+        if (this.dynamicModalContent.objectType === "Level") {
             EcFramework.search(this.repo, "level:\"" + this.dynamicModalContent.uri + "\"", function(success) {
                 for (var i = 0; i < success.length; i++) {
                     me.parentFrameworks.push({name: success[i].getName(), url: success[i].shortId()});
@@ -123,7 +152,7 @@ export default {
                 console.error(failure);
                 me.parentFrameworks = [];
             }, null);
-        } else {
+        } else if (this.dynamicModalContent.objectType === "Competency") {
             EcFramework.search(this.repo, "competency:\"" + this.dynamicModalContent.uri + "\"", function(success) {
                 for (var i = 0; i < success.length; i++) {
                     me.parentFrameworks.push({name: success[i].getName(), url: success[i].shortId()});
@@ -132,6 +161,8 @@ export default {
                 console.error(failure);
                 me.parentFrameworks = [];
             }, null);
+        } else {
+            this.findConceptTrail(this.dynamicModalContent.uri);
         }
     }
 };
@@ -147,6 +178,9 @@ export default {
         .field {
             padding-left: .25rem;
         }
+    }
+    .comment-button {
+        display: none;
     }
     .lode__thing:hover {
         padding-lefT: 0rem;

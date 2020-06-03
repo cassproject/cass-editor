@@ -1,7 +1,26 @@
 @import './variables.scss';
+@import './framework.scss';
 
 textarea {
     resize: vertical !important;
+}
+.page-import {
+    .lode__Competency:hover {
+        .hierarchy-item__buttons {
+            display: flex;
+            visibility: visible;
+            position: absolute;
+            right: 0;
+            top: 16px;
+        }
+    }
+    .hierarchy-item__buttons {
+        display: flex;
+        visibility: hidden;
+        position: absolute;
+        right: 0;
+        top: 16px;
+    }
 }
 ul.processing-list {
     height: 100%;
@@ -62,7 +81,6 @@ ul.processing-list {
 
 
 .page-import {
-    padding-top: 1rem;
     .special-property {
         iframe {
             margin-top: .25rem;
@@ -273,33 +291,23 @@ ul.processing-list {
                 
             }
     }
-    #import-bottom-section {
-        .tile {
-            min-height: 440px;
+    .import-flex {
+        height: calc(100vh - 66px);
+        .import-bottom-flex {
         }
-    }
-    #import-top-section {
-        padding: 1rem 1rem;
-        width: auto;
-        max-width: 100%;
-        top: 0rem;
-        z-index: 10;
-        .columns {
-            max-width: 900px;
-        }
-        .import-instructions {
-            padding-top: .5rem;
+        .import-top-flex {
         }
     }
     #import-actions {
-        position: sticky;
-        background-color: white;
-        bottom: 0;
-        left: 0;
-        right: 0;
+
     }
     .import-light, .import-preview {
-        padding: 0rem 1rem;
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        .lode__thing .lode__Framework {
+            min-height: 40px;
+        }
         // on related competencies, hide buttons to edit competency
         .related-competency, .related-competency.editing-competency {
             width: 100%;
@@ -314,8 +322,7 @@ ul.processing-list {
             display: none;
         }
         .button {
-            display: none;
-        };
+        }
         #check-radio-column {
             display: none;
         }

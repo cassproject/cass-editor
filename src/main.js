@@ -9,7 +9,6 @@ import Clipboard from 'v-clipboard';
 import store from './store/index.js';
 var VueScrollTo = require('vue-scrollto');
 require("cassproject");
-
 Vue.use(Modal);
 Vue.use(require('vue-moment'));
 Vue.use(require('vue-infinite-scroll'));
@@ -19,7 +18,7 @@ Vue.use(VueScrollTo, {
     container: "body",
     duration: 500,
     easing: "ease",
-    offset: -50,
+    offset: -68,
     force: true,
     cancelable: true,
     onStart: false,
@@ -30,8 +29,6 @@ Vue.use(VueScrollTo, {
 });
 
 EcRepository.caching = true;
-window.repo = new EcRepository();
-window.repo.selectedServer = "https://dev.api.cassproject.org/api/";
 
 global.jsonld = require('jsonld');
 global.base64 = require('base64-arraybuffer');

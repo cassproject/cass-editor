@@ -8,7 +8,7 @@
     <!-- import drop area and tabs -->
     <div
         id="import-bottom-section"
-        class="">
+        class="container">
         <!-- types of import for tabs -->
         <div
             v-if="!importFramework || (importFramework && importType === 'text')"
@@ -84,71 +84,84 @@
                             </div>
                         </div>
                     </div>
+                    <!-- IMPORT SUPPORT -->
                     <div
-                        class="columns"
+                        class="columns is-centered"
                         v-if="importType === 'file'">
-                        <div class="column is-12">
-                            <div class="buttons is-centered">
-                                <div
-                                    @click="showImportModal('pdf')"
-                                    class="button is-outlined is-warning is-small">
-                                    <span
-                                        title="PDF files are experimentally supported. Click to learn more."
-                                        class="icon">
-                                        <i class="fa fa-exclamation" />
-                                    </span>
-                                    <span>PDF</span>
-                                </div>
-                                <div
-                                    @click="showImportModal('docx')"
-                                    class="button is-outlined is-warning is-small">
-                                    <span
-                                        title="Word documents and Docx files are experimental. Click to learn more."
-                                        class="icon">
-                                        <i class="fa fa-exclamation" />
-                                    </span>
-                                    <span>DOCX/WORD</span>
-                                </div>
-                                <div
-                                    @click="showImportModal('csv')"
-                                    class="button is-outlined is-success is-small">
-                                    <span
-                                        title="CSV files are supported, click to learn more."
-                                        class="icon is-pulled-right">
-                                        <i class="fa fa-check" />
-                                    </span>
-                                    <span>CSV</span>
-                                </div>
-                                <div
-                                    @click="showImportModal('xml')"
-                                    class="button is-outlined is-success is-small">
-                                    <span
-                                        title="XML files are supported, click to learn more."
-                                        class="icon is-pulled-right">
-                                        <i class="fa fa-check" />
-                                    </span>
-                                    <span>XML</span>
-                                </div>
-                                <div
-                                    @click="showImportModal('json')"
-                                    class="button is-outlined is-success is-small">
-                                    <span
-                                        title="JSON files are supported, click to learn more."
-                                        class="icon is-pulled-right">
-                                        <i class="fa fa-check" />
-                                    </span>
-                                    <span>JSON</span>
-                                </div>
-                                <div
-                                    @click="showImportModal('html')"
-                                    class="button is-outlined is-success is-small">
-                                    <span
-                                        title="html files are fully supported at this time"
-                                        class="icon is-pulled-right">
-                                        <i class="fa fa-check" />
-                                    </span>
-                                    <span>HTML</span>
-                                </div>
+                        <div class="column is-narrow">
+                            <div
+                                @click="showImportModal('pdf')"
+                                class="button is-outlined is-warning is-small"
+                                v-if="q.concepts !== 'true'">
+                                <span
+                                    title="PDF files are experimentally supported. Click to learn more."
+                                    class="icon">
+                                    <i class="fa fa-exclamation" />
+                                </span>
+                                <span>PDF</span>
+                            </div>
+                        </div>
+                        <div class="column is-narrow">
+                            <div
+                                @click="showImportModal('docx')"
+                                class="button is-outlined is-warning is-small"
+                                v-if="q.concepts !== 'true'">
+                                <span
+                                    title="Word documents and Docx files are experimental. Click to learn more."
+                                    class="icon">
+                                    <i class="fa fa-exclamation" />
+                                </span>
+                                <span>DOCX/WORD</span>
+                            </div>
+                        </div>
+                        <div class="column is-narrow">
+                            <div
+                                @click="showImportModal('csv')"
+                                class="button is-outlined is-success is-small">
+                                <span
+                                    title="CSV files are supported, click to learn more."
+                                    class="icon is-pulled-right">
+                                    <i class="fa fa-check" />
+                                </span>
+                                <span>CSV</span>
+                            </div>
+                        </div>
+                        <div class="column is-narrow">
+                            <div
+                                @click="showImportModal('xml')"
+                                class="button is-outlined is-success is-small"
+                                v-if="q.concepts !== 'true'">
+                                <span
+                                    title="XML files are supported, click to learn more."
+                                    class="icon is-pulled-right">
+                                    <i class="fa fa-check" />
+                                </span>
+                                <span>XML</span>
+                            </div>
+                        </div>
+                        <div class="column is-narrow">
+                            <div
+                                @click="showImportModal('json')"
+                                class="button is-outlined is-success is-small">
+                                <span
+                                    title="JSON files are supported, click to learn more."
+                                    class="icon is-pulled-right">
+                                    <i class="fa fa-check" />
+                                </span>
+                                <span>JSON</span>
+                            </div>
+                        </div>
+                        <div class="column is-narrow">
+                            <div
+                                @click="showImportModal('html')"
+                                class="button is-outlined is-success is-small"
+                                v-if="q.concepts !== 'true'">
+                                <span
+                                    title="html files are fully supported at this time"
+                                    class="icon is-pulled-right">
+                                    <i class="fa fa-check" />
+                                </span>
+                                <span>HTML</span>
                             </div>
                         </div>
                     </div>
@@ -163,21 +176,17 @@
                             @clearFiles="clearFiles" />
                         <div
                             v-else-if="(importTransition === 'process' || importTransition === 'info') && importErrors.length === 0"
-                            class="column is-12">
-                            <span
-                                class="icon is-large"
-                                v-if="importTransition === 'process'">
-                                <i class="fa fa-spinner fa-pulse fa-2x" />
-                            </span>
+                            class="column">
+                            <div class="section has-text-centered">
+                                <span
+                                    class="icon is-large"
+                                    v-if="importTransition === 'process'">
+                                    <i class="fa fa-spinner fa-pulse fa-2x" />
+                                </span>
+                            </div>
                             <div class="section">
                                 <p
-                                    v-if="importTransition !== 'process'"
-                                    class="is-size-7">
-                                    {{ importStatus }}
-                                </p>
-                                <p
-                                    v-if="importTransition === 'process'"
-                                    class="is-size-7">
+                                    class="is-size-6">
                                     {{ importStatus }}
                                 </p>
                             </div>
@@ -185,10 +194,10 @@
                         <!-- import errors -->
                         <div
                             v-else-if="importErrors.length > 0"
-                            class="column is-12 has-text-warning">
+                            class="column has-text-danger">
                             <ul>
                                 <li
-                                    class="is-size-7"
+                                    class="is-size-6"
                                     v-for="(error, index) in importErrors"
                                     :key="index">
                                     <span class="">
@@ -216,35 +225,81 @@
                     </div>
                     <!-- HANDLE CSV INPUTS -->
                     <div
-                        class="section">
-                        <template v-if="importFileType == 'csv' && importType == 'file'">
+                        v-if="importFileType == 'csv' && importType == 'file'"
+                        class="section csv-input">
+                        <div
+                            v-for="item in csvImportDetails"
+                            :key="item"
+                            class="field">
+                            <label class="label is-size-5">
+                                {{ item.label }}
+                            </label>
                             <div
-                                v-for="item in csvImportDetails"
+                                v-if="item.type === 'string'"
+                                class="control">
+                                <input
+                                    class="input"
+                                    v-model="item.value">
+                            </div>
+                            <div
+                                v-else-if="item.type === 'column'"
+                                class="control">
+                                <div class="select is-smal">
+                                    <select
+                                        v-model="item.value">
+                                        <option
+                                            value
+                                            selected>
+                                            N/A
+                                        </option>
+                                        <option
+                                            v-for="(column, i) in csvColumns"
+                                            :key="i"
+                                            :value="column">
+                                            {{ column.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div
+                                v-else-if="item.type === 'file'"
+                                class="file is-primary">
+                                <label class="file-label">
+                                    <input
+                                        class="file-input"
+                                        type="file"
+                                        name="relation-file"
+                                        @change="$emit('analyzeCsvRelation', $event)">
+                                    <span class="file-cta">
+                                        <span class="file-icon">
+                                            <i class="fas fa-upload" />
+                                        </span>
+                                        <span class="file-label">
+                                            Choose a file…
+                                        </span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                        <!-- IF RELATIONAL FILE, GATHER DETAILS -->
+                        <template v-if="csvRelationFile">
+                            <div
+                                v-for="item in csvRelationDetails"
                                 :key="item"
                                 class="field">
-                                <label class="label is-size-5">
-                                    {{ item.label }}
-                                </label>
-                                <div
-                                    v-if="item.type === 'string'"
-                                    class="control">
-                                    <input
-                                        class="input"
-                                        v-model="item.value">
-                                </div>
-                                <div
-                                    v-else-if="item.type === 'column'"
-                                    class="control">
-                                    <div class="select is-smal">
-                                        <select
-                                            v-model="item.value">
+                                <div class="field">
+                                    <label class="label is-size-5">
+                                        {{ item.label }}
+                                    </label>
+                                    <div class="select is-small">
+                                        <select v-model="item.value">
                                             <option
                                                 value
                                                 selected>
-                                                N/A
+                                                n/a
                                             </option>
                                             <option
-                                                v-for="(column, i) in csvColumns"
+                                                v-for="(column, i) in csvRelationColumns"
                                                 :key="i"
                                                 :value="column">
                                                 {{ column.name }}
@@ -252,167 +307,146 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div
-                                    v-else-if="item.type === 'file'"
-                                    class="file is-primary">
-                                    <label class="file-label">
-                                        <input
-                                            class="file-input"
-                                            type="file"
-                                            name="relation-file"
-                                            @change="$emit('analyzeCsvRelation', $event)">
-                                        <span class="file-cta">
-                                            <span class="file-icon">
-                                                <i class="fas fa-upload" />
-                                            </span>
-                                            <span class="file-label">
-                                                Choose a file…
-                                            </span>
-                                        </span>
-                                    </label>
-                                </div>
-                            </div>
-                            <!-- IF RELATIONAL FILE, GATHER DETAILS -->
-                            <template v-if="csvRelationFile">
-                                <div
-                                    v-for="item in csvRelationDetails"
-                                    :key="item"
-                                    class="field">
-                                    <div class="field">
-                                        <label class="label is-size-5">
-                                            {{ item.label }}
-                                        </label>
-                                        <div class="select is-small">
-                                            <select v-model="item.value">
-                                                <option
-                                                    value
-                                                    selected>
-                                                    n/a
-                                                </option>
-                                                <option
-                                                    v-for="(column, i) in csvRelationColumns"
-                                                    :key="i"
-                                                    :value="column">
-                                                    {{ column.name }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </template>
-                        </template>
-                        <!-- HANDLE MEDBIQ -->
-                        <template v-else-if="importFileType =='medbiq' && importType == 'file'">
-                            <div
-                                v-for="item in medbiqDetails"
-                                :key="item"
-                                class="field">
-                                <label class="label is-size-5">
-                                    {{ item.label }}
-                                </label>
-                                <div class="control">
-                                    <input
-                                        v-if="item.type === 'string'"
-                                        class="input"
-                                        v-model="item.value">
-                                </div>
                             </div>
                         </template>
-                        <!-- handle non pdf imports -->
-                        <div
-                            v-if="importType === 'file' && importTransition === 'info'"
-                            class="buttons is-right">
-                            <div
-                                class="button is-pulled-right is-outlined is-dark"
-                                v-if="importFile && importType === 'file' && importFileType!=='pdf'"
-                                @click="resetImport">
-                                <span class="icon">
-                                    <i class="fas fa-times" />
-                                </span>
-                                <span>
-                                    Cancel
-                                </span>
-                            </div>
-                            <div
-                                class="button is-pulled-right is-outlined is-primary"
-                                v-if="importFile && importType === 'file' && importFileType!=='pdf'"
-                                @click="prepareToImportNonPdf">
-                                <span class="icon">
-                                    <i class="fas fa-upload" />
-                                </span>
-                                <span>
-                                    Import
-                                </span>
-                            </div>
-                        </div>
                     </div>
-                    <!-- server input -->
-                    <div
-                        class="section"
-                        v-if="importType=='server'">
-                        <h3 class="title is-size-3 has-text-weight-medium">
-                            Import from remote server
-                        </h3>
+                    <!-- HANDLE MEDBIQ -->
+                    <div v-else-if="importFileType =='medbiq' && importType == 'file'">
                         <div
-                            v-for="item in serverDetails"
+                            v-for="item in medbiqDetails"
                             :key="item"
                             class="field">
                             <label class="label is-size-5">
                                 {{ item.label }}
                             </label>
-                            <div class="field is-grouped">
-                                <div class="control is-expanded">
-                                    <input
-                                        class="input"
-                                        v-model="importServerUrl"
-                                        type="url">
-                                </div>
-                                <div class="control">
-                                    <div
-                                        class="button is-pulled-right is-outlined is-primary"
-                                        @click="$store.commit('app/importTransition', 'connectToServer')">
-                                        <span class="icon">
-                                            <i class="fas fa-network-wired" />
-                                        </span>
-                                        <span>
-                                            connect
-                                        </span>
+                            <div class="control">
+                                <input
+                                    v-if="item.type === 'string'"
+                                    class="input"
+                                    v-model="item.value">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- handle non pdf imports -->
+                    <div
+                        v-if="importType === 'file' && importTransition === 'info'"
+                        class="buttons is-right">
+                        <div
+                            class="button is-pulled-right is-outlined is-dark"
+                            v-if="importFile && importType === 'file' && importFileType!=='pdf'"
+                            @click="resetImport">
+                            <span class="icon">
+                                <i class="fas fa-times" />
+                            </span>
+                            <span>
+                                Cancel
+                            </span>
+                        </div>
+                        <div
+                            class="button is-pulled-right is-outlined is-primary"
+                            v-if="importFile && importType === 'file' && importFileType!=='pdf'"
+                            @click="prepareToImportNonPdf">
+                            <span class="icon">
+                                <i class="fas fa-upload" />
+                            </span>
+                            <span>
+                                Import
+                            </span>
+                        </div>
+                    </div>
+                    <!-- server input -->
+                    <div
+                        class="section remote-server"
+                        v-if="importType=='server'">
+                        <h3 class="title is-size-3 has-text-weight-medium">
+                            Import from remote server
+                        </h3>
+                        <template v-if="importTransition === 'upload'">
+                            <div
+                                v-for="item in serverDetails"
+                                :key="item"
+                                class="field">
+                                <label class="label is-size-5">
+                                    {{ item.label }}
+                                </label>
+                                <div class="field is-grouped">
+                                    <div class="control is-expanded">
+                                        <input
+                                            class="input"
+                                            v-model="importServerUrl"
+                                            type="url">
+                                    </div>
+                                    <div class="control">
+                                        <div
+                                            class="button is-pulled-right is-outlined is-primary"
+                                            @click="$store.commit('app/importTransition', 'connectToServer')">
+                                            <span class="icon">
+                                                <i class="fas fa-network-wired" />
+                                            </span>
+                                            <span>
+                                                connect
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                            <div class="columns is-multiline">
+                                <div class="column is-12">
+                                    <h3 class="title is-size-4">
+                                        Remote Server Examples:
+                                    </h3>
+                                </div>
+                                <div class="column is-12">
+                                    <div
+                                        class="button is-dark is-small"
+                                        @click="importServerUrl='https://opensalt.net'">
+                                        OpenSalt.net
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                        <div
+                            v-if="importTransition === 'connectToServer'"
+                            class="section has-text-centered">
+                            <span class="icon is-large">
+                                <i class="fa fa-spinner fa-pule fa-2x" />
+                            </span>
                         </div>
-
                         <!-- HANDLE CASE DOCS -->
                         <div
                             class="section"
                             v-if="caseDocs.length">
-                            <h3 class="subtitle has-text-weight-medium is-size-4">
+                            <h3 class="subtitle has-text-weight-bold is-size-4">
                                 Found Frameworks
                             </h3>
                             <div
-                                class="field"
+                                class="field is-grouped"
                                 v-for="doc in caseDocs"
                                 :key="doc.id">
                                 <input
-                                    class="is-checkradio"
+                                    class="is-checkradio is-small"
                                     type="checkbox"
                                     :checked="doc.checked"
                                     :id="'check' + doc.id"
                                     :name="'check' + doc.id"
                                     v-model="doc.checked"
                                     v-if="!doc.loading && !doc.success && !doc.error">
-                                <i
-                                    class="fa fa-circle-notch fa-spin"
-                                    v-if="doc.loading" />
-                                <i
-                                    class="fa fa-check"
-                                    v-else-if="doc.success" />
-                                <i
-                                    class="fa fa-exclamation-triangle"
-                                    v-else-if="doc.error" />
+
                                 <label
-                                    class="label"
+                                    class="label has-text-weight-normal is-size-5"
                                     :for="'check' + doc.id">{{ doc.name }}</label>
+                                <span class="icon is-pulled-right">
+                                    <i
+                                        class="fa fa-spinner fa-pulse"
+                                        v-if="doc.loading" />
+                                    <i
+                                        class="fa fa-exclamation-triangle"
+                                        v-else-if="doc.error" />
+                                    <i
+                                        class="fa fa-check"
+                                        v-else-if="doc.success" />
+
+                                </span>
                             </div>
                             <div class="buttons is-right">
                                 <div
@@ -421,8 +455,9 @@
                                     Cancel
                                 </div>
                                 <div
+                                    v-if="importTransition !== 'importingCaseFrameworks'"
                                     class="button is-outlined is-primary"
-                                    @click="$emit('importCase', caseDocs)">
+                                    @click="importCaseDocs()">
                                     Import
                                 </div>
                             </div>
@@ -471,31 +506,82 @@
                         <h3 class="title is-size-3 has-text-weight-medium">
                             Import framework from url source
                         </h3>
-                        <div class="field">
-                            <label class="label is-size-5">
-                                Paste URL of document
-                            </label>
-                            <div class="field is-grouped">
-                                <div class="control is-expanded">
-                                    <input
-                                        class="input"
-                                        v-model="importUrl"
-                                        type="url">
-                                </div>
-                                <div class="control">
-                                    <div
-                                        class="button is-outlined is-primary"
-                                        @click="$store.commit('app/importStatus', 'importFromUrl')">
-                                        <span class="file-icon">
-                                            <i class="fas fa-upload" />
-                                        </span>
-                                        <span>
-                                            Import
-                                        </span>
+                        <div
+                            class="section has-text-centered"
+                            v-if="importTransition === 'importingFromUrl'">
+                            <span class="icon is-large">
+                                <i class="fa fa-spinner fa-pulse fa-2x" />
+                            </span>
+                        </div>
+                        <template v-if="importTransition === 'upload'">
+                            <div class="field">
+                                <label class="label is-size-5">
+                                    Paste URL of document
+                                </label>
+                                <div class="field is-grouped">
+                                    <div class="control is-expanded">
+                                        <input
+                                            class="input"
+                                            v-model="importUrl"
+                                            type="url">
+                                    </div>
+                                    <div class="control">
+                                        <div
+                                            class="button is-outlined is-primary"
+                                            @click="importFromUrl">
+                                            <span class="file-icon">
+                                                <i class="fas fa-upload" />
+                                            </span>
+                                            <span>
+                                                Import
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                            <div class="columns is-multiline">
+                                <div class="column is-12">
+                                    <h3 class="title is-size-5">
+                                        URL Import Examples:
+                                    </h3>
+                                </div>
+                                <div class="column is-narrow">
+                                    <div
+                                        class="button is-small is-dark"
+                                        @click="importUrl='https://www.onetcenter.org/ctdlasn/graph/ce-07c257d6-9119-11e8-b852-782bcb5df6ac'">
+                                        O*NET Abilities Competency Framework
+                                    </div>
+                                </div>
+                                <div class="column is-narrow">
+                                    <div
+                                        class="button is-small is-dark"
+                                        @click="importUrl='https://www.onetcenter.org/ctdlasn/graph/ce-07c25f74-9119-11e8-b852-782bcb5df6ac'">
+                                        O*NET Basic Skills Competency Framework
+                                    </div>
+                                </div>
+                                <div class="column is-narrow">
+                                    <div
+                                        class="button is-small is-dark"
+                                        @click="importUrl='https://www.onetcenter.org/ctdlasn/graph/ce-07c264d7-9119-11e8-b852-782bcb5df6ac'">
+                                        O*NET Cross-Functional Skills Competency Framework
+                                    </div>
+                                </div>
+                                <div class="column is-narrow">
+                                    <div
+                                        class="button is-small is-dark"
+                                        @click="importUrl='https://www.onetcenter.org/ctdlasn/graph/ce-07c27a0f-9119-11e8-b852-782bcb5df6ac'">
+                                        O*NET Knowledge Competency Framework
+                                    </div>
+                                </div>
+                                <div class="column is-narrow">
+                                    <div
+                                        class="button is-small is-dark"
+                                        @click="importUrl='https://www.onetcenter.org/ctdlasn/graph/ce-9fab4187-d8e7-11e9-8250-782bcb5df6ac'">
+                                        O*NET Technology Skills Competency Framework
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
                     </div>
                 </div>
             </div>
@@ -504,13 +590,12 @@
 </template>
 
 <script>
-import dragAndDrop from './../../components/DragAndDrop.vue';
+import dragAndDrop from './../../components/import/DragAndDrop.vue';
 
 export default {
     name: 'ImportTabs',
     components: {dragAndDrop},
     props: {
-        q: Object,
         caseDocs: {
             default: function() { return []; },
             type: Array
@@ -660,6 +745,14 @@ export default {
         }
     },
     methods: {
+        importFromUrl: function() {
+            this.$store.commit('app/importStatus', 'importFromUrl');
+            this.$store.commit('app/importTransition', 'importingFromUrl');
+        },
+        importCaseDocs: function() {
+            this.$emit('importCase', this.caseDocs);
+            this.$store.commit('app/importTransition', 'importingCaseFrameworks');
+        },
         showImportModal: function(type) {
             let modalObject = {
                 component: 'SupportedImportDetails',
@@ -704,6 +797,9 @@ export default {
         }
     },
     computed: {
+        q: function() {
+            return this.$store.getters['editor/queryParams'];
+        },
         importText: {
             get() {
                 return this.$store.getters['app/importText'];
@@ -784,3 +880,13 @@ export default {
     }
 };
 </script>
+
+<style>
+.is-vcentered {
+    display: flex;
+}
+
+.remote-server {
+    min-height: 300px;
+}
+</style>

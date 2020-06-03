@@ -261,7 +261,7 @@ export default {
     methods: {
         goToAppHome: function() {
             this.loginBusy = false;
-            this.$router.push({path: '/config'});
+            this.$router.push({path: '/frameworks'});
         },
         addGroupIdentity(group) {
             console.log("Adding group identity: " + "(" + group.shortId() + ") - " + group.getName());

@@ -2,11 +2,13 @@
     <div class="framework-list-page">
         <RightAside v-if="showRightAside" />
         <!-- search field -->
-        <div class="container is-fluid is-marginless is-paddingless">
-            <SearchBar searchType="framework" />
+        <div class="section is-medium">
+            <SearchBar
+                filterSet="all"
+                :searchType="type === 'ConceptScheme' ? 'concept scheme' : 'framework'" />
             <div
-                v-if="!queryParams.concepts==='true'"
-                class="section">
+                v-if="!conceptMode"
+                class="container is-fluid">
                 <!-- show my frameworks radio -->
                 <div class="control">
                     <div v-if="queryParams.show !== 'mine' && queryParams.conceptShow !== 'mine' && numIdentities">
@@ -22,7 +24,7 @@
                     </div>
                 </div>
             </div>
-            <div class="section">
+            <div class="container is-fluid">
                 <List
                     :type="type"
                     :repo="repo"
@@ -35,7 +37,7 @@
                         v-slot:frameworkTags="slotProps">
                         <span
                             class="framework-list-item__details is-light"
-                            v-if="queryParams.concepts!=='true'">
+                            v-if="!conceptMode">
                             <span>
                                 Items:
                             </span>
@@ -111,6 +113,13 @@
                             v-else-if="slotProps.item['schema:creator'] && getName(slotProps.item['schema:creator'])">
                             {{ getName(slotProps.item['schema:creator']) }}
                         </span>
+                        <span
+                            class="framework-list-item__details"
+                            v-if="canEditItem(slotProps.item)">
+                            <span class="details-label">
+                                Editable
+                            </span>
+                        </span>
                     </template>
                 </List>
             </div>
@@ -124,9 +133,6 @@ import common from '@/mixins/common.js';
 import SearchBar from '@/components/framework/SearchBar.vue';
 export default {
     name: "Frameworks",
-    props: {
-        queryParams: Object
-    },
     mixins: [common],
     data: function() {
         return {
@@ -138,7 +144,7 @@ export default {
         };
     },
     created: function() {
-        this.sortBy = this.queryParams.concepts === 'true' ? "dcterms:title.keyword" : "name.keyword";
+        this.sortBy = this.conceptMode ? "dcterms:title.keyword" : "name.keyword";
         this.$store.commit("editor/t3Profile", false);
         this.$store.commit('editor/framework', null);
         this.spitEvent('viewChanged');
@@ -150,28 +156,33 @@ export default {
         frameworkSearchTerm: function() {
             return this.$store.getters['app/searchTerm'];
         },
+        queryParams: function() {
+            return this.$store.getters['editor/queryParams'];
+        },
         type: function() {
-            return this.queryParams.concepts === 'true' ? "ConceptScheme" : "Framework";
+            return this.conceptMode ? "ConceptScheme" : "Framework";
         },
         searchOptions: function() {
             let search = "";
             if (this.queryParams && this.queryParams.filter != null) {
                 search += " AND (" + this.queryParams.filter + ")";
             }
-            if (this.showMine || (this.queryParams && this.queryParams.concepts !== "true" && this.queryParams.show === "mine") ||
-                (this.queryParams && this.queryParams.concepts === "true" && this.queryParams.conceptShow === "mine")) {
-                search += " AND (";
-                for (var i = 0; i < EcIdentityManager.ids.length; i++) {
-                    if (i !== 0) {
-                        search += " OR ";
+            if (this.showMine || (this.queryParams && !this.conceptMode && this.queryParams.show === "mine") ||
+                (this.queryParams && this.conceptMode && this.queryParams.conceptShow === "mine")) {
+                if (EcIdentityManager.ids.length > 0) {
+                    search += " AND (";
+                    for (var i = 0; i < EcIdentityManager.ids.length; i++) {
+                        if (i !== 0) {
+                            search += " OR ";
+                        }
+                        var id = EcIdentityManager.ids[i];
+                        search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
+                        search += " OR @owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
                     }
-                    var id = EcIdentityManager.ids[i];
-                    search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
-                    search += " OR @owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
+                    search += ")";
                 }
-                search += ")";
             }
-            if (this.showNotMine) {
+            if (this.showNotMine && EcIdentityManager.ids.length > 0) {
                 search += " AND NOT (";
                 for (var i = 0; i < EcIdentityManager.ids.length; i++) {
                     if (i !== 0) {
@@ -190,8 +201,8 @@ export default {
             obj.size = 20;
             var order = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "asc" : "desc";
             obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "long",  "missing" : "_last"}} ]';
-            if (this.queryParams && ((this.queryParams.concepts !== "true" && this.queryParams.show === 'mine') ||
-                (this.queryParams.concepts === "true" && this.queryParams.conceptShow === "mine"))) {
+            if (EcIdentityManager.ids.length > 0 && this.queryParams && ((!this.conceptMode && this.queryParams.show === 'mine') ||
+                (this.conceptMode && this.queryParams.conceptShow === "mine"))) {
                 obj.ownership = 'me';
             }
             return obj;
@@ -206,13 +217,19 @@ export default {
             let filterValues = this.quickFilters.filter(item => item.checked === true);
             console.log('filtered value', filterValues);
             return filterValues;
+        },
+        conceptMode: function() {
+            return this.$store.getters['editor/conceptMode'];
         }
     },
     components: {List, RightAside, SearchBar},
     methods: {
+        canEditItem: function(item) {
+            return item.canEditAny(EcIdentityManager.getMyPks());
+        },
         frameworkClick: function(framework) {
             var me = this;
-            if (this.queryParams.concepts === "true") {
+            if (this.conceptMode) {
                 EcConceptScheme.get(framework.id, function(success) {
                     me.$store.commit('editor/framework', success);
                     me.$store.commit('editor/clearFrameworkCommentData');
@@ -251,6 +268,24 @@ export default {
             // End public key line
             pem = pem.substring(0, length - 24) + "\n" + pem.substring(length - 24);
             return pem;
+        }
+    },
+    mounted: function() {
+        // Keep sorting/filtering in sync with the store on back button
+        if (this.sortResults.id === "lastEdited") {
+            this.sortBy = "schema:dateModified";
+        } else if (this.sortResults.id === "dateCreated") {
+            this.sortBy = "schema:dateCreated";
+        }
+        this.showMine = false;
+        this.showNotMine = false;
+        for (var i = 0; i < this.filteredQuickFilters.length; i++) {
+            if (this.filteredQuickFilters[i].id === "ownedByMe") {
+                this.showMine = true;
+            }
+            if (this.filteredQuickFilters[i].id === "notOwnedByMe") {
+                this.showNotMine = true;
+            }
         }
     },
     watch: {

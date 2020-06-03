@@ -3,7 +3,7 @@
         id="app"
         class="has-background-white">
         <!-- nav bar navigation -->
-        <cass-modal />
+        <cass-modal class="cass-modal" />
         <DynamicModal />
 
         <router-view
@@ -12,11 +12,11 @@
             name="topbar" />
         <router-view
             id="app-content"
-            :class="[{ 'clear-side-bar': showSideNav}, {'clear-right-aside': showRightAside}]"
-            :queryParams="queryParams" />
+            :class="[{ 'clear-side-bar': showSideNav}, {'clear-right-aside': showRightAside}]" />
         <router-view
             :showSideNav="showSideNav"
-            @createNewFramework="onCreateNewFramework"
+            @createNewFramework="createNewFramework"
+            @createNewConceptScheme="createNewConceptScheme"
             name="sidebar" />
     </div>
 </template>
@@ -37,7 +37,6 @@ export default {
     data: function() {
         return {
             navBarActive: false,
-            queryParams: null,
             repo: window.repo,
             itemsSaving: 0,
             showNav: true
@@ -52,99 +51,97 @@ export default {
         window.removeEventListener('message', this.cappend);
         window.removeEventListener("message", this.messageListener);
     },
-    created: function() {
-        var servers = ["https://dev.api.cassproject.org/api/"];
-        var me = this;
-        if (this.$route.query) {
-            this.queryParams = this.$route.query;
-            if (this.queryParams.server) {
-                if (this.queryParams.server.endsWith && this.queryParams.server.endsWith("/") === false) {
-                    this.queryParams.server += "/";
-                }
-                servers = [this.queryParams.server];
-            }
-        }
-        for (var i = 0; i < servers.length; i++) {
-            var r = new EcRepository();
-            r.selectedServer = servers[i];
-            r.autoDetectRepository();
-            servers[i] = r;
-            window.repo = r;
-
-            try {
-                window.addEventListener('message', this.cappend, false);
-            } catch (e) {
-                console.error(e);
-            }
-
-            this.openWebSocket(r);
-        }
-        if (window.addEventListener) {
-            window.addEventListener("message", this.messageListener, false);
-        } else {
-            window.attachEvent("onmessage", this.messageListener);
-        }
-        this.loadIdentity(function() {
-            if (me.queryParams) {
-                if (me.queryParams.frameworkId) {
-                    if (me.queryParams.concepts === "true") {
-                        EcConceptScheme.get(me.queryParams.frameworkId, function(success) {
-                            me.$store.commit('editor/framework', success);
-                            me.$store.commit('editor/clearFrameworkCommentData');
-                            me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
-                            me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
-                            me.$router.push({name: "conceptScheme", params: {frameworkId: me.queryParams.frameworkId}});
-                        }, console.error);
-                    } else {
-                        EcFramework.get(me.queryParams.frameworkId, function(success) {
-                            me.$store.commit('editor/framework', success);
-                            me.$store.commit('editor/clearFrameworkCommentData');
-                            me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
-                            me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
-                            me.$router.push({name: "framework", params: {frameworkId: me.queryParams.frameworkId}});
-                        }, console.error);
-                    }
-                }
-                if (me.queryParams.action === "import") {
-                    me.$router.push({name: "import"});
-                }
-                if (me.queryParams.action === "add") {
-                    me.createNew();
-                }
-            }
-        });
-        if (parent !== window) {
-            var oHead = document.getElementsByTagName("head")[0];
-            var arrStyleSheets = parent.document.getElementsByTagName("*");
-            for (var i = 0; i < arrStyleSheets.length; i++) {
-                if (arrStyleSheets[i].tagName.toLowerCase() === "link" || arrStyleSheets[i].tagName.toLowerCase() === "style") {
-                    if (arrStyleSheets[i].attributes.inherit != null) {
-                        oHead.appendChild(arrStyleSheets[i].cloneNode(true));
-                    }
-                }
-            }
-            try {
-                this.importParentStyles();
-            // eslint-disable-next-line no-empty
-            } catch (e) {}
-        }
-        if (this.queryParams.css != null) {
-            var ss = document.createElement("link");
-            ss.type = "text/css";
-            ss.rel = "stylesheet";
-            ss.href = this.queryParams.css;
-            document.getElementsByTagName("head")[0].appendChild(ss);
-        }
-        /* if (!this.loggedInPerson) {
-            this.$router.push({name: 'login'});
-        }*/
-    },
     methods: {
+        initializeApp: function() {
+            var servers = ["https://dev.api.cassproject.org/api/"];
+            var me = this;
+            if (this.$route.query) {
+                this.$store.commit('editor/queryParams', this.$route.query);
+                if (this.queryParams.server) {
+                    if (this.queryParams.server.endsWith && this.queryParams.server.endsWith("/") === false) {
+                        this.queryParams.server += "/";
+                    }
+                    servers = [this.queryParams.server];
+                }
+                if (this.queryParams.concepts === 'true') {
+                    this.$store.commit('editor/conceptMode', true);
+                }
+            }
+            for (var i = 0; i < servers.length; i++) {
+                var r = new EcRepository();
+                r.selectedServer = servers[i];
+                r.autoDetectRepository();
+                servers[i] = r;
+                window.repo = r;
+                this.repo = r;
+
+                try {
+                    window.addEventListener('message', this.cappend, false);
+                } catch (e) {
+                    console.error(e);
+                }
+
+                this.openWebSocket(r);
+            }
+            if (window.addEventListener) {
+                window.addEventListener("message", this.messageListener, false);
+            } else {
+                window.attachEvent("onmessage", this.messageListener);
+            }
+            this.loadIdentity(function() {
+                if (me.queryParams) {
+                    if (me.queryParams.frameworkId) {
+                        if (me.$store.getters['editor/conceptMode'] === true) {
+                            EcConceptScheme.get(me.queryParams.frameworkId, function(success) {
+                                me.$store.commit('editor/framework', success);
+                                me.$store.commit('editor/clearFrameworkCommentData');
+                                me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
+                                me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                                me.$router.push({name: "conceptScheme", params: {frameworkId: me.queryParams.frameworkId}});
+                            }, console.error);
+                        } else {
+                            EcFramework.get(me.queryParams.frameworkId, function(success) {
+                                me.$store.commit('editor/framework', success);
+                                me.$store.commit('editor/clearFrameworkCommentData');
+                                me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
+                                me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                                me.$router.push({name: "framework", params: {frameworkId: me.queryParams.frameworkId}});
+                            }, console.error);
+                        }
+                    }
+                    if (me.queryParams.action === "import") {
+                        me.$router.push({name: "import"});
+                    }
+                    if (me.queryParams.action === "add") {
+                        me.createNew();
+                    }
+                }
+            });
+            if (parent !== window) {
+                var oHead = document.getElementsByTagName("head")[0];
+                var arrStyleSheets = parent.document.getElementsByTagName("*");
+                for (var i = 0; i < arrStyleSheets.length; i++) {
+                    if (arrStyleSheets[i].tagName.toLowerCase() === "link" || arrStyleSheets[i].tagName.toLowerCase() === "style") {
+                        if (arrStyleSheets[i].attributes.inherit != null) {
+                            oHead.appendChild(arrStyleSheets[i].cloneNode(true));
+                        }
+                    }
+                }
+                try {
+                    this.importParentStyles();
+                // eslint-disable-next-line no-empty
+                } catch (e) {}
+            }
+            if (this.queryParams.css != null) {
+                var ss = document.createElement("link");
+                ss.type = "text/css";
+                ss.rel = "stylesheet";
+                ss.href = this.queryParams.css;
+                document.getElementsByTagName("head")[0].appendChild(ss);
+            }
+        },
         onSidebarEvent: function() {
             this.showSideNav = !this.showSideNav;
-        },
-        onCreateNewFramework: function() {
-            this.createNew();
         },
         cappend: function(event) {
             if (event.data.message === "selected") {
@@ -160,7 +157,7 @@ export default {
                 }
                 console.log("I got " + event.data.selected.length + " selected items from the iframe");
                 console.log(event.data.selected);
-                if (this.queryParams.concepts === "true" && event.data.type === 'Concept' && this.$store.state.editor.selectCompetencyRelation) {
+                if (this.$store.getters['editor/conceptMode'] === true && event.data.type === 'Concept' && this.$store.state.editor.selectCompetencyRelation) {
                     this.addAlignments(selectedIds, selectedCompetency, this.$store.state.editor.selectCompetencyRelation);
                 } else if (event.data.type === 'Concept') {
                     this.attachUrlProperties(selectedIds);
@@ -333,58 +330,70 @@ export default {
             returnObject.copyFrom(v.decryptIntoObject());
             return returnObject;
         },
+        createNewFramework: function() {
+            let me = this;
+            this.setDefaultLanguage();
+            var framework = new EcFramework();
+            if (this.queryParams.newObjectEndpoint != null) {
+                framework.generateShortId(this.queryParams.newObjectEndpoint);
+            } else {
+                framework.generateId(this.repo.selectedServer);
+            }
+            framework["schema:dateCreated"] = new Date().toISOString();
+            framework["schema:dateModified"] = new Date().toISOString();
+            if (EcIdentityManager.ids.length > 0) {
+                framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            }
+            framework.name = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Framework"};
+            this.$store.commit('editor/newFramework', framework.shortId());
+            if (this.queryParams.ceasnDataFields === "true") {
+                framework["schema:inLanguage"] = [this.$store.state.editor.defaultLanguage];
+            }
+            var saveFramework = framework;
+            if (this.queryParams.private === "true") {
+                saveFramework = EcEncryptedValue.toEncryptedValue(framework);
+            }
+            this.repo.saveTo(saveFramework, function() {
+                me.$store.commit('editor/framework', framework);
+                if (me.$route.name !== 'framework') {
+                    me.$router.push({name: "framework"});
+                }
+            }, console.error);
+        },
+        createNewConceptScheme: function() {
+            let me = this;
+            this.setDefaultLanguage();
+            var framework = new EcConceptScheme();
+            if (this.queryParams.newObjectEndpoint != null) {
+                framework.generateShortId(this.queryParams.newObjectEndpoint);
+            } else {
+                framework.generateId(this.repo.selectedServer);
+            }
+            if (EcIdentityManager.ids.length > 0) {
+                framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            }
+            framework["dcterms:title"] = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Concept Scheme"};
+            framework["schema:dateCreated"] = new Date().toISOString();
+            framework["schema:dateModified"] = new Date().toISOString();
+            this.$store.commit('editor/newFramework', framework.shortId());
+            var saveFramework = framework;
+            if (this.queryParams.private === "true") {
+                saveFramework = EcEncryptedValue.toEncryptedValue(framework);
+            }
+            this.repo.saveTo(saveFramework, function() {
+                me.$store.commit('editor/framework', framework);
+                if (me.$route.name !== 'conceptScheme') {
+                    me.$router.push({name: "conceptScheme"});
+                }
+            }, console.error);
+        },
         createNew: function() {
             this.setDefaultLanguage();
             var me = this;
-            if (this.queryParams.concepts !== "true") {
-                var framework = new EcFramework();
-                if (this.queryParams.newObjectEndpoint != null) {
-                    framework.generateShortId(this.repo.newObjectEndpoint);
-                } else {
-                    framework.generateId(this.repo.selectedServer);
-                }
-                framework["schema:dateCreated"] = new Date().toISOString();
-                framework["schema:dateModified"] = new Date().toISOString();
-                if (EcIdentityManager.ids.length > 0) {
-                    framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-                }
-                framework.name = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Framework"};
-                if (this.queryParams.ceasnDataFields === "true") {
-                    framework["schema:inLanguage"] = [this.$store.state.editor.defaultLanguage];
-                }
-                var saveFramework = framework;
-                if (this.queryParams.private === "true") {
-                    saveFramework = EcEncryptedValue.toEncryptedValue(framework);
-                }
-                this.repo.saveTo(saveFramework, function() {
-                    me.$store.commit('editor/framework', framework);
-                    if (me.$route.name !== 'framework') {
-                        me.$router.push({name: "framework"});
-                    }
-                }, console.error);
+            if (me.$store.getters['editor/conceptMode'] === true) {
+                this.createNewConceptScheme();
             } else {
-                var framework = new EcConceptScheme();
-                if (this.queryParams.newObjectEndpoint != null) {
-                    framework.generateShortId(newObjectEndpoint);
-                } else {
-                    framework.generateId(this.repo.selectedServer);
-                }
-                if (EcIdentityManager.ids.length > 0) {
-                    framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-                }
-                framework["dcterms:title"] = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Concept Scheme"};
-                framework["schema:dateCreated"] = new Date().toISOString();
-                framework["schema:dateModified"] = new Date().toISOString();
-                var saveFramework = framework;
-                if (this.queryParams.private === "true") {
-                    saveFramework = EcEncryptedValue.toEncryptedValue(framework);
-                }
-                this.repo.saveTo(saveFramework, function() {
-                    me.$store.commit('editor/framework', framework);
-                    if (me.$route.name !== 'conceptScheme') {
-                        me.$router.push({name: "conceptScheme"});
-                    }
-                }, console.error);
+                this.createNewFramework();
             }
         },
         loadIdentity: function(callback) {
@@ -1020,22 +1029,6 @@ export default {
                 me.$store.commit('editor/framework', EcFramework.getBlocking(framework.id));
             }, console.error);
         },
-        addRelationAsCompetencyField: function(targets, thing, relationType, allowSave) {
-            var me = this;
-            for (var i = 0; i < targets.length; i++) {
-                if (thing[relationType] == null) {
-                    thing[relationType] = [];
-                }
-                thing[relationType].push(targets[i]);
-            }
-            thing["schema:dateModified"] = new Date().toISOString();
-            if (this.$store.state.editor.private === true) {
-                if (EcEncryptedValue.encryptOnSaveMap[thing.id] !== true) {
-                    thing = EcEncryptedValue.toEncryptedValue(thing);
-                }
-            }
-            me.repo.saveTo(thing, function() {}, console.error);
-        },
         importParentStyles: function() {
             var parentStyleSheets = parent.document.styleSheets;
             var cssString = "";
@@ -1075,14 +1068,27 @@ export default {
             else return false;
         },
         ...mapState({
-            loggedInPerson: state => state.user.loggedInPerson
+            loggedInPerson: state => state.user.loggedInPerson,
+            queryParams: state => state.editor.queryParams
         })
     },
     watch: {
         '$route'(to, from) {
+            this.$store.commit('app/closeRightAside');
+            this.$store.commit('app/closeSideNav');
             let navigationTo = to;
             if (navigationTo) {
                 this.navBarActive = false;
+            }
+            // First load, can't access this.$route.query before this
+            if (!from.name) {
+                this.initializeApp();
+            }
+            if (to.name === 'concepts') {
+                this.$store.commit('editor/conceptMode', true);
+            }
+            if (to.name === 'frameworks') {
+                this.$store.commit('editor/conceptMode', false);
             }
         }
         /* loggedInPerson: function(val) {
@@ -1106,30 +1112,6 @@ export default {
     margin-top:50px;
 }
 
-
-    html {
-        font-family: $family-primary;
-        max-width: 100vw !important;
-        margin: 0px;
-        height: 100%;
-        padding: 0px;
-        overflow: hidden;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        font-size: 16px;
-    }
-    body{
-        // Tom B.  Taking this out for now as it screws up the configuration editor and needing scrolling
-        //overflow-y: hidden;
-        height: 100%;
-        background: $light;
-        background-repeat: no-repeat;
-        background-size: cover;
-        min-height: 100vh;
-    }
-    #app {
-        height: 100%;
-    }
     #app-content {
 
     }
@@ -1160,6 +1142,9 @@ export default {
         .is-active{
             color: rgba($dark, .7) !important;
         }
+    }
+    .cass-modal {
+        z-index:100;
     }
 
 </style>

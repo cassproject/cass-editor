@@ -5,8 +5,10 @@ with some adjustments to the modal-card classes to just card, this could be
 placed anywhere in a structured html element such as a <section> or a <div>
 -->
 <template>
-    <div class="search-modal modal-card">
-        <header class="modal-card-head has-background-primary">
+    <div :class="[{'search-modal modal-card': view !== 'thing-editing' && view !== 'multi-edit'}, {'columns is-multiline': view === 'thing-editing' || view === 'multi-edit'}]">
+        <header
+            v-if="view !== 'thing-editing' && view !== 'multi-edit'"
+            :class="{'modal-card-head has-background-primary': view !== 'thing-editing' && view !== 'multi-edit'}">
             <p class="modal-card-title">
                 <span class="title has-text-white">Search for {{ searchType }}</span>
                 <br><span
@@ -25,14 +27,19 @@ placed anywhere in a structured html element such as a <section> or a <div>
                 @click="resetModal();"
                 aria-label="close" />
         </header>
-        <section class="modal-card-body">
+        <section
+            v-if="view !== 'thing-editing' && view !== 'multi-edit'"
+            class="modal-card-body">
             <div class="column is-12">
-                <SearchBar searchType="competency" />
+                <SearchBar
+                    filterSet="basic"
+                    :searchType="searchType" />
             </div>
             <div class="column is-12">
                 <List
                     v-if="$store.state.lode.competencySearchModalOpen"
                     :type="searchType"
+                    view="search"
                     :repo="repo"
                     :click="select"
                     :searchOptions="searchOptions"
@@ -43,7 +50,30 @@ placed anywhere in a structured html element such as a <section> or a <div>
                     :displayFirst="displayFirst" />
             </div>
         </section>
-        <footer class="modal-card-foot">
+        <template v-if="view === 'thing-editing' || view === 'multi-edit'">
+            <div class="column is-12">
+                <SearchBar
+                    filterSet="basic"
+                    :searchType="searchType" />
+            </div>
+            <div class="column is-12">
+                <List
+                    v-if="$store.state.lode.competencySearchModalOpen"
+                    :type="searchType"
+                    view="search"
+                    :repo="repo"
+                    :click="select"
+                    :searchOptions="searchOptions"
+                    :paramObj="paramObj"
+                    :disallowEdits="true"
+                    :selectingCompetency="true"
+                    :selected="selectedIds"
+                    :displayFirst="displayFirst" />
+            </div>
+        </template>
+        <footer
+            v-if="view !== 'thing-editing' && view !== 'multi-edit'"
+            class="modal-card-foot">
             <div class="buttons">
                 <button
                     class="button is-outlined is-dark"
@@ -75,12 +105,6 @@ placed anywhere in a structured html element such as a <section> or a <div>
                         Link {{ searchType }}
                     </span>
                 </button>
-                <button
-                    v-if="!copyOrLink"
-                    class="button is-outlined is-primary"
-                    @click="addSelected(selectedIds); resetModal();">
-                    Add Selected
-                </button>
             </div>
         </footer>
     </div>
@@ -95,59 +119,37 @@ export default {
     name: 'CompetencySearch',
     props: {
         isActive: Boolean,
-        framework: Object,
-        queryParams: {
-            type: Object,
-            default: function() { return {}; }
+        view: {
+            type: String,
+            default: 'modal'
         }
     },
     components: {List, SearchBar},
     mixins: [common],
     data() {
         return {
-            viewOptions: [
-                {
-                    label: 'View',
-                    value: 'view'
-                },
-                {
-                    label: 'Admin',
-                    value: 'admin'
-                }
-            ],
-            groups: [
-                {
-                    header: 'group 1',
-                    view: 'admin'
-                },
-                {
-                    header: 'group 2',
-                    view: 'view'
-                }
-            ],
-            users: [
-                {
-                    header: 'user 1',
-                    view: 'admin'
-                },
-                {
-                    header: 'user 2',
-                    view: 'view'
-                }
-            ],
             repo: window.repo,
             selectedIds: [],
             itemsSaving: 0,
-            displayFirst: []
+            displayFirst: [],
+            showMine: false,
+            sortBy: null
         };
+    },
+    created: function() {
+        this.sortBy = (this.$store.getters['editor/conceptMode'] === true || this.searchType === "Concept") ? "dcterms:title.keyword" : "name.keyword";
     },
     computed: {
         ...mapState({
-            selectedCompetency: state => state.editor.selectedCompetency
+            selectedCompetency: state => state.editor.selectedCompetency,
+            framework: state => state.editor.framework,
+            queryParams: state => state.editor.queryParams
         }),
         nameOfSelectedCompetency: function() {
-            if (this.selectedCompetency) {
+            if (this.selectedCompetency && this.selectedCompetency.name) {
                 return this.selectedCompetency.getName();
+            } else if (this.selectedCompetency) {
+                return Thing.getDisplayStringFrom(this.selectedCompetency["skos:prefLabel"]);
             } else {
                 return '';
             }
@@ -167,18 +169,20 @@ export default {
             if (this.queryParams && this.queryParams.filter != null) {
                 search += " AND (" + this.queryParams.filter + ")";
             }
-            if (this.showMine || (this.queryParams && this.queryParams.concepts !== "true" && this.queryParams.show === "mine") ||
-                (this.queryParams && this.queryParams.concepts === "true" && this.queryParams.conceptShow === "mine")) {
-                search += " AND (";
-                for (var i = 0; i < EcIdentityManager.ids.length; i++) {
-                    if (i !== 0) {
-                        search += " OR ";
+            if (this.showMine || (this.queryParams && this.$store.getters['editor/conceptMode'] === true && this.queryParams.show === "mine") ||
+                (this.queryParams && this.$store.getters['editor/conceptMode'] === true && this.queryParams.conceptShow === "mine")) {
+                if (EcIdentityManager.ids.length > 0) {
+                    search += " AND (";
+                    for (var i = 0; i < EcIdentityManager.ids.length; i++) {
+                        if (i !== 0) {
+                            search += " OR ";
+                        }
+                        var id = EcIdentityManager.ids[i];
+                        search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
+                        search += " OR @owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
                     }
-                    var id = EcIdentityManager.ids[i];
-                    search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
-                    search += " OR @owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
+                    search += ")";
                 }
-                search += ")";
             }
             return search;
         },
@@ -187,14 +191,49 @@ export default {
             obj.size = 20;
             var order = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "asc" : "desc";
             obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "long",  "missing" : "_last"}} ]';
-            if (this.queryParams && ((this.queryParams.concepts !== "true" && this.queryParams.show === 'mine') ||
-                (this.queryParams.concepts === "true" && this.queryParams.conceptShow === "mine"))) {
+            if (EcIdentityManager.ids.length > 0 && this.queryParams && ((this.$store.getters['editor/conceptMode'] === true && this.queryParams.show === 'mine') ||
+                (this.$store.getters['editor/conceptMode'] === true && this.queryParams.conceptShow === "mine"))) {
                 obj.ownership = 'me';
             }
             return obj;
         },
         searchType: function() {
             return this.$store.state.lode.searchType;
+        },
+        sortResults: function() {
+            return this.$store.getters['app/sortResults'];
+        },
+        quickFilters: function() {
+            return this.$store.getters['app/quickFilters'];
+        },
+        filteredQuickFilters: function() {
+            if (this.quickFilters) {
+                let filterValues = this.quickFilters.filter(item => item.checked === true);
+                console.log('filtered value', filterValues);
+                return filterValues;
+            } else {
+                return [];
+            }
+        }
+    },
+    mounted: function() {
+        this.displayFirst.splice(0, this.displayFirst.length);
+        this.$store.commit('app/searchTerm', "");
+        if (!this.copyOrLink && this.searchType === "Competency" && this.framework.competency) {
+            for (var i = 0; i < this.framework.competency.length; i++) {
+                var comp = EcRepository.getBlocking(this.framework.competency[i]);
+                if (comp) {
+                    this.displayFirst.push(comp);
+                }
+            }
+        }
+        if (this.searchType === "Level" && this.framework.level) {
+            for (var i = 0; i < this.framework.level.length; i++) {
+                var comp = EcRepository.getBlocking(this.framework.level[i]);
+                if (comp) {
+                    this.displayFirst.push(comp);
+                }
+            }
         }
     },
     methods: {
@@ -208,10 +247,17 @@ export default {
             } else {
                 EcArray.setRemove(this.selectedIds, competency.shortId());
             }
+            if (!this.copyOrLink || this.searchType === "Level") {
+                this.$store.commit('editor/selectedCompetenciesAsProperties', this.selectedIds);
+            }
         },
         copyCompetencies: function(results) {
             var copyDict = {};
             var framework = this.$store.state.editor.framework;
+            var initialCompetencies = this.framework.competency ? this.framework.competency.slice() : null;
+            var initialRelations = this.framework.relation ? this.framework.relation.slice() : null;
+            var initialLevels = this.framework.level ? this.framework.level.slice() : null;
+            var addedNew = [];
             var me = this;
             for (var i = 0; i < results.length; i++) {
                 var thing = EcRepository.getBlocking(results[i]);
@@ -223,6 +269,7 @@ export default {
                     } else {
                         c.generateId(this.repo.selectedServer);
                     }
+                    addedNew.push(c.shortId());
                     c["schema:dateCreated"] = new Date().toISOString();
                     c["schema:dateModified"] = new Date().toISOString();
                     delete c.owner;
@@ -257,13 +304,13 @@ export default {
                     (function(c) {
                         Task.asyncImmediate(function(callback) {
                             me.repo.saveTo(c, function() {
-                                framework.addCompetency(c.id);
+                                framework.addCompetency(c.shortId());
                                 me.$store.commit('editor/framework', framework);
-                                me.afterCopy();
+                                me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                 callback();
                             }, function(error) {
                                 console.error(error);
-                                me.afterCopy();
+                                me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                 callback();
                             });
                         });
@@ -276,6 +323,7 @@ export default {
                     } else {
                         level.generateId(this.repo.selectedServer);
                     }
+                    addedNew.push(level.shortId());
                     level["schema:dateCreated"] = new Date().toISOString();
                     level.competency = this.$store.state.editor.selectedCompetency.shortId();
                     delete level.owner;
@@ -288,13 +336,13 @@ export default {
                     (function(level) {
                         Task.asyncImmediate(function(callback) {
                             me.repo.saveTo(level, function() {
-                                framework.addLevel(level.id);
+                                framework.addLevel(level.shortId());
                                 me.$store.commit('editor/framework', framework);
-                                me.afterCopy();
+                                me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                 callback();
                             }, function(error) {
                                 console.error(error);
-                                me.afterCopy();
+                                me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                 callback();
                             });
                         });
@@ -315,6 +363,7 @@ export default {
                         } else {
                             r.generateId(this.repo.selectedServer);
                         }
+                        addedNew.push(r.shortId());
                         r["schema:dateCreated"] = new Date().toISOString();
 
                         r.target = parent.shortId();
@@ -354,12 +403,12 @@ export default {
                                     me.repo.saveTo(r, function() {
                                         framework.addRelation(r.id);
                                         me.$store.commit('editor/framework', framework);
-                                        me.afterCopy();
+                                        me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                         callback();
                                     },
                                     function(error) {
                                         console.error(error);
-                                        me.afterCopy();
+                                        me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                         callback();
                                     });
                                 });
@@ -379,6 +428,7 @@ export default {
                         } else {
                             r.generateId(this.repo.selectedServer);
                         }
+                        addedNew.push(r.shortId());
                         r["schema:dateCreated"] = new Date().toISOString();
 
                         var child = copyDict[thing.id];
@@ -418,12 +468,12 @@ export default {
                             (function(r) {
                                 Task.asyncImmediate(function(callback) {
                                     me.repo.saveTo(r, function() {
-                                        me.afterCopy();
+                                        me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                         callback();
                                     },
                                     function(error) {
                                         console.error(error);
-                                        me.afterCopy();
+                                        me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                         callback();
                                     });
                                 });
@@ -433,11 +483,17 @@ export default {
                 }
             }
         },
-        afterCopy: function() {
+        afterCopy: function(initialCompetencies, initialRelations, initialLevels, addedNew) {
             this.itemsSaving--;
             // loading(this.itemsSaving + " objects left to copy.");
             if (this.itemsSaving === 0) {
                 var framework = this.$store.state.editor.framework;
+                var changes = [];
+                for (var i = 0; i < addedNew.length; i++) {
+                    changes.push({operation: "addNew", id: addedNew[i]});
+                }
+                changes.push({operation: "update", id: framework.shortId(), fieldChanged: ["competency", "relation", "level"], initialValue: [initialCompetencies, initialRelations, initialLevels], changedValue: [framework.competency, framework.relation, framework.level]});
+                this.$store.commit('editor/addEditsToUndo', changes);
                 if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
                 }
@@ -447,6 +503,12 @@ export default {
         appendCompetencies: function(results, newLink) {
             var selectedCompetency = this.$store.state.editor.selectedCompetency;
             var framework = this.$store.state.editor.framework;
+            var initialCompetencies = this.framework.competency ? this.framework.competency.slice() : null;
+            var initialRelations = this.framework.relation ? this.framework.relation.slice() : null;
+            var initialLevels = this.framework.level ? this.framework.level.slice() : null;
+            var initialLevelCompetency = [];
+            var afterLevelCompetency = [];
+            var addedNew = [];
             var me = this;
             for (var i = 0; i < results.length; i++) {
                 var thing = EcRepository.getBlocking(results[i]);
@@ -457,7 +519,10 @@ export default {
                     if (!EcArray.isArray(thing.competency)) {
                         thing.competency = [thing.competency];
                     }
+                    var thingId = thing.shortId();
+                    initialLevelCompetency.push({id: thingId, competency: thing.competency.splice()});
                     thing.competency.push(selectedCompetency.shortId());
+                    afterLevelCompetency.push({id: thingId, competency: thing.competency});
                     this.repo.saveTo(thing, function() {}, console.error);
                 }
             }
@@ -483,6 +548,7 @@ export default {
                         } else {
                             r.generateId(this.repo.selectedServer);
                         }
+                        addedNew.push(r.shortId());
                         r["schema:dateCreated"] = new Date().toISOString();
 
                         r.target = selectedCompetency.shortId();
@@ -521,6 +587,17 @@ export default {
                     }
                 }
             }
+            var changes = [];
+            for (var i = 0; i < addedNew.length; i++) {
+                changes.push({operation: "addNew", id: addedNew[i]});
+            }
+            if (initialLevelCompetency.length > 0) {
+                for (var i = 0; i < initialLevelCompetency.length; i++) {
+                    changes.push({operation: "update", id: initialLevelCompetency[i].id, fieldChanged: ["competency"], initialValue: [initialLevelCompetency[i].competency], changedValue: [afterLevelCompetency[i].competency]});
+                }
+            }
+            changes.push({operation: "update", id: framework.shortId(), fieldChanged: ["competency", "relation", "level"], initialValue: [initialCompetencies, initialRelations, initialLevels], changedValue: [framework.competency, framework.relation, framework.level]});
+            this.$store.commit('editor/addEditsToUndo', changes);
             if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                 framework = EcEncryptedValue.toEncryptedValue(framework);
             }
@@ -528,53 +605,37 @@ export default {
                 me.$store.commit('editor/framework', EcFramework.getBlocking(framework.id));
             }, console.error);
         },
-        attachUrlProperties: function(results) {
-            var resource = this.$store.state.editor.framework;
-            if (this.$store.state.editor.selectedCompetency != null) {
-                resource = this.$store.state.editor.selectedCompetency;
+        addNewlinesToId: function(pem) {
+            // Begin public key line
+            pem = pem.substring(0, 26) + "\n" + pem.substring(26);
+            var length = pem.length;
+            var start = 27;
+            while (start + 64 < length) {
+                pem = pem.substring(0, start + 64) + "\n" + pem.substring(start + 64);
+                start += 65;
+                length++;
             }
-            for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
-                if (thing.isAny(new EcConcept().getTypes())) {
-                    if (!EcArray.isArray(resource[this.$store.state.editor.selectCompetencyRelation])) {
-                        resource[this.$store.state.editor.selectCompetencyRelation] = [];
-                    }
-                    EcArray.setAdd(resource[this.$store.state.editor.selectCompetencyRelation], thing.shortId());
-                }
-            }
-            resource["schema:dateModified"] = new Date().toISOString();
-            if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[resource.id] !== true) {
-                resource = EcEncryptedValue.toEncryptedValue(resource);
-            }
-            this.repo.saveTo(resource, function() {}, console.error);
-        },
-        addSelected: function(ids) {
-            if (this.searchType === "Competency") {
-                this.addAlignments(ids, this.$store.state.editor.selectedCompetency, this.$store.state.editor.selectCompetencyRelation);
-            } else {
-                this.attachUrlProperties(ids);
-            }
+            // End public key line
+            pem = pem.substring(0, length - 24) + "\n" + pem.substring(length - 24);
+            return pem;
         }
     },
     watch: {
-        isActive: function() {
-            if (this.isActive) {
+        sortResults: function() {
+            if (this.sortResults.id === "lastEdited") {
+                this.sortBy = "schema:dateModified";
                 this.displayFirst.splice(0, this.displayFirst.length);
-                if (!this.copyOrLink && this.searchType === "Competency" && this.framework.competency) {
-                    for (var i = 0; i < this.framework.competency.length; i++) {
-                        var comp = EcRepository.getBlocking(this.framework.competency[i]);
-                        if (comp) {
-                            this.displayFirst.push(comp);
-                        }
-                    }
-                }
-                if (this.searchType === "Level" && this.framework.level) {
-                    for (var i = 0; i < this.framework.level.length; i++) {
-                        var comp = EcRepository.getBlocking(this.framework.level[i]);
-                        if (comp) {
-                            this.displayFirst.push(comp);
-                        }
-                    }
+            } else {
+                this.sortBy = (this.$store.getters['editor/conceptMode'] === true || this.searchType === "Concept") ? "dcterms:title.keyword" : "name.keyword";
+                this.displayFirst.splice(0, this.displayFirst.length);
+            }
+        },
+        filteredQuickFilters: function() {
+            this.showMine = false;
+            for (var i = 0; i < this.filteredQuickFilters.length; i++) {
+                if (this.filteredQuickFilters[i].id === "ownedByMe") {
+                    this.showMine = true;
+                    this.displayFirst.splice(0, this.displayFirst.length);
                 }
             }
         }
@@ -605,13 +666,13 @@ export default {
     }
 
     .list-ul__item:hover {
-        padding-top: .25rem;
+        padding-top: .5rem;
         background-color: $cass-lightest;
     }
     .list-ul__item {
         margin-top: .25rem;
         border-radius: 3px;
-        padding-top: .25rem;
+        padding: .5rem;
     }
 }
 

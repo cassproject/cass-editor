@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="right-aside__filter-and-sort">
         <h3 class="title is-size-3">
             Filter and Sort
         </h3>
@@ -23,7 +23,9 @@
                 </template>
             </div>
         </div>
-        <div class="section">
+        <div
+            class="section"
+            v-if="loggedIn">
             <h3 class="title is-size-4">
                 Quick Filters
             </h3>
@@ -42,7 +44,9 @@
                 </template>
             </div>
         </div>
-        <div class="section">
+        <div
+            class="section"
+            v-if="$store.getters['editor/queryParams'].concepts !== 'true'">
             <h3 class="title is-size-4">
                 Apply search term to
             </h3>
@@ -144,6 +148,9 @@ export default {
             set(val) {
                 this.$store.commit('app/sortResults', val);
             }
+        },
+        loggedIn: function() {
+            return EcIdentityManager.ids && EcIdentityManager.ids.length;
         }
     },
     mounted: function() {

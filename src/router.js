@@ -1,23 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
-import About from './views/About.vue';
-import Test from './lode/views/Test.vue';
-import Frameworks from './views/framework/Frameworks.vue';
-import Framework from './views/framework/Framework.vue';
-import Organizations from './views/organization/Organizations.vue';
-import Organization from './views/organization/Organization.vue';
-import Import from './views/framework/Import.vue';
-import ConceptScheme from './views/conceptScheme/ConceptScheme.vue';
-import Login from './views/login/Login.vue';
-import ConfigurationEditor from './views/configuration/ConfigurationEditor';
-import UserGroupEditor from './views/usersGroups/UserGroupEditor';
-import FrameworkCrosswalk from './views/framework/Crosswalk';
-import NotFound from './views/NotFound.vue';
-import InternalError from './views/InternalError.vue';
-import Forbidden from './views/Forbidden.vue';
-import SideNav from './components/SideNav.vue';
-import Topbar from './components/Topbar.vue';
 
 Vue.use(Router);
 export default new Router({
@@ -34,119 +17,137 @@ export default new Router({
     routes: [
         {
             path: '/',
-            name: 'frameworks',
+            name: 'welcome',
             components: {
-                default: Frameworks,
-                sidebar: SideNav,
-                topbar: Topbar
+                default: () => import('./views/Welcome.vue'),
+                sidebar: () => import('./components/SideNav.vue'),
+                topbar: () => import('./components/Topbar.vue')
             },
             alias: '/cass-editor/'
         },
         {
+            path: '/frameworks',
+            name: 'frameworks',
+            components: {
+                default: () => import('./views/framework/Frameworks.vue'),
+                sidebar: () => import('./components/SideNav.vue'),
+                topbar: () => import('./components/Topbar.vue')
+            }
+        },
+        {
+            path: '/concepts',
+            name: 'concepts',
+            components: {
+                default: () => import('./views/framework/Frameworks.vue'),
+                sidebar: () => import('./components/SideNav.vue'),
+                topbar: () => import('./components/Topbar.vue')
+            }
+        },
+        {
             path: '/login',
             name: 'login',
-            component: Login
+            component: () => import('./views/login/Login.vue')
         },
         {
             path: '/config',
             name: 'configuration',
             components: {
-                default: ConfigurationEditor,
-                sidebar: SideNav,
-                topbar: Topbar
+                default: () => import('./views/configuration/ConfigurationEditor'),
+                sidebar: () => import('./components/SideNav.vue'),
+                topbar: () => import('./components/Topbar.vue')
             }
         },
         {
             path: '/userGroup',
             name: 'usergroup',
             components: {
-                default: UserGroupEditor,
-                sidebar: SideNav,
-                topbar: Topbar
+                default: () => import('./views/usersGroups/UserGroupEditor'),
+                sidebar: () => import('./components/SideNav.vue'),
+                topbar: () => import('./components/Topbar.vue')
             }
         },
         {
             path: '/crosswalk',
             name: 'crosswalk',
             components: {
-                default: FrameworkCrosswalk,
-                sidebar: SideNav,
-                topbar: Topbar
+                default: () => import('./views/framework/Crosswalk'),
+                sidebar: () => import('./components/SideNav.vue'),
+                topbar: () => import('./components/Topbar.vue')
             }
         },
         {
             path: '/about',
             name: 'about',
             components: {
-                default: About,
-                sidebar: SideNav,
-                topbar: Topbar
+                default: () => import('./views/About.vue'),
+                sidebar: () => import('./components/SideNav.vue'),
+                topbar: () => import('./components/Topbar.vue')
             }
         },
         {
             path: '/framework',
             name: 'framework',
             components: {
-                default: Framework,
-                sidebar: SideNav,
-                topbar: Topbar
+                default: () => import('./views/framework/Framework.vue'),
+                sidebar: () => import('./components/SideNav.vue'),
+                topbar: () => import('./components/Topbar.vue')
             }
         },
         {
             path: '/import',
             name: 'import',
             components: {
-                default: Import,
-                sidebar: SideNav,
-                topbar: Topbar
+                default: () => import('./views/framework/Import.vue'),
+                sidebar: () => import('./components/SideNav.vue'),
+                topbar: () => import('./components/Topbar.vue')
             }
         },
         {
             path: '/organizations',
             name: 'organizations',
             components: {
-                default: Organizations,
-                sidebar: SideNav,
-                topbar: Topbar
+                default: () => import('./views/organization/Organizations.vue'),
+                sidebar: () => import('./components/SideNav.vue'),
+                topbar: () => import('./components/Topbar.vue')
             }
         },
         {
             path: '/organization',
             name: 'organization',
             components: {
-                default: Organization,
-                sidebar: SideNav,
-                topbar: Topbar
+                default: () => import('./views/organization/Organization.vue'),
+                sidebar: () => import('./components/SideNav.vue'),
+                topbar: () => import('./components/Topbar.vue')
             }
         },
         {
             path: '/test',
             name: 'test',
-            component: Test
+            component: () => import('./lode/views/Test.vue')
         },
         {
             path: '/conceptScheme',
             name: 'conceptScheme',
             components: {
-                default: ConceptScheme,
-                sidebar: SideNav,
-                topbar: Topbar
+                default: () => import('./views/conceptScheme/ConceptScheme.vue'),
+                sidebar: () => import('./components/SideNav.vue'),
+                topbar: () => import('./components/Topbar.vue')
             }
         },
         {
             path: '/403',
             name: 'Forbidden',
-            component: Forbidden
+            component: () => import('./views/Forbidden.vue')
         },
         {
             path: '/500',
             name: 'InternalError',
-            component: InternalError
+            component: () => import('./views/InternalError.vue')
         },
         {
             path: '/*',
             name: 'NotFound',
-            component: NotFound
+            component: () => import('./views/NotFound.vue')
         }
     ]
 });

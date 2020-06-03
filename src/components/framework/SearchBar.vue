@@ -1,3 +1,16 @@
+<!--
+    SearchBar.vue is a component which can be added anywhere a List.vue
+    is displaying a list of objects from a cass repository.
+
+    Props:
+        searchType:
+            allFilters: Includes button to open the right side panel for managing filtered
+            search options
+            lightSearch: Includes a light version of filters
+                            Owned by me
+                            Owned by someone
+                            Sort by last date modified
+-->
 <template>
     <div class="section">
         <div class="field">
@@ -5,7 +18,7 @@
                 <input
                     class="input is-large"
                     ref="text"
-                    :placeholder="'Search for '+type+'s...'"
+                    :placeholder="'Search for ' + (searchType === 'Competency' ? 'competencie' : searchType)+ 's...'"
                     @change="updateSearchTerm($event)"
                     @keyup.enter="updateSearchTerm($event)">
                 <span
@@ -16,7 +29,7 @@
         </div>
         <!-- filter option button opens side bar -->
         <div
-            v-if="searchType === 'framework'"
+            v-if="filterSet === 'all'"
             class="buttons is-right">
             <div
                 @click="clearAllFilters()"
@@ -29,8 +42,10 @@
                 filter options
             </div>
         </div>
+        <!-- info tags to remove filters -->
         <div
-            v-if="searchType==='framework'"
+            v-if="filterSet === 'all' &&
+                (filteredQuickFilters.length > 0 || filteredSearchTo.length>0 || sortResults.label)"
             class="section">
             <span
                 v-for="filter in filteredQuickFilters"
@@ -41,27 +56,64 @@
                     @click="removeFilter('quickFilters', filter)"
                     class="delete is-small" />
             </span>
-            <template class="">
-                <span
-                    v-if="sortResults.label"
-                    class="tag is-dark">
-                    {{ sortResults.label }}
-                    <button
-                        @click="clearSortBy"
-                        class="delete is-small" />
-                </span>
-            </template>
-            <template class="section">
-                <span
-                    v-for="filter in filteredSearchTo"
-                    :key="filter"
-                    class="tag is-dark">
-                    {{ filter.label }}
-                    <button
-                        @click="removeFilter('applySearchTo', filter)"
-                        class="delete is-small" />
-                </span>
-            </template>
+            <span
+                v-if="sortResults.label"
+                class="tag is-dark">
+                {{ sortResults.label }}
+                <button
+                    @click="clearSortBy"
+                    class="delete is-small" />
+            </span>
+            <span
+                v-for="filter in filteredSearchTo"
+                :key="filter"
+                class="tag is-dark">
+                {{ filter.label }}
+                <button
+                    @click="removeFilter('applySearchTo', filter)"
+                    class="delete is-small" />
+            </span>
+        </div>
+        <!-- to do connect basic filters to list results -->
+        <div v-if="filterSet === 'basic'">
+            <div class="field is-grouped">
+                <div class="field">
+                    <input
+                        v-model="basicFilter"
+                        class="is-checkradio"
+                        value="ownedByMe"
+                        id="ownedByMe"
+                        type="checkbox"
+                        name="filterOwnedByMe"
+                        checked="">
+                    <label for="ownedByMe">
+                        Owned by me
+                    </label>
+                </div>
+                <div class="field">
+                    <input
+                        v-model="basicSort"
+                        class="is-checkradio"
+                        value=""
+                        id="alphabeticalSort"
+                        type="radio"
+                        name="alphabeticalSort"
+                        checked="checked">
+                    <label for="alphabeticalSort">
+                        Alphabetical
+                    </label>
+                    <input
+                        v-model="basicSort"
+                        class="is-checkradio"
+                        value="lastEdited"
+                        id="lastDateModifiedSort"
+                        type="radio"
+                        name="lastDateModifiedSort">
+                    <label for="lastDateModifiedSort">
+                        Date modified
+                    </label>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -74,9 +126,37 @@ export default {
             type: String,
             default: ''
         },
-        queryParams: {
-            type: Object,
-            default: function() { return {}; }
+        filterSet: {
+            type: String,
+            default: ''
+        }
+    },
+    data() {
+        return {
+            basicSort: '',
+            basicFilter: ''
+        };
+    },
+    watch: {
+        basicSort: function(val) {
+            console.log(val);
+            this.$store.commit("app/sortResults", {id: val});
+        },
+        basicFilter: function(val) {
+            console.log(val);
+            var filter;
+            if (val === true) {
+                filter = {
+                    id: 'ownedByMe',
+                    checked: true
+                };
+            } else {
+                filter = {
+                    id: 'ownedByMe',
+                    checked: false
+                };
+            }
+            this.$store.commit("app/quickFilters", [filter]);
         }
     },
     methods: {
@@ -88,7 +168,7 @@ export default {
         },
         clearSortBy: function() {
             this.$store.commit('app/sortResults', []);
-            this.sortBy = this.queryParams.concepts === 'true' ? "dcterms:title.keyword" : "name.keyword";
+            this.sortBy = this.$store.getters['editor/conceptMode'] === true ? "dcterms:title.keyword" : "name.keyword";
         },
         removeFilter: function(filterType, val) {
             let storeCaller = 'app/' + filterType;
@@ -102,8 +182,11 @@ export default {
         }
     },
     computed: {
+        queryParams: function() {
+            return this.$store.getters['editor/queryParams'];
+        },
         type: function() {
-            return this.queryParams.concepts === 'true' ? "ConceptScheme" : "Framework";
+            return this.$store.getters['editor/conceptMode'] === true ? "ConceptScheme" : "Framework";
         },
         applySearchTo: function() {
             return this.$store.getters['app/applySearchTo'];
