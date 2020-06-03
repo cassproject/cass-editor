@@ -52,6 +52,12 @@
                     class="subtitle">
                     Configuration
                 </h3>
+                <p v-if="view === 'dynamic-modal'">
+                    Choose a different configuration to apply to this framework below.  You can view and manage details about
+                    your available configurations in <router-link to="/config">
+                        configuration management
+                    </router-link>.
+                </p>
                 <div
                     class="button is-outlined is-primary"
                     v-if="configViewMode.equals('list') && view !== 'dynamic-modal'"
