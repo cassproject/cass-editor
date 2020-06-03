@@ -518,7 +518,7 @@ export default {
                 this.showCreateLinkedPerson();
             }
         },
-        findLinkedPersonPersonSearchFailure() {
+        findLinkedPersonPersonSearchFailure(msg) {
             this.loginBusy = false;
             console.log('Linked person person search failure: ' + msg);
         },

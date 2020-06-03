@@ -361,7 +361,7 @@ export default {
             }
         },
         frameworkSize: function() {
-            if (this.importFramework) {
+            if (this.importFramework && this.importFramework.competency) {
                 if (this.conceptMode) {
                     return null;
                 }
@@ -502,6 +502,11 @@ export default {
                 console.error,
                 this.repo,
                 true);
+        },
+        importFramework: function() {
+            if (this.importFramework && !this.conceptMode && this.frameworkSize === 0) {
+                this.hierarchyIsdoneLoading = true;
+            }
         }
     },
     created: function() {

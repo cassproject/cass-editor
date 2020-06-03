@@ -70,6 +70,9 @@ const mutations = {
     targetState(state, t) {
         state.targetState = t;
     },
+    alignmentsToSave(state, t) {
+        state.alignmentsToSave = t;
+    },
     populateAlignedCompetenciesList(state) {
         if (state.relevantExistingAlignmentsMap) {
             let alignedCompetencies = [];

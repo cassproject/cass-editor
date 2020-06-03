@@ -1,5 +1,16 @@
 <template>
     <div class="crosswalk section">
+        <!-- busy modal-->
+        <div
+            class="modal"
+            :class="[{'is-active': crosswalkSaveBusy}]">
+            <div class="modal-background" />
+            <div class="modal-content has-text-centered">
+                <span class="icon is-large has-text-center has-text-link">
+                    <i class="fas fa-3x fa-spinner is-info fa-pulse" />
+                </span>
+            </div>
+        </div>
         <div class="container is-fluid">
             <div class="columns is-gapless is-paddiingless is-marginless is-multiline">
                 <div class="column is-12 crosswalk__steps">
@@ -101,7 +112,7 @@
                                 </div>
                                 <div
                                     v-if="(alignmentsToSave.length > 0 || alignmentsToDelete.length > 0) && sourceState === 'ready'"
-                                    @click="saveAlignments"
+                                    @click="goToSummaryAndSave"
                                     class="button is-outlined is-primary">
                                     <span class="icon">
                                         <i class="fa fa-save" />
@@ -111,9 +122,6 @@
                                     </span>
                                 </div>
                             </div>
-                            <h2 v-if="step == 3">
-                                Step 4: Save alignment changes
-                            </h2>
                         </div>
                     </div>
                 </div>
@@ -238,7 +246,74 @@
                     name="slide-fade">
                     <div class="column is-12">
                         <div class="container">
-                            Test Save Screen
+                            <div
+                                v-if="!alignmentsSaved"
+                                class="columns is-multiline">
+                                <div class="column is-6">
+                                    <h4>Summary:</h4>
+                                    <p v-if="alignmentsToSave.length > 0">
+                                        Number of alignments to add: {{ alignmentsToSave.length}}
+                                    </p>
+                                    <p v-if="alignmentsToDelete.length > 0">
+                                        Number of alignments to remove: {{ alignmentsToDelete.length}}
+                                    </p>
+                                </div>
+                                <div class="column is-6">
+                                    <h4>Save To:</h4>
+                                    <div>
+                                        <div class="checkbox">
+                                            <input
+                                                v-if="canSaveToSourceFramework"
+                                                type="checkbox"
+                                                v-model="saveToSourceFramework">
+                                            <input
+                                                v-if="!canSaveToSourceFramework"
+                                                type="checkbox"
+                                                :disabled="true"
+                                                title="You do not have permission to save to this framework"
+                                                v-model="saveToSourceFramework">
+                                            <span> {{frameworkSource.getName()}}</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="checkbox">
+                                            <input
+                                                v-if="canSaveToTargetFramework"
+                                                type="checkbox"
+                                                v-model="saveToTargetFramework">
+                                            <input
+                                                v-if="!canSaveToTargetFramework"
+                                                type="checkbox"
+                                                :disabled="true"
+                                                title="You do not have permission to save to this framework"
+                                                v-model="saveToTargetFramework">
+                                            <span> {{frameworkTarget.getName()}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div
+                                    style="margin-top: 3rem"
+                                    class="column is-12 has-text-centered"
+                                    v-if="saveToSourceFramework || saveToTargetFramework">
+                                    <div
+                                        class="button is-outlined is-primary"
+                                        @click="saveAlignments">
+                                        <span class="icon">
+                                            <i class="fa fa-save" />
+                                        </span>
+                                        <span>
+                                            save alignments
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                v-if="alignmentsSaved"
+                                class="columns is-multiline">
+                                <div class="column is-12 has-text-centered">
+                                    <h4><i class="fa fa-exclamation-triangle" /> Alignments saved</h4>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </transition>
@@ -261,6 +336,16 @@ export default {
         view: 'crosswalk',
         loadCrosswalkTarget: false,
         crosswalkSourceLoaded: false,
+        canSaveToSourceFramework: false,
+        saveToSourceFramework: false,
+        canSaveToTargetFramework: false,
+        saveToTargetFramework: false,
+        alignmentsSaved: false,
+        crosswalkSaveBusy: false,
+        numAlignmentsToDelete: 0,
+        numAlignmentsDeleted: 0,
+        sourceFrameworkSaving: null,
+        targetFrameworkSaving: null,
         repo: window.repo,
         steps: [
             {
@@ -415,47 +500,136 @@ export default {
         })
     },
     methods: {
-        saveAlignments: function() {
+        determineAbilityToSaveToFrameworks: function() {
+            if (this.isObjectOwnerless(this.frameworkSource) || this.doesAnyIdentityOwnObject(this.frameworkSource)) {
+                this.canSaveToSourceFramework = true;
+                this.saveToSourceFramework = true;
+            } else {
+                this.canSaveToSourceFramework = false;
+                this.saveToSourceFramework = false;
+            }
+            if (this.isObjectOwnerless(this.frameworkTarget) || this.doesAnyIdentityOwnObject(this.frameworkTarget)) {
+                this.canSaveToTargetFramework = true;
+                this.saveToTargetFramework = true;
+            } else {
+                this.canSaveToTargetFramework = false;
+                this.saveToTargetFramework = false;
+            }
+        },
+        goToSummaryAndSave: function() {
+            this.alignmentsSaved = false;
+            this.crosswalkSaveBusy = false;
+            this.determineAbilityToSaveToFrameworks();
             this.$store.commit('crosswalk/step', 3);
-            // TODO expand on this...this is just a temporary thing to get some data in the system for development
-            // let ecaa = this.generateAlignmentObjectsFromAlignmentToSaveObjects();
-            // let fso = EcRepository.getBlocking(this.frameworkSource.shortId());
-            // let fs = new EcFramework();
-            // fs.copyFrom(fso);
-            // let fto = EcRepository.getBlocking(this.frameworkTarget.shortId());
-            // let ft = new EcFramework();
-            // ft.copyFrom(fto);
-            // for (let eca of ecaa) {
-            //     fs.addRelation(eca.shortId());
-            //     ft.addRelation(eca.shortId());
-            // }
-            // let repo = window.repo;
-            // repo.multiput(ecaa,
-            //     function(msg) {
-            //         console.log('Alignments saved: ' + msg);
-            //         fs.save(
-            //             function(msg) {
-            //                 console.log('Source framework saved: ' + msg);
-            //             },
-            //             function(msg) {
-            //                 console.log('Source framework NOT SAVED: ' + msg);
-            //             },
-            //             window.repo
-            //         );
-            //         ft.save(
-            //             function(msg) {
-            //                 console.log('Source target saved: ' + msg);
-            //             },
-            //             function(msg) {
-            //                 console.log('Source target NOT SAVED: ' + msg);
-            //             },
-            //             window.repo
-            //         );
-            //     },
-            //     function(msg) {
-            //         console.log('Alignments NOT SAVED: ' + msg);
-            //     }
-            // );
+        },
+        addRelationshipsToFrameworks: function() {
+            let ats = this.alignmentsToSave;
+            for (let ata of ats) {
+                if (this.saveToSourceFramework) this.sourceFrameworkSaving.addRelation(ata.shortId());
+                if (this.saveToTargetFramework) this.targetFrameworkSaving.addRelation(ata.shortId());
+            }
+        },
+        removeRelationshipsFromFrameworks: function() {
+            let atd = this.alignmentsToDelete;
+            for (let atr of atd) {
+                if (atr.id && atr.shortId()) {
+                    this.sourceFrameworkSaving.removeRelation(atr.shortId());
+                    this.targetFrameworkSaving.removeRelation(atr.shortId());
+                }
+            }
+        },
+        generateRelationId(relType, sourceId, targetId) {
+            return 'crswlk' + '-' + Date.now() + '---' + this.genPartialIdPiece(sourceId) + '-' + relType + '-' + this.genPartialIdPiece(targetId);
+        },
+        addIdsAndOwnersToNewRelationships: function() {
+            let ats = this.alignmentsToSave;
+            for (let ata of ats) {
+                ata.assignId(window.repo.selectedServer, this.generateRelationId(ata.relationType, ata.source, ata.target));
+                console.log("New crosswalk alignment: " + ata.shortId());
+                this.addAllIdentityPksAsOwners(ata);
+            }
+            this.$store.commit('crosswalk/alignmentsToSave', ats);
+        },
+        handleSaveTargetFrameworkSuccess: function() {
+            this.alignmentsSaved = true;
+            this.crosswalkSaveBusy = false;
+        },
+        handleSaveTargetFrameworkFailed: function() {
+            console.log("Failed to save target framework for crosswalk: " + msg);
+            this.crosswalkSaveBusy = false;
+        },
+        saveTargetFramework: function() {
+            if (this.isObjectOwnerless(this.targetFrameworkSaving) || this.doesAnyIdentityOwnObject(this.targetFrameworkSaving)) {
+                console.log("Saving target framework for crosswalk...");
+                this.targetFrameworkSaving.save(this.handleSaveTargetFrameworkSuccess, this.handleSaveTargetFrameworkFailed, this.repo);
+            } else {
+                this.alignmentsSaved = true;
+                this.crosswalkSaveBusy = false;
+            };
+        },
+        handleSaveSourceFrameworkFailed: function(msg) {
+            console.log("Failed to save source framework for crosswalk: " + msg);
+            this.crosswalkSaveBusy = false;
+        },
+        saveSourceFrameworkAndGo: function() {
+            if (this.isObjectOwnerless(this.sourceFrameworkSaving) || this.doesAnyIdentityOwnObject(this.sourceFrameworkSaving)) {
+                console.log("Saving source framework for crosswalk...");
+                this.sourceFrameworkSaving.save(this.saveTargetFramework, this.handleSaveSourceFrameworkFailed, this.repo);
+            } else this.saveTargetFramework();
+        },
+        saveFrameworks: function() {
+            console.log("Saving frameworks for crosswalk...");
+            this.saveSourceFrameworkAndGo();
+        },
+        checkDeleteAlignments: function() {
+            this.numAlignmentsDeleted += 1;
+            if (this.numAlignmentsDeleted >= this.numAlignmentsToDelete) this.saveFrameworks();
+            else this.deleteAlignmentToRemove(this.numAlignmentsDeleted);
+        },
+        handleDeleteAlignmentFailed: function(msg) {
+            console.log("Failed to remove crosswalk alignment: " + msg);
+            this.checkDeleteAlignments();
+        },
+        deleteAlignmentToRemove: function(atrIdx) {
+            console.log("Deleting crosswalk alignment to remove: " + atrIdx);
+            let atr = this.alignmentsToDelete[atrIdx];
+            this.repo.deleteRegistered(atr, this.checkDeleteAlignments, this.handleDeleteAlignmentFailed);
+        },
+        deleteAlignmentsToRemoveAndGo: function() {
+            if (this.alignmentsToDelete.length > 0) {
+                console.log("Deleting crosswalk alignments to remove...");
+                this.deleteAlignmentToRemove(0);
+            } else this.saveFrameworks();
+        },
+        handleSaveAlignmentsToAddSuccess: function() {
+            console.log("New crosswalk alignments added");
+            this.deleteAlignmentsToRemoveAndGo();
+        },
+        handleSaveAlignmentsToAddFailed: function(msg) {
+            console.log("Failed to add crosswalk alignments: " + msg);
+            this.crosswalkSaveBusy = false;
+        },
+        saveAlignmentsToAddAndGo: function() {
+            let ats = this.alignmentsToSave;
+            if (ats.length > 0) {
+                console.log("Saving crosswalk alignments to add...");
+                this.repo.multiput(ats, this.handleSaveAlignmentsToAddSuccess, this.handleSaveAlignmentsToAddFailed);
+            } else this.deleteAlignmentsToRemoveAndGo();
+        },
+        saveAlignments: function() {
+            if (this.saveToSourceFramework || this.saveToTargetFramework) {
+                this.crosswalkSaveBusy = true;
+                this.numAlignmentsToDelete = this.alignmentsToDelete.length;
+                this.numAlignmentsDeleted = 0;
+                this.sourceFrameworkSaving = this.frameworkSource;
+                this.targetFrameworkSaving = this.frameworkTarget;
+                this.addIdsAndOwnersToNewRelationships();
+                this.addRelationshipsToFrameworks();
+                this.removeRelationshipsFromFrameworks();
+                this.saveAlignmentsToAddAndGo();
+            } else {
+                this.alignmentsSaved = true;
+            }
         },
         prepareToLoadCrosswalkTarget: function() {
             this.crosswalkSourceLoaded = true;
@@ -499,9 +673,6 @@ export default {
         genPartialIdPiece(compId) {
             if (compId.lastIndexOf("/") <= -1) return compId;
             return compId.substr(compId.lastIndexOf("/") + 1);
-        },
-        generateRelationId(relType, sourceId, targetId) {
-            return 'crswlk' + '-' + Date.now() + '---' + this.genPartialIdPiece(sourceId) + '-' + relType + '-' + this.genPartialIdPiece(targetId);
         },
         generateAlignmentObjectFromAlignProps(alignProps) {
             let eca = new EcAlignment();
@@ -621,6 +792,9 @@ export default {
 
 <style lang="scss">
     @import './../../scss/crosswalk.scss';
-
+    h4 {
+        font-size: 1.3rem;
+        padding-bottom: .5rem;
+    }
 </style>
 
