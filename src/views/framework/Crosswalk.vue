@@ -252,10 +252,10 @@
                                 <div class="column is-6">
                                     <h4>Summary:</h4>
                                     <p v-if="alignmentsToSave.length > 0">
-                                        Number of alignments to add: {{ alignmentsToSave.length}}
+                                        Number of alignments to add: {{ alignmentsToSave.length }}
                                     </p>
                                     <p v-if="alignmentsToDelete.length > 0">
-                                        Number of alignments to remove: {{ alignmentsToDelete.length}}
+                                        Number of alignments to remove: {{ alignmentsToDelete.length }}
                                     </p>
                                 </div>
                                 <div class="column is-6">
@@ -272,7 +272,7 @@
                                                 :disabled="true"
                                                 title="You do not have permission to save to this framework"
                                                 v-model="saveToSourceFramework">
-                                            <span> {{frameworkSource.getName()}}</span>
+                                            <span> {{ frameworkSource.getName() }}</span>
                                         </div>
                                     </div>
                                     <div>
@@ -287,7 +287,7 @@
                                                 :disabled="true"
                                                 title="You do not have permission to save to this framework"
                                                 v-model="saveToTargetFramework">
-                                            <span> {{frameworkTarget.getName()}}</span>
+                                            <span> {{ frameworkTarget.getName() }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -565,7 +565,7 @@ export default {
             } else {
                 this.alignmentsSaved = true;
                 this.crosswalkSaveBusy = false;
-            };
+            }
         },
         handleSaveSourceFrameworkFailed: function(msg) {
             console.log("Failed to save source framework for crosswalk: " + msg);

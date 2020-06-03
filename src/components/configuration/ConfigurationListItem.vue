@@ -3,7 +3,7 @@
         <th>
             <b>{{ name }}</b>
         </th>
-        <td>
+        <td v-if="view !== 'dynamic-modal'">
             {{ description }}
         </td>
         <td>
@@ -17,7 +17,7 @@
                 set as browser default
             </div>
         </td>
-        <td>
+        <td v-if="view !== 'dynamic-modal'">
             <div
                 v-if="isOwned"
                 class="button is-outlined is-small is-primary"
@@ -49,6 +49,10 @@ export default {
     name: 'ConfigurationListItem',
     props: {
         id: {
+            type: String,
+            default: ''
+        },
+        view: {
             type: String,
             default: ''
         },

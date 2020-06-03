@@ -24,6 +24,7 @@
                 </span>
             </div>
         </section>
+        <!-- confirm make private -->
         <section
             v-else-if="confirmMakePrivate"
             class="modal-card-body">
@@ -35,6 +36,7 @@
                 your access list will have the ability to read, write, or edit this framework.
             </p>
         </section>
+        <!-- confirm make public -->
         <section
             v-else-if="confirmMakePublic"
             class="modal-card-body">

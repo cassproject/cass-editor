@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :class="{'modal-card': view === 'dynamic-modal'}">
         <!-- busy modal-->
         <div
             class="modal"
@@ -31,17 +31,30 @@
                 </div>
             </div>
         </div>
+        <header
+            v-if="view === 'dynamic-modal'"
+            class="modal-card-head has-background-primary">
+            <p class="modal-card-title">
+                Manage configuration
+            </p>
+            <button
+                class="delete"
+                @click="$store.commit('app/closeModal')"
+                aria-label="close" />
+        </header>
         <!-- configuration editor content-->
-        <div
-            class="container"
+        <section
+            :class="[{ 'container': view !== 'dynamic-modal'}, { 'modal-card-body': view === 'dynamic-modal'}]"
             v-if="!configBusy">
             <div class="section">
-                <h3 class="subtitle">
+                <h3
+                    v-if="view !== 'dynamic-modal'"
+                    class="subtitle">
                     Configuration
                 </h3>
                 <div
                     class="button is-outlined is-primary"
-                    v-if="configViewMode.equals('list')"
+                    v-if="configViewMode.equals('list') && view !== 'dynamic-modal'"
                     @click="createNewConfig">
                     <span class="icon">
                         <i class="fa fa-plus" />
@@ -58,16 +71,21 @@
                     <thead>
                         <tr>
                             <th><abbr title="Name">name</abbr></th>
-                            <th><abbr title="Description">description</abbr></th>
+                            <th v-if="view !=='dynamic-modal'">
+                                <abbr title="Description">description</abbr>
+                            </th>
                             <th><abbr title="Instance Default">instance default</abbr></th>
                             <th><abbr title="Browser Default" />browser default</th>
-                            <th><abbr title="" />view/manage</th>
+                            <th v-if="view !=='dynamic-modal'">
+                                <abbr title="" />view/manage
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         <configuration-list-item
                             v-for="config in configList"
                             :id="config.id"
+                            :view="view"
                             :key="config"
                             :name="config.name"
                             :isDefault="config.isDefault"
@@ -90,7 +108,16 @@
                     @cancel="cancelEditCurrentConfig"
                     @back="backFromEditCurrentConfig" />
             </div>
-        </div>
+        </section>
+        <footer
+            v-if="view === 'dynamic-modal'"
+            class="modal-card-foot hasbackground-light">
+            <div
+                @click="closeModal"
+                class="button is-pulled-right">
+                done
+            </div>
+        </footer>
     </div>
 </template>
 
@@ -102,6 +129,12 @@ import {cassUtil} from '../../mixins/cassUtil';
 
 export default {
     mixins: [cassUtil],
+    props: {
+        view: {
+            default: '',
+            type: String
+        }
+    },
     name: 'ConfigurationEditor',
     components: {
         ConfigurationDetails,
@@ -130,6 +163,9 @@ export default {
         localDefaultBrowserConfigId: ''
     }),
     methods: {
+        closeModal: function() {
+            this.$store.commit('app/closeModal');
+        },
         showListView() {
             this.configViewMode = "list";
         },

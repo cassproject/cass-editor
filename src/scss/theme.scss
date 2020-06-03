@@ -11,7 +11,7 @@ $section-padding-tb: .5rem 0rem;
 $menu-item-color:$black;
 $menu-item-hover-color: $black;
 
-$is-size-1: 2rem;
+$is-size-1: 1.9rem;
 $is-size-2: 1.8rem;
 $is-size-3: 1.6rem;
 $is-size-4: 1.4rem;
@@ -77,6 +77,9 @@ $breadcrumb-item-color: $cass-primary-down;
 $breadcrumb-item-hover-color: $cass-primary-down;
 $breadcrumb-item-active-color: $cass-primary-down;
 
+$modal-card-title-size: $is-size-2;
+$modal-card-title-line-height: 1;
+$modal-card-title-color: white;
 
 // utilities
 @import "./../../node_modules/bulma/sass/utilities/_all.sass";
