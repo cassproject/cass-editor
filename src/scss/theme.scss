@@ -81,6 +81,24 @@ $modal-card-title-size: $is-size-2;
 $modal-card-title-line-height: 1;
 $modal-card-title-color: white;
 
+
+/* TABLE CONFIGRATION */
+$table-color: $text; // text color
+$table-background-color: transparent;
+//$table-cell-border: transparent;
+//$table-cell-border-width: default;
+//$table-cell-padding: unset;
+$table-cell-heading-color: default;
+//$table-head-cell-border-width: ;
+$table-head-cell-color: $text;
+//$table-foot-cell-border-width: ;
+
+$table-head-background-color: $light;
+$table-body-background-color: transparent;
+$table-row-hover-background-color: rgba($dark, .1);
+$table-row-active-background-color: rgba($link, .2);
+$table-striped-row-even-background-color: rgba($dark, .2);
+
 // utilities
 @import "./../../node_modules/bulma/sass/utilities/_all.sass";
 @import "./../../node_modules/bulma/sass/base/_all.sass";
@@ -90,6 +108,7 @@ $modal-card-title-color: white;
 @import "./../../node_modules/bulma/sass/grid/_all.sass";
 @import "./../../node_modules/bulma/sass/layout/_all.sass";
 @import "./../../node_modules/bulma-checkradio/src/sass/index.sass";
+@import "./../../node_modules/bulma-switch/src/sass/index.sass";
 
 @include desktop {
     .pagesRight {
