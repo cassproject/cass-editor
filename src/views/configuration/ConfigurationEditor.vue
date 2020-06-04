@@ -1,5 +1,5 @@
 <template>
-    <div :class="{'modal-card': view === 'dynamic-modal'}">
+    <div :class="[{'modal-card': view === 'dynamic-modal'}, {'section': view !== 'dynamic-modal'}]">
         <!-- busy modal-->
         <div
             class="modal"

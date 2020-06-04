@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="">
         <!-- busy modal-->
         <div
             class="modal"
@@ -18,7 +18,7 @@
             <div class="modal-background" />
             <div class="modal-card">
                 <header class="modal-card-head has-background-primary">
-                    <p class="subtitle is-size-3 modal-card-title has-text-white">
+                    <p class="modal-card-title has-text-white">
                         {{ permissionEntitySelectionTitle }}
                         <button
                             class="delete is-pulled-right"
@@ -110,7 +110,7 @@
             <div class="modal-background" />
             <div class="modal-card">
                 <header class="modal-card-head has-background-primary">
-                    <p class="subtitle has-text-white is-size-3 modal-card-title">
+                    <p class="has-text-white modal-card-title">
                         {{ levelSelectionModalTitle }}
                         <button
                             class="delete is-pulled-right"
@@ -278,7 +278,7 @@
             <div class="modal-background" />
             <div class="modal-card">
                 <header class="modal-card-head has-background-primary">
-                    <p class="subtitle is-size-3 has-text-white modal-card-title">
+                    <p class="has-text-white modal-card-title">
                         {{ customPropertyModalTitle }}
                         <button
                             class="delete is-pulled-right"
@@ -289,6 +289,9 @@
                 <div class="modal-card-body has-text-dark">
                     <div class="field">
                         <label class="label">Context: </label>
+                        <p class="description">
+                            If you are unsure, keep the default.
+                        </p>
                         <div
                             class="field"
                             v-if="readOnly || !customPropertyIsNew">
@@ -300,7 +303,7 @@
                             <div class="select is-fullwidth">
                                 <select v-model="customPropertyContext">
                                     <option value="https://schema.cassproject.org/0.4/">
-                                        https://schema.cassproject.org/0.4/
+                                        https://schema.cassproject.org/0.4/ (default)
                                     </option>
                                     <option value="https://purl.org/ctdlasn/terms/">
                                         https://purl.org/ctdlasn/terms/
@@ -345,35 +348,81 @@
                             </div>
                         </div>
                     </div>
-                    <div class="field">
-                        <label class="label">Range/Type: </label>
-                        <div class="control">
-                            <div v-if="readOnly || !customPropertyIsNew">
-                                {{ customPropertyRangeReadable }}
+                    <div class="columns">
+                        <div class="column">
+                            <div class="control">
+                                <label class="label">Range/Type: </label>
+                                <div class="control">
+                                    <div v-if="readOnly || !customPropertyIsNew">
+                                        {{ customPropertyRangeReadable }}
+                                    </div>
+                                    <div
+                                        class="select"
+                                        v-if="!readOnly && customPropertyIsNew">
+                                        <select v-model="customPropertyRange">
+                                            <option value="http://www.w3.org/2000/01/rdf-schema#langString">
+                                                Lang-String
+                                            </option>
+                                            <option value="http://schema.org/URL">
+                                                URL
+                                            </option>
+                                            <option value="http://schema.org/Text">
+                                                Text
+                                            </option>
+                                            <option value="http://www.w3.org/2001/XMLSchema#dateTime">
+                                                Date-Time
+                                            </option>
+                                            <option value="http://purl.org/dc/terms/date">
+                                                Date
+                                            </option>
+                                            <option value="https://schema.cassproject.org/0.4/skos/Concept">
+                                                SKOS Concept
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
-                            <div
-                                class="select"
-                                v-if="!readOnly && customPropertyIsNew">
-                                <select v-model="customPropertyRange">
-                                    <option value="http://www.w3.org/2000/01/rdf-schema#langString">
-                                        Lang-String
-                                    </option>
-                                    <option value="http://schema.org/URL">
-                                        URL
-                                    </option>
-                                    <option value="http://schema.org/Text">
-                                        Text
-                                    </option>
-                                    <option value="http://www.w3.org/2001/XMLSchema#dateTime">
-                                        Date-Time
-                                    </option>
-                                    <option value="http://purl.org/dc/terms/date">
-                                        Date
-                                    </option>
-                                    <option value="https://schema.cassproject.org/0.4/skos/Concept">
-                                        SKOS Concept
-                                    </option>
-                                </select>
+                        </div>
+
+                        <div class="column">
+                            <div class="control">
+                                <label class="label">Priority: </label>
+                                <div v-if="readOnly">
+                                    {{ customPropertyPriority }}
+                                </div>
+                                <div
+                                    class="control"
+                                    v-if="!readOnly">
+                                    <div class="select">
+                                        <select v-model="customPropertyPriority">
+                                            <option value="primary">
+                                                primary
+                                            </option>
+                                            <option value="secondary">
+                                                secondary
+                                            </option>
+                                            <option value="tertiary">
+                                                tertiary
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="field">
+                                <label class="label">Required </label>
+                                <div class="control">
+                                    <input
+                                        :disabled="readOnly"
+                                        v-model="customPropertyRequired"
+                                        id="customPropertyRequiredSwitch"
+                                        type="checkbox"
+                                        name="customPropertyRequiredSwitch"
+                                        class="switch is-large"
+                                        checked="checked">
+                                    <label for="customPropertyRequiredSwitch" />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -422,68 +471,43 @@
                                 v-model="customPropertyDescription">
                         </div>
                     </div>
-                    <div class="field">
-                        <label class="label">Is Required: </label>
-                        <div v-if="readOnly">
-                            {{ customPropertyRequired }}
-                        </div>
-                        <div
-                            class="control"
-                            v-if="!readOnly">
-                            <div class="select">
-                                <select v-model="customPropertyRequired">
-                                    <option :value="true">
-                                        true
-                                    </option>
-                                    <option :value="false">
-                                        false
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label class="label">Priority: </label>
-                        <div v-if="readOnly">
-                            {{ customPropertyPriority }}
-                        </div>
-                        <div
-                            class="control"
-                            v-if="!readOnly">
-                            <div class="select">
-                                <select v-model="customPropertyPriority">
-                                    <option value="primary">
-                                        primary
-                                    </option>
-                                    <option value="secondary">
-                                        secondary
-                                    </option>
-                                    <option value="tertiary">
-                                        tertiary
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <template v-if="shouldAllowCustomPropertyPermittedValues">
+
+                    <div
+                        class="box"
+                        v-if="shouldAllowCustomPropertyPermittedValues">
                         <div class="field">
-                            <label class="label">Permitted Values (Optional): </label>
-                            <p v-if="!readOnly">
-                                Leave this section empty to allow any values for this property
+                            <div class="columns">
+                                <div class="column">
+                                    <label class="label">Limit values </label>
+                                </div>
+                                <div class="column is-narrow">
+                                    <div class="control">
+                                        <input
+                                            :disabled="readOnly"
+                                            v-model="customPropertyValuesLimited"
+                                            id="customPropertyValuesLimited"
+                                            type="checkbox"
+                                            name="customPropertyValuesLimited"
+                                            class="switch is-large"
+                                            checked="checked">
+                                        <label for="customPropertyValuesLimited" />
+                                    </div>
+                                </div>
+                            </div>
+                            <p
+                                v-if="!customPropertyValuesLimited && !readOnly"
+                                class="description">
+                                Limit values disabled, any values allowed. To limte, turn on limit values.
                             </p>
-                            <button
-                                class="button is-outlined is-small is-primary"
-                                v-if="!readOnly"
-                                @click="addCustomPropertyPermittedValue">
-                                <span class="icon">
-                                    <i class="fa fa-plus" />
-                                </span>
-                                <span>add</span>
-                            </button>
+                            <p
+                                v-if="customPropertyValuesLimited && !readOnly"
+                                class="description">
+                                Values limited to only those listed below. To allow any, turn off limit values.
+                            </p>
                         </div>
                         <div
                             class="table-container"
-                            v-if="customPropertyPermittedValues.length > 0">
+                            v-if="customPropertyPermittedValues.length > 0 && customPropertyValuesLimited">
                             <table class="table is-hoverable is-fullwidth">
                                 <thead>
                                     <th>display</th>
@@ -536,7 +560,21 @@
                                 </tbody>
                             </table>
                         </div>
-                    </template>
+                        <div v-else-if="customPropertyValuesLimited">
+                            No values entered.
+                        </div>
+                        <div class="buttons is-right">
+                            <button
+                                class="button is-outlined is-small is-primary"
+                                v-if="!readOnly && customPropertyValuesLimited"
+                                @click="addCustomPropertyPermittedValue">
+                                <span class="icon">
+                                    <i class="fa fa-plus" />
+                                </span>
+                                <span>add</span>
+                            </button>
+                        </div>
+                    </div>
                     <br>
                     <div
                         class="field has-text-danger"
@@ -1182,13 +1220,16 @@
                                 <thead>
                                     <tr>
                                         <th>
-                                            relationship
+                                            <abbr title="propety id of the relationship">
+                                                relationship</abbr>
                                         </th>
                                         <th>
-                                            label
+                                            <abbr title="relationship label for form inputs">
+                                                label</abbr>
                                         </th>
                                         <th>
-                                            enabled
+                                            <abbr title="if enabled shows up in property options">
+                                                enabled</abbr>
                                         </th>
                                     </tr>
                                 </thead>
@@ -1212,13 +1253,16 @@
                                 <thead>
                                     <tr>
                                         <th>
-                                            relationship
+                                            <abbr title="propety id of the relationship">
+                                                relationship</abbr>
                                         </th>
                                         <th>
-                                            label
+                                            <abbr title="relationship label for form inputs">
+                                                label</abbr>
                                         </th>
                                         <th>
-                                            enabled
+                                            <abbr title="if enabled shows up in property options">
+                                                enabled</abbr>
                                         </th>
                                     </tr>
                                 </thead>
@@ -1242,13 +1286,16 @@
                                 <thead>
                                     <tr>
                                         <th>
-                                            relationship
+                                            <abbr title="propety id of the relationship">
+                                                relationship</abbr>
                                         </th>
                                         <th>
-                                            label
+                                            <abbr title="relationship label for form inputs">
+                                                label</abbr>
                                         </th>
                                         <th>
-                                            enabled
+                                            <abbr title="if enabled shows up in property options">
+                                                enabled</abbr>
                                         </th>
                                     </tr>
                                 </thead>
@@ -1272,13 +1319,16 @@
                                 <thead>
                                     <tr>
                                         <th>
-                                            relationship
+                                            <abbr title="propety id of the relationship">
+                                                relationship</abbr>
                                         </th>
                                         <th>
-                                            label
+                                            <abbr title="relationship label for form inputs">
+                                                label</abbr>
                                         </th>
                                         <th>
-                                            enabled
+                                            <abbr title="if enabled shows up in property options">
+                                                enabled</abbr>
                                         </th>
                                     </tr>
                                 </thead>
@@ -1308,13 +1358,16 @@
                     <thead>
                         <tr>
                             <th>
-                                relationship
+                                <abbr title="propety id of the relationship">
+                                    relationship</abbr>
                             </th>
                             <th>
-                                label
+                                <abbr title="relationship label for form inputs">
+                                    label</abbr>
                             </th>
                             <th>
-                                enabled
+                                <abbr title="if enabled shows up in property options">
+                                    enabled</abbr>
                             </th>
                         </tr>
                     </thead>
@@ -1754,6 +1807,7 @@ export default {
     },
     data: function() {
         return {
+            customPropertyValuesLimited: false,
             showManageRelationshipsModal: false,
             tab: 'framework',
             LEVEL_SEARCH_SIZE: 10000,
