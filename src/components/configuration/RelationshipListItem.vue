@@ -20,22 +20,17 @@
             </div>
         </td>
         <td>
-            <div v-if="readOnly">
-                {{ localEnabled }}
-            </div>
             <div
-                class="select is-small"
-                v-if="!readOnly">
-                <select
+                class="field">
+                <input
+                    :disabled="readOnly"
+                    @change="changeEnabled"
                     v-model="localEnabled"
-                    @change="changeEnabled">
-                    <option :value="true">
-                        true
-                    </option>
-                    <option :value="false">
-                        false
-                    </option>
-                </select>
+                    id="localEnabledSwitch"
+                    type="checkbox"
+                    name="localEnabledSwitch"
+                    class="switch">
+                <label for="localEnabledSwitch" />
             </div>
         </td>
     </tr>
