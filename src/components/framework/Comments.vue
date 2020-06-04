@@ -212,7 +212,10 @@ export default {
             return commentCreators;
         },
         buildFrameworkCommentPersonMap: function() {
-            window.repo.multiget(this.buildCommentCreatorList(), this.buildFrameworkCommentPersonMapSuccess, this.buildFrameworkCommentPersonMapFailure);
+            let commentCreators = this.buildCommentCreatorList();
+            if (commentCreators.length > 0) {
+                window.repo.multiget(commentCreators, this.buildFrameworkCommentPersonMapSuccess, this.buildFrameworkCommentPersonMapFailure);
+            } else this.buildFrameworkCommentPersonMapSuccess([]);
         },
         sortLocalFrameworkCommentList() {
             this.localFrameworkCommentList.sort(function(c1, c2) {
