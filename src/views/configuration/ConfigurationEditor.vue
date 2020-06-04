@@ -47,28 +47,24 @@
             :class="[{ 'container': view !== 'dynamic-modal'}, { 'modal-card-body': view === 'dynamic-modal'}]"
             v-if="!configBusy">
             <div class="section">
-                <h3
-                    v-if="view !== 'dynamic-modal'"
-                    class="subtitle">
-                    Configuration
-                </h3>
+                <template v-if="view !== 'dynamic-modal'">
+                    <h3
+                        class="title">
+                        Configuration
+                    </h3>
+                    <p v-if="configViewMode.equals('list')">
+                        Configurations control the way your frameworks appear in the editor, as well as what properties, relationships,
+                        and in some cases value types of properties and relationships you can add to your framework. If a browser configuration
+                        not set then the the system will default to your instance default. If you admin the confugration you will be
+                        able to manage the property settings.  Otherwise contact your CAT administrator.
+                    </p>
+                </template>
                 <p v-if="view === 'dynamic-modal'">
                     Choose a different configuration to apply to this framework below.  You can view and manage details about
                     your available configurations in <router-link to="/config">
                         configuration management
                     </router-link>.
                 </p>
-                <div
-                    class="button is-outlined is-primary"
-                    v-if="configViewMode.equals('list') && view !== 'dynamic-modal'"
-                    @click="createNewConfig">
-                    <span class="icon">
-                        <i class="fa fa-plus" />
-                    </span>
-                    <span>
-                        create new configuration
-                    </span>
-                </div>
             </div>
             <div class="table-container">
                 <table
@@ -103,6 +99,17 @@
                     </tbody>
                     <br>
                 </table>
+            </div>
+            <div
+                class="button is-outlined is-primary is-pulled-right"
+                v-if="configViewMode.equals('list') && view !== 'dynamic-modal'"
+                @click="createNewConfig">
+                <span class="icon">
+                    <i class="fa fa-plus" />
+                </span>
+                <span>
+                    create new configuration
+                </span>
             </div>
             <div v-if="configViewMode.equals('detail')">
                 <configuration-details
@@ -1254,7 +1261,7 @@ export default {
 <style lang="scss" scoped>
     h3 {
         font-size: 2rem;
-        padding-bottom: 1rem;
+        padding-bottom: 0rem;
     }
     h4 {
         font-size: 1.6rem;
