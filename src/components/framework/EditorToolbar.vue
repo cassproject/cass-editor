@@ -88,7 +88,7 @@
                             <a
                                 @click="showManageUsersModal(); showShareDropdown = false;"
                                 class="dropdown-item"
-                                v-if="canEditFramework">
+                                v-if="loggedIn">
                                 Manage Users
                             </a>
                             <a
@@ -349,6 +349,12 @@ export default {
                 return false;
             }
             return true;
+        },
+        loggedIn: function() {
+            if (EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
+                return true;
+            }
+            return false;
         }
     },
     watch: {
