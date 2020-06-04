@@ -60,7 +60,7 @@
                     </p>
                 </template>
                 <p v-if="view === 'dynamic-modal'">
-                    Choose a different configuration to apply to this framework below.  You can view and manage details about
+                    Choose a configuration to apply to this framework below.  You can view and manage details about
                     your available configurations in <router-link to="/config">
                         configuration management
                     </router-link>.
@@ -76,8 +76,15 @@
                             <th v-if="view !=='dynamic-modal'">
                                 <abbr title="Description">description</abbr>
                             </th>
-                            <th><abbr title="Instance Default">instance default</abbr></th>
-                            <th><abbr title="Browser Default" />browser default</th>
+                            <th v-if="view !=='dynamic-modal'">
+                                <abbr title="Instance Default">instance default</abbr>
+                            </th>
+                            <th v-if="view !=='dynamic-modal'">
+                                <abbr title="Browser Default" />browser default
+                            </th>
+                            <th v-else>
+                                <abbr title="Framework Default">framework default</abbr>
+                            </th>
                             <th v-if="view !=='dynamic-modal'">
                                 <abbr title="" />view/manage
                             </th>
@@ -94,7 +101,9 @@
                             :description="config.description"
                             :isOwned="config.isOwned"
                             :defaultBrowserConfigId="localDefaultBrowserConfigId"
+                            :defaultFrameworkConfigId="frameworkConfigId"
                             @setBrowserDefault="setConfigAsBrowserDefault"
+                            @setFrameworkDefault="setConfigAsFrameworkDefault"
                             @showDetails="showConfigDetails" />
                     </tbody>
                     <br>
@@ -173,7 +182,8 @@ export default {
         defaultConfigId: null,
         showBrowserConfigSetModal: false,
         defaultBrowserConfigName: '',
-        localDefaultBrowserConfigId: ''
+        localDefaultBrowserConfigId: '',
+        frameworkConfigId: ''
     }),
     methods: {
         closeModal: function() {
@@ -861,6 +871,15 @@ export default {
             this.defaultBrowserConfigName = bdc.name;
             this.localDefaultBrowserConfigId = configId;
             this.showBrowserConfigSetModal = true;
+        },
+        setConfigAsFrameworkDefault(configId) {
+            let me = this;
+            let f = this.$store.getters['editor/framework'];
+            f.configuration = configId;
+            this.frameworkConfigId = configId;
+            window.repo.saveTo(f, function() {
+                me.$store.commit('editor/framework', f);
+            }, function() {});
         },
         generateTestConfigList() {
             let ca = [];

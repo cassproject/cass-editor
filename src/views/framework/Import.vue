@@ -1033,7 +1033,11 @@ export default {
             var toSave = [];
             var f = new EcFramework();
             var name = newName || d.name;
-            f.setName(name);
+            if (name) {
+                f.setName(name);
+            } else {
+                f.setName("Unknown Name");
+            }
             if (d.description && d.description !== "") {
                 f.setDescription(d.description);
             }
