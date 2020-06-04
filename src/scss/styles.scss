@@ -206,6 +206,26 @@ iframe {
     }
 }
 
+.table {
+    thead {
+        th {
+            font-weight: 500;
+            font-size: $is-size-7;
+            font-family: $family-secondary;
+        }
+    }
+    tbody {
+        th {
+        font-weight: 600;
+        font-family: $family-primary;
+        }
+        tr {
+        font-weight: 400;
+        font-size: $is-size-7;
+        font-family: $family-primary;
+        }
+    }
+}
 
 
 /*  Responsive text 
