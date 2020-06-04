@@ -255,13 +255,17 @@ export default {
             newUserGroup.employee = [];
             newUserGroup.addEmployee(this.$store.state.user.loggedOnPerson);
             this.addAllIdentityPksAsOwners(newUserGroup);
-            let newUserGroupPpk = EcPpk.generateKey();
-            newUserGroup[this.GROUP_PPK_KEY] = EcEncryptedValue.encryptValue(newUserGroupPpk.toPem(), this.GROUP_PPK_KEY, newUserGroup.owner, newUserGroup.reader);
-            console.log('New user group created: ');
-            console.log(newUserGroup);
-            this.currentUserGroup = newUserGroup;
-            this.userGroupBusy = false;
-            this.fetchPersonListForDetailViewAndPopulateUserLists();
+            // Vue wasn't updating the this.userGroupBusy before it got busy generating the key.  Putting this timeout here
+            // to let it 'catch up'.  Seems to be 'work' ok.
+            setTimeout(() => {
+                let newUserGroupPpk = EcPpk.generateKey();
+                newUserGroup[this.GROUP_PPK_KEY] = EcEncryptedValue.encryptValue(newUserGroupPpk.toPem(), this.GROUP_PPK_KEY, newUserGroup.owner, newUserGroup.reader);
+                console.log('New user group created: ');
+                console.log(newUserGroup);
+                this.currentUserGroup = newUserGroup;
+                this.userGroupBusy = false;
+                this.fetchPersonListForDetailViewAndPopulateUserLists();
+            }, 300);
         },
         sortUserGroupList() {
             let me = this;
