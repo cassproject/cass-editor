@@ -77,7 +77,7 @@
                 </div>
                 <footer class="modal-card-foot has-background-light">
                     <div
-                        class="buttons"
+                        class="buttons is-spaced"
                         v-if="!readOnly">
                         <button
                             class="button is-outlined is-dark"
@@ -214,7 +214,7 @@
                     v-if="!showAddNewLevelSection"
                     class="modal-card-foot has-background-light">
                     <div
-                        class="buttons"
+                        class="buttons is-spaced"
                         v-if="!readOnly">
                         <button
                             class="button is-outlined is-dark"
@@ -245,7 +245,7 @@
                     v-if="showAddNewLevelSection"
                     class="modal-card-foot has-background-light">
                     <div
-                        class="buttons"
+                        class="buttons is-spaced"
                         v-if="!readOnly && !savingLevelBusy">
                         <button
                             class="button is-outlined"
@@ -629,7 +629,7 @@
                 </div>
                 <footer class="modal-card-foot has-background-light">
                     <div
-                        class="buttons"
+                        class="buttons is-spaced"
                         v-if="!readOnly">
                         <button
                             class="button is-outlined is-dark"
@@ -1796,7 +1796,7 @@
         <!-- ************************************** Actions ************************************************ -->
         <div class="section">
             <div
-                class="buttons is-right"
+                class="buttons is-spaced"
                 v-if="!readOnly">
                 <div
                     class="button is-outlined is-dark"
@@ -1811,7 +1811,7 @@
                     @click="validateCurrentConfigAndEmitSave">
                     <span class="icon">
                         <i class="fa fa-save" />
-                    </span><span>save</span>
+                    </span><span>save configuration</span>
                 </div>
             </div>
             <div

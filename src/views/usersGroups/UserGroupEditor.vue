@@ -16,33 +16,28 @@
             class="container"
             v-if="!userGroupBusy">
             <div class="section">
-                <h3>User Groups</h3>
+                <h3 class="title is-size-1">
+                    User Groups
+                </h3>
+                <p class="description">
+                    User groups are combinations of users and access rules grouped under a name.
+                    These grouped rules can be applied at the configuration level in the
+                    configuration management screen or at the framework level in the framework editor.
+                </p>
             </div>
             <div
                 class="section"
                 v-if="userGroupViewMode.equals('list')">
-                <h4>Groups</h4>
+                <h4 class="header is-size-3">
+                    Groups
+                </h4>
                 <div v-if="userGroupList.length === 0">
                     <p>No user groups are available.</p>
-                </div>
-                <div class="buttons is-left">
-                    <div
-                        class="button is-small is-outlined is-primary"
-                        @click="createNewUserGroup"
-                        :disabled="!amLoggedIn"
-                        :title="getCreateUserGroupButtonTitle">
-                        <span class="icon">
-                            <i class="fa fa-plus" />
-                        </span>
-                        <span>
-                            create new group
-                        </span>
-                    </div>
                 </div>
                 <div
                     class="table-container"
                     v-if="userGroupList.length > 0">
-                    <div class="table">
+                    <table class="table is-hoverable is-fullwidth">
                         <thead>
                             <tr>
                                 <th>
@@ -68,12 +63,28 @@
                                 :isOwned="doesAnyIdentityOwnObject(grp)"
                                 @showDetails="showUserGroupDetails" />
                         </tbody>
+                    </table>
+                </div>
+                <div class="buttons is-right">
+                    <div
+                        class="button is-small is-outlined is-primary"
+                        @click="createNewUserGroup"
+                        :disabled="!amLoggedIn"
+                        :title="getCreateUserGroupButtonTitle">
+                        <span class="icon">
+                            <i class="fa fa-plus" />
+                        </span>
+                        <span>
+                            create new group
+                        </span>
                     </div>
                 </div>
             </div>
             <div v-if="userGroupViewMode.equals('detail')">
                 <div class="section">
-                    <h4>User Group Details</h4>
+                    <h4 class="header is-size-3">
+                        User Group Details
+                    </h4>
                 </div>
                 <user-group-details
                     :group="currentUserGroup"
@@ -320,20 +331,9 @@ export default {
 </script>
 
 
-<style lang="scss" scoped>
-    h3 {
-        font-size: 2rem;
-        padding-bottom: 1rem;
-    }
-    h4 {
-        font-size: 1.6rem;
-        padding-bottom: 1rem;
-    }
-    h4 {
-        font-size: 1.3rem;
-        padding-bottom: .5rem;
-    }
-    .listHdr {
-        font-weight: bold;
+<style lang="scss">
+
+    p.description {
+        padding-bottom: .75rem;
     }
 </style>
