@@ -65,7 +65,7 @@
                     </span>
                 </h3>
                 <p>
-                    CaSS experimentally supports the import of frameworks in Word and Docx document formats.  Because Word and Docx files come in many shapes and sizes there may be deviances when importing content.  The import interface allows you to review and make changes to the detected content before importing.
+                    CaSS experimentally supports the import of frameworks in DOCX document formats.  Because DOCX files come in many shapes and sizes there may be defects when importing frameworks.  The import interface allows you to review and make changes to the detected framework before importing.
                 </p>
                 <div
                     v-if="false"
@@ -99,7 +99,7 @@
                     </span>
                 </h3>
                 <p>
-                    CaSS experimentally supports the import of frameworks in HTML document formats.  Because HTML files come in many shapes and sizes there may be deviances when importing content.  The import interface allows you to review and make changes to the detected content before importing.
+                    CaSS experimentally supports the import of frameworks in HTML document formats.  Because HTML files come in many shapes and sizes there may be defects when importing frameworks.  The import interface allows you to review and make changes to the detected framework before importing.
                 </p>
                 <div
                     v-if="false"
@@ -133,7 +133,7 @@
                     </span>
                 </h3>
                 <p>
-                    CaSS experimentally supports the import of frameworks in PDF document format.  Because PDF files come in many shapes and sizes there may be deviances when importing content.  The import interface allows you to review and make changes to the detected content before importing.
+                    CaSS experimentally supports the import of frameworks in PDF document format.  Because PDF files come in many shapes and sizes there may be deviances when importing frameworks.  The import interface allows you to review and make changes to the detected framework before importing.
                 </p>
                 <div
                     v-if="false"
@@ -167,7 +167,7 @@
                     </span>
                 </h2>
                 <p>
-                    CSV file imports are supported with CaSS.  In order to upload competencies as CSV files your framework CSV files need to be formatted in a CaSS readable format.
+                    CSV file imports are supported with CaSS.  In order to upload competencies as CSV files, your framework CSV files need to be formatted in a CaSS readable format.
                 </p>
                 <h5 class="header is-size-4 has-text-weight-bold">
                     CaSS Formatted
