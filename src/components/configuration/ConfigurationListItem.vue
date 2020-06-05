@@ -7,7 +7,11 @@
             {{ description }}
         </td>
         <td v-if="view !== 'dynamic-modal'">
-            {{ isDefault }}
+            <span
+                v-if="isDefault"
+                class="icon has-text-primary">
+                <i class="fa fa-check" />
+            </span>
         </td>
         <td v-if="view !== 'dynamic-modal'">
             <div

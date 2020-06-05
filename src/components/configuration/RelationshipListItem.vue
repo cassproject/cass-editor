@@ -26,11 +26,11 @@
                     :disabled="readOnly"
                     @change="changeEnabled"
                     v-model="localEnabled"
-                    id="localEnabledSwitch"
+                    :id="relationship"
                     type="checkbox"
-                    name="localEnabledSwitch"
+                    :name="relationship"
                     class="switch">
-                <label for="localEnabledSwitch" />
+                <label :for="relationship" />
             </div>
         </td>
     </tr>

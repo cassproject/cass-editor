@@ -55,8 +55,8 @@
                     <p v-if="configViewMode.equals('list')">
                         Configurations control the way your frameworks appear in the editor, as well as what properties, relationships,
                         and in some cases value types of properties and relationships you can add to your framework. If a browser configuration
-                        not set then the the system will default to your instance default. If you admin the confugration you will be
-                        able to manage the property settings.  Otherwise contact your CAT administrator.
+                        not set then the the system will default to your instance default. If you are the configuration administrator you will be
+                        able to manage the property settings and change which instance is the default.  Otherwise contact your CAT administrator.
                     </p>
                 </template>
                 <p v-if="view === 'dynamic-modal'">

@@ -288,7 +288,7 @@
                 </header>
                 <div class="modal-card-body has-text-dark">
                     <div class="field">
-                        <label class="label">Context: </label>
+                        <label class="label">Context </label>
                         <p class="description">
                             If you are unsure, keep the default.
                         </p>
@@ -302,47 +302,70 @@
                             v-if="!readOnly && customPropertyIsNew">
                             <div class="select is-fullwidth">
                                 <select v-model="customPropertyContext">
-                                    <option value="https://schema.cassproject.org/0.4/">
-                                        https://schema.cassproject.org/0.4/ (default)
+                                    <option
+                                        title="https://schema.cassproject.org/0.4/ (default)"
+                                        value="https://schema.cassproject.org/0.4/">
+                                        CaSS v4.0 (default)
                                     </option>
-                                    <option value="https://purl.org/ctdlasn/terms/">
-                                        https://purl.org/ctdlasn/terms/
+                                    <option
+                                        title="https://purl.org/ctdlasn/terms/"
+                                        value="https://purl.org/ctdlasn/terms/">
+                                        CTDL-ASN
                                     </option>
-                                    <option value="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-                                        http://www.w3.org/1999/02/22-rdf-syntax-ns#
+                                    <option
+                                        title="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                                        value="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+                                        RDF Semantic Web Standards 1999
                                     </option>
-                                    <option value="http://www.w3.org/2000/01/rdf-schema#">
-                                        http://www.w3.org/2000/01/rdf-schema#
+                                    <option
+                                        title="http://www.w3.org/2000/01/rdf-schema#"
+                                        value="http://www.w3.org/2000/01/rdf-schema#">
+                                        RDF Semantic Web Standards 2000
                                     </option>
-                                    <option value="https://schema.cassproject.org/0.4/">
-                                        https://schema.cassproject.org/0.4/
+                                    <option
+                                        title="https://schema.cassproject.org/kbac/0.4/"
+                                        value="https://schema.cassproject.org/kbac/0.4/">
+                                        Key Based Authorization and Control
                                     </option>
-                                    <option value="https://schema.cassproject.org/kbac/0.4/">
-                                        https://schema.cassproject.org/kbac/0.4/
+                                    <option
+                                        title="http://schema.eduworks.com/general/0.3/"
+                                        value="http://schema.eduworks.com/general/0.3/">
+                                        Eduworks v3.0
                                     </option>
-                                    <option value="http://schema.eduworks.com/general/0.3/">
-                                        http://schema.eduworks.com/general/0.3/
+                                    <option
+                                        title="http://schema.org/"
+                                        value="http://schema.org/">
+                                        Schema.org
                                     </option>
-                                    <option value="http://schema.org/">
-                                        http://schema.org/
+                                    <option
+                                        title="http://purl.org/ASN/schema/core/"
+                                        value="http://purl.org/ASN/schema/core/">
+                                        Achievements Standard Network
                                     </option>
-                                    <option value="http://purl.org/ASN/schema/core/">
-                                        http://purl.org/ASN/schema/core/
+                                    <option
+                                        title="http://purl.org/dc/elements/1.1/"
+                                        value="http://purl.org/dc/elements/1.1/">
+                                        DCMI Elements v1.1
                                     </option>
-                                    <option value="http://purl.org/dc/elements/1.1/">
-                                        http://purl.org/dc/elements/1.1/
+                                    <option
+                                        title="http://purl.org/gem/qualifiers/"
+                                        value="http://purl.org/gem/qualifiers/">
+                                        Gem v2.0
                                     </option>
-                                    <option value="http://purl.org/gem/qualifiers/">
-                                        http://purl.org/gem/qualifiers/
+                                    <option
+                                        title="http://www.loc.gov/loc.terms/relators/"
+                                        value="http://www.loc.gov/loc.terms/relators/">
+                                        Relators Scheme
                                     </option>
-                                    <option value="http://www.loc.gov/loc.terms/relators/">
-                                        http://www.loc.gov/loc.terms/relators/
+                                    <option
+                                        title="http://purl.org/dc/terms/"
+                                        value="http://purl.org/dc/terms/">
+                                        DCMI Terms
                                     </option>
-                                    <option value="http://purl.org/dc/terms/">
-                                        http://purl.org/dc/terms/
-                                    </option>
-                                    <option value="http://www.w3.org/2004/02/skos/core#">
-                                        http://www.w3.org/2004/02/skos/core#
+                                    <option
+                                        title="http://www.w3.org/2004/02/skos/core#"
+                                        value="http://www.w3.org/2004/02/skos/core#">
+                                        Simple Knowledge Organization System
                                     </option>
                                 </select>
                             </div>
@@ -428,7 +451,7 @@
                     </div>
                     <div class="field">
                         <label class="label">
-                            Property Name<span v-if="customPropertyIsNew"> (only alphanumerics permitted)</span>:
+                            Unique Property Identifier<span v-if="customPropertyIsNew"> (only alphanumerics permitted)</span>
                         </label>
                         <div v-if="readOnly || !customPropertyIsNew">
                             {{ customPropertyPropertyName }}
@@ -444,7 +467,7 @@
                         </div>
                     </div>
                     <div class="field">
-                        <label class="label">Label: </label>
+                        <label class="label">Label</label>
                         <div v-if="readOnly">
                             {{ customPropertyLabel }}
                         </div>
@@ -458,7 +481,7 @@
                         </div>
                     </div>
                     <div class="field">
-                        <label class="label">Description: </label>
+                        <label class="label">Description</label>
                         <div v-if="readOnly">
                             {{ customPropertyDescription }}
                         </div>
@@ -497,7 +520,7 @@
                             <p
                                 v-if="!customPropertyValuesLimited && !readOnly"
                                 class="description">
-                                Limit values disabled, any values allowed. To limte, turn on limit values.
+                                Limit values disabled, any values allowed. To limit, turn on limit values.
                             </p>
                             <p
                                 v-if="customPropertyValuesLimited && !readOnly"
@@ -637,7 +660,7 @@
             class="section box"
             id="configuration-details">
             <div class="field">
-                <label class="label">Name: </label>
+                <label class="label">Name</label>
                 <div v-if="readOnly">
                     {{ config.name }}
                 </div>
@@ -651,7 +674,7 @@
                 </div>
             </div>
             <div class="field">
-                <label class="label">Description: </label>
+                <label class="label">Description </label>
                 <div v-if="readOnly">
                     {{ config.description }}
                 </div>
@@ -691,6 +714,16 @@
                     </div>
                 </div>
             </div>
+            <div class="buttons is-right">
+                <div
+                    class="button is-outlined is-primary"
+                    @click="$emit('setBrowserDefault', config.id)">
+                    <span class="icon">
+                        <i class="fa fa-save" />
+                    </span>
+                    <span>set as browser default</span>
+                </div>
+            </div>
         </div>
         <div class="tabs">
             <ul>
@@ -726,12 +759,12 @@
             class="section"
             v-if="tab === 'framework'"
             id="framework-properties">
-            <h5 class="header">
+            <h5 class="header is-size-3">
                 Framework Properties
             </h5>
             <p class="description">
                 Framework properties are the values that can be added, edited, and deleted
-                for framework objects. Minimum framework properties are id, name, and description.
+                for framework objects. Minimum framework properties are <b>id</b>, <b>name</b>, and <b>description</b>.
                 Properties added here will be displayed in the framework object at the top of
                 the framework editor view.
             </p>
@@ -739,7 +772,7 @@
                 <table class="table is-hoverable is-fullwidth">
                     <thead>
                         <tr>
-                            <th><abbr title="data property id">property</abbr></th>
+                            <th><abbr title="unique property ID">property</abbr></th>
                             <th><abbr title="label to be displayed in form inputs">label</abbr></th>
                             <th><abbr title="description of this property">description</abbr></th>
                             <th><abbr title="required">required</abbr></th>
@@ -830,15 +863,15 @@
             </h5>
             <p class="description">
                 Competency properties are the values that can be added, edited, and deleted
-                for competency objects. Default competency properties are id, name, and description,
-                and type.Properties added here will be be available when editing competency level objects
+                for competency objects. Default competency properties are <b>id</b>, <b>name</b>, and <b>description</b>,
+                and <b>type</b>. Properties added here will be be available when editing competency level objects
                 in the framework editor.
             </p>
             <div class="table-container">
                 <table class="table is-hoverable is-fullwidth">
                     <thead>
                         <tr>
-                            <th><abbr title="data property id">property</abbr></th>
+                            <th><abbr title="unique property ID">property</abbr></th>
                             <th><abbr title="label to be displayed in form inputs">label</abbr></th>
                             <th><abbr title="description of the property">description</abbr></th>
                             <th><abbr title="required">required</abbr></th>
@@ -1069,7 +1102,7 @@
                         <p class="description">
                             Levels can provide an additional context to define and categorize competencies
                             within frameworks. Levels can include text strings such as "beginner", "intermediate",
-                            "advanced" or any other text string.
+                            "advanced", or any other text string.
                         </p>
                     </div>
                 </div>
@@ -1188,7 +1221,9 @@
             class="section"
             v-if="tab === 'relationships'"
             id="competency-relationships">
-            <h5>Competency Relationships</h5>
+            <h5 class="header is-size-3">
+                Competency Relationships
+            </h5>
             <p class="description">
                 Relationship can be added as properties on competencies to define how competencies
                 within a framework or between two different frameworks relate to eachother. Enabled
@@ -1220,11 +1255,11 @@
                                 <thead>
                                     <tr>
                                         <th>
-                                            <abbr title="propety id of the relationship">
+                                            <abbr title="unique relationship ID">
                                                 relationship</abbr>
                                         </th>
                                         <th>
-                                            <abbr title="relationship label for form inputs">
+                                            <abbr title="label displayed in form inputs">
                                                 label</abbr>
                                         </th>
                                         <th>
@@ -1253,11 +1288,11 @@
                                 <thead>
                                     <tr>
                                         <th>
-                                            <abbr title="propety id of the relationship">
+                                            <abbr title="unique relationship ID">
                                                 relationship</abbr>
                                         </th>
                                         <th>
-                                            <abbr title="relationship label for form inputs">
+                                            <abbr title="label displayed in form inputs">
                                                 label</abbr>
                                         </th>
                                         <th>
@@ -1286,11 +1321,11 @@
                                 <thead>
                                     <tr>
                                         <th>
-                                            <abbr title="propety id of the relationship">
+                                            <abbr title="unique relationship ID">
                                                 relationship</abbr>
                                         </th>
                                         <th>
-                                            <abbr title="relationship label for form inputs">
+                                            <abbr title="label displayed on form inputs">
                                                 label</abbr>
                                         </th>
                                         <th>
@@ -1319,11 +1354,11 @@
                                 <thead>
                                     <tr>
                                         <th>
-                                            <abbr title="propety id of the relationship">
+                                            <abbr title="unique relationship ID">
                                                 relationship</abbr>
                                         </th>
                                         <th>
-                                            <abbr title="relationship label for form inputs">
+                                            <abbr title="label displayed on form inputs">
                                                 label</abbr>
                                         </th>
                                         <th>
@@ -1358,11 +1393,11 @@
                     <thead>
                         <tr>
                             <th>
-                                <abbr title="propety id of the relationship">
+                                <abbr title="unique relationship ID">
                                     relationship</abbr>
                             </th>
                             <th>
-                                <abbr title="relationship label for form inputs">
+                                <abbr title="label displayed on form inputs">
                                     label</abbr>
                             </th>
                             <th>
@@ -1401,7 +1436,9 @@
             v-if="tab === 'alignments'"
             id="resource-alignments">
             <!-- ************************************** Resource Alignments ************************************************ -->
-            <h5>Resource Alignment</h5>
+            <h5 class="header is-size-3">
+                Resource Alignment
+            </h5>
             <p class="description">
                 Alignments terms are used to map resources such as learning material, courses, and other
                 content to competencies in CAT. If enabled, the alignment type property will show up in
@@ -1412,13 +1449,16 @@
                     <thead>
                         <tr>
                             <th>
-                                alignment
+                                <abbr title="unique alignment ID">
+                                    alignment</abbr>
                             </th>
                             <th>
-                                description
+                                <abbr title="description of the relationship">
+                                    description</abbr>
                             </th>
                             <th>
-                                enabled
+                                <abbr title="if enabled will appear as an option in the framework editor">
+                                    enabled</abbr>
                             </th>
                         </tr>
                     </thead>
@@ -1493,7 +1533,9 @@
                 class="section"
                 id="default-owners">
                 <!-- ************************************** Default Owners ************************************************ -->
-                <h5>Default Owners</h5>
+                <h5 class="header is-size-3">
+                    Default Owners
+                </h5>
                 <p class="description">
                     Owners can edit, delete, comment, as well as manage access on frameworks.
                 </p>
@@ -1548,7 +1590,9 @@
                         class="button is-outlined is-primary is-small"
                         v-if="!readOnly"
                         @click="openSelectPermissionEntitiesModal('owner')">
-                        manage default owners
+                        <span class="icon">
+                            <i class="fa fa-cog" />
+                        </span><span>manage default owners</span>
                     </div>
                 </div>
             </div>
@@ -1556,7 +1600,9 @@
                 class="section"
                 id="default-readers">
                 <!-- ************************************** Default Readers ************************************************ -->
-                <h5>Default Readers</h5>
+                <h5 class="header is-size-3">
+                    Default Readers
+                </h5>
                 <p class="description">
                     Readers can read and comment on frameworks.
                 </p>
@@ -1622,7 +1668,9 @@
                 class="section"
                 id="default-commenters">
                 <!-- ************************************** Default Commenters ************************************************ -->
-                <h5>Default Commenters</h5>
+                <h5 class="header is-size-3">
+                    Default Commenters
+                </h5>
                 <p class="description">
                     Commenters can read and comment on frameworks.
                 </p>
@@ -1748,32 +1796,27 @@
         <!-- ************************************** Actions ************************************************ -->
         <div class="section">
             <div
-                class="buttons"
+                class="buttons is-right"
                 v-if="!readOnly">
                 <div
-                    class="button is-outlined is-primary"
-                    @click="$emit('setBrowserDefault', config.id)">
-                    set as browser default
+                    class="button is-outlined is-dark"
+                    @click="$emit('cancel')">
+                    <span class="icon">
+                        <i class="fa fa-times" />
+                    </span>
+                    <span>cancel</span>
                 </div>
                 <div
                     class="button is-outlined is-primary"
                     @click="validateCurrentConfigAndEmitSave">
-                    save
-                </div>
-                <div
-                    class="button is-outlined is-primary"
-                    @click="$emit('cancel')">
-                    cancel
+                    <span class="icon">
+                        <i class="fa fa-save" />
+                    </span><span>save</span>
                 </div>
             </div>
             <div
-                class="buttons"
+                class="buttons is-right"
                 v-if="readOnly">
-                <div
-                    class="button is-outlined is-primary"
-                    @click="$emit('setBrowserDefault', config.id)">
-                    set as browser default
-                </div>
                 <div
                     class="button is-outlined is-primary"
                     @click="$emit('back')">
