@@ -138,7 +138,7 @@
             <div class="right-side">
                 <div
                     class="button is-text is-pulled-right"
-                    v-if="canEditFramework"
+                    v-if="canEditFramework && !conceptMode"
                     @click="showManageConfigurationModal(); showShareDropdown = false;">
                     <span class="icon">
                         <i class="fas fa-cog has-text-dark" />
@@ -370,6 +370,9 @@ export default {
         },
         configuration: function() {
             return this.$store.getters['editor/framework'].configuration;
+        },
+        conceptMode: function() {
+            return this.$store.getters['editor/conceptMode'];
         }
     },
     watch: {
