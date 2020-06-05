@@ -483,6 +483,9 @@ export default {
                     ]
                 };
             }
+        },
+        defaultFrameworkConfiguration: function() {
+            return this.$store.getters['editor/framework'].configuration;
         }
     },
     components: {
@@ -515,6 +518,9 @@ export default {
         },
         commentScrollTo: function() {
             this.$scrollTo(this.commentScrollTo.scrollId);
+        },
+        defaultFrameworkConfiguration: function() {
+            this.getConfiguration();
         }
     },
     methods: {
