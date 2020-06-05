@@ -1273,6 +1273,9 @@ export default {
     mounted() {
         this.buildConfigList();
         this.localDefaultBrowserConfigId = this.getDefaultBrowserConfigId();
+        if (this.$store.getters['editor/framework'] && this.$store.getters['editor/framework'].configuration) {
+            this.frameworkConfigId = this.$store.getters['editor/framework'].configuration;
+        }
     }
 };
 </script>

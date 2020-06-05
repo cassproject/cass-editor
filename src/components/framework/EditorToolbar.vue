@@ -143,7 +143,7 @@
                     <span class="icon">
                         <i class="fas fa-cog has-text-dark" />
                     </span>
-                    <span>Default Config Name</span>
+                    <span>{{ defaultFrameworkConfigName }}</span>
                 </div>
             </div>
         </div>
@@ -163,7 +163,7 @@ export default {
             repo: window.repo,
             editsFinishedCounter: 0,
             totalEditsCounter: 0,
-            defaultConfig: ''
+            defaultFrameworkConfigName: null
         };
     },
     methods: {
@@ -321,6 +321,18 @@ export default {
                 }
             }
             return rld;
+        },
+        getConfigurationName: function() {
+            if (this.$store.getters['editor/framework'].configuration) {
+                let config = EcRepository.getBlocking(this.$store.getters['editor/framework'].configuration);
+                if (config) {
+                    this.defaultFrameworkConfigName = config.name;
+                } else {
+                    this.defaultFrameworkConfigName = "No configuration";
+                }
+            } else {
+                this.defaultFrameworkConfigName = "No configuration";
+            }
         }
     },
     computed: {
@@ -355,6 +367,9 @@ export default {
                 return true;
             }
             return false;
+        },
+        configuration: function() {
+            return this.$store.getters['editor/framework'].configuration;
         }
     },
     watch: {
@@ -367,10 +382,13 @@ export default {
                 this.$store.commit('editor/framework', EcRepository.getBlocking(framework.shortId()));
                 this.$store.commit('editor/recomputeHierarchy', true);
             }
+        },
+        configuration: function() {
+            this.getConfigurationName();
         }
     },
     mounted: function() {
-        this.defaultConfig = this.getDefaultBrowserConfigId();
+        this.getConfigurationName();
     }
 };
 </script>
