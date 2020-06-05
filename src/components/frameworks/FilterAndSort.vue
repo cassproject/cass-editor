@@ -46,7 +46,7 @@
         </div>
         <div
             class="section"
-            v-if="$store.getters['editor/queryParams'].concepts !== 'true'">
+            v-if="!$store.getters['editor/conceptMode']">
             <h3 class="title is-size-4">
                 Apply search term to
             </h3>

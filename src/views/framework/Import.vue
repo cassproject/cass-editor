@@ -74,7 +74,7 @@
                                 <!-- Please review the name and descriptions of the imported competencies. After making edits, "approve" the changes to view the imported competency details.-->
                                 </p>
                                 <p
-                                    v-if="importTransition === 'light'"
+                                    v-if="importTransition === 'light' && importType !== 'text'"
                                     class="is-size-6">
                                     <span class="has-text-success has-text-weight-bold">
                                         Your import is complete!
@@ -459,9 +459,8 @@ export default {
             }
         },
         importType: function(val) {
-            this.$store.commit('app/importFramework', null);
-            this.$store.commit('app/importStatus', 'upload');
             this.caseDocs = [];
+            this.clearImport();
         },
         importTransition: function(val) {
             if (val === 'processFiles') {
@@ -1455,12 +1454,14 @@ export default {
                 }
                 toSave.push(comp);
             }
-            for (var i = 0; i < this.importFramework.relation.length; i++) {
-                var relation = EcRepository.cache[this.importFramework.relation[i]];
-                if (EcIdentityManager.ids != null && EcIdentityManager.ids.length > 0) {
-                    relation.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            if (this.importFramework.relation) {
+                for (var i = 0; i < this.importFramework.relation.length; i++) {
+                    var relation = EcRepository.cache[this.importFramework.relation[i]];
+                    if (EcIdentityManager.ids != null && EcIdentityManager.ids.length > 0) {
+                        relation.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    }
+                    toSave.push(relation);
                 }
-                toSave.push(relation);
             }
             this.repo.multiput(toSave, function() {
                 me.importSuccess();
