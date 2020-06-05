@@ -875,11 +875,43 @@ export default {
         setConfigAsFrameworkDefault(configId) {
             let me = this;
             let f = this.$store.getters['editor/framework'];
+            let previousConfig = f.configuration;
             f.configuration = configId;
             this.frameworkConfigId = configId;
+            if (!previousConfig) {
+                f = this.setOwnersAndReaders(f);
+            }
             window.repo.saveTo(f, function() {
                 me.$store.commit('editor/framework', f);
             }, function() {});
+        },
+        setOwnersAndReaders(framework) {
+            let config = EcRepository.getBlocking(framework.configuration);
+            let owners = config.defaultObjectOwners;
+            let readers = config.defaultObjectReaders;
+            for (let i = 0; i < owners.length; i++) {
+                framework.addOwner(EcPk.fromPem(owners[i]));
+            }
+            for (let i = 0; i < readers.length; i++) {
+                framework.addReader(EcPk.fromPem(readers[i]));
+            }
+            let compsAndRelations = framework.competency ? framework.competency : [];
+            if (framework.relation) {
+                compsAndRelations = compsAndRelations.concat(framework.relation);
+            }
+            new EcAsyncHelper().each(compsAndRelations, function(id, done) {
+                EcRepository.get(id, function(obj) {
+                    for (let i = 0; i < owners.length; i++) {
+                        obj.addOwner(EcPk.fromPem(owners[i]));
+                    }
+                    for (let i = 0; i < readers.length; i++) {
+                        obj.addReader(EcPk.fromPem(readers[i]));
+                    }
+                    window.repo.saveTo(obj, done, done);
+                }, done);
+            }, function(competencyIds) {
+            });
+            return framework;
         },
         generateTestConfigList() {
             let ca = [];
