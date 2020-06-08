@@ -3,13 +3,17 @@
         <th>
             <b>{{ name }}</b>
         </th>
-        <td>
+        <td v-if="view !== 'dynamic-modal'">
             {{ description }}
         </td>
-        <td>
-            {{ isDefault }}
+        <td v-if="view !== 'dynamic-modal'">
+            <span
+                v-if="isDefault"
+                class="icon has-text-primary">
+                <i class="fa fa-check" />
+            </span>
         </td>
-        <td>
+        <td v-if="view !== 'dynamic-modal'">
             <div
                 class="button is-outlined is-primary is-small"
                 :disabled="defaultBrowserConfigId && defaultBrowserConfigId.equals(id)"
@@ -17,7 +21,15 @@
                 set as browser default
             </div>
         </td>
-        <td>
+        <td v-else>
+            <div
+                class="button is-outlined is-primary is-small"
+                :disabled="defaultFrameworkConfigId && defaultFrameworkConfigId.equals(id)"
+                @click="$emit('setFrameworkDefault', id)">
+                set as framework default
+            </div>
+        </td>
+        <td v-if="view !== 'dynamic-modal'">
             <div
                 v-if="isOwned"
                 class="button is-outlined is-small is-primary"
@@ -52,6 +64,10 @@ export default {
             type: String,
             default: ''
         },
+        view: {
+            type: String,
+            default: ''
+        },
         name: {
             type: String,
             default: ''
@@ -69,6 +85,10 @@ export default {
             default: false
         },
         defaultBrowserConfigId: {
+            type: String,
+            default: ''
+        },
+        defaultFrameworkConfigId: {
             type: String,
             default: ''
         }

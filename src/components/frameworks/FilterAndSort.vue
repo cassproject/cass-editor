@@ -25,7 +25,7 @@
         </div>
         <div
             class="section"
-            v-if="loggedIn">
+            v-if="!($store.getters['editor/conceptMode'] && !loggedIn)">
             <h3 class="title is-size-4">
                 Quick Filters
             </h3>
@@ -46,7 +46,7 @@
         </div>
         <div
             class="section"
-            v-if="$store.getters['editor/queryParams'].concepts !== 'true'">
+            v-if="!$store.getters['editor/conceptMode']">
             <h3 class="title is-size-4">
                 Apply search term to
             </h3>
@@ -98,12 +98,11 @@ export default {
                     label: 'Not owned by me',
                     enabled: true
                 },
-                // To do: enable after frameworks are associated with configs
                 {
                     id: 'configMatchDefault',
                     checked: false,
                     label: 'Configuration matches default',
-                    enabled: false
+                    enabled: true
                 }
             ],
             applySearchTo: [
@@ -154,7 +153,20 @@ export default {
         }
     },
     mounted: function() {
-
+        if (!this.loggedIn) {
+            for (var i = 0; i < this.quickFilters.length; i++) {
+                if (this.quickFilters[i].id !== "configMatchDefault") {
+                    this.quickFilters[i].enabled = false;
+                }
+            }
+        }
+        if (this.$store.getters['editor/conceptMode']) {
+            for (var i = 0; i < this.quickFilters.length; i++) {
+                if (this.quickFilters[i].id === "configMatchDefault") {
+                    this.quickFilters[i].enabled = false;
+                }
+            }
+        }
     },
     watch: {
         applySearchTo: {

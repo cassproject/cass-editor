@@ -139,8 +139,10 @@ export default {
             repo: window.repo,
             showMine: false,
             showNotMine: false,
+            filterByConfig: false,
             numIdentities: EcIdentityManager.ids.length,
-            sortBy: null
+            sortBy: null,
+            defaultConfig: ""
         };
     },
     created: function() {
@@ -148,6 +150,7 @@ export default {
         this.$store.commit("editor/t3Profile", false);
         this.$store.commit('editor/framework', null);
         this.spitEvent('viewChanged');
+        this.setDefaultConfig();
     },
     computed: {
         showRightAside: function() {
@@ -193,6 +196,11 @@ export default {
                     search += " OR @owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
                 }
                 search += ")";
+            }
+            if (this.filterByConfig && this.defaultConfig) {
+                search += " AND (configuration:\"";
+                search += this.defaultConfig;
+                search += "\")";
             }
             return search;
         },
@@ -268,6 +276,20 @@ export default {
             // End public key line
             pem = pem.substring(0, length - 24) + "\n" + pem.substring(length - 24);
             return pem;
+        },
+        setDefaultConfig: function() {
+            var me = this;
+            if (localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId")) {
+                this.defaultConfig = localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId");
+            } else {
+                this.repo.searchWithParams("@type:Configuration", {'size': 10000}, function(c) {
+                    if (c.isDefault === "true") {
+                        me.defaultConfig = c.shortId();
+                    }
+                }, function() {
+                }, function() {
+                });
+            }
         }
     },
     mounted: function() {
@@ -279,12 +301,16 @@ export default {
         }
         this.showMine = false;
         this.showNotMine = false;
+        this.filterByConfig = false;
         for (var i = 0; i < this.filteredQuickFilters.length; i++) {
             if (this.filteredQuickFilters[i].id === "ownedByMe") {
                 this.showMine = true;
             }
             if (this.filteredQuickFilters[i].id === "notOwnedByMe") {
                 this.showNotMine = true;
+            }
+            if (this.filteredQuickFilters[i].id === "configMatchDefault") {
+                this.filterByConfig = true;
             }
         }
     },
@@ -299,12 +325,16 @@ export default {
         filteredQuickFilters: function() {
             this.showMine = false;
             this.showNotMine = false;
+            this.filterByConfig = false;
             for (var i = 0; i < this.filteredQuickFilters.length; i++) {
                 if (this.filteredQuickFilters[i].id === "ownedByMe") {
                     this.showMine = true;
                 }
                 if (this.filteredQuickFilters[i].id === "notOwnedByMe") {
                     this.showNotMine = true;
+                }
+                if (this.filteredQuickFilters[i].id === "configMatchDefault") {
+                    this.filterByConfig = true;
                 }
             }
         }

@@ -98,8 +98,7 @@
             Configuration
         </div>
         <ul
-            class="menu-list"
-            v-if="currentRoute !== '/config'">
+            class="menu-list">
             <li>
                 <router-link to="/config">
                     Configurations
@@ -109,66 +108,6 @@
                 <router-link to="/usergroup">
                     Users/Groups
                 </router-link>
-            </li>
-        </ul>
-        <!-- CONFIG OPTIONS -->
-        <ul
-            v-if="currentRoute === '/config'"
-            class="menu-list">
-            <li>
-                <a v-scroll-to="'#configuration-details'">
-                    <span>Configuration Details</span>
-                </a>
-            </li>
-            <li>
-                <a
-                    href="#"
-                    v-scroll-to="'#framework-properties'">Framework Properties</a>
-            </li>
-            <li>
-                <a
-                    href="#"
-                    v-scroll-to="'#competency-properties'">Competency Properties</a>
-            </li>
-            <li>
-                <a
-                    href="#"
-                    v-scroll-to="'#enforce-competency-types'">Enforce Competency Types</a>
-            </li>
-            <li>
-                <a
-                    href="#"
-                    v-scroll-to="'#allow-levels'">Allow Levels</a>
-            </li>
-            <li>
-                <a
-                    href="#"
-                    v-scroll-to="'#enforce-level-values'">Enforce Level Values</a>
-            </li>
-            <li>
-                <a
-                    href="#"
-                    v-scroll-to="'#competency-relationships'">Competency Relationships</a>
-            </li>
-            <li>
-                <a
-                    href="#"
-                    v-scroll-to="'#resource-alignments'">Resource Alignments</a>
-            </li>
-            <li>
-                <a
-                    href="#"
-                    v-scroll-to="'#default-owners'">Default Owners</a>
-            </li>
-            <li>
-                <a
-                    href="#"
-                    v-scroll-to="'#default-readers'">Default Readers</a>
-            </li>
-            <li>
-                <a
-                    href="#"
-                    v-scroll-to="'#default-commenters'">Default Commenters</a>
             </li>
         </ul>
     </aside>

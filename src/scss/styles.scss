@@ -108,8 +108,7 @@ hr  {
 }
 
 // scrollable area minus top bar size
-.is-scrollable{
-}
+
 
 // base styles for text inputs
 input, textarea{
@@ -122,9 +121,12 @@ label {
     font-weight: 600;
     color: rgba($dark, .5);
     width: 95%;
+    text-transform: capitalize;
     font-size: .7rem;
 }
-
+.button {
+    text-transform: lowercase;
+}
 
 .lode__Property-text{
     border-radius: .25rem;
@@ -206,6 +208,26 @@ iframe {
     }
 }
 
+.table {
+    thead {
+        th {
+            font-weight: 500;
+            font-size: $is-size-7;
+            font-family: $family-secondary;
+        }
+    }
+    tbody {
+        th {
+        font-weight: 600;
+        font-family: $family-primary;
+        }
+        tr {
+        font-weight: 400;
+        font-size: $is-size-7;
+        font-family: $family-primary;
+        }
+    }
+}
 
 
 /*  Responsive text 

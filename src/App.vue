@@ -1076,6 +1076,7 @@ export default {
         '$route'(to, from) {
             this.$store.commit('app/closeRightAside');
             this.$store.commit('app/closeSideNav');
+            this.$store.commit('app/closeModal');
             let navigationTo = to;
             if (navigationTo) {
                 this.navBarActive = false;

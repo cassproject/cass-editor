@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :class="[{'modal-card': view === 'dynamic-modal'}, {'section': view !== 'dynamic-modal'}]">
         <!-- busy modal-->
         <div
             class="modal"
@@ -31,25 +31,40 @@
                 </div>
             </div>
         </div>
+        <header
+            v-if="view === 'dynamic-modal'"
+            class="modal-card-head has-background-primary">
+            <p class="modal-card-title">
+                Manage configuration
+            </p>
+            <button
+                class="delete"
+                @click="$store.commit('app/closeModal')"
+                aria-label="close" />
+        </header>
         <!-- configuration editor content-->
-        <div
-            class="container"
+        <section
+            :class="[{ 'container': view !== 'dynamic-modal'}, { 'modal-card-body': view === 'dynamic-modal'}]"
             v-if="!configBusy">
             <div class="section">
-                <h3 class="subtitle">
-                    Configuration
-                </h3>
-                <div
-                    class="button is-outlined is-primary"
-                    v-if="configViewMode.equals('list')"
-                    @click="createNewConfig">
-                    <span class="icon">
-                        <i class="fa fa-plus" />
-                    </span>
-                    <span>
-                        create new configuration
-                    </span>
-                </div>
+                <template v-if="view !== 'dynamic-modal'">
+                    <h3
+                        class="title">
+                        Configuration
+                    </h3>
+                    <p v-if="configViewMode.equals('list')">
+                        Configurations control the way your frameworks appear in the editor, as well as what properties, relationships,
+                        and in some cases value types of properties and relationships you can add to your framework. If a browser configuration
+                        not set then the the system will default to your instance default. If you are the configuration administrator you will be
+                        able to manage the property settings and change which instance is the default.  Otherwise contact your CAT administrator.
+                    </p>
+                </template>
+                <p v-if="view === 'dynamic-modal'">
+                    Choose a configuration to apply to this framework below.  You can view and manage details about
+                    your available configurations in <router-link to="/config">
+                        configuration management
+                    </router-link>.
+                </p>
             </div>
             <div class="table-container">
                 <table
@@ -58,27 +73,52 @@
                     <thead>
                         <tr>
                             <th><abbr title="Name">name</abbr></th>
-                            <th><abbr title="Description">description</abbr></th>
-                            <th><abbr title="Instance Default">instance default</abbr></th>
-                            <th><abbr title="Browser Default" />browser default</th>
-                            <th><abbr title="" />view/manage</th>
+                            <th v-if="view !=='dynamic-modal'">
+                                <abbr title="Description">description</abbr>
+                            </th>
+                            <th v-if="view !=='dynamic-modal'">
+                                <abbr title="Instance Default">instance default</abbr>
+                            </th>
+                            <th v-if="view !=='dynamic-modal'">
+                                <abbr title="Browser Default" />browser default
+                            </th>
+                            <th v-else>
+                                <abbr title="Framework Default">framework default</abbr>
+                            </th>
+                            <th v-if="view !=='dynamic-modal'">
+                                <abbr title="" />view/manage
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         <configuration-list-item
                             v-for="config in configList"
                             :id="config.id"
+                            :view="view"
                             :key="config"
                             :name="config.name"
                             :isDefault="config.isDefault"
                             :description="config.description"
                             :isOwned="config.isOwned"
                             :defaultBrowserConfigId="localDefaultBrowserConfigId"
+                            :defaultFrameworkConfigId="frameworkConfigId"
                             @setBrowserDefault="setConfigAsBrowserDefault"
+                            @setFrameworkDefault="setConfigAsFrameworkDefault"
                             @showDetails="showConfigDetails" />
                     </tbody>
                     <br>
                 </table>
+            </div>
+            <div
+                class="button is-outlined is-primary is-pulled-right"
+                v-if="configViewMode.equals('list') && view !== 'dynamic-modal'"
+                @click="createNewConfig">
+                <span class="icon">
+                    <i class="fa fa-plus" />
+                </span>
+                <span>
+                    create new configuration
+                </span>
             </div>
             <div v-if="configViewMode.equals('detail')">
                 <configuration-details
@@ -90,7 +130,16 @@
                     @cancel="cancelEditCurrentConfig"
                     @back="backFromEditCurrentConfig" />
             </div>
-        </div>
+        </section>
+        <footer
+            v-if="view === 'dynamic-modal'"
+            class="modal-card-foot hasbackground-light">
+            <div
+                @click="closeModal"
+                class="button is-pulled-right">
+                done
+            </div>
+        </footer>
     </div>
 </template>
 
@@ -102,6 +151,12 @@ import {cassUtil} from '../../mixins/cassUtil';
 
 export default {
     mixins: [cassUtil],
+    props: {
+        view: {
+            default: '',
+            type: String
+        }
+    },
     name: 'ConfigurationEditor',
     components: {
         ConfigurationDetails,
@@ -127,9 +182,13 @@ export default {
         defaultConfigId: null,
         showBrowserConfigSetModal: false,
         defaultBrowserConfigName: '',
-        localDefaultBrowserConfigId: ''
+        localDefaultBrowserConfigId: '',
+        frameworkConfigId: ''
     }),
     methods: {
+        closeModal: function() {
+            this.$store.commit('app/closeModal');
+        },
         showListView() {
             this.configViewMode = "list";
         },
@@ -813,6 +872,47 @@ export default {
             this.localDefaultBrowserConfigId = configId;
             this.showBrowserConfigSetModal = true;
         },
+        setConfigAsFrameworkDefault(configId) {
+            let me = this;
+            let f = this.$store.getters['editor/framework'];
+            let previousConfig = f.configuration;
+            f.configuration = configId;
+            this.frameworkConfigId = configId;
+            if (!previousConfig) {
+                f = this.setOwnersAndReaders(f);
+            }
+            window.repo.saveTo(f, function() {
+                me.$store.commit('editor/framework', f);
+            }, function() {});
+        },
+        setOwnersAndReaders(framework) {
+            let config = EcRepository.getBlocking(framework.configuration);
+            let owners = config.defaultObjectOwners;
+            let readers = config.defaultObjectReaders;
+            for (let i = 0; i < owners.length; i++) {
+                framework.addOwner(EcPk.fromPem(owners[i]));
+            }
+            for (let i = 0; i < readers.length; i++) {
+                framework.addReader(EcPk.fromPem(readers[i]));
+            }
+            let compsAndRelations = framework.competency ? framework.competency : [];
+            if (framework.relation) {
+                compsAndRelations = compsAndRelations.concat(framework.relation);
+            }
+            new EcAsyncHelper().each(compsAndRelations, function(id, done) {
+                EcRepository.get(id, function(obj) {
+                    for (let i = 0; i < owners.length; i++) {
+                        obj.addOwner(EcPk.fromPem(owners[i]));
+                    }
+                    for (let i = 0; i < readers.length; i++) {
+                        obj.addReader(EcPk.fromPem(readers[i]));
+                    }
+                    window.repo.saveTo(obj, done, done);
+                }, done);
+            }, function(competencyIds) {
+            });
+            return framework;
+        },
         generateTestConfigList() {
             let ca = [];
             /** **************************** Test Config A ***********************************************/
@@ -1205,6 +1305,9 @@ export default {
     mounted() {
         this.buildConfigList();
         this.localDefaultBrowserConfigId = this.getDefaultBrowserConfigId();
+        if (this.$store.getters['editor/framework'] && this.$store.getters['editor/framework'].configuration) {
+            this.frameworkConfigId = this.$store.getters['editor/framework'].configuration;
+        }
     }
 };
 </script>
@@ -1212,7 +1315,7 @@ export default {
 <style lang="scss" scoped>
     h3 {
         font-size: 2rem;
-        padding-bottom: 1rem;
+        padding-bottom: 0rem;
     }
     h4 {
         font-size: 1.6rem;

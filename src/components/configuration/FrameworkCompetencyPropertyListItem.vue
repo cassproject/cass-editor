@@ -36,22 +36,15 @@
             </div>
         </td>
         <td class="is-narrow">
-            <div v-if="readOnly || enforceRequired">
-                {{ localRequired }}
-            </div>
-            <div
-                class="select is-small"
-                v-if="!readOnly && !enforceRequired">
-                <select
+            <div class="field">
+                <input
+                    :disabled="readOnly || enforceRequired"
                     v-model="localRequired"
-                    @change="changeRequired">
-                    <option :value="true">
-                        true
-                    </option>
-                    <option :value="false">
-                        false
-                    </option>
-                </select>
+                    :id="property"
+                    type="checkbox"
+                    :name="property"
+                    class="switch">
+                <label :for="property" />
             </div>
         </td>
         <td>

@@ -84,7 +84,8 @@
                             @searchThings="handleSearch($event)"
                             @selectButtonClick="onSelectButtonClick"
                             :properties="properties"
-                            @selectedArray="selectedArrayEvent" />
+                            @selectedArray="selectedArrayEvent"
+                            @doneLoadingNodes="preloadRelations" />
                     </div>
                 </div>
             </div>
@@ -483,6 +484,9 @@ export default {
                     ]
                 };
             }
+        },
+        defaultFrameworkConfiguration: function() {
+            return this.$store.getters['editor/framework'].configuration;
         }
     },
     components: {
@@ -515,6 +519,9 @@ export default {
         },
         commentScrollTo: function() {
             this.$scrollTo(this.commentScrollTo.scrollId);
+        },
+        defaultFrameworkConfiguration: function() {
+            this.getConfiguration();
         }
     },
     methods: {
@@ -640,7 +647,7 @@ export default {
             } else if (exportType === "csv") {
                 this.exportCsv();
             } else if (exportType === "case") {
-                this.exportCasePackages(guid);
+                this.exportCasePackages(this.frameworkExportGuid);
             }
         },
         changeProperties: function(type) {
@@ -665,6 +672,11 @@ export default {
             };
             // reveal modal
             this.$modal.show(params);
+        },
+        // Speed up load of secondary properties
+        preloadRelations: function() {
+            var relation = this.relations;
+            var level = this.levels;
         }
     }
 };
