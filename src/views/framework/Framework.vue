@@ -646,7 +646,7 @@ export default {
             } else if (exportType === "csv") {
                 this.exportCsv();
             } else if (exportType === "case") {
-                this.exportCasePackages(guid);
+                this.exportCasePackages(this.frameworkExportGuid);
             }
         },
         changeProperties: function(type) {
