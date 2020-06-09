@@ -467,7 +467,7 @@
                         </div>
                     </div>
                     <div class="field">
-                        <label class="label">Label</label>
+                        <label class="label">Display Label</label>
                         <div v-if="readOnly">
                             {{ customPropertyLabel }}
                         </div>
@@ -773,7 +773,7 @@
                     <thead>
                         <tr>
                             <th><abbr title="unique property ID">property</abbr></th>
-                            <th><abbr title="label to be displayed in form inputs">label</abbr></th>
+                            <th><abbr title="label to be displayed in form inputs">display label</abbr></th>
                             <th><abbr title="description of this property">description</abbr></th>
                             <th><abbr title="required">required</abbr></th>
                             <th><abbr title="priority">priority</abbr></th>
@@ -872,7 +872,7 @@
                     <thead>
                         <tr>
                             <th><abbr title="unique property ID">property</abbr></th>
-                            <th><abbr title="label to be displayed in form inputs">label</abbr></th>
+                            <th><abbr title="label to be displayed in form inputs">display label</abbr></th>
                             <th><abbr title="description of the property">description</abbr></th>
                             <th><abbr title="required">required</abbr></th>
                             <th><abbr title="priorities correlate to view levels in the editor">priority</abbr></th>
@@ -1014,10 +1014,10 @@
                         <thead>
                             <tr>
                                 <th>
-                                    label
+                                    display label
                                 </th>
                                 <th>
-                                    value
+                                    field value
                                 </th>
                                 <th> <i class="fa fa-trash" /></th>
                             </tr>
@@ -1109,7 +1109,7 @@
                 <div
                     class="field"
                     v-if="config.compAllowLevels">
-                    <label class="label">level label: </label>
+                    <label class="label">level display label: </label>
                     <div v-if="readOnly">
                         {{ config.levelLabel }}
                     </div>
@@ -1281,7 +1281,7 @@
                                         </th>
                                         <th>
                                             <abbr title="label displayed in form inputs">
-                                                label</abbr>
+                                                display label</abbr>
                                         </th>
                                         <th>
                                             <abbr title="if enabled shows up in property options">
@@ -1314,7 +1314,7 @@
                                         </th>
                                         <th>
                                             <abbr title="label displayed in form inputs">
-                                                label</abbr>
+                                                display label</abbr>
                                         </th>
                                         <th>
                                             <abbr title="if enabled shows up in property options">
@@ -1347,7 +1347,7 @@
                                         </th>
                                         <th>
                                             <abbr title="label displayed on form inputs">
-                                                label</abbr>
+                                                display label</abbr>
                                         </th>
                                         <th>
                                             <abbr title="if enabled shows up in property options">
@@ -1380,7 +1380,7 @@
                                         </th>
                                         <th>
                                             <abbr title="label displayed on form inputs">
-                                                label</abbr>
+                                                display label</abbr>
                                         </th>
                                         <th>
                                             <abbr title="if enabled shows up in property options">
@@ -1419,7 +1419,7 @@
                             </th>
                             <th>
                                 <abbr title="label displayed on form inputs">
-                                    label</abbr>
+                                    display label</abbr>
                             </th>
                             <th>
                                 <abbr title="if enabled shows up in property options">
@@ -1765,52 +1765,52 @@
                     *Configuration description is required
                 </p>
                 <p v-if="configEnforcedTypesInvalid">
-                    *Enforced types must have a label and value
+                    *Enforced types must have a display label and field value
                 </p>
                 <p v-if="configRelationshipsInvalid">
-                    *Enabled relationships must have a label
+                    *Enabled relationships must have a display label
                 </p>
                 <p v-if="configFrameworkIdLabelInvalid">
-                    *Framework ID Label is required
+                    *Framework ID display label is required
                 </p>
                 <p v-if="configFrameworkIdDescriptionInvalid">
-                    *Framework ID Description is required
+                    *Framework ID description is required
                 </p>
                 <p v-if="configFrameworkNameLabelInvalid">
-                    *Framework Name Label is required
+                    *Framework Name display label is required
                 </p>
                 <p v-if="configFrameworkNameDescriptionInvalid">
-                    *Framework Name Description is required
+                    *Framework Name description is required
                 </p>
                 <p v-if="configFrameworkDescLabelInvalid">
-                    *Framework Description Label is required
+                    *Framework Description display label is required
                 </p>
                 <p v-if="configFrameworkDescDescriptionInvalid">
-                    *Framework Description Description is required
+                    *Framework Description description is required
                 </p>
                 <p v-if="configCompetencyIdLabelInvalid">
-                    *Competency ID Label required
+                    *Competency ID display label required
                 </p>
                 <p v-if="configCompetencyIdDescriptionInvalid">
-                    *Competency ID Description is required
+                    *Competency ID description is required
                 </p>
                 <p v-if="configCompetencyNameLabelInvalid">
-                    *Competency Name Label is required
+                    *Competency Name display label is required
                 </p>
                 <p v-if="configCompetencyNameDescriptionInvalid">
-                    *Competency Name Description is required
+                    *Competency Name description is required
                 </p>
                 <p v-if="configCompetencyDescLabelInvalid">
-                    *Competency Description Label is required
+                    *Competency Description display label is required
                 </p>
                 <p v-if="configCompetencyDescDescriptionInvalid">
-                    *Competency Description Description is required
+                    *Competency Description description is required
                 </p>
                 <p v-if="configCompetencyTypeLabelInvalid">
-                    *Competency Type Label is required
+                    *Competency Type display label is required
                 </p>
                 <p v-if="configCompetencyTypeDescriptionInvalid">
-                    *Competency Type Description is required
+                    *Competency Type description is required
                 </p>
             </div>
         </div>
