@@ -757,7 +757,7 @@
         <!-- ************************************** Framework Properties ************************************************ -->
         <div
             class="section"
-            v-if="tab === 'framework'"
+            v-show="tab === 'framework'"
             id="framework-properties">
             <h5 class="header is-size-3">
                 Framework Properties
@@ -856,7 +856,7 @@
         <!-- ************************************** Competency Properties ************************************************ -->
         <div
             class="section"
-            v-else-if="tab === 'competency'"
+            v-show="tab === 'competency'"
             id="competency-properties">
             <h5 class="is-size-3">
                 Competency Properties
@@ -2411,6 +2411,8 @@ export default {
             this.customPropertyPriority = prop.priority;
             this.customPropertyRequired = prop.required;
             this.customPropertyPermittedValues = this.generateCopyOfCustomPropertyPermittedValues(prop);
+            if (this.customPropertyPermittedValues.length > 0) this.customPropertyValuesLimited = true;
+            else this.customPropertyValuesLimited = false;
         },
         manageCustomFrameworkProperty: function(propertyIdx) {
             this.initCustomPropertyDataHoldersAsExistingProperty('framework', this.config.fwkCustomProperties[propertyIdx]);

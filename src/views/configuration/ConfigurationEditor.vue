@@ -400,7 +400,8 @@ export default {
         buildCompetencyTypeConfigObject(compConf) {
             if (!this.currentConfig.compEnforceTypes) this.currentConfig.compEnforcedTypes = [];
             let compTypeRequired = this.currentConfig.compTypeRequired;
-            if (this.currentConfig.compEnforcedTypes && this.currentConfig.compEnforcedTypes.length > 0) compTypeRequired = true;
+            // commenting this out for now CA-381
+            // if (this.currentConfig.compEnforcedTypes && this.currentConfig.compEnforcedTypes.length > 0) compTypeRequired = true;
             compConf["http://purl.org/dc/terms/type"] = this.generatePropertyConfigObject(
                 "https://purl.org/ctdlasn/terms/competencyCategory",
                 "http://schema.cassproject.org/0.3/Competency",
