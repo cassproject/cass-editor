@@ -295,6 +295,10 @@
 			<span id="frameworksBack" onclick='parent.postMessage({message: "back"}, queryParams.origin);' style="float:left;display:none;"><i class="fa fa-arrow-circle-left" style="font-size:32px;color:black" > </i></span>&nbsp;
 			<input type="text" id="search" placeholder="Search...">
 			<button id="resetSearchButton" onclick="resetSearch();" style="">&#215;</button>
+			<span class="showOnlyMine" style="display:inline-block;vertical-align:middle;" onchange="changeShowOnlyMine();">
+				<label for="showOnlyMine" style="display:inline-block;vertical-align:middle;">Show Only Mine</label>
+				<input id="showOnlyMine" type="checkbox" style="display:inline-block;vertical-align:middle;" />
+			</span>
 			<select id="sortSelect" style="float:right" onchange="changeSort();">
 				<option selected disabled>Sort By</option>
 				<option value="name.keyword">Name</option>

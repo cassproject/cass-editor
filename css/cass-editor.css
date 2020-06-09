@@ -362,10 +362,10 @@ select {
     -webkit-font-smoothing: antialiased;
 }
 
-#header input,
-#header input:focus {
+#header #search,
+#header #search:focus {
     padding: .5rem;
-    width: calc(100% - 50px - 25rem);
+    width: calc(100% - 50px - 30rem);
     height: 1.6rem;
     outline: none;
     border: none;
@@ -375,6 +375,8 @@ select {
     font-weight: 200;
     font-size: 1.5rem;
     padding-right: 3rem;
+    float: left;
+    padding-left: 2rem;
 }
 
 #header input:hover,
@@ -438,6 +440,10 @@ select {
 #sortSelect {
     margin-right: .5rem;
     margin-top: .5rem;
+}
+
+.showOnlyMine {
+    margin-top: .75rem;
 }
 
 #frameworks {
