@@ -145,12 +145,9 @@ export default {
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];
         },
-        amLoggedIn: function() {
-            if (EcIdentityManager && EcIdentityManager.ids && EcIdentityManager.ids.length > 0) return true;
-            else return false;
-        },
+
         displayName: function() {
-            if (this.amLoggedIn) {
+            if (this.loggedOnPerson.name) {
                 return this.loggedOnPerson.name;
             } else {
                 return 'No user';
