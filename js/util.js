@@ -152,6 +152,13 @@ function changeSort() {
     searchFrameworks(createParamObj(20));
 }
 
+function changeShowOnlyMine() {
+	queryParams.show = $("#showOnlyMine")[0].checked ? "mine" : null;
+	firstLoad = true;
+    $('#frameworks').scrollTop(0);
+    searchFrameworks(createParamObj(20));
+}
+
 function download(filename, text) {
 	var blob = new Blob([text], {type: "text/plain;charset=utf-8"});
 	//Wrap in click handler, necessary for iOS
