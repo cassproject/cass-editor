@@ -1491,7 +1491,7 @@
                     <tbody>
                         <RelationshipListItem
                             v-for="(relObj, relKey) in this.config.relationships"
-                            :key="relObj.label + 'list'"
+                            :key="relObj.label + relObj.enabled"
                             v-show="relObj.enabled"
                             :relationship="relKey"
                             :label="relObj.label"
