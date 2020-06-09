@@ -1555,6 +1555,26 @@
                                 </div>
                             </td>
                         </tr>
+                        <tr>
+                            <th>
+                                desires
+                            </th>
+                            <td>
+                                Knowledge of the learning resource being described is desired by the competency being referenced.
+                            </td>
+                            <td>
+                                <div class="field">
+                                    <input
+                                        :disabled="readOnly"
+                                        v-model="config.alignments.desires"
+                                        id="desiresSwitch"
+                                        type="checkbox"
+                                        name="desiresSwitch"
+                                        class="switch">
+                                    <label for="desiresSwitch" />
+                                </div>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -2521,7 +2541,6 @@ export default {
             else if (propertyParent.equals('competency')) this.updateCompetencyProperty(propertyName, field, newValue);
         },
         updateRelationshipProperty: function(relationship, field, newValue) {
-            console.log('updateRelationshipProperty ' + relationship + ' ' + field + ' ' + newValue);
             this.config.relationships[relationship][field] = newValue;
         },
         sortLevelList() {

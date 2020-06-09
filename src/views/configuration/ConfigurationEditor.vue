@@ -632,6 +632,7 @@ export default {
             newConfigObj.alignments.teaches = true;
             newConfigObj.alignments.assesses = true;
             newConfigObj.alignments.requires = true;
+            newConfigObj.alignments.desires = true;
             newConfigObj.defaultOwners = [];
             newConfigObj.defaultReaders = [];
             newConfigObj.defaultCommenters = [];
@@ -809,6 +810,7 @@ export default {
             simpleConfigObj.alignments.teaches = caa.includes("teaches");
             simpleConfigObj.alignments.assesses = caa.includes("assesses");
             simpleConfigObj.alignments.requires = caa.includes("requires");
+            simpleConfigObj.alignments.desires = caa.includes("desires");
         },
         buildSimpleConfigDefaultPermissionData(simpleConfigObj, complexConfigObj) {
             if (complexConfigObj["defaultObjectOwners"]) {
