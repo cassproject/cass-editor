@@ -1292,11 +1292,13 @@
                                 <tbody>
                                     <RelationshipListItem
                                         v-for="(relObj, relKey) in this.config.relationships"
+                                        v-show="isCassRelation(relKey)"
                                         :key="relKey"
                                         :relationship="relKey"
                                         :label="relObj.label"
                                         :enabled="relObj.enabled"
                                         :readOnly="readOnly"
+                                        scope="managecass"
                                         @change="updateRelationshipProperty" />
                                 </tbody>
                             </table>
@@ -1325,17 +1327,19 @@
                                 <tbody>
                                     <RelationshipListItem
                                         v-for="(relObj, relKey) in this.config.relationships"
+                                        v-show="isAsnRelation(relKey)"
                                         :key="relKey"
                                         :relationship="relKey"
                                         :label="relObj.label"
                                         :enabled="relObj.enabled"
                                         :readOnly="readOnly"
+                                        scope="manageasn"
                                         @change="updateRelationshipProperty" />
                                 </tbody>
                             </table>
                         </div>
                         <h3 class="header is-size-4">
-                            CEMQ
+                            GEMQ
                         </h3>
                         <div class="table-container">
                             <table class="table is-hoverable is-fullwidth">
@@ -1358,11 +1362,13 @@
                                 <tbody>
                                     <RelationshipListItem
                                         v-for="(relObj, relKey) in this.config.relationships"
+                                        v-show="isGemqRelation(relKey)"
                                         :key="relKey"
                                         :relationship="relKey"
                                         :label="relObj.label"
                                         :enabled="relObj.enabled"
                                         :readOnly="readOnly"
+                                        scope="managegemq"
                                         @change="updateRelationshipProperty" />
                                 </tbody>
                             </table>
@@ -1391,19 +1397,23 @@
                                 <tbody>
                                     <RelationshipListItem
                                         v-for="(relObj, relKey) in this.config.relationships"
+                                        v-show="isOtherRelation(relKey)"
                                         :key="relKey"
                                         :relationship="relKey"
                                         :label="relObj.label"
                                         :enabled="relObj.enabled"
                                         :readOnly="readOnly"
+                                        scope="manageother"
                                         @change="updateRelationshipProperty" />
                                 </tbody>
                             </table>
                         </div>
                     </section>
                     <footer class="modal-card-foot">
-                        <div class="button is-primary is-outlined">
-                            apply
+                        <div
+                            class="button is-primary is-outlined"
+                            @click="hideManageRelations">
+                            ok
                         </div>
                     </footer>
                 </div>
@@ -1430,12 +1440,13 @@
                     <tbody>
                         <RelationshipListItem
                             v-for="(relObj, relKey) in this.config.relationships"
-                            :key="relKey"
+                            :key="relObj.label + relObj.enabled"
                             v-show="relObj.enabled"
                             :relationship="relKey"
                             :label="relObj.label"
                             :enabled="relObj.enabled"
                             :readOnly="readOnly"
+                            scope="list"
                             @change="updateRelationshipProperty" />
                     </tbody>
                 </table>
@@ -1938,7 +1949,10 @@ export default {
             localEnforcedLevelValues: this.config.enforcedLevelValues,
             localDefaultOwners: this.config.defaultOwners,
             localDefaultReaders: this.config.defaultReaders,
-            localDefaultCommenters: this.config.defaultCommenters
+            localDefaultCommenters: this.config.defaultCommenters,
+            cassRelations: ['isEnabledBy', 'narrows', 'broadens', 'requires', 'desires', 'isEquivalentTo', 'isRelatedTo', 'enables'],
+            asnRelations: ['majorRelated', 'minorRelated'],
+            gemqRelations: ['hasChild', 'isChildOf']
         };
     },
     components: {
@@ -1948,6 +1962,9 @@ export default {
     methods: {
         showManageRelations: function() {
             this.showManageRelationshipsModal = true;
+        },
+        hideManageRelations: function() {
+            this.showManageRelationshipsModal = false;
         },
         getPermissionEntityEmail(pk) {
             let pe = this.getPermissionEntityByPk(pk);
@@ -2504,6 +2521,7 @@ export default {
             else if (propertyParent.equals('competency')) this.updateCompetencyProperty(propertyName, field, newValue);
         },
         updateRelationshipProperty: function(relationship, field, newValue) {
+            console.log('updateRelationshipProperty ' + relationship + ' ' + field + ' ' + newValue);
             this.config.relationships[relationship][field] = newValue;
         },
         sortLevelList() {
@@ -2618,6 +2636,18 @@ export default {
             let paramObj = {};
             paramObj.size = this.LEVEL_SEARCH_SIZE;
             EcLevel.search(window.repo, '', this.initializeLevelListSuccess, this.initializeLevelListFailure, paramObj);
+        },
+        isCassRelation: function(relType) {
+            return this.cassRelations.includes(relType);
+        },
+        isAsnRelation: function(relType) {
+            return this.asnRelations.includes(relType);
+        },
+        isGemqRelation: function(relType) {
+            return this.gemqRelations.includes(relType);
+        },
+        isOtherRelation: function(relType) {
+            return !(this.cassRelations.includes(relType) || this.asnRelations.includes(relType) || this.gemqRelations.includes(relType));
         }
     },
     computed: {

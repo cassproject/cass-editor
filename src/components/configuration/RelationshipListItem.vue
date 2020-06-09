@@ -26,11 +26,11 @@
                     :disabled="readOnly"
                     @change="changeEnabled"
                     v-model="localEnabled"
-                    :id="relationship"
+                    :id="relationship + scope"
                     type="checkbox"
-                    :name="relationship"
+                    :name="relationship + scope"
                     class="switch">
-                <label :for="relationship" />
+                <label :for="relationship + scope" />
             </div>
         </td>
     </tr>
@@ -45,6 +45,10 @@ export default {
             default: ''
         },
         label: {
+            type: String,
+            default: ''
+        },
+        scope: {
             type: String,
             default: ''
         },
@@ -68,8 +72,9 @@ export default {
             this.$emit('change', this.relationship, 'label', evt.srcElement.value);
         },
         changeEnabled: function(evt) {
-            let retVal = false;
-            if (evt.srcElement.value.equals('true')) retVal = true;
+            // let retVal = false;
+            // if (evt.srcElement.value.equals('true')) retVal = true;
+            let retVal = evt.target.checked;
             this.$emit('change', this.relationship, 'enabled', retVal);
         }
     }
