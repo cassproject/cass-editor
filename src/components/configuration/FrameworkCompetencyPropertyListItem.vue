@@ -35,6 +35,22 @@
                 </div>
             </div>
         </td>
+        <td>
+            <div v-if="readOnly">
+                {{ localHeading }}
+            </div>
+            <div
+                class="field"
+                v-if="!readOnly">
+                <div class="control">
+                    <input
+                        type="text"
+                        class="input is-small"
+                        v-model="localHeading"
+                        @change="changeHeading">
+                </div>
+            </div>
+        </td>
         <td class="is-narrow">
             <div class="field">
                 <input
@@ -132,6 +148,10 @@ export default {
             type: String,
             default: ''
         },
+        heading: {
+            type: String,
+            default: ''
+        },
         custom: {
             type: Boolean,
             default: false
@@ -154,14 +174,11 @@ export default {
     },
     data: function() {
         return {
-            // localLabel: this.label,
-            // localDescription: this.description,
-            // localRequired: this.required,
-            // localPriority: this.priority
             localLabel: '',
             localDescription: '',
             localRequired: false,
-            localPriority: ''
+            localPriority: '',
+            localHeading: ''
         };
     },
     methods: {
@@ -169,7 +186,6 @@ export default {
             this.$emit('change', this.propertyParent, this.property, 'label', evt.srcElement.value);
         },
         changeDescription: function(evt) {
-            console.log('propertyListItem: changeDescription');
             this.$emit('change', this.propertyParent, this.property, 'description', evt.srcElement.value);
         },
         changeRequired: function(evt) {
@@ -178,6 +194,9 @@ export default {
         },
         changePriority: function(evt) {
             this.$emit('change', this.propertyParent, this.property, 'priority', evt.srcElement.value);
+        },
+        changeHeading: function(evt) {
+            this.$emit('change', this.propertyParent, this.property, 'heading', evt.srcElement.value);
         }
     },
     mounted() {
@@ -185,6 +204,7 @@ export default {
         this.localDescription = this.description;
         this.localRequired = this.required;
         this.localPriority = this.priority;
+        this.localHeading = this.heading;
     }
 
 };
