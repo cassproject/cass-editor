@@ -11,6 +11,187 @@
                 </span>
             </div>
         </div>
+        <!-- modal for managing relationships
+            modal should show separate lists using a :show="type=TypeString" for the various categorized types
+            only selected items will show up in main list  -->
+        <div
+            :class="{ 'is-active': showManageRelationshipsModal}"
+            class="modal">
+            <div class="modal-background" />
+            <div class="modal-card has-background-white">
+                <header class="modal-card-head has-text-white has-background-primary">
+                    <p class="modal-card-title">
+                        Manage relationship types
+                    </p>
+                    <button
+                        class="delete is-pulled-right"
+                        aria-label="close"
+                        @click="showManageRelationshipsModal = false" />
+                </header>
+                <section class="modal-content">
+                    <div class="section">
+                        <div class="columns is-multiline">
+                            <div class="column is-12">
+                                <h3 class="header is-size-4">
+                                    CaSS Default Relationships
+                                </h3>
+
+                                <div class="table-container">
+                                    <table class="table is-hoverable is-fullwidth">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    <abbr title="unique relationship ID">
+                                                        relationship</abbr>
+                                                </th>
+                                                <th>
+                                                    <abbr title="label displayed in form inputs">
+                                                        display label</abbr>
+                                                </th>
+                                                <th>
+                                                    <abbr title="if enabled shows up in property options">
+                                                        enabled</abbr>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <RelationshipListItem
+                                                v-for="(relObj, relKey) in this.config.relationships"
+                                                v-show="isCassRelation(relKey)"
+                                                :key="relKey + 'managecass'"
+                                                :relationship="relKey"
+                                                :label="relObj.label"
+                                                :enabled="relObj.enabled"
+                                                :readOnly="readOnly"
+                                                scope="managecass"
+                                                @change="updateRelationshipProperty" />
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="column is-12">
+                                <h3 class="header is-size-4">
+                                    Achievement Standards Network Relationships
+                                </h3>
+                                <div class="table-container">
+                                    <table class="table is-hoverable is-fullwidth">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    <abbr title="unique relationship ID">
+                                                        relationship</abbr>
+                                                </th>
+                                                <th>
+                                                    <abbr title="label displayed in form inputs">
+                                                        display label</abbr>
+                                                </th>
+                                                <th>
+                                                    <abbr title="if enabled shows up in property options">
+                                                        enabled</abbr>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <RelationshipListItem
+                                                v-for="(relObj, relKey) in this.config.relationships"
+                                                v-show="isAsnRelation(relKey)"
+                                                :key="relKey + 'manageasn'"
+                                                :relationship="relKey"
+                                                :label="relObj.label"
+                                                :enabled="relObj.enabled"
+                                                :readOnly="readOnly"
+                                                scope="manageasn"
+                                                @change="updateRelationshipProperty" />
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="column is-12">
+                                <h3 class="header is-size-4">
+                                    GEMQ
+                                </h3>
+                                <div class="table-container">
+                                    <table class="table is-hoverable is-fullwidth">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    <abbr title="unique relationship ID">
+                                                        relationship</abbr>
+                                                </th>
+                                                <th>
+                                                    <abbr title="label displayed on form inputs">
+                                                        display label</abbr>
+                                                </th>
+                                                <th>
+                                                    <abbr title="if enabled shows up in property options">
+                                                        enabled</abbr>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <RelationshipListItem
+                                                v-for="(relObj, relKey) in this.config.relationships"
+                                                v-show="isGemqRelation(relKey)"
+                                                :key="relKey + 'managegemq'"
+                                                :relationship="relKey"
+                                                :label="relObj.label"
+                                                :enabled="relObj.enabled"
+                                                :readOnly="readOnly"
+                                                scope="managegemq"
+                                                @change="updateRelationshipProperty" />
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="column is-12">
+                                <h3 class="header is-size-4">
+                                    Other
+                                </h3>
+                                <div class="table-container">
+                                    <table class="table is-hoverable is-fullwidth">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    <abbr title="unique relationship ID">
+                                                        relationship</abbr>
+                                                </th>
+                                                <th>
+                                                    <abbr title="label displayed on form inputs">
+                                                        display label</abbr>
+                                                </th>
+                                                <th>
+                                                    <abbr title="if enabled shows up in property options">
+                                                        enabled</abbr>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <RelationshipListItem
+                                                v-for="(relObj, relKey) in this.config.relationships"
+                                                v-show="isOtherRelation(relKey)"
+                                                :key="relKey + 'manageother'"
+                                                :relationship="relKey"
+                                                :label="relObj.label"
+                                                :enabled="relObj.enabled"
+                                                :readOnly="readOnly"
+                                                scope="manageother"
+                                                @change="updateRelationshipProperty" />
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <footer class="modal-card-foot">
+                    <div
+                        class="button is-primary is-outlined"
+                        @click="hideManageRelations">
+                        ok
+                    </div>
+                </footer>
+            </div>
+        </div>
         <!-- permission entities search modal -->
         <div
             class="modal"
@@ -1250,174 +1431,6 @@
                 within a framework or between two different frameworks relate to eachother. Enabled
                 relationships will be available in the property drop down when editing competencies in the framework editor.
             </p>
-            <!-- modal for managing relationships
-                modal should show separate lists using a :show="type=TypeString" for the various categorized types
-                only selected items will show up in main list  -->
-            <div
-                v-if="showManageRelationshipsModal"
-                class="modal is-active has-background-white">
-                <div class="modal-background" />
-                <div class="modal-card has-background-white">
-                    <header class="modal-card-head has-text-white has-background-primary">
-                        <p class="modal-card-title">
-                            Manage relationship types
-                        </p>
-                        <button
-                            class="delete is-pulled-right"
-                            aria-label="close"
-                            @click="showManageRelationshipsModal = false" />
-                    </header>
-                    <section class="modal-card-body">
-                        <h3 class="header is-size-4">
-                            CaSS Default Relationships
-                        </h3>
-                        <div class="table-container">
-                            <table class="table is-hoverable is-fullwidth">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            <abbr title="unique relationship ID">
-                                                relationship</abbr>
-                                        </th>
-                                        <th>
-                                            <abbr title="label displayed in form inputs">
-                                                display label</abbr>
-                                        </th>
-                                        <th>
-                                            <abbr title="if enabled shows up in property options">
-                                                enabled</abbr>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <RelationshipListItem
-                                        v-for="(relObj, relKey) in this.config.relationships"
-                                        v-show="isCassRelation(relKey)"
-                                        :key="relKey"
-                                        :relationship="relKey"
-                                        :label="relObj.label"
-                                        :enabled="relObj.enabled"
-                                        :readOnly="readOnly"
-                                        scope="managecass"
-                                        @change="updateRelationshipProperty" />
-                                </tbody>
-                            </table>
-                        </div>
-                        <h3 class="header is-size-4">
-                            Achievement Standards Network Relationships
-                        </h3>
-                        <div class="table-container">
-                            <table class="table is-hoverable is-fullwidth">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            <abbr title="unique relationship ID">
-                                                relationship</abbr>
-                                        </th>
-                                        <th>
-                                            <abbr title="label displayed in form inputs">
-                                                display label</abbr>
-                                        </th>
-                                        <th>
-                                            <abbr title="if enabled shows up in property options">
-                                                enabled</abbr>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <RelationshipListItem
-                                        v-for="(relObj, relKey) in this.config.relationships"
-                                        v-show="isAsnRelation(relKey)"
-                                        :key="relKey"
-                                        :relationship="relKey"
-                                        :label="relObj.label"
-                                        :enabled="relObj.enabled"
-                                        :readOnly="readOnly"
-                                        scope="manageasn"
-                                        @change="updateRelationshipProperty" />
-                                </tbody>
-                            </table>
-                        </div>
-                        <h3 class="header is-size-4">
-                            GEMQ
-                        </h3>
-                        <div class="table-container">
-                            <table class="table is-hoverable is-fullwidth">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            <abbr title="unique relationship ID">
-                                                relationship</abbr>
-                                        </th>
-                                        <th>
-                                            <abbr title="label displayed on form inputs">
-                                                display label</abbr>
-                                        </th>
-                                        <th>
-                                            <abbr title="if enabled shows up in property options">
-                                                enabled</abbr>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <RelationshipListItem
-                                        v-for="(relObj, relKey) in this.config.relationships"
-                                        v-show="isGemqRelation(relKey)"
-                                        :key="relKey"
-                                        :relationship="relKey"
-                                        :label="relObj.label"
-                                        :enabled="relObj.enabled"
-                                        :readOnly="readOnly"
-                                        scope="managegemq"
-                                        @change="updateRelationshipProperty" />
-                                </tbody>
-                            </table>
-                        </div>
-                        <h3 class="header is-size-4">
-                            Other
-                        </h3>
-                        <div class="table-container">
-                            <table class="table is-hoverable is-fullwidth">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            <abbr title="unique relationship ID">
-                                                relationship</abbr>
-                                        </th>
-                                        <th>
-                                            <abbr title="label displayed on form inputs">
-                                                display label</abbr>
-                                        </th>
-                                        <th>
-                                            <abbr title="if enabled shows up in property options">
-                                                enabled</abbr>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <RelationshipListItem
-                                        v-for="(relObj, relKey) in this.config.relationships"
-                                        v-show="isOtherRelation(relKey)"
-                                        :key="relKey"
-                                        :relationship="relKey"
-                                        :label="relObj.label"
-                                        :enabled="relObj.enabled"
-                                        :readOnly="readOnly"
-                                        scope="manageother"
-                                        @change="updateRelationshipProperty" />
-                                </tbody>
-                            </table>
-                        </div>
-                    </section>
-                    <footer class="modal-card-foot">
-                        <div
-                            class="button is-primary is-outlined"
-                            @click="hideManageRelations">
-                            ok
-                        </div>
-                    </footer>
-                </div>
-            </div>
             <!--- list of selected relationships -->
             <div class="table-container">
                 <table class="table is-hoverable is-fullwidth">
@@ -1440,7 +1453,7 @@
                     <tbody>
                         <RelationshipListItem
                             v-for="(relObj, relKey) in this.config.relationships"
-                            :key="relObj.label + relObj.enabled"
+                            :key="relObj.label + 'list'"
                             v-show="relObj.enabled"
                             :relationship="relKey"
                             :label="relObj.label"
