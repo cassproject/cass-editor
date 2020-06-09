@@ -675,7 +675,20 @@
                                 v-model="customPropertyDescription">
                         </div>
                     </div>
-
+                    <div class="field">
+                        <label class="label">Display Category</label>
+                        <div v-if="readOnly">
+                            {{ customPropertyHeading }}
+                        </div>
+                        <div
+                            class="control"
+                            v-if="!readOnly">
+                            <input
+                                class="input"
+                                type="text"
+                                v-model="customPropertyHeading">
+                        </div>
+                    </div>
                     <div
                         class="box"
                         v-if="shouldAllowCustomPropertyPermittedValues">
@@ -956,6 +969,7 @@
                             <th><abbr title="unique property ID">property</abbr></th>
                             <th><abbr title="label to be displayed in form inputs">display label</abbr></th>
                             <th><abbr title="description of this property">description</abbr></th>
+                            <th><abbr title="category (if any) under which the field is displayed in form inputs">display category</abbr></th>
                             <th><abbr title="required">required</abbr></th>
                             <th><abbr title="priority">priority</abbr></th>
                             <th><abbr title="manage" /><i class="fa fa-cog" /></th>
@@ -970,6 +984,7 @@
                             :description="config.fwkIdDescription"
                             :required="true"
                             :priority="config.fwkIdPriorty"
+                            :heading="config.fwkIdHeading"
                             :custom="false"
                             :readOnly="readOnly"
                             :enforceRequired="true"
@@ -982,6 +997,7 @@
                             :description="config.fwkNameDescription"
                             :required="true"
                             priority="primary"
+                            :heading="config.fwkNameHeading"
                             :custom="false"
                             :readOnly="readOnly"
                             :enforceRequired="true"
@@ -994,6 +1010,7 @@
                             :description="config.fwkDescDescription"
                             :required="config.fwkDescRequired"
                             :priority="config.fwkDescPriority"
+                            :heading="config.fwkDescHeading"
                             :custom="false"
                             :readOnly="readOnly"
                             :enforceRequired="false"
@@ -1001,13 +1018,14 @@
                             @change="updateFrameworkCompetencyProperty" />
                         <FrameworkCompetencyPropertyListItem
                             v-for="(prop,idx) in config.fwkCustomProperties"
-                            :key="prop.propertyName + '_' + prop.label + '_' + prop.description + '_' + prop.required + '_' + prop.priority"
+                            :key="prop.propertyName + '_' + prop.label + '_' + prop.description + '_' + prop.required + '_' + prop.priority + '_' +prop.heading"
                             propertyParent="framework"
                             :property="prop.propertyName"
                             :label="prop.label"
                             :description="prop.description"
                             :required="prop.required"
                             :priority="prop.priority"
+                            :heading="prop.heading"
                             :custom="true"
                             :readOnly="readOnly"
                             :enforceRequired="false"
@@ -1055,6 +1073,7 @@
                             <th><abbr title="unique property ID">property</abbr></th>
                             <th><abbr title="label to be displayed in form inputs">display label</abbr></th>
                             <th><abbr title="description of the property">description</abbr></th>
+                            <th><abbr title="category (if any) under which the field is displayed in form inputs">display category</abbr></th>
                             <th><abbr title="required">required</abbr></th>
                             <th><abbr title="priorities correlate to view levels in the editor">priority</abbr></th>
                             <th><abbr title="manage"><i class="fa fa-cog" /></abbr></th>
@@ -1069,6 +1088,7 @@
                             :description="config.compIdDescription"
                             :required="true"
                             :priority="config.compIdPriorty"
+                            :heading="config.compIdHeading"
                             :custom="false"
                             :readOnly="readOnly"
                             :enforceRequired="true"
@@ -1081,6 +1101,7 @@
                             :description="config.compNameDescription"
                             :required="true"
                             priority="primary"
+                            :heading="config.compNameHeading"
                             :custom="false"
                             :readOnly="readOnly"
                             :enforceRequired="true"
@@ -1093,6 +1114,7 @@
                             :description="config.compDescDescription"
                             :required="config.compDescRequired"
                             :priority="config.compDescPriority"
+                            :heading="config.compDescHeading"
                             :custom="false"
                             :readOnly="readOnly"
                             :enforceRequired="false"
@@ -1105,6 +1127,7 @@
                             :description="config.compTypeDescription"
                             :required="config.compTypeRequired"
                             :priority="config.compTypePriority"
+                            :heading="config.compTypeHeading"
                             :custom="false"
                             :readOnly="readOnly"
                             :enforceRequired="false"
@@ -1112,13 +1135,14 @@
                             @change="updateFrameworkCompetencyProperty" />
                         <FrameworkCompetencyPropertyListItem
                             v-for="(prop,idx) in config.compCustomProperties"
-                            :key="prop.propertyName + '_' + prop.label + '_' + prop.description + '_' + prop.required + '_' + prop.priority"
+                            :key="prop.propertyName + '_' + prop.label + '_' + prop.description + '_' + prop.required + '_' + prop.priority + '_' +prop.heading"
                             propertyParent="competency"
                             :property="prop.propertyName"
                             :label="prop.label"
                             :description="prop.description"
                             :required="prop.required"
                             :priority="prop.priority"
+                            :heading="prop.heading"
                             :custom="true"
                             :readOnly="readOnly"
                             :enforceRequired="false"
@@ -1313,6 +1337,20 @@
                             class="input is-small"
                             type="text"
                             v-model="config.levelDescription">
+                    </div>
+                </div>
+                <div
+                    v-if="config.compAllowLevels"
+                    class="field">
+                    <label class="label">level heading: </label>
+                    <div v-if="readOnly">
+                        {{ config.levelHeading }}
+                    </div>
+                    <div v-if="!readOnly">
+                        <input
+                            class="input is-small"
+                            type="text"
+                            v-model="config.levelHeading">
                     </div>
                 </div>
                 <div
@@ -1731,7 +1769,8 @@
             </div>
             <div
                 class="section"
-                id="default-commenters">
+                id="default-commenters"
+                v-if="showDefaultCommenters">
                 <!-- ************************************** Default Commenters ************************************************ -->
                 <h5 class="header is-size-3">
                     Default Commenters
@@ -1915,6 +1954,7 @@ export default {
     },
     data: function() {
         return {
+            showDefaultCommenters: false,
             customPropertyValuesLimited: false,
             showManageRelationshipsModal: false,
             tab: 'framework',
@@ -1954,6 +1994,7 @@ export default {
             customPropertyLabel: '',
             customPropertyPriority: '',
             customPropertyRequired: false,
+            customPropertyHeading: '',
             customPropertyPermittedValues: [],
             customPropertyInvalid: false,
             customPropertyPropertyNameExists: false,
@@ -2346,6 +2387,7 @@ export default {
             newProp.label = this.customPropertyLabel;
             newProp.priority = this.customPropertyPriority;
             newProp.required = this.customPropertyRequired;
+            newProp.heading = this.customPropertyHeading;
             if (this.shouldAllowCustomPropertyPermittedValues) newProp.permittedValues = this.customPropertyPermittedValues;
             else newProp.permittedValues = [];
             if (this.customPropertyParent.equals('framework')) this.config.fwkCustomProperties.push(newProp);
@@ -2359,6 +2401,7 @@ export default {
                 propToUpdate.label = this.customPropertyLabel;
                 propToUpdate.priority = this.customPropertyPriority;
                 propToUpdate.required = this.customPropertyRequired;
+                propToUpdate.heading = this.customPropertyHeading;
                 if (this.shouldAllowCustomPropertyPermittedValues) propToUpdate.permittedValues = this.customPropertyPermittedValues;
                 else propToUpdate.permittedValues = [];
             }
@@ -2406,6 +2449,7 @@ export default {
             this.customPropertyLabel = '';
             this.customPropertyPriority = '';
             this.customPropertyRequired = false;
+            this.customPropertyHeading = '';
             this.customPropertyPermittedValues = [];
             this.customPropertyInvalid = false;
             this.customPropertyPropertyNameExists = false;
@@ -2460,6 +2504,7 @@ export default {
             this.customPropertyLabel = prop.label;
             this.customPropertyPriority = prop.priority;
             this.customPropertyRequired = prop.required;
+            this.customPropertyHeading = prop.heading;
             this.customPropertyPermittedValues = this.generateCopyOfCustomPropertyPermittedValues(prop);
             if (this.customPropertyPermittedValues.length > 0) this.customPropertyValuesLimited = true;
             else this.customPropertyValuesLimited = false;
@@ -2490,16 +2535,19 @@ export default {
             if (field.equals("label")) this.config.fwkIdLabel = newValue;
             else if (field.equals("description")) this.config.fwkIdDescription = newValue;
             else if (field.equals("priority")) this.config.fwkIdPriorty = newValue;
+            else if (field.equals("heading")) this.config.fwkIdHeading = newValue;
         },
         updateFrameworkNameProperty: function(field, newValue) {
             if (field.equals("label")) this.config.fwkNameLabel = newValue;
             else if (field.equals("description")) this.config.fwkNameDescription = newValue;
+            else if (field.equals("heading")) this.config.fwkNameHeading = newValue;
         },
         updateFrameworkDescriptionProperty: function(field, newValue) {
             if (field.equals("label")) this.config.fwkDescLabel = newValue;
             else if (field.equals("description")) this.config.fwkDescDescription = newValue;
             else if (field.equals("priority")) this.config.fwkDescPriority = newValue;
             else if (field.equals("required")) this.config.fwkDescRequired = newValue;
+            else if (field.equals("heading")) this.config.fwkDescHeading = newValue;
         },
         updateFrameworkCustomProperty: function(propertyName, field, newValue) {
             let propToUpdate = this.getCustomProperty('framework', propertyName);
@@ -2507,6 +2555,7 @@ export default {
             else if (field.equals("description")) propToUpdate.description = newValue;
             else if (field.equals("priority")) propToUpdate.priority = newValue;
             else if (field.equals("required")) propToUpdate.required = newValue;
+            else if (field.equals("heading")) propToUpdate.heading = newValue;
         },
         updateFrameworkProperty: function(propertyName, field, newValue) {
             if (propertyName.equals("id")) this.updateFrameworkIdProperty(field, newValue);
@@ -2518,22 +2567,26 @@ export default {
             if (field.equals("label")) this.config.compIdLabel = newValue;
             else if (field.equals("description")) this.config.compIdDescription = newValue;
             else if (field.equals("priority")) this.config.compIdPriorty = newValue;
+            else if (field.equals("heading")) this.config.compIdHeading = newValue;
         },
         updateCompetencyNameProperty: function(field, newValue) {
             if (field.equals("label")) this.config.compNameLabel = newValue;
             else if (field.equals("description")) this.config.compNameDescription = newValue;
+            else if (field.equals("heading")) this.config.compNameHeading = newValue;
         },
         updateCompetencyDescriptionProperty: function(field, newValue) {
             if (field.equals("label")) this.config.compDescLabel = newValue;
             else if (field.equals("description")) this.config.compDescDescription = newValue;
             else if (field.equals("priority")) this.config.compDescPriority = newValue;
             else if (field.equals("required")) this.config.compDescRequired = newValue;
+            else if (field.equals("heading")) this.config.compDescHeading = newValue;
         },
         updateCompetencyTypeProperty: function(field, newValue) {
             if (field.equals("label")) this.config.compTypeLabel = newValue;
             else if (field.equals("description")) this.config.compTypeDescription = newValue;
             else if (field.equals("priority")) this.config.compTypePriority = newValue;
             else if (field.equals("required")) this.config.compTypeRequired = newValue;
+            else if (field.equals("heading")) this.config.compTypeHeading = newValue;
         },
         updateCompetencyCustomProperty: function(propertyName, field, newValue) {
             let propToUpdate = this.getCustomProperty('competency', propertyName);
@@ -2541,6 +2594,7 @@ export default {
             else if (field.equals("description")) propToUpdate.description = newValue;
             else if (field.equals("priority")) propToUpdate.priority = newValue;
             else if (field.equals("required")) propToUpdate.required = newValue;
+            else if (field.equals("heading")) propToUpdate.heading = newValue;
         },
         updateCompetencyProperty: function(propertyName, field, newValue) {
             if (propertyName.equals("id")) this.updateCompetencyIdProperty(field, newValue);

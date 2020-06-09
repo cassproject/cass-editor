@@ -538,7 +538,8 @@ export default {
                     this.config = c;
                 }
                 console.log("c is: ", c);
-            } else if (localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId")) {
+            }
+            if (!this.config && localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId")) {
                 // If no framework configuration, use browser default
                 var c = EcRepository.getBlocking(localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId"));
                 if (c) {

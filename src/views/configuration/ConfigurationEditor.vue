@@ -219,7 +219,14 @@ export default {
                 }
             }
         },
-        generatePropertyConfigObject(id, domain, range, description, label, priority, required, readOnly, noTextEditing, permittedValues) {
+        addCustomPropertiesToHeadingsObj(customProperties, headingsObj) {
+            for (let prop of customProperties) {
+                if (prop.heading && !prop.heading.trim().equals('')) {
+                    headingsObj[prop.heading.trim()] = 'x';
+                }
+            }
+        },
+        generatePropertyConfigObject(id, domain, range, description, label, priority, required, readOnly, noTextEditing, permittedValues, heading) {
             let propObj = {};
             propObj["@id"] = id;
             propObj["@type"] = "http://www.w3.org/2000/01/rdf-schema#Property";
@@ -255,6 +262,7 @@ export default {
                     propObj.options.push(option);
                 }
             }
+            if (heading && !heading.trim().equals('')) propObj.heading = heading.trim();
             return propObj;
         },
         buildCustomPropertiesConfigObjects(parentConf, domain, customProperties) {
@@ -270,7 +278,8 @@ export default {
                     prop.required,
                     false,
                     false,
-                    prop.permittedValues);
+                    prop.permittedValues,
+                    prop.heading);
             }
         },
         buildFrameworkConfigPriorityArrays(fwkConf) {
@@ -299,7 +308,8 @@ export default {
                 true,
                 true,
                 true,
-                null);
+                null,
+                this.currentConfig.fwkIdHeading);
         },
         buildFrameworkNameConfigObject(fwkConf) {
             fwkConf["http://schema.org/name"] = this.generatePropertyConfigObject(
@@ -312,7 +322,8 @@ export default {
                 true,
                 false,
                 false,
-                null);
+                null,
+                this.currentConfig.fwkNameHeading);
         },
         buildFrameworkDescConfigObject(fwkConf) {
             fwkConf["http://schema.org/description"] = this.generatePropertyConfigObject(
@@ -325,12 +336,21 @@ export default {
                 this.currentConfig.fwkDescRequired,
                 false,
                 false,
-                null);
+                null,
+                this.currentConfig.fwkDescHeading);
+        },
+        buildFrameworkConfigHeadingsArray(fwkConf) {
+            let allHeadings = [];
+            if (this.currentConfig.fwkIdHeading && !this.currentConfig.fwkIdHeading.trim().equals('')) allHeadings[this.currentConfig.fwkIdHeading.trim()] = 'x';
+            if (this.currentConfig.fwkNameHeading && !this.currentConfig.fwkNameHeading.trim().equals('')) allHeadings[this.currentConfig.fwkNameHeading.trim()] = 'x';
+            if (this.currentConfig.fwkDescHeading && !this.currentConfig.fwkDescHeading.trim().equals('')) allHeadings[this.currentConfig.fwkDescHeading.trim()] = 'x';
+            this.addCustomPropertiesToHeadingsObj(this.currentConfig.fwkCustomProperties, allHeadings);
+            fwkConf.headings = Object.keys(allHeadings);
         },
         addFrameworkConfigToObject(cco) {
             let fwkConf = {};
-            fwkConf.headings = [];
             this.buildFrameworkConfigPriorityArrays(fwkConf);
+            this.buildFrameworkConfigHeadingsArray(fwkConf);
             this.buildFrameworkIdConfigObject(fwkConf);
             this.buildFrameworkNameConfigObject(fwkConf);
             this.buildFrameworkDescConfigObject(fwkConf);
@@ -369,7 +389,8 @@ export default {
                 true,
                 true,
                 true,
-                null);
+                null,
+                this.currentConfig.compIdHeading);
         },
         buildCompetencyNameConfigObject(compConf) {
             compConf["http://schema.org/name"] = this.generatePropertyConfigObject(
@@ -382,7 +403,8 @@ export default {
                 true,
                 false,
                 false,
-                null);
+                null,
+                this.currentConfig.compNameHeading);
         },
         buildCompetencyDescConfigObject(compConf) {
             compConf["http://schema.org/description"] = this.generatePropertyConfigObject(
@@ -395,7 +417,8 @@ export default {
                 this.currentConfig.compDescRequired,
                 false,
                 false,
-                null);
+                null,
+                this.currentConfig.compDescHeading);
         },
         buildCompetencyTypeConfigObject(compConf) {
             if (!this.currentConfig.compEnforceTypes) this.currentConfig.compEnforcedTypes = [];
@@ -412,12 +435,23 @@ export default {
                 compTypeRequired,
                 false,
                 false,
-                this.currentConfig.compEnforcedTypes);
+                this.currentConfig.compEnforcedTypes,
+                this.currentConfig.compTypeHeading);
+        },
+        buildCompetencyConfigHeadingsArray(compConf) {
+            let allHeadings = [];
+            if (this.currentConfig.compIdHeading && !this.currentConfig.compIdHeading.trim().equals('')) allHeadings[this.currentConfig.compIdHeading.trim()] = 'x';
+            if (this.currentConfig.compNameHeading && !this.currentConfig.compNameHeading.trim().equals('')) allHeadings[this.currentConfig.compNameHeading.trim()] = 'x';
+            if (this.currentConfig.compDescHeading && !this.currentConfig.compDescHeading.trim().equals('')) allHeadings[this.currentConfig.compDescHeading.trim()] = 'x';
+            if (this.currentConfig.compTypeHeading && !this.currentConfig.compTypeHeading.trim().equals('')) allHeadings[this.currentConfig.compTypeHeading.trim()] = 'x';
+            if (this.currentConfig.levelHeading && !this.currentConfig.levelHeading.trim().equals('')) allHeadings[this.currentConfig.levelHeading.trim()] = 'x';
+            this.addCustomPropertiesToHeadingsObj(this.currentConfig.compCustomProperties, allHeadings);
+            compConf.headings = Object.keys(allHeadings);
         },
         addCompetencyConfigToObject(cco) {
             let compConf = {};
-            compConf.headings = [];
             this.buildCompetencyConfigPriorityArrays(compConf);
+            this.buildCompetencyConfigHeadingsArray(compConf);
             this.buildCompetencyIdConfigObject(compConf);
             this.buildCompetencyNameConfigObject(compConf);
             this.buildCompetencyDescConfigObject(compConf);
@@ -451,6 +485,9 @@ export default {
         generateLevelsConfigObject(levConf) {
             levConf["https://schema.cassproject.org/0.4/Level"] = {};
             levConf["https://schema.cassproject.org/0.4/Level"]["priority"] = this.currentConfig.levelPriority;
+            if (this.currentConfig.levelHeading && !this.currentConfig.levelHeading.trim().equals('')) {
+                levConf["https://schema.cassproject.org/0.4/Level"]["heading"] = this.currentConfig.levelHeading.trim();
+            }
             levConf["https://schema.cassproject.org/0.4/Level"]["http://www.w3.org/2000/01/rdf-schema#comment"] = [];
             let commentObj = {};
             commentObj["@language"] = "en";
@@ -556,31 +593,39 @@ export default {
             newConfigObj.fwkIdLabel = "Framework ID";
             newConfigObj.fwkIdDescription = "ID of the framework";
             newConfigObj.fwkIdPriorty = "primary";
+            newConfigObj.fwkIdHeading = "";
             newConfigObj.fwkNameLabel = "Framework Name";
             newConfigObj.fwkNameDescription = "Name of the framework";
+            newConfigObj.fwkNameHeading = "";
             newConfigObj.fwkDescLabel = "Framework Description";
             newConfigObj.fwkDescDescription = "Description of the framework";
             newConfigObj.fwkDescPriority = "primary";
             newConfigObj.fwkDescRequired = true;
+            newConfigObj.fwkDescHeading = "";
             newConfigObj.compAllowLevels = true;
             newConfigObj.levelLabel = 'Level';
             newConfigObj.levelDescription = 'Level of the competency';
             newConfigObj.enforceLevelValues = false;
             newConfigObj.enforcedLevelValues = [];
             newConfigObj.levelPriority = 'secondary';
+            newConfigObj.levelHeading = "";
             newConfigObj.compIdLabel = "Competency ID";
             newConfigObj.compIdDescription = "ID of the competency";
             newConfigObj.compIdPriorty = "primary";
+            newConfigObj.compIdHeading = "";
             newConfigObj.compNameLabel = "Competency Name";
             newConfigObj.compNameDescription = "Name of the competency";
+            newConfigObj.compNameHeading = "";
             newConfigObj.compDescLabel = "Competency Description";
             newConfigObj.compDescDescription = "Description of the competency";
             newConfigObj.compDescPriority = "primary";
             newConfigObj.compDescRequired = false;
+            newConfigObj.compDescHeading = "";
             newConfigObj.compTypeLabel = "Competency Type";
             newConfigObj.compTypeDescription = "Type of the competency";
             newConfigObj.compTypePriority = "secondary";
             newConfigObj.compTypeRequired = false;
+            newConfigObj.compTypeHeading = "";
             newConfigObj.compEnforceTypes = false;
             newConfigObj.compEnforcedTypes = [];
             newConfigObj.fwkCustomProperties = [];
@@ -685,6 +730,8 @@ export default {
             scpo.description = ccpo["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
             scpo.label = ccpo["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
             scpo.priority = ccpo["priority"];
+            if (ccpo["heading"]) scpo.heading = ccpo["heading"];
+            else scpo.heading = "";
             scpo.required = this.getBooleanValue(ccpo["isRequired"]);
             scpo.permittedValues = [];
             if (ccpo.options && ccpo.options.length > 0) {
@@ -702,12 +749,21 @@ export default {
             simpleConfigObj.fwkIdLabel = cfo["@id"]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
             simpleConfigObj.fwkIdDescription = cfo["@id"]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
             simpleConfigObj.fwkIdPriorty = cfo["@id"]["priority"];
+            let idHeading = cfo["@id"]["heading"];
+            if (idHeading) simpleConfigObj.fwkIdHeading = idHeading.trim();
+            else simpleConfigObj.fwkIdHeading = "";
             simpleConfigObj.fwkNameLabel = cfo["http://schema.org/name"]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
             simpleConfigObj.fwkNameDescription = cfo["http://schema.org/name"]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
+            let nameHeading = cfo["http://schema.org/name"]["heading"];
+            if (nameHeading) simpleConfigObj.fwkNameHeading = nameHeading.trim();
+            else simpleConfigObj.fwkNameHeading = "";
             simpleConfigObj.fwkDescLabel = cfo["http://schema.org/description"]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
             simpleConfigObj.fwkDescDescription = cfo["http://schema.org/description"]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
             simpleConfigObj.fwkDescPriority = cfo["http://schema.org/description"]["priority"];
             simpleConfigObj.fwkDescRequired = this.getBooleanValue(cfo["http://schema.org/description"]["isRequired"]);
+            let descHeading = cfo["http://schema.org/description"]["heading"];
+            if (descHeading) simpleConfigObj.fwkDescHeading = descHeading.trim();
+            else simpleConfigObj.fwkDescHeading = "";
             simpleConfigObj.fwkCustomProperties = [];
             let propertyKeys = Object.keys(cfo);
             for (let pk of propertyKeys) {
@@ -720,17 +776,28 @@ export default {
             let cco = complexConfigObj["competencyConfig"];
             simpleConfigObj.compIdLabel = cco["@id"]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
             simpleConfigObj.compIdDescription = cco["@id"]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
-            simpleConfigObj.compIdPriorty = cco["@id"]["priority"];
+            simpleConfigObj.compIdPriorty = cco["@id"]["priority"]
+            let idHeading = cco["@id"]["heading"];
+            if (idHeading) simpleConfigObj.compIdHeading = idHeading.trim();
+            else simpleConfigObj.compIdHeading = "";
             simpleConfigObj.compNameLabel = cco["http://schema.org/name"]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
             simpleConfigObj.compNameDescription = cco["http://schema.org/name"]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
+            let nameHeading = cco["http://schema.org/name"]["heading"];
+            if (nameHeading) simpleConfigObj.compNameHeading = nameHeading.trim();
+            else simpleConfigObj.compNameHeading = "";
             simpleConfigObj.compDescLabel = cco["http://schema.org/description"]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
             simpleConfigObj.compDescDescription = cco["http://schema.org/description"]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
             simpleConfigObj.compDescPriority = cco["http://schema.org/description"]["priority"];
             simpleConfigObj.compDescRequired = this.getBooleanValue(cco["http://schema.org/description"]["isRequired"]);
+            let descHeading = cco["http://schema.org/description"]["heading"];
+            if (descHeading) simpleConfigObj.compDescHeading = descHeading.trim();
+            else simpleConfigObj.compDescHeading = "";
             let ccto = cco["http://purl.org/dc/terms/type"];
             simpleConfigObj.compTypeLabel = ccto["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
             simpleConfigObj.compTypeDescription = ccto["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
             simpleConfigObj.compTypePriority = ccto["priority"];
+            if (ccto["heading"]) simpleConfigObj.compTypeHeading = ccto["heading"];
+            else simpleConfigObj.compTypeHeading = "";
             simpleConfigObj.compTypeRequired = this.getBooleanValue(ccto["isRequired"]);
             simpleConfigObj.compEnforceTypes = false;
             simpleConfigObj.compEnforcedTypes = [];
@@ -758,11 +825,14 @@ export default {
             simpleConfigObj.enforceLevelValues = false;
             simpleConfigObj.enforcedLevelValues = [];
             simpleConfigObj.levelPriority = 'secondary';
+            simpleConfigObj.levelHeading = '';
             if (complexConfigObj["levelsConfig"] && complexConfigObj["levelsConfig"]["https://schema.cassproject.org/0.4/Level"]) {
                 let lo = complexConfigObj["levelsConfig"]["https://schema.cassproject.org/0.4/Level"];
                 simpleConfigObj.compAllowLevels = true;
                 if (lo["priority"]) simpleConfigObj.levelPriority = lo["priority"];
                 else simpleConfigObj.levelPriority = "secondary";
+                if (lo["heading"]) simpleConfigObj.levelHeading = lo["heading"];
+                else simpleConfigObj.levelHeading = "";
                 simpleConfigObj.levelLabel = lo["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
                 simpleConfigObj.levelDescription = lo["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
                 if (complexConfigObj["levelsConfig"]["https://schema.cassproject.org/0.4/Level"]["options"]) {
