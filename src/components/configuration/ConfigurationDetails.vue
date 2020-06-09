@@ -1134,6 +1134,27 @@
                             v-model="config.levelDescription">
                     </div>
                 </div>
+                <div
+                    class="field"
+                    v-if="config.compAllowLevels">
+                    <label class="label">level priority: </label>
+                    <div v-if="readOnly">
+                        {{ config.levelPriority }}
+                    </div>
+                    <div v-if="!readOnly">
+                        <select v-model="config.levelPriority">
+                            <option value="primary">
+                                primary
+                            </option>
+                            <option value="secondary">
+                                secondary
+                            </option>
+                            <option value="tertiary">
+                                tertiary
+                            </option>
+                        </select>
+                    </div>
+                </div>
                 <!-- ************************************** Enforce Levels ************************************************ -->
                 <div
                     v-if="config.compAllowLevels && tab === 'competency'"
