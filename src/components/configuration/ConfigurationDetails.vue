@@ -1756,7 +1756,8 @@
             </div>
             <div
                 class="section"
-                id="default-commenters">
+                id="default-commenters"
+                v-if="showDefaultCommenters">
                 <!-- ************************************** Default Commenters ************************************************ -->
                 <h5 class="header is-size-3">
                     Default Commenters
@@ -1940,6 +1941,7 @@ export default {
     },
     data: function() {
         return {
+            showDefaultCommenters: false,
             customPropertyValuesLimited: false,
             showManageRelationshipsModal: false,
             tab: 'framework',
