@@ -11,6 +11,42 @@
                 </span>
             </div>
         </div>
+        <!-- configuration deletion confirm modal-->
+        <div
+            class="modal"
+            :class="[{'is-active': showConfirmDeleteConfigModal}]">
+            <div class="modal-background" />
+            <div class="modal-card">
+                <header class="modal-card-head has-background-primary">
+                    <p class="modal-card-title">
+                        <span class="title has-text-white">
+                            Delete Configuration?
+                        </span>
+                    </p>
+                    <button
+                        class="delete"
+                        @click="cancelConfigurationDelete"
+                        aria-label="close" />
+                </header>
+                <section class="modal-card-body">
+                    Are you sure you wish to delete the configuration <b>'{{ configToDelete.name }}'</b>?
+                </section>
+                <footer class="modal-card-foot">
+                    <div class="buttons is-spaced">
+                        <button
+                            class="button is-dark is-outlined"
+                            @click="cancelConfigurationDelete">
+                            Cancel
+                        </button>
+                        <button
+                            class="button is-outlined is-primary"
+                            @click="deleteConfiguration">
+                            Delete
+                        </button>
+                    </div>
+                </footer>
+            </div>
+        </div>
         <!-- set browser commit success modal-->
         <div
             class="modal"
@@ -18,17 +54,28 @@
             <div class="modal-background" />
             <div class="modal-card">
                 <header class="modal-card-head has-background-primary">
-                    <h4 class="subtitle is-size-3 has-text-white modal-card-title">
-                        Configuration set as browser default
-                    </h4>
+                    <p class="modal-card-title">
+                        <span class="title has-text-white">
+                            Configuration set as browser default
+                        </span>
+                    </p>
                     <div
                         class="delete is-pulled-right"
                         aria-label="close"
                         @click="closeBrowserConfigSetModal" />
                 </header>
-                <div class="modal-card-body has-text-dark">
-                    <p>'<i>{{ defaultBrowserConfigName }}</i>' has been set as your browser's default CaSS Authoring Tool configuration.</p>
-                </div>
+                <section class="modal-card-body">
+                    <p>'<b>{{ defaultBrowserConfigName }}</b>' has been set as your browser's default CaSS Authoring Tool configuration.</p>
+                </section>
+                <footer class="modal-card-foot">
+                    <div class="buttons is-spaced">
+                        <button
+                            class="button is-dark is-outlined"
+                            @click="closeBrowserConfigSetModal">
+                            OK
+                        </button>
+                    </div>
+                </footer>
             </div>
         </div>
         <header
@@ -86,7 +133,7 @@
                                 <abbr title="Framework Default">framework default</abbr>
                             </th>
                             <th v-if="view !=='dynamic-modal'">
-                                <abbr title="" />view/manage
+                                <abbr title="" />view/manage/delete
                             </th>
                         </tr>
                     </thead>
@@ -104,7 +151,8 @@
                             :defaultFrameworkConfigId="frameworkConfigId"
                             @setBrowserDefault="setConfigAsBrowserDefault"
                             @setFrameworkDefault="setConfigAsFrameworkDefault"
-                            @showDetails="showConfigDetails" />
+                            @showDetails="showConfigDetails"
+                            @showDelete="showDeleteConfirm"/>
                     </tbody>
                     <br>
                 </table>
@@ -174,6 +222,7 @@ export default {
         CONFIG_SEARCH_SIZE: 10000,
         DEFAULT_CONFIGURATION_CONTEXT: 'https://schema.cassproject.org/0.4/',
         DEFAULT_CONFIGURATION_TYPE: 'Configuration',
+        LANG_STRING_RANGE: 'http://www.w3.org/2000/01/rdf-schema#langString',
         configViewMode: "list",
         configBusy: false,
         currentConfig: {},
@@ -183,7 +232,9 @@ export default {
         showBrowserConfigSetModal: false,
         defaultBrowserConfigName: '',
         localDefaultBrowserConfigId: '',
-        frameworkConfigId: ''
+        frameworkConfigId: '',
+        configToDelete: {},
+        showConfirmDeleteConfigModal: false
     }),
     methods: {
         closeModal: function() {
@@ -194,6 +245,38 @@ export default {
         },
         showDetailView() {
             this.configViewMode = "detail";
+        },
+        handleDeleteConfigurationSuccess() {
+            console.log("Config delete success");
+            this.configToDelete = {};
+            this.buildConfigList();
+            this.configBusy = false;
+            this.showListView();
+        },
+        handleDeleteConfigurationFailure(msg) {
+            console.error("failed to delete configuration: " + msg);
+            this.configToDelete = {};
+            this.configBusy = false;
+        },
+        deleteConfiguration() {
+            this.showConfirmDeleteConfigModal = false;
+            this.configBusy = true;
+            let configObj = EcRepository.getBlocking(this.configToDelete.id);
+            if (configObj) {
+                let repo = window.repo;
+                repo.deleteRegistered(configObj, this.handleDeleteConfigurationSuccess, this.handleDeleteConfigurationFailure);
+            }
+        },
+        cancelConfigurationDelete() {
+            this.configToDelete = {};
+            this.showConfirmDeleteConfigModal = false;
+        },
+        setConfigToDelete(configId) {
+            this.configToDelete = this.getConfigById(configId);
+        },
+        showDeleteConfirm(configId) {
+            this.setConfigToDelete(configId);
+            this.showConfirmDeleteConfigModal = true;
         },
         showConfigDetails(configId) {
             this.setCurrentConfig(configId);
@@ -226,7 +309,7 @@ export default {
                 }
             }
         },
-        generatePropertyConfigObject(id, domain, range, description, label, priority, required, readOnly, noTextEditing, permittedValues, heading) {
+        generatePropertyConfigObject(id, domain, range, description, label, priority, required, readOnly, noTextEditing, permittedValues, heading, allowMultiples, onePerLanguage) {
             let propObj = {};
             propObj["@id"] = id;
             propObj["@type"] = "http://www.w3.org/2000/01/rdf-schema#Property";
@@ -252,7 +335,8 @@ export default {
             propObj.isRequired = required;
             propObj.readOnly = readOnly;
             propObj.noTextEditing = noTextEditing;
-            propObj.max = 1;
+            if (!allowMultiples) propObj.max = 1;
+            if (range.equalsIgnoreCase(this.LANG_STRING_RANGE)) propObj.onePerLanguage = onePerLanguage;
             if (permittedValues && permittedValues.length > 0) {
                 propObj.options = [];
                 for (let pv of permittedValues) {
@@ -279,7 +363,9 @@ export default {
                     false,
                     false,
                     prop.permittedValues,
-                    prop.heading);
+                    prop.heading,
+                    prop.allowMultiples,
+                    prop.onePerLanguage);
             }
         },
         buildFrameworkConfigPriorityArrays(fwkConf) {
@@ -309,7 +395,9 @@ export default {
                 true,
                 true,
                 null,
-                this.currentConfig.fwkIdHeading);
+                this.currentConfig.fwkIdHeading,
+                false,
+                true);
         },
         buildFrameworkNameConfigObject(fwkConf) {
             fwkConf["http://schema.org/name"] = this.generatePropertyConfigObject(
@@ -323,7 +411,9 @@ export default {
                 false,
                 false,
                 null,
-                this.currentConfig.fwkNameHeading);
+                this.currentConfig.fwkNameHeading,
+                false,
+                true);
         },
         buildFrameworkDescConfigObject(fwkConf) {
             fwkConf["http://schema.org/description"] = this.generatePropertyConfigObject(
@@ -337,7 +427,9 @@ export default {
                 false,
                 false,
                 null,
-                this.currentConfig.fwkDescHeading);
+                this.currentConfig.fwkDescHeading,
+                false,
+                true);
         },
         buildFrameworkConfigHeadingsArray(fwkConf) {
             let allHeadings = [];
@@ -390,7 +482,9 @@ export default {
                 true,
                 true,
                 null,
-                this.currentConfig.compIdHeading);
+                this.currentConfig.compIdHeading,
+                false,
+                true);
         },
         buildCompetencyNameConfigObject(compConf) {
             compConf["http://schema.org/name"] = this.generatePropertyConfigObject(
@@ -404,7 +498,9 @@ export default {
                 false,
                 false,
                 null,
-                this.currentConfig.compNameHeading);
+                this.currentConfig.compNameHeading,
+                false,
+                true);
         },
         buildCompetencyDescConfigObject(compConf) {
             compConf["http://schema.org/description"] = this.generatePropertyConfigObject(
@@ -418,7 +514,9 @@ export default {
                 false,
                 false,
                 null,
-                this.currentConfig.compDescHeading);
+                this.currentConfig.compDescHeading,
+                false,
+                true);
         },
         buildCompetencyTypeConfigObject(compConf) {
             if (!this.currentConfig.compEnforceTypes) this.currentConfig.compEnforcedTypes = [];
@@ -436,7 +534,9 @@ export default {
                 false,
                 false,
                 this.currentConfig.compEnforcedTypes,
-                this.currentConfig.compTypeHeading);
+                this.currentConfig.compTypeHeading,
+                false,
+                true);
         },
         buildCompetencyConfigHeadingsArray(compConf) {
             let allHeadings = [];
@@ -732,6 +832,10 @@ export default {
             scpo.priority = ccpo["priority"];
             if (ccpo["heading"]) scpo.heading = ccpo["heading"];
             else scpo.heading = "";
+            if (ccpo["max"] && (ccpo["max"] === 1 || ccpo["max"] === '1')) scpo.allowMultiple = false;
+            else scpo.allowMultiples = true;
+            if (ccpo["onePerLanguage"] && (ccpo["onePerLanguage"] === 'true' || ccpo["max"] === true)) scpo.onePerLanguage = true;
+            else scpo.onePerLanguage = false;
             scpo.required = this.getBooleanValue(ccpo["isRequired"]);
             scpo.permittedValues = [];
             if (ccpo.options && ccpo.options.length > 0) {

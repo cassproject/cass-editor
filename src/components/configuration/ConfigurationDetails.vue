@@ -689,6 +689,46 @@
                                 v-model="customPropertyHeading">
                         </div>
                     </div>
+                    <div class="field">
+                        <label class="label">Allow Multiple Instances of Field </label>
+                        <div class="control">
+                            <input
+                                :disabled="readOnly"
+                                v-model="customPropertyAllowMultiples"
+                                id="customPropertyAllowMultiplesSwitch"
+                                type="checkbox"
+                                name="customPropertyAllowMultiplesSwitch"
+                                class="switch is-large"
+                                checked="checked">
+                            <label for="customPropertyAllowMultiplesSwitch" />
+                        </div>
+                    </div>
+                    <!-- had to put the v-if on all of these elements for some reason or it wouldn't work...f'in vue man -->
+                    <div
+                        class="field"
+                        v-if="shouldAllowOnePerLangChoice">
+                        <label
+                            class="label"
+                            v-if="shouldAllowOnePerLangChoice">
+                            One Entry Per Language
+                        </label>
+                        <div
+                            class="control"
+                            v-if="shouldAllowOnePerLangChoice">
+                            <input
+                                :disabled="readOnly"
+                                v-if="shouldAllowOnePerLangChoice"
+                                v-model="customPropertyOnePerLanguage"
+                                id="customPropertyOnePerLanguageSwitch"
+                                type="checkbox"
+                                name="customPropertyOnePerLanguageSwitch"
+                                class="switch is-large"
+                                checked="checked">
+                            <label
+                                for="customPropertyOnePerLanguageSwitch"
+                                v-if="shouldAllowOnePerLangChoice"/>
+                        </div>
+                    </div>
                     <div
                         class="box"
                         v-if="shouldAllowCustomPropertyPermittedValues">
@@ -727,8 +767,8 @@
                             v-if="customPropertyPermittedValues.length > 0 && customPropertyValuesLimited">
                             <table class="table is-hoverable is-fullwidth">
                                 <thead>
-                                    <th>display</th>
-                                    <th>value</th>
+                                    <th>display label</th>
+                                    <th>field value</th>
                                     <th />
                                 </thead>
                                 <tbody>
@@ -1963,6 +2003,7 @@ export default {
             PERSON_SEARCH_SIZE: 10000,
             DEFAULT_CUSTOM_PROPERTY_CONTEXT: 'https://schema.cassproject.org/0.4/',
             DEFAULT_CUSTOM_PROPERTY_RANGE: 'http://schema.org/Text',
+            LANG_STRING_RANGE: 'http://www.w3.org/2000/01/rdf-schema#langString',
             configDetailsBusy: false,
             configInvalid: false,
             configNameInvalid: false,
@@ -1995,6 +2036,8 @@ export default {
             customPropertyPriority: '',
             customPropertyRequired: false,
             customPropertyHeading: '',
+            customPropertyAllowMultiples: false,
+            customPropertyOnePerLanguage: true,
             customPropertyPermittedValues: [],
             customPropertyInvalid: false,
             customPropertyPropertyNameExists: false,
@@ -2388,6 +2431,8 @@ export default {
             newProp.priority = this.customPropertyPriority;
             newProp.required = this.customPropertyRequired;
             newProp.heading = this.customPropertyHeading;
+            newProp.allowMultiples = this.customPropertyAllowMultiples;
+            newProp.onePerLanguage = this.customPropertyOnePerLanguage;
             if (this.shouldAllowCustomPropertyPermittedValues) newProp.permittedValues = this.customPropertyPermittedValues;
             else newProp.permittedValues = [];
             if (this.customPropertyParent.equals('framework')) this.config.fwkCustomProperties.push(newProp);
@@ -2402,6 +2447,8 @@ export default {
                 propToUpdate.priority = this.customPropertyPriority;
                 propToUpdate.required = this.customPropertyRequired;
                 propToUpdate.heading = this.customPropertyHeading;
+                propToUpdate.allowMultiples = this.customPropertyAllowMultiples;
+                propToUpdate.onePerLanguage = this.customPropertyOnePerLanguage;
                 if (this.shouldAllowCustomPropertyPermittedValues) propToUpdate.permittedValues = this.customPropertyPermittedValues;
                 else propToUpdate.permittedValues = [];
             }
@@ -2450,6 +2497,8 @@ export default {
             this.customPropertyPriority = '';
             this.customPropertyRequired = false;
             this.customPropertyHeading = '';
+            this.customPropertyAllowMultiples = false;
+            this.customPropertyOnePerLanguage = true;
             this.customPropertyPermittedValues = [];
             this.customPropertyInvalid = false;
             this.customPropertyPropertyNameExists = false;
@@ -2505,6 +2554,8 @@ export default {
             this.customPropertyPriority = prop.priority;
             this.customPropertyRequired = prop.required;
             this.customPropertyHeading = prop.heading;
+            this.customPropertyAllowMultiples = prop.allowMultiples;
+            this.customPropertyOnePerLanguage = prop.onePerLanguage;
             this.customPropertyPermittedValues = this.generateCopyOfCustomPropertyPermittedValues(prop);
             if (this.customPropertyPermittedValues.length > 0) this.customPropertyValuesLimited = true;
             else this.customPropertyValuesLimited = false;
@@ -2748,6 +2799,10 @@ export default {
         },
         shouldAllowCustomPropertyPermittedValues: function() {
             if (this.customPropertyRange.equals('http://schema.org/Text')) return true;
+            else return false;
+        },
+        shouldAllowOnePerLangChoice: function() {
+            if (this.customPropertyRange.equals(this.LANG_STRING_RANGE)) return true;
             else return false;
         },
         filteredLevels() {
