@@ -11,6 +11,42 @@
                 </span>
             </div>
         </div>
+        <!-- configuration deletion confirm modal-->
+        <div
+            class="modal"
+            :class="[{'is-active': showConfirmDeleteConfigModal}]">
+            <div class="modal-background" />
+            <div class="modal-card">
+                <header class="modal-card-head has-background-primary">
+                    <p class="modal-card-title">
+                        <span class="title has-text-white">
+                            Delete Configuration?
+                        </span>
+                    </p>
+                    <button
+                        class="delete"
+                        @click="cancelConfigurationDelete"
+                        aria-label="close" />
+                </header>
+                <section class="modal-card-body">
+                    Are you sure you wish to delete the configuration <b>'{{ configToDelete.name }}'</b>?
+                </section>
+                <footer class="modal-card-foot">
+                    <div class="buttons is-spaced">
+                        <button
+                            class="button is-dark is-outlined"
+                            @click="cancelConfigurationDelete">
+                            Cancel
+                        </button>
+                        <button
+                            class="button is-outlined is-primary"
+                            @click="deleteConfiguration">
+                            Delete
+                        </button>
+                    </div>
+                </footer>
+            </div>
+        </div>
         <!-- set browser commit success modal-->
         <div
             class="modal"
@@ -18,17 +54,28 @@
             <div class="modal-background" />
             <div class="modal-card">
                 <header class="modal-card-head has-background-primary">
-                    <h4 class="subtitle is-size-3 has-text-white modal-card-title">
-                        Configuration set as browser default
-                    </h4>
+                    <p class="modal-card-title">
+                        <span class="title has-text-white">
+                            Configuration set as browser default
+                        </span>
+                    </p>
                     <div
                         class="delete is-pulled-right"
                         aria-label="close"
                         @click="closeBrowserConfigSetModal" />
                 </header>
-                <div class="modal-card-body has-text-dark">
-                    <p>'<i>{{ defaultBrowserConfigName }}</i>' has been set as your browser's default CaSS Authoring Tool configuration.</p>
-                </div>
+                <section class="modal-card-body">
+                    <p>'<b>{{ defaultBrowserConfigName }}</b>' has been set as your browser's default CaSS Authoring Tool configuration.</p>
+                </section>
+                <footer class="modal-card-foot">
+                    <div class="buttons is-spaced">
+                        <button
+                            class="button is-dark is-outlined"
+                            @click="closeBrowserConfigSetModal">
+                            OK
+                        </button>
+                    </div>
+                </footer>
             </div>
         </div>
         <header
@@ -86,7 +133,7 @@
                                 <abbr title="Framework Default">framework default</abbr>
                             </th>
                             <th v-if="view !=='dynamic-modal'">
-                                <abbr title="" />view/manage
+                                <abbr title="" />view/manage/delete
                             </th>
                         </tr>
                     </thead>
@@ -104,7 +151,8 @@
                             :defaultFrameworkConfigId="frameworkConfigId"
                             @setBrowserDefault="setConfigAsBrowserDefault"
                             @setFrameworkDefault="setConfigAsFrameworkDefault"
-                            @showDetails="showConfigDetails" />
+                            @showDetails="showConfigDetails"
+                            @showDelete="showDeleteConfirm"/>
                     </tbody>
                     <br>
                 </table>
@@ -184,7 +232,9 @@ export default {
         showBrowserConfigSetModal: false,
         defaultBrowserConfigName: '',
         localDefaultBrowserConfigId: '',
-        frameworkConfigId: ''
+        frameworkConfigId: '',
+        configToDelete: {},
+        showConfirmDeleteConfigModal: false
     }),
     methods: {
         closeModal: function() {
@@ -195,6 +245,38 @@ export default {
         },
         showDetailView() {
             this.configViewMode = "detail";
+        },
+        handleDeleteConfigurationSuccess() {
+            console.log("Config delete success");
+            this.configToDelete = {};
+            this.buildConfigList();
+            this.configBusy = false;
+            this.showListView();
+        },
+        handleDeleteConfigurationFailure(msg) {
+            console.error("failed to delete configuration: " + msg);
+            this.configToDelete = {};
+            this.configBusy = false;
+        },
+        deleteConfiguration() {
+            this.showConfirmDeleteConfigModal = false;
+            this.configBusy = true;
+            let configObj = EcRepository.getBlocking(this.configToDelete.id);
+            if (configObj) {
+                let repo = window.repo;
+                repo.deleteRegistered(configObj, this.handleDeleteConfigurationSuccess, this.handleDeleteConfigurationFailure);
+            }
+        },
+        cancelConfigurationDelete() {
+            this.configToDelete = {};
+            this.showConfirmDeleteConfigModal = false;
+        },
+        setConfigToDelete(configId) {
+            this.configToDelete = this.getConfigById(configId);
+        },
+        showDeleteConfirm(configId) {
+            this.setConfigToDelete(configId);
+            this.showConfirmDeleteConfigModal = true;
         },
         showConfigDetails(configId) {
             this.setCurrentConfig(configId);

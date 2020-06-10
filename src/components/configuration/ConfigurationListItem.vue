@@ -42,7 +42,18 @@
                 </span>
             </div>
             <div
-                v-else-if="!isOwned"
+                v-if="isOwned && !isDefault"
+                class="button is-outlined is-small is-warning delete-btn"
+                @click="$emit('showDelete', id)">
+                <span class="icon">
+                    <i class="fas fa-trash" />
+                </span>
+                <span>
+                    delete
+                </span>
+            </div>
+            <div
+                v-if="!isOwned"
                 class="button is-outlined is-small is-primary"
                 @click="$emit('showDetails', id)">
                 <span class="icon">
@@ -98,4 +109,7 @@ export default {
 
 
 <style lang="scss" scoped>
+    .delete-btn {
+        margin-left: .4rem;
+    }
 </style>
