@@ -174,6 +174,7 @@ export default {
         CONFIG_SEARCH_SIZE: 10000,
         DEFAULT_CONFIGURATION_CONTEXT: 'https://schema.cassproject.org/0.4/',
         DEFAULT_CONFIGURATION_TYPE: 'Configuration',
+        LANG_STRING_RANGE: 'http://www.w3.org/2000/01/rdf-schema#langString',
         configViewMode: "list",
         configBusy: false,
         currentConfig: {},
@@ -226,7 +227,7 @@ export default {
                 }
             }
         },
-        generatePropertyConfigObject(id, domain, range, description, label, priority, required, readOnly, noTextEditing, permittedValues, heading) {
+        generatePropertyConfigObject(id, domain, range, description, label, priority, required, readOnly, noTextEditing, permittedValues, heading, allowMultiples, onePerLanguage) {
             let propObj = {};
             propObj["@id"] = id;
             propObj["@type"] = "http://www.w3.org/2000/01/rdf-schema#Property";
@@ -252,7 +253,8 @@ export default {
             propObj.isRequired = required;
             propObj.readOnly = readOnly;
             propObj.noTextEditing = noTextEditing;
-            propObj.max = 1;
+            if (!allowMultiples) propObj.max = 1;
+            if (range.equalsIgnoreCase(this.LANG_STRING_RANGE)) propObj.onePerLanguage = onePerLanguage;
             if (permittedValues && permittedValues.length > 0) {
                 propObj.options = [];
                 for (let pv of permittedValues) {
@@ -279,7 +281,9 @@ export default {
                     false,
                     false,
                     prop.permittedValues,
-                    prop.heading);
+                    prop.heading,
+                    prop.allowMultiples,
+                    prop.onePerLanguage);
             }
         },
         buildFrameworkConfigPriorityArrays(fwkConf) {
@@ -309,7 +313,9 @@ export default {
                 true,
                 true,
                 null,
-                this.currentConfig.fwkIdHeading);
+                this.currentConfig.fwkIdHeading,
+                false,
+                true);
         },
         buildFrameworkNameConfigObject(fwkConf) {
             fwkConf["http://schema.org/name"] = this.generatePropertyConfigObject(
@@ -323,7 +329,9 @@ export default {
                 false,
                 false,
                 null,
-                this.currentConfig.fwkNameHeading);
+                this.currentConfig.fwkNameHeading,
+                false,
+                true);
         },
         buildFrameworkDescConfigObject(fwkConf) {
             fwkConf["http://schema.org/description"] = this.generatePropertyConfigObject(
@@ -337,7 +345,9 @@ export default {
                 false,
                 false,
                 null,
-                this.currentConfig.fwkDescHeading);
+                this.currentConfig.fwkDescHeading,
+                false,
+                true);
         },
         buildFrameworkConfigHeadingsArray(fwkConf) {
             let allHeadings = [];
@@ -390,7 +400,9 @@ export default {
                 true,
                 true,
                 null,
-                this.currentConfig.compIdHeading);
+                this.currentConfig.compIdHeading,
+                false,
+                true);
         },
         buildCompetencyNameConfigObject(compConf) {
             compConf["http://schema.org/name"] = this.generatePropertyConfigObject(
@@ -404,7 +416,9 @@ export default {
                 false,
                 false,
                 null,
-                this.currentConfig.compNameHeading);
+                this.currentConfig.compNameHeading,
+                false,
+                true);
         },
         buildCompetencyDescConfigObject(compConf) {
             compConf["http://schema.org/description"] = this.generatePropertyConfigObject(
@@ -418,7 +432,9 @@ export default {
                 false,
                 false,
                 null,
-                this.currentConfig.compDescHeading);
+                this.currentConfig.compDescHeading,
+                false,
+                true);
         },
         buildCompetencyTypeConfigObject(compConf) {
             if (!this.currentConfig.compEnforceTypes) this.currentConfig.compEnforcedTypes = [];
@@ -436,7 +452,9 @@ export default {
                 false,
                 false,
                 this.currentConfig.compEnforcedTypes,
-                this.currentConfig.compTypeHeading);
+                this.currentConfig.compTypeHeading,
+                false,
+                true);
         },
         buildCompetencyConfigHeadingsArray(compConf) {
             let allHeadings = [];
@@ -732,6 +750,10 @@ export default {
             scpo.priority = ccpo["priority"];
             if (ccpo["heading"]) scpo.heading = ccpo["heading"];
             else scpo.heading = "";
+            if (ccpo["max"] && (ccpo["max"] === 1 || ccpo["max"] === '1')) scpo.allowMultiple = false;
+            else scpo.allowMultiples = true;
+            if (ccpo["onePerLanguage"] && (ccpo["onePerLanguage"] === 'true' || ccpo["max"] === true)) scpo.onePerLanguage = true;
+            else scpo.onePerLanguage = false;
             scpo.required = this.getBooleanValue(ccpo["isRequired"]);
             scpo.permittedValues = [];
             if (ccpo.options && ccpo.options.length > 0) {
@@ -776,7 +798,7 @@ export default {
             let cco = complexConfigObj["competencyConfig"];
             simpleConfigObj.compIdLabel = cco["@id"]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
             simpleConfigObj.compIdDescription = cco["@id"]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
-            simpleConfigObj.compIdPriorty = cco["@id"]["priority"]
+            simpleConfigObj.compIdPriorty = cco["@id"]["priority"];
             let idHeading = cco["@id"]["heading"];
             if (idHeading) simpleConfigObj.compIdHeading = idHeading.trim();
             else simpleConfigObj.compIdHeading = "";
