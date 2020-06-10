@@ -767,8 +767,8 @@
                             v-if="customPropertyPermittedValues.length > 0 && customPropertyValuesLimited">
                             <table class="table is-hoverable is-fullwidth">
                                 <thead>
-                                    <th>display</th>
-                                    <th>value</th>
+                                    <th>display label</th>
+                                    <th>field value</th>
                                     <th />
                                 </thead>
                                 <tbody>
