@@ -776,7 +776,7 @@ export default {
             let cco = complexConfigObj["competencyConfig"];
             simpleConfigObj.compIdLabel = cco["@id"]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
             simpleConfigObj.compIdDescription = cco["@id"]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
-            simpleConfigObj.compIdPriorty = cco["@id"]["priority"]
+            simpleConfigObj.compIdPriorty = cco["@id"]["priority"];
             let idHeading = cco["@id"]["heading"];
             if (idHeading) simpleConfigObj.compIdHeading = idHeading.trim();
             else simpleConfigObj.compIdHeading = "";

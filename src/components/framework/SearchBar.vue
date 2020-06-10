@@ -12,11 +12,12 @@
                             Sort by last date modified
 -->
 <template>
-    <div class="section">
-        <div class="field">
+    <div class="">
+        <div
+            class="field">
             <p class="control has-icons-right">
                 <input
-                    class="input is-large"
+                    class="input is-small"
                     ref="text"
                     :placeholder="'Search for ' + (searchType === 'Competency' ? 'competencie' : searchType)+ 's...'"
                     @change="updateSearchTerm($event)"
@@ -122,6 +123,10 @@
 export default {
     name: 'SearchBar',
     props: {
+        view: {
+            type: String,
+            default: ''
+        },
         searchType: {
             type: String,
             default: ''
