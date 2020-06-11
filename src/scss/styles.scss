@@ -2,7 +2,9 @@
 @import './../assets/fonts/webfonts/all.css';
 @import './../assets/fonts/RobotoCondensed/stylesheet.css';
 @import './../assets/fonts/Assistant/stylesheet.css';
-
+html {
+    overflow: auto;
+}
 html {
     font-family: $family-primary;
     max-width: 100vw !important;

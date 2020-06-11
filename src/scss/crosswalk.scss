@@ -1,8 +1,6 @@
 @import './variables.scss';
 // required to adjust to side bar open
-html {
-    overflow: hidden; // were custom handling scroll on this page 
-}
+
 .crosswalk.clear-side-bar {
     .hierarchy-buttons {
         width: calc(45vw - 150px);
