@@ -2086,17 +2086,17 @@ export default {
         getPermissionEntityEmail(pk) {
             let pe = this.getPermissionEntityByPk(pk);
             if (pe) return pe.email;
-            else return 'unknown';
+            else return 'unknown user/group email';
         },
         getPermissionEntityType(pk) {
             let pe = this.getPermissionEntityByPk(pk);
             if (pe) return pe.type;
-            else return 'unknown';
+            else return 'unknown type';
         },
         getPermissionEntityName(pk) {
             let pe = this.getPermissionEntityByPk(pk);
             if (pe) return pe.name;
-            else return 'unknown';
+            else return 'unknown user/group name';
         },
         getPermissionEntityByPk(pk) {
             for (let pe of this.permissionEntityList) {
