@@ -726,7 +726,7 @@
                                 checked="checked">
                             <label
                                 for="customPropertyOnePerLanguageSwitch"
-                                v-if="shouldAllowOnePerLangChoice"/>
+                                v-if="shouldAllowOnePerLangChoice" />
                         </div>
                     </div>
                     <div

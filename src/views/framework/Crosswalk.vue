@@ -56,11 +56,11 @@
                     class="crosswalk__buttons">
                     <div class="container">
                         <h2 class="title is-size-1">
-                            Crosswalk Align Frameworks:
+                            Crosswalk:
                             <span
                                 v-if="alignmentsToSave.length > 0"
                                 class="is-size-2 is-outlined is-dark">
-                                {{ alignmentsToSave.length }} alignment <span v-if="alignmentsToSave.length >1">s</span> ready to save
+                                {{ alignmentsToSave.length }} alignment<span v-if="alignmentsToSave.length >1">s</span> ready to save
                             </span>
                             <span
                                 v-if="alignmentsToDelete.length > 0"
@@ -217,52 +217,71 @@
                 <transition
                     v-if="step === 3"
                     name="slide-fade">
-                    <div class="column is-12 crosswalk__summary">
+                    <div class="is-narrow crosswalk__summary">
                         <div
-                            class="container box"
+                            class="box"
                             v-if="!alignmentsSaved">
-                            <h4 class="title is-size-2 has-text-centered">
-                                Crosswalk Alignment Summary
-                            </h4>
-                            <p v-if="alignmentsToSave.length > 0">
-                                {{ alignmentsToSave.length }} alignment<span v-if="alignmentsToSave.length">s</span> to add:
-                            </p>
-                            <p v-if="alignmentsToDelete.length > 0">
-                                {{ alignmentsToDelete.length }} Number of alignment<span v-if="alignmentsToDelete.length">s</span> to remove
-                            </p>
-                            <h4 class="title is-size-2">
-                                Choose which framework to save to
-                            </h4>
-                            <div
-                                v-if="canSaveToSourceFramework"
-                                class="field">
-                                <input
-                                    title="You do not have permission to save to this framework"
-                                    :disabled="!canSaveToSourceFramework"
-                                    v-model="saveToSourceFramework"
-                                    class="is-checkradio"
-                                    id="saveToSourceFramework"
-                                    type="checkbox"
-                                    name="saveToSourceFramework">
-                                <label for="saveToSourceFramework">{{ frameworkSource.getName() }}</label>
+                            <div class="section">
+                                <h4 class="title is-size-2 has-text-centered">
+                                    Crosswalk Alignment Summary
+                                </h4>
+                                <p
+                                    class="has-text-centered"
+                                    v-if="alignmentsToSave.length > 0">
+                                    {{ alignmentsToSave.length }} alignment<span v-if="alignmentsToSave.length">s</span> ready to add
+                                </p>
+                                <p v-if="alignmentsToDelete.length > 0">
+                                    {{ alignmentsToDelete.length }} Number of alignment<span v-if="alignmentsToDelete.length">s</span> to remove
+                                </p>
                             </div>
-                            <div
-                                v-if="canSaveToTargetFramework"
-                                class="field">
-                                <input
-                                    title="You do not have permission to save to this framework"
-                                    :disabled="!canSaveToTargetFramework"
-                                    v-model="saveToTargetFramework"
-                                    class="is-checkradio"
-                                    id="saveToTargetFramework"
-                                    type="checkbox"
-                                    name="saveToTargetFramework">
-                                <label for="saveToTargetFramework">{{ frameworkTarget.getName() }}</label>
+                            <div class="section">
+                                <label class="label is-size-3 has-text-centered">
+                                    Choose which framework to save to
+                                </label>
+                                <div
+                                    v-if="canSaveToSourceFramework"
+                                    class="field has-text-centered">
+                                    <input
+                                        title="You do not have permission to save to this framework"
+                                        :disabled="!canSaveToSourceFramework"
+                                        v-model="saveToSourceFramework"
+                                        class="is-checkradio"
+                                        id="saveToSourceFramework"
+                                        type="checkbox"
+                                        name="saveToSourceFramework">
+                                    <label
+                                        class="label"
+                                        for="saveToSourceFramework">{{ frameworkSource.getName() }}</label>
+                                </div>
+                                <div
+                                    v-if="canSaveToTargetFramework"
+                                    class="field has-text-centered">
+                                    <input
+                                        title="You do not have permission to save to this framework"
+                                        :disabled="!canSaveToTargetFramework"
+                                        v-model="saveToTargetFramework"
+                                        class="is-checkradio"
+                                        id="saveToTargetFramework"
+                                        type="checkbox"
+                                        name="saveToTargetFramework">
+                                    <label
+                                        class="label"
+                                        for="saveToTargetFramework">{{ frameworkTarget.getName() }}</label>
+                                </div>
                             </div>
                             <div
                                 style="margin-top: 3rem"
-                                class="column is-12 has-text-centered"
+                                class="buttons is-spaced"
                                 v-if="saveToSourceFramework || saveToTargetFramework">
+                                <div
+                                    class="button is-outlined is-dark">
+                                    <span class="icon">
+                                        <i class="fa fa-arrow-left" />
+                                    </span>
+                                    <span>
+                                        continue editing
+                                    </span>
+                                </div>
                                 <div
                                     class="button is-outlined is-primary"
                                     @click="saveAlignments">
@@ -276,9 +295,9 @@
                             </div>
                         </div>
                         <div
-                            class="container box"
+                            class="container has-text-centered"
                             v-if="alignmentsSaved">
-                            <h4><i class="fa fa-exclamation-triangle" /> Alignments saved</h4>
+                            <h4><i class="fa fa-check" /> Alignments saved</h4>
                         </div>
                     </div>
                 </transition>

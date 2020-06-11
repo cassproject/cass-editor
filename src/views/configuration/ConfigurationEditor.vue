@@ -152,7 +152,7 @@
                             @setBrowserDefault="setConfigAsBrowserDefault"
                             @setFrameworkDefault="setConfigAsFrameworkDefault"
                             @showDetails="showConfigDetails"
-                            @showDelete="showDeleteConfirm"/>
+                            @showDelete="showDeleteConfirm" />
                     </tbody>
                     <br>
                 </table>
