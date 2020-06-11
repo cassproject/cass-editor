@@ -31,17 +31,6 @@
             </div>
         </div>
         <hr>
-        <!-- OPTION TO NAVIGATE BACK -->
-        <div
-            class="menu-label has-text-white"
-            :class="[{'is-hidden': currentRoute == '/'}]">
-            <router-link to="/frameworks">
-                <span class="icon">
-                    <i class="fa fa-arrow-left" />
-                </span>
-                <span>back</span>
-            </router-link>
-        </div>
         <!-- END OPTION TO NAVIGATE BACK -->
 
         <!-- GENERAL MENU -->
@@ -171,8 +160,8 @@ export default {
     z-index: 2;
     top: 0;
     left:0;
-    height: calc(100vh - 47px);
-    margin-top: 64px;
+    height: calc(100vh - 3.25rem);
+    margin-top: 3.25rem;
     bottom: 0;
     overflow-y: scroll;
 }
