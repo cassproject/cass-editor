@@ -56,9 +56,6 @@ html {
     }
     .crosswalk__title {
         flex:1;
-        .crosswalk__title__title {
-            
-        }
         .crosswalk__title__buttons {
 
             .is-spaced {
@@ -187,8 +184,8 @@ html {
                     }
                     .lode__hierarchy-item {
                         padding: .125rem !important;
-                        border-radius: .25rem;
-                        min-height: 50px;
+                        border-radius: .125rem;
+                        min-height: 54px;
                         transform: translateX(0);
                         .crosswalk-buttons__source {
                             position: fixed;

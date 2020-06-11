@@ -15,14 +15,19 @@
     <div class="">
         <div
             class="field">
-            <p class="control has-icons-right">
+            <p
+                class="control"
+                :class="{'has-icons-right': searchTerm === ''}">
                 <input
                     class="input is-small"
                     ref="text"
+                    type="search"
+                    v-model="searchTerm"
                     :placeholder="'Search for ' + (searchType === 'Competency' ? 'competencie' : searchType)+ 's...'"
-                    @change="updateSearchTerm($event)"
-                    @keyup.enter="updateSearchTerm($event)">
+                    @change="updateSearchTerm(searchTerm)"
+                    @keyup.enter="updateSearchTerm(searchTerm)">
                 <span
+                    v-if="searchTerm === ''"
                     class="icon is-small is-right">
                     <i class="fas fa-search" />
                 </span>
@@ -138,11 +143,15 @@ export default {
     },
     data() {
         return {
+            searchTerm: '',
             basicSort: '',
             basicFilter: ''
         };
     },
     watch: {
+        searchTerm: function(val) {
+            this.updateSearchTerm(val);
+        },
         basicSort: function(val) {
             console.log(val);
             this.$store.commit("app/sortResults", {id: val});
@@ -183,7 +192,7 @@ export default {
             this.$store.commit(storeCaller, filterArray);
         },
         updateSearchTerm: function(e) {
-            this.$store.commit('app/searchTerm', e.target.value);
+            this.$store.commit('app/searchTerm', e);
         }
     },
     computed: {
