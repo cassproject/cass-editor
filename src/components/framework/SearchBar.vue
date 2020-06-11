@@ -83,7 +83,9 @@
         <!-- to do connect basic filters to list results -->
         <div v-if="filterSet === 'basic'">
             <div class="field is-grouped">
-                <div class="field">
+                <div
+                    class="field"
+                    v-if="loggedIn">
                     <input
                         v-model="basicFilter"
                         class="is-checkradio"
@@ -220,6 +222,12 @@ export default {
         },
         sortResults: function() {
             return this.$store.getters['app/sortResults'];
+        },
+        loggedIn: function() {
+            if (EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
+                return true;
+            }
+            return false;
         }
     }
 };

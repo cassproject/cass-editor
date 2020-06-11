@@ -307,7 +307,7 @@
 </template>
 
 <script>
-import {mapState} from 'vuex';
+import {mapState, mapGetters} from 'vuex';
 import List from '@/lode/components/lode/List.vue';
 import Hierarchy from '@/lode/components/lode/Hierarchy.vue';
 import SearchBar from '@/components/framework/SearchBar.vue';
@@ -352,7 +352,9 @@ export default {
                 description: 'save & review',
                 complete: false
             }
-        ]
+        ],
+        sortBy: "name.keyword",
+        showMine: false
     }),
     mixins: [common, cassUtil],
     props: {
@@ -408,6 +410,21 @@ export default {
                 this.steps[2].complete = true;
                 this.steps[3].complete = true;
             }
+        },
+        sortResults: function() {
+            if (this.sortResults.id === "lastEdited") {
+                this.sortBy = "schema:dateModified";
+            } else {
+                this.sortBy = "name.keyword";
+            }
+        },
+        filteredQuickFilters: function() {
+            this.showMine = false;
+            for (var i = 0; i < this.filteredQuickFilters.length; i++) {
+                if (this.filteredQuickFilters[i].id === "ownedByMe") {
+                    this.showMine = true;
+                }
+            }
         }
     },
     computed: {
@@ -430,36 +447,31 @@ export default {
                 search += " AND (" + this.queryParams.filter + ")";
             }
             if (this.showMine || (this.queryParams && this.queryParams.show === "mine")) {
-                search += " AND (";
-                for (var i = 0; i < EcIdentityManager.ids.length; i++) {
-                    if (i !== 0) {
-                        search += " OR ";
+                if (EcIdentityManager.ids.length > 0) {
+                    search += " AND (";
+                    for (var i = 0; i < EcIdentityManager.ids.length; i++) {
+                        if (i !== 0) {
+                            search += " OR ";
+                        }
+                        var id = EcIdentityManager.ids[i];
+                        search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
                     }
-                    var id = EcIdentityManager.ids[i];
-                    search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
-                    search += " OR @owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
+                    search += ")";
                 }
-                search += ")";
-            }
-            if (this.showNotMine) {
-                search += " AND NOT (";
-                for (var i = 0; i < EcIdentityManager.ids.length; i++) {
-                    if (i !== 0) {
-                        search += " OR ";
-                    }
-                    var id = EcIdentityManager.ids[i];
-                    search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
-                    search += " OR @owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
-                }
-                search += ")";
             }
             return search;
         },
+        filteredQuickFilters: function() {
+            if (this.quickFilters) {
+                let filterValues = this.quickFilters.filter(item => item.checked === true);
+                console.log('filtered value', filterValues);
+                return filterValues;
+            } else {
+                return [];
+            }
+        },
         ...mapState({
             step: state => state.crosswalk.step,
-            sortResults: state => state.app.sortResults,
-            quickFilters: state => state.app.quickFilters,
-            filteredQuickFilters: state => state.app.filteredQuickFilters,
             frameworkSearchTerm: state => state.app.frameworkSearchTerm,
             showRightAside: state => state.app.showRightAside,
             frameworkSource: state => state.crosswalk.frameworkSource,
@@ -479,6 +491,10 @@ export default {
             targetState: state => state.crosswalk.targetState,
             sourceState: state => state.crosswalk.sourceState,
             targetNodesToHighlight: state => state.crosswalk.targetNodesToHighlight
+        }),
+        ...mapGetters({
+            sortResults: 'app/sortResults',
+            quickFilters: 'app/quickFilters'
         })
     },
     methods: {
