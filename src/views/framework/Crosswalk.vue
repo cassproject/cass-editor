@@ -228,16 +228,18 @@
                                 <p
                                     class="has-text-centered"
                                     v-if="alignmentsToSave.length > 0">
-                                    {{ alignmentsToSave.length }} alignment<span v-if="alignmentsToSave.length">s</span> ready to add
+                                    {{ alignmentsToSave.length }} alignment<span v-if="alignmentsToSave.length > 1">s</span> ready to add
                                 </p>
-                                <p v-if="alignmentsToDelete.length > 0">
-                                    {{ alignmentsToDelete.length }} Number of alignment<span v-if="alignmentsToDelete.length">s</span> to remove
+                                <p
+                                    class="has-text-centered"
+                                    v-if="alignmentsToDelete.length > 0">
+                                    {{ alignmentsToDelete.length }} alignment<span v-if="alignmentsToDelete.length > 1">s</span> ready to remove
                                 </p>
                             </div>
                             <div class="section">
-                                <label class="label is-size-3 has-text-centered">
-                                    Choose which framework to save to
-                                </label>
+                                <h4 class="title is-size-2 has-text-centered">
+                                    Choose which framework to apply alignments
+                                </h4>
                                 <div
                                     v-if="canSaveToSourceFramework"
                                     class="field has-text-centered">
@@ -274,7 +276,8 @@
                                 class="buttons is-spaced"
                                 v-if="saveToSourceFramework || saveToTargetFramework">
                                 <div
-                                    class="button is-outlined is-dark">
+                                    class="button is-outlined is-dark"
+                                    @click="returnToCrosswalkEditing">
                                     <span class="icon">
                                         <i class="fa fa-arrow-left" />
                                     </span>
@@ -519,6 +522,9 @@ export default {
             this.crosswalkSaveBusy = false;
             this.determineAbilityToSaveToFrameworks();
             this.$store.commit('crosswalk/step', 3);
+        },
+        returnToCrosswalkEditing: function() {
+            this.$store.commit('crosswalk/step', 2);
         },
         addRelationshipsToFrameworks: function() {
             let ats = this.alignmentsToSave;
