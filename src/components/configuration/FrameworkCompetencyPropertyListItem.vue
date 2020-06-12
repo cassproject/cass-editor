@@ -35,16 +35,33 @@
                 </div>
             </div>
         </td>
+        <td>
+            <div v-if="readOnly">
+                {{ localHeading }}
+            </div>
+            <div
+                class="field"
+                v-if="!readOnly">
+                <div class="control">
+                    <input
+                        type="text"
+                        class="input is-small"
+                        v-model="localHeading"
+                        @change="changeHeading">
+                </div>
+            </div>
+        </td>
         <td class="is-narrow">
             <div class="field">
                 <input
                     :disabled="readOnly || enforceRequired"
                     v-model="localRequired"
-                    :id="property"
+                    :id="property + propertyParent"
                     type="checkbox"
-                    :name="property"
-                    class="switch">
-                <label :for="property" />
+                    :name="property + propertyParent"
+                    class="switch"
+                    @change="changeRequired">
+                <label :for="property + propertyParent" />
             </div>
         </td>
         <td>
@@ -131,6 +148,10 @@ export default {
             type: String,
             default: ''
         },
+        heading: {
+            type: String,
+            default: ''
+        },
         custom: {
             type: Boolean,
             default: false
@@ -153,10 +174,11 @@ export default {
     },
     data: function() {
         return {
-            localLabel: this.label,
-            localDescription: this.description,
-            localRequired: this.required,
-            localPriority: this.priority
+            localLabel: '',
+            localDescription: '',
+            localRequired: false,
+            localPriority: '',
+            localHeading: ''
         };
     },
     methods: {
@@ -167,13 +189,23 @@ export default {
             this.$emit('change', this.propertyParent, this.property, 'description', evt.srcElement.value);
         },
         changeRequired: function(evt) {
-            let retVal = false;
-            if (evt.srcElement.value.equals('true')) retVal = true;
+            let retVal = evt.target.checked;
             this.$emit('change', this.propertyParent, this.property, 'required', retVal);
         },
         changePriority: function(evt) {
             this.$emit('change', this.propertyParent, this.property, 'priority', evt.srcElement.value);
+        },
+        changeHeading: function(evt) {
+            this.$emit('change', this.propertyParent, this.property, 'heading', evt.srcElement.value);
         }
+    },
+    mounted() {
+        this.localLabel = this.label;
+        this.localDescription = this.description;
+        this.localRequired = this.required;
+        this.localPriority = this.priority;
+        this.localHeading = this.heading;
     }
+
 };
 </script>

@@ -416,6 +416,7 @@ export default {
                     callback();
                 }
             } else if (this.queryParams.user === "wait") {
+                var me = this;
                 var fun = function(evt) {
                     var data = evt.data;
                     if (data != null && data !== "" && !EcObject.isObject(data)) {
@@ -432,7 +433,7 @@ export default {
                             message: "identityOk"
                         };
                         console.log(message);
-                        parent.postMessage(message, this.queryParams.origin);
+                        parent.postMessage(message, me.queryParams.origin);
                     }
                 };
                 if (window.addEventListener) {
