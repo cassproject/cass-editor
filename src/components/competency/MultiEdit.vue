@@ -217,6 +217,11 @@ export default {
         },
         applyToMultiple: function() {
             var me = this;
+            this.errorMessage = [];
+            if (me.addedPropertiesAndValues.length === 0 || (me.addedPropertiesAndValues[0].property === "")) {
+                me.addErrorMessage("Please select a property to add.");
+                return me.showModal();
+            }
             this.isProcessing = true;
             for (var i = 0; i < this.selectedCompetencies.length; i++) {
                 var competencyId = this.selectedCompetencies[i];

@@ -12,117 +12,95 @@
             </div>
         </div>
         <div class="container is-fluid">
-            <div class="columns is-gapless is-paddiingless is-marginless is-multiline">
-                <div class="column is-12 crosswalk__steps">
-                    <div class="section">
-                        <div class="container">
-                            <div class="columns is-mobile">
-                                <div
-                                    class="column is-3"
-                                    v-for="(item, index) in steps"
-                                    :key="index">
-                                    <div class="step-icon__wrapper has-text-centered">
-                                        <div
-                                            class="step-icon icon is-large has-text-white"
-                                            :class="[{'has-background-primary': index === step}, { 'has-background-success': step > index}, { 'has-background-medium': step < index}]">
-                                            <h3
-                                                v-if="item.name === 'from'"
-                                                class="has-text-white">
-                                                A
-                                            </h3>
-                                            <h3
-                                                v-if="item.name === 'to'"
-                                                class="has-text-white">
-                                                B
-                                            </h3>
-                                            <i
-                                                v-if="item.name === 'align'"
-                                                class="fa fa-network-wired" />
-                                            <i
-                                                v-if="item.name === 'review'"
-                                                class="fa fa-check" />
-                                        </div>
-                                        <p class="label is-size-4 has-text-success has-text-centered">
-                                            <span
-                                                v-if="item.complete"
-                                                class="icon">
-                                                <i class="fa fa-check" />
-                                            </span>
-                                            <span :class="[{'has-text-primary has-text-bold': index === step}, { 'has-text-success': step > index}, { 'has-text-medium': step < index}]">
-                                                {{ item.description }}
-                                            </span>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
+            <div class="crosswalk-column is-gapless is-paddiingless is-marginless is-multiline">
+                <div class="crosswalk__steps">
+                    <div
+                        class="step-item"
+                        :class="[{'complete': item.complete}, {'current': index === step}]"
+                        v-for="(item, index) in steps"
+                        :key="index">
+                        <div
+                            class="step-marker"
+                            :class="[{'has-background-primary': index === step}, { 'has-background-success': step > index}, { 'has-background-medium': step < index}]">
+                            <span
+                                v-if="item.name === 'from'"
+                                class="has-text-white">
+                                A
+                            </span>
+                            <span
+                                v-if="item.name === 'to'"
+                                class="has-text-white">
+                                B
+                            </span>
+                            <i
+                                v-if="item.name === 'align'"
+                                class="fa fa-network-wired" />
+                            <i
+                                v-if="item.name === 'review'"
+                                class="fa fa-check" />
                         </div>
+                        <p class="step-details">
+                            <span
+                                v-if="item.complete"
+                                class="icon has-text-success">
+                                <i class="fa fa-check" />
+                            </span>
+                            <span :class="[{'has-text-primary has-text-weight-bold': index === step}, { 'has-text-success': step > index}, { 'has-text-medium': step < index}]">
+                                {{ item.description }}
+                            </span>
+                        </p>
                     </div>
                 </div>
-                <div class="column is-12 crosswalk__title">
+                <div
+                    v-if="step===2"
+                    class="crosswalk__buttons">
                     <div class="container">
-                        <div class="is-flex">
-                            <div class="crosswalk__title__title">
-                                <h2 class="is-size-2 has-text-weight-bold is-inline">
-                                    Framework Crosswalk:
-                                </h2>
-                                <h2
-                                    v-if="step == 0"
-                                    class="is-size-2 is-inline">
-                                    select source framework
-                                </h2>
-                                <h2
-                                    v-if="step == 1"
-                                    class="is-size-2 is-inline">
-                                    select target framework
-                                </h2>
-                                <h2
-                                    v-if="step == 2"
-                                    class="is-size-2 is-inline">
-                                    create alignments
-                                </h2>
-                                <h2
-                                    v-if="step == 3"
-                                    class="is-size-2 is-inline">
-                                    save alignments
-                                </h2>
-                            </div>
-                            <div
-                                v-if="step == 2"
-                                class="buttons crosswalk__title__buttons">
-                                <div
-                                    v-if="alignmentsToDelete.length > 0"
-                                    class="button is-outlined is-warning">
-                                    {{ alignmentsToDelete.length }} alignments to remove
-                                </div>
-                                <div
-                                    v-if="alignmentsToSave.length > 0"
-                                    class="button is-outlined is-primary">
-                                    {{ alignmentsToSave.length }} alignments to add
-                                </div>
-                                <div
-                                    v-if="workingAlignmentsChanged"
-                                    @click="applyWorkingAlignmentChanges"
-                                    class="button is-outlined is-primary">
-                                    <span class="icon">
-                                        <i class="fa fa-plus" />
-                                    </span>
-                                    <span>
-                                        apply alignments changes
-                                    </span>
-                                </div>
-                                <div
-                                    v-if="(alignmentsToSave.length > 0 || alignmentsToDelete.length > 0) && sourceState === 'ready'"
-                                    @click="goToSummaryAndSave"
-                                    class="button is-outlined is-primary">
-                                    <span class="icon">
-                                        <i class="fa fa-save" />
-                                    </span>
-                                    <span>
-                                        save alignments
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
+                        <h2 class="title is-size-1">
+                            Crosswalk:
+                            <span
+                                v-if="alignmentsToSave.length > 0"
+                                class="is-size-2 is-outlined is-dark">
+                                {{ alignmentsToSave.length }} alignment<span v-if="alignmentsToSave.length >1">s</span> ready to save
+                            </span>
+                            <span
+                                v-if="alignmentsToDelete.length > 0"
+                                class="button is-outlined is-pulled-right  is-warning">
+                                {{ alignmentsToDelete.length }} alignments to remove
+                            </span>
+
+                            <span
+                                v-if="workingAlignmentsChanged"
+                                @click="applyWorkingAlignmentChanges"
+                                class="button is-pulled-right is-outlined is-primary">
+                                <span class="icon">
+                                    <i class="fa fa-plus" />
+                                </span>
+                                <span>
+                                    apply alignments
+                                </span>
+                            </span>
+                            <span
+                                v-if="(alignmentsToSave.length > 0 || alignmentsToDelete.length > 0) && sourceState === 'ready'"
+                                @click="goToSummaryAndSave"
+                                class="button  is-pulled-right is-outlined is-primary">
+                                <span class="icon">
+                                    <i class="fa fa-arrow-right" />
+                                </span>
+                                <span>
+                                    save & review
+                                </span>
+                            </span>
+                        </h2>
+                    </div>
+                </div>
+                <div
+                    class="crosswalk__search column is-6 is-offset-3"
+                    v-if="step < 2">
+                    <div class="container">
+                        <SearchBar
+                            view="crosswalk"
+                            filterSet="basic"
+                            searchType="framework" />
                     </div>
                 </div>
                 <!-- step framework list for selecting a & b -->
@@ -132,9 +110,6 @@
                         v-if="step === 0"
                         class="column is-12 crosswalk__list">
                         <div class="container">
-                            <SearchBar
-                                filterSet="basic"
-                                searchType="framework" />
                             <List
                                 :type="type"
                                 :repo="repo"
@@ -146,15 +121,13 @@
                         </div>
                     </div>
                 </transition>
+                <!-- step framework list for selecting a & b -->
                 <transition
                     v-if="step === 1"
                     name="slide-fade">
                     <div
                         class="column is-12 crosswalk__list">
                         <div class="container">
-                            <SearchBar
-                                filterSet="basic"
-                                searchType="framework" />
                             <List
                                 :type="type"
                                 :repo="repo"
@@ -172,7 +145,7 @@
                     <div
                         v-if="step === 2"
                         class="column is-12 crosswalk__double-hierarchy">
-                        <div class="columns">
+                        <div class="columns is-mobile crosswalk__double-heirarchy__column">
                             <div
                                 class="column is-6 has-text-centered"
                                 v-if="!crosswalkSourceLoaded">
@@ -182,7 +155,7 @@
                             </div>
                             <div
                                 v-show="crosswalkSourceLoaded"
-                                class="column is-6 crosswalk__single-hierachy">
+                                class="column is-6">
                                 <Hierarchy
                                     :container="frameworkSource"
                                     view="crosswalk"
@@ -214,7 +187,7 @@
                                 </span>
                             </div>
                             <div
-                                class="column is-6 crosswalk__single-hierachy"
+                                class="column is-6"
                                 v-if="loadCrosswalkTarget">
                                 <Hierarchy
                                     :container="frameworkTarget"
@@ -244,76 +217,90 @@
                 <transition
                     v-if="step === 3"
                     name="slide-fade">
-                    <div class="column is-12">
-                        <div class="container">
-                            <div
-                                v-if="!alignmentsSaved"
-                                class="columns is-multiline">
-                                <div class="column is-6">
-                                    <h4>Summary:</h4>
-                                    <p v-if="alignmentsToSave.length > 0">
-                                        Number of alignments to add: {{ alignmentsToSave.length }}
-                                    </p>
-                                    <p v-if="alignmentsToDelete.length > 0">
-                                        Number of alignments to remove: {{ alignmentsToDelete.length }}
-                                    </p>
-                                </div>
-                                <div class="column is-6">
-                                    <h4>Save To:</h4>
-                                    <div>
-                                        <div class="checkbox">
-                                            <input
-                                                v-if="canSaveToSourceFramework"
-                                                type="checkbox"
-                                                v-model="saveToSourceFramework">
-                                            <input
-                                                v-if="!canSaveToSourceFramework"
-                                                type="checkbox"
-                                                :disabled="true"
-                                                title="You do not have permission to save to this framework"
-                                                v-model="saveToSourceFramework">
-                                            <span> {{ frameworkSource.getName() }}</span>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="checkbox">
-                                            <input
-                                                v-if="canSaveToTargetFramework"
-                                                type="checkbox"
-                                                v-model="saveToTargetFramework">
-                                            <input
-                                                v-if="!canSaveToTargetFramework"
-                                                type="checkbox"
-                                                :disabled="true"
-                                                title="You do not have permission to save to this framework"
-                                                v-model="saveToTargetFramework">
-                                            <span> {{ frameworkTarget.getName() }}</span>
-                                        </div>
-                                    </div>
+                    <div class="is-narrow crosswalk__summary">
+                        <div
+                            class="box"
+                            v-if="!alignmentsSaved">
+                            <div class="section">
+                                <h4 class="title is-size-2 has-text-centered">
+                                    Crosswalk Alignment Summary
+                                </h4>
+                                <p
+                                    class="has-text-centered"
+                                    v-if="alignmentsToSave.length > 0">
+                                    {{ alignmentsToSave.length }} alignment<span v-if="alignmentsToSave.length > 1">s</span> ready to add
+                                </p>
+                                <p
+                                    class="has-text-centered"
+                                    v-if="alignmentsToDelete.length > 0">
+                                    {{ alignmentsToDelete.length }} alignment<span v-if="alignmentsToDelete.length > 1">s</span> ready to remove
+                                </p>
+                            </div>
+                            <div class="section">
+                                <h4 class="title is-size-2 has-text-centered">
+                                    Choose which framework to apply alignments
+                                </h4>
+                                <div
+                                    v-if="canSaveToSourceFramework"
+                                    class="field has-text-centered">
+                                    <input
+                                        title="You do not have permission to save to this framework"
+                                        :disabled="!canSaveToSourceFramework"
+                                        v-model="saveToSourceFramework"
+                                        class="is-checkradio"
+                                        id="saveToSourceFramework"
+                                        type="checkbox"
+                                        name="saveToSourceFramework">
+                                    <label
+                                        class="label"
+                                        for="saveToSourceFramework">{{ frameworkSource.getName() }}</label>
                                 </div>
                                 <div
-                                    style="margin-top: 3rem"
-                                    class="column is-12 has-text-centered"
-                                    v-if="saveToSourceFramework || saveToTargetFramework">
-                                    <div
-                                        class="button is-outlined is-primary"
-                                        @click="saveAlignments">
-                                        <span class="icon">
-                                            <i class="fa fa-save" />
-                                        </span>
-                                        <span>
-                                            save alignments
-                                        </span>
-                                    </div>
+                                    v-if="canSaveToTargetFramework"
+                                    class="field has-text-centered">
+                                    <input
+                                        title="You do not have permission to save to this framework"
+                                        :disabled="!canSaveToTargetFramework"
+                                        v-model="saveToTargetFramework"
+                                        class="is-checkradio"
+                                        id="saveToTargetFramework"
+                                        type="checkbox"
+                                        name="saveToTargetFramework">
+                                    <label
+                                        class="label"
+                                        for="saveToTargetFramework">{{ frameworkTarget.getName() }}</label>
                                 </div>
                             </div>
                             <div
-                                v-if="alignmentsSaved"
-                                class="columns is-multiline">
-                                <div class="column is-12 has-text-centered">
-                                    <h4><i class="fa fa-exclamation-triangle" /> Alignments saved</h4>
+                                style="margin-top: 3rem"
+                                class="buttons is-spaced"
+                                v-if="saveToSourceFramework || saveToTargetFramework">
+                                <div
+                                    class="button is-outlined is-dark"
+                                    @click="returnToCrosswalkEditing">
+                                    <span class="icon">
+                                        <i class="fa fa-arrow-left" />
+                                    </span>
+                                    <span>
+                                        continue editing
+                                    </span>
+                                </div>
+                                <div
+                                    class="button is-outlined is-primary"
+                                    @click="saveAlignments">
+                                    <span class="icon">
+                                        <i class="fa fa-save" />
+                                    </span>
+                                    <span>
+                                        save alignments
+                                    </span>
                                 </div>
                             </div>
+                        </div>
+                        <div
+                            class="container has-text-centered"
+                            v-if="alignmentsSaved">
+                            <h4><i class="fa fa-check" /> Alignments saved</h4>
                         </div>
                     </div>
                 </transition>
@@ -323,7 +310,7 @@
 </template>
 
 <script>
-import {mapState} from 'vuex';
+import {mapState, mapGetters} from 'vuex';
 import List from '@/lode/components/lode/List.vue';
 import Hierarchy from '@/lode/components/lode/Hierarchy.vue';
 import SearchBar from '@/components/framework/SearchBar.vue';
@@ -350,17 +337,17 @@ export default {
         steps: [
             {
                 name: 'from',
-                description: 'select source framework',
+                description: 'select source',
                 complete: false
             },
             {
                 name: 'to',
-                description: 'select target framework',
+                description: 'select target',
                 complete: false
             },
             {
                 name: 'align',
-                description: 'create new alignments',
+                description: 'align frameworks',
                 complete: false
             },
             {
@@ -368,7 +355,9 @@ export default {
                 description: 'save & review',
                 complete: false
             }
-        ]
+        ],
+        sortBy: "name.keyword",
+        showMine: false
     }),
     mixins: [common, cassUtil],
     props: {
@@ -424,19 +413,33 @@ export default {
                 this.steps[2].complete = true;
                 this.steps[3].complete = true;
             }
+        },
+        sortResults: function() {
+            if (this.sortResults.id === "lastEdited") {
+                this.sortBy = "schema:dateModified";
+            } else {
+                this.sortBy = "name.keyword";
+            }
+        },
+        filteredQuickFilters: function() {
+            this.showMine = false;
+            for (var i = 0; i < this.filteredQuickFilters.length; i++) {
+                if (this.filteredQuickFilters[i].id === "ownedByMe") {
+                    this.showMine = true;
+                }
+            }
         }
     },
     computed: {
         type: function() {
-            return this.$store.getters['editor/conceptMode'] === true ? "ConceptScheme" : "Framework";
+            return "Framework";
         },
         paramObj: function() {
             let obj = {};
             obj.size = 20;
             var order = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "asc" : "desc";
             obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "long",  "missing" : "_last"}} ]';
-            if (this.queryParams && ((this.$store.getters['editor/conceptMode'] === true && this.queryParams.show === 'mine') ||
-                    (this.$store.getters['editor/conceptMode'] === true && this.queryParams.conceptShow === "mine"))) {
+            if (this.queryParams && this.queryParams.show === 'mine') {
                 obj.ownership = 'me';
             }
             return obj;
@@ -446,38 +449,32 @@ export default {
             if (this.queryParams && this.queryParams.filter != null) {
                 search += " AND (" + this.queryParams.filter + ")";
             }
-            if (this.showMine || (this.queryParams && this.$store.getters['editor/conceptMode'] === true && this.queryParams.show === "mine") ||
-                    (this.queryParams && this.$store.getters['editor/conceptMode'] === true && this.queryParams.conceptShow === "mine")) {
-                search += " AND (";
-                for (var i = 0; i < EcIdentityManager.ids.length; i++) {
-                    if (i !== 0) {
-                        search += " OR ";
+            if (this.showMine || (this.queryParams && this.queryParams.show === "mine")) {
+                if (EcIdentityManager.ids.length > 0) {
+                    search += " AND (";
+                    for (var i = 0; i < EcIdentityManager.ids.length; i++) {
+                        if (i !== 0) {
+                            search += " OR ";
+                        }
+                        var id = EcIdentityManager.ids[i];
+                        search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
                     }
-                    var id = EcIdentityManager.ids[i];
-                    search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
-                    search += " OR @owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
+                    search += ")";
                 }
-                search += ")";
-            }
-            if (this.showNotMine) {
-                search += " AND NOT (";
-                for (var i = 0; i < EcIdentityManager.ids.length; i++) {
-                    if (i !== 0) {
-                        search += " OR ";
-                    }
-                    var id = EcIdentityManager.ids[i];
-                    search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
-                    search += " OR @owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
-                }
-                search += ")";
             }
             return search;
         },
+        filteredQuickFilters: function() {
+            if (this.quickFilters) {
+                let filterValues = this.quickFilters.filter(item => item.checked === true);
+                console.log('filtered value', filterValues);
+                return filterValues;
+            } else {
+                return [];
+            }
+        },
         ...mapState({
             step: state => state.crosswalk.step,
-            sortResults: state => state.app.sortResults,
-            quickFilters: state => state.app.quickFilters,
-            filteredQuickFilters: state => state.app.filteredQuickFilters,
             frameworkSearchTerm: state => state.app.frameworkSearchTerm,
             showRightAside: state => state.app.showRightAside,
             frameworkSource: state => state.crosswalk.frameworkSource,
@@ -497,6 +494,10 @@ export default {
             targetState: state => state.crosswalk.targetState,
             sourceState: state => state.crosswalk.sourceState,
             targetNodesToHighlight: state => state.crosswalk.targetNodesToHighlight
+        }),
+        ...mapGetters({
+            sortResults: 'app/sortResults',
+            quickFilters: 'app/quickFilters'
         })
     },
     methods: {
@@ -521,6 +522,9 @@ export default {
             this.crosswalkSaveBusy = false;
             this.determineAbilityToSaveToFrameworks();
             this.$store.commit('crosswalk/step', 3);
+        },
+        returnToCrosswalkEditing: function() {
+            this.$store.commit('crosswalk/step', 2);
         },
         addRelationshipsToFrameworks: function() {
             let ats = this.alignmentsToSave;

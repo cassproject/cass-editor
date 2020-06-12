@@ -12,16 +12,22 @@
                             Sort by last date modified
 -->
 <template>
-    <div class="section">
-        <div class="field">
-            <p class="control has-icons-right">
+    <div class="">
+        <div
+            class="field">
+            <p
+                class="control"
+                :class="{'has-icons-right': searchTerm === ''}">
                 <input
-                    class="input is-large"
+                    class="input is-small"
                     ref="text"
+                    type="search"
+                    v-model="searchTerm"
                     :placeholder="'Search for ' + (searchType === 'Competency' ? 'competencie' : searchType)+ 's...'"
-                    @change="updateSearchTerm($event)"
-                    @keyup.enter="updateSearchTerm($event)">
+                    @change="updateSearchTerm(searchTerm)"
+                    @keyup.enter="updateSearchTerm(searchTerm)">
                 <span
+                    v-if="searchTerm === ''"
                     class="icon is-small is-right">
                     <i class="fas fa-search" />
                 </span>
@@ -77,7 +83,9 @@
         <!-- to do connect basic filters to list results -->
         <div v-if="filterSet === 'basic'">
             <div class="field is-grouped">
-                <div class="field">
+                <div
+                    class="field"
+                    v-if="loggedIn">
                     <input
                         v-model="basicFilter"
                         class="is-checkradio"
@@ -122,6 +130,10 @@
 export default {
     name: 'SearchBar',
     props: {
+        view: {
+            type: String,
+            default: ''
+        },
         searchType: {
             type: String,
             default: ''
@@ -133,11 +145,15 @@ export default {
     },
     data() {
         return {
+            searchTerm: '',
             basicSort: '',
             basicFilter: ''
         };
     },
     watch: {
+        searchTerm: function(val) {
+            this.updateSearchTerm(val);
+        },
         basicSort: function(val) {
             console.log(val);
             this.$store.commit("app/sortResults", {id: val});
@@ -178,7 +194,7 @@ export default {
             this.$store.commit(storeCaller, filterArray);
         },
         updateSearchTerm: function(e) {
-            this.$store.commit('app/searchTerm', e.target.value);
+            this.$store.commit('app/searchTerm', e);
         }
     },
     computed: {
@@ -206,6 +222,12 @@ export default {
         },
         sortResults: function() {
             return this.$store.getters['app/sortResults'];
+        },
+        loggedIn: function() {
+            if (EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
+                return true;
+            }
+            return false;
         }
     }
 };
