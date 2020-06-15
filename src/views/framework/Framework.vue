@@ -99,7 +99,7 @@ import competencyEdits from '@/mixins/competencyEdits.js';
 import ctdlasnProfile from '@/mixins/ctdlasnProfile.js';
 import t3Profile from '@/mixins/t3Profile.js';
 import tlaProfile from '@/mixins/tlaProfile.js';
-
+import saveAs from 'file-saver';
 
 export default {
     name: "Framework",
