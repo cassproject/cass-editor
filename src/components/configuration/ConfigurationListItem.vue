@@ -24,7 +24,7 @@
         <td v-else>
             <div
                 class="button is-outlined is-primary is-small"
-                :disabled="defaultFrameworkConfigId && defaultFrameworkConfigId.equals(id)"
+                :disabled="defaultFrameworkConfigId !== null && defaultFrameworkConfigId !== undefined && defaultFrameworkConfigId.equals(id)"
                 @click="$emit('setFrameworkDefault', id)">
                 set as framework default
             </div>
