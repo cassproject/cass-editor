@@ -47,6 +47,37 @@
                 </footer>
             </div>
         </div>
+        <!-- this configuration can't be selected when not logged in modal-->
+        <div
+            class="modal"
+            :class="[{'is-active': showMustBeLoggedInModal}]">
+            <div class="modal-background" />
+            <div class="modal-card">
+                <header class="modal-card-head has-background-primary">
+                    <p class="modal-card-title">
+                        <span class="title has-text-white">
+                            Not permitted
+                        </span>
+                    </p>
+                    <button
+                        class="delete"
+                        @click="showMustBeLoggedInModal=false"
+                        aria-label="close" />
+                </header>
+                <section class="modal-card-body">
+                    This configuration has default owners and readers defined. You must be logged in to apply this configuration.
+                </section>
+                <footer class="modal-card-foot">
+                    <div class="buttons is-spaced">
+                        <button
+                            class="button is-dark is-outlined"
+                            @click="showMustBeLoggedInModal=false">
+                            OK
+                        </button>
+                    </div>
+                </footer>
+            </div>
+        </div>
         <!-- set browser commit success modal-->
         <div
             class="modal"
@@ -236,7 +267,8 @@ export default {
         localDefaultBrowserConfigId: '',
         frameworkConfigId: '',
         configToDelete: {},
-        showConfirmDeleteConfigModal: false
+        showConfirmDeleteConfigModal: false,
+        showMustBeLoggedInModal: false
     }),
     methods: {
         closeModal: function() {
@@ -1058,18 +1090,32 @@ export default {
             let f = this.$store.getters['editor/framework'];
             let previousConfig = f.configuration;
             f.configuration = configId;
-            this.frameworkConfigId = configId;
             if (!previousConfig) {
                 f = this.setOwnersAndReaders(f);
             }
-            window.repo.saveTo(f, function() {
-                me.$store.commit('editor/framework', f);
-            }, function() {});
+            if (f) {
+                this.frameworkConfigId = configId;
+                window.repo.saveTo(f, function() {
+                    me.$store.commit('editor/framework', f);
+                }, function() {});
+            }
         },
         setOwnersAndReaders(framework) {
+            let userIdentity = null;
+            if (EcIdentityManager.ids.length > 0) {
+                userIdentity = EcIdentityManager.ids[0].ppk.toPk();
+            }
             let config = EcRepository.getBlocking(framework.configuration);
             let owners = config.defaultObjectOwners;
             let readers = config.defaultObjectReaders;
+            if (owners.length > 0 || readers.length > 0) {
+                if (userIdentity) {
+                    framework.addOwner(userIdentity);
+                } else {
+                    this.showMustBeLoggedInModal = true;
+                    return false;
+                }
+            }
             for (let i = 0; i < owners.length; i++) {
                 framework.addOwner(EcPk.fromPem(owners[i]));
             }
@@ -1082,6 +1128,11 @@ export default {
             }
             new EcAsyncHelper().each(compsAndRelations, function(id, done) {
                 EcRepository.get(id, function(obj) {
+                    if (owners.length > 0 || readers.length > 0) {
+                        if (userIdentity) {
+                            obj.addOwner(userIdentity);
+                        }
+                    }
                     for (let i = 0; i < owners.length; i++) {
                         obj.addOwner(EcPk.fromPem(owners[i]));
                     }
