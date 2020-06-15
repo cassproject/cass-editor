@@ -113,10 +113,10 @@
                     </router-link>.
                 </p>
             </div>
-            <div class="table-container">
-                <table
-                    class="table is-fullwidth"
-                    v-if="configViewMode.equals('list')">
+            <div
+                v-if="configViewMode.equals('list')"
+                class="table-container">
+                <table class="table is-fullwidth">
                     <thead>
                         <tr>
                             <th><abbr title="Name">name</abbr></th>
@@ -173,7 +173,9 @@
                     :config="currentConfig"
                     :readOnly="currentConfigIsReadOnly"
                     :defaultConfigId="defaultConfigId"
+                    :defaultBrowserConfig="localDefaultBrowserConfigId"
                     @setBrowserDefault="setConfigAsBrowserDefault"
+                    @removeBrowserDefaultConfig="removeBrowserDefaultConfig"
                     @save="saveCurrentConfig"
                     @cancel="cancelEditCurrentConfig"
                     @back="backFromEditCurrentConfig" />
@@ -1092,6 +1094,9 @@ export default {
             });
             return framework;
         }
+    },
+    updated() {
+        this.localDefaultBrowserConfigId = this.getDefaultBrowserConfigId();
     },
     mounted() {
         this.buildConfigList();
