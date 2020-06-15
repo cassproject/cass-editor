@@ -115,6 +115,9 @@ export default {
                     if (me.queryParams.action === "add") {
                         me.createNew();
                     }
+                    if (me.queryParams.ceasnDataFields === "true" && !me.queryParams.action && !me.queryParams.frameworkId) {
+                        me.$router.push({name: "frameworks"});
+                    }
                 }
             });
             if (parent !== window) {
