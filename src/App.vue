@@ -743,7 +743,7 @@ export default {
                     if (framework.reader && framework.reader.length > 0) {
                         for (var j = 0; j < framework.reader.length; j++) {
                             var reader = framework.reader[j];
-                            r.addReader(EcPk.fromPem(reader));
+                            c.addReader(EcPk.fromPem(reader));
                         }
                     }
                     c['ceasn:derivedFrom'] = thing.id;
