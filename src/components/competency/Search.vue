@@ -282,17 +282,10 @@ export default {
                             c.addOwner(EcPk.fromPem(owner));
                         }
                     }
-                    if (this.$store.state.editor && this.$store.state.editor.configuration) {
-                        var config = this.$store.state.editor.configuration;
-                        if (config["defaultObjectOwners"]) {
-                            for (var k = 0; k < config["defaultObjectOwners"].length; k++) {
-                                c.addOwner(EcPk.fromPem(config["defaultObjectOwners"][k]));
-                            }
-                        }
-                        if (config["defaultObjectReaders"]) {
-                            for (var k = 0; k < config["defaultObjectReaders"].length; k++) {
-                                c.addReader(EcPk.fromPem(config["defaultObjectReaders"][k]));
-                            }
+                    if (framework.reader && framework.reader.length > 0) {
+                        for (var j = 0; j < framework.reader.length; j++) {
+                            var reader = framework.reader[j];
+                            c.addReader(EcPk.fromPem(reader));
                         }
                     }
                     c['ceasn:derivedFrom'] = thing.id;
@@ -378,17 +371,10 @@ export default {
                                 r.addOwner(EcPk.fromPem(owner));
                             }
                         }
-                        if (this.$store.state.editor && this.$store.state.editor.configuration) {
-                            var config = this.$store.state.editor.configuration;
-                            if (config["defaultObjectOwners"]) {
-                                for (var k = 0; k < config["defaultObjectOwners"].length; k++) {
-                                    r.addOwner(EcPk.fromPem(config["defaultObjectOwners"][k]));
-                                }
-                            }
-                            if (config["defaultObjectReaders"]) {
-                                for (var k = 0; k < config["defaultObjectReaders"].length; k++) {
-                                    r.addReader(EcPk.fromPem(config["defaultObjectReaders"][k]));
-                                }
+                        if (framework.reader && framework.reader.length > 0) {
+                            for (var j = 0; j < framework.reader.length; j++) {
+                                var reader = framework.reader[j];
+                                r.addReader(EcPk.fromPem(reader));
                             }
                         }
                         if (r.source !== r.target) {
@@ -445,17 +431,10 @@ export default {
                                 r.addOwner(EcPk.fromPem(owner));
                             }
                         }
-                        if (this.$store.state.editor && this.$store.state.editor.configuration) {
-                            var config = this.$store.state.editor.configuration;
-                            if (config["defaultObjectOwners"]) {
-                                for (var k = 0; k < config["defaultObjectOwners"].length; k++) {
-                                    r.addOwner(EcPk.fromPem(config["defaultObjectOwners"][k]));
-                                }
-                            }
-                            if (config["defaultObjectReaders"]) {
-                                for (var k = 0; k < config["defaultObjectReaders"].length; k++) {
-                                    r.addReader(EcPk.fromPem(config["defaultObjectReaders"][k]));
-                                }
+                        if (framework.reader && framework.reader.length > 0) {
+                            for (var j = 0; j < framework.reader.length; j++) {
+                                var reader = framework.reader[j];
+                                r.addReader(EcPk.fromPem(reader));
                             }
                         }
                         if (r.source !== r.target) {
@@ -563,17 +542,10 @@ export default {
                                 r.addOwner(EcPk.fromPem(owner));
                             }
                         }
-                        if (this.$store.state.editor && this.$store.state.editor.configuration) {
-                            var config = this.$store.state.editor.configuration;
-                            if (config["defaultObjectOwners"]) {
-                                for (var k = 0; k < config["defaultObjectOwners"].length; k++) {
-                                    r.addOwner(EcPk.fromPem(config["defaultObjectOwners"][k]));
-                                }
-                            }
-                            if (config["defaultObjectReaders"]) {
-                                for (var k = 0; k < config["defaultObjectReaders"].length; k++) {
-                                    r.addReader(EcPk.fromPem(config["defaultObjectReaders"][k]));
-                                }
+                        if (framework.reader && framework.reader.length > 0) {
+                            for (var j = 0; j < framework.reader.length; j++) {
+                                var reader = framework.reader[j];
+                                r.addReader(EcPk.fromPem(reader));
                             }
                         }
 
