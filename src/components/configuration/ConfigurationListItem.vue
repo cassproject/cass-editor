@@ -14,11 +14,22 @@
             </span>
         </td>
         <td v-if="view !== 'dynamic-modal'">
-            <div
+            <!-- <div
                 class="button is-outlined is-primary is-small"
                 :disabled="defaultBrowserConfigId && defaultBrowserConfigId.equals(id)"
                 @click="$emit('setBrowserDefault', id)">
                 set as browser default
+            </div>-->
+            <div class="field">
+                <div class="control is-size-3">
+                    <input
+                        v-model="isBrowserDefault"
+                        :id="id + 'browserDefaultSwitch'"
+                        type="checkbox"
+                        :name="id + 'browserDefaultSwitch'"
+                        class="switch is-outlined">
+                    <label :for="id + 'browserDefaultSwitch'" />
+                </div>
             </div>
         </td>
         <td v-else>
@@ -32,35 +43,29 @@
         <td v-if="view !== 'dynamic-modal'">
             <div
                 v-if="isOwned"
+                title="Manage configuration"
                 class="button is-outlined is-small is-primary"
                 @click="$emit('showDetails', id)">
                 <span class="icon">
                     <i class="fas fa-cog" />
                 </span>
-                <span>
-                    manage
-                </span>
             </div>
             <div
                 v-if="isOwned && !isDefault"
-                class="button is-outlined is-small is-warning delete-btn"
+                title="Delete configuration"
+                class="button is-outlined is-small is-danger delete-btn"
                 @click="$emit('showDelete', id)">
                 <span class="icon">
                     <i class="fas fa-trash" />
                 </span>
-                <span>
-                    delete
-                </span>
             </div>
             <div
                 v-if="!isOwned"
+                title="View configuration"
                 class="button is-outlined is-small is-primary"
                 @click="$emit('showDetails', id)">
                 <span class="icon">
                     <i class="fas fa-eye" />
-                </span>
-                <span>
-                    view
                 </span>
             </div>
         </td>
@@ -102,6 +107,25 @@ export default {
         defaultFrameworkConfigId: {
             type: String,
             default: ''
+        }
+    },
+    computed: {
+        isBrowserDefault: {
+            get() {
+                if (this.defaultBrowserConfigId === this.id) {
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+            set(val) {
+                console.log("val", val);
+                if (val) {
+                    this.$emit('setBrowserDefault', this.id);
+                } else {
+                    this.$emit('removeBrowserDefaultConfig');
+                }
+            }
         }
     }
 };
