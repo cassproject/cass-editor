@@ -2,30 +2,6 @@ import dateFormat from 'dateformat';
 
 export default {
     computed: {
-        levels: function() {
-            // Make reactive when the same level is applied to multiple competencies in the same framework
-            if (this.$store.getters['editor/refreshLevels'] === true) {
-                this.$store.commit('editor/refreshLevels', false);
-            }
-            var levels = {};
-            if (!this.framework.level) {
-                return null;
-            }
-            for (var i = 0; i < this.framework.level.length; i++) {
-                var level = EcLevel.getBlocking(this.framework.level[i]);
-                var comp = level.competency;
-                if (!EcArray.isArray(comp)) {
-                    comp = [comp];
-                }
-                for (var j = 0; j < comp.length; j++) {
-                    if (!EcArray.isArray(levels[comp[j]])) {
-                        levels[comp[j]] = [];
-                    }
-                    levels[comp[j]].push({"@id": level.shortId()});
-                }
-            }
-            return levels;
-        },
         relations: function() {
             if (!this.framework.relation) {
                 return {};
