@@ -2,45 +2,6 @@ import dateFormat from 'dateformat';
 
 export default {
     computed: {
-        relations: function() {
-            if (!this.framework.relation) {
-                return {};
-            }
-            var relations = {};
-            for (var i = 0; i < this.framework.relation.length; i++) {
-                var a = EcAlignment.getBlocking(this.framework.relation[i]);
-                if (a && a.source && a.target) {
-                    var relationType = a.relationType;
-                    var reciprocalRelation = null;
-                    if (this.queryParams.ceasnDataFields === "true" && relationType === "narrows") {
-                        if (this.framework.competency.indexOf(a.target) !== -1) {
-                            relationType = "isChildOf";
-                            reciprocalRelation = "hasChild";
-                        }
-                    }
-                    if (relationType === "narrows") {
-                        reciprocalRelation = "broadens";
-                    }
-                    if (!relations[relationType]) {
-                        relations[relationType] = {};
-                    }
-                    if (!relations[relationType][a.source]) {
-                        relations[relationType][a.source] = [];
-                    }
-                    relations[relationType][a.source].push({"@id": a.target});
-                    if (reciprocalRelation) {
-                        if (!relations[reciprocalRelation]) {
-                            relations[reciprocalRelation] = {};
-                        }
-                        if (!relations[reciprocalRelation][a.target]) {
-                            relations[reciprocalRelation][a.target] = [];
-                        }
-                        relations[reciprocalRelation][a.target].push({"@id": a.source});
-                    }
-                }
-            }
-            return relations;
-        },
         ctids: function() {
             if (this.queryParams.ceasnDataFields !== "true") {
                 return null;

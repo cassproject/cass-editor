@@ -511,6 +511,7 @@ export default {
             this.$router.push({name: "frameworks"});
         } else {
             this.updateLevels();
+            this.updateRelations();
         }
     },
     watch: {

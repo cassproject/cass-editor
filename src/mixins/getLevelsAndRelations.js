@@ -1,7 +1,8 @@
 export default {
     data() {
         return {
-            levels: null
+            levels: null,
+            relations: {}
         };
     },
     watch: {
@@ -9,11 +10,17 @@ export default {
             if (this.refreshLevels) {
                 this.updateLevels();
             }
+        },
+        relationArray: function() {
+            this.updateRelations();
         }
     },
     computed: {
         refreshLevels: function() {
             return this.$store.getters['editor/refreshLevels'];
+        },
+        relationArray: function() {
+            return this.framework.relation;
         }
     },
     methods: {
@@ -46,6 +53,50 @@ export default {
                 }, done);
             }, function(levelIds) {
                 me.levels = levels;
+            });
+        },
+        updateRelations: function() {
+            if (!this.framework.relation) {
+                this.relations = {};
+                return;
+            }
+            var me = this;
+            var relations = {};
+            new EcAsyncHelper().each(this.framework.relation, function(relationId, done) {
+                EcAlignment.get(relationId, function(a) {
+                    if (a && a.source && a.target) {
+                        var relationType = a.relationType;
+                        var reciprocalRelation = null;
+                        if (me.queryParams.ceasnDataFields === "true" && relationType === "narrows") {
+                            if (me.framework.competency.indexOf(a.target) !== -1) {
+                                relationType = "isChildOf";
+                                reciprocalRelation = "hasChild";
+                            }
+                        }
+                        if (relationType === "narrows") {
+                            reciprocalRelation = "broadens";
+                        }
+                        if (!relations[relationType]) {
+                            relations[relationType] = {};
+                        }
+                        if (!relations[relationType][a.source]) {
+                            relations[relationType][a.source] = [];
+                        }
+                        relations[relationType][a.source].push({"@id": a.target});
+                        if (reciprocalRelation) {
+                            if (!relations[reciprocalRelation]) {
+                                relations[reciprocalRelation] = {};
+                            }
+                            if (!relations[reciprocalRelation][a.target]) {
+                                relations[reciprocalRelation][a.target] = [];
+                            }
+                            relations[reciprocalRelation][a.target].push({"@id": a.source});
+                        }
+                    }
+                    done();
+                }, done);
+            }, function(relationIds) {
+                me.relations = relations;
             });
         }
     }
