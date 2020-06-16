@@ -363,9 +363,9 @@ export default {
         },
         shareableFrameworkInEditor: function() {
             if (this.$store.getters['editor/conceptMode'] === true) {
-                return window.location.href + "?concepts=true&frameworkId=" + this.frameworkId;
+                return window.location.href.replace('/conceptScheme', "?concepts=true&frameworkId=" + this.frameworkId);
             }
-            return window.location.href + "?frameworkId=" + this.frameworkId;
+            return window.location.href.replace('/framework', "?frameworkId=" + this.frameworkId);
         },
         framework: function() {
             return this.$store.state.editor.framework;

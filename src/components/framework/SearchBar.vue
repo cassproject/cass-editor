@@ -24,7 +24,6 @@
                     type="search"
                     v-model="searchTerm"
                     :placeholder="'Search for ' + (searchType === 'Competency' ? 'competencie' : searchType)+ 's...'"
-                    @change="updateSearchTerm(searchTerm)"
                     @keyup.enter="updateSearchTerm(searchTerm)">
                 <span
                     v-if="searchTerm === ''"
@@ -152,7 +151,9 @@ export default {
     },
     watch: {
         searchTerm: function(val) {
-            this.updateSearchTerm(val);
+            if (val.length === 0) {
+                this.updateSearchTerm(val);
+            }
         },
         basicSort: function(val) {
             console.log(val);

@@ -20,17 +20,19 @@
             </div>
         </td>
         <td>
-            <div
-                class="field">
-                <input
-                    :disabled="readOnly"
-                    @change="changeEnabled"
-                    v-model="localEnabled"
-                    :id="relationship + scope"
-                    type="checkbox"
-                    :name="relationship + scope"
-                    class="switch">
-                <label :for="relationship + scope" />
+            <div class="field">
+                <div
+                    class="control is-size-3">
+                    <input
+                        :disabled="readOnly"
+                        @change="changeEnabled"
+                        v-model="localEnabled"
+                        :id="relationship + scope"
+                        type="checkbox"
+                        :name="relationship + scope"
+                        class="switch is-outlined">
+                    <label :for="relationship + scope" />
+                </div>
             </div>
         </td>
     </tr>

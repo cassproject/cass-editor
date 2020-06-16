@@ -468,17 +468,10 @@ export default {
                     c.addOwner(EcPk.fromPem(owner));
                 }
             }
-            if (this.$store.state.editor && this.$store.state.editor.configuration) {
-                var config = this.$store.state.editor.configuration;
-                if (config["defaultObjectOwners"]) {
-                    for (var i = 0; i < config["defaultObjectOwners"].length; i++) {
-                        c.addOwner(EcPk.fromPem(config["defaultObjectOwners"][i]));
-                    }
-                }
-                if (config["defaultObjectReaders"]) {
-                    for (var i = 0; i < config["defaultObjectReaders"].length; i++) {
-                        c.addReader(EcPk.fromPem(config["defaultObjectReaders"][i]));
-                    }
+            if (this.container.reader && this.container.reader.length > 0) {
+                for (var j = 0; j < this.container.reader.length; j++) {
+                    var reader = this.container.reader[j];
+                    r.addReader(EcPk.fromPem(reader));
                 }
             }
             this.setDefaultLanguage();

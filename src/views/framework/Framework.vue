@@ -94,19 +94,20 @@
 </template>
 <script>
 import common from '@/mixins/common.js';
+import getLevelsAndRelations from '@/mixins/getLevelsAndRelations.js';
 import exports from '@/mixins/exports.js';
 import competencyEdits from '@/mixins/competencyEdits.js';
 import ctdlasnProfile from '@/mixins/ctdlasnProfile.js';
 import t3Profile from '@/mixins/t3Profile.js';
 import tlaProfile from '@/mixins/tlaProfile.js';
-
+import saveAs from 'file-saver';
 
 export default {
     name: "Framework",
     props: {
         profileOverride: Object
     },
-    mixins: [common, exports, competencyEdits, ctdlasnProfile, t3Profile, tlaProfile],
+    mixins: [common, exports, competencyEdits, ctdlasnProfile, t3Profile, tlaProfile, getLevelsAndRelations],
     data: function() {
         return {
             showVersionHistory: false,
@@ -508,6 +509,9 @@ export default {
     mounted: function() {
         if (!this.framework) {
             this.$router.push({name: "frameworks"});
+        } else {
+            this.updateLevels();
+            this.updateRelations();
         }
     },
     watch: {

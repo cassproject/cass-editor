@@ -2,69 +2,6 @@ import dateFormat from 'dateformat';
 
 export default {
     computed: {
-        levels: function() {
-            // Make reactive when the same level is applied to multiple competencies in the same framework
-            if (this.$store.getters['editor/refreshLevels'] === true) {
-                this.$store.commit('editor/refreshLevels', false);
-            }
-            var levels = {};
-            if (!this.framework.level) {
-                return null;
-            }
-            for (var i = 0; i < this.framework.level.length; i++) {
-                var level = EcLevel.getBlocking(this.framework.level[i]);
-                var comp = level.competency;
-                if (!EcArray.isArray(comp)) {
-                    comp = [comp];
-                }
-                for (var j = 0; j < comp.length; j++) {
-                    if (!EcArray.isArray(levels[comp[j]])) {
-                        levels[comp[j]] = [];
-                    }
-                    levels[comp[j]].push({"@id": level.shortId()});
-                }
-            }
-            return levels;
-        },
-        relations: function() {
-            if (!this.framework.relation) {
-                return {};
-            }
-            var relations = {};
-            for (var i = 0; i < this.framework.relation.length; i++) {
-                var a = EcAlignment.getBlocking(this.framework.relation[i]);
-                if (a && a.source && a.target) {
-                    var relationType = a.relationType;
-                    var reciprocalRelation = null;
-                    if (this.queryParams.ceasnDataFields === "true" && relationType === "narrows") {
-                        if (this.framework.competency.indexOf(a.target) !== -1) {
-                            relationType = "isChildOf";
-                            reciprocalRelation = "hasChild";
-                        }
-                    }
-                    if (relationType === "narrows") {
-                        reciprocalRelation = "broadens";
-                    }
-                    if (!relations[relationType]) {
-                        relations[relationType] = {};
-                    }
-                    if (!relations[relationType][a.source]) {
-                        relations[relationType][a.source] = [];
-                    }
-                    relations[relationType][a.source].push({"@id": a.target});
-                    if (reciprocalRelation) {
-                        if (!relations[reciprocalRelation]) {
-                            relations[reciprocalRelation] = {};
-                        }
-                        if (!relations[reciprocalRelation][a.target]) {
-                            relations[reciprocalRelation][a.target] = [];
-                        }
-                        relations[reciprocalRelation][a.target].push({"@id": a.source});
-                    }
-                }
-            }
-            return relations;
-        },
         ctids: function() {
             if (this.queryParams.ceasnDataFields !== "true") {
                 return null;
@@ -545,17 +482,10 @@ export default {
                         r.addOwner(EcPk.fromPem(owner));
                     }
                 }
-                if (this.$store.state.editor && this.$store.state.editor.configuration) {
-                    var config = this.$store.state.editor.configuration;
-                    if (config["defaultObjectOwners"]) {
-                        for (var k = 0; k < config["defaultObjectOwners"].length; k++) {
-                            r.addOwner(EcPk.fromPem(config["defaultObjectOwners"][k]));
-                        }
-                    }
-                    if (config["defaultObjectReaders"]) {
-                        for (var k = 0; k < config["defaultObjectReaders"].length; k++) {
-                            r.addReader(EcPk.fromPem(config["defaultObjectReaders"][k]));
-                        }
+                if (framework.reader && framework.reader.length > 0) {
+                    for (var j = 0; j < framework.reader.length; j++) {
+                        var reader = framework.reader[j];
+                        r.addReader(EcPk.fromPem(reader));
                     }
                 }
                 if (this.$store.state.editor.private === true) {

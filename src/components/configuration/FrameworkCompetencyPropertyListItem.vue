@@ -53,15 +53,17 @@
         </td>
         <td class="is-narrow">
             <div class="field">
-                <input
-                    :disabled="readOnly || enforceRequired"
-                    v-model="localRequired"
-                    :id="property + propertyParent"
-                    type="checkbox"
-                    :name="property + propertyParent"
-                    class="switch"
-                    @change="changeRequired">
-                <label :for="property + propertyParent" />
+                <div class="control is-size-3">
+                    <input
+                        :disabled="readOnly || enforceRequired"
+                        v-model="localRequired"
+                        :id="property + propertyParent"
+                        type="checkbox"
+                        :name="property + propertyParent"
+                        class="switch is-outlined"
+                        @change="changeRequired">
+                    <label :for="property + propertyParent" />
+                </div>
             </div>
         </td>
         <td>
