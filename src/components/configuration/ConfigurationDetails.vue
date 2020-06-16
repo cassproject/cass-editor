@@ -616,7 +616,7 @@
                         <div class="column">
                             <div class="field">
                                 <label class="label">Required </label>
-                                <div class="control">
+                                <div class="control is-size-3">
                                     <input
                                         :disabled="readOnly"
                                         v-model="customPropertyRequired"
@@ -921,21 +921,21 @@
                         v-model="config.description">
                 </div>
             </div>
-            <div class="is-default">
+            <!--<div class="is-default">
                 <div
                     v-if="readOnly"
                     class="is-default__badge has-text-centered">
-                    <!-- {{ config.isDefault }} -->
+                    {{ config.isDefault }}
                     <span class="icon has-text-primary">
                         <i class="fa fa-check" />
                     </span>
                     <label class="label">default</label>
                 </div>
-                <div
-                    class="is-default__input"
-                    v-if="defaultConfigId && defaultConfigId.equals(config.id) && !readOnly">
-                    <!--{{ config.isDefault }}-->
-                    <div
+                    {{ config.isDefault }}
+                    <div class="field">
+                        <input :disabled="defaultConfigId && defaultConfigId.equals(config.id) && !readOnly" v-model="config.isDefault" :id="config.id + 'instanceDefaultSwitch'" type="checkbox" :name="config.id + 'instanceDefaultSwitch'" class="switch is-outlined">
+                        <label :for="config.id + 'instanceDefaultSwitch'">Is browser default</label>
+                    </div>
                         class="field"
                         v-if="!defaultConfigId || defaultConfigId.equals(config.id)">
                         <input
@@ -946,17 +946,36 @@
                             name="is-default">
                         <label for="is-default">is default</label>
                     </div>
+            </div>-->
+            <div class="field is-grouped">
+                <div class="control is-ltr is-expanded">
+                    <input
+                        :disabled="isSetInstanceDisabled"
+                        v-model="config.isDefault"
+                        :id="config.id + 'instanceDefaultSwitch'"
+                        type="checkbox"
+                        :name="config.id + 'instanceDefaultSwitch'"
+                        class="switch is-outlined"
+                        :class="{ 'is-primary': config.isDefault }">
+                    <label :for="config.id + 'instanceDefaultSwitch'">Instance default</label>
                 </div>
-            </div>
-            <div class="buttons is-right">
-                <div
+                <div class="control is-expanded">
+                    <input
+                        v-model="isBrowserDefault"
+                        id="browserDefaultSwitch"
+                        type="checkbox"
+                        name="browserDefaultSwitch"
+                        class="switch is-outlined">
+                    <label for="browserDefaultSwitch">Browser default</label>
+                </div>
+                <!--<div
                     class="button is-outlined is-primary"
                     @click="$emit('setBrowserDefault', config.id)">
                     <span class="icon">
                         <i class="fa fa-save" />
                     </span>
                     <span>set as browser default</span>
-                </div>
+                </div>-->
             </div>
         </div>
         <div class="tabs">
@@ -1235,7 +1254,7 @@
                                 id="enforceTypesSwitch"
                                 type="checkbox"
                                 name="enforceTypesSwitch"
-                                class="switch">
+                                class="switch is-outlined">
                             <label for="enforceTypesSwitch" />
                         </div>
                     </div>
@@ -1338,7 +1357,7 @@
                                     id="allowLevelsSwitch"
                                     type="checkbox"
                                     name="allowLevelsSwitch"
-                                    class="switch">
+                                    class="switch is-outlined">
                                 <label for="allowLevelsSwitch" />
                             </div>
                         </div>
@@ -1432,7 +1451,7 @@
                                     id="enforceLevelsSwitch"
                                     type="checkbox"
                                     name="enforceLevelsSwitch"
-                                    class="switch">
+                                    class="switch is-outlined">
                                 <label for="enforceLevelsSwitch" />
                             </div>
                         </div>
@@ -1595,14 +1614,16 @@
                             </td>
                             <td>
                                 <div class="field">
-                                    <input
-                                        :disabled="readOnly"
-                                        v-model="config.alignments.teaches"
-                                        id="teachesSwitch"
-                                        type="checkbox"
-                                        name="teachesSwitch"
-                                        class="switch">
-                                    <label for="teachesSwitch" />
+                                    <div class="control is-size-3">
+                                        <input
+                                            :disabled="readOnly"
+                                            v-model="config.alignments.teaches"
+                                            id="teachesSwitch"
+                                            type="checkbox"
+                                            name="teachesSwitch"
+                                            class="switch is-outlined">
+                                        <label for="teachesSwitch" />
+                                    </div>
                                 </div>
                             </td>
                         </tr>
@@ -1615,14 +1636,16 @@
                             </td>
                             <td>
                                 <div class="field">
-                                    <input
-                                        :disabled="readOnly"
-                                        v-model="config.alignments.assesses"
-                                        id="assessesSwitch"
-                                        type="checkbox"
-                                        name="assessesSwitch"
-                                        class="switch">
-                                    <label for="assessesSwitch" />
+                                    <div class="control is-size-3">
+                                        <input
+                                            :disabled="readOnly"
+                                            v-model="config.alignments.assesses"
+                                            id="assessesSwitch"
+                                            type="checkbox"
+                                            name="assessesSwitch"
+                                            class="switch is-outlined">
+                                        <label for="assessesSwitch" />
+                                    </div>
                                 </div>
                             </td>
                         </tr>
@@ -1635,14 +1658,16 @@
                             </td>
                             <td>
                                 <div class="field">
-                                    <input
-                                        :disabled="readOnly"
-                                        v-model="config.alignments.requires"
-                                        id="requiresSwitch"
-                                        type="checkbox"
-                                        name="requiresSwitch"
-                                        class="switch">
-                                    <label for="requiresSwitch" />
+                                    <div class="control is-size-3">
+                                        <input
+                                            :disabled="readOnly"
+                                            v-model="config.alignments.requires"
+                                            id="requiresSwitch"
+                                            type="checkbox"
+                                            name="requiresSwitch"
+                                            class="switch is-outlined">
+                                        <label for="requiresSwitch" />
+                                    </div>
                                 </div>
                             </td>
                         </tr>
@@ -1655,14 +1680,16 @@
                             </td>
                             <td>
                                 <div class="field">
-                                    <input
-                                        :disabled="readOnly"
-                                        v-model="config.alignments.desires"
-                                        id="desiresSwitch"
-                                        type="checkbox"
-                                        name="desiresSwitch"
-                                        class="switch">
-                                    <label for="desiresSwitch" />
+                                    <div class="control is-size-3">
+                                        <input
+                                            :disabled="readOnly"
+                                            v-model="config.alignments.desires"
+                                            id="desiresSwitch"
+                                            type="checkbox"
+                                            name="desiresSwitch"
+                                            class="switch is-outlined">
+                                        <label for="desiresSwitch" />
+                                    </div>
                                 </div>
                             </td>
                         </tr>
@@ -1994,6 +2021,7 @@ export default {
     },
     data: function() {
         return {
+            defaultBrowserConfigId: '',
             showDefaultCommenters: false,
             customPropertyValuesLimited: false,
             showManageRelationshipsModal: false,
@@ -2788,6 +2816,32 @@ export default {
         }
     },
     computed: {
+        isSetInstanceDisabled() {
+            if (!this.defaultConfigId) { // if there is no default instance set
+                return false;
+            } else if (this.defaultConfigId === this.config.is && !this.readOnly) {
+                return false;
+            } else {
+                return true;
+            }
+        },
+        isBrowserDefault: {
+            get() {
+                if (this.config && (this.defaultBrowserConfigId === this.config.id)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+            set(val) {
+                console.log("val", val);
+                if (val) {
+                    this.$emit('setBrowserDefault', this.config.id);
+                } else {
+                    this.$emit('removeBrowserDefaultConfig');
+                }
+            }
+        },
         customPropertyRangeReadable: function() {
             if (this.customPropertyRange.equals('http://www.w3.org/2000/01/rdf-schema#langString')) return 'Lang-String';
             else if (this.customPropertyRange.equals('http://schema.org/URL')) return 'URL';
@@ -2824,6 +2878,7 @@ export default {
     },
     mounted() {
         this.initializeDataLists();
+        this.defaultBrowserConfigId = this.getDefaultBrowserConfigId();
     }
 };
 </script>
