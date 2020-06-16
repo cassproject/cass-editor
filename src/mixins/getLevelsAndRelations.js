@@ -36,6 +36,7 @@ export default {
             }
             if (!this.framework.level) {
                 this.levels = null;
+                return;
             }
             new EcAsyncHelper().each(this.framework.level, function(levelId, done) {
                 EcLevel.get(levelId, function(level) {
