@@ -126,6 +126,7 @@
                     :newFramework="newFramework"
                     :index="index"
                     :frameworkEditable="canEdit"
+                    :selectedArray="selectedArray"
                     @add="add"
                     @beginDrag="beginDrag"
                     @move="move"
