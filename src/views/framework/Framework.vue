@@ -142,7 +142,8 @@ export default {
             editingFramework: false,
             properties: "primary",
             config: null,
-            selectedArray: []
+            selectedArray: [],
+            configSetOnFramework: false
         };
     },
     computed: {
@@ -199,7 +200,7 @@ export default {
             if (this.$store.state.editor.t3Profile === true) {
                 return this.t3FrameworkProfile;
             }
-            if (this.queryParams.ceasnDataFields === "true") {
+            if (this.queryParams.ceasnDataFields === "true" && ((this.config && !this.configSetOnFramework) || !this.config)) {
                 return this.ctdlAsnFrameworkProfile;
             }
             if (this.config) {
@@ -259,7 +260,8 @@ export default {
         competencyProfile: function() {
             if (this.$store.state.editor.t3Profile === true) {
                 return this.t3CompetencyProfile;
-            } else if (this.queryParams.ceasnDataFields === "true") {
+            }
+            if (this.queryParams.ceasnDataFields === "true" && ((this.config && !this.configSetOnFramework) || !this.config)) {
                 return this.ctdlAsnCompetencyProfile;
             }
             if (this.config) {
@@ -556,6 +558,7 @@ export default {
                 if (c) {
                     console.log("c is: ", c);
                     this.config = c;
+                    this.configSetOnFramework = true;
                 }
                 console.log("c is: ", c);
             }
