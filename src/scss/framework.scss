@@ -1,5 +1,5 @@
 @import './variables.scss';
-
+#framework, #concept {
 .framework-wrapper {
     max-width: 1400px;
     width: 100%;
@@ -186,7 +186,7 @@ drag, drag, and chosen states
                     height: auto;
                     cursor: pointer;
                 }
-                .add-node-section:hover .add-new-node__line {
+                .add-node-section:hover >>> .add-new-node__line {
                     height: 48px !important;
                     padding-top: 1rem;
                     padding-right: 2rem;
@@ -464,6 +464,7 @@ drag, drag, and chosen states
         padding: 1rem 0rem;
     }
 }
+
 .lode__Hierarchy {
     .lode__Property {
         .control {
@@ -597,4 +598,5 @@ drag, drag, and chosen states
             width: 100%;
         }
     }
+}
 }

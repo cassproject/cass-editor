@@ -1,7 +1,7 @@
 <template>
     <div
         id="crosswalk"
-        class="crosswalk section has-background-light">
+        class="crosswalk section has-background-white">
         <!-- busy modal-->
         <div
             class="modal"
@@ -63,19 +63,19 @@
                             Crosswalk:
                             <span
                                 v-if="alignmentsToSave.length > 0"
-                                class="is-size-7 is-dark tag">
+                                class="is-size-6 is-dark tag">
                                 adding {{ alignmentsToSave.length }}
                             </span>
                             <span
                                 v-if="alignmentsToDelete.length > 0"
-                                class="tag is-size-7 is-dark">
+                                class="tag is-size-6 is-dark">
                                 removing {{ alignmentsToDelete.length }}
                             </span>
 
                             <span
                                 v-if="workingAlignmentsChanged"
                                 @click="applyWorkingAlignmentChanges"
-                                class="button is-pulled-right is-small is-outlined is-primary">
+                                class="button is-pulled-right is-outlined is-primary">
                                 <span class="icon">
                                     <i class="fa fa-plus" />
                                 </span>
@@ -86,7 +86,7 @@
                             <span
                                 v-if="(alignmentsToSave.length > 0 || alignmentsToDelete.length > 0) && sourceState === 'ready'"
                                 @click="goToSummaryAndSave"
-                                class="button  is-pulled-right is-small is-outlined is-primary">
+                                class="button  is-pulled-right is-outlined is-primary">
                                 <span class="icon">
                                     <i class="fa fa-arrow-right" />
                                 </span>
@@ -160,7 +160,7 @@
                             </div>
                             <div
                                 v-show="crosswalkSourceLoaded"
-                                class="column is-6">
+                                class="column is-6 source">
                                 <Hierarchy
                                     :container="frameworkSource"
                                     view="crosswalk"
@@ -192,7 +192,7 @@
                                 </span>
                             </div>
                             <div
-                                class="column is-6"
+                                class="column is-6 target"
                                 v-if="loadCrosswalkTarget">
                                 <Hierarchy
                                     :container="frameworkTarget"
@@ -801,6 +801,7 @@ export default {
 
 <style lang="scss">
     @import './../../scss/crosswalk.scss';
+    @import './../../scss/framework.scss';
     h4 {
         font-size: 1.3rem;
         padding-bottom: .5rem;

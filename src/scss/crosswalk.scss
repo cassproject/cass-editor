@@ -1,14 +1,14 @@
 @import './variables.scss';
 // required to adjust to side bar open
-
-.crosswalk.clear-side-bar {
+#crosswalk.clear-side-bar {
     .hierarchy-buttons {
         width: calc(45vw - 150px);
     }
 }
-.crosswalk {
+#crosswalk {
     height: calc(100vh - 4rem);
     overflow: hidden;
+    background-color: white;
     .lode__type {
         display: none;
     }
@@ -131,7 +131,6 @@
         }
     }
     .crosswalk__list {
-        overflow: scroll;
         flex: 10;
         flex-shrink: 1 0 auto;
         flex-grow: 10;
@@ -171,8 +170,8 @@
             ul.lode__hierarchy-ul {
                 overflow: scroll;
                 
-                height: calc(100% - 48px); // account for top buttons
-                padding: .5rem;
+                height: calc(100% - 2rem); // account for top buttons
+                padding: 0rem .5rem;
               
                 li.lode__hierarchy-li {
                     .add-new-node {
@@ -184,7 +183,7 @@
                         -o-transition: 1s;
                         -webkit-transition: 1s;
                         transition: 1s;
-                        min-height: 0rem;
+                        min-height: 1.5rem;
                         cursor: pointer;
                         margin: .25rem 0rem !important;
                         border: solid 1px transparent;
@@ -214,12 +213,12 @@
                             }
                         } 
                         .crosswalk-tags {
-                            padding: .75rem .25rem .25rem .25rem !important;
+                            padding: .25rem .25rem .25rem .25rem !important;
                         }
                         .crosswalk-buttons__target {
                             position: fixed;
-                            right: 8px;
-                            top: 8px;
+                            right: 0px;
+                            top: 0px;
                         }                   
                         .add-node-section {
                             display: none;
@@ -256,7 +255,7 @@
                             }
                         }
                     }
-                    .lode__hierarchy-item:hover {
+                    .lode__hierarchy-item.crosswalkSource:hover {
                         min-height: 2.5rem;
                         background-color: $light;
                         .lode__thing {
@@ -264,6 +263,37 @@
                                 .lode__thing-heading {
                                     margin: auto;
                                     margin-right: 2.5rem;
+                                }
+                            }
+                        }
+                        //min-height: 3rem;
+                        .crosswalk-buttons__target,
+                        .crosswalk-buttons__source {
+                            .crosswalk-buttons__source__create {
+                                visibility: visible;
+                            }
+                        }
+                    }
+                    .lode__hierarchy-item.crosswalkTarget.target-enabled {
+                        min-height: 1.5rem;
+                        background-color: $white;
+                        .lode__thing {
+                            .lode__Competency {
+                                .lode__thing-heading {
+                                    margin: auto;
+                                    margin-right: .5rem;
+                                }
+                            }
+                        }
+                    }
+                    .lode__hierarchy-item.crosswalkTarget.target-enabled:hover {
+                        min-height: 1.5rem;
+                        background-color: $light;
+                        .lode__thing {
+                            .lode__Competency {
+                                .lode__thing-heading {
+                                    margin: auto;
+                                    margin-right: .5rem;
                                 }
                             }
                         }
@@ -322,11 +352,30 @@
                         background-color: $white;
                         border: solid 1px $link;
                         color: $dark !important;
+                        min-height: 1.5rem;
+                        .lode__thing {
+                            margin-right: 0rem;
+                            .lode__Competency {
+                                .lode__thing-heading {
+                                    margin: auto;
+                                    margin-right: 2rem;
+                                }
+                            }
+                        }
                     }
                     .is-selected-competency-target.lode__hierarchy-item:hover {
                         background-color: $white;
                         border: solid 1px $link;
                         color: $dark !important;
+                        .lode__thing {
+                            margin-right: 0rem;
+                            .lode__Competency {
+                                .lode__thing-heading {
+                                    margin: auto;
+                                    margin-right: 2rem;
+                                }
+                            }
+                        }
                     }
                     ul.lode__hierarchy-sub-ul {
                         margin-left: 1.25rem;

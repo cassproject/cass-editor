@@ -1,5 +1,5 @@
 <template>
-    <div class="page-open">
+    <div class="organizations">
         <div>
             <span v-if="$store.getters['editor/conceptMode']">
                 <input
