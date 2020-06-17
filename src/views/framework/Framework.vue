@@ -203,11 +203,11 @@ export default {
             if (this.queryParams.ceasnDataFields === "true" && ((this.config && !this.configSetOnFramework) || !this.config)) {
                 return this.ctdlAsnFrameworkProfile;
             }
+            if (this.queryParams.tlaProfile === "true" && ((this.config && !this.configSetOnFramework) || !this.config)) {
+                return this.tlaFrameworkProfile;
+            }
             if (this.config) {
                 return this.config.frameworkConfig;
-            }
-            if (this.queryParams.tlaProfile === "true") {
-                return this.tlaFrameworkProfile;
             }
             return {
                 "@id": {
@@ -263,6 +263,9 @@ export default {
             }
             if (this.queryParams.ceasnDataFields === "true" && ((this.config && !this.configSetOnFramework) || !this.config)) {
                 return this.ctdlAsnCompetencyProfile;
+            }
+            if (this.queryParams.tlaProfile === "true" && ((this.config && !this.configSetOnFramework) || !this.config)) {
+                return this.tlaCompetencyProfile;
             }
             if (this.config) {
                 var profile = JSON.parse(JSON.stringify(this.config.competencyConfig));
@@ -326,8 +329,6 @@ export default {
             }
             if (this.profileOverride) {
                 return this.profileOverride;
-            } else if (this.queryParams.tlaProfile === "true") {
-                return this.tlaCompetencyProfile;
             } else {
                 var me = this;
                 return {
