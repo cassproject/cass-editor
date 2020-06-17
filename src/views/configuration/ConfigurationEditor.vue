@@ -251,11 +251,11 @@ export default {
         }
     },
     data: () => ({
-        USE_TEST_DATA: false,
         CONFIG_SEARCH_SIZE: 10000,
         DEFAULT_CONFIGURATION_CONTEXT: 'https://schema.cassproject.org/0.4/',
         DEFAULT_CONFIGURATION_TYPE: 'Configuration',
         LANG_STRING_RANGE: 'http://www.w3.org/2000/01/rdf-schema#langString',
+        DEFAULT_HEADING: "General",
         configViewMode: "list",
         configBusy: false,
         currentConfig: {},
@@ -268,7 +268,8 @@ export default {
         frameworkConfigId: '',
         configToDelete: {},
         showConfirmDeleteConfigModal: false,
-        showMustBeLoggedInModal: false
+        showMustBeLoggedInModal: false,
+        enforceHeadings: false
     }),
     methods: {
         closeModal: function() {
@@ -381,6 +382,7 @@ export default {
                 }
             }
             if (heading && !heading.trim().equals('')) propObj.heading = heading.trim();
+            else if (this.enforceHeadings) propObj.heading = this.DEFAULT_HEADING;
             return propObj;
         },
         buildCustomPropertiesConfigObjects(parentConf, domain, customProperties) {
@@ -465,13 +467,18 @@ export default {
                 false,
                 true);
         },
-        buildFrameworkConfigHeadingsArray(fwkConf) {
+        getFrameworkConfigHeadings() {
             let allHeadings = [];
             if (this.currentConfig.fwkIdHeading && !this.currentConfig.fwkIdHeading.trim().equals('')) allHeadings[this.currentConfig.fwkIdHeading.trim()] = 'x';
             if (this.currentConfig.fwkNameHeading && !this.currentConfig.fwkNameHeading.trim().equals('')) allHeadings[this.currentConfig.fwkNameHeading.trim()] = 'x';
             if (this.currentConfig.fwkDescHeading && !this.currentConfig.fwkDescHeading.trim().equals('')) allHeadings[this.currentConfig.fwkDescHeading.trim()] = 'x';
             this.addCustomPropertiesToHeadingsObj(this.currentConfig.fwkCustomProperties, allHeadings);
-            fwkConf.headings = Object.keys(allHeadings);
+            return allHeadings;
+        },
+        buildFrameworkConfigHeadingsArray(fwkConf) {
+            let fwkConfigHeadings = this.getFrameworkConfigHeadings();
+            fwkConf.headings = Object.keys(fwkConfigHeadings);
+            if (this.enforceHeadings && !fwkConf.headings.includes(this.DEFAULT_HEADING)) fwkConf.headings.push(this.DEFAULT_HEADING);
         },
         addFrameworkConfigToObject(cco) {
             let fwkConf = {};
@@ -572,7 +579,7 @@ export default {
                 false,
                 true);
         },
-        buildCompetencyConfigHeadingsArray(compConf) {
+        getCompetencyConfigHeadings() {
             let allHeadings = [];
             if (this.currentConfig.compIdHeading && !this.currentConfig.compIdHeading.trim().equals('')) allHeadings[this.currentConfig.compIdHeading.trim()] = 'x';
             if (this.currentConfig.compNameHeading && !this.currentConfig.compNameHeading.trim().equals('')) allHeadings[this.currentConfig.compNameHeading.trim()] = 'x';
@@ -580,12 +587,28 @@ export default {
             if (this.currentConfig.compTypeHeading && !this.currentConfig.compTypeHeading.trim().equals('')) allHeadings[this.currentConfig.compTypeHeading.trim()] = 'x';
             if (this.currentConfig.levelHeading && !this.currentConfig.levelHeading.trim().equals('')) allHeadings[this.currentConfig.levelHeading.trim()] = 'x';
             this.addCustomPropertiesToHeadingsObj(this.currentConfig.compCustomProperties, allHeadings);
-            compConf.headings = Object.keys(allHeadings);
+            return allHeadings;
+        },
+        buildCompetencyConfigHeadingsArray(compConf) {
+            let compHeadings = this.getCompetencyConfigHeadings();
+            compConf.headings = Object.keys(compHeadings);
+            if (this.enforceHeadings && !compConf.headings.includes(this.DEFAULT_HEADING)) compConf.headings.push(this.DEFAULT_HEADING);
+        },
+        buildRelationshipsPriorityAndHeading(compConf) {
+            if (this.currentConfig.relationshipsHeading && !this.currentConfig.relationshipsHeading.trim().equals('')) {
+                compConf.relationshipsHeading = this.currentConfig.relationshipsHeading;
+            } else if (this.enforceHeadings) {
+                compConf.relationshipsHeading = this.DEFAULT_HEADING;
+            } else {
+                compConf.relationshipsHeading = "";
+            }
+            compConf.relationshipsPriority = this.currentConfig.relationshipsPriority;
         },
         addCompetencyConfigToObject(cco) {
             let compConf = {};
             this.buildCompetencyConfigPriorityArrays(compConf);
             this.buildCompetencyConfigHeadingsArray(compConf);
+            this.buildRelationshipsPriorityAndHeading(compConf);
             this.buildCompetencyIdConfigObject(compConf);
             this.buildCompetencyNameConfigObject(compConf);
             this.buildCompetencyDescConfigObject(compConf);
@@ -621,6 +644,8 @@ export default {
             levConf["https://schema.cassproject.org/0.4/Level"]["priority"] = this.currentConfig.levelPriority;
             if (this.currentConfig.levelHeading && !this.currentConfig.levelHeading.trim().equals('')) {
                 levConf["https://schema.cassproject.org/0.4/Level"]["heading"] = this.currentConfig.levelHeading.trim();
+            } else if (this.enforceHeadings) {
+                levConf["https://schema.cassproject.org/0.4/Level"]["heading"] = this.DEFAULT_HEADING;
             }
             levConf["https://schema.cassproject.org/0.4/Level"]["http://www.w3.org/2000/01/rdf-schema#comment"] = [];
             let commentObj = {};
@@ -662,6 +687,34 @@ export default {
             cco.defaultObjectReaders = this.currentConfig.defaultReaders;
             cco.defaultCommenters = this.currentConfig.defaultCommenters;
         },
+        determineHeadingStatusForCustomProperties(customProperties, headingsTracking) {
+            for (let prop of customProperties) {
+                if (prop.heading && !prop.heading.trim().equals('')) headingsTracking.anyHeadingsPopulated = true;
+                else headingsTracking.anyHeadingsBlank = true;
+            }
+        },
+        determineHeadingStatus(headingField, headingsTracking) {
+            if (headingField && !headingField.trim().equals('')) headingsTracking.anyHeadingsPopulated = true;
+            else headingsTracking.anyHeadingsBlank = true;
+        },
+        determineIfHeadingsShouldBeEnforced() {
+            this.enforceHeadings = false;
+            let headingsTracking = {};
+            headingsTracking.anyHeadingsPopulated = false;
+            headingsTracking.anyHeadingsBlank = false;
+            this.determineHeadingStatus(this.currentConfig.compIdHeading, headingsTracking);
+            this.determineHeadingStatus(this.currentConfig.compNameHeading, headingsTracking);
+            this.determineHeadingStatus(this.currentConfig.compDescHeading, headingsTracking);
+            this.determineHeadingStatus(this.currentConfig.compTypeHeading, headingsTracking);
+            this.determineHeadingStatus(this.currentConfig.levelHeading, headingsTracking);
+            this.determineHeadingStatus(this.currentConfig.relationshipsHeading, headingsTracking);
+            this.determineHeadingStatus(this.currentConfig.fwkIdHeading, headingsTracking);
+            this.determineHeadingStatus(this.currentConfig.fwkNameHeading, headingsTracking);
+            this.determineHeadingStatus(this.currentConfig.fwkDescHeading, headingsTracking);
+            this.determineHeadingStatusForCustomProperties(this.currentConfig.compCustomProperties, headingsTracking);
+            this.determineHeadingStatusForCustomProperties(this.currentConfig.fwkCustomProperties, headingsTracking);
+            if (headingsTracking.anyHeadingsPopulated && headingsTracking.anyHeadingsBlank) this.enforceHeadings = true;
+        },
         generateComplexConfigObjectFromCurrentConfig() {
             let cco = new Thing();
             cco.context = this.DEFAULT_CONFIGURATION_CONTEXT;
@@ -673,6 +726,7 @@ export default {
             cco.setName(this.currentConfig.name.trim());
             cco.setDescription(this.currentConfig.description.trim());
             cco.isDefault = this.currentConfig.isDefault;
+            this.determineIfHeadingsShouldBeEnforced();
             this.addFrameworkConfigToObject(cco);
             this.addCompetencyConfigToObject(cco);
             this.addRelationsConfigToObject(cco);
@@ -694,7 +748,6 @@ export default {
         },
         saveCurrentConfig(enforcedLevels, defaultOwners, defaultReaders, defaultCommenters) {
             console.log("saveCurrentConfig: ");
-            console.log(enforcedLevels);
             if (enforcedLevels && enforcedLevels.length > 0) {
                 this.currentConfig.enforceLevelValues = true;
                 this.currentConfig.enforcedLevelValues = enforcedLevels;
@@ -705,11 +758,8 @@ export default {
             this.generateComplexConfigObjectFromCurrentConfig();
             console.log("complexConfigObject: ");
             console.log(JSON.stringify(this.complexConfigObject));
-            if (this.USE_TEST_DATA) alert("Using Test Data...won't issue repository save");
-            else {
-                this.configBusy = true;
-                EcRepository.save(this.complexConfigObject, this.saveConfigToRepositorySuccess, this.saveConfigToRepositoryFailure);
-            }
+            this.configBusy = true;
+            EcRepository.save(this.complexConfigObject, this.saveConfigToRepositorySuccess, this.saveConfigToRepositoryFailure);
         },
         cancelEditCurrentConfig() {
             this.buildConfigList();
@@ -764,6 +814,8 @@ export default {
             newConfigObj.compEnforcedTypes = [];
             newConfigObj.fwkCustomProperties = [];
             newConfigObj.compCustomProperties = [];
+            newConfigObj.relationshipsHeading = '';
+            newConfigObj.relationshipsPriority = "tertiary";
             newConfigObj.relationships = {};
             newConfigObj.relationships.isEnabledBy = {};
             newConfigObj.relationships.isEnabledBy.label = 'is enabled by';
@@ -912,6 +964,12 @@ export default {
         },
         buildSimpleConfigObjectCompetencyData(simpleConfigObj, complexConfigObj) {
             let cco = complexConfigObj["competencyConfig"];
+            let relHeading = cco["relationshipsHeading"];
+            if (relHeading) simpleConfigObj.relationshipsHeading = relHeading.trim();
+            else simpleConfigObj.relationshipsHeading = "";
+            let relPriority = cco["relationshipsPriority"];
+            if (relPriority) simpleConfigObj.relationshipsPriority = relPriority;
+            else simpleConfigObj.relationshipsPriority = "tertiary";
             simpleConfigObj.compIdLabel = cco["@id"]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
             simpleConfigObj.compIdDescription = cco["@id"]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
             simpleConfigObj.compIdPriorty = cco["@id"]["priority"];
