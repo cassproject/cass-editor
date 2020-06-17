@@ -116,7 +116,11 @@ export default {
                         me.createNew();
                     }
                     if (me.queryParams.ceasnDataFields === "true" && !me.queryParams.action && !me.queryParams.frameworkId) {
-                        me.$router.push({name: "frameworks"});
+                        if (me.$store.getters['editor/conceptMode'] === true) {
+                            me.$router.push({name: "concepts"});
+                        } else {
+                            me.$router.push({name: "frameworks"});
+                        }
                     }
                 }
             });
