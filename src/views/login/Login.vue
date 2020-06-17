@@ -1,7 +1,7 @@
 <template>
     <div
         id="login"
-        class="container is-fluid is-marginless is-paddingless has-background-white">
+        class="section is-large">
         <!-- busy modal-->
         <div
             class="modal"
@@ -9,39 +9,52 @@
             <div class="modal-background" />
             <div class="modal-content has-text-centered">
                 <span class="icon is-large has-text-center has-text-link">
-                    <i class="fas fa-3x fa-spinner is-info fa-pulse" />
+                    <i class="fas fa-2x fa-spinner is-info fa-pulse" />
                 </span>
             </div>
         </div>
         <!-- login content-->
-        <div class="columns is-vcentered is-centered">
-            <div class="column is-4">
-                <div
-                    class="card"
+        <div
+            v-if="!loginBusy"
+            class="modal is-active">
+            <div class="modal-card">
+                <header
+                    class="modal-card-head has-text-centered has-background-primary"
                     v-if="!loginBusy">
-                    <header
+                    <h3
                         v-if="amJustLoggingIn"
-                        class="card-header has-background-primary">
-                        <h3 class="card-header-title has-text-white">
-                            CAT Login
-                        </h3>
-                    </header>
-                    <header
+                        class="modal-card-title is-size-2 has-text-centered has-text-white">
+                        Login to CaSS Authoring Tool
+                    </h3>
+                    <h3
                         v-if="amCreatingAccount"
-                        class="card-header has-background-primary">
-                        <h3 class="card-header-title has-text-white">
-                            CAT Signup
-                        </h3>
-                    </header>
+                        class="modal-card-title is-size-2 has-text-centered has-text-white">
+                        Create CaSS Authoring Tool User
+                    </h3>
+                    <h4
+                        class="title is-size-2 has-text-centered has-text-white"
+                        v-if="amCreatingLinkedPerson">
+                        Link User Information
+                    </h4>
+                </header>
+                <section class="modal-card-body">
                     <div
-                        class="card-content"
+                        class="section"
+                        v-if="amCreatingAccount || amCreatingLinkedPerson">
+                        <p v-if="amCreatingLinkedPerson">
+                            No matching user record could be found that matched your login information. Please provide the following:
+                        </p>
+                    </div>
+                    <!-- inputs -->
+                    <div
+                        class="section"
                         v-if="amJustLoggingIn">
                         <div class="field">
                             <div class="control">
                                 <label class="label">Username</label>
                                 <input
                                     type="text"
-                                    class="input"
+                                    class="input is-small"
                                     v-model="username"
                                     placeholder="username">
                             </div>
@@ -51,12 +64,111 @@
                                 <label class="label">Password</label>
                                 <input
                                     type="password"
-                                    class="input"
+                                    class="input is-small"
                                     v-model="password"
                                     placeholder="password"
                                     @keyup.enter="attemptCassLogin">
                             </div>
                         </div>
+                    </div>
+                    <!-- inputs -->
+                    <div class="section">
+                        <div
+                            class="field"
+                            v-if="amCreatingAccount">
+                            <div class="control">
+                                <label class="label">username</label>
+                                <input
+                                    type="text"
+                                    class="input is-small"
+                                    v-model="createAccountUsername">
+                            </div>
+                        </div>
+                        <!-- name and email -->
+                        <div
+                            class="field"
+                            v-if="amCreatingAccount || amCreatingLinkedPerson">
+                            <div class="control">
+                                <label class="label">name</label>
+                                <input
+                                    class="input is-small "
+                                    type="text "
+                                    v-model="createLinkPersonName">
+                            </div>
+                        </div>
+                        <div
+                            v-if="amCreatingAccount || amCreatingLinkedPerson"
+                            class="field">
+                            <div class="control">
+                                <label class="label">email</label>
+                                <input
+                                    class="input is-small "
+                                    type="text "
+                                    v-model="createLinkPersonEmail">
+                            </div>
+                        </div>
+                        <!--  password -->
+                        <div
+                            class="field is-grouped"
+                            v-if="amCreatingAccount">
+                            <div class="control is-expanded">
+                                <label class="label">password</label>
+                                <input
+                                    type="password"
+                                    class="input is-small "
+                                    v-model="createAccountPassword">
+                            </div>
+                            <div class="control is-expanded">
+                                <label class="label">Confirm password</label>
+                                <input
+                                    class="input is-small "
+                                    type="password"
+                                    v-model="createAccountPasswordRetype">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- error messages -->
+                    <div
+                        class="field has-text-danger"
+                        v-if="createAccountOrLinkPersonDataInvalid">
+                        <div class="label has-text-danger">
+                            Please correct the following errors:
+                        </div>
+                        <div
+                            class="is-size-7"
+                            v-if="createAccountUsernameInvalid">
+                            Username is required
+                        </div>
+                        <div
+                            class="is-size-7"
+                            v-if="createAccountPasswordInvalid">
+                            Password is required
+                        </div>
+                        <div
+                            class="is-size-7"
+                            v-if="createAccountPasswordMismatch">
+                            Passwords do not match
+                        </div>
+                        <div
+                            class="is-size-7"
+                            v-if="createLinkPersonNameInvalid">
+                            Name is required
+                        </div>
+                        <div
+                            class="is-size-7"
+                            v-if="createLinkPersonEmailInvalid">
+                            Valid email is required
+                        </div>
+                        <div
+                            class="is-size-7"
+                            v-if="createLinkPersonEmailExists">
+                            That email is already in use
+                        </div>
+                    </div>
+                    <!-- error messages -->
+                    <div
+                        v-if="identityFetchFailed || configRetrieveFailed || loginParamsInvalid"
+                        class="section">
                         <div v-if="identityFetchFailed">
                             <p><b>Login failed: {{ identityFailMsg }}</b></p>
                         </div>
@@ -66,159 +178,64 @@
                         <div v-if="loginParamsInvalid">
                             <p><b>Login failed: Invalid Username/Password</b></p>
                         </div>
-                        <div class="buttons">
-                            <div
-                                class="button is-light"
-                                @click="showCreateAccount">
-                                create account
-                            </div>
-                            <div
-                                class="button is-primary"
-                                @click="attemptCassLogin">
-                                login
-                            </div>
-                        </div>
+                    </div>
+                    <!-- errors login failed -->
+                    <div
+                        class="field"
+                        v-if="identityFetchFailed">
+                        <p><b>Login failed: {{ identityFailMsg }}</b></p>
                     </div>
                     <div
-                        class="card-content"
-                        v-if="amCreatingAccount || amCreatingLinkedPerson">
-                        <h4 v-if="amCreatingLinkedPerson">
-                            Link User Information
-                        </h4>
-                        <p v-if="amCreatingLinkedPerson">
-                            No matching user record could be found that matched your login information. Please provide the following:
-                        </p>
+                        class="field"
+                        v-if="configRetrieveFailed">
+                        <p><b>Could not retrieve configuration from selected server: {{ configFailMsg }}</b></p>
+                    </div>
+                </section>
+                <!-- footer with actions -->
+                <footer class="modal-card-foot has-background-white">
+                    <div class="buttons is-spaced">
                         <div
-                            class="field"
-                            v-if="amCreatingAccount">
-                            <div class="control">
-                                <label class="label">username</label>
-                                <input
-                                    type="text"
-                                    class="input"
-                                    v-model="createAccountUsername"
-                                    placeholder="username">
-                            </div>
+                            class="button is-dark is-outlined"
+                            v-if="amCreatingLinkedPerson || amCreatingAccount"
+                            @click="setDataToBaseLogin(true)">
+                            <span class="icon">
+                                <i class="fa fa-times" />
+                            </span><span>cancel</span>
                         </div>
-                        <div
-                            class="field"
-                            v-if="amCreatingAccount">
-                            <div class="control">
-                                <label class="label">password</label>
-                                <input
-                                    type="password"
-                                    class="input"
-                                    v-model="createAccountPassword"
-                                    placeholder="password">
-                            </div>
-                        </div>
-                        <div
-                            class="field"
-                            v-if="amCreatingAccount">
-                            <div class="control">
-                                <label class="label">password</label>
-                                <input
-                                    class="input"
-                                    type="password"
-                                    v-model="createAccountPasswordRetype"
-                                    placeholder="retype password">
-                            </div>
-                        </div>
-                        <div
-                            class="field"
-                            v-if="amCreatingAccount || amCreatingLinkedPerson">
-                            <div class="control">
-                                <label class="label">name</label>
-                                <input
-                                    class="input"
-                                    type="text"
-                                    v-model="createLinkPersonName"
-                                    placeholder="name">
-                            </div>
-                        </div>
-                        <div
-                            class="field"
-                            v-if="amCreatingAccount || amCreatingLinkedPerson">
-                            <div class="control">
-                                <label class="label">email</label>
-                                <input
-                                    class="input"
-                                    type="text"
-                                    v-model="createLinkPersonEmail"
-                                    placeholder="email">
-                            </div>
-                        </div>
-                        <div
-                            class="field has-text-danger"
-                            v-if="createAccountOrLinkPersonDataInvalid">
-                            <div class="label has-text-danger">
-                                Please correct the following errors:
+                        <template v-if="amJustLoggingIn">
+                            <div
+                                class="button is-outlined is-dark"
+                                @click="showCreateAccount">
+                                <span class="icon">
+                                    <i class="fa fa-plus" />
+                                </span><span>create account</span>
                             </div>
                             <div
-                                class="is-size-7"
-                                v-if="createAccountUsernameInvalid">
-                                Username is required
+                                class="button is-outlined is-primary"
+                                @click="attemptCassLogin">
+                                <span class="icon">
+                                    <i class="fa fa-sign-in-alt" />
+                                </span><span>login</span>
                             </div>
-                            <div
-                                class="is-size-7"
-                                v-if="createAccountPasswordInvalid">
-                                Password is required
-                            </div>
-                            <div
-                                class="is-size-7"
-                                v-if="createAccountPasswordMismatch">
-                                Passwords do not match
-                            </div>
-                            <div
-                                class="is-size-7"
-                                v-if="createLinkPersonNameInvalid">
-                                Name is required
-                            </div>
-                            <div
-                                class="is-size-7"
-                                v-if="createLinkPersonEmailInvalid">
-                                Valid email is required
-                            </div>
-                            <div
-                                class="is-size-7"
-                                v-if="createLinkPersonEmailExists">
-                                That email is already in use
-                            </div>
+                        </template>
+                        <div
+                            class="button is-expanded is-primary is-outlined"
+                            v-if="amCreatingAccount"
+                            @click="createNewAccount">
+                            <span class="icon">
+                                <i class="fa fa-sign-in-alt" />
+                            </span><span>create</span>
                         </div>
                         <div
-                            class="field"
-                            v-if="identityFetchFailed">
-                            <p><b>Login failed: {{ identityFailMsg }}</b></p>
-                        </div>
-                        <div
-                            class="field"
-                            v-if="configRetrieveFailed">
-                            <p><b>Could not retrieve configuration from selected server: {{ configFailMsg }}</b></p>
-                        </div>
-                        <div class="field">
-                            <div class="buttons">
-                                <div
-                                    class="button is-light"
-                                    v-if="amCreatingLinkedPerson || amCreatingAccount"
-                                    @click="setDataToBaseLogin(true)">
-                                    cancel
-                                </div>
-                                <div
-                                    class="button is-primary"
-                                    v-if="amCreatingAccount"
-                                    @click="createNewAccount">
-                                    create
-                                </div>
-                                <div
-                                    class="button is-success"
-                                    v-if="amCreatingLinkedPerson"
-                                    @click="linkPerson">
-                                    update
-                                </div>
-                            </div>
+                            class="button is-success is-outlined"
+                            v-if="amCreatingLinkedPerson"
+                            @click="linkPerson">
+                            <span class="icon">
+                                <i class="fa fa-sign-in-alt" />
+                            </span><span>update</span>
                         </div>
                     </div>
-                </div>
+                </footer>
             </div>
         </div>
     </div>
@@ -572,13 +589,23 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    @import './../../scss/variables.scss';
+    @import '@/scss/variables.scss';
 #login {
+    position: fixed;
+    background-color: $light;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100vh;
+    width: 100vw;
+    .container {
+        height: 100%;
+    }
     .columns {
         height: 100%;
     }
     .container {
-        height: 100vh;
     }
 
     .card {

@@ -1,5 +1,5 @@
 <template>
-    <div id="page-framework">
+    <div id="framework">
         <RightAside v-if="showRightAside" />
         <!-- begin framework -->
         <div class="framework-content">

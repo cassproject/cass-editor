@@ -1,5 +1,7 @@
 <template>
-    <div class="crosswalk section">
+    <div
+        id="crosswalk"
+        class="crosswalk section has-background-light">
         <!-- busy modal-->
         <div
             class="modal"
@@ -13,6 +15,7 @@
         </div>
         <div class="container is-fluid">
             <div class="crosswalk-column is-gapless is-paddiingless is-marginless is-multiline">
+                <!-- steps -->
                 <div class="crosswalk__steps">
                     <div
                         class="step-item"
@@ -51,6 +54,7 @@
                         </p>
                     </div>
                 </div>
+                <!-- buttons -->
                 <div
                     v-if="step===2"
                     class="crosswalk__buttons">
@@ -59,19 +63,19 @@
                             Crosswalk:
                             <span
                                 v-if="alignmentsToSave.length > 0"
-                                class="is-size-2 is-outlined is-dark">
-                                {{ alignmentsToSave.length }} alignment<span v-if="alignmentsToSave.length >1">s</span> ready to save
+                                class="is-size-7 is-dark tag">
+                                adding {{ alignmentsToSave.length }}
                             </span>
                             <span
                                 v-if="alignmentsToDelete.length > 0"
-                                class="button is-outlined is-pulled-right  is-warning">
-                                {{ alignmentsToDelete.length }} alignments to remove
+                                class="tag is-size-7 is-dark">
+                                removing {{ alignmentsToDelete.length }}
                             </span>
 
                             <span
                                 v-if="workingAlignmentsChanged"
                                 @click="applyWorkingAlignmentChanges"
-                                class="button is-pulled-right is-outlined is-primary">
+                                class="button is-pulled-right is-small is-outlined is-primary">
                                 <span class="icon">
                                     <i class="fa fa-plus" />
                                 </span>
@@ -82,7 +86,7 @@
                             <span
                                 v-if="(alignmentsToSave.length > 0 || alignmentsToDelete.length > 0) && sourceState === 'ready'"
                                 @click="goToSummaryAndSave"
-                                class="button  is-pulled-right is-outlined is-primary">
+                                class="button  is-pulled-right is-small is-outlined is-primary">
                                 <span class="icon">
                                     <i class="fa fa-arrow-right" />
                                 </span>
@@ -93,6 +97,7 @@
                         </h2>
                     </div>
                 </div>
+                <!-- search -->
                 <div
                     class="crosswalk__search column is-6 is-offset-3"
                     v-if="step < 2">
@@ -108,7 +113,7 @@
                     name="slide-fade">
                     <div
                         v-if="step === 0"
-                        class="column is-12 crosswalk__list">
+                        class="box column is-12 crosswalk__list">
                         <div class="container">
                             <List
                                 :type="type"

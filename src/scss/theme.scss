@@ -1,6 +1,7 @@
 @charset 'utf-8';
 @import './variables.scss';
 
+
 $section-padding-small: .125rem .125rem;
 $section-padding-basic: .25rem .75rem;
 $section-padding: 1rem 1rem;
@@ -11,13 +12,13 @@ $section-padding-tb: .5rem 0rem;
 $menu-item-color:$black;
 $menu-item-hover-color: $black;
 
-$is-size-1: 1.5rem;
-$is-size-2: 1.4rem;
-$is-size-3: 1.3rem;
-$is-size-4: 1.2rem;
-$is-size-5: 1.1rem;
-$is-size-6: 1rem;
-$is-size-7: .8rem;
+$size-1: 2rem;
+$size-2: 1.5675rem;
+$size-3: 1.375rem;
+$size-4: 1.25rem;
+$size-5: 1rem;
+$size-6: .85rem;
+$size-7: .65rem;
 
 
 $tag-radius: 1rem;
@@ -29,6 +30,7 @@ $menu-list-link-padding: .5em 1em;
 $title-size: $size-2;
 $title-weight: 500;
 $subtitle-weight: 200;
+$title-family: $family-secondary;
 $subtitle-family: $family-primary;
 $subtitle-line-height: 1.75;
 /* side bad menu theme*/ 
@@ -77,7 +79,7 @@ $breadcrumb-item-color: $cass-primary-down;
 $breadcrumb-item-hover-color: $cass-primary-down;
 $breadcrumb-item-active-color: $cass-primary-down;
 
-$modal-card-title-size: $is-size-2;
+$modal-card-title-size: $size-2;
 $modal-card-title-line-height: 1;
 $modal-card-title-color: white;
 
@@ -99,7 +101,16 @@ $table-row-hover-background-color: rgba($dark, .1);
 $table-row-active-background-color: rgba($link, .2);
 $table-striped-row-even-background-color: rgba($dark, .2);
 
+
+@import "./../../node_modules/bulma/bulma";
 // utilities
+$size-1: 1.65rem;
+$size-2: 1.425rem;
+$size-3: 1.25rem;
+$size-4: 1.1rem;
+$size-5: 1rem;
+$size-6: .85rem;
+$size-7: .7rem;
 @import "./../../node_modules/bulma/sass/utilities/_all.sass";
 @import "./../../node_modules/bulma/sass/base/_all.sass";
 @import "./../../node_modules/bulma/sass/components/_all.sass";
