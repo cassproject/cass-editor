@@ -291,10 +291,23 @@ export default {
                 }
                 if (this.config.relationshipConfig) {
                     var keys = EcObject.keys(this.config.relationshipConfig);
+                    var relationshipsPriority;
+                    var relationshipsHeading = null;
+                    if (profile["relationshipsPriority"] && profile["relationshipsPriority"].length > 0) {
+                        relationshipsPriority = profile["relationshipsPriority"] + "Properties";
+                    } else {
+                        relationshipsPriority = "secondaryProperties";
+                    }
+                    if (profile["relationshipsHeading"] && profile["relationshipsHeading"].length > 0) {
+                        if (profile["headings"] && !EcArray.has(profile["headings"], profile["relationshipsHeading"])) {
+                            profile["headings"].push(profile["relationshipsHeading"]);
+                        }
+                        relationshipsHeading = profile["relationshipsHeading"];
+                    }
                     for (var i = 0; i < keys.length; i++) {
                         let key = keys[i];
                         var me = this;
-                        profile.secondaryProperties.push(key);
+                        profile[relationshipsPriority].push(key);
                         profile[key] = JSON.parse(JSON.stringify(this.config.relationshipConfig[key]));
                         profile[key]["http://schema.org/rangeIncludes"] = [{"@id": "https://schema.cassproject.org/0.4/Competency"}];
                         profile[key]["valuesIndexed"] = function() { return me.relations[key]; };
@@ -302,6 +315,9 @@ export default {
                         profile[key]["remove"] = function(source, target) { me.removeRelationFromFramework(source, key, target); };
                         profile[key]["add"] = function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, key, values); };
                         profile[key]["save"] = function() {};
+                        if (relationshipsHeading) {
+                            profile[key]["heading"] = relationshipsHeading;
+                        }
                     }
                 }
                 return profile;
