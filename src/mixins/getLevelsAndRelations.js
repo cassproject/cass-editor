@@ -62,10 +62,11 @@ export default {
                 return;
             }
             var me = this;
-            var relations = {};
+            var relations = [];
             new EcAsyncHelper().each(this.framework.relation, function(relationId, done) {
                 EcAlignment.get(relationId, function(a) {
                     if (a && a.source && a.target) {
+                        var relation = {};
                         var relationType = a.relationType;
                         var reciprocalRelation = null;
                         if (me.queryParams.ceasnDataFields === "true" && relationType === "narrows") {
@@ -77,27 +78,32 @@ export default {
                         if (relationType === "narrows") {
                             reciprocalRelation = "broadens";
                         }
-                        if (!relations[relationType]) {
-                            relations[relationType] = {};
-                        }
-                        if (!relations[relationType][a.source]) {
-                            relations[relationType][a.source] = [];
-                        }
-                        relations[relationType][a.source].push({"@id": a.target});
+                        relation.type = relationType;
+                        relation.source = a.source;
+                        relation.target = {"@id": a.target};
+                        relations.push(relation);
                         if (reciprocalRelation) {
-                            if (!relations[reciprocalRelation]) {
-                                relations[reciprocalRelation] = {};
-                            }
-                            if (!relations[reciprocalRelation][a.target]) {
-                                relations[reciprocalRelation][a.target] = [];
-                            }
-                            relations[reciprocalRelation][a.target].push({"@id": a.source});
+                            relation.type = reciprocalRelation;
+                            relation.source = a.target;
+                            relation.target = {"@id": a.source};
+                            relations.push(relation);
                         }
                     }
                     done();
                 }, done);
             }, function(relationIds) {
-                me.relations = relations;
+                let relationObject = {};
+                for (let i = 0; i < relations.length; i++) {
+                    let each = relations[i];
+                    if (!relationObject[each.type]) {
+                        relationObject[each.type] = {};
+                    }
+                    if (!relationObject[each.type][each.source]) {
+                        relationObject[each.type][each.source] = [];
+                    }
+                    relationObject[each.type][each.source].push(each.target);
+                }
+                me.relations = relationObject;
             });
         }
     }
