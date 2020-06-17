@@ -905,6 +905,8 @@ export default {
             else if (propertyKey.equals('http://schema.org/name')) return false;
             else if (propertyKey.equals('http://schema.org/description')) return false;
             else if (propertyParent.equalsIgnoreCase('competency') && propertyKey.equals('http://purl.org/dc/terms/type')) return false;
+            else if (propertyParent.equalsIgnoreCase('competency') && propertyKey.equals('relationshipsHeading')) return false;
+            else if (propertyParent.equalsIgnoreCase('competency') && propertyKey.equals('relationshipsPriority')) return false;
             else return true;
         },
         generateSimpleCustomPropertyObject(ccpo) {
