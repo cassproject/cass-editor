@@ -193,7 +193,8 @@
             }
             .list-ul__item:hover {
                 background-color: rgba($light, .5);
-                .lode__Competency .search-selection__add-icon {
+                .lode__Competency .search-selection__add-icon,
+                .lode__Level .search-selection__add-icon {
                     visibility: visible !important;
                 }
             }

@@ -175,8 +175,7 @@ drag, drag, and chosen states
         margin-bottom: .25rem;
         li.lode__hierarchy-li {
             padding-bottom: .5rem;
-            .add-new-node {
-            }
+
             .lode__hierarchy-item {
                 padding: .25rem .5rem !important;
                 .add-node-section {
@@ -186,7 +185,7 @@ drag, drag, and chosen states
                     height: auto;
                     cursor: pointer;
                 }
-                .add-node-section:hover >>> .add-new-node__line {
+                .add-node-section:hover .add-new-node__line {
                     height: 48px !important;
                     padding-top: 1rem;
                     padding-right: 2rem;

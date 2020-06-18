@@ -103,14 +103,6 @@ $table-striped-row-even-background-color: rgba($dark, .2);
 
 
 @import "./../../node_modules/bulma/bulma";
-// utilities
-$size-1: 1.65rem;
-$size-2: 1.425rem;
-$size-3: 1.25rem;
-$size-4: 1.1rem;
-$size-5: 1rem;
-$size-6: .85rem;
-$size-7: .7rem;
 @import "./../../node_modules/bulma/sass/utilities/_all.sass";
 @import "./../../node_modules/bulma/sass/base/_all.sass";
 @import "./../../node_modules/bulma/sass/components/_all.sass";
