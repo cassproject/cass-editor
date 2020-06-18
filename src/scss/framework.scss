@@ -1,10 +1,13 @@
 @import './variables.scss';
-
+#framework, #concept, #import {
 .framework-wrapper {
     max-width: 1400px;
     width: 100%;
     margin: auto;
     display: block;
+}
+.lode__type {
+    display: none;
 }
 .constrain-column {
     max-width: 100%;
@@ -14,7 +17,7 @@ handle dragging icon on ghost
 drag, drag, and chosen states 
 */
 .handle-button {
-    visibility: hidden;
+    visibility: visible;
     i.fa-arrows-alt {
     cursor: move !important;
       cursor: -webkit-grabbing !important;
@@ -30,15 +33,20 @@ drag, drag, and chosen states
 .ghost-drag {
     .lode__hierarchy-item {
         background-color: rgba($link, .1);
+        border-radius: 5px;
     }
-    i.fa-arrows-alt{
-        visibility: visible;
+    .comment-button, .edit-button {
+        visibility: hidden;
     }
+
     .add-node-section {
         visibility: hidden !important;
     }
 }
 .chosen-drag {
+    .comment-button, .edit-button {
+        visibility: hidden;
+    }
     i.fa-arrows-alt {
         visibility: visible;
     }
@@ -47,6 +55,9 @@ drag, drag, and chosen states
     }
 }
 .drag {
+    .comment-button, .edit-button {
+        visibility: hidden;
+    }
      i.fa-arrows-alt{
         visibility: visible;
         color: $cass-primary-down;
@@ -104,9 +115,7 @@ drag, drag, and chosen states
     .lode__thing.lode__Competency,
     .lode__thing.lode__Concept {
     }
-    .handle-button {
-        display: none;
-    }
+   
     label.label {
         text-align: left;
     }
@@ -175,7 +184,14 @@ drag, drag, and chosen states
         margin-bottom: .25rem;
         li.lode__hierarchy-li {
             padding-bottom: .5rem;
-            .add-new-node {
+            .check-radio-column .field {
+                padding-top: .25rem;
+            }
+            .expand-column .icon {
+                padding-top: .5rem;
+            }
+            .expand-column .list-bullet {
+                padding-top: 1rem;
             }
             .lode__hierarchy-item {
                 padding: .25rem .5rem !important;
@@ -322,41 +338,15 @@ drag, drag, and chosen states
         .framework__info-bar {
             margin: 1rem .5rem;
         }
-        
-        a {
-            display:none;
-        }
+
         transform: translateX(0); // make room for add node
-        .edit-button {
+        .edit-button, .comment-button, .handle-button {
             visibility: hidden;
-        }
-        .handle-button {
-            visibility: hidden !important;
+            margin: 0rem .125rem;
         }
         .comment-button {
-            color: $dark;
             visibility: hidden;
             -webkit-backface-visibility: hidden;
-        }
-        .edit-button:hover,
-        .comment-button:hover,
-        .handle-button:hover {
-            visibility: visible;
-            color: $primary;
-            .icon {
-                color: $primary;
-            }
-        }
-        .drag-button {
-            visibility: visible;
-            .button {
-                color: $cass-primary-down;
-            }
-        }
-        .drag-button:hover {
-            .button {
-                color: $primary !important;
-            }
         }
         .lode__Competency,
         .lode__Concept,
@@ -401,7 +391,11 @@ drag, drag, and chosen states
         }
     }
     .lode__thing:hover {
-        .edit-button {
+        .lode__Property.lode__name,
+        .lode__Property.lode__prefLabel{
+            color: $primary !important;
+        }
+        .edit-button, .comment-button, .handle-button {
             visibility: visible;
         }
     }
@@ -464,6 +458,7 @@ drag, drag, and chosen states
         padding: 1rem 0rem;
     }
 }
+
 .lode__Hierarchy {
     .lode__Property {
         .control {
@@ -597,4 +592,5 @@ drag, drag, and chosen states
             width: 100%;
         }
     }
+}
 }

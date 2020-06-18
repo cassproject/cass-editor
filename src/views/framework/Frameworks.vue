@@ -1,5 +1,7 @@
 <template>
-    <div class="framework-list-page">
+    <div
+        id="frameworks"
+        class="framework-list-page">
         <RightAside v-if="showRightAside" />
         <!-- search field -->
         <div class="section is-medium">

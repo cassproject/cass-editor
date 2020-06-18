@@ -1,7 +1,7 @@
 <template>
     <div
         id="app"
-        class="has-background-white">
+        class="">
         <!-- nav bar navigation -->
         <cass-modal class="cass-modal" />
         <DynamicModal />
@@ -11,7 +11,6 @@
             @sideBarEvent="onSidebarEvent"
             name="topbar" />
         <router-view
-            id="app-content"
             :class="[{ 'clear-side-bar': showSideNav}, {'clear-right-aside': showRightAside}]" />
         <router-view
             :showSideNav="showSideNav"
@@ -1093,8 +1092,11 @@ export default {
     margin-top:50px;
 }
 
+    #app {
+        height: 100%;
+    }
     #app-content {
-
+        height: 100%;
     }
     .clear-side-bar {
         margin-left: 300px;

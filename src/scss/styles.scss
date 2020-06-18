@@ -3,24 +3,27 @@
 @import './../assets/fonts/RobotoCondensed/stylesheet.css';
 @import './../assets/fonts/Assistant/stylesheet.css';
 html {
-    overflow: auto;
+    overflow-x: auto;
 }
 html {
     font-family: $family-primary;
     max-width: 100vw !important;
+    overflow-y: hidden;
+    padding:0;
+    margin:0;
     margin: 0px;
     height: 100%;
     padding: 0px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-size: 16px;
 }
 .has-navbar-fixed-top {
 }
 body{
     // Tom B.  Taking this out for now as it screws up the configuration editor and needing scrolling
-    //overflow-y: hidden;
     height: 100%;
+    width: 100vw;
+    overflow: hidden;
     background: $light;
     background-repeat: no-repeat;
     background-size: cover;
@@ -28,6 +31,20 @@ body{
 }
 #app {
     height: 100%;
+    overflow: hidden;
+    width: 100%;
+}
+#frameworks,
+#framework,
+#import,
+#concept,
+#concepts,
+#configuration,
+#user-groups {
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    background-color: $white;
 }
 
 .expand-column .icon{
@@ -216,7 +233,7 @@ iframe {
     thead {
         th {
             font-weight: 500;
-            font-size: $is-size-7;
+            font-size: $size-7;
             font-family: $family-secondary;
         }
     }
@@ -227,7 +244,7 @@ iframe {
         }
         tr {
         font-weight: 400;
-        font-size: $is-size-7;
+        font-size: $size-7;
         font-family: $family-primary;
         }
     }
@@ -237,12 +254,12 @@ iframe {
 /*  Responsive text 
     sets size to 16 - 22 depending on size 
 */ 
-@media screen and (min-width: 320px) {
+@media screen and (min-width: 0px) {
     html {
       font-size: calc(16px + 6 * ((100vw - 320px) / 680));
     }
   }
-  @media screen and (min-width: 1000px) {
+  @media screen and (min-width: 1200px) {
     html {
       font-size: 22px;
     }

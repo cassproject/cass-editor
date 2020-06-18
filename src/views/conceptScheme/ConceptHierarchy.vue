@@ -51,7 +51,7 @@
                     <div
                         v-if="multipleSelected && !addingNode && view !== 'import' && canEdit"
                         @click="$emit('editMultipleEvent')"
-                        class="button is-small is-outlined is-primary">
+                        class="button is-outlined is-primary">
                         <span class="icon">
                             <i class="fa fa-cog" />
                         </span>
@@ -62,8 +62,8 @@
                     <!-- if multiple are selected allow for edit multiple -->
                     <div
                         @click="addingNode = true;"
-                        v-if="!addingNode && canEdit"
-                        class="button is-small is-outlined is-primary">
+                        v-if="!addingNode && canEdit && !multipleSelected"
+                        class="button is-outlined is-primary">
                         <span class="icon">
                             <i class="fa fa-plus-circle" />
                         </span>
@@ -74,7 +74,7 @@
                     <div
                         v-if="addingNode"
                         @click="addingNode = false;"
-                        class="button is-outlined is-small is-dark ">
+                        class="button is-outlined is-dark ">
                         <span class="icon">
                             <i class="fa fa-times" />
                         </span>
@@ -83,7 +83,7 @@
                     <div
                         v-if="addingNode"
                         @click="add(container.shortId(), null); addingNode = false;"
-                        class="button is-outlined is-small is-primary ">
+                        class="button is-outlined is-primary ">
                         <span class="icon">
                             <i class="fa fa-plus" />
                         </span>

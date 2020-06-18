@@ -7,7 +7,7 @@
             <div class="modal-background" />
             <div class="modal-content has-text-centered">
                 <span class="icon is-large has-text-center has-text-link">
-                    <i class="fas fa-3x fa-spinner is-info fa-pulse" />
+                    <i class="fas fa-2x fa-spinner is-info fa-pulse" />
                 </span>
             </div>
         </div>
@@ -2940,15 +2940,15 @@ export default {
         width: 150px;
     }
     h3 {
-        font-size: $is-size-3;
+        font-size: $size-3;
         padding-bottom: 1rem;
     }
     h4 {
-        font-size:$is-size-4;
+        font-size:$size-4;
         padding-bottom: 1rem;
     }
     h5 {
-        font-size: $is-size-5;
+        font-size: $size-5;
         padding-bottom: .5rem;
     }
     .listHdr {
@@ -2961,7 +2961,7 @@ export default {
     }
     .description {
         padding-bottom: .75rem;
-        font-size: $is-size-7;
+        font-size: $size-7;
     }
 </style>
 

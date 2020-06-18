@@ -17,8 +17,8 @@
 -->
 <template>
     <div
-        id="page-import"
-        class="page-import has-background-white">
+        id="import"
+        class="has-background-white">
         <!--- main body section -->
         <!-- top section import information -->
         <div
