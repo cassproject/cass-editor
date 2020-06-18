@@ -33,7 +33,13 @@ body{
     height: 100%;
     width: 100%;
 }
-#frameworks, #framework, #concept-scheme {
+#frameworks,
+#framework,
+#import,
+#concept-scheme,
+#concepts,
+#configuration,
+#user-groups {
     height: 100%;
     overflow: scroll;
     background-color: $white;

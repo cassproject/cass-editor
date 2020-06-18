@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="user-groups">
         <!-- busy modal-->
         <div
             class="modal"

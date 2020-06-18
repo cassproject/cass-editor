@@ -5,22 +5,28 @@ textarea {
     resize: vertical !important;
 }
 #import {
-    .lode__Competency:hover {
-        .hierarchy-item__buttons {
-            display: flex;
-            visibility: visible;
-            position: absolute;
-            right: 0;
-            top: 16px;
+        .lode__Competency, .lode__Framework {
+            padding-right: 120px;
+            .hierarchy-item__buttons {
+                display: flex;
+                visibility: hidden;
+                position: absolute;
+                right: 0;
+                top: 0px;
+            }
         }
-    }
-    .hierarchy-item__buttons {
-        display: flex;
-        visibility: hidden;
-        position: absolute;
-        right: 0;
-        top: 16px;
-    }
+    
+        .lode__Competency:hover {
+            .lode__thing-heading .lode__Property {
+                color: $primary !important;
+            }
+            .hierarchy-item__buttons {
+                visibility: visible;
+            }
+        }
+
+    
+   
 }
 ul.processing-list {
     height: 100%;
