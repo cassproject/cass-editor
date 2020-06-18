@@ -521,6 +521,7 @@ export default {
             this.addAndRemoveFromAllObjects();
         },
         populateAddAndRemoveArrays: function() {
+            this.isProcessing = true;
             for (let i = 0; i < this.users.length; i++) {
                 if (this.users[i].changed) {
                     if (this.users[i].view === "view") {
@@ -549,6 +550,10 @@ export default {
                 } else if (this.selectViewOrAdmin === "admin") {
                     this.addOwner.push(this.userOrGroupToAdd.pk);
                 }
+            }
+            // Make sure current user is added as an owner if a reader is being added, otherwise framework could become uneditable
+            if (this.addReader.length > 0) {
+                this.addOwner.push(EcIdentityManager.ids[0].ppk.toPk());
             }
         },
         addAndRemoveFromAllObjects: function() {
@@ -673,6 +678,7 @@ export default {
             me.search = "";
             me.conceptsProcessed = 0;
             me.conceptsToProcess = 0;
+            me.isProcessing = false;
         },
         makePrivate: function() {
             var me = this;
