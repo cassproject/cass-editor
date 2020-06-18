@@ -149,7 +149,7 @@ export default {
                 let reply = this.commentWrapperMap[replyId];
                 let replyAboutId = reply.aboutId;
                 let parent = this.commentWrapperMap[replyAboutId];
-                parent.replies.push(reply);
+                if (parent) parent.replies.push(reply);
             }
         },
         buildReplyCommentWrappers: function() {
