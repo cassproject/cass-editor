@@ -113,7 +113,7 @@
                     name="slide-fade">
                     <div
                         v-if="step === 0"
-                        class="box column is-12 crosswalk__list">
+                        class="column is-12 crosswalk__list">
                         <div class="container">
                             <List
                                 :type="type"

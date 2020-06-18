@@ -132,6 +132,8 @@
     }
     .crosswalk__list {
         flex: 10;
+        margin-bottom: .5rem;
+        overflow-y:scroll;
         flex-shrink: 1 0 auto;
         flex-grow: 10;
         .List {
