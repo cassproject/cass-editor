@@ -6,7 +6,7 @@
     }
 }
 #crosswalk {
-    height: calc(100vh - 4rem);
+    height: calc(100vh - 3.25rem);
     overflow: hidden;
     background-color: white;
     .lode__type {
@@ -75,7 +75,7 @@
         padding: .5rem;
         display: flex;
         flex-wrap: nowrap;
-        min-height: 2rem;
+        min-height: 5rem;
         font-size: 1rem;
         .step-item {
             margin-top: 0;

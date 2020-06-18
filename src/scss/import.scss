@@ -14,6 +14,10 @@ textarea {
                 right: 0;
                 top: 0px;
             }
+            .edit-button, .comment-button, .handle-button {
+                visibility: hidden;
+                margin: 0rem .25rem;
+            }
         }
     
         .lode__Competency:hover {
@@ -21,6 +25,9 @@ textarea {
                 color: $primary !important;
             }
             .hierarchy-item__buttons {
+                visibility: visible;
+            }
+            .edit-button, .comment-button, .handle-button {
                 visibility: visible;
             }
         }

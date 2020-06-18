@@ -23,7 +23,7 @@ body{
     // Tom B.  Taking this out for now as it screws up the configuration editor and needing scrolling
     height: 100%;
     width: 100vw;
-    overflow-y: hidden;
+    overflow: hidden;
     background: $light;
     background-repeat: no-repeat;
     background-size: cover;
@@ -31,17 +31,19 @@ body{
 }
 #app {
     height: 100%;
+    overflow: hidden;
     width: 100%;
 }
 #frameworks,
 #framework,
 #import,
-#concept-scheme,
+#concept,
 #concepts,
 #configuration,
 #user-groups {
     height: 100%;
-    overflow: scroll;
+    overflow-x: hidden;
+    overflow-y: scroll;
     background-color: $white;
 }
 
