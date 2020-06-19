@@ -34,6 +34,13 @@ body{
     overflow: hidden;
     width: 100%;
 }
+.dropdown-item.is-disabled {
+    color: rgba($dark, .5);
+    cursor: not-allowed;
+}
+.dropdown-item.is-disabled:hover {
+    background-color: transparent !important;
+}
 #frameworks,
 #framework,
 #import,

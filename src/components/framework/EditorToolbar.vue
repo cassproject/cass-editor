@@ -81,7 +81,8 @@
                         role="menu">
                         <div class="dropdown-content">
                             <a
-                                @click="$emit('showExportModal'); showShareDropdown = false;"
+                                :class="{ 'is-disabled': $store.state.editor.private}"
+                                @click="handleExportClick()"
                                 class="dropdown-item">
                                 Export
                             </a>
@@ -167,6 +168,12 @@ export default {
         };
     },
     methods: {
+        handleExportClick: function() {
+            if (!this.$store.state.editor.private) {
+                this.$emit('showExportModal');
+                this.showShareDropdown = false;
+            }
+        },
         handleClickAddComment: function() {
             this.$store.commit('editor/setAddCommentAboutId', this.$store.getters['editor/framework'].shortId());
             this.$store.commit('editor/setAddCommentType', 'new');
