@@ -81,7 +81,7 @@
                         role="menu">
                         <div class="dropdown-content">
                             <a
-                                :class="{ 'is-disabled': $store.state.editor.private}"
+                                :class="{ 'is-disabled': !canExport}"
                                 @click="handleExportClick()"
                                 class="dropdown-item">
                                 Export
@@ -169,7 +169,7 @@ export default {
     },
     methods: {
         handleExportClick: function() {
-            if (!this.$store.state.editor.private) {
+            if (this.canExport) {
                 this.$emit('showExportModal');
                 this.showShareDropdown = false;
             }
@@ -380,6 +380,15 @@ export default {
         },
         conceptMode: function() {
             return this.$store.getters['editor/conceptMode'];
+        },
+        canExport: function() {
+            if (this.$store.state.editor.private) {
+                return false;
+            } else if (this.framework.reader && this.framework.reader.length > 0) {
+                return false;
+            } else {
+                return true;
+            }
         }
     },
     watch: {
