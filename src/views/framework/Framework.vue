@@ -150,7 +150,7 @@ export default {
     },
     computed: {
         newFramework: function() {
-            return this.$store.getters['editor/newFramework'];
+            return this.$store.getters['editor/newFramework'] === this.framework.shortId();
         },
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];
