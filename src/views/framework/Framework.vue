@@ -14,6 +14,7 @@
                             :id="'scroll-' + framework.shortId().split('/').pop()"
                             :obj="framework"
                             :repo="repo"
+                            :newFramework="newFramework"
                             :parentNotEditable="queryParams.view==='true'"
                             :profile="frameworkProfile"
                             @deleteObject="deleteObject"
@@ -77,6 +78,7 @@
                             :exportOptions="competencyExportOptions"
                             :highlightList="highlightCompetency"
                             :profile="competencyProfile"
+                            :newFramework="newFramework"
                             @deleteObject="deleteObject"
                             @editMultipleEvent="onEditMultiple"
                             @removeObject="removeObject"
@@ -147,6 +149,9 @@ export default {
         };
     },
     computed: {
+        newFramework: function() {
+            return this.$store.getters['editor/newFramework'];
+        },
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];
         },
