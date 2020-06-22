@@ -5,6 +5,9 @@
             :title="comment.creatorEmail">
             {{ comment.creatorName }}
         </li>
+        <li class="comment-list__email">
+            {{ comment.creatorEmail }}
+        </li>
         <li class="comment-list__timestamp">
             {{ toPrettyDateString(comment.dateCreated) }}
         </li>
