@@ -39,7 +39,7 @@
                         v-slot:frameworkTags="slotProps">
                         <span
                             class="framework-list-item__details is-light"
-                            v-if="!conceptMode">
+                            v-if="!conceptMode && slotProps.item.type === 'Framework'">
                             <span>
                                 Items:
                             </span>
