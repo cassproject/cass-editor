@@ -24,6 +24,17 @@
                 </span>
             </div>
         </section>
+        <!-- not permitted to remove -->
+        <section
+            v-else-if="cantRemoveOwner"
+            class="modal-card-body">
+            <h2 class="header is-size-3">
+                Not permitted
+            </h2>
+            <p>
+                You are not permitted to remove the only owner of a private framework.
+            </p>
+        </section>
         <!-- confirm make private -->
         <section
             v-else-if="confirmMakePrivate"
@@ -353,7 +364,8 @@ export default {
             addOwner: [],
             repo: window.repo,
             conceptsProcessed: 0,
-            conceptsToProcess: 0
+            conceptsToProcess: 0,
+            cantRemoveOwner: false
         };
     },
     computed: {
@@ -664,6 +676,27 @@ export default {
             if (userOrGroup.view === "view") {
                 this.removeReader.push(userOrGroup.pk);
             } else if (userOrGroup.view === "admin") {
+                if (this.privateFramework) {
+                    let hasOtherOwners = false;
+                    for (let i = 0; i < this.users.length; i++) {
+                        if (this.users[i].view === "admin" && userOrGroup.pk !== this.users[i].pk) {
+                            hasOtherOwners = true;
+                            break;
+                        }
+                    }
+                    if (!hasOtherOwners) {
+                        for (let i = 0; i < this.groups.length; i++) {
+                            if (this.groups[i].view === "admin" && userOrGroup.pk !== this.groups[i].pk) {
+                                hasOtherOwners = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!hasOtherOwners) {
+                        this.cantRemoveOwner = true;
+                        return;
+                    }
+                }
                 this.removeOwner.push(userOrGroup.pk);
             }
             this.saveSettings();
@@ -681,6 +714,7 @@ export default {
             me.conceptsProcessed = 0;
             me.conceptsToProcess = 0;
             me.isProcessing = false;
+            me.cantRemoveOwner = false;
         },
         makePrivate: function() {
             var me = this;
