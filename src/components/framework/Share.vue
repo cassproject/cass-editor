@@ -128,7 +128,7 @@
                                         v-for="(result, i) in filtered"
                                         :key="i"
                                         @mousedown="selectUserOrGroup(result)">
-                                        {{ result.name }}
+                                        {{ result.name + " (" + result.email + ")" }}
                                     </li>
                                 </ul>
                             </div>
@@ -217,6 +217,7 @@
                             <thead>
                                 <tr>
                                     <th><abbr title="User name">User Name</abbr></th>
+                                    <th><abbr title="User email">User Email</abbr></th>
                                     <th><abbr title="Access">View</abbr></th>
                                     <th><abbr title="Delete">Delete</abbr></th>
                                 </tr>
@@ -226,6 +227,7 @@
                                     v-for="user in users"
                                     :key="user">
                                     <td> {{ user.header }}</td>
+                                    <td> {{ user.email }}</td>
                                     <td>
                                         <div class="select is-primary is-small">
                                             <select
@@ -443,7 +445,7 @@ export default {
                     EcPerson.getByPk(window.repo, pk, function(success) {
                         console.log(success);
                         if (success) {
-                            var user = {header: success.name, view: "admin", id: success.shortId(), changed: false, pk: pk};
+                            var user = {header: success.name, email: success.email, view: "admin", id: success.shortId(), changed: false, pk: pk};
                             me.users.push(user);
                         }
                     }, function(failure) {
@@ -466,7 +468,7 @@ export default {
                     EcPerson.getByPk(window.repo, pk, function(success) {
                         console.log(success);
                         if (success) {
-                            var user = {header: success.name, view: "view", id: success.shortId(), changed: false, pk: pk};
+                            var user = {header: success.name, email: success.email, view: "view", id: success.shortId(), changed: false, pk: pk};
                             me.users.push(user);
                         }
                     }, function(failure) {
@@ -491,7 +493,7 @@ export default {
             EcPerson.search(window.repo, '', function(success) {
                 console.log(success);
                 for (var i = 0; i < success.length; i++) {
-                    let person = {id: success[i].shortId(), name: success[i].name, pk: me.getPersonEcPk(success[i])};
+                    let person = {id: success[i].shortId(), name: success[i].name, email: success[i].email, pk: me.getPersonEcPk(success[i])};
                     me.possibleGroupsAndUsers.push(person);
                 }
             }, function(failure) {
