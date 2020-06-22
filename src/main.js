@@ -15,7 +15,7 @@ Vue.use(require('vue-infinite-scroll'));
 Vue.use(Vuex);
 Vue.use(Clipboard);
 Vue.use(VueScrollTo, {
-    container: "body",
+    container: "#framework",
     duration: 500,
     easing: "ease",
     offset: -68,
