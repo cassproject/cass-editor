@@ -121,7 +121,7 @@
                 Managers
             </h5>
             <p class="description">
-                Managers can read, edit, comment, delete, and manager user access to frameworks.
+                Managers can read, edit, comment, delete, and manage user access to frameworks.
             </p>
             <div class="table-container">
                 <table class="table is-hoverable is-fullwidth">

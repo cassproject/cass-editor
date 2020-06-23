@@ -1,7 +1,7 @@
 <template>
     <div
         id="app"
-        class="has-background-white">
+        class="">
         <!-- nav bar navigation -->
         <cass-modal class="cass-modal" />
         <DynamicModal />
@@ -11,7 +11,6 @@
             @sideBarEvent="onSidebarEvent"
             name="topbar" />
         <router-view
-            id="app-content"
             :class="[{ 'clear-side-bar': showSideNav}, {'clear-right-aside': showRightAside}]" />
         <router-view
             :showSideNav="showSideNav"
@@ -116,7 +115,11 @@ export default {
                         me.createNew();
                     }
                     if (me.queryParams.ceasnDataFields === "true" && !me.queryParams.action && !me.queryParams.frameworkId) {
-                        me.$router.push({name: "frameworks"});
+                        if (me.$store.getters['editor/conceptMode'] === true) {
+                            me.$router.push({name: "concepts"});
+                        } else {
+                            me.$router.push({name: "frameworks"});
+                        }
                     }
                 }
             });
@@ -1039,16 +1042,32 @@ export default {
         currentRoute: function() {
             return this.$route.path;
         },
+        isLoggedIn: function() {
+            if (!this.loggedInPerson || (this.loggedInPerson && !this.loggedInPerson.name)) {
+                return false;
+            } else {
+                return true;
+            }
+        },
         currentPathIsLogin: function() {
             if (this.$route.name === 'login') return true;
             else return false;
         },
         ...mapState({
-            loggedInPerson: state => state.user.loggedInPerson,
+            loggedInPerson: state => state.user.loggedOnPerson,
             queryParams: state => state.editor.queryParams
         })
     },
+    mounted: function() {
+
+    },
     watch: {
+        currentRoute: function(val) {
+            console.log("logged in", this.loggedInPerson);
+            if (!this.isLoggedIn && val === '/users') {
+                this.$router.push({path: '/'});
+            }
+        },
         '$route'(to, from) {
             this.$store.commit('app/closeRightAside');
             this.$store.commit('app/closeSideNav');
@@ -1068,11 +1087,6 @@ export default {
                 this.$store.commit('editor/conceptMode', false);
             }
         }
-        /* loggedInPerson: function(val) {
-            if (!val) {
-                this.$router.push({name: 'login'});
-            }
-        }*/
     }
 };
 </script>
@@ -1089,8 +1103,11 @@ export default {
     margin-top:50px;
 }
 
+    #app {
+        height: 100%;
+    }
     #app-content {
-
+        height: 100%;
     }
     .clear-side-bar {
         margin-left: 300px;

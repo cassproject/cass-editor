@@ -1,5 +1,5 @@
 <template>
-    <div id="page-framework">
+    <div id="framework">
         <RightAside v-if="showRightAside" />
         <!-- begin framework -->
         <div class="framework-content">
@@ -14,6 +14,7 @@
                             :id="'scroll-' + framework.shortId().split('/').pop()"
                             :obj="framework"
                             :repo="repo"
+                            :newFramework="newFramework"
                             :parentNotEditable="queryParams.view==='true'"
                             :profile="frameworkProfile"
                             @deleteObject="deleteObject"
@@ -77,6 +78,7 @@
                             :exportOptions="competencyExportOptions"
                             :highlightList="highlightCompetency"
                             :profile="competencyProfile"
+                            :newFramework="newFramework"
                             @deleteObject="deleteObject"
                             @editMultipleEvent="onEditMultiple"
                             @removeObject="removeObject"
@@ -142,10 +144,14 @@ export default {
             editingFramework: false,
             properties: "primary",
             config: null,
-            selectedArray: []
+            selectedArray: [],
+            configSetOnFramework: false
         };
     },
     computed: {
+        newFramework: function() {
+            return this.$store.getters['editor/newFramework'] === this.framework.shortId();
+        },
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];
         },
@@ -199,14 +205,14 @@ export default {
             if (this.$store.state.editor.t3Profile === true) {
                 return this.t3FrameworkProfile;
             }
-            if (this.queryParams.ceasnDataFields === "true") {
+            if (this.queryParams.ceasnDataFields === "true" && ((this.config && !this.configSetOnFramework) || !this.config)) {
                 return this.ctdlAsnFrameworkProfile;
+            }
+            if (this.queryParams.tlaProfile === "true" && ((this.config && !this.configSetOnFramework) || !this.config)) {
+                return this.tlaFrameworkProfile;
             }
             if (this.config) {
                 return this.config.frameworkConfig;
-            }
-            if (this.queryParams.tlaProfile === "true") {
-                return this.tlaFrameworkProfile;
             }
             return {
                 "@id": {
@@ -259,8 +265,12 @@ export default {
         competencyProfile: function() {
             if (this.$store.state.editor.t3Profile === true) {
                 return this.t3CompetencyProfile;
-            } else if (this.queryParams.ceasnDataFields === "true") {
+            }
+            if (this.queryParams.ceasnDataFields === "true" && ((this.config && !this.configSetOnFramework) || !this.config)) {
                 return this.ctdlAsnCompetencyProfile;
+            }
+            if (this.queryParams.tlaProfile === "true" && ((this.config && !this.configSetOnFramework) || !this.config)) {
+                return this.tlaCompetencyProfile;
             }
             if (this.config) {
                 var profile = JSON.parse(JSON.stringify(this.config.competencyConfig));
@@ -291,10 +301,23 @@ export default {
                 }
                 if (this.config.relationshipConfig) {
                     var keys = EcObject.keys(this.config.relationshipConfig);
+                    var relationshipsPriority;
+                    var relationshipsHeading = null;
+                    if (profile["relationshipsPriority"] && profile["relationshipsPriority"].length > 0) {
+                        relationshipsPriority = profile["relationshipsPriority"] + "Properties";
+                    } else {
+                        relationshipsPriority = "secondaryProperties";
+                    }
+                    if (profile["relationshipsHeading"] && profile["relationshipsHeading"].length > 0) {
+                        if (profile["headings"] && !EcArray.has(profile["headings"], profile["relationshipsHeading"])) {
+                            profile["headings"].push(profile["relationshipsHeading"]);
+                        }
+                        relationshipsHeading = profile["relationshipsHeading"];
+                    }
                     for (var i = 0; i < keys.length; i++) {
                         let key = keys[i];
                         var me = this;
-                        profile.secondaryProperties.push(key);
+                        profile[relationshipsPriority].push(key);
                         profile[key] = JSON.parse(JSON.stringify(this.config.relationshipConfig[key]));
                         profile[key]["http://schema.org/rangeIncludes"] = [{"@id": "https://schema.cassproject.org/0.4/Competency"}];
                         profile[key]["valuesIndexed"] = function() { return me.relations[key]; };
@@ -302,14 +325,15 @@ export default {
                         profile[key]["remove"] = function(source, target) { me.removeRelationFromFramework(source, key, target); };
                         profile[key]["add"] = function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, key, values); };
                         profile[key]["save"] = function() {};
+                        if (relationshipsHeading) {
+                            profile[key]["heading"] = relationshipsHeading;
+                        }
                     }
                 }
                 return profile;
             }
             if (this.profileOverride) {
                 return this.profileOverride;
-            } else if (this.queryParams.tlaProfile === "true") {
-                return this.tlaCompetencyProfile;
             } else {
                 var me = this;
                 return {
@@ -540,6 +564,7 @@ export default {
                 if (c) {
                     console.log("c is: ", c);
                     this.config = c;
+                    this.configSetOnFramework = true;
                 }
                 console.log("c is: ", c);
             }

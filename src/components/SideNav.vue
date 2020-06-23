@@ -15,12 +15,23 @@
                 <p class="is-size-5">
                     {{ loggedOnPerson.type }}
                 </p>
+                <div class="buttons is-right">
+                    <router-link
+                        class="button is-outlined is-link"
+                        to="/login">
+                        <span class="icon">
+                            <i class="fa fa-sign-in-alt" />
+                        </span><span>logout</span>
+                    </router-link>
+                </div>
             </template>
             <template v-else>
                 <router-link
                     class="button is-outlined is-link"
                     to="/login">
-                    login
+                    <span class="icon">
+                        <i class="fa fa-sign-in-alt" />
+                    </span><span>login</span>
                 </router-link>
             </template>
             <!-- might need later to close -->
@@ -89,12 +100,12 @@
         <ul
             class="menu-list">
             <li>
-                <router-link to="/config">
+                <router-link to="/configuration">
                     Configurations
                 </router-link>
             </li>
-            <li>
-                <router-link to="/usergroup">
+            <li v-if="isLoggedOn">
+                <router-link to="/users">
                     Users/Groups
                 </router-link>
             </li>
@@ -130,13 +141,20 @@ export default {
             this.$emit('updateUrl', this.url);
         }
     },
+
     computed: {
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];
         },
-
+        isLoggedOn: function() {
+            if (this.loggedOnPerson && this.loggedOnPerson.name) {
+                return true;
+            } else {
+                return false;
+            }
+        },
         displayName: function() {
-            if (this.loggedOnPerson.name) {
+            if (this.isLoggedOn) {
                 return this.loggedOnPerson.name;
             } else {
                 return 'No user';

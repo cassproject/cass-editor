@@ -49,7 +49,7 @@ export default new Router({
             component: () => import('./views/login/Login.vue')
         },
         {
-            path: '/config',
+            path: '/configuration',
             name: 'configuration',
             components: {
                 default: () => import('./views/configuration/ConfigurationEditor'),
@@ -58,8 +58,8 @@ export default new Router({
             }
         },
         {
-            path: '/userGroup',
-            name: 'usergroup',
+            path: '/users',
+            name: 'users',
             components: {
                 default: () => import('./views/usersGroups/UserGroupEditor'),
                 sidebar: () => import('./components/SideNav.vue'),
