@@ -1043,7 +1043,7 @@ export default {
             return this.$route.path;
         },
         isLoggedIn: function() {
-            if (!this.loggedInPerson || (this.loggedInPerson && !this.loggedInperson.name)) {
+            if (!this.loggedInPerson || (this.loggedInPerson && !this.loggedInPerson.name)) {
                 return false;
             } else {
                 return true;
@@ -1054,16 +1054,20 @@ export default {
             else return false;
         },
         ...mapState({
-            loggedInPerson: state => state.user.loggedInPerson,
+            loggedInPerson: state => state.user.loggedOnPerson,
             queryParams: state => state.editor.queryParams
         })
     },
     mounted: function() {
-        if (!this.isLoggedIn) {
-            this.$router.push({path: '/'});
-        }
+
     },
     watch: {
+        currentRoute: function(val) {
+            console.log("logged in", this.loggedInPerson);
+            if (!this.isLoggedIn && val === '/users') {
+                this.$router.push({path: '/'});
+            }
+        },
         '$route'(to, from) {
             this.$store.commit('app/closeRightAside');
             this.$store.commit('app/closeSideNav');
@@ -1083,11 +1087,6 @@ export default {
                 this.$store.commit('editor/conceptMode', false);
             }
         }
-        /* loggedInPerson: function(val) {
-            if (!val) {
-                this.$router.push({name: 'login'});
-            }
-        }*/
     }
 };
 </script>
