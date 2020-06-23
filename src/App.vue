@@ -1042,6 +1042,13 @@ export default {
         currentRoute: function() {
             return this.$route.path;
         },
+        isLoggedIn: function() {
+            if (!this.loggedInPerson || (this.loggedInPerson && !this.loggedInperson.name)) {
+                return false;
+            } else {
+                return true;
+            }
+        },
         currentPathIsLogin: function() {
             if (this.$route.name === 'login') return true;
             else return false;
@@ -1050,6 +1057,11 @@ export default {
             loggedInPerson: state => state.user.loggedInPerson,
             queryParams: state => state.editor.queryParams
         })
+    },
+    mounted: function() {
+        if (!this.isLoggedIn) {
+            this.$router.push({path: '/'});
+        }
     },
     watch: {
         '$route'(to, from) {
