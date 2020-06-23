@@ -86,13 +86,13 @@
                     class="field"
                     v-if="loggedIn">
                     <input
+                        :disabled="ownedByMe"
                         v-model="basicFilter"
                         class="is-checkradio"
                         value="ownedByMe"
                         id="ownedByMe"
                         type="checkbox"
-                        name="filterOwnedByMe"
-                        checked="">
+                        name="filterOwnedByMe">
                     <label for="ownedByMe">
                         Owned by me
                     </label>
@@ -129,6 +129,10 @@
 export default {
     name: 'SearchBar',
     props: {
+        ownedByMe: {
+            type: Boolean,
+            default: false
+        },
         view: {
             type: String,
             default: ''
@@ -174,6 +178,11 @@ export default {
                 };
             }
             this.$store.commit("app/quickFilters", [filter]);
+        }
+    },
+    mounted: function() {
+        if (this.ownedByMe) {
+            this.basicFilter = true;
         }
     },
     methods: {
