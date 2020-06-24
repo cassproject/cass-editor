@@ -17,8 +17,8 @@
 -->
 <template>
     <div
-        id="page-import"
-        class="page-import has-background-white">
+        id="import"
+        class="has-background-white">
         <!--- main body section -->
         <!-- top section import information -->
         <div
@@ -30,7 +30,7 @@
                             <div class="column is-12">
                                 <h1
                                     class="title is-size-1 has-text-black">
-                                    <span v-if="queryParams.concepts === 'true'">
+                                    <span v-if="conceptMode">
                                         Import a concept scheme
                                     </span>
                                     <span v-else>Import a framework</span>
@@ -39,7 +39,7 @@
                             <!-- ready state details -->
                             <div class="column is-12">
                                 <p
-                                    v-if="importTransition === 'upload' && !importFile && queryParams.concepts === 'true'"
+                                    v-if="importTransition === 'upload' && !importFile && conceptMode"
                                     class="is-size-6">
                                     Upload documents to transform into CaSS Concept Schemes.
                                 </p>
@@ -74,7 +74,7 @@
                                 <!-- Please review the name and descriptions of the imported competencies. After making edits, "approve" the changes to view the imported competency details.-->
                                 </p>
                                 <p
-                                    v-if="importTransition === 'light'"
+                                    v-if="importTransition === 'light' && importType !== 'text'"
                                     class="is-size-6">
                                     <span class="has-text-success has-text-weight-bold">
                                         Your import is complete!
@@ -147,12 +147,12 @@
                                 :obj="changedObj ? changedObj : importFramework"
                                 :repo="repo"
                                 class="framework-title"
-                                :profile="queryParams.concepts === 'true' ? null : t3FrameworkProfile" />
+                                :profile="conceptMode ? null : t3FrameworkProfile" />
 
                             <Hierarchy
                                 :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                 view="importPreview"
-                                v-if="importFramework && queryParams.concepts !== 'true'"
+                                v-if="importFramework && !conceptMode"
                                 @doneLoadingNodes="handleDoneLoading"
                                 @searchThings="handleSearch($event)"
                                 @editMultipleEvent="onEditMultiple"
@@ -176,7 +176,7 @@
                             <ConceptHierarchy
                                 :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                 view="import"
-                                v-if="importFramework && queryParams.concepts === 'true'"
+                                v-if="importFramework && conceptMode"
                                 @doneLoadingNodes="handleDoneLoading"
                                 @searchThings="handleSearch($event)"
                                 @editMultipleEvent="onEditMultiple"
@@ -200,9 +200,9 @@
                                 :obj="changedObj ? changedObj : importFramework"
                                 :parentNotEditable="true"
                                 class="framework-title"
-                                :profile="queryParams.concepts === 'true' ? null : t3FrameworkProfile" />
+                                :profile="conceptMode ? null : t3FrameworkProfile" />
                             <Hierarchy
-                                v-if="importFramework && queryParams.concepts !== 'true'"
+                                v-if="importFramework && !conceptMode"
                                 view="importLight"
                                 :container="importFramework"
                                 containerType="Framework"
@@ -223,7 +223,7 @@
                             <ConceptHierarchy
                                 :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                 view="import"
-                                v-if="importFramework && queryParams.concepts === 'true'"
+                                v-if="importFramework && conceptMode"
                                 :container="importFramework"
                                 containerType="ConceptScheme"
                                 :viewOnly="true"
@@ -306,6 +306,9 @@ export default {
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];
         },
+        conceptMode: function() {
+            return this.$store.getters['editor/conceptMode'];
+        },
         showImportActions: function() {
             if (this.importTransition === 'detail' ||
             this.importTransition === 'preview' ||
@@ -358,8 +361,8 @@ export default {
             }
         },
         frameworkSize: function() {
-            if (this.importFramework) {
-                if (this.queryParams.concepts === 'true') {
+            if (this.importFramework && this.importFramework.competency) {
+                if (this.conceptMode) {
                     return null;
                 }
                 return this.importFramework.competency.length;
@@ -455,9 +458,8 @@ export default {
             }
         },
         importType: function(val) {
-            this.$store.commit('app/importFramework', null);
-            this.$store.commit('app/importStatus', 'upload');
             this.caseDocs = [];
+            this.clearImport();
         },
         importTransition: function(val) {
             if (val === 'processFiles') {
@@ -498,6 +500,11 @@ export default {
                 console.error,
                 this.repo,
                 false);
+        },
+        importFramework: function() {
+            if (this.importFramework && !this.conceptMode && this.frameworkSize === 0) {
+                this.hierarchyIsdoneLoading = true;
+            }
         }
     },
     created: function() {
@@ -562,6 +569,24 @@ export default {
                         return this.clearImport();
                     }
                 };
+            } else if (val === 'duplicateOverwriteOnly') {
+                params = {
+                    type: val,
+                    title: "Duplicate framework",
+                    text: (data[0].name ? ("The framework " + data[0].name) : "This framework") + " has already been imported. If you're a framework admin you can overwrite it. Do you want to overwrite it?",
+                    onConfirm: () => {
+                        if (this.importType === "url") {
+                            return this.importJsonLd(data[0]);
+                        }
+                        return this.continueCaseImport(data);
+                    },
+                    onCancel: () => {
+                        if (this.importType === "url") {
+                            return this.clearImport();
+                        }
+                        return this.importCase(data);
+                    }
+                };
             }
             // reveal modal
             this.$modal.show(params);
@@ -576,7 +601,7 @@ export default {
         },
         /* When an import is "successful" */
         importSuccess: function() {
-            if (this.queryParams.concepts !== "true") {
+            if (!this.conceptMode) {
                 let feedback = "Competency detected";
                 this.$store.commit('app/importStatus', feedback);
                 if (this.isT3Import) {
@@ -622,7 +647,7 @@ export default {
             console.log("file is", file);
             var feedback;
             if (file.name.endsWith(".csv")) {
-                if (this.queryParams.concepts === 'true') {
+                if (this.conceptMode) {
                     CTDLASNCSVConceptImport.analyzeFile(file, function(frameworkCount, competencyCount) {
                         me.$store.commit('app/importFileType', 'conceptcsv');
                         feedback = "Import " + frameworkCount + " concept schemes and " + competencyCount + " concepts.";
@@ -675,7 +700,7 @@ export default {
                     var error;
                     var feedback;
                     if (ctdlasn === "ctdlasnConcept") {
-                        if (me.queryParams.concepts === 'true') {
+                        if (me.conceptMode) {
                             me.$store.commit('app/importStatus', "1 Concept Scheme Detected.");
                             me.$store.commit('app/importFileType', 'ctdlasnjsonld');
                             me.$store.commit('app/importTransition', 'info');
@@ -686,7 +711,7 @@ export default {
                             me.$store.commit('app/importTransition', 'process');
                         }
                     } else {
-                        if (me.queryParams.concepts !== 'true') {
+                        if (!me.conceptMode) {
                             me.$store.commit('app/importFileType', 'ctdlasnjsonld');
                             feedback = "1 Framework and " + (EcObject.keys(data).length - 1) + " Competencies Detected.";
                             me.$store.commit('app/importStatus', feedback);
@@ -1006,7 +1031,11 @@ export default {
             var toSave = [];
             var f = new EcFramework();
             var name = newName || d.name;
-            f.setName(name);
+            if (name) {
+                f.setName(name);
+            } else {
+                f.setName("Unknown Name");
+            }
             if (d.description && d.description !== "") {
                 f.setDescription(d.description);
             }
@@ -1166,7 +1195,7 @@ export default {
                     data = data1 + "data" + data2;
                 }
                 var framework;
-                if (me.queryParams.concepts === 'true') {
+                if (me.conceptMode) {
                     framework = EcConceptScheme.getBlocking(data);
                 } else {
                     framework = EcFramework.getBlocking(data);
@@ -1190,7 +1219,7 @@ export default {
                 console.log(failure.statusText);
                 me.$store.commit('app/addImportError', failure);
             });
-            if (me.queryParams.concepts === 'true') {
+            if (me.conceptMode) {
                 me.$store.commit('app/importStatus', "Importing Concept Scheme");
             } else {
                 me.$store.commit('app/importStatus', 'Importing Framework');
@@ -1309,7 +1338,13 @@ export default {
                 me.$store.commit('app/addImportError', "No frameworks found. Please check the URL and try again.");
             });
         },
-        importCase: function() {
+        importCase: function(dataArray) {
+            if (dataArray) {
+                // User has clicked cancel on this import item
+                var firstIndex = dataArray[1];
+                this.caseDocs[firstIndex].loading = false;
+                this.caseDocs[firstIndex].error = true;
+            }
             for (var i = this.caseDocs.length - 1; i >= 0; i--) {
                 if (!this.caseDocs[i].checked) {
                     this.caseDocs.splice(i, 1);
@@ -1329,32 +1364,57 @@ export default {
                     }
                 }
                 if (lis === 0) {
+                    this.$store.commit('app/importFramework', this.$store.getters['editor/framework']);
                     this.importSuccess();
                     this.$store.commit('app/importStatus', "Import finished.");
                 } else {
                     var me = this;
                     var id = this.caseDocs[firstIndex].id;
-                    var uuid = this.caseDocs[firstIndex].identifier;
-
-                    var identity = EcIdentityManager.ids[0];
-                    var formData = new FormData();
-                    if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
-                    EcRemote.postInner(this.repo.selectedServer, "ims/case/harvest?caseEndpoint=" + this.importServerUrl + "&dId=" + uuid, formData, null, function(success) {
-                        me.caseDocs[firstIndex].loading = false;
-                        me.caseDocs[firstIndex].success = true;
-                        EcFramework.get(id, function(f) {
-                            me.$store.commit('app/importFramework', f);
-                            me.$store.commit('editor/framework', framework);
-                            me.spitEvent("importFinished", f.shortId(), "importPage");
-                        }, console.error);
-                        me.importCase();
-                    }, function(failure) {
-                        me.caseDocs[firstIndex].loading = false;
-                        me.caseDocs[firstIndex].error = true;
-                        me.importCase();
+                    me.repo.search("(@id:\"" + id + "\") AND (@type:Framework)", function() {}, function(frameworks) {
+                        console.log(frameworks);
+                        if (frameworks.length > 0) {
+                            me.$store.commit('app/importStatus', 'framework found...');
+                            me.showModal('duplicateOverwriteOnly', [me.caseDocs[firstIndex], firstIndex]);
+                        } else {
+                            me.$store.commit('app/importStatus', 'no match, saving new framework...');
+                            me.continueCaseImport([me.caseDocs[firstIndex], firstIndex]);
+                        } /* TO DO - ERROR HANDLING HERE */
+                    }, function(error) {
+                        me.$store.commit('app/importStatus', error);
+                        me.$store.commit('app/importTransition', 'process');
+                        me.$store.commit('app/addImportError', error);
                     });
                 }
             }// if not canceled
+        },
+        continueCaseImport: function(dataArray) {
+            var data = dataArray[0];
+            var firstIndex = dataArray[1];
+            var me = this;
+            var id = data.id;
+            var uuid = data.identifier;
+            var identity = EcIdentityManager.ids[0];
+            var formData = new FormData();
+            if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
+            EcRemote.postInner(this.repo.selectedServer, "ims/case/harvest?caseEndpoint=" + this.importServerUrl + "&dId=" + uuid, formData, null, function(success) {
+                me.caseDocs[firstIndex].loading = false;
+                me.caseDocs[firstIndex].success = true;
+                console.log(id);
+                EcFramework.get(id, function(f) {
+                    // me.$store.commit('app/importFramework', f);
+                    // Preserve the framework so we can set it as importFramework when they're all done
+                    me.$store.commit('editor/framework', f);
+                    me.spitEvent("importFinished", f.shortId(), "importPage");
+                    me.importCase();
+                }, function(error) {
+                    console.error(error);
+                    me.importCase();
+                });
+            }, function(failure) {
+                me.caseDocs[firstIndex].loading = false;
+                me.caseDocs[firstIndex].error = true;
+                me.importCase();
+            });
         },
         cancelCase: function() {
             this.caseCancel = true;
@@ -1383,6 +1443,8 @@ export default {
                 this.importFramework.generateId(this.repo.selectedServer);
             }
             this.importFramework.name = this.importFrameworkName;
+            this.importFramework["schema:dateCreated"] = new Date().toISOString();
+            this.importFramework["schema:dateModified"] = new Date().toISOString();
             var toSave = [this.importFramework];
             for (var i = 0; i < this.importFramework.competency.length; i++) {
                 var comp = EcRepository.cache[this.importFramework.competency[i]];
@@ -1391,12 +1453,14 @@ export default {
                 }
                 toSave.push(comp);
             }
-            for (var i = 0; i < this.importFramework.relation.length; i++) {
-                var relation = EcRepository.cache[this.importFramework.relation[i]];
-                if (EcIdentityManager.ids != null && EcIdentityManager.ids.length > 0) {
-                    relation.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            if (this.importFramework.relation) {
+                for (var i = 0; i < this.importFramework.relation.length; i++) {
+                    var relation = EcRepository.cache[this.importFramework.relation[i]];
+                    if (EcIdentityManager.ids != null && EcIdentityManager.ids.length > 0) {
+                        relation.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    }
+                    toSave.push(relation);
                 }
-                toSave.push(relation);
             }
             this.repo.multiput(toSave, function() {
                 me.importSuccess();
@@ -1414,7 +1478,25 @@ export default {
                 result = JSON.parse(result);
                 var graph = result["@graph"];
                 if (graph != null) {
-                    me.importJsonLd(result);
+                    var id = graph[0]["@id"];
+                    if (id) {
+                        me.repo.search("(@id:\"" + id + "\") AND (@type:Framework)", function() {}, function(frameworks) {
+                            console.log(frameworks);
+                            if (frameworks.length > 0) {
+                                me.$store.commit('app/importStatus', 'framework found...');
+                                me.showModal('duplicateOverwriteOnly', [result]);
+                            } else {
+                                me.$store.commit('app/importStatus', 'no match, saving new framework...');
+                                me.importJsonLd(result);
+                            } /* TO DO - ERROR HANDLING HERE */
+                        }, function(error) {
+                            me.$store.commit('app/importStatus', error);
+                            me.$store.commit('app/importTransition', 'process');
+                            me.$store.commit('app/addImportError', error);
+                        });
+                    } else {
+                        me.importJsonLd(result);
+                    }
                 } else {
                     error = "URL must have an '@graph' field at the top level.";
                     me.$store.commit('app/addImportError', error);

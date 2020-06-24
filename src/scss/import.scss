@@ -4,6 +4,37 @@
 textarea {
     resize: vertical !important;
 }
+#import {
+        .lode__Competency, .lode__Framework {
+            padding-right: 120px;
+            .hierarchy-item__buttons {
+                display: flex;
+                visibility: hidden;
+                position: absolute;
+                right: 0;
+                top: 0px;
+            }
+            .edit-button, .comment-button, .handle-button {
+                visibility: hidden;
+                margin: 0rem .25rem;
+            }
+        }
+    
+        .lode__Competency:hover {
+            .lode__thing-heading .lode__Property {
+                color: $primary !important;
+            }
+            .hierarchy-item__buttons {
+                visibility: visible;
+            }
+            .edit-button, .comment-button, .handle-button {
+                visibility: visible;
+            }
+        }
+
+    
+   
+}
 ul.processing-list {
     height: 100%;
     width: 100%;
@@ -62,7 +93,7 @@ ul.processing-list {
   }
 
 
-.page-import {
+#import{
     .special-property {
         iframe {
             margin-top: .25rem;

@@ -37,11 +37,12 @@
                     class="icon is-vcentered">
                     <i class="fa fa-circle is-size-7 has-text-light" />
                 </div>
-                <button
+                <div
                     v-if="selectButtonText"
-                    @click="$emit('selectButtonClick', selectedArray)">
+                    @click="$emit('selectButtonClick', selectedArray)"
+                    class="button is-small is-outlined is-primary">
                     {{ selectButtonText }}
-                </button>
+                </div>
             </div>
             <!-- MULTI EDIT BUTTONS -->
             <div class="column is-narrow">
@@ -50,7 +51,7 @@
                     <div
                         v-if="multipleSelected && !addingNode && view !== 'import' && canEdit"
                         @click="$emit('editMultipleEvent')"
-                        class="button is-small is-outlined is-primary">
+                        class="button is-outlined is-primary">
                         <span class="icon">
                             <i class="fa fa-cog" />
                         </span>
@@ -61,8 +62,8 @@
                     <!-- if multiple are selected allow for edit multiple -->
                     <div
                         @click="addingNode = true;"
-                        v-if="!addingNode && canEdit"
-                        class="button is-small is-outlined is-primary">
+                        v-if="!addingNode && canEdit && !multipleSelected"
+                        class="button is-outlined is-primary">
                         <span class="icon">
                             <i class="fa fa-plus-circle" />
                         </span>
@@ -73,7 +74,7 @@
                     <div
                         v-if="addingNode"
                         @click="addingNode = false;"
-                        class="button is-outlined is-small is-dark ">
+                        class="button is-outlined is-dark ">
                         <span class="icon">
                             <i class="fa fa-times" />
                         </span>
@@ -82,7 +83,7 @@
                     <div
                         v-if="addingNode"
                         @click="add(container.shortId(), null); addingNode = false;"
-                        class="button is-outlined is-small is-primary ">
+                        class="button is-outlined is-primary ">
                         <span class="icon">
                             <i class="fa fa-plus" />
                         </span>
@@ -101,7 +102,7 @@
                 v-model="hierarchy"
                 tag="ul"
                 class="lode__hierarchy-ul"
-                :disabled="canEdit != true || !isDraggable"
+                :disabled="canEdit !== true || !isDraggable"
                 :group="{ name: 'test' }"
                 @start="beginDrag"
                 handle=".handle"
@@ -125,6 +126,7 @@
                     :newFramework="newFramework"
                     :index="index"
                     :frameworkEditable="canEdit"
+                    :selectedArray="selectedArray"
                     @add="add"
                     @beginDrag="beginDrag"
                     @move="move"
@@ -136,18 +138,7 @@
                     @draggableCheck="onDraggableCheck"
                     :properties="properties"
                     :expandAll="expanded==true"
-                    :parentChecked="false">
-                    <div
-                        class="handle-button"
-                        v-if="canEdit">
-                        <div class="button is-text has-text-dark">
-                            <span class="icon is-size-5">
-                                <i class="fa handle fa-hand-paper" />
-                                <i class="fa handle fa-hand-rock" />
-                            </span>
-                        </div>
-                    </div>
-                </HierarchyNode>
+                    :parentChecked="false" />
             </draggable>
         </template>
     </div>
@@ -187,7 +178,7 @@ export default {
             dragging: false,
             controlOnStart: false,
             filter: 'showAll',
-            dragIcon: 'fa-hand-paper',
+            dragIcon: 'fa-arrows-alt',
             dragOptions: {
                 delay: 100,
                 disabled: false,
@@ -463,7 +454,7 @@ export default {
             var me = this;
             var c = new EcConcept();
             if (this.queryParams.newObjectEndpoint) {
-                c.generateShortId(newObjectEndpoint);
+                c.generateShortId(this.queryParams.newObjectEndpoint);
             } else {
                 c.generateId(this.repo.selectedServer);
             }
@@ -478,17 +469,10 @@ export default {
                     c.addOwner(EcPk.fromPem(owner));
                 }
             }
-            if (this.$store.state.editor && this.$store.state.editor.configuration) {
-                var config = this.$store.state.editor.configuration;
-                if (config["defaultObjectOwners"]) {
-                    for (var i = 0; i < config["defaultObjectOwners"].length; i++) {
-                        c.addOwner(EcPk.fromPem(config["defaultObjectOwners"][i]));
-                    }
-                }
-                if (config["defaultObjectReaders"]) {
-                    for (var i = 0; i < config["defaultObjectReaders"].length; i++) {
-                        c.addReader(EcPk.fromPem(config["defaultObjectReaders"][i]));
-                    }
+            if (this.container.reader && this.container.reader.length > 0) {
+                for (var j = 0; j < this.container.reader.length; j++) {
+                    var reader = this.container.reader[j];
+                    r.addReader(EcPk.fromPem(reader));
                 }
             }
             this.setDefaultLanguage();

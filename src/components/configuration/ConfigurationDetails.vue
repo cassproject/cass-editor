@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="">
         <!-- busy modal-->
         <div
             class="modal"
@@ -7,8 +7,189 @@
             <div class="modal-background" />
             <div class="modal-content has-text-centered">
                 <span class="icon is-large has-text-center has-text-link">
-                    <i class="fas fa-3x fa-spinner is-info fa-pulse" />
+                    <i class="fas fa-2x fa-spinner is-info fa-pulse" />
                 </span>
+            </div>
+        </div>
+        <!-- modal for managing relationships
+            modal should show separate lists using a :show="type=TypeString" for the various categorized types
+            only selected items will show up in main list  -->
+        <div
+            :class="{ 'is-active': showManageRelationshipsModal}"
+            class="modal">
+            <div class="modal-background" />
+            <div class="modal-card has-background-white">
+                <header class="modal-card-head has-text-white has-background-primary">
+                    <p class="modal-card-title">
+                        Manage relationship types
+                    </p>
+                    <button
+                        class="delete is-pulled-right"
+                        aria-label="close"
+                        @click="showManageRelationshipsModal = false" />
+                </header>
+                <section class="modal-content">
+                    <div class="section">
+                        <div class="columns is-multiline">
+                            <div class="column is-12">
+                                <h3 class="header is-size-4">
+                                    CaSS Default Relationships
+                                </h3>
+
+                                <div class="table-container">
+                                    <table class="table is-hoverable is-fullwidth">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    <abbr title="unique relationship ID">
+                                                        relationship</abbr>
+                                                </th>
+                                                <th>
+                                                    <abbr title="label displayed in form inputs">
+                                                        display label</abbr>
+                                                </th>
+                                                <th>
+                                                    <abbr title="if enabled shows up in property options">
+                                                        enabled</abbr>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <RelationshipListItem
+                                                v-for="(relObj, relKey) in this.config.relationships"
+                                                v-show="isCassRelation(relKey)"
+                                                :key="relKey + 'managecass'"
+                                                :relationship="relKey"
+                                                :label="relObj.label"
+                                                :enabled="relObj.enabled"
+                                                :readOnly="readOnly"
+                                                scope="managecass"
+                                                @change="updateRelationshipProperty" />
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="column is-12">
+                                <h3 class="header is-size-4">
+                                    Achievement Standards Network Relationships
+                                </h3>
+                                <div class="table-container">
+                                    <table class="table is-hoverable is-fullwidth">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    <abbr title="unique relationship ID">
+                                                        relationship</abbr>
+                                                </th>
+                                                <th>
+                                                    <abbr title="label displayed in form inputs">
+                                                        display label</abbr>
+                                                </th>
+                                                <th>
+                                                    <abbr title="if enabled shows up in property options">
+                                                        enabled</abbr>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <RelationshipListItem
+                                                v-for="(relObj, relKey) in this.config.relationships"
+                                                v-show="isAsnRelation(relKey)"
+                                                :key="relKey + 'manageasn'"
+                                                :relationship="relKey"
+                                                :label="relObj.label"
+                                                :enabled="relObj.enabled"
+                                                :readOnly="readOnly"
+                                                scope="manageasn"
+                                                @change="updateRelationshipProperty" />
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="column is-12">
+                                <h3 class="header is-size-4">
+                                    GEMQ
+                                </h3>
+                                <div class="table-container">
+                                    <table class="table is-hoverable is-fullwidth">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    <abbr title="unique relationship ID">
+                                                        relationship</abbr>
+                                                </th>
+                                                <th>
+                                                    <abbr title="label displayed on form inputs">
+                                                        display label</abbr>
+                                                </th>
+                                                <th>
+                                                    <abbr title="if enabled shows up in property options">
+                                                        enabled</abbr>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <RelationshipListItem
+                                                v-for="(relObj, relKey) in this.config.relationships"
+                                                v-show="isGemqRelation(relKey)"
+                                                :key="relKey + 'managegemq'"
+                                                :relationship="relKey"
+                                                :label="relObj.label"
+                                                :enabled="relObj.enabled"
+                                                :readOnly="readOnly"
+                                                scope="managegemq"
+                                                @change="updateRelationshipProperty" />
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="column is-12">
+                                <h3 class="header is-size-4">
+                                    Other
+                                </h3>
+                                <div class="table-container">
+                                    <table class="table is-hoverable is-fullwidth">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    <abbr title="unique relationship ID">
+                                                        relationship</abbr>
+                                                </th>
+                                                <th>
+                                                    <abbr title="label displayed on form inputs">
+                                                        display label</abbr>
+                                                </th>
+                                                <th>
+                                                    <abbr title="if enabled shows up in property options">
+                                                        enabled</abbr>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <RelationshipListItem
+                                                v-for="(relObj, relKey) in this.config.relationships"
+                                                v-show="isOtherRelation(relKey)"
+                                                :key="relKey + 'manageother'"
+                                                :relationship="relKey"
+                                                :label="relObj.label"
+                                                :enabled="relObj.enabled"
+                                                :readOnly="readOnly"
+                                                scope="manageother"
+                                                @change="updateRelationshipProperty" />
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <footer class="modal-card-foot">
+                    <div
+                        class="button is-primary is-outlined"
+                        @click="hideManageRelations">
+                        ok
+                    </div>
+                </footer>
             </div>
         </div>
         <!-- permission entities search modal -->
@@ -18,7 +199,7 @@
             <div class="modal-background" />
             <div class="modal-card">
                 <header class="modal-card-head has-background-primary">
-                    <p class="subtitle is-size-3 modal-card-title has-text-white">
+                    <p class="modal-card-title has-text-white">
                         {{ permissionEntitySelectionTitle }}
                         <button
                             class="delete is-pulled-right"
@@ -77,7 +258,7 @@
                 </div>
                 <footer class="modal-card-foot has-background-light">
                     <div
-                        class="buttons"
+                        class="buttons is-spaced"
                         v-if="!readOnly">
                         <button
                             class="button is-outlined is-dark"
@@ -110,7 +291,7 @@
             <div class="modal-background" />
             <div class="modal-card">
                 <header class="modal-card-head has-background-primary">
-                    <p class="subtitle has-text-white is-size-3 modal-card-title">
+                    <p class="has-text-white modal-card-title">
                         {{ levelSelectionModalTitle }}
                         <button
                             class="delete is-pulled-right"
@@ -214,7 +395,7 @@
                     v-if="!showAddNewLevelSection"
                     class="modal-card-foot has-background-light">
                     <div
-                        class="buttons"
+                        class="buttons is-spaced"
                         v-if="!readOnly">
                         <button
                             class="button is-outlined is-dark"
@@ -245,7 +426,7 @@
                     v-if="showAddNewLevelSection"
                     class="modal-card-foot has-background-light">
                     <div
-                        class="buttons"
+                        class="buttons is-spaced"
                         v-if="!readOnly && !savingLevelBusy">
                         <button
                             class="button is-outlined"
@@ -278,7 +459,7 @@
             <div class="modal-background" />
             <div class="modal-card">
                 <header class="modal-card-head has-background-primary">
-                    <p class="subtitle is-size-3 has-text-white modal-card-title">
+                    <p class="has-text-white modal-card-title">
                         {{ customPropertyModalTitle }}
                         <button
                             class="delete is-pulled-right"
@@ -288,7 +469,10 @@
                 </header>
                 <div class="modal-card-body has-text-dark">
                     <div class="field">
-                        <label class="label">Context: </label>
+                        <label class="label">Context </label>
+                        <p class="description">
+                            If you are unsure, keep the default.
+                        </p>
                         <div
                             class="field"
                             v-if="readOnly || !customPropertyIsNew">
@@ -299,87 +483,158 @@
                             v-if="!readOnly && customPropertyIsNew">
                             <div class="select is-fullwidth">
                                 <select v-model="customPropertyContext">
-                                    <option value="https://schema.cassproject.org/0.4/">
-                                        https://schema.cassproject.org/0.4/
+                                    <option
+                                        title="https://schema.cassproject.org/0.4/ (default)"
+                                        value="https://schema.cassproject.org/0.4/">
+                                        CaSS v4.0 (default)
                                     </option>
-                                    <option value="https://purl.org/ctdlasn/terms/">
-                                        https://purl.org/ctdlasn/terms/
+                                    <option
+                                        title="https://purl.org/ctdlasn/terms/"
+                                        value="https://purl.org/ctdlasn/terms/">
+                                        CTDL-ASN
                                     </option>
-                                    <option value="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-                                        http://www.w3.org/1999/02/22-rdf-syntax-ns#
+                                    <option
+                                        title="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                                        value="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+                                        RDF Semantic Web Standards 1999
                                     </option>
-                                    <option value="http://www.w3.org/2000/01/rdf-schema#">
-                                        http://www.w3.org/2000/01/rdf-schema#
+                                    <option
+                                        title="http://www.w3.org/2000/01/rdf-schema#"
+                                        value="http://www.w3.org/2000/01/rdf-schema#">
+                                        RDF Semantic Web Standards 2000
                                     </option>
-                                    <option value="https://schema.cassproject.org/0.4/">
-                                        https://schema.cassproject.org/0.4/
+                                    <option
+                                        title="https://schema.cassproject.org/kbac/0.4/"
+                                        value="https://schema.cassproject.org/kbac/0.4/">
+                                        Key Based Authorization and Control
                                     </option>
-                                    <option value="https://schema.cassproject.org/kbac/0.4/">
-                                        https://schema.cassproject.org/kbac/0.4/
+                                    <option
+                                        title="http://schema.eduworks.com/general/0.3/"
+                                        value="http://schema.eduworks.com/general/0.3/">
+                                        Eduworks v3.0
                                     </option>
-                                    <option value="http://schema.eduworks.com/general/0.3/">
-                                        http://schema.eduworks.com/general/0.3/
+                                    <option
+                                        title="http://schema.org/"
+                                        value="http://schema.org/">
+                                        Schema.org
                                     </option>
-                                    <option value="http://schema.org/">
-                                        http://schema.org/
+                                    <option
+                                        title="http://purl.org/ASN/schema/core/"
+                                        value="http://purl.org/ASN/schema/core/">
+                                        Achievements Standard Network
                                     </option>
-                                    <option value="http://purl.org/ASN/schema/core/">
-                                        http://purl.org/ASN/schema/core/
+                                    <option
+                                        title="http://purl.org/dc/elements/1.1/"
+                                        value="http://purl.org/dc/elements/1.1/">
+                                        DCMI Elements v1.1
                                     </option>
-                                    <option value="http://purl.org/dc/elements/1.1/">
-                                        http://purl.org/dc/elements/1.1/
+                                    <option
+                                        title="http://purl.org/gem/qualifiers/"
+                                        value="http://purl.org/gem/qualifiers/">
+                                        Gem v2.0
                                     </option>
-                                    <option value="http://purl.org/gem/qualifiers/">
-                                        http://purl.org/gem/qualifiers/
+                                    <option
+                                        title="http://www.loc.gov/loc.terms/relators/"
+                                        value="http://www.loc.gov/loc.terms/relators/">
+                                        Relators Scheme
                                     </option>
-                                    <option value="http://www.loc.gov/loc.terms/relators/">
-                                        http://www.loc.gov/loc.terms/relators/
+                                    <option
+                                        title="http://purl.org/dc/terms/"
+                                        value="http://purl.org/dc/terms/">
+                                        DCMI Terms
                                     </option>
-                                    <option value="http://purl.org/dc/terms/">
-                                        http://purl.org/dc/terms/
-                                    </option>
-                                    <option value="http://www.w3.org/2004/02/skos/core#">
-                                        http://www.w3.org/2004/02/skos/core#
+                                    <option
+                                        title="http://www.w3.org/2004/02/skos/core#"
+                                        value="http://www.w3.org/2004/02/skos/core#">
+                                        Simple Knowledge Organization System
                                     </option>
                                 </select>
                             </div>
                         </div>
                     </div>
-                    <div class="field">
-                        <label class="label">Range/Type: </label>
-                        <div class="control">
-                            <div v-if="readOnly || !customPropertyIsNew">
-                                {{ customPropertyRangeReadable }}
+                    <div class="columns">
+                        <div class="column">
+                            <div class="control">
+                                <label class="label">Range/Type: </label>
+                                <div class="control">
+                                    <div v-if="readOnly || !customPropertyIsNew">
+                                        {{ customPropertyRangeReadable }}
+                                    </div>
+                                    <div
+                                        class="select"
+                                        v-if="!readOnly && customPropertyIsNew">
+                                        <select v-model="customPropertyRange">
+                                            <option value="http://www.w3.org/2000/01/rdf-schema#langString">
+                                                Lang-String
+                                            </option>
+                                            <option value="http://schema.org/URL">
+                                                URL
+                                            </option>
+                                            <option value="http://schema.org/Text">
+                                                Text
+                                            </option>
+                                            <option value="http://www.w3.org/2001/XMLSchema#dateTime">
+                                                Date-Time
+                                            </option>
+                                            <option value="http://purl.org/dc/terms/date">
+                                                Date
+                                            </option>
+                                            <option value="https://schema.cassproject.org/0.4/skos/Concept">
+                                                SKOS Concept
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
-                            <div
-                                class="select"
-                                v-if="!readOnly && customPropertyIsNew">
-                                <select v-model="customPropertyRange">
-                                    <option value="http://www.w3.org/2000/01/rdf-schema#langString">
-                                        Lang-String
-                                    </option>
-                                    <option value="http://schema.org/URL">
-                                        URL
-                                    </option>
-                                    <option value="http://schema.org/Text">
-                                        Text
-                                    </option>
-                                    <option value="http://www.w3.org/2001/XMLSchema#dateTime">
-                                        Date-Time
-                                    </option>
-                                    <option value="http://purl.org/dc/terms/date">
-                                        Date
-                                    </option>
-                                    <option value="https://schema.cassproject.org/0.4/skos/Concept">
-                                        SKOS Concept
-                                    </option>
-                                </select>
+                        </div>
+
+                        <div class="column">
+                            <div class="control">
+                                <label
+                                    class="label"
+                                    title="priority in which the custom property is displayed in form inputs">Display Priority: </label>
+                                <div v-if="readOnly">
+                                    {{ customPropertyPriority }}
+                                </div>
+                                <div
+                                    class="control"
+                                    v-if="!readOnly">
+                                    <div class="select">
+                                        <select v-model="customPropertyPriority">
+                                            <option value="primary">
+                                                primary
+                                            </option>
+                                            <option value="secondary">
+                                                secondary
+                                            </option>
+                                            <option value="tertiary">
+                                                tertiary
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="field">
+                                <label class="label">Required </label>
+                                <div class="control is-size-3">
+                                    <input
+                                        :disabled="readOnly"
+                                        v-model="customPropertyRequired"
+                                        id="customPropertyRequiredSwitch"
+                                        type="checkbox"
+                                        name="customPropertyRequiredSwitch"
+                                        class="switch is-large"
+                                        checked="checked">
+                                    <label for="customPropertyRequiredSwitch" />
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="field">
                         <label class="label">
-                            Property Name<span v-if="customPropertyIsNew"> (only alphanumerics permitted)</span>:
+                            Unique Property Identifier<span v-if="customPropertyIsNew"> (only alphanumerics permitted)</span>
                         </label>
                         <div v-if="readOnly || !customPropertyIsNew">
                             {{ customPropertyPropertyName }}
@@ -395,7 +650,7 @@
                         </div>
                     </div>
                     <div class="field">
-                        <label class="label">Label: </label>
+                        <label class="label">Display Label</label>
                         <div v-if="readOnly">
                             {{ customPropertyLabel }}
                         </div>
@@ -409,7 +664,7 @@
                         </div>
                     </div>
                     <div class="field">
-                        <label class="label">Description: </label>
+                        <label class="label">Description</label>
                         <div v-if="readOnly">
                             {{ customPropertyDescription }}
                         </div>
@@ -423,71 +678,101 @@
                         </div>
                     </div>
                     <div class="field">
-                        <label class="label">Is Required: </label>
+                        <label
+                            class="label"
+                            title="category (if any) under which the custom property is displayed in form inputs">Display Category</label>
                         <div v-if="readOnly">
-                            {{ customPropertyRequired }}
+                            {{ customPropertyHeading }}
                         </div>
                         <div
                             class="control"
                             v-if="!readOnly">
-                            <div class="select">
-                                <select v-model="customPropertyRequired">
-                                    <option :value="true">
-                                        true
-                                    </option>
-                                    <option :value="false">
-                                        false
-                                    </option>
-                                </select>
-                            </div>
+                            <input
+                                class="input"
+                                type="text"
+                                v-model="customPropertyHeading">
                         </div>
                     </div>
                     <div class="field">
-                        <label class="label">Priority: </label>
-                        <div v-if="readOnly">
-                            {{ customPropertyPriority }}
-                        </div>
-                        <div
-                            class="control"
-                            v-if="!readOnly">
-                            <div class="select">
-                                <select v-model="customPropertyPriority">
-                                    <option value="primary">
-                                        primary
-                                    </option>
-                                    <option value="secondary">
-                                        secondary
-                                    </option>
-                                    <option value="tertiary">
-                                        tertiary
-                                    </option>
-                                </select>
-                            </div>
+                        <label class="label">Allow Multiple Instances of Field </label>
+                        <div class="control">
+                            <input
+                                :disabled="readOnly"
+                                v-model="customPropertyAllowMultiples"
+                                id="customPropertyAllowMultiplesSwitch"
+                                type="checkbox"
+                                name="customPropertyAllowMultiplesSwitch"
+                                class="switch is-large"
+                                checked="checked">
+                            <label for="customPropertyAllowMultiplesSwitch" />
                         </div>
                     </div>
-                    <template v-if="shouldAllowCustomPropertyPermittedValues">
+                    <!-- had to put the v-if on all of these elements for some reason or it wouldn't work...f'in vue man -->
+                    <div
+                        class="field"
+                        v-if="shouldAllowOnePerLangChoice">
+                        <label
+                            class="label"
+                            v-if="shouldAllowOnePerLangChoice">
+                            One Entry Per Language
+                        </label>
+                        <div
+                            class="control"
+                            v-if="shouldAllowOnePerLangChoice">
+                            <input
+                                :disabled="readOnly"
+                                v-if="shouldAllowOnePerLangChoice"
+                                v-model="customPropertyOnePerLanguage"
+                                id="customPropertyOnePerLanguageSwitch"
+                                type="checkbox"
+                                name="customPropertyOnePerLanguageSwitch"
+                                class="switch is-large"
+                                checked="checked">
+                            <label
+                                for="customPropertyOnePerLanguageSwitch"
+                                v-if="shouldAllowOnePerLangChoice" />
+                        </div>
+                    </div>
+                    <div
+                        class="box"
+                        v-if="shouldAllowCustomPropertyPermittedValues">
                         <div class="field">
-                            <label class="label">Permitted Values (Optional): </label>
-                            <p v-if="!readOnly">
-                                Leave this section empty to allow any values for this property
+                            <div class="columns">
+                                <div class="column">
+                                    <label class="label">Limit values </label>
+                                </div>
+                                <div class="column is-narrow">
+                                    <div class="control">
+                                        <input
+                                            :disabled="readOnly"
+                                            v-model="customPropertyValuesLimited"
+                                            id="customPropertyValuesLimited"
+                                            type="checkbox"
+                                            name="customPropertyValuesLimited"
+                                            class="switch is-large"
+                                            checked="checked">
+                                        <label for="customPropertyValuesLimited" />
+                                    </div>
+                                </div>
+                            </div>
+                            <p
+                                v-if="!customPropertyValuesLimited && !readOnly"
+                                class="description">
+                                Limit values disabled, any values allowed. To limit, turn on limit values.
                             </p>
-                            <button
-                                class="button is-outlined is-small is-primary"
-                                v-if="!readOnly"
-                                @click="addCustomPropertyPermittedValue">
-                                <span class="icon">
-                                    <i class="fa fa-plus" />
-                                </span>
-                                <span>add</span>
-                            </button>
+                            <p
+                                v-if="customPropertyValuesLimited && !readOnly"
+                                class="description">
+                                Values limited to only those listed below. To allow any, turn off limit values.
+                            </p>
                         </div>
                         <div
                             class="table-container"
-                            v-if="customPropertyPermittedValues.length > 0">
+                            v-if="customPropertyPermittedValues.length > 0 && customPropertyValuesLimited">
                             <table class="table is-hoverable is-fullwidth">
                                 <thead>
-                                    <th>display</th>
-                                    <th>value</th>
+                                    <th>display label</th>
+                                    <th>field value</th>
                                     <th />
                                 </thead>
                                 <tbody>
@@ -536,7 +821,21 @@
                                 </tbody>
                             </table>
                         </div>
-                    </template>
+                        <div v-else-if="customPropertyValuesLimited">
+                            No values entered.
+                        </div>
+                        <div class="buttons is-right">
+                            <button
+                                class="button is-outlined is-small is-primary"
+                                v-if="!readOnly && customPropertyValuesLimited"
+                                @click="addCustomPropertyPermittedValue">
+                                <span class="icon">
+                                    <i class="fa fa-plus" />
+                                </span>
+                                <span>add</span>
+                            </button>
+                        </div>
+                    </div>
                     <br>
                     <div
                         class="field has-text-danger"
@@ -568,7 +867,7 @@
                 </div>
                 <footer class="modal-card-foot has-background-light">
                     <div
-                        class="buttons"
+                        class="buttons is-spaced"
                         v-if="!readOnly">
                         <button
                             class="button is-outlined is-dark"
@@ -596,13 +895,10 @@
         </div>
         <!-- CONFIGURATION DETAILS BODY CONTENT -->
         <div
-            class="section"
+            class="section box"
             id="configuration-details">
-            <h5 class="header">
-                Configuration Details
-            </h5>
             <div class="field">
-                <label class="label">Name: </label>
+                <label class="label">Name</label>
                 <div v-if="readOnly">
                     {{ config.name }}
                 </div>
@@ -616,7 +912,7 @@
                 </div>
             </div>
             <div class="field">
-                <label class="label">Description: </label>
+                <label class="label">Description </label>
                 <div v-if="readOnly">
                     {{ config.description }}
                 </div>
@@ -629,49 +925,116 @@
                         v-model="config.description">
                 </div>
             </div>
-            <div class="field">
-                <label class="label">Is Default: </label>
-                <div v-if="readOnly">
-                    {{ config.isDefault }}
-                </div>
+            <!--<div class="is-default">
                 <div
-                    class="control"
-                    v-if="!readOnly">
-                    <span v-if="defaultConfigId && !defaultConfigId.equals(config.id)">
-                        {{ config.isDefault }}
+                    v-if="readOnly"
+                    class="is-default__badge has-text-centered">
+                    {{ config.isDefault }}
+                    <span class="icon has-text-primary">
+                        <i class="fa fa-check" />
                     </span>
-                    <div
-                        class="select is-small"
-                        v-if="!defaultConfigId || defaultConfigId.equals(config.id)">
-                        <select
-                            v-model="config.isDefault">
-                            <option :value="true">
-                                true
-                            </option>
-                            <option :value="false">
-                                false
-                            </option>
-                        </select>
-                    </div>
+                    <label class="label">default</label>
                 </div>
+                    {{ config.isDefault }}
+                    <div class="field">
+                        <input :disabled="defaultConfigId && defaultConfigId.equals(config.id) && !readOnly" v-model="config.isDefault" :id="config.id + 'instanceDefaultSwitch'" type="checkbox" :name="config.id + 'instanceDefaultSwitch'" class="switch is-outlined">
+                        <label :for="config.id + 'instanceDefaultSwitch'">Is browser default</label>
+                    </div>
+                        class="field"
+                        v-if="!defaultConfigId || defaultConfigId.equals(config.id)">
+                        <input
+                            v-model="config.isDefault"
+                            class="is-checkradio is-rtl is-large"
+                            id="is-default"
+                            type="checkbox"
+                            name="is-default">
+                        <label for="is-default">is default</label>
+                    </div>
+            </div>-->
+            <div class="field is-grouped">
+                <div class="control is-ltr is-expanded">
+                    <input
+                        :disabled="isSetInstanceDisabled"
+                        v-model="config.isDefault"
+                        :id="config.id + 'instanceDefaultSwitch'"
+                        type="checkbox"
+                        :name="config.id + 'instanceDefaultSwitch'"
+                        class="switch is-outlined"
+                        :class="{ 'is-primary': config.isDefault }">
+                    <label :for="config.id + 'instanceDefaultSwitch'">Instance default</label>
+                </div>
+                <div class="control is-expanded">
+                    <input
+                        v-model="isBrowserDefault"
+                        id="browserDefaultSwitch"
+                        type="checkbox"
+                        name="browserDefaultSwitch"
+                        class="switch is-outlined">
+                    <label for="browserDefaultSwitch">Browser default</label>
+                </div>
+                <!--<div
+                    class="button is-outlined is-primary"
+                    @click="$emit('setBrowserDefault', config.id)">
+                    <span class="icon">
+                        <i class="fa fa-save" />
+                    </span>
+                    <span>set as browser default</span>
+                </div>-->
             </div>
+        </div>
+        <div class="tabs">
+            <ul>
+                <li
+                    @click="tab ='framework'"
+                    :class="{'is-active': tab === 'framework'}">
+                    <a>Framework</a>
+                </li>
+                <li
+                    @click="tab = 'competency'"
+                    :class="{'is-active': tab === 'competency'}">
+                    <a>Competency</a>
+                </li>
+                <li
+                    @click="tab = 'relationships'"
+                    :class="{'is-active': tab === 'relationships'}">
+                    <a>Relationships</a>
+                </li>
+                <li
+                    @click="tab = 'alignments'"
+                    :class="{'is-active': tab === 'alignments'}">
+                    <a>Alignments</a>
+                </li>
+                <li
+                    @click="tab = 'users'"
+                    :class="{'is-active': tab === 'users'}">
+                    <a>Users</a>
+                </li>
+            </ul>
         </div>
         <!-- ************************************** Framework Properties ************************************************ -->
         <div
             class="section"
+            v-show="tab === 'framework'"
             id="framework-properties">
-            <h5 class="header">
+            <h5 class="header is-size-3">
                 Framework Properties
             </h5>
+            <p class="description">
+                Framework properties are the values that can be added, edited, and deleted
+                for framework objects. Minimum framework properties are <b>id</b>, <b>name</b>, and <b>description</b>.
+                Properties added here will be displayed in the framework object at the top of
+                the framework editor view.
+            </p>
             <div class="table-container">
                 <table class="table is-hoverable is-fullwidth">
                     <thead>
                         <tr>
-                            <th><abbr title="property" />property</th>
-                            <th><abbr title="label" />label</th>
-                            <th><abbr title="description" />description</th>
-                            <th><abbr title="required" />required</th>
-                            <th><abbr title="priority" />priority</th>
+                            <th><abbr title="unique property ID">property</abbr></th>
+                            <th><abbr title="label to be displayed in form inputs">display label</abbr></th>
+                            <th><abbr title="description of this property">description</abbr></th>
+                            <th><abbr title="category (if any) under which the field is displayed in form inputs">display category</abbr></th>
+                            <th><abbr title="required">required</abbr></th>
+                            <th><abbr title="priority in which the field is displayed in form inputs">display priority</abbr></th>
                             <th><abbr title="manage" /><i class="fa fa-cog" /></th>
                             <th><abbr title="delete" /><i class="fa fa-trash" /></th>
                         </tr>
@@ -684,6 +1047,7 @@
                             :description="config.fwkIdDescription"
                             :required="true"
                             :priority="config.fwkIdPriorty"
+                            :heading="config.fwkIdHeading"
                             :custom="false"
                             :readOnly="readOnly"
                             :enforceRequired="true"
@@ -696,6 +1060,7 @@
                             :description="config.fwkNameDescription"
                             :required="true"
                             priority="primary"
+                            :heading="config.fwkNameHeading"
                             :custom="false"
                             :readOnly="readOnly"
                             :enforceRequired="true"
@@ -708,6 +1073,7 @@
                             :description="config.fwkDescDescription"
                             :required="config.fwkDescRequired"
                             :priority="config.fwkDescPriority"
+                            :heading="config.fwkDescHeading"
                             :custom="false"
                             :readOnly="readOnly"
                             :enforceRequired="false"
@@ -715,13 +1081,14 @@
                             @change="updateFrameworkCompetencyProperty" />
                         <FrameworkCompetencyPropertyListItem
                             v-for="(prop,idx) in config.fwkCustomProperties"
-                            :key="prop.propertyName + '_' + prop.label + '_' + prop.description + '_' + prop.required + '_' + prop.priority"
+                            :key="prop.propertyName + '_' + prop.label + '_' + prop.description + '_' + prop.required + '_' + prop.priority + '_' +prop.heading"
                             propertyParent="framework"
                             :property="prop.propertyName"
                             :label="prop.label"
                             :description="prop.description"
                             :required="prop.required"
                             :priority="prop.priority"
+                            :heading="prop.heading"
                             :custom="true"
                             :readOnly="readOnly"
                             :enforceRequired="false"
@@ -734,7 +1101,7 @@
                 </table>
             </div>
             <div
-                class="field"
+                class="buttons is-right"
                 v-if="!readOnly">
                 <div
                     class="button is-outlined is-small is-primary"
@@ -751,19 +1118,29 @@
         <!-- ************************************** Competency Properties ************************************************ -->
         <div
             class="section"
+            v-show="tab === 'competency'"
             id="competency-properties">
-            <h5>Competency Properties</h5>
+            <h5 class="is-size-3">
+                Competency Properties
+            </h5>
+            <p class="description">
+                Competency properties are the values that can be added, edited, and deleted
+                for competency objects. Default competency properties are <b>id</b>, <b>name</b>, and <b>description</b>,
+                and <b>type</b>. Properties added here will be be available when editing competency level objects
+                in the framework editor.
+            </p>
             <div class="table-container">
                 <table class="table is-hoverable is-fullwidth">
                     <thead>
                         <tr>
-                            <th><abbr title="property" />property</th>
-                            <th><abbr title="label" />label</th>
-                            <th><abbr title="description" />description</th>
-                            <th><abbr title="required" />required</th>
-                            <th><abbr title="priority" />priority</th>
-                            <th><abbr title="manage" /><i class="fa fa-cog" /></th>
-                            <th><abbr title="manage" /><i class="fa fa-trash" /></th>
+                            <th><abbr title="unique property ID">property</abbr></th>
+                            <th><abbr title="label to be displayed in form inputs">display label</abbr></th>
+                            <th><abbr title="description of the property">description</abbr></th>
+                            <th><abbr title="category (if any) under which the field is displayed in form inputs">display category</abbr></th>
+                            <th><abbr title="required">required</abbr></th>
+                            <th><abbr title="priority in which the field is displayed in form inputs">display priority</abbr></th>
+                            <th><abbr title="manage"><i class="fa fa-cog" /></abbr></th>
+                            <th><abbr title="delete"><i class="fa fa-trash" /></abbr></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -774,6 +1151,7 @@
                             :description="config.compIdDescription"
                             :required="true"
                             :priority="config.compIdPriorty"
+                            :heading="config.compIdHeading"
                             :custom="false"
                             :readOnly="readOnly"
                             :enforceRequired="true"
@@ -786,6 +1164,7 @@
                             :description="config.compNameDescription"
                             :required="true"
                             priority="primary"
+                            :heading="config.compNameHeading"
                             :custom="false"
                             :readOnly="readOnly"
                             :enforceRequired="true"
@@ -798,6 +1177,7 @@
                             :description="config.compDescDescription"
                             :required="config.compDescRequired"
                             :priority="config.compDescPriority"
+                            :heading="config.compDescHeading"
                             :custom="false"
                             :readOnly="readOnly"
                             :enforceRequired="false"
@@ -810,6 +1190,7 @@
                             :description="config.compTypeDescription"
                             :required="config.compTypeRequired"
                             :priority="config.compTypePriority"
+                            :heading="config.compTypeHeading"
                             :custom="false"
                             :readOnly="readOnly"
                             :enforceRequired="false"
@@ -817,13 +1198,14 @@
                             @change="updateFrameworkCompetencyProperty" />
                         <FrameworkCompetencyPropertyListItem
                             v-for="(prop,idx) in config.compCustomProperties"
-                            :key="prop.propertyName + '_' + prop.label + '_' + prop.description + '_' + prop.required + '_' + prop.priority"
+                            :key="prop.propertyName + '_' + prop.label + '_' + prop.description + '_' + prop.required + '_' + prop.priority + '_' +prop.heading"
                             propertyParent="competency"
                             :property="prop.propertyName"
                             :label="prop.label"
                             :description="prop.description"
                             :required="prop.required"
                             :priority="prop.priority"
+                            :heading="prop.heading"
                             :custom="true"
                             :readOnly="readOnly"
                             :enforceRequired="false"
@@ -835,9 +1217,8 @@
                     </tbody>
                 </table>
             </div>
-
             <div
-                class="field"
+                class="buttons is-right"
                 v-if="!readOnly">
                 <div
                     class="button is-outlined is-small is-primary"
@@ -851,258 +1232,418 @@
                 </div>
             </div>
         </div>
-        <!-- ************************************** Competency Type Enforcement ************************************************ -->
         <div
             class="section"
-            id="enforce-competency-types">
-            <h5>Enforce Competency Types? (optional)</h5>
-            <p v-if="!readOnly">
-                Leave this section empty to allow competencies of any type.
-            </p>
+            v-if="tab === 'competency'">
+            <h4 class="header is-size-3">
+                Optional Competency Property Settings
+            </h4>
+            <!-- ************************************** Competency Type Enforcement ************************************************ -->
             <div
-                class="field"
-                v-if="readOnly">
-                {{ config.compEnforceTypes }}
-            </div>
-            <div
-                v-if="!readOnly"
-                class="field">
-                <div class="select is-small">
-                    <select
-                        v-model="config.compEnforceTypes"
-                        @change="checkEnforceTypesChange">
-                        <option :value="true">
-                            true
-                        </option>
-                        <option :value="false">
-                            false
-                        </option>
-                    </select>
+                class="section box"
+                id="enforce-competency-types">
+                <div class="columns is-multiline is-mobile">
+                    <div class="column">
+                        <h5 class="is-size-3">
+                            Restrict competency types
+                        </h5>
+                    </div>
+                    <div class="column is-narrow">
+                        <div
+                            class="field">
+                            <input
+                                :disabled="readOnly"
+                                @change="checkEnforceTypesChange"
+                                v-model="config.compEnforceTypes"
+                                id="enforceTypesSwitch"
+                                type="checkbox"
+                                name="enforceTypesSwitch"
+                                class="switch is-outlined">
+                            <label for="enforceTypesSwitch" />
+                        </div>
+                    </div>
+                    <div class="column is-12">
+                        <p
+                            class="description"
+                            v-if="!readOnly && config.compEnforceTypes">
+                            Competency types limited to the below table presets. If table is left blank, this feature will be turned off on save.
+                        </p>
+                        <p
+                            class="description"
+                            v-if="!readOnly && !config.compEnforceTypes">
+                            Competency types are not defined, any text field can be entered for competency types. Restrict to limit types.
+                        </p>
+                    </div>
                 </div>
-            </div>
-            <div
-                class="field"
-                v-if="config.compEnforceTypes">
                 <div
-                    class="button is-outlined is-primary is-small"
-                    v-if="!readOnly"
-                    @click="addCompetencyEnforcedTypeDataHolder">
-                    add enforced type
+                    v-if="config.compEnforceTypes"
+                    class="table-container">
+                    <table class="table is-hoverable is-fullwidth">
+                        <thead>
+                            <tr>
+                                <th>
+                                    display label
+                                </th>
+                                <th>
+                                    field value
+                                </th>
+                                <th> <i class="fa fa-trash" /></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                v-for="(et,idx) in config.compEnforcedTypes"
+                                :key="idx">
+                                <th>
+                                    <label
+                                        class="label"
+                                        v-if="readOnly">
+                                        {{ et.display }}
+                                    </label>
+                                    <input
+                                        class="input is-small"
+                                        v-if="!readOnly"
+                                        type="text"
+                                        v-model="et.display">
+                                </th>
+                                <td>
+                                    <p v-if="readOnly">
+                                        {{ et.value }}
+                                    </p>
+                                    <input
+                                        class="input is-small"
+                                        v-if="!readOnly"
+                                        type="text"
+                                        v-model="et.value">
+                                </td>
+                                <td>
+                                    <div
+                                        class="button is-outlined is-small"
+                                        v-if="!readOnly"
+                                        @click="deleteCompetencyEnforcedType(idx)">
+                                        delete
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div
+                    class="buttons is-right"
+                    v-if="config.compEnforceTypes">
+                    <div
+                        class="button is-outlined is-primary is-small"
+                        v-if="!readOnly"
+                        @click="addCompetencyEnforcedTypeDataHolder">
+                        <span class="icon">
+                            <i class="fa fa-plus" />
+                        </span>
+                        <span>add type</span>
+                    </div>
                 </div>
             </div>
-            <div
-                v-if="config.compEnforceTypes"
-                class="table-container">
-                <table class="table is-hoverable is-fullwidth">
-                    <thead>
-                        <tr>
-                            <th>
-                                label
-                            </th>
-                            <th>
-                                value
-                            </th>
-                            <th> <i class="fa fa-trash" /></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr
-                            v-for="(et,idx) in config.compEnforcedTypes"
-                            :key="idx">
-                            <th>
-                                <label
-                                    class="label"
-                                    v-if="readOnly">
-                                    {{ et.display }}
-                                </label>
-                                <input
-                                    class="input is-small"
-                                    v-if="!readOnly"
-                                    type="text"
-                                    v-model="et.display">
-                            </th>
-                            <td>
-                                <p v-if="readOnly">
-                                    {{ et.value }}
-                                </p>
-                                <input
-                                    class="input is-small"
-                                    v-if="!readOnly"
-                                    type="text"
-                                    v-model="et.value">
-                            </td>
-                            <td>
-                                <div
-                                    class="button is-outlined is-small"
-                                    v-if="!readOnly"
-                                    @click="deleteCompetencyEnforcedType(idx)">
-                                    delete
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div
-            class="section"
-            id="allow-levels">
             <!-- ************************************** Allow Levels ************************************************ -->
-            <h5>Allow Levels?</h5>
-            <div v-if="readOnly">
-                {{ config.compAllowLevels }}
-            </div>
-            <div class="field">
+            <div
+                class="section box"
+                id="allow-levels">
+                <!-- ************************************** Allow Levels ************************************************ -->
+                <div class="columns is-multiline">
+                    <div class="column">
+                        <h5>Allow Levels</h5>
+                    </div>
+                    <div class="column is-narrow">
+                        <div class="column is-narrow">
+                            <div
+                                class="field">
+                                <input
+                                    :disabled="readOnly"
+                                    v-model="config.compAllowLevels"
+                                    id="allowLevelsSwitch"
+                                    type="checkbox"
+                                    name="allowLevelsSwitch"
+                                    class="switch is-outlined">
+                                <label for="allowLevelsSwitch" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-12">
+                        <p class="description">
+                            Levels can provide an additional context to define and categorize competencies
+                            within frameworks. Levels can include text strings such as "beginner", "intermediate",
+                            "advanced", or any other text string.
+                        </p>
+                    </div>
+                </div>
                 <div
-                    class="select is-small"
-                    v-if="!readOnly">
-                    <select v-model="config.compAllowLevels">
-                        <option :value="true">
-                            true
-                        </option>
-                        <option :value="false">
-                            false
-                        </option>
-                    </select>
+                    class="field"
+                    v-if="config.compAllowLevels">
+                    <label class="label">level display label: </label>
+                    <div v-if="readOnly">
+                        {{ config.levelLabel }}
+                    </div>
+                    <div v-if="!readOnly">
+                        <input
+                            class="input is-small"
+                            type="text"
+                            v-model="config.levelLabel">
+                    </div>
                 </div>
-            </div>
-            <div
-                class="field"
-                v-if="config.compAllowLevels">
-                <label class="label">level label: </label>
-                <div v-if="readOnly">
-                    {{ config.levelLabel }}
-                </div>
-                <div v-if="!readOnly">
-                    <input
-                        class="input is-small"
-                        type="text"
-                        v-model="config.levelLabel">
-                </div>
-            </div>
-            <div
-                class="field"
-                v-if="config.compAllowLevels">
-                <label class="label">level description: </label>
-                <div v-if="readOnly">
-                    {{ config.levelDescription }}
-                </div>
-                <div v-if="!readOnly">
-                    <input
-                        class="input is-small"
-                        type="text"
-                        v-model="config.levelDescription">
-                </div>
-            </div>
-        </div>
-        <!-- ************************************** Enforce Levels ************************************************ -->
-        <div
-            v-if="config.compAllowLevels"
-            class="section"
-            id="enforce-level-values">
-            <h5>Enforce Level Values? (optional)</h5>
-            <div v-if="readOnly">
-                {{ config.enforceLevelValues }}
-            </div>
-            <div
-                class="field"
-                v-if="!readOnly">
-                <div class="select is-small">
-                    <select v-model="config.enforceLevelValues">
-                        <option :value="true">
-                            true
-                        </option>
-                        <option :value="false">
-                            false
-                        </option>
-                    </select>
-                </div>
-            </div>
-            <div
-                class="field"
-                v-if="config.enforceLevelValues">
                 <div
-                    class="button is-outlined is-primary is-small"
-                    @click="showSelectLevelsModal">
-                    manage enforced levels
+                    v-if="config.compAllowLevels"
+                    class="field">
+                    <label class="label">level description: </label>
+                    <div v-if="readOnly">
+                        {{ config.levelDescription }}
+                    </div>
+                    <div v-if="!readOnly">
+                        <input
+                            class="input is-small"
+                            type="text"
+                            v-model="config.levelDescription">
+                    </div>
                 </div>
-            </div>
-            <div
-                v-if="config.enforceLevelValues"
-                class="table-container">
-                <table class="table is-hoverable is-fullwidth">
-                    <thead>
-                        <tr>
-                            <th>
-                                name
-                            </th>
-                            <th>
-                                description
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr
-                            v-for="lvlId in localEnforcedLevelValues"
-                            :key="lvlId">
-                            <th class="control">
-                                <p>{{ getLevelNameById(lvlId) }}</p>
-                            </th>
-                            <td>
-                                <p>{{ getLevelDescById(lvlId) }}</p>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div
+                    v-if="config.compAllowLevels"
+                    class="field">
+                    <label
+                        class="label"
+                        title="category (if any) under which levels are displayed in form inputs">level display category: </label>
+                    <div v-if="readOnly">
+                        {{ config.levelHeading }}
+                    </div>
+                    <div v-if="!readOnly">
+                        <input
+                            class="input is-small"
+                            type="text"
+                            v-model="config.levelHeading">
+                    </div>
+                </div>
+                <div
+                    class="field"
+                    v-if="config.compAllowLevels">
+                    <label
+                        class="label"
+                        title="priority in which levels are displayed in form inputs">level display priority: </label>
+                    <div v-if="readOnly">
+                        {{ config.levelPriority }}
+                    </div>
+                    <div v-if="!readOnly">
+                        <select v-model="config.levelPriority">
+                            <option value="primary">
+                                primary
+                            </option>
+                            <option value="secondary">
+                                secondary
+                            </option>
+                            <option value="tertiary">
+                                tertiary
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <!-- ************************************** Enforce Levels ************************************************ -->
+                <div
+                    v-if="config.compAllowLevels && tab === 'competency'"
+                    class=""
+                    id="enforce-level-values">
+                    <div class="columns is-multiline is-mobile">
+                        <div class="column">
+                            <h5>Restrict Level Values</h5>
+                        </div>
+                        <div class="column is-narrow">
+                            <div
+                                class="field">
+                                <input
+                                    :disabled="readOnly"
+                                    v-model="config.enforceLevelValues"
+                                    id="enforceLevelsSwitch"
+                                    type="checkbox"
+                                    name="enforceLevelsSwitch"
+                                    class="switch is-outlined">
+                                <label for="enforceLevelsSwitch" />
+                            </div>
+                        </div>
+                        <div class="column is-12">
+                            <p
+                                v-if="config.enforceLevelValues"
+                                class="description">
+                                Levels are restricting. Levels property values in the framework
+                                editor will be limited to the values in the below
+                                table.
+                            </p>
+                            <p
+                                v-if="!config.enforceLevelValues"
+                                class="description">
+                                Levels are not restricted, any text string can be input in the
+                                framework editor. If no values are input in the table below
+                                this option will be turned off.
+                            </p>
+                        </div>
+                    </div>
+                    <div
+                        v-if="config.enforceLevelValues"
+                        class="table-container">
+                        <table class="table is-hoverable is-fullwidth">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        name
+                                    </th>
+                                    <th>
+                                        description
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    v-for="lvlId in localEnforcedLevelValues"
+                                    :key="lvlId">
+                                    <th class="control">
+                                        <p>{{ getLevelNameById(lvlId) }}</p>
+                                    </th>
+                                    <td>
+                                        <p>{{ getLevelDescById(lvlId) }}</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div
+                        class="buttons is-right"
+                        v-if="config.enforceLevelValues">
+                        <div
+                            class="button is-outlined is-primary is-small"
+                            @click="showSelectLevelsModal">
+                            <span class="icon">
+                                <i class="fa fa-cog" />
+                            </span>
+                            <span>manage levels</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <!-- ************************************** Competency Relationships ************************************************ -->
         <div
             class="section"
+            v-if="tab === 'relationships'"
             id="competency-relationships">
-            <h5>Competency Relationships</h5>
+            <h5 class="header is-size-3">
+                Competency Relationships
+            </h5>
+            <p class="description">
+                Relationship can be added as properties on competencies to define how competencies
+                within a framework or between two different frameworks relate to eachother. Enabled
+                relationships will be available in the property drop down when editing competencies in the framework editor.
+            </p>
+            <div class="field">
+                <label
+                    class="label"
+                    title="category (if any) under which relationships are displayed in form inputs">relationships display category: </label>
+                <div v-if="readOnly">
+                    {{ config.relationshipsHeading }}
+                </div>
+                <div v-if="!readOnly">
+                    <input
+                        class="input is-small"
+                        type="text"
+                        v-model="config.relationshipsHeading">
+                </div>
+            </div>
+            <div class="field">
+                <label
+                    class="label"
+                    title="priority in which relationships are displayed in form inputs">relationships display priority: </label>
+                <div v-if="readOnly">
+                    {{ config.relationshipsPriority }}
+                </div>
+                <div v-if="!readOnly">
+                    <select v-model="config.relationshipsPriority">
+                        <option value="primary">
+                            primary
+                        </option>
+                        <option value="secondary">
+                            secondary
+                        </option>
+                        <option value="tertiary">
+                            tertiary
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <!--- list of selected relationships -->
             <div class="table-container">
                 <table class="table is-hoverable is-fullwidth">
                     <thead>
                         <tr>
-                            <td>
-                                relationship
-                            </td>
-                            <td>
-                                label
-                            </td>
-                            <td>
-                                enabled
-                            </td>
+                            <th>
+                                <abbr title="unique relationship ID">
+                                    relationship</abbr>
+                            </th>
+                            <th>
+                                <abbr title="label displayed on form inputs">
+                                    display label</abbr>
+                            </th>
+                            <th>
+                                <abbr title="if enabled shows up in property options">
+                                    enabled</abbr>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         <RelationshipListItem
                             v-for="(relObj, relKey) in this.config.relationships"
-                            :key="relKey"
+                            :key="relObj.label + relObj.enabled"
+                            v-show="relObj.enabled"
                             :relationship="relKey"
                             :label="relObj.label"
                             :enabled="relObj.enabled"
                             :readOnly="readOnly"
+                            scope="list"
                             @change="updateRelationshipProperty" />
                     </tbody>
                 </table>
             </div>
+            <div class="buttons is-right">
+                <div
+                    @click="showManageRelations()"
+                    class="button is-small is-primary is-outlined">
+                    <span class="icon">
+                        <i class="fa fa-cog" />
+                    </span>
+                    <span>manage relationships</span>
+                </div>
+            </div>
         </div>
+        <!-- resource alignment -->
         <div
             class="section"
+            v-if="tab === 'alignments'"
             id="resource-alignments">
             <!-- ************************************** Resource Alignments ************************************************ -->
-            <h5>Resource Alignment</h5>
+            <h5 class="header is-size-3">
+                Resource Alignment
+            </h5>
+            <p class="description">
+                Alignments terms are used to map resources such as learning material, courses, and other
+                content to competencies in CAT. If enabled, the alignment type property will show up in
+                the framework editor when aligning comeptencies to resources.
+            </p>
             <div class="table-container">
                 <table class="table is-hoverable is-fullwidth">
                     <thead>
                         <tr>
                             <th>
-                                alignment
+                                <abbr title="unique alignment ID">
+                                    alignment</abbr>
                             </th>
                             <th>
-                                enabled
+                                <abbr title="description of the relationship">
+                                    description</abbr>
+                            </th>
+                            <th>
+                                <abbr title="if enabled will appear as an option in the framework editor">
+                                    enabled</abbr>
                             </th>
                         </tr>
                     </thead>
@@ -1112,20 +1653,20 @@
                                 teaches
                             </th>
                             <td>
-                                <div v-if="readOnly">
-                                    {{ config.alignments.teaches }}
-                                </div>
-                                <div
-                                    class="select is-small"
-                                    v-if="!readOnly">
-                                    <select v-model="config.alignments.teaches">
-                                        <option :value="true">
-                                            true
-                                        </option>
-                                        <option :value="false">
-                                            false
-                                        </option>
-                                    </select>
+                                The item being described is intended to help a person learn the competency or learning outcome defined by the referenced term.
+                            </td>
+                            <td>
+                                <div class="field">
+                                    <div class="control is-size-3">
+                                        <input
+                                            :disabled="readOnly"
+                                            v-model="config.alignments.teaches"
+                                            id="teachesSwitch"
+                                            type="checkbox"
+                                            name="teachesSwitch"
+                                            class="switch is-outlined">
+                                        <label for="teachesSwitch" />
+                                    </div>
                                 </div>
                             </td>
                         </tr>
@@ -1134,20 +1675,20 @@
                                 assesses
                             </th>
                             <td>
-                                <div v-if="readOnly">
-                                    {{ config.alignments.assesses }}
-                                </div>
-                                <div
-                                    class="select is-small"
-                                    v-if="!readOnly">
-                                    <select v-model="config.alignments.assesses">
-                                        <option :value="true">
-                                            true
-                                        </option>
-                                        <option :value="false">
-                                            false
-                                        </option>
-                                    </select>
+                                The learning resource being described may be used to assess the competency being referenced.
+                            </td>
+                            <td>
+                                <div class="field">
+                                    <div class="control is-size-3">
+                                        <input
+                                            :disabled="readOnly"
+                                            v-model="config.alignments.assesses"
+                                            id="assessesSwitch"
+                                            type="checkbox"
+                                            name="assessesSwitch"
+                                            class="switch is-outlined">
+                                        <label for="assessesSwitch" />
+                                    </div>
                                 </div>
                             </td>
                         </tr>
@@ -1156,20 +1697,42 @@
                                 requires
                             </th>
                             <td>
-                                <div v-if="readOnly">
-                                    {{ config.alignments.requires }}
+                                The competency being referenced is required in order for effective outcome of the learning resource being described.
+                            </td>
+                            <td>
+                                <div class="field">
+                                    <div class="control is-size-3">
+                                        <input
+                                            :disabled="readOnly"
+                                            v-model="config.alignments.requires"
+                                            id="requiresSwitch"
+                                            type="checkbox"
+                                            name="requiresSwitch"
+                                            class="switch is-outlined">
+                                        <label for="requiresSwitch" />
+                                    </div>
                                 </div>
-                                <div
-                                    class="select is-small"
-                                    v-if="!readOnly">
-                                    <select v-model="config.alignments.requires">
-                                        <option :value="true">
-                                            true
-                                        </option>
-                                        <option :value="false">
-                                            false
-                                        </option>
-                                    </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                desires
+                            </th>
+                            <td>
+                                Knowledge of the learning resource being described is desired by the competency being referenced.
+                            </td>
+                            <td>
+                                <div class="field">
+                                    <div class="control is-size-3">
+                                        <input
+                                            :disabled="readOnly"
+                                            v-model="config.alignments.desires"
+                                            id="desiresSwitch"
+                                            type="checkbox"
+                                            name="desiresSwitch"
+                                            class="switch is-outlined">
+                                        <label for="desiresSwitch" />
+                                    </div>
                                 </div>
                             </td>
                         </tr>
@@ -1177,165 +1740,213 @@
                 </table>
             </div>
         </div>
-        <div
-            class="section"
-            id="default-owners">
-            <!-- ************************************** Default Owners ************************************************ -->
-            <h5>Default Owners</h5>
+        <!-- default owners -->
+        <template v-if="tab === 'users'">
             <div
-                class="button is-outlined is-primary is-small"
-                v-if="!readOnly"
-                @click="openSelectPermissionEntitiesModal('owner')">
-                manage default owners
+                class="section"
+                id="default-owners">
+                <!-- ************************************** Default Owners ************************************************ -->
+                <h5 class="header is-size-3">
+                    Default Owners
+                </h5>
+                <p class="description">
+                    Owners can edit, delete, comment, as well as manage access on frameworks.
+                </p>
+                <div
+                    v-if="localDefaultOwners.length > 0"
+                    class="table-container">
+                    <table class="table is-hoverable is-fullwidth">
+                        <thead>
+                            <tr>
+                                <th>
+                                    name
+                                </th>
+                                <th>
+                                    email
+                                </th>
+                                <th>
+                                    type
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                v-for="pk in localDefaultOwners"
+                                :key="pk">
+                                <th class="control">
+                                    <p>{{ getPermissionEntityName(pk) }}</p>
+                                </th>
+                                <td>
+                                    <p>{{ getPermissionEntityEmail(pk) }}</p>
+                                </td>
+                                <td>
+                                    <i
+                                        v-if="getPermissionEntityType(pk).equalsIgnoreCase('person')"
+                                        class="fa fa-user"
+                                        title="user" />
+                                    <i
+                                        v-if="getPermissionEntityType(pk).equalsIgnoreCase('group')"
+                                        class="fa fa-users"
+                                        title="group" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div
+                    v-else
+                    class="has-text-right has-text-small">
+                    No default owners added.
+                </div>
+                <div class="buttons is-right">
+                    <div
+                        class="button is-outlined is-primary is-small"
+                        v-if="!readOnly"
+                        @click="openSelectPermissionEntitiesModal('owner')">
+                        <span class="icon">
+                            <i class="fa fa-cog" />
+                        </span><span>manage default owners</span>
+                    </div>
+                </div>
             </div>
             <div
-                v-if="localDefaultOwners.length > 0"
-                class="table-container">
-                <table class="table is-hoverable is-fullwidth">
-                    <thead>
-                        <tr>
-                            <th>
-                                name
-                            </th>
-                            <th>
-                                email
-                            </th>
-                            <th>
-                                type
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr
-                            v-for="pk in localDefaultOwners"
-                            :key="pk">
-                            <th class="control">
-                                <p>{{ getPermissionEntityName(pk) }}</p>
-                            </th>
-                            <td>
-                                <p>{{ getPermissionEntityEmail(pk) }}</p>
-                            </td>
-                            <td>
-                                <i
-                                    v-if="getPermissionEntityType(pk).equalsIgnoreCase('person')"
-                                    class="fa fa-user"
-                                    title="user" />
-                                <i
-                                    v-if="getPermissionEntityType(pk).equalsIgnoreCase('group')"
-                                    class="fa fa-users"
-                                    title="group" />
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div
-            class="section"
-            id="default-readers">
-            <!-- ************************************** Default Readers ************************************************ -->
-            <h5>Default Readers</h5>
-            <div
-                class="button is-outlined is-primary is-small"
-                v-if="!readOnly"
-                @click="openSelectPermissionEntitiesModal('reader')">
-                manage default readers
-            </div>
-            <div
-                v-if="localDefaultReaders.length > 0"
-                class="table-container">
-                <table class="table is-hoverable is-fullwidth">
-                    <thead>
-                        <tr>
-                            <th>
-                                name
-                            </th>
-                            <th>
-                                email
-                            </th>
-                            <th>
-                                type
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr
-                            v-for="pk in localDefaultReaders"
-                            :key="pk">
-                            <th class="control">
-                                <p>{{ getPermissionEntityName(pk) }}</p>
-                            </th>
-                            <td>
-                                <p>{{ getPermissionEntityEmail(pk) }}</p>
-                            </td>
-                            <td>
-                                <i
-                                    v-if="getPermissionEntityType(pk).equalsIgnoreCase('person')"
-                                    class="fa fa-user"
-                                    title="user" />
-                                <i
-                                    v-if="getPermissionEntityType(pk).equalsIgnoreCase('group')"
-                                    class="fa fa-users"
-                                    title="group" />
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div
-            class="section"
-            id="default-commenters">
-            <!-- ************************************** Default Commenters ************************************************ -->
-            <h5>Default Commenters</h5>
-            <div
-                class="button is-outlined is-primary is-small"
-                v-if="!readOnly"
-                @click="openSelectPermissionEntitiesModal('commenter')">
-                manage default commenters
+                class="section"
+                id="default-readers">
+                <!-- ************************************** Default Readers ************************************************ -->
+                <h5 class="header is-size-3">
+                    Default Readers
+                </h5>
+                <p class="description">
+                    Readers can read and comment on frameworks.
+                </p>
+                <div
+                    v-if="localDefaultReaders.length > 0"
+                    class="table-container">
+                    <table class="table is-hoverable is-fullwidth">
+                        <thead>
+                            <tr>
+                                <th>
+                                    name
+                                </th>
+                                <th>
+                                    email
+                                </th>
+                                <th>
+                                    type
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                v-for="pk in localDefaultReaders"
+                                :key="pk">
+                                <th class="control">
+                                    <p>{{ getPermissionEntityName(pk) }}</p>
+                                </th>
+                                <td>
+                                    <p>{{ getPermissionEntityEmail(pk) }}</p>
+                                </td>
+                                <td>
+                                    <i
+                                        v-if="getPermissionEntityType(pk).equalsIgnoreCase('person')"
+                                        class="fa fa-user"
+                                        title="user" />
+                                    <i
+                                        v-if="getPermissionEntityType(pk).equalsIgnoreCase('group')"
+                                        class="fa fa-users"
+                                        title="group" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div
+                    v-else
+                    class="has-text-right has-text-small">
+                    No default readers added.
+                </div>
+                <div class="buttons is-right">
+                    <div
+                        class="button is-outlined is-primary is-small"
+                        v-if="!readOnly"
+                        @click="openSelectPermissionEntitiesModal('reader')">
+                        <span class="icon">
+                            <i class="fa fa-cog" />
+                        </span>
+                        <span>manage default readers</span>
+                    </div>
+                </div>
             </div>
             <div
-                v-if="localDefaultCommenters.length > 0"
-                class="table-container">
-                <table class="table is-hoverable is-fullwidth">
-                    <thead>
-                        <tr>
-                            <th>
-                                name
-                            </th>
-                            <th>
-                                email
-                            </th>
-                            <th>
-                                type
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr
-                            v-for="pk in localDefaultCommenters"
-                            :key="pk">
-                            <th class="control">
-                                <p>{{ getPermissionEntityName(pk) }}</p>
-                            </th>
-                            <td>
-                                <p>{{ getPermissionEntityEmail(pk) }}</p>
-                            </td>
-                            <td>
-                                <i
-                                    v-if="getPermissionEntityType(pk).equalsIgnoreCase('person')"
-                                    class="fa fa-user"
-                                    title="user" />
-                                <i
-                                    v-if="getPermissionEntityType(pk).equalsIgnoreCase('group')"
-                                    class="fa fa-users"
-                                    title="group" />
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                class="section"
+                id="default-commenters"
+                v-if="showDefaultCommenters">
+                <!-- ************************************** Default Commenters ************************************************ -->
+                <h5 class="header is-size-3">
+                    Default Commenters
+                </h5>
+                <p class="description">
+                    Commenters can read and comment on frameworks.
+                </p>
+                <div
+                    v-if="localDefaultCommenters.length > 0"
+                    class="table-container">
+                    <table class="table is-hoverable is-fullwidth">
+                        <thead>
+                            <tr>
+                                <th>
+                                    name
+                                </th>
+                                <th>
+                                    email
+                                </th>
+                                <th>
+                                    type
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                v-for="pk in localDefaultCommenters"
+                                :key="pk">
+                                <th class="control">
+                                    <p>{{ getPermissionEntityName(pk) }}</p>
+                                </th>
+                                <td>
+                                    <p>{{ getPermissionEntityEmail(pk) }}</p>
+                                </td>
+                                <td>
+                                    <i
+                                        v-if="getPermissionEntityType(pk).equalsIgnoreCase('person')"
+                                        class="fa fa-user"
+                                        title="user" />
+                                    <i
+                                        v-if="getPermissionEntityType(pk).equalsIgnoreCase('group')"
+                                        class="fa fa-users"
+                                        title="group" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div
+                    v-else
+                    class="has-text-right has-text-small">
+                    No default commenters added.
+                </div>
+                <div class="buttons is-right">
+                    <div
+                        class="button is-outlined is-primary is-small"
+                        v-if="!readOnly"
+                        @click="openSelectPermissionEntitiesModal('commenter')">
+                        <span class="icon">
+                            <i class="fa fa-cog" />
+                        </span>
+                        <span>manage default commenters</span>
+                    </div>
+                </div>
             </div>
-        </div>
+        </template>
         <!-- ************************************** Validation ************************************************ -->
         <div class="section">
             <div v-if="configInvalid">
@@ -1347,84 +1958,79 @@
                     *Configuration description is required
                 </p>
                 <p v-if="configEnforcedTypesInvalid">
-                    *Enforced types must have a label and value
+                    *Enforced types must have a display label and field value
                 </p>
                 <p v-if="configRelationshipsInvalid">
-                    *Enabled relationships must have a label
+                    *Enabled relationships must have a display label
                 </p>
                 <p v-if="configFrameworkIdLabelInvalid">
-                    *Framework ID Label is required
+                    *Framework ID display label is required
                 </p>
                 <p v-if="configFrameworkIdDescriptionInvalid">
-                    *Framework ID Description is required
+                    *Framework ID description is required
                 </p>
                 <p v-if="configFrameworkNameLabelInvalid">
-                    *Framework Name Label is required
+                    *Framework Name display label is required
                 </p>
                 <p v-if="configFrameworkNameDescriptionInvalid">
-                    *Framework Name Description is required
+                    *Framework Name description is required
                 </p>
                 <p v-if="configFrameworkDescLabelInvalid">
-                    *Framework Description Label is required
+                    *Framework Description display label is required
                 </p>
                 <p v-if="configFrameworkDescDescriptionInvalid">
-                    *Framework Description Description is required
+                    *Framework Description description is required
                 </p>
                 <p v-if="configCompetencyIdLabelInvalid">
-                    *Competency ID Label required
+                    *Competency ID display label required
                 </p>
                 <p v-if="configCompetencyIdDescriptionInvalid">
-                    *Competency ID Description is required
+                    *Competency ID description is required
                 </p>
                 <p v-if="configCompetencyNameLabelInvalid">
-                    *Competency Name Label is required
+                    *Competency Name display label is required
                 </p>
                 <p v-if="configCompetencyNameDescriptionInvalid">
-                    *Competency Name Description is required
+                    *Competency Name description is required
                 </p>
                 <p v-if="configCompetencyDescLabelInvalid">
-                    *Competency Description Label is required
+                    *Competency Description display label is required
                 </p>
                 <p v-if="configCompetencyDescDescriptionInvalid">
-                    *Competency Description Description is required
+                    *Competency Description description is required
                 </p>
                 <p v-if="configCompetencyTypeLabelInvalid">
-                    *Competency Type Label is required
+                    *Competency Type display label is required
                 </p>
                 <p v-if="configCompetencyTypeDescriptionInvalid">
-                    *Competency Type Description is required
+                    *Competency Type description is required
                 </p>
             </div>
         </div>
         <!-- ************************************** Actions ************************************************ -->
         <div class="section">
             <div
-                class="buttons"
+                class="buttons is-spaced"
                 v-if="!readOnly">
                 <div
-                    class="button is-outlined is-primary"
-                    @click="$emit('setBrowserDefault', config.id)">
-                    set as browser default
+                    class="button is-outlined is-dark"
+                    @click="$emit('cancel')">
+                    <span class="icon">
+                        <i class="fa fa-times" />
+                    </span>
+                    <span>cancel</span>
                 </div>
                 <div
                     class="button is-outlined is-primary"
                     @click="validateCurrentConfigAndEmitSave">
-                    save
-                </div>
-                <div
-                    class="button is-outlined is-primary"
-                    @click="$emit('cancel')">
-                    cancel
+                    <span class="icon">
+                        <i class="fa fa-save" />
+                    </span><span>save configuration</span>
                 </div>
             </div>
             <div
-                class="buttons"
+                class="buttons is-right"
                 v-if="readOnly">
-                <div
-                    class="button is-outlined is-primary"
-                    @click="$emit('setBrowserDefault', config.id)">
-                    set as browser default
-                </div>
                 <div
                     class="button is-outlined is-primary"
                     @click="$emit('back')">
@@ -1458,11 +2064,18 @@ export default {
     },
     data: function() {
         return {
+            defaultBrowserConfigId: '',
+            showDefaultCommenters: false,
+            customPropertyValuesLimited: false,
+            showManageRelationshipsModal: false,
+            tab: 'framework',
             LEVEL_SEARCH_SIZE: 10000,
             GROUP_SEARCH_SIZE: 10000,
             PERSON_SEARCH_SIZE: 10000,
             DEFAULT_CUSTOM_PROPERTY_CONTEXT: 'https://schema.cassproject.org/0.4/',
             DEFAULT_CUSTOM_PROPERTY_RANGE: 'http://schema.org/Text',
+            LANG_STRING_RANGE: 'http://www.w3.org/2000/01/rdf-schema#langString',
+            DEFAULT_HEADING: "General",
             configDetailsBusy: false,
             configInvalid: false,
             configNameInvalid: false,
@@ -1494,6 +2107,9 @@ export default {
             customPropertyLabel: '',
             customPropertyPriority: '',
             customPropertyRequired: false,
+            customPropertyHeading: '',
+            customPropertyAllowMultiples: false,
+            customPropertyOnePerLanguage: true,
             customPropertyPermittedValues: [],
             customPropertyInvalid: false,
             customPropertyPropertyNameExists: false,
@@ -1522,7 +2138,10 @@ export default {
             localEnforcedLevelValues: this.config.enforcedLevelValues,
             localDefaultOwners: this.config.defaultOwners,
             localDefaultReaders: this.config.defaultReaders,
-            localDefaultCommenters: this.config.defaultCommenters
+            localDefaultCommenters: this.config.defaultCommenters,
+            cassRelations: ['isEnabledBy', 'narrows', 'broadens', 'requires', 'desires', 'isEquivalentTo', 'isRelatedTo', 'enables'],
+            asnRelations: ['majorRelated', 'minorRelated'],
+            gemqRelations: ['hasChild', 'isChildOf']
         };
     },
     components: {
@@ -1530,20 +2149,26 @@ export default {
         RelationshipListItem
     },
     methods: {
+        showManageRelations: function() {
+            this.showManageRelationshipsModal = true;
+        },
+        hideManageRelations: function() {
+            this.showManageRelationshipsModal = false;
+        },
         getPermissionEntityEmail(pk) {
             let pe = this.getPermissionEntityByPk(pk);
             if (pe) return pe.email;
-            else return 'unknown';
+            else return 'unknown user/group email';
         },
         getPermissionEntityType(pk) {
             let pe = this.getPermissionEntityByPk(pk);
             if (pe) return pe.type;
-            else return 'unknown';
+            else return 'unknown type';
         },
         getPermissionEntityName(pk) {
             let pe = this.getPermissionEntityByPk(pk);
             if (pe) return pe.name;
-            else return 'unknown';
+            else return 'unknown user/group name';
         },
         getPermissionEntityByPk(pk) {
             for (let pe of this.permissionEntityList) {
@@ -1877,6 +2502,9 @@ export default {
             newProp.label = this.customPropertyLabel;
             newProp.priority = this.customPropertyPriority;
             newProp.required = this.customPropertyRequired;
+            newProp.heading = this.customPropertyHeading;
+            newProp.allowMultiples = this.customPropertyAllowMultiples;
+            newProp.onePerLanguage = this.customPropertyOnePerLanguage;
             if (this.shouldAllowCustomPropertyPermittedValues) newProp.permittedValues = this.customPropertyPermittedValues;
             else newProp.permittedValues = [];
             if (this.customPropertyParent.equals('framework')) this.config.fwkCustomProperties.push(newProp);
@@ -1890,6 +2518,9 @@ export default {
                 propToUpdate.label = this.customPropertyLabel;
                 propToUpdate.priority = this.customPropertyPriority;
                 propToUpdate.required = this.customPropertyRequired;
+                propToUpdate.heading = this.customPropertyHeading;
+                propToUpdate.allowMultiples = this.customPropertyAllowMultiples;
+                propToUpdate.onePerLanguage = this.customPropertyOnePerLanguage;
                 if (this.shouldAllowCustomPropertyPermittedValues) propToUpdate.permittedValues = this.customPropertyPermittedValues;
                 else propToUpdate.permittedValues = [];
             }
@@ -1937,6 +2568,9 @@ export default {
             this.customPropertyLabel = '';
             this.customPropertyPriority = '';
             this.customPropertyRequired = false;
+            this.customPropertyHeading = '';
+            this.customPropertyAllowMultiples = false;
+            this.customPropertyOnePerLanguage = true;
             this.customPropertyPermittedValues = [];
             this.customPropertyInvalid = false;
             this.customPropertyPropertyNameExists = false;
@@ -1991,7 +2625,12 @@ export default {
             this.customPropertyLabel = prop.label;
             this.customPropertyPriority = prop.priority;
             this.customPropertyRequired = prop.required;
+            this.customPropertyHeading = prop.heading;
+            this.customPropertyAllowMultiples = prop.allowMultiples;
+            this.customPropertyOnePerLanguage = prop.onePerLanguage;
             this.customPropertyPermittedValues = this.generateCopyOfCustomPropertyPermittedValues(prop);
+            if (this.customPropertyPermittedValues.length > 0) this.customPropertyValuesLimited = true;
+            else this.customPropertyValuesLimited = false;
         },
         manageCustomFrameworkProperty: function(propertyIdx) {
             this.initCustomPropertyDataHoldersAsExistingProperty('framework', this.config.fwkCustomProperties[propertyIdx]);
@@ -2019,16 +2658,19 @@ export default {
             if (field.equals("label")) this.config.fwkIdLabel = newValue;
             else if (field.equals("description")) this.config.fwkIdDescription = newValue;
             else if (field.equals("priority")) this.config.fwkIdPriorty = newValue;
+            else if (field.equals("heading")) this.config.fwkIdHeading = newValue;
         },
         updateFrameworkNameProperty: function(field, newValue) {
             if (field.equals("label")) this.config.fwkNameLabel = newValue;
             else if (field.equals("description")) this.config.fwkNameDescription = newValue;
+            else if (field.equals("heading")) this.config.fwkNameHeading = newValue;
         },
         updateFrameworkDescriptionProperty: function(field, newValue) {
             if (field.equals("label")) this.config.fwkDescLabel = newValue;
             else if (field.equals("description")) this.config.fwkDescDescription = newValue;
             else if (field.equals("priority")) this.config.fwkDescPriority = newValue;
             else if (field.equals("required")) this.config.fwkDescRequired = newValue;
+            else if (field.equals("heading")) this.config.fwkDescHeading = newValue;
         },
         updateFrameworkCustomProperty: function(propertyName, field, newValue) {
             let propToUpdate = this.getCustomProperty('framework', propertyName);
@@ -2036,6 +2678,7 @@ export default {
             else if (field.equals("description")) propToUpdate.description = newValue;
             else if (field.equals("priority")) propToUpdate.priority = newValue;
             else if (field.equals("required")) propToUpdate.required = newValue;
+            else if (field.equals("heading")) propToUpdate.heading = newValue;
         },
         updateFrameworkProperty: function(propertyName, field, newValue) {
             if (propertyName.equals("id")) this.updateFrameworkIdProperty(field, newValue);
@@ -2047,22 +2690,26 @@ export default {
             if (field.equals("label")) this.config.compIdLabel = newValue;
             else if (field.equals("description")) this.config.compIdDescription = newValue;
             else if (field.equals("priority")) this.config.compIdPriorty = newValue;
+            else if (field.equals("heading")) this.config.compIdHeading = newValue;
         },
         updateCompetencyNameProperty: function(field, newValue) {
             if (field.equals("label")) this.config.compNameLabel = newValue;
             else if (field.equals("description")) this.config.compNameDescription = newValue;
+            else if (field.equals("heading")) this.config.compNameHeading = newValue;
         },
         updateCompetencyDescriptionProperty: function(field, newValue) {
             if (field.equals("label")) this.config.compDescLabel = newValue;
             else if (field.equals("description")) this.config.compDescDescription = newValue;
             else if (field.equals("priority")) this.config.compDescPriority = newValue;
             else if (field.equals("required")) this.config.compDescRequired = newValue;
+            else if (field.equals("heading")) this.config.compDescHeading = newValue;
         },
         updateCompetencyTypeProperty: function(field, newValue) {
             if (field.equals("label")) this.config.compTypeLabel = newValue;
             else if (field.equals("description")) this.config.compTypeDescription = newValue;
             else if (field.equals("priority")) this.config.compTypePriority = newValue;
             else if (field.equals("required")) this.config.compTypeRequired = newValue;
+            else if (field.equals("heading")) this.config.compTypeHeading = newValue;
         },
         updateCompetencyCustomProperty: function(propertyName, field, newValue) {
             let propToUpdate = this.getCustomProperty('competency', propertyName);
@@ -2070,6 +2717,7 @@ export default {
             else if (field.equals("description")) propToUpdate.description = newValue;
             else if (field.equals("priority")) propToUpdate.priority = newValue;
             else if (field.equals("required")) propToUpdate.required = newValue;
+            else if (field.equals("heading")) propToUpdate.heading = newValue;
         },
         updateCompetencyProperty: function(propertyName, field, newValue) {
             if (propertyName.equals("id")) this.updateCompetencyIdProperty(field, newValue);
@@ -2197,9 +2845,47 @@ export default {
             let paramObj = {};
             paramObj.size = this.LEVEL_SEARCH_SIZE;
             EcLevel.search(window.repo, '', this.initializeLevelListSuccess, this.initializeLevelListFailure, paramObj);
+        },
+        isCassRelation: function(relType) {
+            return this.cassRelations.includes(relType);
+        },
+        isAsnRelation: function(relType) {
+            return this.asnRelations.includes(relType);
+        },
+        isGemqRelation: function(relType) {
+            return this.gemqRelations.includes(relType);
+        },
+        isOtherRelation: function(relType) {
+            return !(this.cassRelations.includes(relType) || this.asnRelations.includes(relType) || this.gemqRelations.includes(relType));
         }
     },
     computed: {
+        isSetInstanceDisabled() {
+            if (!this.defaultConfigId) { // if there is no default instance set
+                return false;
+            } else if (this.defaultConfigId === this.config.is && !this.readOnly) {
+                return false;
+            } else {
+                return true;
+            }
+        },
+        isBrowserDefault: {
+            get() {
+                if (this.config && (this.defaultBrowserConfigId === this.config.id)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+            set(val) {
+                console.log("val", val);
+                if (val) {
+                    this.$emit('setBrowserDefault', this.config.id);
+                } else {
+                    this.$emit('removeBrowserDefaultConfig');
+                }
+            }
+        },
         customPropertyRangeReadable: function() {
             if (this.customPropertyRange.equals('http://www.w3.org/2000/01/rdf-schema#langString')) return 'Lang-String';
             else if (this.customPropertyRange.equals('http://schema.org/URL')) return 'URL';
@@ -2211,6 +2897,10 @@ export default {
         },
         shouldAllowCustomPropertyPermittedValues: function() {
             if (this.customPropertyRange.equals('http://schema.org/Text')) return true;
+            else return false;
+        },
+        shouldAllowOnePerLangChoice: function() {
+            if (this.customPropertyRange.equals(this.LANG_STRING_RANGE)) return true;
             else return false;
         },
         filteredLevels() {
@@ -2232,21 +2922,33 @@ export default {
     },
     mounted() {
         this.initializeDataLists();
+        this.defaultBrowserConfigId = this.getDefaultBrowserConfigId();
     }
 };
 </script>
 
 <style lang="scss" scoped>
+    @import '@/scss/variables.scss';
+
+    #configuration-details {
+        transform: translateX(0);
+    }
+    .is-default {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        width: 150px;
+    }
     h3 {
-        font-size: 2rem;
+        font-size: $size-3;
         padding-bottom: 1rem;
     }
     h4 {
-        font-size: 1.6rem;
+        font-size:$size-4;
         padding-bottom: 1rem;
     }
     h5 {
-        font-size: 1.3rem;
+        font-size: $size-5;
         padding-bottom: .5rem;
     }
     .listHdr {
@@ -2256,6 +2958,10 @@ export default {
         min-height: 20rem;
         max-height: 20rem;
         overflow: auto;
+    }
+    .description {
+        padding-bottom: .75rem;
+        font-size: $size-7;
     }
 </style>
 

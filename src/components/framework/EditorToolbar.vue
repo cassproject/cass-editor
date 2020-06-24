@@ -3,142 +3,159 @@
         id="framework-editor-toolbar">
         <!-- property view -->
         <div class="fet__wrapper">
-            <div
-                class="dropdown"
-                :class="{ 'is-active': showPropertyViewDropDown}">
-                <div class="dropdown-trigger">
-                    <button
-                        class="button is-text"
-                        @click="showPropertyViewDropDown = !showPropertyViewDropDown"
-                        aria-haspopup="true">
-                        <span>View</span>
-                        <span class="icon is-small">
-                            <i
-                                class="fas fa-angle-down has-text-link"
-                                aria-hidden="true" />
-                        </span>
-                    </button>
-                </div>
+            <div class="left-side">
                 <div
-                    class="dropdown-menu"
-                    id="property-dropdown"
-                    role="menu">
-                    <div class="dropdown-content">
-                        <a
-                            @click="changeProperties('primary')"
-                            class="dropdown-item">
-                            <span
-                                :class="activeView==='primary'? '' : 'is-hidden'"
-                                class="icon">
-                                <i class="fa fa-check has-text-primary" />
+                    class="dropdown"
+                    :class="{ 'is-active': showPropertyViewDropDown}">
+                    <div class="dropdown-trigger">
+                        <button
+                            class="button is-text"
+                            @click="showPropertyViewDropDown = !showPropertyViewDropDown"
+                            aria-haspopup="true">
+                            <span>View</span>
+                            <span class="icon is-small">
+                                <i
+                                    class="fas fa-angle-down has-text-link"
+                                    aria-hidden="true" />
                             </span>
-                            Primary Properties
-                        </a>
-                        <a
-                            @click="changeProperties('secondary')"
-                            class="dropdown-item">
-                            <span
-                                :class="activeView==='secondary'? '' : 'is-hidden'"
-                                class="icon">
-                                <i class="fa fa-check has-text-link" />
-                            </span>
-                            Secondary Properties
-                        </a>
-                        <a
-                            @click="changeProperties('tertiary')"
-                            class="dropdown-item">
-                            <span
-                                :class="activeView==='tertiary'? '' : 'is-hidden'"
-                                class="icon">
-                                <i class="fa fa-check" />
-                            </span>
-                            Tertiary Properties
-                        </a>
+                        </button>
+                    </div>
+                    <div
+                        class="dropdown-menu"
+                        id="property-dropdown"
+                        role="menu">
+                        <div class="dropdown-content">
+                            <a
+                                @click="changeProperties('primary')"
+                                class="dropdown-item">
+                                <span
+                                    :class="activeView==='primary'? '' : 'is-hidden'"
+                                    class="icon">
+                                    <i class="fa fa-check has-text-primary" />
+                                </span>
+                                Primary Properties
+                            </a>
+                            <a
+                                @click="changeProperties('secondary')"
+                                class="dropdown-item">
+                                <span
+                                    :class="activeView==='secondary'? '' : 'is-hidden'"
+                                    class="icon">
+                                    <i class="fa fa-check has-text-link" />
+                                </span>
+                                Secondary Properties
+                            </a>
+                            <a
+                                @click="changeProperties('tertiary')"
+                                class="dropdown-item">
+                                <span
+                                    :class="activeView==='tertiary'? '' : 'is-hidden'"
+                                    class="icon">
+                                    <i class="fa fa-check" />
+                                </span>
+                                Tertiary Properties
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <!-- share: export or manage users -->
-            <div
-                class="dropdown"
-                :class="{ 'is-active': showShareDropdown}">
-                <div class="dropdown-trigger">
-                    <button
-                        class="button is-text"
-                        @click="showShareDropdown = !showShareDropdown"
-                        aria-haspopup="true">
-                        <span>Share</span>
-                        <span class="icon is-small">
-                            <i
-                                class="fas fa-angle-down has-text-link"
-                                aria-hidden="true" />
-                        </span>
-                    </button>
-                </div>
+                <!-- share: export or manage users -->
                 <div
-                    class="dropdown-menu"
-                    id="share-menu"
-                    role="menu">
-                    <div class="dropdown-content">
-                        <a
-                            @click="$emit('showExportModal'); showShareDropdown = false;"
-                            class="dropdown-item">
-                            Export
-                        </a>
-                        <a
-                            @click="showManageUsersModal(); showShareDropdown = false;"
-                            class="dropdown-item"
-                            v-if="canEditFramework">
-                            Manage Users
-                        </a>
-                        <a
-                            @click="showManageUsersModal(); showShareDropdown = false;"
-                            class="dropdown-item"
-                            v-else>
-                            Get Shareable Link
-                        </a>
+                    class="dropdown"
+                    :class="{ 'is-active': showShareDropdown}">
+                    <div class="dropdown-trigger">
+                        <button
+                            class="button is-text"
+                            @click="showShareDropdown = !showShareDropdown"
+                            aria-haspopup="true">
+                            <span>Framework</span>
+                            <span class="icon is-small">
+                                <i
+                                    class="fas fa-angle-down has-text-link"
+                                    aria-hidden="true" />
+                            </span>
+                        </button>
+                    </div>
+                    <div
+                        class="dropdown-menu"
+                        id="share-menu"
+                        role="menu">
+                        <div class="dropdown-content">
+                            <a
+                                :class="{ 'is-disabled': !canExport}"
+                                @click="handleExportClick()"
+                                class="dropdown-item">
+                                Export
+                            </a>
+                            <a
+                                @click="showManageUsersModal(); showShareDropdown = false;"
+                                class="dropdown-item"
+                                v-if="loggedIn">
+                                Manage Users
+                            </a>
+                            <a
+                                @click="showManageUsersModal(); showShareDropdown = false;"
+                                class="dropdown-item"
+                                v-else>
+                                Get Shareable Link
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <!-- hook this button up to add a new node at the top of the
+                <!-- hook this button up to add a new node at the top of the
             hierarchy in editing mode -->
-            <div
-                v-if="showAddComments"
-                @click="handleClickAddComment"
-                class="button is-text has-text-primary">
-                <span class="icon">
-                    <i class="fas fa-comment-medical" />
-                </span>
+                <div
+                    v-if="showAddComments"
+                    @click="handleClickAddComment"
+                    class="button is-text has-text-primary">
+                    <span class="icon">
+                        <i class="fas fa-comment-medical" />
+                    </span>
+                </div>
+                <div
+                    v-if="showViewComments"
+                    @click="$store.commit('app/showRightAside', 'Comments')"
+                    class="button is-text has-text-dark">
+                    <span class="icon">
+                        <i class="fas fa-comments" />
+                    </span>
+                </div>
+                <div
+                    class="button is-text has-text-dark"
+                    @click="onClickUndo"
+                    v-if="canEditFramework">
+                    <span class="icon">
+                        <i class="fas fa-undo-alt " />
+                    </span>
+                </div>
+                <div
+                    @click="$store.commit('app/showRightAside', 'Versions')"
+                    class="button is-text"
+                    v-if="canEditFramework">
+                    <span class="icon">
+                        <i class="fas fa-history has-text-dark" />
+                    </span>
+                </div>
             </div>
-            <div
-                v-if="showViewComments"
-                @click="$store.commit('app/showRightAside', 'Comments')"
-                class="button is-text has-text-dark">
-                <span class="icon">
-                    <i class="fas fa-comments" />
-                </span>
-            </div>
-            <div
-                class="button is-text has-text-dark"
-                @click="onClickUndo"
-                v-if="canEditFramework">
-                <span class="icon">
-                    <i class="fas fa-undo-alt " />
-                </span>
-            </div>
-            <div
-                @click="$store.commit('app/showRightAside', 'Versions')"
-                class="button is-text"
-                v-if="canEditFramework">
-                <span class="icon">
-                    <i class="fas fa-history has-text-dark" />
-                </span>
+            <div class="right-side">
+                <div
+                    class="button is-text is-pulled-right"
+                    v-if="canEditFramework && !conceptMode"
+                    @click="showManageConfigurationModal(); showShareDropdown = false;">
+                    <span class="icon">
+                        <i class="fas fa-cog has-text-dark" />
+                    </span>
+                    <span>{{ defaultFrameworkConfigName }}</span>
+                </div>
             </div>
         </div>
     </div>
 </template>
 <script>
+
+import {cassUtil} from '../../mixins/cassUtil';
 export default {
     name: 'EditorToolbar',
+    mixins: [ cassUtil ],
     data() {
         return {
             showPropertyViewDropDown: false,
@@ -146,10 +163,17 @@ export default {
             activeView: "primary",
             repo: window.repo,
             editsFinishedCounter: 0,
-            totalEditsCounter: 0
+            totalEditsCounter: 0,
+            defaultFrameworkConfigName: null
         };
     },
     methods: {
+        handleExportClick: function() {
+            if (this.canExport) {
+                this.$emit('showExportModal');
+                this.showShareDropdown = false;
+            }
+        },
         handleClickAddComment: function() {
             this.$store.commit('editor/setAddCommentAboutId', this.$store.getters['editor/framework'].shortId());
             this.$store.commit('editor/setAddCommentType', 'new');
@@ -160,6 +184,9 @@ export default {
         },
         showManageUsersModal() {
             this.$store.commit('app/showModal', {component: 'Share'});
+        },
+        showManageConfigurationModal() {
+            this.$store.commit('app/showModal', {component: 'Configuration'});
         },
         changeProperties(type) {
             this.$emit('changeProperties', type);
@@ -301,17 +328,29 @@ export default {
                 }
             }
             return rld;
+        },
+        getConfigurationName: function() {
+            if (this.$store.getters['editor/framework'].configuration) {
+                let config = EcRepository.getBlocking(this.$store.getters['editor/framework'].configuration);
+                if (config) {
+                    this.defaultFrameworkConfigName = config.name;
+                } else {
+                    this.defaultFrameworkConfigName = "No configuration";
+                }
+            } else {
+                this.defaultFrameworkConfigName = "No configuration";
+            }
         }
     },
     computed: {
         showAddComments() {
-            if (this.queryParams.concepts === "true") {
+            if (this.$store.getters['editor/conceptMode'] === true) {
                 return false;
             }
             return this.$store.state.app.canAddComments;
         },
         showViewComments() {
-            if (this.queryParams.concepts === "true") {
+            if (this.$store.getters['editor/conceptMode'] === true) {
                 return false;
             }
             return this.$store.state.app.canViewComments;
@@ -329,6 +368,27 @@ export default {
                 return false;
             }
             return true;
+        },
+        loggedIn: function() {
+            if (EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
+                return true;
+            }
+            return false;
+        },
+        configuration: function() {
+            return this.$store.getters['editor/framework'].configuration;
+        },
+        conceptMode: function() {
+            return this.$store.getters['editor/conceptMode'];
+        },
+        canExport: function() {
+            if (this.$store.state.editor.private) {
+                return false;
+            } else if (this.framework.reader && this.framework.reader.length > 0) {
+                return false;
+            } else {
+                return true;
+            }
         }
     },
     watch: {
@@ -341,7 +401,13 @@ export default {
                 this.$store.commit('editor/framework', EcRepository.getBlocking(framework.shortId()));
                 this.$store.commit('editor/recomputeHierarchy', true);
             }
+        },
+        configuration: function() {
+            this.getConfigurationName();
         }
+    },
+    mounted: function() {
+        this.getConfigurationName();
     }
 };
 </script>
@@ -365,10 +431,16 @@ export default {
         flex-direction: row;
         flex-wrap: nowrap;
         width: 100%;
-        justify-content: flex-start;
+        justify-content: space-between;
         justify-items: center;
         align-content: center;
-        align-items: center;
+        align-items: stretch;
+        .right-side {
+            justify-content: flex-end;
+        }
+         .left-side {
+            justify-content: flex-start;
+        }
     }
     .dropdown, .button, .framework-search {
         padding: 0px .5rem;

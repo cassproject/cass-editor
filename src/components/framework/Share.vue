@@ -24,6 +24,18 @@
                 </span>
             </div>
         </section>
+        <!-- not permitted to remove -->
+        <section
+            v-else-if="cantRemoveOwner"
+            class="modal-card-body">
+            <h2 class="header is-size-3">
+                Not permitted
+            </h2>
+            <p>
+                You are not permitted to remove the only owner of a private framework.
+            </p>
+        </section>
+        <!-- confirm make private -->
         <section
             v-else-if="confirmMakePrivate"
             class="modal-card-body">
@@ -35,6 +47,7 @@
                 your access list will have the ability to read, write, or edit this framework.
             </p>
         </section>
+        <!-- confirm make public -->
         <section
             v-else-if="confirmMakePublic"
             class="modal-card-body">
@@ -126,7 +139,7 @@
                                         v-for="(result, i) in filtered"
                                         :key="i"
                                         @mousedown="selectUserOrGroup(result)">
-                                        {{ result.name }}
+                                        {{ result.name + " (" + result.email + ")" }}
                                     </li>
                                 </ul>
                             </div>
@@ -215,6 +228,7 @@
                             <thead>
                                 <tr>
                                     <th><abbr title="User name">User Name</abbr></th>
+                                    <th><abbr title="User email">User Email</abbr></th>
                                     <th><abbr title="Access">View</abbr></th>
                                     <th><abbr title="Delete">Delete</abbr></th>
                                 </tr>
@@ -224,6 +238,7 @@
                                     v-for="user in users"
                                     :key="user">
                                     <td> {{ user.header }}</td>
+                                    <td> {{ user.email }}</td>
                                     <td>
                                         <div class="select is-primary is-small">
                                             <select
@@ -349,7 +364,8 @@ export default {
             addOwner: [],
             repo: window.repo,
             conceptsProcessed: 0,
-            conceptsToProcess: 0
+            conceptsToProcess: 0,
+            cantRemoveOwner: false
         };
     },
     computed: {
@@ -360,10 +376,10 @@ export default {
             return false;
         },
         shareableFrameworkInEditor: function() {
-            if (this.queryParams.concepts === "true") {
-                return window.location.href + "?concepts=true&frameworkId=" + this.frameworkId;
+            if (this.$store.getters['editor/conceptMode'] === true) {
+                return window.location.href.replace('/conceptScheme', "?concepts=true&frameworkId=" + this.frameworkId);
             }
-            return window.location.href + "?frameworkId=" + this.frameworkId;
+            return window.location.href.replace('/framework', "?frameworkId=" + this.frameworkId);
         },
         framework: function() {
             return this.$store.state.editor.framework;
@@ -379,6 +395,9 @@ export default {
             return this.$store.getters['editor/queryParams'];
         },
         canEditFramework: function() {
+            if (!this.loggedIn) {
+                return false;
+            }
             if (this.queryParams && this.queryParams.view === 'true') {
                 return false;
             } else if (!this.framework.canEditAny(EcIdentityManager.getMyPks())) {
@@ -438,7 +457,7 @@ export default {
                     EcPerson.getByPk(window.repo, pk, function(success) {
                         console.log(success);
                         if (success) {
-                            var user = {header: success.name, view: "admin", id: success.shortId(), changed: false, pk: pk};
+                            var user = {header: success.name, email: success.email, view: "admin", id: success.shortId(), changed: false, pk: pk};
                             me.users.push(user);
                         }
                     }, function(failure) {
@@ -461,7 +480,7 @@ export default {
                     EcPerson.getByPk(window.repo, pk, function(success) {
                         console.log(success);
                         if (success) {
-                            var user = {header: success.name, view: "view", id: success.shortId(), changed: false, pk: pk};
+                            var user = {header: success.name, email: success.email, view: "view", id: success.shortId(), changed: false, pk: pk};
                             me.users.push(user);
                         }
                     }, function(failure) {
@@ -486,7 +505,7 @@ export default {
             EcPerson.search(window.repo, '', function(success) {
                 console.log(success);
                 for (var i = 0; i < success.length; i++) {
-                    let person = {id: success[i].shortId(), name: success[i].name, pk: me.getPersonEcPk(success[i])};
+                    let person = {id: success[i].shortId(), name: success[i].name, email: success[i].email, pk: me.getPersonEcPk(success[i])};
                     me.possibleGroupsAndUsers.push(person);
                 }
             }, function(failure) {
@@ -516,6 +535,7 @@ export default {
             this.addAndRemoveFromAllObjects();
         },
         populateAddAndRemoveArrays: function() {
+            this.isProcessing = true;
             for (let i = 0; i < this.users.length; i++) {
                 if (this.users[i].changed) {
                     if (this.users[i].view === "view") {
@@ -545,10 +565,14 @@ export default {
                     this.addOwner.push(this.userOrGroupToAdd.pk);
                 }
             }
+            // Make sure current user is added as an owner if a reader is being added, otherwise framework could become uneditable
+            if (this.addReader.length > 0) {
+                this.addOwner.push(EcIdentityManager.ids[0].ppk.toPk());
+            }
         },
         addAndRemoveFromAllObjects: function() {
             let me = this;
-            if (this.queryParams.concepts === "true") {
+            if (this.$store.getters['editor/conceptMode'] === true) {
                 return this.addAndRemoveFromAllConceptObjects();
             }
             if (this.framework.competency && this.framework.competency.length > 0) {
@@ -652,6 +676,27 @@ export default {
             if (userOrGroup.view === "view") {
                 this.removeReader.push(userOrGroup.pk);
             } else if (userOrGroup.view === "admin") {
+                if (this.privateFramework) {
+                    let hasOtherOwners = false;
+                    for (let i = 0; i < this.users.length; i++) {
+                        if (this.users[i].view === "admin" && userOrGroup.pk !== this.users[i].pk) {
+                            hasOtherOwners = true;
+                            break;
+                        }
+                    }
+                    if (!hasOtherOwners) {
+                        for (let i = 0; i < this.groups.length; i++) {
+                            if (this.groups[i].view === "admin" && userOrGroup.pk !== this.groups[i].pk) {
+                                hasOtherOwners = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!hasOtherOwners) {
+                        this.cantRemoveOwner = true;
+                        return;
+                    }
+                }
                 this.removeOwner.push(userOrGroup.pk);
             }
             this.saveSettings();
@@ -668,12 +713,14 @@ export default {
             me.search = "";
             me.conceptsProcessed = 0;
             me.conceptsToProcess = 0;
+            me.isProcessing = false;
+            me.cantRemoveOwner = false;
         },
         makePrivate: function() {
             var me = this;
             this.isProcessing = true;
             var framework = this.framework;
-            if (this.queryParams.concepts === 'true') {
+            if (this.$store.getters['editor/conceptMode'] === true) {
                 this.handleMakePrivateConceptScheme();
             } else {
                 this.$store.commit('editor/private', true);
@@ -713,7 +760,7 @@ export default {
             var me = this;
             this.isProcessing = true;
             var framework = this.framework;
-            if (this.queryParams.concepts === 'true') {
+            if (this.$store.getters['editor/conceptMode'] === true) {
                 this.handleMakePublicConceptScheme();
             } else {
                 this.$store.commit('editor/private', false);

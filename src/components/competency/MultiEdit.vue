@@ -10,8 +10,17 @@
                 @click="$store.commit('app/closeModal')" />
         </header>
         <section
+            v-if="isProcessing"
+            class="modal-card-body">
+            <div class="section has-text-centered">
+                <span class="icon is-large">
+                    <i class="fa fa-spinner fa-2x fa-pulse" />
+                </span>
+            </div>
+        </section>
+        <section
             class="modal-card-body"
-            v-if="!isSearching">
+            v-else-if="!isSearching">
             <div
                 v-for="(item,idx) in addedPropertiesAndValues"
                 :key="item">
@@ -90,6 +99,7 @@ export default {
     },
     data() {
         return {
+            isProcessing: false,
             addedPropertiesAndValues: [{"property": "", "value": "", "range": []}],
             repo: window.repo,
             saveCount: 0,
@@ -207,6 +217,12 @@ export default {
         },
         applyToMultiple: function() {
             var me = this;
+            this.errorMessage = [];
+            if (me.addedPropertiesAndValues.length === 0 || (me.addedPropertiesAndValues[0].property === "")) {
+                me.addErrorMessage("Please select a property to add.");
+                return me.showModal();
+            }
+            this.isProcessing = true;
             for (var i = 0; i < this.selectedCompetencies.length; i++) {
                 var competencyId = this.selectedCompetencies[i];
                 EcRepository.get(competencyId, function(competency) {
@@ -366,6 +382,7 @@ export default {
         saveCount: function() {
             if (this.saveCount === this.selectedCompetencies.length) {
                 // Done saving, close modal
+                this.isProcessing = false;
                 this.$store.commit('editor/addEditsToUndo', this.changedItemsForUndo);
                 this.$store.commit('app/closeModal');
             }

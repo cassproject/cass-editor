@@ -2,65 +2,6 @@ import dateFormat from 'dateformat';
 
 export default {
     computed: {
-        levels: function() {
-            var levels = {};
-            if (!this.framework.level) {
-                return null;
-            }
-            for (var i = 0; i < this.framework.level.length; i++) {
-                var level = EcLevel.getBlocking(this.framework.level[i]);
-                var comp = level.competency;
-                if (!EcArray.isArray(comp)) {
-                    comp = [comp];
-                }
-                for (var j = 0; j < comp.length; j++) {
-                    if (!EcArray.isArray(levels[comp[j]])) {
-                        levels[comp[j]] = [];
-                    }
-                    levels[comp[j]].push({"@id": level.shortId()});
-                }
-            }
-            return levels;
-        },
-        relations: function() {
-            if (!this.framework.relation) {
-                return {};
-            }
-            var relations = {};
-            for (var i = 0; i < this.framework.relation.length; i++) {
-                var a = EcAlignment.getBlocking(this.framework.relation[i]);
-                if (a && a.source && a.target) {
-                    var relationType = a.relationType;
-                    var reciprocalRelation = null;
-                    if (this.queryParams.ceasnDataFields === "true" && relationType === "narrows") {
-                        if (this.framework.competency.indexOf(a.target) !== -1) {
-                            relationType = "isChildOf";
-                            reciprocalRelation = "hasChild";
-                        }
-                    }
-                    if (relationType === "narrows") {
-                        reciprocalRelation = "broadens";
-                    }
-                    if (!relations[relationType]) {
-                        relations[relationType] = {};
-                    }
-                    if (!relations[relationType][a.source]) {
-                        relations[relationType][a.source] = [];
-                    }
-                    relations[relationType][a.source].push({"@id": a.target});
-                    if (reciprocalRelation) {
-                        if (!relations[reciprocalRelation]) {
-                            relations[reciprocalRelation] = {};
-                        }
-                        if (!relations[reciprocalRelation][a.target]) {
-                            relations[reciprocalRelation][a.target] = [];
-                        }
-                        relations[reciprocalRelation][a.target].push({"@id": a.source});
-                    }
-                }
-            }
-            return relations;
-        },
         ctids: function() {
             if (this.queryParams.ceasnDataFields !== "true") {
                 return null;
@@ -312,7 +253,7 @@ export default {
                 selectedArray = this.selectedArray;
             }
             for (var i = 0; i < selectedArray.length; i++) {
-                if (this.queryParams.selectVerbose === "true" && this.queryParams.concepts !== "true") {
+                if (this.queryParams.selectVerbose === "true" && this.$store.getters['editor/conceptMode'] !== true) {
                     if (this.queryParams.selectExport === "ctdlasn") {
                         var link;
                         if (EcRepository.shouldTryUrl(selectedArray[i]) === false) {
@@ -347,7 +288,7 @@ export default {
                 }
             }
             var currentFramework = this.framework;
-            if (this.queryParams.selectExport === "ctdlasn" && this.queryParams.concepts !== "true") {
+            if (this.queryParams.selectExport === "ctdlasn" && this.$store.getters['editor/conceptMode'] !== true) {
                 if (this.framework != null) {
                     var link;
                     if (EcRepository.shouldTryUrl(this.framework.id) === false) {
@@ -368,7 +309,7 @@ export default {
             var message = {
                 message: "selected",
                 selected: ary,
-                type: this.queryParams.concepts === "true" ? 'Concept' : 'Competency',
+                type: this.$store.getters['editor/conceptMode'] === true ? 'Concept' : 'Competency',
                 selectedFramework: currentFramework
             };
             message = JSON.parse(JSON.stringify(message));
@@ -378,10 +319,11 @@ export default {
         },
         addLevel: function(selectedCompetency, optionalLevelUrl) {
             var c;
-            var initialLevels = this.framework.level ? this.framework.level.slice() : null;
+            var me = this;
+            var framework = this.framework ? this.framework : this.$store.getters['editor/framework'];
+            var initialLevels = framework.level ? framework.level.slice() : null;
             if (!optionalLevelUrl) {
                 c = new EcLevel();
-                var me = this;
                 if (this.queryParams.newObjectEndpoint != null) {
                     c.generateShortId(this.queryParams.newObjectEndpoint);
                 } else {
@@ -398,21 +340,25 @@ export default {
                 }
                 c.competency.push(selectedCompetency);
             }
-            this.framework["schema:dateModified"] = new Date().toISOString();
-            if (this.$store.state.editor.private === true) {
-                if (EcEncryptedValue.encryptOnSaveMap[this.framework.id] !== true) {
-                    this.framework = EcEncryptedValue.toEncryptedValue(this.framework);
-                }
-            }
+            framework["schema:dateModified"] = new Date().toISOString();
             this.repo.saveTo(c, function() {
-                me.framework.addLevel(c.shortId());
+                framework.addLevel(c.shortId());
                 var edits = [];
                 if (!optionalLevelUrl) {
                     edits.push({operation: "addNew", id: c.shortId()});
                 }
-                edits.push({operation: "update", id: me.framework.shortId(), fieldChanged: ["level"], initialValue: [initialLevels], changedValue: [me.framework.level]});
+                edits.push({operation: "update", id: framework.shortId(), fieldChanged: ["level"], initialValue: [initialLevels], changedValue: [framework.level]});
                 me.$store.commit('editor/addEditsToUndo', edits);
-                me.repo.saveTo(me.framework, function() {}, console.error);
+                me.$store.commit('editor/framework', framework);
+                if (me.$store.state.editor.private === true) {
+                    if (EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                        framework = EcEncryptedValue.toEncryptedValue(framework);
+                    }
+                }
+                me.repo.saveTo(framework, function() {
+                    me.$store.commit('lode/setIsAddingProperty', false);
+                    me.$store.commit('editor/refreshLevels', true);
+                }, console.error);
             }, console.error);
         },
         saveCheckedLevels: function(selectedCompetency, checkedOptions, allOptions) {
@@ -461,6 +407,9 @@ export default {
                 this.saveFramework();
             }
             this.$store.commit('editor/addEditsToUndo', edits);
+            this.$store.commit('lode/setAddingChecked', []);
+            this.$store.commit('lode/setIsAddingProperty', false);
+            this.$store.commit('editor/refreshLevels', true);
         },
         saveFramework: function() {
             this.framework["schema:dateModified"] = new Date().toISOString();
@@ -502,7 +451,7 @@ export default {
             for (var i = 0; i < targets.length; i++) {
                 var r = new EcAlignment();
                 if (this.$store.getters['editor/queryParams'].newObjectEndpoint != null) {
-                    r.generateShortId(this.newObjectEndpoint);
+                    r.generateShortId(this.$store.getters['editor/queryParams'].newObjectEndpoint);
                 } else {
                     r.generateId(this.repo.selectedServer);
                 }
@@ -533,17 +482,10 @@ export default {
                         r.addOwner(EcPk.fromPem(owner));
                     }
                 }
-                if (this.$store.state.editor && this.$store.state.editor.configuration) {
-                    var config = this.$store.state.editor.configuration;
-                    if (config["defaultObjectOwners"]) {
-                        for (var k = 0; k < config["defaultObjectOwners"].length; k++) {
-                            r.addOwner(EcPk.fromPem(config["defaultObjectOwners"][k]));
-                        }
-                    }
-                    if (config["defaultObjectReaders"]) {
-                        for (var k = 0; k < config["defaultObjectReaders"].length; k++) {
-                            r.addReader(EcPk.fromPem(config["defaultObjectReaders"][k]));
-                        }
+                if (framework.reader && framework.reader.length > 0) {
+                    for (var j = 0; j < framework.reader.length; j++) {
+                        var reader = framework.reader[j];
+                        r.addReader(EcPk.fromPem(reader));
                     }
                 }
                 if (this.$store.state.editor.private === true) {

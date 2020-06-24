@@ -1,5 +1,5 @@
 <template>
-    <div id="page-framework">
+    <div id="concept">
         <RightAside v-if="showRightAside" />
         <!-- begin framework -->
         <div class="framework-content">
@@ -941,6 +941,6 @@ export default {
 </script>
 
 <style lang="scss">
-    @import './../../scss/framework.scss';
+    @import '@/scss/framework.scss';
 
 </style>

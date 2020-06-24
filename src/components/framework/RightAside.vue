@@ -116,6 +116,12 @@ export default {
                 font-weight: 500;
                 padding: .125rem 0rem .125rem .5rem;
             }
+            .comment-list__email {
+                font-size: .6rem;
+                padding: .125rem 0rem .125rem .75rem;
+                font-weight: 500;
+                color: #4F99A8;
+            }
             .comment-list__timestamp {
                 font-size: .7rem;
                 padding: .125rem 0rem .125rem .25rem;

@@ -1,5 +1,5 @@
 <template>
-    <div id="page-framework">
+    <div id="framework">
         <RightAside v-if="showRightAside" />
         <!-- begin framework -->
         <div class="framework-content">
@@ -14,6 +14,7 @@
                             :id="'scroll-' + framework.shortId().split('/').pop()"
                             :obj="framework"
                             :repo="repo"
+                            :newFramework="newFramework"
                             :parentNotEditable="queryParams.view==='true'"
                             :profile="frameworkProfile"
                             @deleteObject="deleteObject"
@@ -77,6 +78,7 @@
                             :exportOptions="competencyExportOptions"
                             :highlightList="highlightCompetency"
                             :profile="competencyProfile"
+                            :newFramework="newFramework"
                             @deleteObject="deleteObject"
                             @editMultipleEvent="onEditMultiple"
                             @removeObject="removeObject"
@@ -84,7 +86,8 @@
                             @searchThings="handleSearch($event)"
                             @selectButtonClick="onSelectButtonClick"
                             :properties="properties"
-                            @selectedArray="selectedArrayEvent" />
+                            @selectedArray="selectedArrayEvent"
+                            @doneLoadingNodes="preloadRelations" />
                     </div>
                 </div>
             </div>
@@ -93,19 +96,20 @@
 </template>
 <script>
 import common from '@/mixins/common.js';
+import getLevelsAndRelations from '@/mixins/getLevelsAndRelations.js';
 import exports from '@/mixins/exports.js';
 import competencyEdits from '@/mixins/competencyEdits.js';
 import ctdlasnProfile from '@/mixins/ctdlasnProfile.js';
 import t3Profile from '@/mixins/t3Profile.js';
 import tlaProfile from '@/mixins/tlaProfile.js';
-
+import saveAs from 'file-saver';
 
 export default {
     name: "Framework",
     props: {
         profileOverride: Object
     },
-    mixins: [common, exports, competencyEdits, ctdlasnProfile, t3Profile, tlaProfile],
+    mixins: [common, exports, competencyEdits, ctdlasnProfile, t3Profile, tlaProfile, getLevelsAndRelations],
     data: function() {
         return {
             showVersionHistory: false,
@@ -140,10 +144,14 @@ export default {
             editingFramework: false,
             properties: "primary",
             config: null,
-            selectedArray: []
+            selectedArray: [],
+            configSetOnFramework: false
         };
     },
     computed: {
+        newFramework: function() {
+            return this.$store.getters['editor/newFramework'] === this.framework.shortId();
+        },
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];
         },
@@ -197,14 +205,14 @@ export default {
             if (this.$store.state.editor.t3Profile === true) {
                 return this.t3FrameworkProfile;
             }
-            if (this.queryParams.ceasnDataFields === "true") {
+            if (this.queryParams.ceasnDataFields === "true" && ((this.config && !this.configSetOnFramework) || !this.config)) {
                 return this.ctdlAsnFrameworkProfile;
+            }
+            if (this.queryParams.tlaProfile === "true" && ((this.config && !this.configSetOnFramework) || !this.config)) {
+                return this.tlaFrameworkProfile;
             }
             if (this.config) {
                 return this.config.frameworkConfig;
-            }
-            if (this.queryParams.tlaProfile === "true") {
-                return this.tlaFrameworkProfile;
             }
             return {
                 "@id": {
@@ -257,8 +265,12 @@ export default {
         competencyProfile: function() {
             if (this.$store.state.editor.t3Profile === true) {
                 return this.t3CompetencyProfile;
-            } else if (this.queryParams.ceasnDataFields === "true") {
+            }
+            if (this.queryParams.ceasnDataFields === "true" && ((this.config && !this.configSetOnFramework) || !this.config)) {
                 return this.ctdlAsnCompetencyProfile;
+            }
+            if (this.queryParams.tlaProfile === "true" && ((this.config && !this.configSetOnFramework) || !this.config)) {
+                return this.tlaCompetencyProfile;
             }
             if (this.config) {
                 var profile = JSON.parse(JSON.stringify(this.config.competencyConfig));
@@ -289,24 +301,39 @@ export default {
                 }
                 if (this.config.relationshipConfig) {
                     var keys = EcObject.keys(this.config.relationshipConfig);
+                    var relationshipsPriority;
+                    var relationshipsHeading = null;
+                    if (profile["relationshipsPriority"] && profile["relationshipsPriority"].length > 0) {
+                        relationshipsPriority = profile["relationshipsPriority"] + "Properties";
+                    } else {
+                        relationshipsPriority = "secondaryProperties";
+                    }
+                    if (profile["relationshipsHeading"] && profile["relationshipsHeading"].length > 0) {
+                        if (profile["headings"] && !EcArray.has(profile["headings"], profile["relationshipsHeading"])) {
+                            profile["headings"].push(profile["relationshipsHeading"]);
+                        }
+                        relationshipsHeading = profile["relationshipsHeading"];
+                    }
                     for (var i = 0; i < keys.length; i++) {
                         let key = keys[i];
                         var me = this;
-                        profile.secondaryProperties.push(key);
+                        profile[relationshipsPriority].push(key);
                         profile[key] = JSON.parse(JSON.stringify(this.config.relationshipConfig[key]));
                         profile[key]["http://schema.org/rangeIncludes"] = [{"@id": "https://schema.cassproject.org/0.4/Competency"}];
                         profile[key]["valuesIndexed"] = function() { return me.relations[key]; };
                         profile[key]["noTextEditing"] = 'true';
                         profile[key]["remove"] = function(source, target) { me.removeRelationFromFramework(source, key, target); };
                         profile[key]["add"] = function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, key, values); };
+                        profile[key]["save"] = function() {};
+                        if (relationshipsHeading) {
+                            profile[key]["heading"] = relationshipsHeading;
+                        }
                     }
                 }
                 return profile;
             }
             if (this.profileOverride) {
                 return this.profileOverride;
-            } else if (this.queryParams.tlaProfile === "true") {
-                return this.tlaCompetencyProfile;
             } else {
                 var me = this;
                 return {
@@ -385,6 +412,7 @@ export default {
                         "valuesIndexed": function() { return me.relations["narrows"]; },
                         "noTextEditing": "true",
                         "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "narrows", values); },
+                        "save": function() {},
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "narrows", target); },
                         "heading": "Connections"
                     },
@@ -396,6 +424,7 @@ export default {
                         "valuesIndexed": function() { return me.relations["broadens"]; },
                         "noTextEditing": "true",
                         "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "broadens", values); },
+                        "save": function() {},
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "broadens", target); },
                         "heading": "Connections"
                     },
@@ -407,6 +436,7 @@ export default {
                         "valuesIndexed": function() { return me.relations["isEquivalentTo"]; },
                         "noTextEditing": "true",
                         "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEquivalentTo", values); },
+                        "save": function() {},
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "isEquivalentTo", target); },
                         "heading": "Connections"
                     },
@@ -418,6 +448,7 @@ export default {
                         "valuesIndexed": function() { return me.relations["requires"]; },
                         "noTextEditing": "true",
                         "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "requires", values); },
+                        "save": function() {},
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "requires", target); },
                         "heading": "Connections"
                     },
@@ -429,6 +460,7 @@ export default {
                         "valuesIndexed": function() { return me.relations["isEnabledBy"]; },
                         "noTextEditing": "true",
                         "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEnabledBy", values); },
+                        "save": function() {},
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "isEnabledBy", target); },
                         "heading": "Connections"
                     },
@@ -440,6 +472,7 @@ export default {
                         "valuesIndexed": function() { return me.relations["isRelatedTo"]; },
                         "noTextEditing": "true",
                         "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isRelatedTo", values); },
+                        "save": function() {},
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "isRelatedTo", target); },
                         "heading": "Connections"
                     },
@@ -451,6 +484,7 @@ export default {
                         "valuesIndexed": function() { return me.relations["desires"]; },
                         "noTextEditing": "true",
                         "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "desires", values); },
+                        "save": function() {},
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "desires", target); },
                         "heading": "Connections"
                     },
@@ -475,6 +509,9 @@ export default {
                     ]
                 };
             }
+        },
+        defaultFrameworkConfiguration: function() {
+            return this.$store.getters['editor/framework'].configuration;
         }
     },
     components: {
@@ -496,6 +533,9 @@ export default {
     mounted: function() {
         if (!this.framework) {
             this.$router.push({name: "frameworks"});
+        } else {
+            this.updateLevels();
+            this.updateRelations();
         }
     },
     watch: {
@@ -507,6 +547,9 @@ export default {
         },
         commentScrollTo: function() {
             this.$scrollTo(this.commentScrollTo.scrollId);
+        },
+        defaultFrameworkConfiguration: function() {
+            this.getConfiguration();
         }
     },
     methods: {
@@ -521,9 +564,11 @@ export default {
                 if (c) {
                     console.log("c is: ", c);
                     this.config = c;
+                    this.configSetOnFramework = true;
                 }
                 console.log("c is: ", c);
-            } else if (localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId")) {
+            }
+            if (!this.config && localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId")) {
                 // If no framework configuration, use browser default
                 var c = EcRepository.getBlocking(localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId"));
                 if (c) {
@@ -632,7 +677,7 @@ export default {
             } else if (exportType === "csv") {
                 this.exportCsv();
             } else if (exportType === "case") {
-                this.exportCasePackages(guid);
+                this.exportCasePackages(this.frameworkExportGuid);
             }
         },
         changeProperties: function(type) {
@@ -657,6 +702,11 @@ export default {
             };
             // reveal modal
             this.$modal.show(params);
+        },
+        // Speed up load of secondary properties
+        preloadRelations: function() {
+            var relation = this.relations;
+            var level = this.levels;
         }
     }
 };

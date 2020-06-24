@@ -2,7 +2,7 @@
     <div class="single modal-card">
         <header class="modal-card-head has-background-primary">
             <p class="modal-card-title has-text-white is-size-2">
-                <template v-if="dynamicModalContent.parentName['@value']">
+                <template v-if="dynamicModalContent.parentName && dynamicModalContent.parentName['@value']">
                     <span>{{ dynamicModalContent.parentName['@value'] }}</span>
                     <br><br>
                 </template>
@@ -107,9 +107,7 @@ export default {
             }
             this.$store.commit('editor/framework', EcRepository.getBlocking(framework.url));
             if (this.dynamicModalContent.objectType === "Concept") {
-                var queryParams = this.$store.state.editor.queryParams;
-                queryParams.concepts = "true";
-                this.$store.commit('editor/queryParams', queryParams);
+                this.$store.commit('editor/conceptMode', true);
                 this.$router.push({name: "conceptScheme", params: {frameworkId: framework.url}});
             }
             this.$store.commit('app/closeModal');
@@ -180,6 +178,9 @@ export default {
         .field {
             padding-left: .25rem;
         }
+    }
+    .comment-button {
+        display: none;
     }
     .lode__thing:hover {
         padding-lefT: 0rem;

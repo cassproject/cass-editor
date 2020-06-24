@@ -1,7 +1,7 @@
 <template>
     <div
         id="app"
-        class="has-background-white">
+        class="">
         <!-- nav bar navigation -->
         <cass-modal class="cass-modal" />
         <DynamicModal />
@@ -11,11 +11,11 @@
             @sideBarEvent="onSidebarEvent"
             name="topbar" />
         <router-view
-            id="app-content"
             :class="[{ 'clear-side-bar': showSideNav}, {'clear-right-aside': showRightAside}]" />
         <router-view
             :showSideNav="showSideNav"
-            @createNewFramework="onCreateNewFramework"
+            @createNewFramework="createNewFramework"
+            @createNewConceptScheme="createNewConceptScheme"
             name="sidebar" />
     </div>
 </template>
@@ -62,6 +62,9 @@ export default {
                     }
                     servers = [this.queryParams.server];
                 }
+                if (this.queryParams.concepts === 'true') {
+                    this.$store.commit('editor/conceptMode', true);
+                }
             }
             for (var i = 0; i < servers.length; i++) {
                 var r = new EcRepository();
@@ -69,6 +72,7 @@ export default {
                 r.autoDetectRepository();
                 servers[i] = r;
                 window.repo = r;
+                this.repo = r;
 
                 try {
                     window.addEventListener('message', this.cappend, false);
@@ -86,7 +90,7 @@ export default {
             this.loadIdentity(function() {
                 if (me.queryParams) {
                     if (me.queryParams.frameworkId) {
-                        if (me.queryParams.concepts === "true") {
+                        if (me.$store.getters['editor/conceptMode'] === true) {
                             EcConceptScheme.get(me.queryParams.frameworkId, function(success) {
                                 me.$store.commit('editor/framework', success);
                                 me.$store.commit('editor/clearFrameworkCommentData');
@@ -109,6 +113,13 @@ export default {
                     }
                     if (me.queryParams.action === "add") {
                         me.createNew();
+                    }
+                    if (me.queryParams.ceasnDataFields === "true" && !me.queryParams.action && !me.queryParams.frameworkId) {
+                        if (me.$store.getters['editor/conceptMode'] === true) {
+                            me.$router.push({name: "concepts"});
+                        } else {
+                            me.$router.push({name: "frameworks"});
+                        }
                     }
                 }
             });
@@ -138,9 +149,6 @@ export default {
         onSidebarEvent: function() {
             this.showSideNav = !this.showSideNav;
         },
-        onCreateNewFramework: function() {
-            this.createNew();
-        },
         cappend: function(event) {
             if (event.data.message === "selected") {
                 var selectedIds = [];
@@ -155,7 +163,7 @@ export default {
                 }
                 console.log("I got " + event.data.selected.length + " selected items from the iframe");
                 console.log(event.data.selected);
-                if (this.queryParams.concepts === "true" && event.data.type === 'Concept' && this.$store.state.editor.selectCompetencyRelation) {
+                if (this.$store.getters['editor/conceptMode'] === true && event.data.type === 'Concept' && this.$store.state.editor.selectCompetencyRelation) {
                     this.addAlignments(selectedIds, selectedCompetency, this.$store.state.editor.selectCompetencyRelation);
                 } else if (event.data.type === 'Concept') {
                     this.attachUrlProperties(selectedIds);
@@ -328,60 +336,70 @@ export default {
             returnObject.copyFrom(v.decryptIntoObject());
             return returnObject;
         },
+        createNewFramework: function() {
+            let me = this;
+            this.setDefaultLanguage();
+            var framework = new EcFramework();
+            if (this.queryParams.newObjectEndpoint != null) {
+                framework.generateShortId(this.queryParams.newObjectEndpoint);
+            } else {
+                framework.generateId(this.repo.selectedServer);
+            }
+            framework["schema:dateCreated"] = new Date().toISOString();
+            framework["schema:dateModified"] = new Date().toISOString();
+            if (EcIdentityManager.ids.length > 0) {
+                framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            }
+            framework.name = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Framework"};
+            this.$store.commit('editor/newFramework', framework.shortId());
+            if (this.queryParams.ceasnDataFields === "true") {
+                framework["schema:inLanguage"] = [this.$store.state.editor.defaultLanguage];
+            }
+            var saveFramework = framework;
+            if (this.queryParams.private === "true") {
+                saveFramework = EcEncryptedValue.toEncryptedValue(framework);
+            }
+            this.repo.saveTo(saveFramework, function() {
+                me.$store.commit('editor/framework', framework);
+                if (me.$route.name !== 'framework') {
+                    me.$router.push({name: "framework"});
+                }
+            }, console.error);
+        },
+        createNewConceptScheme: function() {
+            let me = this;
+            this.setDefaultLanguage();
+            var framework = new EcConceptScheme();
+            if (this.queryParams.newObjectEndpoint != null) {
+                framework.generateShortId(this.queryParams.newObjectEndpoint);
+            } else {
+                framework.generateId(this.repo.selectedServer);
+            }
+            if (EcIdentityManager.ids.length > 0) {
+                framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            }
+            framework["dcterms:title"] = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Concept Scheme"};
+            framework["schema:dateCreated"] = new Date().toISOString();
+            framework["schema:dateModified"] = new Date().toISOString();
+            this.$store.commit('editor/newFramework', framework.shortId());
+            var saveFramework = framework;
+            if (this.queryParams.private === "true") {
+                saveFramework = EcEncryptedValue.toEncryptedValue(framework);
+            }
+            this.repo.saveTo(saveFramework, function() {
+                me.$store.commit('editor/framework', framework);
+                if (me.$route.name !== 'conceptScheme') {
+                    me.$router.push({name: "conceptScheme"});
+                }
+            }, console.error);
+        },
         createNew: function() {
             this.setDefaultLanguage();
             var me = this;
-            if (this.queryParams.concepts !== "true") {
-                var framework = new EcFramework();
-                if (this.queryParams.newObjectEndpoint != null) {
-                    framework.generateShortId(this.queryParams.newObjectEndpoint);
-                } else {
-                    framework.generateId(this.repo.selectedServer);
-                }
-                framework["schema:dateCreated"] = new Date().toISOString();
-                framework["schema:dateModified"] = new Date().toISOString();
-                if (EcIdentityManager.ids.length > 0) {
-                    framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-                }
-                framework.name = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Framework"};
-                this.$store.commit('editor/newFramework', framework.shortId());
-                if (this.queryParams.ceasnDataFields === "true") {
-                    framework["schema:inLanguage"] = [this.$store.state.editor.defaultLanguage];
-                }
-                var saveFramework = framework;
-                if (this.queryParams.private === "true") {
-                    saveFramework = EcEncryptedValue.toEncryptedValue(framework);
-                }
-                this.repo.saveTo(saveFramework, function() {
-                    me.$store.commit('editor/framework', framework);
-                    if (me.$route.name !== 'framework') {
-                        me.$router.push({name: "framework"});
-                    }
-                }, console.error);
+            if (me.$store.getters['editor/conceptMode'] === true) {
+                this.createNewConceptScheme();
             } else {
-                var framework = new EcConceptScheme();
-                if (this.queryParams.newObjectEndpoint != null) {
-                    framework.generateShortId(newObjectEndpoint);
-                } else {
-                    framework.generateId(this.repo.selectedServer);
-                }
-                if (EcIdentityManager.ids.length > 0) {
-                    framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-                }
-                framework["dcterms:title"] = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Concept Scheme"};
-                framework["schema:dateCreated"] = new Date().toISOString();
-                framework["schema:dateModified"] = new Date().toISOString();
-                this.$store.commit('editor/newFramework', framework.shortId());
-                var saveFramework = framework;
-                if (this.queryParams.private === "true") {
-                    saveFramework = EcEncryptedValue.toEncryptedValue(framework);
-                }
-                this.repo.saveTo(saveFramework, function() {
-                    me.$store.commit('editor/framework', framework);
-                    if (me.$route.name !== 'conceptScheme') {
-                        me.$router.push({name: "conceptScheme"});
-                    }
-                }, console.error);
+                this.createNewFramework();
             }
         },
         loadIdentity: function(callback) {
@@ -404,6 +422,7 @@ export default {
                     callback();
                 }
             } else if (this.queryParams.user === "wait") {
+                var me = this;
                 var fun = function(evt) {
                     var data = evt.data;
                     if (data != null && data !== "" && !EcObject.isObject(data)) {
@@ -420,7 +439,7 @@ export default {
                             message: "identityOk"
                         };
                         console.log(message);
-                        parent.postMessage(message, this.queryParams.origin);
+                        parent.postMessage(message, me.queryParams.origin);
                     }
                 };
                 if (window.addEventListener) {
@@ -724,17 +743,10 @@ export default {
                             c.addOwner(EcPk.fromPem(owner));
                         }
                     }
-                    if (this.$store.state.editor && this.$store.state.editor.configuration) {
-                        var config = this.$store.state.editor.configuration;
-                        if (config["defaultObjectOwners"]) {
-                            for (var k = 0; k < config["defaultObjectOwners"].length; k++) {
-                                c.addOwner(EcPk.fromPem(config["defaultObjectOwners"][k]));
-                            }
-                        }
-                        if (config["defaultObjectReaders"]) {
-                            for (var k = 0; k < config["defaultObjectReaders"].length; k++) {
-                                c.addReader(EcPk.fromPem(config["defaultObjectReaders"][k]));
-                            }
+                    if (framework.reader && framework.reader.length > 0) {
+                        for (var j = 0; j < framework.reader.length; j++) {
+                            var reader = framework.reader[j];
+                            c.addReader(EcPk.fromPem(reader));
                         }
                     }
                     c['ceasn:derivedFrom'] = thing.id;
@@ -818,17 +830,10 @@ export default {
                                 r.addOwner(EcPk.fromPem(owner));
                             }
                         }
-                        if (this.$store.state.editor && this.$store.state.editor.configuration) {
-                            var config = this.$store.state.editor.configuration;
-                            if (config["defaultObjectOwners"]) {
-                                for (var k = 0; k < config["defaultObjectOwners"].length; k++) {
-                                    r.addOwner(EcPk.fromPem(config["defaultObjectOwners"][k]));
-                                }
-                            }
-                            if (config["defaultObjectReaders"]) {
-                                for (var k = 0; k < config["defaultObjectReaders"].length; k++) {
-                                    r.addReader(EcPk.fromPem(config["defaultObjectReaders"][k]));
-                                }
+                        if (framework.reader && framework.reader.length > 0) {
+                            for (var j = 0; j < framework.reader.length; j++) {
+                                var reader = framework.reader[j];
+                                r.addReader(EcPk.fromPem(reader));
                             }
                         }
                         if (r.source !== r.target) {
@@ -884,17 +889,10 @@ export default {
                                 r.addOwner(EcPk.fromPem(owner));
                             }
                         }
-                        if (this.$store.state.editor && this.$store.state.editor.configuration) {
-                            var config = this.$store.state.editor.configuration;
-                            if (config["defaultObjectOwners"]) {
-                                for (var k = 0; k < config["defaultObjectOwners"].length; k++) {
-                                    r.addOwner(EcPk.fromPem(config["defaultObjectOwners"][k]));
-                                }
-                            }
-                            if (config["defaultObjectReaders"]) {
-                                for (var k = 0; k < config["defaultObjectReaders"].length; k++) {
-                                    r.addReader(EcPk.fromPem(config["defaultObjectReaders"][k]));
-                                }
+                        if (framework.reader && framework.reader.length > 0) {
+                            for (var j = 0; j < framework.reader.length; j++) {
+                                var reader = framework.reader[j];
+                                r.addReader(EcPk.fromPem(reader));
                             }
                         }
                         if (r.source !== r.target) {
@@ -986,17 +984,10 @@ export default {
                                 r.addOwner(EcPk.fromPem(owner));
                             }
                         }
-                        if (this.$store.state.editor && this.$store.state.editor.configuration) {
-                            var config = this.$store.state.editor.configuration;
-                            if (config["defaultObjectOwners"]) {
-                                for (var k = 0; k < config["defaultObjectOwners"].length; k++) {
-                                    r.addOwner(EcPk.fromPem(config["defaultObjectOwners"][k]));
-                                }
-                            }
-                            if (config["defaultObjectReaders"]) {
-                                for (var k = 0; k < config["defaultObjectReaders"].length; k++) {
-                                    r.addReader(EcPk.fromPem(config["defaultObjectReaders"][k]));
-                                }
+                        if (framework.reader && framework.reader.length > 0) {
+                            for (var j = 0; j < framework.reader.length; j++) {
+                                var reader = framework.reader[j];
+                                r.addReader(EcPk.fromPem(reader));
                             }
                         }
 
@@ -1051,19 +1042,36 @@ export default {
         currentRoute: function() {
             return this.$route.path;
         },
+        isLoggedIn: function() {
+            if (!this.loggedInPerson || (this.loggedInPerson && !this.loggedInPerson.name)) {
+                return false;
+            } else {
+                return true;
+            }
+        },
         currentPathIsLogin: function() {
             if (this.$route.name === 'login') return true;
             else return false;
         },
         ...mapState({
-            loggedInPerson: state => state.user.loggedInPerson,
+            loggedInPerson: state => state.user.loggedOnPerson,
             queryParams: state => state.editor.queryParams
         })
     },
+    mounted: function() {
+
+    },
     watch: {
+        currentRoute: function(val) {
+            console.log("logged in", this.loggedInPerson);
+            if (!this.isLoggedIn && val === '/users') {
+                this.$router.push({path: '/'});
+            }
+        },
         '$route'(to, from) {
             this.$store.commit('app/closeRightAside');
             this.$store.commit('app/closeSideNav');
+            this.$store.commit('app/closeModal');
             let navigationTo = to;
             if (navigationTo) {
                 this.navBarActive = false;
@@ -1072,12 +1080,13 @@ export default {
             if (!from.name) {
                 this.initializeApp();
             }
-        }
-        /* loggedInPerson: function(val) {
-            if (!val) {
-                this.$router.push({name: 'login'});
+            if (to.name === 'concepts') {
+                this.$store.commit('editor/conceptMode', true);
             }
-        }*/
+            if (to.name === 'frameworks') {
+                this.$store.commit('editor/conceptMode', false);
+            }
+        }
     }
 };
 </script>
@@ -1094,8 +1103,11 @@ export default {
     margin-top:50px;
 }
 
+    #app {
+        height: 100%;
+    }
     #app-content {
-
+        height: 100%;
     }
     .clear-side-bar {
         margin-left: 300px;

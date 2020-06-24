@@ -108,6 +108,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual resources contextually."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Concept Terms"}],
+                    "noTextEditing": "true",
                     "heading": "Tagging"
                 },
                 "https://purl.org/ctdlasn/terms/derivedFrom": {
@@ -166,6 +167,7 @@ export default {
                                 Alternatively, a more specific statement of the location of the audience in terms of its progression through an education or training context.`}
                         ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Education Level Type"}],
+                    "noTextEditing": "true",
                     "heading": "Context"
                 },
                 "http://schema.org/validFrom": {
@@ -394,6 +396,7 @@ export default {
                                 through an education or training context.`}
                         ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Education Level"}],
+                    "noTextEditing": "true",
                     "heading": "General"
                 },
                 "https://purl.org/ctdlasn/terms/listId": {
@@ -467,6 +470,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual resources contextually."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Concept Terms"}],
+                    "noTextEditing": "true",
                     "heading": "Tagging"
                 },
                 "https://purl.org/ctdlasn/terms/complexityLevel": {
@@ -478,6 +482,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "The expected performance level of a learner or professional as defined by a competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Complexity Level"}],
+                    "noTextEditing": "true",
                     "heading": "Scales"
                 },
                 "https://purl.org/ctdlasn/terms/weight": {
@@ -500,6 +505,7 @@ export default {
                     "valuesIndexed": function() { return me.relations["narrows"]; },
                     "noTextEditing": "true",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "narrows", values); },
+                    "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "narrows", target); },
                     "heading": "Connections"
                 },
@@ -511,6 +517,7 @@ export default {
                     "valuesIndexed": function() { return me.relations["broadens"]; },
                     "noTextEditing": "true",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "broadens", values); },
+                    "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "broadens", target); },
                     "heading": "Connections"
                 },
@@ -522,6 +529,7 @@ export default {
                     "valuesIndexed": function() { return me.relations["isEquivalentTo"]; },
                     "noTextEditing": "true",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEquivalentTo", values); },
+                    "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isEquivalentTo", target); },
                     "heading": "Connections"
                 },
@@ -533,6 +541,7 @@ export default {
                     "valuesIndexed": function() { return me.relations["requires"]; },
                     "noTextEditing": "true",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "requires", values); },
+                    "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "requires", target); },
                     "heading": "Connections"
                 },
@@ -544,6 +553,7 @@ export default {
                     "valuesIndexed": function() { return me.relations["isEnabledBy"]; },
                     "noTextEditing": "true",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEnabledBy", values); },
+                    "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isEnabledBy", target); },
                     "heading": "Connections"
                 },
@@ -555,6 +565,7 @@ export default {
                     "valuesIndexed": function() { return me.relations["isRelatedTo"]; },
                     "noTextEditing": "true",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isRelatedTo", values); },
+                    "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isRelatedTo", target); },
                     "heading": "Connections"
                 },
@@ -566,6 +577,7 @@ export default {
                     "valuesIndexed": function() { return me.relations["desires"]; },
                     "noTextEditing": "true",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "desires", values); },
+                    "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "desires", target); },
                     "heading": "Connections"
                 },
