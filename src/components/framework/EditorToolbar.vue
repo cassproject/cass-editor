@@ -81,7 +81,8 @@
                         role="menu">
                         <div class="dropdown-content">
                             <a
-                                @click="$emit('showExportModal'); showShareDropdown = false;"
+                                :class="{ 'is-disabled': !canExport}"
+                                @click="handleExportClick()"
                                 class="dropdown-item">
                                 Export
                             </a>
@@ -167,6 +168,12 @@ export default {
         };
     },
     methods: {
+        handleExportClick: function() {
+            if (this.canExport) {
+                this.$emit('showExportModal');
+                this.showShareDropdown = false;
+            }
+        },
         handleClickAddComment: function() {
             this.$store.commit('editor/setAddCommentAboutId', this.$store.getters['editor/framework'].shortId());
             this.$store.commit('editor/setAddCommentType', 'new');
@@ -373,6 +380,15 @@ export default {
         },
         conceptMode: function() {
             return this.$store.getters['editor/conceptMode'];
+        },
+        canExport: function() {
+            if (this.$store.state.editor.private) {
+                return false;
+            } else if (this.framework.reader && this.framework.reader.length > 0) {
+                return false;
+            } else {
+                return true;
+            }
         }
     },
     watch: {

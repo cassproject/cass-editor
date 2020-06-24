@@ -1,5 +1,7 @@
 <template>
-    <div class="crosswalk section">
+    <div
+        id="crosswalk"
+        class="crosswalk section has-background-white">
         <!-- busy modal-->
         <div
             class="modal"
@@ -7,12 +9,13 @@
             <div class="modal-background" />
             <div class="modal-content has-text-centered">
                 <span class="icon is-large has-text-center has-text-link">
-                    <i class="fas fa-3x fa-spinner is-info fa-pulse" />
+                    <i class="fas fa-2x fa-spinner is-info fa-pulse" />
                 </span>
             </div>
         </div>
         <div class="container is-fluid">
             <div class="crosswalk-column is-gapless is-paddiingless is-marginless is-multiline">
+                <!-- steps -->
                 <div class="crosswalk__steps">
                     <div
                         class="step-item"
@@ -51,6 +54,7 @@
                         </p>
                     </div>
                 </div>
+                <!-- buttons -->
                 <div
                     v-if="step===2"
                     class="crosswalk__buttons">
@@ -59,13 +63,13 @@
                             Crosswalk:
                             <span
                                 v-if="alignmentsToSave.length > 0"
-                                class="is-size-2 is-outlined is-dark">
-                                {{ alignmentsToSave.length }} alignment<span v-if="alignmentsToSave.length >1">s</span> ready to save
+                                class="is-size-6 is-dark tag">
+                                adding {{ alignmentsToSave.length }}
                             </span>
                             <span
                                 v-if="alignmentsToDelete.length > 0"
-                                class="button is-outlined is-pulled-right  is-warning">
-                                {{ alignmentsToDelete.length }} alignments to remove
+                                class="tag is-size-6 is-dark">
+                                removing {{ alignmentsToDelete.length }}
                             </span>
 
                             <span
@@ -93,6 +97,7 @@
                         </h2>
                     </div>
                 </div>
+                <!-- search -->
                 <div
                     class="crosswalk__search column is-6 is-offset-3"
                     v-if="step < 2">
@@ -155,7 +160,7 @@
                             </div>
                             <div
                                 v-show="crosswalkSourceLoaded"
-                                class="column is-6">
+                                class="column is-6 source">
                                 <Hierarchy
                                     :container="frameworkSource"
                                     view="crosswalk"
@@ -187,7 +192,7 @@
                                 </span>
                             </div>
                             <div
-                                class="column is-6"
+                                class="column is-6 target"
                                 v-if="loadCrosswalkTarget">
                                 <Hierarchy
                                     :container="frameworkTarget"
@@ -796,6 +801,7 @@ export default {
 
 <style lang="scss">
     @import './../../scss/crosswalk.scss';
+    @import './../../scss/framework.scss';
     h4 {
         font-size: 1.3rem;
         padding-bottom: .5rem;

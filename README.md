@@ -14,7 +14,9 @@ Create, edit, modify CASS frameworks and competencies using an easy to use, embe
  * Unbranded and open source - Carries no branding information, allowing you to use it easily and without concern.
 
 # Try it out
-The (unbranded) cass-editor is available for use at https://cassproject.github.io/cass-editor/
+The (unbranded) experimental new version of cass-editor is available for use at https://cassproject.github.io/cass-editor/ and is found on the master branch.
+
+To try the previous, stable version of the editor, check out branch 1.2.
 
 # Integration
 Integrate the cass-editor into your website by nesting it into an iframe on your website.

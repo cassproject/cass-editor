@@ -409,8 +409,56 @@
                             v-if="importTransition === 'connectToServer'"
                             class="section has-text-centered">
                             <span class="icon is-large">
-                                <i class="fa fa-spinner fa-pule fa-2x" />
+                                <i class="fa fa-spinner fa-pulse fa-2x" />
                             </span>
+                        </div>
+                        <div
+                            v-else-if="(importTransition === 'process' || importTransition === 'info') && importErrors.length === 0"
+                            class="column">
+                            <div class="section has-text-centered">
+                                <span
+                                    class="icon is-large"
+                                    v-if="importTransition === 'process'">
+                                    <i class="fa fa-spinner fa-pulse fa-2x" />
+                                </span>
+                            </div>
+                            <div class="section">
+                                <p
+                                    class="is-size-6">
+                                    {{ importStatus }}
+                                </p>
+                            </div>
+                        </div>
+                        <!-- import errors -->
+                        <div
+                            v-else-if="importErrors.length > 0"
+                            class="column has-text-danger">
+                            <ul>
+                                <li
+                                    class="is-size-6"
+                                    v-for="(error, index) in importErrors"
+                                    :key="index">
+                                    <span class="">
+                                        <span class="icon">
+                                            <i class="fa fa-times" />
+                                        </span>
+                                        {{ error }}
+                                    </span>
+                                </li>
+                                <li />
+                            </ul>
+                            <div class="section">
+                                <div class="buttons is-centered">
+                                    <div
+                                        @click="resetImport()"
+                                        class="button is-primary">
+                                        <span class="icon">
+                                            <i class="fa fa-redo" />
+                                        </span>
+                                        <span>start over</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <!-- HANDLE CASE DOCS -->
                         <div
@@ -582,6 +630,54 @@
                                 </div>
                             </div>
                         </template>
+                        <div
+                            v-else-if="(importTransition === 'process' || importTransition === 'info') && importErrors.length === 0"
+                            class="column">
+                            <div class="section has-text-centered">
+                                <span
+                                    class="icon is-large"
+                                    v-if="importTransition === 'process'">
+                                    <i class="fa fa-spinner fa-pulse fa-2x" />
+                                </span>
+                            </div>
+                            <div class="section">
+                                <p
+                                    class="is-size-6">
+                                    {{ importStatus }}
+                                </p>
+                            </div>
+                        </div>
+                        <!-- import errors -->
+                        <div
+                            v-else-if="importErrors.length > 0"
+                            class="column has-text-danger">
+                            <ul>
+                                <li
+                                    class="is-size-6"
+                                    v-for="(error, index) in importErrors"
+                                    :key="index">
+                                    <span class="">
+                                        <span class="icon">
+                                            <i class="fa fa-times" />
+                                        </span>
+                                        {{ error }}
+                                    </span>
+                                </li>
+                                <li />
+                            </ul>
+                            <div class="section">
+                                <div class="buttons is-centered">
+                                    <div
+                                        @click="resetImport()"
+                                        class="button is-primary">
+                                        <span class="icon">
+                                            <i class="fa fa-redo" />
+                                        </span>
+                                        <span>start over</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

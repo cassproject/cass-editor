@@ -1,5 +1,7 @@
 <template>
-    <div class="framework-list-page">
+    <div
+        id="frameworks"
+        class="framework-list-page">
         <RightAside v-if="showRightAside" />
         <!-- search field -->
         <div class="section is-medium">
@@ -37,7 +39,7 @@
                         v-slot:frameworkTags="slotProps">
                         <span
                             class="framework-list-item__details is-light"
-                            v-if="!conceptMode">
+                            v-if="!conceptMode && slotProps.item.type === 'Framework'">
                             <span>
                                 Items:
                             </span>

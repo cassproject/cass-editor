@@ -7,7 +7,7 @@
             <div class="modal-background" />
             <div class="modal-content has-text-centered">
                 <span class="icon is-large has-text-center has-text-link">
-                    <i class="fas fa-3x fa-spinner is-info fa-pulse" />
+                    <i class="fas fa-2x fa-spinner is-info fa-pulse" />
                 </span>
             </div>
         </div>
@@ -590,7 +590,9 @@
 
                         <div class="column">
                             <div class="control">
-                                <label class="label">Priority: </label>
+                                <label
+                                    class="label"
+                                    title="priority in which the custom property is displayed in form inputs">Display Priority: </label>
                                 <div v-if="readOnly">
                                     {{ customPropertyPriority }}
                                 </div>
@@ -676,7 +678,9 @@
                         </div>
                     </div>
                     <div class="field">
-                        <label class="label">Display Category</label>
+                        <label
+                            class="label"
+                            title="category (if any) under which the custom property is displayed in form inputs">Display Category</label>
                         <div v-if="readOnly">
                             {{ customPropertyHeading }}
                         </div>
@@ -1030,7 +1034,7 @@
                             <th><abbr title="description of this property">description</abbr></th>
                             <th><abbr title="category (if any) under which the field is displayed in form inputs">display category</abbr></th>
                             <th><abbr title="required">required</abbr></th>
-                            <th><abbr title="priority">priority</abbr></th>
+                            <th><abbr title="priority in which the field is displayed in form inputs">display priority</abbr></th>
                             <th><abbr title="manage" /><i class="fa fa-cog" /></th>
                             <th><abbr title="delete" /><i class="fa fa-trash" /></th>
                         </tr>
@@ -1134,7 +1138,7 @@
                             <th><abbr title="description of the property">description</abbr></th>
                             <th><abbr title="category (if any) under which the field is displayed in form inputs">display category</abbr></th>
                             <th><abbr title="required">required</abbr></th>
-                            <th><abbr title="priorities correlate to view levels in the editor">priority</abbr></th>
+                            <th><abbr title="priority in which the field is displayed in form inputs">display priority</abbr></th>
                             <th><abbr title="manage"><i class="fa fa-cog" /></abbr></th>
                             <th><abbr title="delete"><i class="fa fa-trash" /></abbr></th>
                         </tr>
@@ -1401,7 +1405,9 @@
                 <div
                     v-if="config.compAllowLevels"
                     class="field">
-                    <label class="label">level heading: </label>
+                    <label
+                        class="label"
+                        title="category (if any) under which levels are displayed in form inputs">level display category: </label>
                     <div v-if="readOnly">
                         {{ config.levelHeading }}
                     </div>
@@ -1415,7 +1421,9 @@
                 <div
                     class="field"
                     v-if="config.compAllowLevels">
-                    <label class="label">level priority: </label>
+                    <label
+                        class="label"
+                        title="priority in which levels are displayed in form inputs">level display priority: </label>
                     <div v-if="readOnly">
                         {{ config.levelPriority }}
                     </div>
@@ -1528,6 +1536,41 @@
                 within a framework or between two different frameworks relate to eachother. Enabled
                 relationships will be available in the property drop down when editing competencies in the framework editor.
             </p>
+            <div class="field">
+                <label
+                    class="label"
+                    title="category (if any) under which relationships are displayed in form inputs">relationships display category: </label>
+                <div v-if="readOnly">
+                    {{ config.relationshipsHeading }}
+                </div>
+                <div v-if="!readOnly">
+                    <input
+                        class="input is-small"
+                        type="text"
+                        v-model="config.relationshipsHeading">
+                </div>
+            </div>
+            <div class="field">
+                <label
+                    class="label"
+                    title="priority in which relationships are displayed in form inputs">relationships display priority: </label>
+                <div v-if="readOnly">
+                    {{ config.relationshipsPriority }}
+                </div>
+                <div v-if="!readOnly">
+                    <select v-model="config.relationshipsPriority">
+                        <option value="primary">
+                            primary
+                        </option>
+                        <option value="secondary">
+                            secondary
+                        </option>
+                        <option value="tertiary">
+                            tertiary
+                        </option>
+                    </select>
+                </div>
+            </div>
             <!--- list of selected relationships -->
             <div class="table-container">
                 <table class="table is-hoverable is-fullwidth">
@@ -2032,6 +2075,7 @@ export default {
             DEFAULT_CUSTOM_PROPERTY_CONTEXT: 'https://schema.cassproject.org/0.4/',
             DEFAULT_CUSTOM_PROPERTY_RANGE: 'http://schema.org/Text',
             LANG_STRING_RANGE: 'http://www.w3.org/2000/01/rdf-schema#langString',
+            DEFAULT_HEADING: "General",
             configDetailsBusy: false,
             configInvalid: false,
             configNameInvalid: false,
@@ -2896,15 +2940,15 @@ export default {
         width: 150px;
     }
     h3 {
-        font-size: $is-size-3;
+        font-size: $size-3;
         padding-bottom: 1rem;
     }
     h4 {
-        font-size:$is-size-4;
+        font-size:$size-4;
         padding-bottom: 1rem;
     }
     h5 {
-        font-size: $is-size-5;
+        font-size: $size-5;
         padding-bottom: .5rem;
     }
     .listHdr {
@@ -2917,7 +2961,7 @@ export default {
     }
     .description {
         padding-bottom: .75rem;
-        font-size: $is-size-7;
+        font-size: $size-7;
     }
 </style>
 
