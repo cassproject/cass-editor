@@ -123,7 +123,8 @@
                                 :click="frameworkClickSource"
                                 :searchOptions="searchOptions"
                                 :paramObj="paramObj"
-                                :disallowEdits="true" />
+                                :disallowEdits="true"
+                                :filterToEditable="true" />
                         </div>
                     </div>
                 </transition>
