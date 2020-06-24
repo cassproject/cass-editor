@@ -4,14 +4,14 @@
 
 	<groupId>org.cassproject</groupId>
 	<artifactId>cass-editor</artifactId>
-	<version>1.2.33</version>
+	<version>1.2.34</version>
 	<packaging>rar</packaging>
 
 	<name>cass-editor</name>
 	<url>http://github.com/cassproject/cass-editor</url>
 
 	<properties>
-		<ec-version>2.11.6</ec-version>
+		<ec-version>2.11.8</ec-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
