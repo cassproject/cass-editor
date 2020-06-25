@@ -9,7 +9,7 @@
                     :class="{ 'is-active': showPropertyViewDropDown}">
                     <div class="dropdown-trigger">
                         <button
-                            class="button is-text"
+                            class="button is-small is-text"
                             @click="showPropertyViewDropDown = !showPropertyViewDropDown"
                             aria-haspopup="true">
                             <span>View</span>
@@ -64,7 +64,7 @@
                     :class="{ 'is-active': showShareDropdown}">
                     <div class="dropdown-trigger">
                         <button
-                            class="button is-text"
+                            class="button is-small is-text"
                             @click="showShareDropdown = !showShareDropdown"
                             aria-haspopup="true">
                             <span>Framework</span>
@@ -114,13 +114,13 @@
                 <div
                     v-if="showViewComments"
                     @click="$store.commit('app/showRightAside', 'Comments')"
-                    class="button is-text has-text-dark">
+                    class="button is-text is-small has-text-dark">
                     <span class="icon">
                         <i class="fas fa-comments" />
                     </span>
                 </div>
                 <div
-                    class="button is-text has-text-dark"
+                    class="button is-small is-text has-text-dark"
                     @click="onClickUndo"
                     v-if="canEditFramework">
                     <span class="icon">
@@ -129,16 +129,34 @@
                 </div>
                 <div
                     @click="$store.commit('app/showRightAside', 'Versions')"
-                    class="button is-text"
+                    class="button is-text is-small"
                     v-if="canEditFramework">
                     <span class="icon">
                         <i class="fas fa-history has-text-dark" />
                     </span>
                 </div>
+                <div class="button is-small is-text has-text-primary">
+                    <span class="icon ">
+                        <i class="fa fa-copy is-size-7" />
+                    </span>
+                </div>
+                <div
+                    class="button is-small is-text has-text-primary">
+                    <span class="icon">
+                        <i class="fas handle fa-cut" />
+                    </span>
+                </div>
+                <div
+                    class="button is-small is-text has-text-primary"
+                    title="paste">
+                    <span class="icon">
+                        <i class="fa fa-paste is-size-7" />
+                    </span>
+                </div>
             </div>
             <div class="right-side">
                 <div
-                    class="button is-text is-pulled-right"
+                    class="button is-small is-text is-pulled-right"
                     v-if="canEditFramework && !conceptMode"
                     @click="showManageConfigurationModal(); showShareDropdown = false;">
                     <span class="icon">
@@ -417,10 +435,10 @@ export default {
 
 #framework-editor-toolbar {
     border-bottom: solid 1px $light;
-    top: 52px;
+    top: 3.25rem;
     z-index: 10;
-    height: 44px;
-    display: fixed;
+    height: 1.75rem;
+    position: fixed;
     width: 100%;
     padding: 4px;
     background-color:$light;
