@@ -135,19 +135,23 @@
                         <i class="fas fa-history has-text-dark" />
                     </span>
                 </div>
-                <div class="button is-small is-text has-text-primary">
+                <div
+                    class="button is-small is-text has-text-primary"
+                    @click="copyClick">
                     <span class="icon ">
                         <i class="fa fa-copy is-size-7" />
                     </span>
                 </div>
                 <div
-                    class="button is-small is-text has-text-primary">
+                    class="button is-small is-text has-text-primary"
+                    @click="cutClick">
                     <span class="icon">
                         <i class="fas handle fa-cut" />
                     </span>
                 </div>
                 <div
                     class="button is-small is-text has-text-primary"
+                    @click="pasteClick"
                     title="paste">
                     <span class="icon">
                         <i class="fa fa-paste is-size-7" />
@@ -174,6 +178,9 @@ import {cassUtil} from '../../mixins/cassUtil';
 export default {
     name: 'EditorToolbar',
     mixins: [ cassUtil ],
+    props: {
+        selectedArray: Array
+    },
     data() {
         return {
             showPropertyViewDropDown: false,
@@ -358,6 +365,23 @@ export default {
             } else {
                 this.defaultFrameworkConfigName = "No configuration";
             }
+        },
+        cutClick: function() {
+            if (this.selectedArray && this.selectedArray.length === 1) {
+                this.$store.commit('editor/cutId', this.selectedArray[0]);
+            }
+            this.$store.commit('editor/copyId', null);
+            this.$store.commit('editor/paste', false);
+        },
+        copyClick: function() {
+            if (this.selectedArray && this.selectedArray.length === 1) {
+                this.$store.commit('editor/copyId', this.selectedArray[0]);
+            }
+            this.$store.commit('editor/cutId', null);
+            this.$store.commit('editor/paste', false);
+        },
+        pasteClick: function() {
+            this.$store.commit('editor/paste', true);
         }
     },
     computed: {

@@ -40,7 +40,8 @@ const state = {
     cutId: null,
     copyId: null,
     paste: false,
-    cutOrCopyContainerId: null
+    cutOrCopyContainerId: null,
+    nodeInFocus: null
 };
 const mutations = {
     framework(state, f) {
@@ -155,6 +156,9 @@ const mutations = {
     },
     cutOrCopyContainerId(state, id) {
         state.cutOrCopyContainerId = id;
+    },
+    nodeInFocus(state, id) {
+        state.nodeInFocus = id;
     }
 };
 const actions = {
@@ -256,6 +260,9 @@ const getters = {
     },
     cutOrCopyContainerId: function(state) {
         return state.cutOrCopyContainerId;
+    },
+    nodeInFocus: function(state) {
+        return state.nodeInFocus;
     }
 };
 
