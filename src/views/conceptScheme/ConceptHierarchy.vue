@@ -279,11 +279,28 @@ export default {
     },
     methods: {
         keydown(e) {
-            if (e.shiftKey) {
-                this.shiftKey = true;
-            }
-            if (e.key.indexOf("Arrow") !== -1) {
-                this.arrowKey = e.key;
+            if (this.canEdit) {
+                if (e.shiftKey) {
+                    this.shiftKey = true;
+                }
+                if (e.key.indexOf("Arrow") !== -1 && e.shiftKey) {
+                    this.arrowKey = e.key;
+                }
+                if (e.key === "x" && e.ctrlKey) {
+                    if (this.selectedArray && this.selectedArray.length === 1) {
+                        this.$store.commit('editor/cutId', this.selectedArray[0]);
+                    }
+                    this.$store.commit('editor/copyId', null);
+                }
+                if (e.key === "c" && e.ctrlKey) {
+                    if (this.selectedArray && this.selectedArray.length === 1) {
+                        this.$store.commit('editor/copyId', this.selectedArray[0]);
+                    }
+                    this.$store.commit('editor/cutId', null);
+                }
+                if (e.key === "v" && e.ctrlKey) {
+                    this.$store.commit('editor/paste', true);
+                }
             }
         },
         keyup(e) {
