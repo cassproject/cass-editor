@@ -942,13 +942,14 @@ export default {
                     for (var i = 0; i < frameworks.length; i++) {
                         me.$store.commit('app/importFramework', frameworks[i]);
                         me.$store.commit('editor/framework', frameworks[i]);
-                        me.importSuccess();
                         me.spitEvent("importFinished", frameworks[i].shortId(), "importPage");
                     }
                     me.importFile.splice(0, 1);
                     if (me.importFile.length > 0) {
                         me.firstImport = false;
                         me.analyzeImportFile();
+                    } else {
+                        me.importSuccess();
                     }
                 }, function(failure) {
                     me.$store.commit('app/importStatus', failure);
