@@ -749,33 +749,53 @@ export default {
                     }
                 });
             } else if (file.name.endsWith(".xml")) {
-                MedbiqImport.analyzeFile(file, function(data) {
-                    me.$store.commit('app/importFileType', 'medbiq');
-                    me.importFrameworkName = file.name.replace(".xml", "");
-                    me.$store.commit('app/importStatus', "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.");
-                    me.competencyCount = EcObject.keys(data).length;
-                    me.$store.commit('app/importTransition', 'info');
-                }, function(error) {
+                if (this.conceptMode) {
                     me.$store.commit('app/importTransition', 'process');
-                    me.$store.commit('app/addImportError', error);
-                });
+                    me.$store.commit('app/addImportError', "This is not a valid file format for concept schemes");
+                } else {
+                    MedbiqImport.analyzeFile(file, function(data) {
+                        me.$store.commit('app/importFileType', 'medbiq');
+                        me.importFrameworkName = file.name.replace(".xml", "");
+                        me.$store.commit('app/importStatus', "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.");
+                        me.competencyCount = EcObject.keys(data).length;
+                        me.$store.commit('app/importTransition', 'info');
+                    }, function(error) {
+                        me.$store.commit('app/importTransition', 'process');
+                        me.$store.commit('app/addImportError', error);
+                    });
+                }
             } else if (file.name.endsWith(".pdf")) {
-                me.$store.commit('app/importFileType', 'pdf');
-                me.firstImport = false;
-                me.detailsDetected.fileType = "pdf";
-                me.$store.commit('app/importStatus', "File selected.");
-                me.$store.commit('app/importTransition', 'info');
+                if (this.conceptMode) {
+                    me.$store.commit('app/importTransition', 'process');
+                    me.$store.commit('app/addImportError', "This is not a valid file format for concept schemes");
+                } else {
+                    me.$store.commit('app/importFileType', 'pdf');
+                    me.firstImport = false;
+                    me.detailsDetected.fileType = "pdf";
+                    me.$store.commit('app/importStatus', "File selected.");
+                    me.$store.commit('app/importTransition', 'info');
+                }
             } else if (file.name.endsWith(".docx")) {
-                me.$store.commit('app/importFileType', "pdf");
-                me.firstImport = false;
-                me.$store.commit('app/importStatus', "File selected.");
-                me.$store.commit('app/importTransition', 'info');
+                if (this.conceptMode) {
+                    me.$store.commit('app/importTransition', 'process');
+                    me.$store.commit('app/addImportError', "This is not a valid file format for concept schemes");
+                } else {
+                    me.$store.commit('app/importFileType', "pdf");
+                    me.firstImport = false;
+                    me.$store.commit('app/importStatus', "File selected.");
+                    me.$store.commit('app/importTransition', 'info');
+                }
             } else if (file.name.endsWith(".html")) {
-                me.$store.commit('app/importFileType', "pdf");
-                me.detailsDetected.fileType = "html";
-                me.firstImport = false;
-                me.$store.commit('app/importStatus', "File selected.");
-                me.$store.commit('app/importTransition', 'info');
+                if (this.conceptMode) {
+                    me.$store.commit('app/importTransition', 'process');
+                    me.$store.commit('app/addImportError', "This is not a valid file format for concept schemes");
+                } else {
+                    me.$store.commit('app/importFileType', "pdf");
+                    me.detailsDetected.fileType = "html";
+                    me.firstImport = false;
+                    me.$store.commit('app/importStatus', "File selected.");
+                    me.$store.commit('app/importTransition', 'info');
+                }
             } else {
                 me.$store.commit('app/importFileType', '');
                 error = ("CaSS cannot read the file " + file.name + ". Please check that the file has the correct file extension.");
