@@ -393,6 +393,7 @@ export default {
     beforeDestroy: function() {
         this.$store.commit('crosswalk/resetCrosswalk');
         this.$store.commit('crosswalk/resetCrosswalkFrameworks');
+        this.$store.commit('app/clearSearchFilters');
     },
     watch: {
         step: function(val) {
