@@ -1,5 +1,5 @@
 @id,@type,ceasn:name,skos:prefLabel,skos:hasTopConcept,skos:topConceptOf,skos:narrower,skos:broader
 https://myid.com/1aa,skos:ConceptScheme,123,,https://myid.com/2aa|https://myid.com/3aa,,,
-https://myid.com/2aa,skos:Concept,,New Concept,,https://myid.com/1a,https://myid.com/4aa,
+https://myid.com/2aa,skos:Concept,,New Concept,,https://myid.com/1aa,https://myid.com/4aa,
 https://myid.com/4aa,skos:Concept,,New Concept2,,,,https://myid.com/2aa
 https://myid.com/3aa,skos:Concept,,New Concept,,https://myid.com/1aa,,

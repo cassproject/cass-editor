@@ -2,7 +2,62 @@
 @import './../assets/fonts/webfonts/all.css';
 @import './../assets/fonts/RobotoCondensed/stylesheet.css';
 @import './../assets/fonts/Assistant/stylesheet.css';
+html {
+    overflow-x: auto;
+}
+html {
+    font-family: $family-primary;
+    max-width: 100vw !important;
+    overflow-y: hidden;
+    padding:0;
+    margin:0;
+    margin: 0px;
+    height: 100%;
+    padding: 0px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.has-navbar-fixed-top {
+}
+body{
+    // Tom B.  Taking this out for now as it screws up the configuration editor and needing scrolling
+    height: 100%;
+    width: 100vw;
+    overflow: hidden;
+    background: $light;
+    background-repeat: no-repeat;
+    background-size: cover;
+    min-height: 100vh;
+}
+#app {
+    height: 100%;
+    overflow: hidden;
+    width: 100%;
+}
+.dropdown-item.is-disabled {
+    color: rgba($dark, .5);
+    cursor: not-allowed;
+}
+.dropdown-item.is-disabled:hover {
+    background-color: transparent !important;
+}
+#frameworks,
+#framework,
+#import,
+#concept,
+#concepts,
+#configuration,
+#user-groups {
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    background-color: $white;
+}
 
+.expand-column .icon{
+    font-size: .5rem;
+    margin-right: .5rem;
+}
 
 p {
     font-style: normal;
@@ -15,6 +70,7 @@ p {
     transform: translateX(0);
     padding-right: 8px;
     z-index: 10;
+    width: 120px;
     border-radius: 5px;
 
     input {
@@ -34,7 +90,7 @@ p {
     }
     
     .auto-complete {
-        width: 240px;
+        width: 160px;
         position: fixed;
         top: 60px;
         left: 0px;
@@ -80,8 +136,7 @@ hr  {
 }
 
 // scrollable area minus top bar size
-.is-scrollable{
-}
+
 
 // base styles for text inputs
 input, textarea{
@@ -94,9 +149,12 @@ label {
     font-weight: 600;
     color: rgba($dark, .5);
     width: 95%;
+    text-transform: capitalize;
     font-size: .7rem;
 }
-
+.button {
+    text-transform: lowercase;
+}
 
 .lode__Property-text{
     border-radius: .25rem;
@@ -177,3 +235,40 @@ iframe {
         width: 100% !important;
     }
 }
+
+.table {
+    thead {
+        th {
+            font-weight: 500;
+            font-size: $size-7;
+            font-family: $family-secondary;
+        }
+    }
+    tbody {
+        th {
+        font-weight: 600;
+        font-family: $family-primary;
+        }
+        tr {
+        font-weight: 400;
+        font-size: $size-7;
+        font-family: $family-primary;
+        }
+    }
+}
+
+
+/*  Responsive text 
+    sets size to 16 - 22 depending on size 
+*/ 
+@media screen and (min-width: 0px) {
+    html {
+      font-size: calc(16px + 6 * ((100vw - 320px) / 680));
+    }
+  }
+  @media screen and (min-width: 1200px) {
+    html {
+      font-size: 22px;
+    }
+  } 
+  

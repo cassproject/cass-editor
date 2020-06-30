@@ -5,9 +5,13 @@ export default {
             console.log("removing " + thing.id);
             var me = this;
             var thisFramework = this.$store.getters['editor/framework'];
+            var initialCompetencies = thisFramework.competency ? thisFramework.competency.slice() : null;
+            var initialRelations = thisFramework.relation ? thisFramework.relation.slice() : null;
+            var initialLevels = thisFramework.level ? thisFramework.level.slice() : null;
             thisFramework["schema:dateModified"] = new Date().toISOString();
             thisFramework.removeCompetency(thing.shortId(), function() {
                 var framework = me.framework;
+                me.$store.commit('editor/addEditsToUndo', [{operation: "update", id: framework.shortId(), fieldChanged: ["competency", "relation", "level"], initialValue: [initialCompetencies, initialRelations, initialLevels]}]);
                 if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[f.id] !== true) {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
                 }
