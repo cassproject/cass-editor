@@ -22,7 +22,7 @@
     "jsonld": "^1.8.1",
     "pure-uuid": "^1.6.0",
     "v-clipboard": "^2.2.3",
-    "vue": "^2.6.10",
+    "vue": "^2.6.11",
     "vue-infinite-loading": "^2.4.5",
     "vue-moment": "^4.1.0",
     "vue-router": "^3.2.0",
@@ -44,7 +44,7 @@
     "node-sass": "^4.14.1",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
-    "vue-template-compiler": "^2.6.10"
+    "vue-template-compiler": "^2.6.11"
   },
   "eslintConfig": {
     "root": true,
