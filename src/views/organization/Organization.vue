@@ -1,5 +1,5 @@
 <template>
-    <div class="page-organization">
+    <div class="organization">
         <Thing
             :obj="organization"
             :repo="repo"

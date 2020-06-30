@@ -7,13 +7,13 @@
                 Not found
             </h2>
             <p>
-                We’re terribly sorry but the CaSS server does not appear to be online. Please try again later or check the server configuration parameters.
+                You've tried to access a page that doesn't exist, please check your url and try again.
             </p>
         </div>
         <div class="section">
             <div class="buttons is-centered">
                 <router-link
-                    to="/"
+                    to="/frameworks"
                     class="button is-primary is-centered">
                     return home
                 </router-link>

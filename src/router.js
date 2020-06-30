@@ -17,13 +17,31 @@ export default new Router({
     routes: [
         {
             path: '/',
+            name: 'welcome',
+            components: {
+                default: () => import('./views/Welcome.vue'),
+                sidebar: () => import('./components/SideNav.vue'),
+                topbar: () => import('./components/Topbar.vue')
+            },
+            alias: '/cass-editor/'
+        },
+        {
+            path: '/frameworks',
             name: 'frameworks',
             components: {
                 default: () => import('./views/framework/Frameworks.vue'),
                 sidebar: () => import('./components/SideNav.vue'),
                 topbar: () => import('./components/Topbar.vue')
-            },
-            alias: '/cass-editor/'
+            }
+        },
+        {
+            path: '/concepts',
+            name: 'concepts',
+            components: {
+                default: () => import('./views/framework/Frameworks.vue'),
+                sidebar: () => import('./components/SideNav.vue'),
+                topbar: () => import('./components/Topbar.vue')
+            }
         },
         {
             path: '/login',
@@ -31,7 +49,7 @@ export default new Router({
             component: () => import('./views/login/Login.vue')
         },
         {
-            path: '/config',
+            path: '/configuration',
             name: 'configuration',
             components: {
                 default: () => import('./views/configuration/ConfigurationEditor'),
@@ -40,8 +58,8 @@ export default new Router({
             }
         },
         {
-            path: '/userGroup',
-            name: 'usergroup',
+            path: '/users',
+            name: 'users',
             components: {
                 default: () => import('./views/usersGroups/UserGroupEditor'),
                 sidebar: () => import('./components/SideNav.vue'),
