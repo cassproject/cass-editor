@@ -12,16 +12,21 @@
                             Sort by last date modified
 -->
 <template>
-    <div class="section">
-        <div class="field">
-            <p class="control has-icons-right">
+    <div class="">
+        <div
+            class="field">
+            <p
+                class="control"
+                :class="{'has-icons-right': searchTerm === ''}">
                 <input
-                    class="input is-large"
+                    class="input is-small"
                     ref="text"
+                    type="search"
+                    v-model="searchTerm"
                     :placeholder="'Search for ' + (searchType === 'Competency' ? 'competencie' : searchType)+ 's...'"
-                    @change="updateSearchTerm($event)"
-                    @keyup.enter="updateSearchTerm($event)">
+                    @keyup.enter="updateSearchTerm(searchTerm)">
                 <span
+                    v-if="searchTerm === ''"
                     class="icon is-small is-right">
                     <i class="fas fa-search" />
                 </span>
@@ -77,15 +82,17 @@
         <!-- to do connect basic filters to list results -->
         <div v-if="filterSet === 'basic'">
             <div class="field is-grouped">
-                <div class="field">
+                <div
+                    class="field"
+                    v-if="loggedIn">
                     <input
+                        :disabled="ownedByMe"
                         v-model="basicFilter"
                         class="is-checkradio"
                         value="ownedByMe"
                         id="ownedByMe"
                         type="checkbox"
-                        name="filterOwnedByMe"
-                        checked="">
+                        name="filterOwnedByMe">
                     <label for="ownedByMe">
                         Owned by me
                     </label>
@@ -100,7 +107,7 @@
                         name="alphabeticalSort"
                         checked="checked">
                     <label for="alphabeticalSort">
-                        Sort Alphabetical
+                        Alphabetical
                     </label>
                     <input
                         v-model="basicSort"
@@ -110,7 +117,7 @@
                         type="radio"
                         name="lastDateModifiedSort">
                     <label for="lastDateModifiedSort">
-                        Sort by Last date modified
+                        Date modified
                     </label>
                 </div>
             </div>
@@ -122,6 +129,14 @@
 export default {
     name: 'SearchBar',
     props: {
+        ownedByMe: {
+            type: Boolean,
+            default: false
+        },
+        view: {
+            type: String,
+            default: ''
+        },
         searchType: {
             type: String,
             default: ''
@@ -133,11 +148,17 @@ export default {
     },
     data() {
         return {
+            searchTerm: '',
             basicSort: '',
             basicFilter: ''
         };
     },
     watch: {
+        searchTerm: function(val) {
+            if (val.length === 0) {
+                this.updateSearchTerm(val);
+            }
+        },
         basicSort: function(val) {
             console.log(val);
             this.$store.commit("app/sortResults", {id: val});
@@ -159,6 +180,11 @@ export default {
             this.$store.commit("app/quickFilters", [filter]);
         }
     },
+    mounted: function() {
+        if (this.ownedByMe) {
+            this.basicFilter = true;
+        }
+    },
     methods: {
         clearAllFilters: function() {
             this.$store.commit('app/clearSearchFilters');
@@ -168,7 +194,7 @@ export default {
         },
         clearSortBy: function() {
             this.$store.commit('app/sortResults', []);
-            this.sortBy = this.queryParams.concepts === 'true' ? "dcterms:title.keyword" : "name.keyword";
+            this.sortBy = this.$store.getters['editor/conceptMode'] === true ? "dcterms:title.keyword" : "name.keyword";
         },
         removeFilter: function(filterType, val) {
             let storeCaller = 'app/' + filterType;
@@ -178,7 +204,7 @@ export default {
             this.$store.commit(storeCaller, filterArray);
         },
         updateSearchTerm: function(e) {
-            this.$store.commit('app/searchTerm', e.target.value);
+            this.$store.commit('app/searchTerm', e);
         }
     },
     computed: {
@@ -186,7 +212,7 @@ export default {
             return this.$store.getters['editor/queryParams'];
         },
         type: function() {
-            return this.queryParams.concepts === 'true' ? "ConceptScheme" : "Framework";
+            return this.$store.getters['editor/conceptMode'] === true ? "ConceptScheme" : "Framework";
         },
         applySearchTo: function() {
             return this.$store.getters['app/applySearchTo'];
@@ -206,6 +232,12 @@ export default {
         },
         sortResults: function() {
             return this.$store.getters['app/sortResults'];
+        },
+        loggedIn: function() {
+            if (EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
+                return true;
+            }
+            return false;
         }
     }
 };

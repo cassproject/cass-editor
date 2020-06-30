@@ -5,8 +5,10 @@ with some adjustments to the modal-card classes to just card, this could be
 placed anywhere in a structured html element such as a <section> or a <div>
 -->
 <template>
-    <div class="search-modal modal-card">
-        <header class="modal-card-head has-background-primary">
+    <div :class="[{'search-modal modal-card': view !== 'thing-editing' && view !== 'multi-edit'}, {'columns is-multiline': view === 'thing-editing' || view === 'multi-edit'}]">
+        <header
+            v-if="view !== 'thing-editing' && view !== 'multi-edit'"
+            :class="{'modal-card-head has-background-primary': view !== 'thing-editing' && view !== 'multi-edit'}">
             <p class="modal-card-title">
                 <span class="title has-text-white">Search for {{ searchType }}</span>
                 <br><span
@@ -25,7 +27,9 @@ placed anywhere in a structured html element such as a <section> or a <div>
                 @click="resetModal();"
                 aria-label="close" />
         </header>
-        <section class="modal-card-body">
+        <section
+            v-if="view !== 'thing-editing' && view !== 'multi-edit'"
+            class="modal-card-body">
             <div class="column is-12">
                 <SearchBar
                     filterSet="basic"
@@ -35,6 +39,7 @@ placed anywhere in a structured html element such as a <section> or a <div>
                 <List
                     v-if="$store.state.lode.competencySearchModalOpen"
                     :type="searchType"
+                    view="search"
                     :repo="repo"
                     :click="select"
                     :searchOptions="searchOptions"
@@ -45,7 +50,30 @@ placed anywhere in a structured html element such as a <section> or a <div>
                     :displayFirst="displayFirst" />
             </div>
         </section>
-        <footer class="modal-card-foot">
+        <template v-if="view === 'thing-editing' || view === 'multi-edit'">
+            <div class="column is-12">
+                <SearchBar
+                    filterSet="basic"
+                    :searchType="searchType" />
+            </div>
+            <div class="column is-12">
+                <List
+                    v-if="$store.state.lode.competencySearchModalOpen"
+                    :type="searchType"
+                    view="search"
+                    :repo="repo"
+                    :click="select"
+                    :searchOptions="searchOptions"
+                    :paramObj="paramObj"
+                    :disallowEdits="true"
+                    :selectingCompetency="true"
+                    :selected="selectedIds"
+                    :displayFirst="displayFirst" />
+            </div>
+        </template>
+        <footer
+            v-if="view !== 'thing-editing' && view !== 'multi-edit'"
+            class="modal-card-foot">
             <div class="buttons">
                 <button
                     class="button is-outlined is-dark"
@@ -77,12 +105,6 @@ placed anywhere in a structured html element such as a <section> or a <div>
                         Link {{ searchType }}
                     </span>
                 </button>
-                <button
-                    v-if="!copyOrLink"
-                    class="button is-outlined is-primary"
-                    @click="addSelected(selectedIds); resetModal();">
-                    Add Selected
-                </button>
             </div>
         </footer>
     </div>
@@ -96,7 +118,11 @@ import SearchBar from '@/components/framework/SearchBar.vue';
 export default {
     name: 'CompetencySearch',
     props: {
-        isActive: Boolean
+        isActive: Boolean,
+        view: {
+            type: String,
+            default: 'modal'
+        }
     },
     components: {List, SearchBar},
     mixins: [common],
@@ -111,7 +137,7 @@ export default {
         };
     },
     created: function() {
-        this.sortBy = this.queryParams.concepts === 'true' ? "dcterms:title.keyword" : "name.keyword";
+        this.sortBy = (this.$store.getters['editor/conceptMode'] === true || this.searchType === "Concept") ? "dcterms:title.keyword" : "name.keyword";
     },
     computed: {
         ...mapState({
@@ -120,8 +146,10 @@ export default {
             queryParams: state => state.editor.queryParams
         }),
         nameOfSelectedCompetency: function() {
-            if (this.selectedCompetency) {
+            if (this.selectedCompetency && this.selectedCompetency.name) {
                 return this.selectedCompetency.getName();
+            } else if (this.selectedCompetency) {
+                return Thing.getDisplayStringFrom(this.selectedCompetency["skos:prefLabel"]);
             } else {
                 return '';
             }
@@ -141,18 +169,20 @@ export default {
             if (this.queryParams && this.queryParams.filter != null) {
                 search += " AND (" + this.queryParams.filter + ")";
             }
-            if (this.showMine || (this.queryParams && this.queryParams.concepts !== "true" && this.queryParams.show === "mine") ||
-                (this.queryParams && this.queryParams.concepts === "true" && this.queryParams.conceptShow === "mine")) {
-                search += " AND (";
-                for (var i = 0; i < EcIdentityManager.ids.length; i++) {
-                    if (i !== 0) {
-                        search += " OR ";
+            if (this.showMine || (this.queryParams && this.$store.getters['editor/conceptMode'] === true && this.queryParams.show === "mine") ||
+                (this.queryParams && this.$store.getters['editor/conceptMode'] === true && this.queryParams.conceptShow === "mine")) {
+                if (EcIdentityManager.ids.length > 0) {
+                    search += " AND (";
+                    for (var i = 0; i < EcIdentityManager.ids.length; i++) {
+                        if (i !== 0) {
+                            search += " OR ";
+                        }
+                        var id = EcIdentityManager.ids[i];
+                        search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
+                        search += " OR @owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
                     }
-                    var id = EcIdentityManager.ids[i];
-                    search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
-                    search += " OR @owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
+                    search += ")";
                 }
-                search += ")";
             }
             return search;
         },
@@ -161,8 +191,8 @@ export default {
             obj.size = 20;
             var order = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "asc" : "desc";
             obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "long",  "missing" : "_last"}} ]';
-            if (this.queryParams && ((this.queryParams.concepts !== "true" && this.queryParams.show === 'mine') ||
-                (this.queryParams.concepts === "true" && this.queryParams.conceptShow === "mine"))) {
+            if (EcIdentityManager.ids.length > 0 && this.queryParams && ((this.$store.getters['editor/conceptMode'] === true && this.queryParams.show === 'mine') ||
+                (this.$store.getters['editor/conceptMode'] === true && this.queryParams.conceptShow === "mine"))) {
                 obj.ownership = 'me';
             }
             return obj;
@@ -217,6 +247,9 @@ export default {
             } else {
                 EcArray.setRemove(this.selectedIds, competency.shortId());
             }
+            if (!this.copyOrLink || this.searchType === "Level") {
+                this.$store.commit('editor/selectedCompetenciesAsProperties', this.selectedIds);
+            }
         },
         copyCompetencies: function(results) {
             var copyDict = {};
@@ -249,17 +282,10 @@ export default {
                             c.addOwner(EcPk.fromPem(owner));
                         }
                     }
-                    if (this.$store.state.editor && this.$store.state.editor.configuration) {
-                        var config = this.$store.state.editor.configuration;
-                        if (config["defaultObjectOwners"]) {
-                            for (var k = 0; k < config["defaultObjectOwners"].length; k++) {
-                                c.addOwner(EcPk.fromPem(config["defaultObjectOwners"][k]));
-                            }
-                        }
-                        if (config["defaultObjectReaders"]) {
-                            for (var k = 0; k < config["defaultObjectReaders"].length; k++) {
-                                c.addReader(EcPk.fromPem(config["defaultObjectReaders"][k]));
-                            }
+                    if (framework.reader && framework.reader.length > 0) {
+                        for (var j = 0; j < framework.reader.length; j++) {
+                            var reader = framework.reader[j];
+                            c.addReader(EcPk.fromPem(reader));
                         }
                     }
                     c['ceasn:derivedFrom'] = thing.id;
@@ -345,17 +371,10 @@ export default {
                                 r.addOwner(EcPk.fromPem(owner));
                             }
                         }
-                        if (this.$store.state.editor && this.$store.state.editor.configuration) {
-                            var config = this.$store.state.editor.configuration;
-                            if (config["defaultObjectOwners"]) {
-                                for (var k = 0; k < config["defaultObjectOwners"].length; k++) {
-                                    r.addOwner(EcPk.fromPem(config["defaultObjectOwners"][k]));
-                                }
-                            }
-                            if (config["defaultObjectReaders"]) {
-                                for (var k = 0; k < config["defaultObjectReaders"].length; k++) {
-                                    r.addReader(EcPk.fromPem(config["defaultObjectReaders"][k]));
-                                }
+                        if (framework.reader && framework.reader.length > 0) {
+                            for (var j = 0; j < framework.reader.length; j++) {
+                                var reader = framework.reader[j];
+                                r.addReader(EcPk.fromPem(reader));
                             }
                         }
                         if (r.source !== r.target) {
@@ -412,17 +431,10 @@ export default {
                                 r.addOwner(EcPk.fromPem(owner));
                             }
                         }
-                        if (this.$store.state.editor && this.$store.state.editor.configuration) {
-                            var config = this.$store.state.editor.configuration;
-                            if (config["defaultObjectOwners"]) {
-                                for (var k = 0; k < config["defaultObjectOwners"].length; k++) {
-                                    r.addOwner(EcPk.fromPem(config["defaultObjectOwners"][k]));
-                                }
-                            }
-                            if (config["defaultObjectReaders"]) {
-                                for (var k = 0; k < config["defaultObjectReaders"].length; k++) {
-                                    r.addReader(EcPk.fromPem(config["defaultObjectReaders"][k]));
-                                }
+                        if (framework.reader && framework.reader.length > 0) {
+                            for (var j = 0; j < framework.reader.length; j++) {
+                                var reader = framework.reader[j];
+                                r.addReader(EcPk.fromPem(reader));
                             }
                         }
                         if (r.source !== r.target) {
@@ -530,17 +542,10 @@ export default {
                                 r.addOwner(EcPk.fromPem(owner));
                             }
                         }
-                        if (this.$store.state.editor && this.$store.state.editor.configuration) {
-                            var config = this.$store.state.editor.configuration;
-                            if (config["defaultObjectOwners"]) {
-                                for (var k = 0; k < config["defaultObjectOwners"].length; k++) {
-                                    r.addOwner(EcPk.fromPem(config["defaultObjectOwners"][k]));
-                                }
-                            }
-                            if (config["defaultObjectReaders"]) {
-                                for (var k = 0; k < config["defaultObjectReaders"].length; k++) {
-                                    r.addReader(EcPk.fromPem(config["defaultObjectReaders"][k]));
-                                }
+                        if (framework.reader && framework.reader.length > 0) {
+                            for (var j = 0; j < framework.reader.length; j++) {
+                                var reader = framework.reader[j];
+                                r.addReader(EcPk.fromPem(reader));
                             }
                         }
 
@@ -572,33 +577,6 @@ export default {
                 me.$store.commit('editor/framework', EcFramework.getBlocking(framework.id));
             }, console.error);
         },
-        attachUrlProperties: function(results) {
-            var resource = this.$store.state.editor.framework;
-            if (this.$store.state.editor.selectedCompetency != null) {
-                resource = this.$store.state.editor.selectedCompetency;
-            }
-            for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
-                if (thing.isAny(new EcConcept().getTypes())) {
-                    if (!EcArray.isArray(resource[this.$store.state.editor.selectCompetencyRelation])) {
-                        resource[this.$store.state.editor.selectCompetencyRelation] = [];
-                    }
-                    EcArray.setAdd(resource[this.$store.state.editor.selectCompetencyRelation], thing.shortId());
-                }
-            }
-            resource["schema:dateModified"] = new Date().toISOString();
-            if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[resource.id] !== true) {
-                resource = EcEncryptedValue.toEncryptedValue(resource);
-            }
-            this.repo.saveTo(resource, function() {}, console.error);
-        },
-        addSelected: function(ids) {
-            if (this.searchType === "Competency") {
-                this.addAlignments(ids, this.$store.state.editor.selectedCompetency, this.$store.state.editor.selectCompetencyRelation);
-            } else {
-                this.attachUrlProperties(ids);
-            }
-        },
         addNewlinesToId: function(pem) {
             // Begin public key line
             pem = pem.substring(0, 26) + "\n" + pem.substring(26);
@@ -620,7 +598,7 @@ export default {
                 this.sortBy = "schema:dateModified";
                 this.displayFirst.splice(0, this.displayFirst.length);
             } else {
-                this.sortBy = this.queryParams.concepts === 'true' ? "dcterms:title.keyword" : "name.keyword";
+                this.sortBy = (this.$store.getters['editor/conceptMode'] === true || this.searchType === "Concept") ? "dcterms:title.keyword" : "name.keyword";
                 this.displayFirst.splice(0, this.displayFirst.length);
             }
         },
@@ -640,34 +618,78 @@ export default {
 
 <style lang="scss">
     @import '@/scss/frameworks.scss';
-.search-modal {
+.search-modal, .modal.lode__thing-editing {
     max-height: 100%;
     min-height: 600px;
-}
-.competency-search{
-    .thing {
-        padding: .125rem .25rem !important;
+    .breadcrumb {
+        padding-left: .125rem;
     }
-    .thing .list-thing:hover {
-        background-color: none;
-    }
-    .Thing__heading {
-        padding-left: .25rem !important;
-        margin-right: 2rem;
-    }
-    .edit-button {
+    .lode__type {
         display: none;
     }
+    .competency-search{
+        .thing {
+            padding: .125rem .25rem !important;
+        }
+        .thing .list-thing:hover {
+            background-color: none;
+        }
+        .Thing__heading {
+            padding-left: .25rem !important;
+            margin-right: 2rem;
+        }
+        .edit-button {
+            display: none;
+        }
 
-    .list-ul__item:hover {
-        padding-top: .25rem;
-        background-color: $cass-lightest;
+        .list-ul__item:hover {
+            padding-top: .5rem;
+            background-color: $cass-lightest;
+        }
+        .list-ul__item {
+            margin-top: .25rem;
+            border-radius: 3px;
+            padding: .5rem;
+        }
     }
-    .list-ul__item {
-        margin-top: .25rem;
-        border-radius: 3px;
-        padding-top: .25rem;
+    .property-section {
+        padding-top: 0rem !important;
+        padding-bottom: 0rem !important;
     }
+
+    .List {
+        .list-ul {
+            .list-ul__item {
+
+                padding: .5rem .25rem;
+
+                .search-selection__icon,
+                .search-selection__add-icon
+                {
+                    float: right;
+                    right: 16px;
+                    display: flex;
+                    height: 100%;
+                    align-content: center;
+                    .icon {
+                        height: 100%;
+                        padding-right: 16px;
+                    }
+                }
+                .search-selection__add-icon {
+                    visibility: hidden;
+                }
+            }
+            .list-ul__item:hover {
+                background-color: rgba($light, .5);
+                .lode__Competency .search-selection__add-icon {
+                    visibility: visible !important;
+                }
+            }
+        }
+    }
+
 }
+
 
 </style>
