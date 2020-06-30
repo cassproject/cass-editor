@@ -19,7 +19,7 @@
             v-if="isCommentsBusy"
             class="has-text-centered">
             <span class="icon is-large has-text-center has-text-link">
-                <i class="fas fa-3x fa-spinner is-info fa-pulse" />
+                <i class="fas fa-2x fa-spinner is-info fa-pulse" />
             </span>
         </div>
         <div v-if="!isCommentsBusy">
@@ -149,7 +149,7 @@ export default {
                 let reply = this.commentWrapperMap[replyId];
                 let replyAboutId = reply.aboutId;
                 let parent = this.commentWrapperMap[replyAboutId];
-                parent.replies.push(reply);
+                if (parent) parent.replies.push(reply);
             }
         },
         buildReplyCommentWrappers: function() {
@@ -212,7 +212,10 @@ export default {
             return commentCreators;
         },
         buildFrameworkCommentPersonMap: function() {
-            window.repo.multiget(this.buildCommentCreatorList(), this.buildFrameworkCommentPersonMapSuccess, this.buildFrameworkCommentPersonMapFailure);
+            let commentCreators = this.buildCommentCreatorList();
+            if (commentCreators.length > 0) {
+                window.repo.multiget(commentCreators, this.buildFrameworkCommentPersonMapSuccess, this.buildFrameworkCommentPersonMapFailure);
+            } else this.buildFrameworkCommentPersonMapSuccess([]);
         },
         sortLocalFrameworkCommentList() {
             this.localFrameworkCommentList.sort(function(c1, c2) {

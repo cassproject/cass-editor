@@ -56,7 +56,7 @@ buildQA:
 
   - npm install
   - npm run lint
-  - npm run buildDev
+  - npm run build
   artifacts:
     paths:
     - ./dist
@@ -81,7 +81,7 @@ buildT3:
 
   - npm install
   - npm run lint
-  - npm run buildDev
+  - npm run build
   artifacts:
     paths:
     - ./dist

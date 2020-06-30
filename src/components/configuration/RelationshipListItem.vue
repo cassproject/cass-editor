@@ -20,22 +20,19 @@
             </div>
         </td>
         <td>
-            <div v-if="readOnly">
-                {{ localEnabled }}
-            </div>
-            <div
-                class="select is-small"
-                v-if="!readOnly">
-                <select
-                    v-model="localEnabled"
-                    @change="changeEnabled">
-                    <option :value="true">
-                        true
-                    </option>
-                    <option :value="false">
-                        false
-                    </option>
-                </select>
+            <div class="field">
+                <div
+                    class="control is-size-3">
+                    <input
+                        :disabled="readOnly"
+                        @change="changeEnabled"
+                        v-model="localEnabled"
+                        :id="relationship + scope"
+                        type="checkbox"
+                        :name="relationship + scope"
+                        class="switch is-outlined">
+                    <label :for="relationship + scope" />
+                </div>
             </div>
         </td>
     </tr>
@@ -50,6 +47,10 @@ export default {
             default: ''
         },
         label: {
+            type: String,
+            default: ''
+        },
+        scope: {
             type: String,
             default: ''
         },
@@ -73,8 +74,10 @@ export default {
             this.$emit('change', this.relationship, 'label', evt.srcElement.value);
         },
         changeEnabled: function(evt) {
-            let retVal = false;
-            if (evt.srcElement.value.equals('true')) retVal = true;
+            // let retVal = false;
+            // if (evt.srcElement.value.equals('true')) retVal = true;
+            let retVal = evt.target.checked;
+            console.log("evt", evt);
             this.$emit('change', this.relationship, 'enabled', retVal);
         }
     }
