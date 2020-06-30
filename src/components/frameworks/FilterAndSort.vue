@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="right-aside__filter-and-sort">
         <h3 class="title is-size-3">
             Filter and Sort
         </h3>
@@ -23,7 +23,9 @@
                 </template>
             </div>
         </div>
-        <div class="section">
+        <div
+            class="section"
+            v-if="!($store.getters['editor/conceptMode'] && !loggedIn)">
             <h3 class="title is-size-4">
                 Quick Filters
             </h3>
@@ -42,7 +44,9 @@
                 </template>
             </div>
         </div>
-        <div class="section">
+        <div
+            class="section"
+            v-if="!$store.getters['editor/conceptMode']">
             <h3 class="title is-size-4">
                 Apply search term to
             </h3>
@@ -94,12 +98,11 @@ export default {
                     label: 'Not owned by me',
                     enabled: true
                 },
-                // To do: enable after frameworks are associated with configs
                 {
                     id: 'configMatchDefault',
                     checked: false,
                     label: 'Configuration matches default',
-                    enabled: false
+                    enabled: true
                 }
             ],
             applySearchTo: [
@@ -144,10 +147,26 @@ export default {
             set(val) {
                 this.$store.commit('app/sortResults', val);
             }
+        },
+        loggedIn: function() {
+            return EcIdentityManager.ids && EcIdentityManager.ids.length;
         }
     },
     mounted: function() {
-
+        if (!this.loggedIn) {
+            for (var i = 0; i < this.quickFilters.length; i++) {
+                if (this.quickFilters[i].id !== "configMatchDefault") {
+                    this.quickFilters[i].enabled = false;
+                }
+            }
+        }
+        if (this.$store.getters['editor/conceptMode']) {
+            for (var i = 0; i < this.quickFilters.length; i++) {
+                if (this.quickFilters[i].id === "configMatchDefault") {
+                    this.quickFilters[i].enabled = false;
+                }
+            }
+        }
     },
     watch: {
         applySearchTo: {

@@ -2,9 +2,10 @@
     <div class="single modal-card">
         <header class="modal-card-head has-background-primary">
             <p class="modal-card-title has-text-white is-size-2">
-                <span>{{ dynamicModalContent.parentName['@value'] }}</span>
-                <br>
-                <br>
+                <template v-if="dynamicModalContent.parentName && dynamicModalContent.parentName['@value']">
+                    <span>{{ dynamicModalContent.parentName['@value'] }}</span>
+                    <br><br>
+                </template>
                 <b>{{ dynamicModalContent.type }}</b>
             </p>
             <button
@@ -16,10 +17,11 @@
             <Component
                 :is="dynamicThing"
                 :uri="dynamicModalContent.uri"
-                :expandInModal="true" />
+                :expandInModal="true"
+                @doneEditingNodeEvent="doneEditing" />
             <div class="section">
                 <h4 class="header">
-                    This <b>{{ dynamicModalContent.type }}</b> is listed in <b>{{ numberOfParentFrameworks }}</b> {{ dynamicModalContent.objectType === "Concept" ? "concept schemes" : "frameworks"}}
+                    This item is listed in <b>{{ numberOfParentFrameworks }}</b> {{ dynamicModalContent.objectType === "Concept" ? "concept scheme" : "framework" }}<span v-if="numberOfParentFrameworks > 1">s</span>
                 </h4>
                 <ul class="single__list">
                     <li
@@ -105,9 +107,7 @@ export default {
             }
             this.$store.commit('editor/framework', EcRepository.getBlocking(framework.url));
             if (this.dynamicModalContent.objectType === "Concept") {
-                var queryParams = this.$store.state.editor.queryParams;
-                queryParams.concepts = "true";
-                this.$store.commit('editor/queryParams', queryParams);
+                this.$store.commit('editor/conceptMode', true);
                 this.$router.push({name: "conceptScheme", params: {frameworkId: framework.url}});
             }
             this.$store.commit('app/closeModal');
@@ -123,8 +123,7 @@ export default {
                 var scheme = EcConceptScheme.getBlocking(concept["skos:topConceptOf"]);
                 this.parentFrameworks.push({name: this.getDisplayStringFrom(scheme["dcterms:title"]), url: scheme.shortId()});
             } else if (concept["skos:broader"]) {
-                var parent = EcConcept.getBlocking(concept["skos:broader"]);
-                this.findConceptTrail(parent);
+                this.findConceptTrail(concept["skos:broader"]);
             }
         },
         getDisplayStringFrom: function(n) {
@@ -137,6 +136,9 @@ export default {
                 return (n)["@value"];
             }
             return n;
+        },
+        doneEditing: function() {
+            this.edit = false;
         }
     },
     mounted() {
@@ -176,6 +178,9 @@ export default {
         .field {
             padding-left: .25rem;
         }
+    }
+    .comment-button {
+        display: none;
     }
     .lode__thing:hover {
         padding-lefT: 0rem;
