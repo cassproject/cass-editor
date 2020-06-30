@@ -2,8 +2,10 @@ module.exports = {
     css: {
         loaderOptions: {
             sass: {
-                // options here will be passed to postcss-loader
-                indentedSyntax: false
+                sassOptions: {
+                    // options here will be passed to postcss-loader
+                    indentedSyntax: false
+                }
             }
         }
     },
