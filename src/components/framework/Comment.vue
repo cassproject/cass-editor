@@ -5,10 +5,15 @@
             :title="comment.creatorEmail">
             {{ comment.creatorName }}
         </li>
+        <li class="comment-list__email">
+            {{ comment.creatorEmail }}
+        </li>
         <li class="comment-list__timestamp">
             {{ toPrettyDateString(comment.dateCreated) }}
         </li>
-        <li class="comment-list__message-container">
+        <li
+            class="comment-list__message-container"
+            v-click-outside="closeCommentListDropDown">
             <div
                 v-if="comment.canModify"
                 class="dropdown"
@@ -176,6 +181,9 @@ export default {
         };
     },
     methods: {
+        closeCommentListDropDown: function() {
+            this.commentListDropDownActive = false;
+        },
         handleClickReply: function() {
             this.$store.commit('editor/setAddCommentAboutId', this.comment.aboutId);
             this.$store.commit('editor/setAddCommentType', 'reply');
@@ -183,6 +191,7 @@ export default {
             this.$store.commit('app/showModal', {component: 'AddComment'});
         },
         handleClickEdit: function() {
+            this.commentListDropDownActive = false;
             this.$store.commit('editor/setAddCommentAboutId', this.comment.aboutId);
             this.$store.commit('editor/setAddCommentType', 'edit');
             this.$store.commit('editor/setCommentToEdit', this.comment.comment);

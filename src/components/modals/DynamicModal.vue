@@ -14,6 +14,7 @@ returns content.
         :class="{'is-active': showModal}">
         <div class="modal-background" />
         <Component
+            view="dynamic-modal"
             :content="dynamicModalContent"
             :is="dynamicModal" />
     </div>
@@ -28,6 +29,7 @@ import Single from '@/components/competency/Single.vue';
 import AddComment from '@/components/framework/AddComment.vue';
 import DeleteCommentConfirm from '@/components/framework/DeleteCommentConfirm.vue';
 import SupportedImportDetails from '@/components/import/SupportedImportDetails.vue';
+import Configuration from '@/views/configuration/ConfigurationEditor.vue';
 
 export default {
     name: 'DynamicModal',
@@ -38,7 +40,8 @@ export default {
         AddComment,
         DeleteCommentConfirm,
         SupportedImportDetails,
-        Single
+        Single,
+        Configuration
     },
     data() {
         return {

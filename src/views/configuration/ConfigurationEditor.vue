@@ -1,5 +1,7 @@
 <template>
-    <div>
+    <div
+        id="configuration"
+        :class="[{'modal-card': view === 'dynamic-modal'}, {'section': view !== 'dynamic-modal'}]">
         <!-- busy modal-->
         <div
             class="modal"
@@ -7,8 +9,75 @@
             <div class="modal-background" />
             <div class="modal-content has-text-centered">
                 <span class="icon is-large has-text-center has-text-link">
-                    <i class="fas fa-3x fa-spinner is-info fa-pulse" />
+                    <i class="fas fa-2x fa-spinner is-info fa-pulse" />
                 </span>
+            </div>
+        </div>
+        <!-- configuration deletion confirm modal-->
+        <div
+            class="modal"
+            :class="[{'is-active': showConfirmDeleteConfigModal}]">
+            <div class="modal-background" />
+            <div class="modal-card">
+                <header class="modal-card-head has-background-primary">
+                    <p class="modal-card-title">
+                        <span class="title has-text-white">
+                            Delete Configuration?
+                        </span>
+                    </p>
+                    <button
+                        class="delete"
+                        @click="cancelConfigurationDelete"
+                        aria-label="close" />
+                </header>
+                <section class="modal-card-body">
+                    Are you sure you wish to delete the configuration <b>'{{ configToDelete.name }}'</b>?
+                </section>
+                <footer class="modal-card-foot">
+                    <div class="buttons is-spaced">
+                        <button
+                            class="button is-dark is-outlined"
+                            @click="cancelConfigurationDelete">
+                            Cancel
+                        </button>
+                        <button
+                            class="button is-outlined is-primary"
+                            @click="deleteConfiguration">
+                            Delete
+                        </button>
+                    </div>
+                </footer>
+            </div>
+        </div>
+        <!-- this configuration can't be selected when not logged in modal-->
+        <div
+            class="modal"
+            :class="[{'is-active': showMustBeLoggedInModal}]">
+            <div class="modal-background" />
+            <div class="modal-card">
+                <header class="modal-card-head has-background-primary">
+                    <p class="modal-card-title">
+                        <span class="title has-text-white">
+                            Not permitted
+                        </span>
+                    </p>
+                    <button
+                        class="delete"
+                        @click="showMustBeLoggedInModal=false"
+                        aria-label="close" />
+                </header>
+                <section class="modal-card-body">
+                    This configuration has default owners and readers defined. You must be logged in to apply this configuration.
+                </section>
+                <footer class="modal-card-foot">
+                    <div class="buttons is-spaced">
+                        <button
+                            class="button is-dark is-outlined"
+                            @click="showMustBeLoggedInModal=false">
+                            OK
+                        </button>
+                    </div>
+                </footer>
             </div>
         </div>
         <!-- set browser commit success modal-->
@@ -18,79 +87,142 @@
             <div class="modal-background" />
             <div class="modal-card">
                 <header class="modal-card-head has-background-primary">
-                    <h4 class="subtitle is-size-3 has-text-white modal-card-title">
-                        Configuration set as browser default
-                    </h4>
+                    <p class="modal-card-title">
+                        <span class="title has-text-white">
+                            Configuration set as browser default
+                        </span>
+                    </p>
                     <div
                         class="delete is-pulled-right"
                         aria-label="close"
                         @click="closeBrowserConfigSetModal" />
                 </header>
-                <div class="modal-card-body has-text-dark">
-                    <p>'<i>{{ defaultBrowserConfigName }}</i>' has been set as your browser's default CaSS Authoring Tool configuration.</p>
-                </div>
+                <section class="modal-card-body">
+                    <p>'<b>{{ defaultBrowserConfigName }}</b>' has been set as your browser's default CaSS Authoring Tool configuration.</p>
+                </section>
+                <footer class="modal-card-foot">
+                    <div class="buttons is-spaced">
+                        <button
+                            class="button is-dark is-outlined"
+                            @click="closeBrowserConfigSetModal">
+                            OK
+                        </button>
+                    </div>
+                </footer>
             </div>
         </div>
+        <header
+            v-if="view === 'dynamic-modal'"
+            class="modal-card-head has-background-primary">
+            <p class="modal-card-title">
+                Manage configuration
+            </p>
+            <button
+                class="delete"
+                @click="$store.commit('app/closeModal')"
+                aria-label="close" />
+        </header>
         <!-- configuration editor content-->
-        <div
-            class="container"
+        <section
+            :class="[{ 'container': view !== 'dynamic-modal'}, { 'modal-card-body': view === 'dynamic-modal'}]"
             v-if="!configBusy">
             <div class="section">
-                <h3 class="subtitle">
-                    Configuration
-                </h3>
-                <div
-                    class="button is-outlined is-primary"
-                    v-if="configViewMode.equals('list')"
-                    @click="createNewConfig">
-                    <span class="icon">
-                        <i class="fa fa-plus" />
-                    </span>
-                    <span>
-                        create new configuration
-                    </span>
-                </div>
+                <template v-if="view !== 'dynamic-modal'">
+                    <h3
+                        class="title">
+                        Configuration
+                    </h3>
+                    <p v-if="configViewMode.equals('list')">
+                        Configurations control the way your frameworks appear in the editor, as well as what properties, relationships,
+                        and in some cases value types of properties and relationships you can add to your framework. If a browser configuration
+                        not set then the the system will default to your instance default. If you are the configuration administrator you will be
+                        able to manage the property settings and change which instance is the default.  Otherwise contact your CAT administrator.
+                    </p>
+                </template>
+                <p v-if="view === 'dynamic-modal'">
+                    Choose a configuration to apply to this framework below.  You can view and manage details about
+                    your available configurations in <router-link to="/config">
+                        configuration management
+                    </router-link>.
+                </p>
             </div>
-            <div class="table-container">
-                <table
-                    class="table is-fullwidth"
-                    v-if="configViewMode.equals('list')">
+            <div
+                v-if="configViewMode.equals('list')"
+                class="table-container">
+                <table class="table is-fullwidth">
                     <thead>
                         <tr>
                             <th><abbr title="Name">name</abbr></th>
-                            <th><abbr title="Description">description</abbr></th>
-                            <th><abbr title="Instance Default">instance default</abbr></th>
-                            <th><abbr title="Browser Default" />browser default</th>
-                            <th><abbr title="" />view/manage</th>
+                            <th v-if="view !=='dynamic-modal'">
+                                <abbr title="Description">description</abbr>
+                            </th>
+                            <th v-if="view !=='dynamic-modal'">
+                                <abbr title="Instance Default">instance default</abbr>
+                            </th>
+                            <th v-if="view !=='dynamic-modal'">
+                                <abbr title="Browser Default" />browser default
+                            </th>
+                            <th v-else>
+                                <abbr title="Framework Default">framework default</abbr>
+                            </th>
+                            <th v-if="view !=='dynamic-modal'">
+                                <abbr title="" />view/manage/delete
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         <configuration-list-item
                             v-for="config in configList"
                             :id="config.id"
+                            :view="view"
                             :key="config"
                             :name="config.name"
                             :isDefault="config.isDefault"
                             :description="config.description"
                             :isOwned="config.isOwned"
                             :defaultBrowserConfigId="localDefaultBrowserConfigId"
+                            :defaultFrameworkConfigId="frameworkConfigId"
                             @setBrowserDefault="setConfigAsBrowserDefault"
-                            @showDetails="showConfigDetails" />
+                            @setFrameworkDefault="setConfigAsFrameworkDefault"
+                            @showDetails="showConfigDetails"
+                            @showDelete="showDeleteConfirm" />
                     </tbody>
                     <br>
                 </table>
+            </div>
+            <div
+                class="button is-outlined is-primary is-pulled-right"
+                v-if="configViewMode.equals('list') && view !== 'dynamic-modal'"
+                @click="createNewConfig">
+                <span class="icon">
+                    <i class="fa fa-plus" />
+                </span>
+                <span>
+                    create new configuration
+                </span>
             </div>
             <div v-if="configViewMode.equals('detail')">
                 <configuration-details
                     :config="currentConfig"
                     :readOnly="currentConfigIsReadOnly"
                     :defaultConfigId="defaultConfigId"
+                    :defaultBrowserConfig="localDefaultBrowserConfigId"
                     @setBrowserDefault="setConfigAsBrowserDefault"
+                    @removeBrowserDefaultConfig="removeBrowserDefaultConfig"
                     @save="saveCurrentConfig"
                     @cancel="cancelEditCurrentConfig"
                     @back="backFromEditCurrentConfig" />
             </div>
-        </div>
+        </section>
+        <footer
+            v-if="view === 'dynamic-modal'"
+            class="modal-card-foot hasbackground-light">
+            <div
+                @click="closeModal"
+                class="button is-pulled-right">
+                done
+            </div>
+        </footer>
     </div>
 </template>
 
@@ -102,6 +234,12 @@ import {cassUtil} from '../../mixins/cassUtil';
 
 export default {
     mixins: [cassUtil],
+    props: {
+        view: {
+            default: '',
+            type: String
+        }
+    },
     name: 'ConfigurationEditor',
     components: {
         ConfigurationDetails,
@@ -115,10 +253,11 @@ export default {
         }
     },
     data: () => ({
-        USE_TEST_DATA: false,
         CONFIG_SEARCH_SIZE: 10000,
         DEFAULT_CONFIGURATION_CONTEXT: 'https://schema.cassproject.org/0.4/',
         DEFAULT_CONFIGURATION_TYPE: 'Configuration',
+        LANG_STRING_RANGE: 'http://www.w3.org/2000/01/rdf-schema#langString',
+        DEFAULT_HEADING: "General",
         configViewMode: "list",
         configBusy: false,
         currentConfig: {},
@@ -127,14 +266,54 @@ export default {
         defaultConfigId: null,
         showBrowserConfigSetModal: false,
         defaultBrowserConfigName: '',
-        localDefaultBrowserConfigId: ''
+        localDefaultBrowserConfigId: '',
+        frameworkConfigId: '',
+        configToDelete: {},
+        showConfirmDeleteConfigModal: false,
+        showMustBeLoggedInModal: false,
+        enforceHeadings: false
     }),
     methods: {
+        closeModal: function() {
+            this.$store.commit('app/closeModal');
+        },
         showListView() {
             this.configViewMode = "list";
         },
         showDetailView() {
             this.configViewMode = "detail";
+        },
+        handleDeleteConfigurationSuccess() {
+            console.log("Config delete success");
+            this.configToDelete = {};
+            this.buildConfigList();
+            this.configBusy = false;
+            this.showListView();
+        },
+        handleDeleteConfigurationFailure(msg) {
+            console.error("failed to delete configuration: " + msg);
+            this.configToDelete = {};
+            this.configBusy = false;
+        },
+        deleteConfiguration() {
+            this.showConfirmDeleteConfigModal = false;
+            this.configBusy = true;
+            let configObj = EcRepository.getBlocking(this.configToDelete.id);
+            if (configObj) {
+                let repo = window.repo;
+                repo.deleteRegistered(configObj, this.handleDeleteConfigurationSuccess, this.handleDeleteConfigurationFailure);
+            }
+        },
+        cancelConfigurationDelete() {
+            this.configToDelete = {};
+            this.showConfirmDeleteConfigModal = false;
+        },
+        setConfigToDelete(configId) {
+            this.configToDelete = this.getConfigById(configId);
+        },
+        showDeleteConfirm(configId) {
+            this.setConfigToDelete(configId);
+            this.showConfirmDeleteConfigModal = true;
         },
         showConfigDetails(configId) {
             this.setCurrentConfig(configId);
@@ -160,7 +339,14 @@ export default {
                 }
             }
         },
-        generatePropertyConfigObject(id, domain, range, description, label, priority, required, readOnly, noTextEditing, permittedValues) {
+        addCustomPropertiesToHeadingsObj(customProperties, headingsObj) {
+            for (let prop of customProperties) {
+                if (prop.heading && !prop.heading.trim().equals('')) {
+                    headingsObj[prop.heading.trim()] = 'x';
+                }
+            }
+        },
+        generatePropertyConfigObject(id, domain, range, description, label, priority, required, readOnly, noTextEditing, permittedValues, heading, allowMultiples, onePerLanguage) {
             let propObj = {};
             propObj["@id"] = id;
             propObj["@type"] = "http://www.w3.org/2000/01/rdf-schema#Property";
@@ -186,7 +372,8 @@ export default {
             propObj.isRequired = required;
             propObj.readOnly = readOnly;
             propObj.noTextEditing = noTextEditing;
-            propObj.max = 1;
+            if (!allowMultiples) propObj.max = 1;
+            if (range.equalsIgnoreCase(this.LANG_STRING_RANGE)) propObj.onePerLanguage = onePerLanguage;
             if (permittedValues && permittedValues.length > 0) {
                 propObj.options = [];
                 for (let pv of permittedValues) {
@@ -196,6 +383,8 @@ export default {
                     propObj.options.push(option);
                 }
             }
+            if (heading && !heading.trim().equals('')) propObj.heading = heading.trim();
+            else if (this.enforceHeadings) propObj.heading = this.DEFAULT_HEADING;
             return propObj;
         },
         buildCustomPropertiesConfigObjects(parentConf, domain, customProperties) {
@@ -211,7 +400,10 @@ export default {
                     prop.required,
                     false,
                     false,
-                    prop.permittedValues);
+                    prop.permittedValues,
+                    prop.heading,
+                    prop.allowMultiples,
+                    prop.onePerLanguage);
             }
         },
         buildFrameworkConfigPriorityArrays(fwkConf) {
@@ -240,7 +432,10 @@ export default {
                 true,
                 true,
                 true,
-                null);
+                null,
+                this.currentConfig.fwkIdHeading,
+                false,
+                true);
         },
         buildFrameworkNameConfigObject(fwkConf) {
             fwkConf["http://schema.org/name"] = this.generatePropertyConfigObject(
@@ -253,7 +448,10 @@ export default {
                 true,
                 false,
                 false,
-                null);
+                null,
+                this.currentConfig.fwkNameHeading,
+                false,
+                true);
         },
         buildFrameworkDescConfigObject(fwkConf) {
             fwkConf["http://schema.org/description"] = this.generatePropertyConfigObject(
@@ -266,12 +464,28 @@ export default {
                 this.currentConfig.fwkDescRequired,
                 false,
                 false,
-                null);
+                null,
+                this.currentConfig.fwkDescHeading,
+                false,
+                true);
+        },
+        getFrameworkConfigHeadings() {
+            let allHeadings = [];
+            if (this.currentConfig.fwkIdHeading && !this.currentConfig.fwkIdHeading.trim().equals('')) allHeadings[this.currentConfig.fwkIdHeading.trim()] = 'x';
+            if (this.currentConfig.fwkNameHeading && !this.currentConfig.fwkNameHeading.trim().equals('')) allHeadings[this.currentConfig.fwkNameHeading.trim()] = 'x';
+            if (this.currentConfig.fwkDescHeading && !this.currentConfig.fwkDescHeading.trim().equals('')) allHeadings[this.currentConfig.fwkDescHeading.trim()] = 'x';
+            this.addCustomPropertiesToHeadingsObj(this.currentConfig.fwkCustomProperties, allHeadings);
+            return allHeadings;
+        },
+        buildFrameworkConfigHeadingsArray(fwkConf) {
+            let fwkConfigHeadings = this.getFrameworkConfigHeadings();
+            fwkConf.headings = Object.keys(fwkConfigHeadings);
+            if (this.enforceHeadings && !fwkConf.headings.includes(this.DEFAULT_HEADING)) fwkConf.headings.push(this.DEFAULT_HEADING);
         },
         addFrameworkConfigToObject(cco) {
             let fwkConf = {};
-            fwkConf.headings = [];
             this.buildFrameworkConfigPriorityArrays(fwkConf);
+            this.buildFrameworkConfigHeadingsArray(fwkConf);
             this.buildFrameworkIdConfigObject(fwkConf);
             this.buildFrameworkNameConfigObject(fwkConf);
             this.buildFrameworkDescConfigObject(fwkConf);
@@ -284,16 +498,19 @@ export default {
             if (this.currentConfig.compIdPriorty.equalsIgnoreCase("primary")) compConf.primaryProperties.push("@id");
             if (this.currentConfig.compDescPriority.equalsIgnoreCase("primary")) compConf.primaryProperties.push("http://schema.org/description");
             if (this.currentConfig.compTypePriority.equalsIgnoreCase("primary")) compConf.primaryProperties.push("http://purl.org/dc/terms/type");
+            if (this.currentConfig.compAllowLevels && this.currentConfig.levelPriority.equalsIgnoreCase("primary")) compConf.primaryProperties.push("https://schema.cassproject.org/0.4/Level");
             this.addCustomPropertiesToPriorityArray(this.currentConfig.compCustomProperties, compConf.primaryProperties, "primary");
             compConf.secondaryProperties = [];
             if (this.currentConfig.compIdPriorty.equalsIgnoreCase("secondary")) compConf.secondaryProperties.push("@id");
             if (this.currentConfig.compDescPriority.equalsIgnoreCase("secondary")) compConf.secondaryProperties.push("http://schema.org/description");
             if (this.currentConfig.compTypePriority.equalsIgnoreCase("secondary")) compConf.secondaryProperties.push("http://purl.org/dc/terms/type");
+            if (this.currentConfig.compAllowLevels && this.currentConfig.levelPriority.equalsIgnoreCase("secondary")) compConf.secondaryProperties.push("https://schema.cassproject.org/0.4/Level");
             this.addCustomPropertiesToPriorityArray(this.currentConfig.compCustomProperties, compConf.secondaryProperties, "secondary");
             compConf.tertiaryProperties = [];
             if (this.currentConfig.compIdPriorty.equalsIgnoreCase("tertiary")) compConf.tertiaryProperties.push("@id");
             if (this.currentConfig.compDescPriority.equalsIgnoreCase("tertiary")) compConf.tertiaryProperties.push("http://schema.org/description");
             if (this.currentConfig.compTypePriority.equalsIgnoreCase("tertiary")) compConf.tertiaryProperties.push("http://purl.org/dc/terms/type");
+            if (this.currentConfig.compAllowLevels && this.currentConfig.levelPriority.equalsIgnoreCase("tertiary")) compConf.tertiaryProperties.push("https://schema.cassproject.org/0.4/Level");
             this.addCustomPropertiesToPriorityArray(this.currentConfig.compCustomProperties, compConf.tertiaryProperties, "tertiary");
         },
         buildCompetencyIdConfigObject(compConf) {
@@ -307,7 +524,10 @@ export default {
                 true,
                 true,
                 true,
-                null);
+                null,
+                this.currentConfig.compIdHeading,
+                false,
+                true);
         },
         buildCompetencyNameConfigObject(compConf) {
             compConf["http://schema.org/name"] = this.generatePropertyConfigObject(
@@ -320,7 +540,10 @@ export default {
                 true,
                 false,
                 false,
-                null);
+                null,
+                this.currentConfig.compNameHeading,
+                false,
+                true);
         },
         buildCompetencyDescConfigObject(compConf) {
             compConf["http://schema.org/description"] = this.generatePropertyConfigObject(
@@ -333,12 +556,16 @@ export default {
                 this.currentConfig.compDescRequired,
                 false,
                 false,
-                null);
+                null,
+                this.currentConfig.compDescHeading,
+                false,
+                true);
         },
         buildCompetencyTypeConfigObject(compConf) {
             if (!this.currentConfig.compEnforceTypes) this.currentConfig.compEnforcedTypes = [];
             let compTypeRequired = this.currentConfig.compTypeRequired;
-            if (this.currentConfig.compEnforcedTypes && this.currentConfig.compEnforcedTypes.length > 0) compTypeRequired = true;
+            // commenting this out for now CA-381
+            // if (this.currentConfig.compEnforcedTypes && this.currentConfig.compEnforcedTypes.length > 0) compTypeRequired = true;
             compConf["http://purl.org/dc/terms/type"] = this.generatePropertyConfigObject(
                 "https://purl.org/ctdlasn/terms/competencyCategory",
                 "http://schema.cassproject.org/0.3/Competency",
@@ -349,12 +576,41 @@ export default {
                 compTypeRequired,
                 false,
                 false,
-                this.currentConfig.compEnforcedTypes);
+                this.currentConfig.compEnforcedTypes,
+                this.currentConfig.compTypeHeading,
+                false,
+                true);
+        },
+        getCompetencyConfigHeadings() {
+            let allHeadings = [];
+            if (this.currentConfig.compIdHeading && !this.currentConfig.compIdHeading.trim().equals('')) allHeadings[this.currentConfig.compIdHeading.trim()] = 'x';
+            if (this.currentConfig.compNameHeading && !this.currentConfig.compNameHeading.trim().equals('')) allHeadings[this.currentConfig.compNameHeading.trim()] = 'x';
+            if (this.currentConfig.compDescHeading && !this.currentConfig.compDescHeading.trim().equals('')) allHeadings[this.currentConfig.compDescHeading.trim()] = 'x';
+            if (this.currentConfig.compTypeHeading && !this.currentConfig.compTypeHeading.trim().equals('')) allHeadings[this.currentConfig.compTypeHeading.trim()] = 'x';
+            if (this.currentConfig.levelHeading && !this.currentConfig.levelHeading.trim().equals('')) allHeadings[this.currentConfig.levelHeading.trim()] = 'x';
+            this.addCustomPropertiesToHeadingsObj(this.currentConfig.compCustomProperties, allHeadings);
+            return allHeadings;
+        },
+        buildCompetencyConfigHeadingsArray(compConf) {
+            let compHeadings = this.getCompetencyConfigHeadings();
+            compConf.headings = Object.keys(compHeadings);
+            if (this.enforceHeadings && !compConf.headings.includes(this.DEFAULT_HEADING)) compConf.headings.push(this.DEFAULT_HEADING);
+        },
+        buildRelationshipsPriorityAndHeading(compConf) {
+            if (this.currentConfig.relationshipsHeading && !this.currentConfig.relationshipsHeading.trim().equals('')) {
+                compConf.relationshipsHeading = this.currentConfig.relationshipsHeading;
+            } else if (this.enforceHeadings) {
+                compConf.relationshipsHeading = this.DEFAULT_HEADING;
+            } else {
+                compConf.relationshipsHeading = "";
+            }
+            compConf.relationshipsPriority = this.currentConfig.relationshipsPriority;
         },
         addCompetencyConfigToObject(cco) {
             let compConf = {};
-            compConf.headings = [];
             this.buildCompetencyConfigPriorityArrays(compConf);
+            this.buildCompetencyConfigHeadingsArray(compConf);
+            this.buildRelationshipsPriorityAndHeading(compConf);
             this.buildCompetencyIdConfigObject(compConf);
             this.buildCompetencyNameConfigObject(compConf);
             this.buildCompetencyDescConfigObject(compConf);
@@ -387,6 +643,12 @@ export default {
         },
         generateLevelsConfigObject(levConf) {
             levConf["https://schema.cassproject.org/0.4/Level"] = {};
+            levConf["https://schema.cassproject.org/0.4/Level"]["priority"] = this.currentConfig.levelPriority;
+            if (this.currentConfig.levelHeading && !this.currentConfig.levelHeading.trim().equals('')) {
+                levConf["https://schema.cassproject.org/0.4/Level"]["heading"] = this.currentConfig.levelHeading.trim();
+            } else if (this.enforceHeadings) {
+                levConf["https://schema.cassproject.org/0.4/Level"]["heading"] = this.DEFAULT_HEADING;
+            }
             levConf["https://schema.cassproject.org/0.4/Level"]["http://www.w3.org/2000/01/rdf-schema#comment"] = [];
             let commentObj = {};
             commentObj["@language"] = "en";
@@ -427,6 +689,34 @@ export default {
             cco.defaultObjectReaders = this.currentConfig.defaultReaders;
             cco.defaultCommenters = this.currentConfig.defaultCommenters;
         },
+        determineHeadingStatusForCustomProperties(customProperties, headingsTracking) {
+            for (let prop of customProperties) {
+                if (prop.heading && !prop.heading.trim().equals('')) headingsTracking.anyHeadingsPopulated = true;
+                else headingsTracking.anyHeadingsBlank = true;
+            }
+        },
+        determineHeadingStatus(headingField, headingsTracking) {
+            if (headingField && !headingField.trim().equals('')) headingsTracking.anyHeadingsPopulated = true;
+            else headingsTracking.anyHeadingsBlank = true;
+        },
+        determineIfHeadingsShouldBeEnforced() {
+            this.enforceHeadings = false;
+            let headingsTracking = {};
+            headingsTracking.anyHeadingsPopulated = false;
+            headingsTracking.anyHeadingsBlank = false;
+            this.determineHeadingStatus(this.currentConfig.compIdHeading, headingsTracking);
+            this.determineHeadingStatus(this.currentConfig.compNameHeading, headingsTracking);
+            this.determineHeadingStatus(this.currentConfig.compDescHeading, headingsTracking);
+            this.determineHeadingStatus(this.currentConfig.compTypeHeading, headingsTracking);
+            this.determineHeadingStatus(this.currentConfig.levelHeading, headingsTracking);
+            this.determineHeadingStatus(this.currentConfig.relationshipsHeading, headingsTracking);
+            this.determineHeadingStatus(this.currentConfig.fwkIdHeading, headingsTracking);
+            this.determineHeadingStatus(this.currentConfig.fwkNameHeading, headingsTracking);
+            this.determineHeadingStatus(this.currentConfig.fwkDescHeading, headingsTracking);
+            this.determineHeadingStatusForCustomProperties(this.currentConfig.compCustomProperties, headingsTracking);
+            this.determineHeadingStatusForCustomProperties(this.currentConfig.fwkCustomProperties, headingsTracking);
+            if (headingsTracking.anyHeadingsPopulated && headingsTracking.anyHeadingsBlank) this.enforceHeadings = true;
+        },
         generateComplexConfigObjectFromCurrentConfig() {
             let cco = new Thing();
             cco.context = this.DEFAULT_CONFIGURATION_CONTEXT;
@@ -438,6 +728,7 @@ export default {
             cco.setName(this.currentConfig.name.trim());
             cco.setDescription(this.currentConfig.description.trim());
             cco.isDefault = this.currentConfig.isDefault;
+            this.determineIfHeadingsShouldBeEnforced();
             this.addFrameworkConfigToObject(cco);
             this.addCompetencyConfigToObject(cco);
             this.addRelationsConfigToObject(cco);
@@ -459,7 +750,6 @@ export default {
         },
         saveCurrentConfig(enforcedLevels, defaultOwners, defaultReaders, defaultCommenters) {
             console.log("saveCurrentConfig: ");
-            console.log(enforcedLevels);
             if (enforcedLevels && enforcedLevels.length > 0) {
                 this.currentConfig.enforceLevelValues = true;
                 this.currentConfig.enforcedLevelValues = enforcedLevels;
@@ -470,11 +760,8 @@ export default {
             this.generateComplexConfigObjectFromCurrentConfig();
             console.log("complexConfigObject: ");
             console.log(JSON.stringify(this.complexConfigObject));
-            if (this.USE_TEST_DATA) alert("Using Test Data...won't issue repository save");
-            else {
-                this.configBusy = true;
-                EcRepository.save(this.complexConfigObject, this.saveConfigToRepositorySuccess, this.saveConfigToRepositoryFailure);
-            }
+            this.configBusy = true;
+            EcRepository.save(this.complexConfigObject, this.saveConfigToRepositorySuccess, this.saveConfigToRepositoryFailure);
         },
         cancelEditCurrentConfig() {
             this.buildConfigList();
@@ -492,34 +779,45 @@ export default {
             newConfigObj.fwkIdLabel = "Framework ID";
             newConfigObj.fwkIdDescription = "ID of the framework";
             newConfigObj.fwkIdPriorty = "primary";
+            newConfigObj.fwkIdHeading = "";
             newConfigObj.fwkNameLabel = "Framework Name";
             newConfigObj.fwkNameDescription = "Name of the framework";
+            newConfigObj.fwkNameHeading = "";
             newConfigObj.fwkDescLabel = "Framework Description";
             newConfigObj.fwkDescDescription = "Description of the framework";
             newConfigObj.fwkDescPriority = "primary";
             newConfigObj.fwkDescRequired = true;
+            newConfigObj.fwkDescHeading = "";
             newConfigObj.compAllowLevels = true;
             newConfigObj.levelLabel = 'Level';
             newConfigObj.levelDescription = 'Level of the competency';
             newConfigObj.enforceLevelValues = false;
             newConfigObj.enforcedLevelValues = [];
+            newConfigObj.levelPriority = 'secondary';
+            newConfigObj.levelHeading = "";
             newConfigObj.compIdLabel = "Competency ID";
             newConfigObj.compIdDescription = "ID of the competency";
             newConfigObj.compIdPriorty = "primary";
+            newConfigObj.compIdHeading = "";
             newConfigObj.compNameLabel = "Competency Name";
             newConfigObj.compNameDescription = "Name of the competency";
+            newConfigObj.compNameHeading = "";
             newConfigObj.compDescLabel = "Competency Description";
             newConfigObj.compDescDescription = "Description of the competency";
             newConfigObj.compDescPriority = "primary";
             newConfigObj.compDescRequired = false;
+            newConfigObj.compDescHeading = "";
             newConfigObj.compTypeLabel = "Competency Type";
             newConfigObj.compTypeDescription = "Type of the competency";
             newConfigObj.compTypePriority = "secondary";
             newConfigObj.compTypeRequired = false;
+            newConfigObj.compTypeHeading = "";
             newConfigObj.compEnforceTypes = false;
             newConfigObj.compEnforcedTypes = [];
             newConfigObj.fwkCustomProperties = [];
             newConfigObj.compCustomProperties = [];
+            newConfigObj.relationshipsHeading = '';
+            newConfigObj.relationshipsPriority = "tertiary";
             newConfigObj.relationships = {};
             newConfigObj.relationships.isEnabledBy = {};
             newConfigObj.relationships.isEnabledBy.label = 'is enabled by';
@@ -567,6 +865,7 @@ export default {
             newConfigObj.alignments.teaches = true;
             newConfigObj.alignments.assesses = true;
             newConfigObj.alignments.requires = true;
+            newConfigObj.alignments.desires = true;
             newConfigObj.defaultOwners = [];
             newConfigObj.defaultReaders = [];
             newConfigObj.defaultCommenters = [];
@@ -599,11 +898,6 @@ export default {
                 }
             });
         },
-        buildConfigListFromTestData() {
-            this.configList = this.generateTestConfigList();
-            this.sortConfigList();
-            this.configBusy = false;
-        },
         isCustomPropertyKey(propertyParent, propertyKey) {
             if (propertyKey.equals('headings')) return false;
             else if (propertyKey.equals('primaryProperties')) return false;
@@ -613,6 +907,8 @@ export default {
             else if (propertyKey.equals('http://schema.org/name')) return false;
             else if (propertyKey.equals('http://schema.org/description')) return false;
             else if (propertyParent.equalsIgnoreCase('competency') && propertyKey.equals('http://purl.org/dc/terms/type')) return false;
+            else if (propertyParent.equalsIgnoreCase('competency') && propertyKey.equals('relationshipsHeading')) return false;
+            else if (propertyParent.equalsIgnoreCase('competency') && propertyKey.equals('relationshipsPriority')) return false;
             else return true;
         },
         generateSimpleCustomPropertyObject(ccpo) {
@@ -624,6 +920,12 @@ export default {
             scpo.description = ccpo["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
             scpo.label = ccpo["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
             scpo.priority = ccpo["priority"];
+            if (ccpo["heading"]) scpo.heading = ccpo["heading"];
+            else scpo.heading = "";
+            if (ccpo["max"] && (ccpo["max"] === 1 || ccpo["max"] === '1')) scpo.allowMultiple = false;
+            else scpo.allowMultiples = true;
+            if (ccpo["onePerLanguage"] && (ccpo["onePerLanguage"] === 'true' || ccpo["max"] === true)) scpo.onePerLanguage = true;
+            else scpo.onePerLanguage = false;
             scpo.required = this.getBooleanValue(ccpo["isRequired"]);
             scpo.permittedValues = [];
             if (ccpo.options && ccpo.options.length > 0) {
@@ -641,12 +943,21 @@ export default {
             simpleConfigObj.fwkIdLabel = cfo["@id"]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
             simpleConfigObj.fwkIdDescription = cfo["@id"]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
             simpleConfigObj.fwkIdPriorty = cfo["@id"]["priority"];
+            let idHeading = cfo["@id"]["heading"];
+            if (idHeading) simpleConfigObj.fwkIdHeading = idHeading.trim();
+            else simpleConfigObj.fwkIdHeading = "";
             simpleConfigObj.fwkNameLabel = cfo["http://schema.org/name"]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
             simpleConfigObj.fwkNameDescription = cfo["http://schema.org/name"]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
+            let nameHeading = cfo["http://schema.org/name"]["heading"];
+            if (nameHeading) simpleConfigObj.fwkNameHeading = nameHeading.trim();
+            else simpleConfigObj.fwkNameHeading = "";
             simpleConfigObj.fwkDescLabel = cfo["http://schema.org/description"]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
             simpleConfigObj.fwkDescDescription = cfo["http://schema.org/description"]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
             simpleConfigObj.fwkDescPriority = cfo["http://schema.org/description"]["priority"];
             simpleConfigObj.fwkDescRequired = this.getBooleanValue(cfo["http://schema.org/description"]["isRequired"]);
+            let descHeading = cfo["http://schema.org/description"]["heading"];
+            if (descHeading) simpleConfigObj.fwkDescHeading = descHeading.trim();
+            else simpleConfigObj.fwkDescHeading = "";
             simpleConfigObj.fwkCustomProperties = [];
             let propertyKeys = Object.keys(cfo);
             for (let pk of propertyKeys) {
@@ -657,19 +968,36 @@ export default {
         },
         buildSimpleConfigObjectCompetencyData(simpleConfigObj, complexConfigObj) {
             let cco = complexConfigObj["competencyConfig"];
+            let relHeading = cco["relationshipsHeading"];
+            if (relHeading) simpleConfigObj.relationshipsHeading = relHeading.trim();
+            else simpleConfigObj.relationshipsHeading = "";
+            let relPriority = cco["relationshipsPriority"];
+            if (relPriority) simpleConfigObj.relationshipsPriority = relPriority;
+            else simpleConfigObj.relationshipsPriority = "tertiary";
             simpleConfigObj.compIdLabel = cco["@id"]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
             simpleConfigObj.compIdDescription = cco["@id"]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
             simpleConfigObj.compIdPriorty = cco["@id"]["priority"];
+            let idHeading = cco["@id"]["heading"];
+            if (idHeading) simpleConfigObj.compIdHeading = idHeading.trim();
+            else simpleConfigObj.compIdHeading = "";
             simpleConfigObj.compNameLabel = cco["http://schema.org/name"]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
             simpleConfigObj.compNameDescription = cco["http://schema.org/name"]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
+            let nameHeading = cco["http://schema.org/name"]["heading"];
+            if (nameHeading) simpleConfigObj.compNameHeading = nameHeading.trim();
+            else simpleConfigObj.compNameHeading = "";
             simpleConfigObj.compDescLabel = cco["http://schema.org/description"]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
             simpleConfigObj.compDescDescription = cco["http://schema.org/description"]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
             simpleConfigObj.compDescPriority = cco["http://schema.org/description"]["priority"];
             simpleConfigObj.compDescRequired = this.getBooleanValue(cco["http://schema.org/description"]["isRequired"]);
+            let descHeading = cco["http://schema.org/description"]["heading"];
+            if (descHeading) simpleConfigObj.compDescHeading = descHeading.trim();
+            else simpleConfigObj.compDescHeading = "";
             let ccto = cco["http://purl.org/dc/terms/type"];
             simpleConfigObj.compTypeLabel = ccto["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
             simpleConfigObj.compTypeDescription = ccto["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
             simpleConfigObj.compTypePriority = ccto["priority"];
+            if (ccto["heading"]) simpleConfigObj.compTypeHeading = ccto["heading"];
+            else simpleConfigObj.compTypeHeading = "";
             simpleConfigObj.compTypeRequired = this.getBooleanValue(ccto["isRequired"]);
             simpleConfigObj.compEnforceTypes = false;
             simpleConfigObj.compEnforcedTypes = [];
@@ -696,9 +1024,15 @@ export default {
             simpleConfigObj.levelDescription = '';
             simpleConfigObj.enforceLevelValues = false;
             simpleConfigObj.enforcedLevelValues = [];
+            simpleConfigObj.levelPriority = 'secondary';
+            simpleConfigObj.levelHeading = '';
             if (complexConfigObj["levelsConfig"] && complexConfigObj["levelsConfig"]["https://schema.cassproject.org/0.4/Level"]) {
                 let lo = complexConfigObj["levelsConfig"]["https://schema.cassproject.org/0.4/Level"];
                 simpleConfigObj.compAllowLevels = true;
+                if (lo["priority"]) simpleConfigObj.levelPriority = lo["priority"];
+                else simpleConfigObj.levelPriority = "secondary";
+                if (lo["heading"]) simpleConfigObj.levelHeading = lo["heading"];
+                else simpleConfigObj.levelHeading = "";
                 simpleConfigObj.levelLabel = lo["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
                 simpleConfigObj.levelDescription = lo["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
                 if (complexConfigObj["levelsConfig"]["https://schema.cassproject.org/0.4/Level"]["options"]) {
@@ -746,6 +1080,7 @@ export default {
             simpleConfigObj.alignments.teaches = caa.includes("teaches");
             simpleConfigObj.alignments.assesses = caa.includes("assesses");
             simpleConfigObj.alignments.requires = caa.includes("requires");
+            simpleConfigObj.alignments.desires = caa.includes("desires");
         },
         buildSimpleConfigDefaultPermissionData(simpleConfigObj, complexConfigObj) {
             if (complexConfigObj["defaultObjectOwners"]) {
@@ -800,8 +1135,7 @@ export default {
         buildConfigList() {
             this.configBusy = true;
             this.complexConfigObject = {};
-            if (this.USE_TEST_DATA) this.buildConfigListFromTestData();
-            else this.buildConfigListFromRepository();
+            this.buildConfigListFromRepository();
         },
         closeBrowserConfigSetModal() {
             this.showBrowserConfigSetModal = false;
@@ -813,398 +1147,76 @@ export default {
             this.localDefaultBrowserConfigId = configId;
             this.showBrowserConfigSetModal = true;
         },
-        generateTestConfigList() {
-            let ca = [];
-            /** **************************** Test Config A ***********************************************/
-            let a = {};
-            a.id = "testOwnedConfig_1";
-            a.isOwned = true;
-            a.isNew = false;
-            a.name = "Test Owned Configuration 1";
-            a.description = "Configuration owned by the current user - 1";
-            a.isDefault = true;
-            a.fwkIdLabel = "FWK ID LBL 1";
-            a.fwkIdDescription = "FWK ID DESC 1";
-            a.fwkIdPriorty = "primary";
-            a.fwkNameLabel = "FWK NAME LBL 1";
-            a.fwkNameDescription = "FWK NAME DESC 1";
-            a.fwkDescLabel = "FWK DESC LBL 1";
-            a.fwkDescDescription = "FWK DESC DESC 1";
-            a.fwkDescPriority = "primary";
-            a.fwkDescRequired = true;
-            a.compAllowLevels = true;
-            a.levelLabel = 'Level';
-            a.levelDescription = 'Level of the competency';
-            a.enforceLevelValues = true;
-            a.enforcedLevelValues = [];
-            a.enforcedLevelValues.push("https://dev.api.cassproject.org/api/data/schema.cassproject.org.0.4.Level/760175fd-4bda-49e1-9607-f8fa51737f88");
-            a.enforcedLevelValues.push("https://dev.api.cassproject.org/api/data/schema.cassproject.org.0.4.Level/35d4b028-d805-4da5-8eba-8938fc5ef1d8");
-            a.compIdLabel = "COMP ID LABEL 1";
-            a.compIdDescription = "COMP ID DESC 1";
-            a.compIdPriorty = "secondary";
-            a.compNameLabel = "COMP NAME LABEL 1";
-            a.compNameDescription = "COMP NAME DESC 1";
-            a.compDescLabel = "COMP DESC LABEL 1";
-            a.compDescDescription = "COMP DESC DESC 1";
-            a.compDescPriority = "primary";
-            a.compDescRequired = false;
-            a.compTypeLabel = "COMP TYPE LABEL 1";
-            a.compTypeDescription = "COMP TYPE DESC 1";
-            a.compTypePriority = "secondary";
-            a.compTypeRequired = false;
-            a.compEnforceTypes = false;
-            a.compEnforcedTypes = [];
-            a.fwkCustomProperties = [];
-            a.compCustomProperties = [];
-            a.relationships = {};
-            a.relationships.isEnabledBy = {};
-            a.relationships.isEnabledBy.label = 'is enabled by';
-            a.relationships.isEnabledBy.enabled = true;
-            a.relationships.requires = {};
-            a.relationships.requires.label = 'requires';
-            a.relationships.requires.enabled = true;
-            a.relationships.desires = {};
-            a.relationships.desires.label = 'desires';
-            a.relationships.desires.enabled = true;
-            a.relationships.narrows = {};
-            a.relationships.narrows.label = 'narrows';
-            a.relationships.narrows.enabled = true;
-            a.relationships.isRelatedTo = {};
-            a.relationships.isRelatedTo.label = 'is related to';
-            a.relationships.isRelatedTo.enabled = true;
-            a.relationships.isEquivalentTo = {};
-            a.relationships.isEquivalentTo.label = 'is equivalent to';
-            a.relationships.isEquivalentTo.enabled = true;
-            a.relationships.broadens = {};
-            a.relationships.broadens.label = 'broadens';
-            a.relationships.broadens.enabled = false;
-            a.relationships.majorRelated = {};
-            a.relationships.majorRelated.label = 'is majorly related to';
-            a.relationships.majorRelated.enabled = false;
-            a.relationships.minorRelated = {};
-            a.relationships.minorRelated.label = 'is minorly related to';
-            a.relationships.minorRelated.enabled = false;
-            a.relationships.isSimilarTo = {};
-            a.relationships.isSimilarTo.label = 'is similar to';
-            a.relationships.isSimilarTo.enabled = false;
-            a.relationships.isPartiallySameAs = {};
-            a.relationships.isPartiallySameAs.label = 'is partially the same as';
-            a.relationships.isPartiallySameAs.enabled = false;
-            a.relationships.enables = {};
-            a.relationships.enables.label = 'enables';
-            a.relationships.enables.enabled = false;
-            a.relationships.hasChild = {};
-            a.relationships.hasChild.label = 'has child';
-            a.relationships.hasChild.enabled = false;
-            a.relationships.isChildOf = {};
-            a.relationships.isChildOf.label = 'is child of';
-            a.relationships.isChildOf.enabled = false;
-            a.alignments = {};
-            a.alignments.teaches = true;
-            a.alignments.assesses = true;
-            a.alignments.requires = true;
-            a.defaultOwners = [];
-            a.defaultReaders = [];
-            a.defaultCommenters = [];
-            ca.push(a);
-            /** **************************** Test Config B ***********************************************/
-            let b = {};
-            b.id = "testNotOwnedConfig_1";
-            b.isOwned = false;
-            b.isNew = false;
-            b.name = "Test Not-Owned Configuration 1";
-            b.description = "Configuration NOT owned by the current user - 1";
-            b.isDefault = false;
-            b.fwkIdLabel = "framework id";
-            b.fwkIdDescription = "id of the framework";
-            b.fwkIdPriorty = "secondary";
-            b.fwkNameLabel = "framework name";
-            b.fwkNameDescription = "name of the framework";
-            b.fwkDescLabel = "framework description";
-            b.fwkDescDescription = "description of the framework";
-            b.fwkDescPriority = "primary";
-            b.fwkDescRequired = true;
-            b.compAllowLevels = false;
-            b.levelLabel = 'Level';
-            b.levelDescription = 'Level of the competency';
-            b.enforceLevelValues = false;
-            b.enforcedLevelValues = [];
-            b.compIdLabel = "competency id";
-            b.compIdDescription = "id of the competency";
-            b.compIdPriorty = "secondary";
-            b.compNameLabel = "competency name";
-            b.compNameDescription = "name of the competency";
-            b.compDescLabel = "competency description";
-            b.compDescDescription = "description of the competency";
-            b.compDescPriority = "primary";
-            b.compDescRequired = false;
-            b.compTypeLabel = "competency type";
-            b.compTypeDescription = "type of the competency";
-            b.compTypePriority = "secondary";
-            b.compTypeRequired = true;
-            b.compEnforceTypes = false;
-            b.compEnforcedTypes = [];
-            b.fwkCustomProperties = [];
-            let prop1 = {};
-            prop1.context = 'https://schema.cassproject.org/0.4/';
-            prop1.propertyName = 'customFwkProp1';
-            prop1.range = 'http://schema.org/URL';
-            prop1.description = 'Custom Fwk property 1';
-            prop1.label = 'cFwkProp1';
-            prop1.priority = 'secondary';
-            prop1.required = true;
-            prop1.permittedValues = [];
-            let prop2 = {};
-            prop2.context = 'https://schema.cassproject.org/0.4/';
-            prop2.propertyName = 'customFwkProp2';
-            prop2.range = 'http://schema.org/Text';
-            prop2.description = 'Custom Fwk property 2';
-            prop2.label = 'cFwkProp2';
-            prop2.priority = 'tertiary';
-            prop2.required = false;
-            prop2.permittedValues = [];
-            let prop2pv1 = {};
-            prop2pv1.display = "fwkProp2 pvd 1";
-            prop2pv1.value = "fwkProp2pvv1";
-            let prop2pv2 = {};
-            prop2pv2.display = "fwkProp2 pvd 2";
-            prop2pv2.value = "fwkProp2pvv2";
-            prop2.permittedValues.push(prop2pv1);
-            prop2.permittedValues.push(prop2pv2);
-            b.fwkCustomProperties.push(prop1);
-            b.fwkCustomProperties.push(prop2);
-            b.compCustomProperties = [];
-            let prop3 = {};
-            prop3.context = 'https://schema.cassproject.org/0.4/';
-            prop3.propertyName = 'customCompProp1';
-            prop3.range = 'http://schema.org/URL';
-            prop3.description = 'Custom Comp property 1';
-            prop3.label = 'cCompProp1';
-            prop3.priority = 'primary';
-            prop3.required = true;
-            prop3.permittedValues = [];
-            let prop4 = {};
-            prop4.context = 'https://schema.cassproject.org/0.4/';
-            prop4.propertyName = 'customCompProp2';
-            prop4.range = 'http://schema.org/Text';
-            prop4.description = 'Custom Comp property 2';
-            prop4.label = 'cCompProp2';
-            prop4.priority = 'tertiary';
-            prop4.required = false;
-            prop4.permittedValues = [];
-            let prop4pv1 = {};
-            prop4pv1.display = "compProp2 pvd 1";
-            prop4pv1.value = "compProp2pvv1";
-            let prop4pv2 = {};
-            prop4pv2.display = "compProp2 pvd 2";
-            prop4pv2.value = "compProp2pvv2";
-            prop4.permittedValues.push(prop4pv1);
-            prop4.permittedValues.push(prop4pv2);
-            b.compCustomProperties.push(prop3);
-            b.compCustomProperties.push(prop4);
-            b.relationships = {};
-            b.relationships.isEnabledBy = {};
-            b.relationships.isEnabledBy.label = 'is enabled by';
-            b.relationships.isEnabledBy.enabled = true;
-            b.relationships.requires = {};
-            b.relationships.requires.label = 'requires';
-            b.relationships.requires.enabled = true;
-            b.relationships.desires = {};
-            b.relationships.desires.label = 'desires';
-            b.relationships.desires.enabled = true;
-            b.relationships.narrows = {};
-            b.relationships.narrows.label = 'narrows';
-            b.relationships.narrows.enabled = true;
-            b.relationships.isRelatedTo = {};
-            b.relationships.isRelatedTo.label = 'is related to';
-            b.relationships.isRelatedTo.enabled = true;
-            b.relationships.isEquivalentTo = {};
-            b.relationships.isEquivalentTo.label = 'is equivalent to';
-            b.relationships.isEquivalentTo.enabled = true;
-            b.relationships.broadens = {};
-            b.relationships.broadens.label = 'broadens';
-            b.relationships.broadens.enabled = false;
-            b.relationships.majorRelated = {};
-            b.relationships.majorRelated.label = 'is majorly related to';
-            b.relationships.majorRelated.enabled = false;
-            b.relationships.minorRelated = {};
-            b.relationships.minorRelated.label = 'is minorly related to';
-            b.relationships.minorRelated.enabled = false;
-            b.relationships.isSimilarTo = {};
-            b.relationships.isSimilarTo.label = 'is similar to';
-            b.relationships.isSimilarTo.enabled = false;
-            b.relationships.isPartiallySameAs = {};
-            b.relationships.isPartiallySameAs.label = 'is partially the same as';
-            b.relationships.isPartiallySameAs.enabled = false;
-            b.relationships.enables = {};
-            b.relationships.enables.label = 'enables';
-            b.relationships.enables.enabled = false;
-            b.relationships.hasChild = {};
-            b.relationships.hasChild.label = 'has child';
-            b.relationships.hasChild.enabled = false;
-            b.relationships.isChildOf = {};
-            b.relationships.isChildOf.label = 'is child of';
-            b.relationships.isChildOf.enabled = false;
-            b.alignments = {};
-            b.alignments.teaches = true;
-            b.alignments.assesses = true;
-            b.alignments.requires = true;
-            b.defaultOwners = [];
-            b.defaultReaders = [];
-            b.defaultCommenters = [];
-            ca.push(b);
-            /** **************************** Test Config C ***********************************************/
-            let c = {};
-            c.id = "testOwnedConfig_2";
-            c.isOwned = true;
-            c.isNew = false;
-            c.name = "Test Owned Configuration 2";
-            c.description = "Configuration owned by the current user - 2";
-            c.isDefault = false;
-            c.fwkIdLabel = "FWK ID LBL 2";
-            c.fwkIdDescription = "FWK ID DESC 2";
-            c.fwkIdPriorty = "secondary";
-            c.fwkNameLabel = "FWK NAME LBL 2";
-            c.fwkNameDescription = "FWK NAME DESC 2";
-            c.fwkDescLabel = "FWK DESC LBL 2";
-            c.fwkDescDescription = "FWK DESC DESC 2";
-            c.fwkDescPriority = "primary";
-            c.fwkDescRequired = true;
-            c.compAllowLevels = true;
-            c.levelLabel = 'Level';
-            c.levelDescription = 'Level of the competency';
-            c.enforceLevelValues = false;
-            c.enforcedLevelValues = [];
-            c.compIdLabel = "COMP ID LABEL 2";
-            c.compIdDescription = "COMP ID DESC 2";
-            c.compIdPriorty = "secondary";
-            c.compNameLabel = "COMP NAME LABEL 2";
-            c.compNameDescription = "COMP NAME DESC 2";
-            c.compDescLabel = "COMP DESC LABEL 2";
-            c.compDescDescription = "COMP DESC DESC 2";
-            c.compDescPriority = "primary";
-            c.compDescRequired = false;
-            c.compTypeLabel = "COMP TYPE LABEL 2";
-            c.compTypeDescription = "COMP TYPE DESC 2";
-            c.compTypePriority = "secondary";
-            c.compTypeRequired = true;
-            c.compEnforceTypes = false;
-            c.compEnforcedTypes = [];
-            c.fwkCustomProperties = [];
-            let prop5 = {};
-            prop5.context = 'https://schema.cassproject.org/0.4/';
-            prop5.propertyName = 'customFwkProp1';
-            prop5.range = 'http://schema.org/URL';
-            prop5.description = 'Custom Fwk property 1';
-            prop5.label = 'cFwkProp1';
-            prop5.priority = 'secondary';
-            prop5.required = true;
-            prop5.permittedValues = [];
-            let prop6 = {};
-            prop6.context = 'https://schema.cassproject.org/0.4/';
-            prop6.propertyName = 'customFwkProp2';
-            prop6.range = 'http://schema.org/Text';
-            prop6.description = 'Custom Fwk property 2';
-            prop6.label = 'cFwkProp2';
-            prop6.priority = 'tertiary';
-            prop6.required = false;
-            prop6.permittedValues = [];
-            let prop6pv1 = {};
-            prop6pv1.display = "fwkProp2 pvd 1";
-            prop6pv1.value = "fwkProp2pvv1";
-            let prop6pv2 = {};
-            prop6pv2.display = "fwkProp2 pvd 2";
-            prop6pv2.value = "fwkProp2pvv2";
-            prop6.permittedValues.push(prop6pv1);
-            prop6.permittedValues.push(prop6pv2);
-            c.fwkCustomProperties.push(prop5);
-            c.fwkCustomProperties.push(prop6);
-            c.compCustomProperties = [];
-            let prop7 = {};
-            prop7.context = 'https://schema.cassproject.org/0.4/';
-            prop7.propertyName = 'customCompProp1';
-            prop7.range = 'http://schema.org/URL';
-            prop7.description = 'Custom Comp property 1';
-            prop7.label = 'cCompProp1';
-            prop7.priority = 'primary';
-            prop7.required = true;
-            prop7.permittedValues = [];
-            let prop8 = {};
-            prop8.context = 'https://schema.cassproject.org/0.4/';
-            prop8.propertyName = 'customCompProp2';
-            prop8.range = 'http://schema.org/Text';
-            prop8.description = 'Custom Comp property 2';
-            prop8.label = 'cCompProp2';
-            prop8.priority = 'tertiary';
-            prop8.required = false;
-            prop8.permittedValues = [];
-            let prop8pv1 = {};
-            prop8pv1.display = "compProp2 pvd 1";
-            prop8pv1.value = "compProp2pvv1";
-            let prop8pv2 = {};
-            prop8pv2.display = "compProp2 pvd 2";
-            prop8pv2.value = "compProp2pvv2";
-            prop8.permittedValues.push(prop8pv1);
-            prop8.permittedValues.push(prop8pv2);
-            c.compCustomProperties.push(prop7);
-            c.compCustomProperties.push(prop8);
-            c.relationships = {};
-            c.relationships.isEnabledBy = {};
-            c.relationships.isEnabledBy.label = 'is enabled by';
-            c.relationships.isEnabledBy.enabled = true;
-            c.relationships.requires = {};
-            c.relationships.requires.label = 'requires';
-            c.relationships.requires.enabled = true;
-            c.relationships.desires = {};
-            c.relationships.desires.label = 'desires';
-            c.relationships.desires.enabled = true;
-            c.relationships.narrows = {};
-            c.relationships.narrows.label = 'narrows';
-            c.relationships.narrows.enabled = true;
-            c.relationships.isRelatedTo = {};
-            c.relationships.isRelatedTo.label = 'is related to';
-            c.relationships.isRelatedTo.enabled = true;
-            c.relationships.isEquivalentTo = {};
-            c.relationships.isEquivalentTo.label = 'is equivalent to';
-            c.relationships.isEquivalentTo.enabled = true;
-            c.relationships.broadens = {};
-            c.relationships.broadens.label = 'broadens';
-            c.relationships.broadens.enabled = false;
-            c.relationships.majorRelated = {};
-            c.relationships.majorRelated.label = 'is majorly related to';
-            c.relationships.majorRelated.enabled = false;
-            c.relationships.minorRelated = {};
-            c.relationships.minorRelated.label = 'is minorly related to';
-            c.relationships.minorRelated.enabled = false;
-            c.relationships.isSimilarTo = {};
-            c.relationships.isSimilarTo.label = 'is similar to';
-            c.relationships.isSimilarTo.enabled = false;
-            c.relationships.isPartiallySameAs = {};
-            c.relationships.isPartiallySameAs.label = 'is partially the same as';
-            c.relationships.isPartiallySameAs.enabled = false;
-            c.relationships.enables = {};
-            c.relationships.enables.label = 'enables';
-            c.relationships.enables.enabled = false;
-            c.relationships.hasChild = {};
-            c.relationships.hasChild.label = 'has child';
-            c.relationships.hasChild.enabled = false;
-            c.relationships.isChildOf = {};
-            c.relationships.isChildOf.label = 'is child of';
-            c.relationships.isChildOf.enabled = false;
-            c.alignments = {};
-            c.alignments.teaches = true;
-            c.alignments.assesses = true;
-            c.alignments.requires = true;
-            c.defaultOwners = [];
-            c.defaultReaders = [];
-            c.defaultCommenters = [];
-            ca.push(c);
-            return ca;
+        setConfigAsFrameworkDefault(configId) {
+            let me = this;
+            let f = this.$store.getters['editor/framework'];
+            let previousConfig = f.configuration;
+            f.configuration = configId;
+            if (!previousConfig) {
+                f = this.setOwnersAndReaders(f);
+            }
+            if (f) {
+                this.frameworkConfigId = configId;
+                window.repo.saveTo(f, function() {
+                    me.$store.commit('editor/framework', f);
+                }, function() {});
+            }
+        },
+        setOwnersAndReaders(framework) {
+            let userIdentity = null;
+            if (EcIdentityManager.ids.length > 0) {
+                userIdentity = EcIdentityManager.ids[0].ppk.toPk();
+            }
+            let config = EcRepository.getBlocking(framework.configuration);
+            let owners = config.defaultObjectOwners;
+            let readers = config.defaultObjectReaders;
+            if (owners.length > 0 || readers.length > 0) {
+                if (userIdentity) {
+                    framework.addOwner(userIdentity);
+                } else {
+                    this.showMustBeLoggedInModal = true;
+                    return false;
+                }
+            }
+            for (let i = 0; i < owners.length; i++) {
+                framework.addOwner(EcPk.fromPem(owners[i]));
+            }
+            for (let i = 0; i < readers.length; i++) {
+                framework.addReader(EcPk.fromPem(readers[i]));
+            }
+            let compsAndRelations = framework.competency ? framework.competency : [];
+            if (framework.relation) {
+                compsAndRelations = compsAndRelations.concat(framework.relation);
+            }
+            new EcAsyncHelper().each(compsAndRelations, function(id, done) {
+                EcRepository.get(id, function(obj) {
+                    if (owners.length > 0 || readers.length > 0) {
+                        if (userIdentity) {
+                            obj.addOwner(userIdentity);
+                        }
+                    }
+                    for (let i = 0; i < owners.length; i++) {
+                        obj.addOwner(EcPk.fromPem(owners[i]));
+                    }
+                    for (let i = 0; i < readers.length; i++) {
+                        obj.addReader(EcPk.fromPem(readers[i]));
+                    }
+                    window.repo.saveTo(obj, done, done);
+                }, done);
+            }, function(competencyIds) {
+            });
+            return framework;
         }
+    },
+    updated() {
+        this.localDefaultBrowserConfigId = this.getDefaultBrowserConfigId();
     },
     mounted() {
         this.buildConfigList();
         this.localDefaultBrowserConfigId = this.getDefaultBrowserConfigId();
+        if (this.$store.getters['editor/framework'] && this.$store.getters['editor/framework'].configuration) {
+            this.frameworkConfigId = this.$store.getters['editor/framework'].configuration;
+        }
     }
 };
 </script>
@@ -1212,7 +1224,7 @@ export default {
 <style lang="scss" scoped>
     h3 {
         font-size: 2rem;
-        padding-bottom: 1rem;
+        padding-bottom: 0rem;
     }
     h4 {
         font-size: 1.6rem;
