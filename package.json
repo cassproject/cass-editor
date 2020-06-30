@@ -26,7 +26,7 @@
     "vue-infinite-loading": "^2.4.5",
     "vue-moment": "^4.1.0",
     "vue-router": "^3.0.3",
-    "vue-scrollto": "^2.17.1",
+    "vue-scrollto": "^2.18.1",
     "vuedraggable": "^2.23.2",
     "vuex": "^3.4.0"
   },
