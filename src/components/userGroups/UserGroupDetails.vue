@@ -7,7 +7,7 @@
             <div class="modal-background" />
             <div class="modal-card">
                 <header class="modal-card-head has-background-primary">
-                    <p class="subtitle is-size-3 modal-card-title has-text-white">
+                    <p class="is-size-3 modal-card-title has-text-white">
                         {{ addMemberModalTitle }}
                         <button
                             class="delete is-pulled-right"
@@ -17,17 +17,17 @@
                 </header>
                 <div class="modal-card-body has-text-dark">
                     <div class="field">
-                        <label class="label">Available Members:</label>
-                    </div>
-                    <div class="field">
                         <input
                             type="text"
                             class="input"
                             v-model="selectedPersonsFilter"
-                            placeholder="person filter">
+                            placeholder="search for person...">
                     </div>
+                    <h4 class="header is-size-3">
+                        Available Member List
+                    </h4>
                     <div class="table-container">
-                        <div class="table">
+                        <table class="table is-hoverable is-fullwidth">
                             <thead>
                                 <tr>
                                     <th />
@@ -53,12 +53,12 @@
                                     <td>  {{ prs.email }}</td>
                                 </tr>
                             </tbody>
-                        </div>
+                        </table>
                     </div>
                 </div>
                 <footer class="modal-card-foot has-background-light">
                     <div
-                        class="buttons"
+                        class="buttons is-spaced"
                         v-if="!readOnly">
                         <button
                             class="button is-outlined is-dark"
@@ -117,22 +117,14 @@
             </div>
         </div>
         <div class="section">
-            <h5>Managers</h5>
-            <div class="buttons is-left">
-                <button
-                    class="button is-small is-outlined is-primary"
-                    v-if="!readOnly"
-                    @click="addManagers">
-                    <span class="icon">
-                        <i class="fa fa-user-plus" />
-                    </span>
-                    <span>
-                        add managers
-                    </span>
-                </button>
-            </div>
+            <h5 class="header is-size-3">
+                Managers
+            </h5>
+            <p class="description">
+                Managers can read, edit, comment, delete, and manage user access to frameworks.
+            </p>
             <div class="table-container">
-                <div class="table">
+                <table class="table is-hoverable is-fullwidth">
                     <thead>
                         <tr>
                             <th>
@@ -177,31 +169,38 @@
                             </td>
                         </tr>
                     </tbody>
-                </div>
+                </table>
             </div>
-        </div>
-        <div class="section">
-            <h5>Users</h5>
-            <div class="buttons is-left">
+            <div class="buttons is-right">
                 <button
                     class="button is-small is-outlined is-primary"
                     v-if="!readOnly"
-                    @click="addUsers">
+                    @click="addManagers">
                     <span class="icon">
                         <i class="fa fa-user-plus" />
                     </span>
                     <span>
-                        add users
+                        add managers
                     </span>
                 </button>
             </div>
+        </div>
+        <div class="section">
+            <h5 class="header is-size-3">
+                Users
+            </h5>
+            <p class="description">
+                Readers can read, and comment on frameworks.
+            </p>
             <div v-if="groupUsers.length === 0">
-                <p>No users assigned to this group</p>
+                <p class="is-size-7">
+                    No users assigned to this group yet.
+                </p>
             </div>
             <div
                 class="table-container"
                 v-if="groupUsers.length > 0">
-                <div class="table">
+                <table class="table is-hoverable is-fullwidth">
                     <thead>
                         <tr>
                             <th>
@@ -246,7 +245,20 @@
                             </td>
                         </tr>
                     </tbody>
-                </div>
+                </table>
+            </div>
+            <div class="buttons is-right">
+                <button
+                    class="button is-small is-outlined is-primary"
+                    v-if="!readOnly"
+                    @click="addUsers">
+                    <span class="icon">
+                        <i class="fa fa-user-plus" />
+                    </span>
+                    <span>
+                        add users
+                    </span>
+                </button>
             </div>
             <!-- ************************************** Validation ************************************************ -->
             <div v-if="groupInvalid">
@@ -262,8 +274,16 @@
         <!-- ************************************** Actions ************************************************ -->
         <div class="section">
             <div
-                class="buttons is-right"
+                class="buttons is-spaced"
                 v-if="!readOnly">
+                <button
+                    class="button is-outlined is-dark"
+                    @click="$emit('cancel')">
+                    <span class="icon">
+                        <i class="fa fa-times" />
+                    </span>
+                    <span>cancel</span>
+                </button>
                 <button
                     class="button is-outlined is-primary"
                     @click="validateCurrentGroupAndEmitSave">
@@ -271,16 +291,8 @@
                         <i class="fa fa-save" />
                     </span>
                     <span>
-                        save
+                        save group
                     </span>
-                </button>
-                <button
-                    class="button is-outlined is-primary"
-                    @click="$emit('cancel')">
-                    <span class="icon">
-                        <i class="fa fa-times" />
-                    </span>
-                    <span>cancel</span>
                 </button>
             </div>
             <div v-else>

@@ -1,24 +1,12 @@
 @import './variables.scss';
 
-#search-selection__icon {
-    float: right;
-    position:fixed;
-    right: 8px;
-    display: flex;
-    height: 100%;
-    align-content: center;
-    .icon {
-        height: 100%;
-    }
-}
 .framework-list-page {
     label{
         display:none;
     }
     .lode__Property {
-    padding: .5rem 0rem;
+        padding: .125rem 0rem;
     }
-
     .page {
         margin-top: 2rem;
     }
@@ -37,6 +25,12 @@
                     .list-thing {
                         width: calc(100% - 56px);
                     }
+                    .lode__type {
+                        display: none;
+                    }
+                    .language {
+                        display: none;
+                    }
 
             }
             li.list-ul__item:hover {
@@ -50,10 +44,10 @@
                 padding: .0rem .5rem .25rem .125rem;
                 margin-top: .5rem;
                 .framework-list-item__details {
-                    color: rgba($dark, .6);
-                    padding-right: .5rem;
-                    padding-left: 0rem;
+                    color: $text;
+                    font-weight: 300;
                     font-size: $size-7;
+                    font-family: $family-primary;
                     .details-value {
 
                     }
@@ -69,12 +63,12 @@
                 .bottom-actions, .top-actions {
                     display: none !important;
                 }
-                .lode__Framework {
+                .lode__Framework, .lode__ConceptScheme {
                     transform: translateX(0);
                     cursor: pointer;
-                    .lode__Framework {
-
-                    }
+                    font-weight: 600;
+                    font-size: 1rem;
+                    font-family: $family-secondary;
                     .lode__Thing-ul {
                         padding: 0rem .5rem;
                         width: 100%;
@@ -86,7 +80,7 @@
         }
     }
      .lode__Framework,
-     .framework-list-page
+     .framework-list-page,
      .lode__ConceptScheme {
         a {
             display:none;
@@ -163,6 +157,7 @@
         }
     }
     .lode__description {
+        display: none;
         .lode__Property-text  {
             font-size: $size-6;
         }
@@ -172,4 +167,38 @@
     }
 }
 
+/* handles search */
+.lode__thing-editing, .lode__thing {
+    .List {
+        .list-ul {
+            .list-ul__item {
+                padding: .25rem;
+
+                .search-selection__icon,
+                .search-selection__add-icon
+                {
+                    float: right;
+                    right: 16px;
+                    display: flex;
+                    height: 100%;
+                    align-content: center;
+                    .icon {
+                        height: 100%;
+                        padding-right: 16px;
+                    }
+                }
+                .search-selection__add-icon {
+                    visibility: hidden;
+                }
+            }
+            .list-ul__item:hover {
+                background-color: rgba($light, .5);
+                .lode__Competency .search-selection__add-icon,
+                .lode__Level .search-selection__add-icon {
+                    visibility: visible !important;
+                }
+            }
+        }
+    }
+}
 

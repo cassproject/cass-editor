@@ -148,8 +148,7 @@ export default {
             onCancel: {},
             newName: '',
             currentName: '',
-            invalid: false,
-            repo: window.repo
+            invalid: false
         };
     },
     computed: {
@@ -260,9 +259,9 @@ export default {
                         if (me.queryParams && me.queryParams.newObjectEndpoint) {
                             f.id = me.queryParams.newObjectEndpoint + uuid;
                         } else {
-                            f.assignId(me.repo.selectedServer, uuid);
+                            f.assignId(window.repo.selectedServer, uuid);
                         }
-                        this.repo.search("(@id:\"" + f.shortId() + "\") AND (@type:Framework)", function() {}, function(frameworks) {
+                        window.repo.search("(@id:\"" + f.shortId() + "\") AND (@type:Framework)", function() {}, function(frameworks) {
                             if (frameworks.length > 0) {
                                 me.invalid = true;
                             } else {

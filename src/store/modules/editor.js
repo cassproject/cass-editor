@@ -32,7 +32,16 @@ const state = {
     commentsToDelete: [],
     commentScrollTo: {},
     editsToUndo: [],
-    lastEditToUndo: null
+    lastEditToUndo: null,
+    recomputeHierarchy: false,
+    selectedCompetenciesAsProperties: null,
+    refreshLevels: false,
+    conceptMode: false,
+    cutId: null,
+    copyId: null,
+    paste: false,
+    cutOrCopyContainerId: null,
+    nodeInFocus: null
 };
 const mutations = {
     framework(state, f) {
@@ -123,6 +132,33 @@ const mutations = {
     },
     setLastEditToUndo(state, edit) {
         state.lastEditToUndo = edit;
+    },
+    recomputeHierarchy(state, boolean) {
+        state.recomputeHierarchy = boolean;
+    },
+    selectedCompetenciesAsProperties(state, comps) {
+        state.selectedCompetenciesAsProperties = comps;
+    },
+    refreshLevels(state, boolean) {
+        state.refreshLevels = boolean;
+    },
+    conceptMode(state, boolean) {
+        state.conceptMode = boolean;
+    },
+    cutId(state, id) {
+        state.cutId = id;
+    },
+    copyId(state, id) {
+        state.copyId = id;
+    },
+    paste(state, id) {
+        state.paste = id;
+    },
+    cutOrCopyContainerId(state, id) {
+        state.cutOrCopyContainerId = id;
+    },
+    nodeInFocus(state, id) {
+        state.nodeInFocus = id;
     }
 };
 const actions = {
@@ -200,6 +236,33 @@ const getters = {
     },
     commentScrollTo: function(state) {
         return state.commentScrollTo;
+    },
+    recomputeHierarchy: function(state) {
+        return state.recomputeHierarchy;
+    },
+    selectedCompetenciesAsProperties: function(state) {
+        return state.selectedCompetenciesAsProperties;
+    },
+    refreshLevels: function(state) {
+        return state.refreshLevels;
+    },
+    conceptMode: function(state) {
+        return state.conceptMode;
+    },
+    cutId: function(state) {
+        return state.cutId;
+    },
+    copyId: function(state) {
+        return state.copyId;
+    },
+    paste: function(state) {
+        return state.paste;
+    },
+    cutOrCopyContainerId: function(state) {
+        return state.cutOrCopyContainerId;
+    },
+    nodeInFocus: function(state) {
+        return state.nodeInFocus;
     }
 };
 

@@ -4,6 +4,37 @@
 textarea {
     resize: vertical !important;
 }
+#import {
+        .lode__Competency, .lode__Framework {
+            padding-right: 120px;
+            .hierarchy-item__buttons {
+                display: flex;
+                visibility: hidden;
+                position: absolute;
+                right: 0;
+                top: 0px;
+            }
+            .edit-button, .comment-button, .handle-button {
+                visibility: hidden;
+                margin: 0rem .25rem;
+            }
+        }
+    
+        .lode__Competency:hover {
+            .lode__thing-heading .lode__Property {
+                color: $primary !important;
+            }
+            .hierarchy-item__buttons {
+                visibility: visible;
+            }
+            .edit-button, .comment-button, .handle-button {
+                visibility: visible;
+            }
+        }
+
+    
+   
+}
 ul.processing-list {
     height: 100%;
     width: 100%;
@@ -62,8 +93,7 @@ ul.processing-list {
   }
 
 
-.page-import {
-    padding-top: 1rem;
+#import{
     .special-property {
         iframe {
             margin-top: .25rem;
@@ -274,33 +304,23 @@ ul.processing-list {
                 
             }
     }
-    #import-bottom-section {
-        .tile {
-            min-height: 440px;
+    .import-flex {
+        height: calc(100vh - 66px);
+        .import-bottom-flex {
         }
-    }
-    #import-top-section {
-        padding: 1rem 1rem;
-        width: auto;
-        max-width: 100%;
-        top: 0rem;
-        z-index: 10;
-        .columns {
-            max-width: 900px;
-        }
-        .import-instructions {
-            padding-top: .5rem;
+        .import-top-flex {
         }
     }
     #import-actions {
-        position: sticky;
-        background-color: white;
-        bottom: 0;
-        left: 0;
-        right: 0;
+
     }
     .import-light, .import-preview {
-        padding: 0rem 1rem;
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        .lode__thing .lode__Framework {
+            min-height: 40px;
+        }
         // on related competencies, hide buttons to edit competency
         .related-competency, .related-competency.editing-competency {
             width: 100%;
@@ -315,8 +335,7 @@ ul.processing-list {
             display: none;
         }
         .button {
-            display: none;
-        };
+        }
         #check-radio-column {
             display: none;
         }
