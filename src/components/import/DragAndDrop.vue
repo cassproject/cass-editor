@@ -20,7 +20,9 @@
                         Files to Upload
                     </p>
                 </div>
-                <div class="column is-12">
+                <div
+                    v-if="files.length === 0"
+                    class="column is-12">
                     <p class="is-size-6">
                         Drag and drop, or click to upload.
                     </p>
@@ -28,11 +30,11 @@
                 <div class="column is-12">
                     <ul>
                         <li
-                            class="is-size-7"
+                            class="is-size-6"
                             v-for="file in files"
                             :key="file"
                             style="display: inline; vertical-align: middle;">
-                            <span class="has-text-weight-bold">
+                            <span class="has-text-weight-medium">
                                 {{ file.name }} ({{ file.size | kb }} kb)
                                 <button
                                     title="Remove"
@@ -148,7 +150,7 @@ export default {
 </script>
 
 <style lang="scss">
-    @import './../scss/variables.scss';
+    @import '@/scss/variables.scss';
 
 #drag-and-drop {
     min-height: 100%;

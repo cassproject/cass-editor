@@ -1,7 +1,7 @@
 <template>
-    <div class="page-open">
+    <div class="organizations">
         <div>
-            <span v-if="queryParams.concepts==='true'">
+            <span v-if="$store.getters['editor/conceptMode']">
                 <input
                     type="radio"
                     value="dcterms:title.keyword"

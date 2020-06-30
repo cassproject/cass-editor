@@ -71,6 +71,7 @@ export default {
                     "http://schema.org/domainIncludes":
                         [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                     "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/skos/Concept"}],
+                    "noTextEditing": "true",
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual resources contextually."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Context"}]
@@ -125,6 +126,7 @@ export default {
                     "valuesIndexed": function() { return me.relations["narrows"]; },
                     "noTextEditing": "true",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "narrows", values); },
+                    "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "narrows", target); }
                 },
                 "broadens": {
@@ -135,6 +137,7 @@ export default {
                     "valuesIndexed": function() { return me.relations["broadens"]; },
                     "noTextEditing": "true",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "broadens", values); },
+                    "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "broadens", target); }
                 },
                 "isEquivalentTo": {
@@ -145,6 +148,7 @@ export default {
                     "valuesIndexed": function() { return me.relations["isEquivalentTo"]; },
                     "noTextEditing": "true",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEquivalentTo", values); },
+                    "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isEquivalentTo", target); }
                 },
                 "isSimilarTo": {
@@ -153,6 +157,7 @@ export default {
                     "valuesIndexed": function() { return me.relations["isSimilarTo"]; },
                     "noTextEditing": "true",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isSimilarTo", values); },
+                    "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isSimilarTo", target); }
                 },
                 "isPartiallySameAs": {
@@ -161,6 +166,7 @@ export default {
                     "valuesIndexed": function() { return me.relations["isPartiallySameAs"]; },
                     "noTextEditing": "true",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isPartiallySameAs", values); },
+                    "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isPartiallySameAs", target); }
                 },
                 "isRelatedTo": {
@@ -171,6 +177,7 @@ export default {
                     "valuesIndexed": function() { return me.relations["isRelatedTo"]; },
                     "noTextEditing": "true",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isRelatedTo", values); },
+                    "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isRelatedTo", target); }
                 },
                 "enables": {
@@ -179,6 +186,7 @@ export default {
                     "valuesIndexed": function() { return me.relations["enables"]; },
                     "noTextEditing": "true",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "enables", values); },
+                    "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "enables", target); }
                 },
                 "isEnabledBy": {
@@ -189,6 +197,7 @@ export default {
                     "valuesIndexed": function() { return me.relations["isEnabledBy"]; },
                     "noTextEditing": "true",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEnabledBy", values); },
+                    "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isEnabledBy", target); }
                 },
                 "primaryProperties": [

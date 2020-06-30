@@ -44,7 +44,7 @@
                 v-if="commentIsBusy"
                 class="has-text-centered">
                 <span class="icon is-large has-text-center has-text-link">
-                    <i class="fas fa-3x fa-spinner is-info fa-pulse" />
+                    <i class="fas fa-2x fa-spinner is-info fa-pulse" />
                 </span>
             </div>
         </section>
