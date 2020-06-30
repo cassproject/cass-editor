@@ -21,7 +21,7 @@
                 </div>
             </div>
             <div class="navbar-item">
-                <router-link to="/">
+                <router-link to="/frameworks">
                     <h2 class="has-text-white subtitle has-text-weight-bold">
                         CaSS
                     </h2>
