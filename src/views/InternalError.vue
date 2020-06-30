@@ -11,7 +11,7 @@
         <div class="section">
             <div class="buttons is-centered">
                 <router-link
-                    to="/"
+                    to="/frameworks"
                     class="button is-primary is-centered">
                     return home
                 </router-link>

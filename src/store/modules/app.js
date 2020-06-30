@@ -234,7 +234,15 @@ const mutations = {
     }
 };
 const actions = {
-
+    clearImport: function({commit}) {
+        commit('importFramework', null);
+        commit('clearImportFiles');
+        commit('clearImportErrors');
+        commit('importTransition', 'upload');
+        commit('importStatus', '');
+        commit('importFeedback', '');
+        commit('importFileType', '');
+    }
 };
 const getters = {
     canViewComments: state => {
