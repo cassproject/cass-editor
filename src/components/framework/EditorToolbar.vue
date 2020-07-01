@@ -297,7 +297,7 @@ export default {
                 }
             });
         },
-        expand: function(o, after) {
+        expand: async function(o, after) {
             var toExpand = JSON.parse(o.toJson());
             if (toExpand["@context"] != null && toExpand["@context"].startsWith("http://")) {
                 toExpand["@context"] = toExpand["@context"].replace("http://", "https://");
@@ -305,24 +305,21 @@ export default {
             if (toExpand["@context"] != null && toExpand["@context"].indexOf("skos") !== -1) {
                 toExpand["@context"] = "https://schema.cassproject.org/0.4/skos/";
             }
-            jsonld.expand(toExpand, function(err, expanded) {
-                if (err == null) {
-                    after(expanded[0]);
-                } else {
-                    after(null);
-                }
-            });
+            var expanded = await jsonld.expand(toExpand);
+            if (expanded && expanded[0]) {
+                after(expanded[0]);
+            } else {
+                after(null);
+            }
         },
-        saveExpanded: function(expandedCompetency) {
+        saveExpanded: async function(expandedCompetency) {
             var me = this;
             var context = "https://schema.cassproject.org/0.4";
             if (expandedCompetency["@type"][0].toLowerCase().indexOf("concept") !== -1) {
                 context = "https://schema.cassproject.org/0.4/skos";
             }
-            jsonld.compact(expandedCompetency, this.$store.state.lode.rawSchemata[context], function(err, compacted) {
-                if (err != null) {
-                    console.error(err);
-                }
+            var compacted = await jsonld.compact(expandedCompetency, this.$store.state.lode.rawSchemata[context]);
+            if (compacted) {
                 var rld = new EcRemoteLinkedData();
                 rld.copyFrom(compacted);
                 rld.context = context;
@@ -338,7 +335,7 @@ export default {
                     console.error(error);
                     me.editsFinishedCounter++;
                 });
-            });
+            }
         },
         // Compact operation removes arrays when length is 1, but some fields need to be arrays in the data that's saved
         turnFieldsBackIntoArrays: function(rld) {
