@@ -69,7 +69,9 @@
                 </router-link>
             </li>
             <li class="has-text-white">
-                <router-link to="/import">
+                <router-link
+                    to="/import"
+                    @click.native="$store.commit('editor/conceptMode', false)">
                     Import
                 </router-link>
             </li>
@@ -90,6 +92,13 @@
                 class="has-text-white"
                 @click="$emit('createNewConceptScheme')">
                 <a> New Concept Scheme</a>
+            </li>
+            <li class="has-text-white">
+                <router-link
+                    to="/import"
+                    @click.native="$store.commit('editor/conceptMode', true)">
+                    Import
+                </router-link>
             </li>
         </ul>
         <ul class="menu-list" />

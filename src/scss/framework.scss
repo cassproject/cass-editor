@@ -1,5 +1,6 @@
 @import './variables.scss';
 #framework, #concept, #import {
+    margin-top: 2rem !important;
 .framework-wrapper {
     max-width: 1400px;
     width: 100%;
@@ -29,10 +30,14 @@ drag, drag, and chosen states
         position:absolute;
     }
 }
-
+.sortable-fallback {
+    border: dashed 2px green;
+}
 .ghost-drag {
+    .no-child {
+        display: none;
+    }
     .lode__hierarchy-item {
-        background-color: rgba($link, .1);
         border-radius: 5px;
     }
     .comment-button, .edit-button {
@@ -44,6 +49,11 @@ drag, drag, and chosen states
     }
 }
 .chosen-drag {
+    border: dashed 2px grey;
+    background-color: white;
+    .no-child {
+        display: none;
+    }
     .comment-button, .edit-button {
         visibility: hidden;
     }
@@ -55,6 +65,17 @@ drag, drag, and chosen states
     }
 }
 .drag {
+    border: dashed 2px grey;
+    background-color: white;
+    .no-child {
+        display: none;
+    }
+    .lode__type {
+        display: none;
+    }
+    .lode__id {
+        display: none;
+    }
     .comment-button, .edit-button {
         visibility: hidden;
     }
@@ -66,6 +87,14 @@ drag, drag, and chosen states
         display: none !important;
     }
 }
+
+.dragging.no-child {
+    border: dashed 2px grey;
+    min-height: 36px;
+    margin-left: 5rem;
+}
+
+
 .uneditable {
     word-break: break-all;
 }
@@ -151,7 +180,6 @@ drag, drag, and chosen states
             padding: .5rem;
         }
         .lode__framework__info-bar {
-            padding: .5rem;
             margin-left: 0rem;
         }
         .lode__Property.lode__name {
@@ -266,11 +294,28 @@ drag, drag, and chosen states
                 }
                 
             }
-            ul.lode__hierarchy-sub-ul:first {
+            .lode__hierarchy-item.is-focused {
+                background-color: rgba($link, .2);
+                border-radius: .25rem;
+            }
+            .lode__hierarchy-item.is-selected {
+                background-color: rgba($link, .3);
+                border-radius: .25rem;
+                box-shadow: $two-dp;
+            }
+            .lode__hierarchy-item.is-cut {
+                border-radius: .25rem;
+                border: dashed 2px $dark;
+                opacity: 50%;
+            }
+            .lode__hierarchy-item.can-paste {
+                background-color: rgba($primary, .2);
+                border-radius: .25rem;
+                border: dashed 2px $black;
             }
             ul.lode__hierarchy-sub-ul {
-                margin-left: 1.25rem;                
-                padding: .25rem;
+                margin-left: 1.25rem;
+                padding: .25rem 0rem;
                 li.lode__hierarchy-sub-li {
                     .lode__name {
                         font-size: 1rem; // top level competencies
@@ -291,8 +336,6 @@ drag, drag, and chosen states
     }
     .lode__framework__info-bar {
         margin-left: 0rem;
-        margin-bottom: 1rem;
-        margin-top: 1rem;
     }
     // top level items outside of Hierarchy
     .lode__thing {

@@ -36,7 +36,12 @@ const state = {
     recomputeHierarchy: false,
     selectedCompetenciesAsProperties: null,
     refreshLevels: false,
-    conceptMode: false
+    conceptMode: false,
+    cutId: null,
+    copyId: null,
+    paste: false,
+    cutOrCopyContainerId: null,
+    nodeInFocus: null
 };
 const mutations = {
     framework(state, f) {
@@ -139,6 +144,21 @@ const mutations = {
     },
     conceptMode(state, boolean) {
         state.conceptMode = boolean;
+    },
+    cutId(state, id) {
+        state.cutId = id;
+    },
+    copyId(state, id) {
+        state.copyId = id;
+    },
+    paste(state, id) {
+        state.paste = id;
+    },
+    cutOrCopyContainerId(state, id) {
+        state.cutOrCopyContainerId = id;
+    },
+    nodeInFocus(state, id) {
+        state.nodeInFocus = id;
     }
 };
 const actions = {
@@ -228,6 +248,21 @@ const getters = {
     },
     conceptMode: function(state) {
         return state.conceptMode;
+    },
+    cutId: function(state) {
+        return state.cutId;
+    },
+    copyId: function(state) {
+        return state.copyId;
+    },
+    paste: function(state) {
+        return state.paste;
+    },
+    cutOrCopyContainerId: function(state) {
+        return state.cutOrCopyContainerId;
+    },
+    nodeInFocus: function(state) {
+        return state.nodeInFocus;
     }
 };
 

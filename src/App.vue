@@ -338,6 +338,7 @@ export default {
         },
         createNewFramework: function() {
             let me = this;
+            this.$store.commit('editor/t3Profile', false);
             this.setDefaultLanguage();
             var framework = new EcFramework();
             if (this.queryParams.newObjectEndpoint != null) {
