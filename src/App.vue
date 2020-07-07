@@ -114,7 +114,7 @@ export default {
                     if (me.queryParams.action === "add") {
                         me.createNew();
                     }
-                    if (me.queryParams.ceasnDataFields === "true" && !me.queryParams.action && !me.queryParams.frameworkId) {
+                    if ((me.queryParams.ceasnDataFields === "true" || me.queryParams.frameworksPage === "true") && (!me.queryParams.action && !me.queryParams.frameworkId)) {
                         if (me.$store.getters['editor/conceptMode'] === true) {
                             me.$router.push({name: "concepts"});
                         } else {
