@@ -33,6 +33,7 @@
                     :click="frameworkClick"
                     :searchOptions="searchOptions"
                     :paramObj="paramObj"
+                    view="frameworks"
                     :disallowEdits="true">
                     <!-- TO DO move these template items to the "actions" right side area -->
                     <template
