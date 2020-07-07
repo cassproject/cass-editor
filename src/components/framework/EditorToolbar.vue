@@ -9,7 +9,7 @@
                     :class="{ 'is-active': showPropertyViewDropDown}">
                     <div class="dropdown-trigger">
                         <button
-                            class="button is-text"
+                            class="button is-small is-text"
                             @click="showPropertyViewDropDown = !showPropertyViewDropDown"
                             aria-haspopup="true">
                             <span>View</span>
@@ -64,7 +64,7 @@
                     :class="{ 'is-active': showShareDropdown}">
                     <div class="dropdown-trigger">
                         <button
-                            class="button is-text"
+                            class="button is-small is-text"
                             @click="showShareDropdown = !showShareDropdown"
                             aria-haspopup="true">
                             <span>Framework</span>
@@ -114,13 +114,13 @@
                 <div
                     v-if="showViewComments"
                     @click="$store.commit('app/showRightAside', 'Comments')"
-                    class="button is-text has-text-dark">
+                    class="button is-text is-small has-text-dark">
                     <span class="icon">
                         <i class="fas fa-comments" />
                     </span>
                 </div>
                 <div
-                    class="button is-text has-text-dark"
+                    class="button is-small is-text has-text-dark"
                     @click="onClickUndo"
                     v-if="canEditFramework">
                     <span class="icon">
@@ -129,16 +129,38 @@
                 </div>
                 <div
                     @click="$store.commit('app/showRightAside', 'Versions')"
-                    class="button is-text"
+                    class="button is-text is-small"
                     v-if="canEditFramework">
                     <span class="icon">
                         <i class="fas fa-history has-text-dark" />
                     </span>
                 </div>
+                <div
+                    class="button is-small is-text has-text-primary"
+                    @click="copyClick">
+                    <span class="icon ">
+                        <i class="fa fa-copy is-size-7" />
+                    </span>
+                </div>
+                <div
+                    class="button is-small is-text has-text-primary"
+                    @click="cutClick">
+                    <span class="icon">
+                        <i class="fas handle fa-cut" />
+                    </span>
+                </div>
+                <div
+                    class="button is-small is-text has-text-primary"
+                    @click="pasteClick"
+                    title="paste">
+                    <span class="icon">
+                        <i class="fa fa-paste is-size-7" />
+                    </span>
+                </div>
             </div>
             <div class="right-side">
                 <div
-                    class="button is-text is-pulled-right"
+                    class="button is-small is-text is-pulled-right"
                     v-if="canEditFramework && !conceptMode"
                     @click="showManageConfigurationModal(); showShareDropdown = false;">
                     <span class="icon">
@@ -156,6 +178,9 @@ import {cassUtil} from '../../mixins/cassUtil';
 export default {
     name: 'EditorToolbar',
     mixins: [ cassUtil ],
+    props: {
+        selectedArray: Array
+    },
     data() {
         return {
             showPropertyViewDropDown: false,
@@ -272,7 +297,7 @@ export default {
                 }
             });
         },
-        expand: function(o, after) {
+        expand: async function(o, after) {
             var toExpand = JSON.parse(o.toJson());
             if (toExpand["@context"] != null && toExpand["@context"].startsWith("http://")) {
                 toExpand["@context"] = toExpand["@context"].replace("http://", "https://");
@@ -280,24 +305,21 @@ export default {
             if (toExpand["@context"] != null && toExpand["@context"].indexOf("skos") !== -1) {
                 toExpand["@context"] = "https://schema.cassproject.org/0.4/skos/";
             }
-            jsonld.expand(toExpand, function(err, expanded) {
-                if (err == null) {
-                    after(expanded[0]);
-                } else {
-                    after(null);
-                }
-            });
+            var expanded = await jsonld.expand(toExpand);
+            if (expanded && expanded[0]) {
+                after(expanded[0]);
+            } else {
+                after(null);
+            }
         },
-        saveExpanded: function(expandedCompetency) {
+        saveExpanded: async function(expandedCompetency) {
             var me = this;
             var context = "https://schema.cassproject.org/0.4";
             if (expandedCompetency["@type"][0].toLowerCase().indexOf("concept") !== -1) {
                 context = "https://schema.cassproject.org/0.4/skos";
             }
-            jsonld.compact(expandedCompetency, this.$store.state.lode.rawSchemata[context], function(err, compacted) {
-                if (err != null) {
-                    console.error(err);
-                }
+            var compacted = await jsonld.compact(expandedCompetency, this.$store.state.lode.rawSchemata[context]);
+            if (compacted) {
                 var rld = new EcRemoteLinkedData();
                 rld.copyFrom(compacted);
                 rld.context = context;
@@ -313,7 +335,7 @@ export default {
                     console.error(error);
                     me.editsFinishedCounter++;
                 });
-            });
+            }
         },
         // Compact operation removes arrays when length is 1, but some fields need to be arrays in the data that's saved
         turnFieldsBackIntoArrays: function(rld) {
@@ -340,6 +362,23 @@ export default {
             } else {
                 this.defaultFrameworkConfigName = "No configuration";
             }
+        },
+        cutClick: function() {
+            if (this.selectedArray && this.selectedArray.length === 1) {
+                this.$store.commit('editor/cutId', this.selectedArray[0]);
+            }
+            this.$store.commit('editor/copyId', null);
+            this.$store.commit('editor/paste', false);
+        },
+        copyClick: function() {
+            if (this.selectedArray && this.selectedArray.length === 1) {
+                this.$store.commit('editor/copyId', this.selectedArray[0]);
+            }
+            this.$store.commit('editor/cutId', null);
+            this.$store.commit('editor/paste', false);
+        },
+        pasteClick: function() {
+            this.$store.commit('editor/paste', true);
         }
     },
     computed: {
@@ -417,10 +456,10 @@ export default {
 
 #framework-editor-toolbar {
     border-bottom: solid 1px $light;
-    top: 52px;
+    top: 3.25rem;
     z-index: 10;
-    height: 44px;
-    display: fixed;
+    height: 1.75rem;
+    position: fixed;
     width: 100%;
     padding: 4px;
     background-color:$light;

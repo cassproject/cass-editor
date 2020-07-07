@@ -802,7 +802,7 @@ export default {
                     n = (n)[0];
                 }
             }
-            if (n != null && EcObject.isObject(n) && (n).hasOwnProperty("@value")) {
+            if (n != null && EcObject.isObject(n) && (n)["@value"]) {
                 return (n)["@value"];
             }
             return n;

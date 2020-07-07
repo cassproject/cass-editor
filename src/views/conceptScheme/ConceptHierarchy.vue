@@ -138,7 +138,9 @@
                     @draggableCheck="onDraggableCheck"
                     :properties="properties"
                     :expandAll="expanded==true"
-                    :parentChecked="false" />
+                    :parentChecked="false"
+                    :shiftKey="shiftKey"
+                    :arrowKey="arrowKey" />
             </draggable>
         </template>
     </div>
@@ -193,7 +195,9 @@ export default {
             selectedArray: [],
             selectButtonText: null,
             expanded: true,
-            isDraggable: true
+            isDraggable: true,
+            shiftKey: false,
+            arrowKey: null
         };
     },
     components: {
@@ -266,8 +270,49 @@ export default {
                 }
             }
         }
+        window.addEventListener("keydown", this.keydown);
+        window.addEventListener("keyup", this.keyup);
+    },
+    beforeDestroy: function() {
+        window.removeEventListener('keyup', this.keyup);
+        window.removeEventListener('keydown', this.keydown);
     },
     methods: {
+        keydown(e) {
+            if (this.canEdit) {
+                if (e.shiftKey) {
+                    this.shiftKey = true;
+                }
+                if (e.key.indexOf("Arrow") !== -1 && e.shiftKey) {
+                    this.arrowKey = e.key;
+                }
+                if (e.key === "x" && e.ctrlKey) {
+                    if (this.selectedArray && this.selectedArray.length === 1) {
+                        this.$store.commit('editor/cutId', this.selectedArray[0]);
+                    }
+                    this.$store.commit('editor/copyId', null);
+                    this.$store.commit('editor/paste', false);
+                }
+                if (e.key === "c" && e.ctrlKey) {
+                    if (this.selectedArray && this.selectedArray.length === 1) {
+                        this.$store.commit('editor/copyId', this.selectedArray[0]);
+                    }
+                    this.$store.commit('editor/cutId', null);
+                    this.$store.commit('editor/paste', false);
+                }
+                if (e.key === "v" && e.ctrlKey) {
+                    this.$store.commit('editor/paste', true);
+                }
+            }
+        },
+        keyup(e) {
+            if (!e.shiftKey) {
+                this.shiftKey = false;
+            }
+            if (e.key.indexOf("Arrow") !== -1) {
+                this.arrowKey = null;
+            }
+        },
         onCreateNewNode: function(parentId, previousSiblingId) {
             this.add(parentId, previousSiblingId);
         },
@@ -314,7 +359,7 @@ export default {
             }
         },
         // WARNING: The Daemon of OBO lingers in these here drag and move methods. The library moves the objects, and OBO will then come get you!
-        beginDrag: function() {
+        beginDrag: function(event) {
             this.dragging = true;
             if (event !== undefined) {
                 this.controlOnStart = event.originalEvent.ctrlKey || event.originalEvent.shiftKey;
@@ -324,6 +369,9 @@ export default {
             console.log(foo.oldIndex, foo.newIndex);
             var toId = null;
             var plusup = 0;
+            if (this.shiftKey) {
+                this.controlOnStart = true;
+            }
             if (foo.from.id === foo.to.id) {
                 if (foo.newIndex < this.hierarchy.length) {
                     toId = this.hierarchy[foo.newIndex].obj.shortId();
@@ -398,9 +446,13 @@ export default {
                 var fromProp2InitialValue = moveComp[fromProperty2] ? moveComp[fromProperty2].slice() : null;
                 var toPropInitialValue = toContainer[toProperty] ? toContainer[toProperty].slice() : null;
                 var toProp2InitialValue = moveComp[toProperty2] ? moveComp[toProperty2].slice() : null;
-                fromContainer[fromProperty].splice(fromIndex, 1);
+                if (removeOldRelations) {
+                    fromContainer[fromProperty].splice(fromIndex, 1);
+                }
                 if (fromContainerId && moveComp[fromProperty2]) {
-                    EcArray.setRemove(moveComp[fromProperty2], fromContainerId);
+                    if (removeOldRelations) {
+                        EcArray.setRemove(moveComp[fromProperty2], fromContainerId);
+                    }
                     if (moveComp[fromProperty2].length === 0) {
                         delete moveComp[fromProperty2];
                     }

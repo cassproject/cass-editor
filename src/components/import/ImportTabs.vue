@@ -35,7 +35,7 @@
                         <!-- server tab -->
                         <div
                             class="column"
-                            v-if="q.concepts !== 'true'">
+                            v-if="!conceptMode">
                             <div
                                 class="import-tab"
                                 :class="{ 'is-active-tab': importType === 'server'}">
@@ -52,7 +52,7 @@
                         <!-- text tab -->
                         <div
                             class="column"
-                            v-if="q.concepts !== 'true'">
+                            v-if="!conceptMode">
                             <div
                                 class="import-tab"
                                 :class="{ 'is-active-tab': importType === 'text'}">
@@ -69,7 +69,7 @@
                         <!-- url tab -->
                         <div
                             class="column"
-                            v-if="q.concepts !== 'true'">
+                            v-if="!conceptMode">
                             <div
                                 class="import-tab"
                                 :class="{ 'is-active-tab': importType === 'url'}">
@@ -92,7 +92,7 @@
                             <div
                                 @click="showImportModal('pdf')"
                                 class="button is-outlined is-warning is-small"
-                                v-if="q.concepts !== 'true'">
+                                v-if="!conceptMode">
                                 <span
                                     title="PDF files are experimentally supported. Click to learn more."
                                     class="icon">
@@ -105,7 +105,7 @@
                             <div
                                 @click="showImportModal('docx')"
                                 class="button is-outlined is-warning is-small"
-                                v-if="q.concepts !== 'true'">
+                                v-if="!conceptMode">
                                 <span
                                     title="Word documents and Docx files are experimental. Click to learn more."
                                     class="icon">
@@ -130,7 +130,7 @@
                             <div
                                 @click="showImportModal('xml')"
                                 class="button is-outlined is-success is-small"
-                                v-if="q.concepts !== 'true'">
+                                v-if="!conceptMode">
                                 <span
                                     title="XML files are supported, click to learn more."
                                     class="icon is-pulled-right">
@@ -155,7 +155,7 @@
                             <div
                                 @click="showImportModal('html')"
                                 class="button is-outlined is-success is-small"
-                                v-if="q.concepts !== 'true'">
+                                v-if="!conceptMode">
                                 <span
                                     title="html files are fully supported at this time"
                                     class="icon is-pulled-right">
@@ -893,8 +893,8 @@ export default {
         }
     },
     computed: {
-        q: function() {
-            return this.$store.getters['editor/queryParams'];
+        conceptMode: function() {
+            return this.$store.getters['editor/conceptMode'];
         },
         importText: {
             get() {

@@ -42,7 +42,7 @@
                                 v-if="item.name === 'review'"
                                 class="fa fa-check" />
                         </div>
-                        <p class="step-details">
+                        <p class="step-details is-hidden-touch">
                             <span
                                 v-if="item.complete"
                                 class="icon has-text-success">
@@ -99,12 +99,13 @@
                 </div>
                 <!-- search -->
                 <div
-                    class="crosswalk__search column is-6 is-offset-3"
-                    v-if="step < 2">
+                    class="crosswalk__search column is-8 is-offset-2"
+                    v-if="step < 2 ">
                     <div class="container">
                         <SearchBar
                             view="crosswalk"
                             filterSet="basic"
+                            :ownedByMe="setSearchToOnlyShowOwned"
                             searchType="framework" />
                     </div>
                 </div>
@@ -122,7 +123,8 @@
                                 :click="frameworkClickSource"
                                 :searchOptions="searchOptions"
                                 :paramObj="paramObj"
-                                :disallowEdits="true" />
+                                :disallowEdits="true"
+                                :filterToEditable="true" />
                         </div>
                     </div>
                 </transition>
@@ -161,6 +163,9 @@
                             <div
                                 v-show="crosswalkSourceLoaded"
                                 class="column is-6 source">
+                                <Thing
+                                    :obj="frameworkSource"
+                                    :repo="repo" />
                                 <Hierarchy
                                     :container="frameworkSource"
                                     view="crosswalk"
@@ -194,6 +199,9 @@
                             <div
                                 class="column is-6 target"
                                 v-if="loadCrosswalkTarget">
+                                <Thing
+                                    :obj="frameworkTarget"
+                                    :repo="repo" />
                                 <Hierarchy
                                     :container="frameworkTarget"
                                     view="crosswalk"
@@ -318,6 +326,7 @@
 import {mapState, mapGetters} from 'vuex';
 import List from '@/lode/components/lode/List.vue';
 import Hierarchy from '@/lode/components/lode/Hierarchy.vue';
+import Thing from '@/lode/components/lode/Thing.vue';
 import SearchBar from '@/components/framework/SearchBar.vue';
 import common from '@/mixins/common.js';
 import {cassUtil} from '@/mixins/cassUtil.js';
@@ -374,7 +383,8 @@ export default {
     components: {
         List,
         SearchBar,
-        Hierarchy
+        Hierarchy,
+        Thing
     },
     mounted() {
         this.$store.commit('crosswalk/resetCrosswalk');
@@ -383,6 +393,7 @@ export default {
     beforeDestroy: function() {
         this.$store.commit('crosswalk/resetCrosswalk');
         this.$store.commit('crosswalk/resetCrosswalkFrameworks');
+        this.$store.commit('app/clearSearchFilters');
     },
     watch: {
         step: function(val) {
@@ -436,6 +447,13 @@ export default {
         }
     },
     computed: {
+        setSearchToOnlyShowOwned: function() {
+            if (this.step === 0) {
+                return true;
+            } else {
+                return false;
+            }
+        },
         type: function() {
             return "Framework";
         },

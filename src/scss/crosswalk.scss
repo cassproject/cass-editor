@@ -9,6 +9,19 @@
     height: calc(100vh - 3.25rem);
     overflow: hidden;
     background-color: white;
+    .lode__Framework {
+        .lode__name {
+            font-weight: 600;
+            font-family: $family-secondary;
+            font-size: $size-4;
+            .language {
+                display: none;
+            }
+        }
+        .lode__description {
+            display: none;
+        }
+    }
     .lode__type {
         display: none;
     }
@@ -75,7 +88,7 @@
         padding: .5rem;
         display: flex;
         flex-wrap: nowrap;
-        min-height: 5rem;
+        min-height: 1.5rem;
         font-size: 1rem;
         .step-item {
             margin-top: 0;
@@ -144,8 +157,6 @@
         width: auto;
     }
     .crosswalk__double-hierarchy {
-    // room for improvement, iterate over loop for max depth tabbing
-    // possibly set tab value based on value in scss varaibles sheet
         flex: 10;
         .crosswalk__double-heirarchy__column {
             height: 100%;
@@ -172,7 +183,7 @@
             ul.lode__hierarchy-ul {
                 overflow: scroll;
                 
-                height: calc(100% - 2rem); // account for top buttons
+                height: calc(100% - 3.5rem); // account for top buttons
                 padding: 0rem .5rem;
               
                 li.lode__hierarchy-li {
@@ -187,7 +198,7 @@
                         transition: 1s;
                         min-height: 1.5rem;
                         cursor: pointer;
-                        margin: .25rem 0rem !important;
+                        margin: .25rem .125rem !important;
                         border: solid 1px transparent;
                         padding: .125em !important;
                         border-radius: .125em;

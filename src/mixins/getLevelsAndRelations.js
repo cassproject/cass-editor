@@ -83,10 +83,11 @@ export default {
                         relation.target = {"@id": a.target};
                         relations.push(relation);
                         if (reciprocalRelation) {
-                            relation.type = reciprocalRelation;
-                            relation.source = a.target;
-                            relation.target = {"@id": a.source};
-                            relations.push(relation);
+                            var reciprocal = {};
+                            reciprocal.type = reciprocalRelation;
+                            reciprocal.source = a.target;
+                            reciprocal.target = {"@id": a.source};
+                            relations.push(reciprocal);
                         }
                     }
                     done();

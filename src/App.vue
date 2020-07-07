@@ -114,7 +114,7 @@ export default {
                     if (me.queryParams.action === "add") {
                         me.createNew();
                     }
-                    if (me.queryParams.ceasnDataFields === "true" && !me.queryParams.action && !me.queryParams.frameworkId) {
+                    if ((me.queryParams.ceasnDataFields === "true" || me.queryParams.frameworksPage === "true") && (!me.queryParams.action && !me.queryParams.frameworkId)) {
                         if (me.$store.getters['editor/conceptMode'] === true) {
                             me.$router.push({name: "concepts"});
                         } else {
@@ -338,6 +338,7 @@ export default {
         },
         createNewFramework: function() {
             let me = this;
+            this.$store.commit('editor/t3Profile', false);
             this.setDefaultLanguage();
             var framework = new EcFramework();
             if (this.queryParams.newObjectEndpoint != null) {
