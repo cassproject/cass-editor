@@ -182,8 +182,8 @@ export default {
                             search += " OR ";
                         }
                         var id = EcIdentityManager.ids[i];
-                        search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
-                        search += " OR @owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
+                        search += "owner:\"" + id.ppk.toPk().toPem() + "\"";
+                        search += " OR owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
                     }
                     search += ")";
                 }
@@ -195,8 +195,8 @@ export default {
                         search += " OR ";
                     }
                     var id = EcIdentityManager.ids[i];
-                    search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
-                    search += " OR @owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
+                    search += "owner:\"" + id.ppk.toPk().toPem() + "\"";
+                    search += " OR owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
                 }
                 search += ")";
             }
