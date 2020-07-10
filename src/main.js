@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import VueProgressBar from 'vue-progressbar';
 import App from './App.vue';
 import './scss/theme.scss';
 import './scss/styles.scss';
@@ -10,6 +11,24 @@ import store from './store/index.js';
 import InfiniteLoading from 'vue-infinite-loading';
 var VueScrollTo = require('vue-scrollto');
 require("cassproject");
+
+const options = {
+    color: '#68C8DB',
+    failedColor: '#D74C44',
+    thickness: '5px',
+    transition: {
+        speed: '0.2s',
+        opacity: '0.6s',
+        termination: 300
+    },
+    autoRevert: true,
+    location: 'top',
+    inverse: false
+};
+
+Vue.use(VueProgressBar, options);
+
+
 Vue.use(Modal);
 Vue.use(require('vue-moment'));
 Vue.use(Vuex);

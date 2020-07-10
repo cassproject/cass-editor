@@ -219,6 +219,7 @@ export default {
             this.activeView = type;
         },
         onClickUndo: function() {
+            this.$Progress.start();
             this.$store.dispatch('editor/lastEditToUndo').then(editToUndo => {
                 if (editToUndo) {
                     if (!EcArray.isArray(editToUndo)) {
@@ -247,6 +248,7 @@ export default {
             }, function(failure) {
                 console.log(failure);
                 me.editsFinishedCounter++;
+                me.$Progress.fail();
             });
         },
         undoDelete(obj) {
@@ -259,9 +261,11 @@ export default {
             }
             this.repo.saveTo(toSave, function() {
                 me.editsFinishedCounter++;
+                me.$Progress.finish();
             }, function(failure) {
                 console.log(failure);
                 me.editsFinishedCounter++;
+                me.$Progress.fail();
             });
         },
         undoUpdate(update) {
@@ -276,13 +280,16 @@ export default {
                 }
                 me.repo.saveTo(success, function() {
                     me.editsFinishedCounter++;
+                    me.$Progress.finish();
                 }, function() {
                     me.editsFinishedCounter++;
+                    me.$Progress.fail();
                 });
                 me.$store.commit('editor/changedObject', success.shortId());
             }, function(error) {
                 console.error(error);
                 me.editsFinishedCounter++;
+                me.$Progress.fail();
             });
         },
         undoUpdateWithExpandedProperty(update, updatedObject) {

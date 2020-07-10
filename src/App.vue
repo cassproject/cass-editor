@@ -17,12 +17,12 @@
             @createNewFramework="createNewFramework"
             @createNewConceptScheme="createNewConceptScheme"
             name="sidebar" />
+        <vue-progress-bar />
     </div>
 </template>
 
 <script>
 import {mapState} from 'vuex';
-
 import common from '@/mixins/common.js';
 import cassModal from './components/CassModal.vue';
 import DynamicModal from './components/modals/DynamicModal.vue';
@@ -31,7 +31,8 @@ export default {
     mixins: [common],
     name: "App",
     components: {
-        DynamicModal
+        DynamicModal,
+        cassModal
     },
     data: function() {
         return {
@@ -1072,7 +1073,6 @@ export default {
         })
     },
     mounted: function() {
-
     },
     watch: {
         currentRoute: function(val) {
