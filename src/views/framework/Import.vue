@@ -1089,7 +1089,11 @@ export default {
                     c.assignId(me.repo.selectedServer, d.competencies[i].id);
                 }
                 cs[d.competencies[i].id] = c.shortId();
-                if (d.competencies[i].name != null) { c.setName(d.competencies[i].name.trim()); }
+                if (d.competencies[i].name != null) {
+                    c.setName(d.competencies[i].name.trim());
+                } else {
+                    c.setName("Unknown name");
+                }
                 if (d.competencies[i].name !== d.competencies[i].description && d.competencies[i].description) { c.setDescription(d.competencies[i].description.trim()); }
                 if (d.competencies[i]["ceasn:codedNotation"] != null) {
                     c["ceasn:codedNotation"] = d.competencies[i]["ceasn:codedNotation"];
