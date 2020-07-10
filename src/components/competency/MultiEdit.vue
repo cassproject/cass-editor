@@ -44,6 +44,11 @@
                     <span @click="addAnotherProperty">Add another property</span>
                 </div>
             </div>
+            <p
+                class="help is-danger"
+                v-if="errorMessage !== []">
+                {{ this.errorMessage[0] }}
+            </p>
         </section>
         <section
             v-if="isSearching"
@@ -99,6 +104,7 @@ export default {
     },
     data() {
         return {
+            showErrorMessages: false,
             isProcessing: false,
             addedPropertiesAndValues: [{"property": "", "value": "", "range": []}],
             repo: window.repo,
@@ -132,17 +138,6 @@ export default {
         }
     },
     methods: {
-        showModal() {
-            let params = {};
-
-            params = {
-                type: "errors",
-                title: "Errors saving",
-                text: this.errorMessage
-            };
-            // reveal modal
-            this.$modal.show(params);
-        },
         onCancel: function() {
             if (this.isSearching) {
                 this.isSearching = false;
@@ -219,8 +214,7 @@ export default {
             var me = this;
             this.errorMessage = [];
             if (me.addedPropertiesAndValues.length === 0 || (me.addedPropertiesAndValues[0].property === "")) {
-                me.addErrorMessage("Please select a property to add.");
-                return me.showModal();
+                return me.addErrorMessage("Saving to multiple required a property and value.");
             }
             this.isProcessing = true;
             for (var i = 0; i < this.selectedCompetencies.length; i++) {
@@ -283,7 +277,7 @@ export default {
                             changedValues.push(expandedCompetency[property]);
                         }
                         if (me.errorMessage && me.errorMessage.length > 0) {
-                            me.showModal();
+                            return;
                         }
                         me.changedItemsForUndo.push({operation: "update", id: EcRemoteLinkedData.trimVersionFromUrl(expandedCompetency["@id"]), fieldChanged: properties, initialValue: initialValues, changedValue: changedValues, expandedProperty: true});
                         me.save(expandedCompetency);
