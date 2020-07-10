@@ -673,6 +673,18 @@ export default {
                     entity["reader"][i] = EcPk.fromPem(owner).toPem();
                 }
             }
+            if (entity["@owner"] != null) {
+                for (var i = 0; i < entity["@owner"].length; i++) {
+                    var owner = entity["@owner"][i];
+                    entity["@owner"][i] = EcPk.fromPem(owner).toPem();
+                }
+            }
+            if (entity["@reader"] != null) {
+                for (var i = 0; i < entity["@reader"].length; i++) {
+                    var owner = entity["@reader"][i];
+                    entity["@reader"][i] = EcPk.fromPem(owner).toPem();
+                }
+            }
             return entity;
         },
         attachUrlProperties: function(results) {
