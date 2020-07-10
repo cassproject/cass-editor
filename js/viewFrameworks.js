@@ -54,6 +54,8 @@ function frameworkSearch(server, searchTerm, subsearchTerm, paramObj, retry) {
                     var id = EcIdentityManager.ids[i];
                     search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
                     search += " OR @owner:\"" + addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
+                    search += " OR owner:\"" + id.ppk.toPk().toPem() + "\"";
+					search += " OR owner:\"" + addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
                 }
                 search += ")";
         }
