@@ -46,7 +46,12 @@ export default {
                         }
                     }
                     me.$store.commit('editor/framework', null);
-                    me.$router.push({name: "frameworks"});
+                    if (me.importType) {
+                        // Calling function from import page
+                        me.$store.commit('app/importFramework', null);
+                    } else {
+                        me.$router.push({name: "frameworks"});
+                    }
                 }, appLog);
             } else {
                 // Delete competency and relations

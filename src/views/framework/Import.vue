@@ -105,7 +105,8 @@
                             :importCsvColumnTarget="importCsvColumnTarget"
                             :csvColumns="csvColumns"
                             @analyzeCsvRelation="analyzeCsvRelation($event)"
-                            @importCase="handleImportFromTabs($event)" />
+                            @importCase="handleImportFromTabs($event)"
+                            @deleteObject="deleteObject" />
                         <!-- import details -->
                         <!--
                             we shouldn't need to check for isT3Type here, since this information
@@ -114,7 +115,8 @@
                         -->
                         <ImportDetails
                             :detailsDetected="detailsDetected"
-                            v-if="importTransition === 'detail'" />
+                            v-if="importTransition === 'detail'"
+                            @deleteObject="deleteObject" />
                         <!-- import preview -->
                         <div
                             v-if="importFramework && importTransition === 'preview'"
