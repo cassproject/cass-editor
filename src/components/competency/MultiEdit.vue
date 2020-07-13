@@ -228,7 +228,7 @@ export default {
                             var property = me.addedPropertiesAndValues[j].property.value;
                             var value = me.addedPropertiesAndValues[j].value;
                             var range = me.addedPropertiesAndValues[j].range;
-                            console.log("adding " + property + " " + JSON.stringify(expandedCompetency));
+                            appLog("adding " + property + " " + JSON.stringify(expandedCompetency));
 
                             properties.push(property);
                             if (expandedCompetency[property]) {
@@ -338,7 +338,7 @@ export default {
                 if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
                     rld = EcEncryptedValue.toEncryptedValue(rld);
                 }
-                me.repo.saveTo(rld, console.log, console.error);
+                me.repo.saveTo(rld, appLog, appError);
             }
         },
         // Compact operation removes arrays when length is 1, but some fields need to be arrays in the data that's saved

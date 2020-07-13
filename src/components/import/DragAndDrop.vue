@@ -115,7 +115,7 @@ export default {
             }
         },
         fileChange(e) {
-            console.log(e);
+            appLog(e);
             let selectedFiles = e.target.files;
             if (selectedFiles) {
                 ([...selectedFiles]).forEach(f => {

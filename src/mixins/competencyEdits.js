@@ -2,7 +2,7 @@ export default {
     methods: {
         removeObject: function(thing) {
             // Remove from container but don't delete
-            console.log("removing " + thing.id);
+            appLog("removing " + thing.id);
             var me = this;
             var thisFramework = this.$store.getters['editor/framework'];
             var initialCompetencies = thisFramework.competency ? thisFramework.competency.slice() : null;
@@ -18,11 +18,11 @@ export default {
                 repo.saveTo(framework, function() {
                     me.confirmDialog = false;
                     me.$store.commit('editor/framework', thisFramework);
-                }, console.error);
-            }, console.log);
+                }, appError);
+            }, appLog);
         },
         deleteObject: function(thing) {
-            console.log("deleting " + thing.id);
+            appLog("deleting " + thing.id);
             var me = this;
             var framework = this.$store.getters['editor/framework'];
             if (thing.shortId() === framework.shortId()) {
@@ -47,7 +47,7 @@ export default {
                     }
                     me.$store.commit('editor/framework', null);
                     me.$router.push({name: "frameworks"});
-                }, console.log);
+                }, appLog);
             } else {
                 // Delete competency and relations
                 var initialCompetencies = framework.competency ? framework.competency.slice() : null;
@@ -70,8 +70,8 @@ export default {
                     }
                     me.repo.saveTo(frameworkToSave, function() {
                         me.$store.commit('editor/framework', framework);
-                    }, console.error);
-                }, console.log);
+                    }, appError);
+                }, appLog);
             }
         }
     }

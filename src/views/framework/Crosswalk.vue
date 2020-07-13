@@ -397,8 +397,8 @@ export default {
     },
     watch: {
         step: function(val) {
-            console.log("step, ", val);
-            console.log("steps, ", this.steps);
+            appLog("step, ", val);
+            appLog("steps, ", this.steps);
             if (val === 0) {
                 this.steps[0].complete = false;
                 this.steps[1].complete = false;
@@ -490,7 +490,7 @@ export default {
         filteredQuickFilters: function() {
             if (this.quickFilters) {
                 let filterValues = this.quickFilters.filter(item => item.checked === true);
-                console.log('filtered value', filterValues);
+                appLog('filtered value', filterValues);
                 return filterValues;
             } else {
                 return [];
@@ -572,7 +572,7 @@ export default {
             let ats = this.alignmentsToSave;
             for (let ata of ats) {
                 ata.assignId(window.repo.selectedServer, this.generateRelationId(ata.relationType, ata.source, ata.target));
-                console.log("New crosswalk alignment: " + ata.shortId());
+                appLog("New crosswalk alignment: " + ata.shortId());
                 this.addAllIdentityPksAsOwners(ata);
             }
             this.$store.commit('crosswalk/alignmentsToSave', ats);
@@ -582,12 +582,12 @@ export default {
             this.crosswalkSaveBusy = false;
         },
         handleSaveTargetFrameworkFailed: function() {
-            console.log("Failed to save target framework for crosswalk: " + msg);
+            appLog("Failed to save target framework for crosswalk: " + msg);
             this.crosswalkSaveBusy = false;
         },
         saveTargetFramework: function() {
             if (this.isObjectOwnerless(this.targetFrameworkSaving) || this.doesAnyIdentityOwnObject(this.targetFrameworkSaving)) {
-                console.log("Saving target framework for crosswalk...");
+                appLog("Saving target framework for crosswalk...");
                 this.targetFrameworkSaving.save(this.handleSaveTargetFrameworkSuccess, this.handleSaveTargetFrameworkFailed, this.repo);
             } else {
                 this.alignmentsSaved = true;
@@ -595,17 +595,17 @@ export default {
             }
         },
         handleSaveSourceFrameworkFailed: function(msg) {
-            console.log("Failed to save source framework for crosswalk: " + msg);
+            appLog("Failed to save source framework for crosswalk: " + msg);
             this.crosswalkSaveBusy = false;
         },
         saveSourceFrameworkAndGo: function() {
             if (this.isObjectOwnerless(this.sourceFrameworkSaving) || this.doesAnyIdentityOwnObject(this.sourceFrameworkSaving)) {
-                console.log("Saving source framework for crosswalk...");
+                appLog("Saving source framework for crosswalk...");
                 this.sourceFrameworkSaving.save(this.saveTargetFramework, this.handleSaveSourceFrameworkFailed, this.repo);
             } else this.saveTargetFramework();
         },
         saveFrameworks: function() {
-            console.log("Saving frameworks for crosswalk...");
+            appLog("Saving frameworks for crosswalk...");
             this.saveSourceFrameworkAndGo();
         },
         checkDeleteAlignments: function() {
@@ -614,32 +614,32 @@ export default {
             else this.deleteAlignmentToRemove(this.numAlignmentsDeleted);
         },
         handleDeleteAlignmentFailed: function(msg) {
-            console.log("Failed to remove crosswalk alignment: " + msg);
+            appLog("Failed to remove crosswalk alignment: " + msg);
             this.checkDeleteAlignments();
         },
         deleteAlignmentToRemove: function(atrIdx) {
-            console.log("Deleting crosswalk alignment to remove: " + atrIdx);
+            appLog("Deleting crosswalk alignment to remove: " + atrIdx);
             let atr = this.alignmentsToDelete[atrIdx];
             this.repo.deleteRegistered(atr, this.checkDeleteAlignments, this.handleDeleteAlignmentFailed);
         },
         deleteAlignmentsToRemoveAndGo: function() {
             if (this.alignmentsToDelete.length > 0) {
-                console.log("Deleting crosswalk alignments to remove...");
+                appLog("Deleting crosswalk alignments to remove...");
                 this.deleteAlignmentToRemove(0);
             } else this.saveFrameworks();
         },
         handleSaveAlignmentsToAddSuccess: function() {
-            console.log("New crosswalk alignments added");
+            appLog("New crosswalk alignments added");
             this.deleteAlignmentsToRemoveAndGo();
         },
         handleSaveAlignmentsToAddFailed: function(msg) {
-            console.log("Failed to add crosswalk alignments: " + msg);
+            appLog("Failed to add crosswalk alignments: " + msg);
             this.crosswalkSaveBusy = false;
         },
         saveAlignmentsToAddAndGo: function() {
             let ats = this.alignmentsToSave;
             if (ats.length > 0) {
-                console.log("Saving crosswalk alignments to add...");
+                appLog("Saving crosswalk alignments to add...");
                 this.repo.multiput(ats, this.handleSaveAlignmentsToAddSuccess, this.handleSaveAlignmentsToAddFailed);
             } else this.deleteAlignmentsToRemoveAndGo();
         },
@@ -757,7 +757,7 @@ export default {
             this.$store.commit('crosswalk/populateAlignedCompetenciesList');
         },
         handleBuildFrameworkTargetRelationshipsSuccess(ecrlda) {
-            console.log("Building framework target relationship list...");
+            appLog("Building framework target relationship list...");
             this.$store.commit('crosswalk/frameworkTargetRelationships', this.buildEcAlignmentsFromRemoteLinkedData(ecrlda));
             this.buildRelevantAlignmentsMap();
             this.$store.commit('crosswalk/step', 2);
@@ -769,13 +769,13 @@ export default {
                 repo.multiget(this.frameworkTarget.relation,
                     me.handleBuildFrameworkTargetRelationshipsSuccess,
                     function(msg) {
-                        console.error("buildFrameworkTargetRelationships failed: " + msg);
+                        appError("buildFrameworkTargetRelationships failed: " + msg);
                     }
                 );
             } else this.handleBuildFrameworkTargetRelationshipsSuccess([]);
         },
         handleBuildFrameworkSourceRelationshipsSuccess(ecrlda) {
-            console.log("Building framework source relationship list...");
+            appLog("Building framework source relationship list...");
             this.$store.commit('crosswalk/frameworkSourceRelationships', this.buildEcAlignmentsFromRemoteLinkedData(ecrlda));
             this.buildRelevantAlignmentsMap();
             if (this.frameworkTarget) this.$store.commit('crosswalk/step', 2);
@@ -788,7 +788,7 @@ export default {
                 repo.multiget(this.frameworkSource.relation,
                     me.handleBuildFrameworkSourceRelationshipsSuccess,
                     function(msg) {
-                        console.error("buildFrameworkSourceRelationships failed: " + msg);
+                        appError("buildFrameworkSourceRelationships failed: " + msg);
                     }
                 );
             } else this.handleBuildFrameworkSourceRelationshipsSuccess([]);
@@ -800,7 +800,7 @@ export default {
             EcFramework.get(framework.id, function(success) {
                 me.$store.commit('crosswalk/frameworkSource', success);
                 me.buildFrameworkSourceRelationships();
-            }, console.error);
+            }, appError);
             this.$store.commit('app/searchTerm', '');
         },
         frameworkClickTarget: function(framework) {
@@ -810,7 +810,7 @@ export default {
             EcFramework.get(framework.id, function(success) {
                 me.$store.commit('crosswalk/frameworkTarget', success);
                 me.buildFrameworkTargetRelationships();
-            }, console.error);
+            }, appError);
             this.$store.commit('app/searchTerm', '');
         }
     }

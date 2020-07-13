@@ -209,7 +209,7 @@ export default {
         filteredQuickFilters: function() {
             if (this.quickFilters) {
                 let filterValues = this.quickFilters.filter(item => item.checked === true);
-                console.log('filtered value', filterValues);
+                appLog('filtered value', filterValues);
                 return filterValues;
             } else {
                 return [];
@@ -302,7 +302,7 @@ export default {
                                 me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                 callback();
                             }, function(error) {
-                                console.error(error);
+                                appError(error);
                                 me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                 callback();
                             });
@@ -334,7 +334,7 @@ export default {
                                 me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                 callback();
                             }, function(error) {
-                                console.error(error);
+                                appError(error);
                                 me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                 callback();
                             });
@@ -393,7 +393,7 @@ export default {
                                         callback();
                                     },
                                     function(error) {
-                                        console.error(error);
+                                        appError(error);
                                         me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                         callback();
                                     });
@@ -451,7 +451,7 @@ export default {
                                         callback();
                                     },
                                     function(error) {
-                                        console.error(error);
+                                        appError(error);
                                         me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                         callback();
                                     });
@@ -476,7 +476,7 @@ export default {
                 if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
                 }
-                this.repo.saveTo(framework, function() {}, console.error);
+                this.repo.saveTo(framework, function() {}, appError);
             }
         },
         appendCompetencies: function(results, newLink) {
@@ -502,7 +502,7 @@ export default {
                     initialLevelCompetency.push({id: thingId, competency: thing.competency.splice()});
                     thing.competency.push(selectedCompetency.shortId());
                     afterLevelCompetency.push({id: thingId, competency: thing.competency});
-                    this.repo.saveTo(thing, function() {}, console.error);
+                    this.repo.saveTo(thing, function() {}, appError);
                 }
             }
             for (var i = 0; i < results.length; i++) {
@@ -554,7 +554,7 @@ export default {
                             if (this.$store.state.editor.private === true) {
                                 r = EcEncryptedValue.toEncryptedValue(r);
                             }
-                            this.repo.saveTo(r, function() {}, console.error);
+                            this.repo.saveTo(r, function() {}, appError);
                         }
                     }
                 }
@@ -575,7 +575,7 @@ export default {
             }
             this.repo.saveTo(framework, function() {
                 me.$store.commit('editor/framework', EcFramework.getBlocking(framework.id));
-            }, console.error);
+            }, appError);
         },
         addNewlinesToId: function(pem) {
             // Begin public key line

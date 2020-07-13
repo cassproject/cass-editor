@@ -226,7 +226,7 @@ export default {
         },
         filteredQuickFilters: function() {
             let filterValues = this.quickFilters.filter(item => item.checked === true);
-            console.log('filtered value', filterValues);
+            appLog('filtered value', filterValues);
             return filterValues;
         },
         conceptMode: function() {
@@ -247,7 +247,7 @@ export default {
                     me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
                     me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "conceptScheme", params: {frameworkId: framework.id}});
-                }, console.error);
+                }, appError);
             } else {
                 EcFramework.get(framework.id, function(success) {
                     me.$store.commit('editor/framework', success);
@@ -255,7 +255,7 @@ export default {
                     me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
                     me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "framework", params: {frameworkId: framework.id}});
-                }, console.error);
+                }, appError);
             }
         },
         getName: function(field) {

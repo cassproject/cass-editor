@@ -109,7 +109,7 @@ export default {
                     }
                 }
             }
-            console.log(evt);
+            appLog(evt);
             if (parent != null) {
                 if (this.queryParams && this.queryParams.origin != null && this.queryParams.origin !== '') {
                     parent.postMessage(evt, this.queryParams.origin);
@@ -210,7 +210,7 @@ export default {
                 }
                 return name;
             }, function(error) {
-                console.log(error);
+                appLog(error);
             });
         },
         conditionalDelete: function(id, depth) {
@@ -224,21 +224,21 @@ export default {
                     if (depth < 5) {
                         EcFramework.search(me.repo, "\"" + id + "\"", function(results) {
                             if (results.length <= 0) {
-                                console.log("No references found for " + id + "... deleting.");
+                                appLog("No references found for " + id + "... deleting.");
                                 me.repo.deleteRegistered(EcRepository.getBlocking(id), function(success) {
                                     callback();
                                 }, function(failure) {
-                                    console.log(failure);
+                                    appLog(failure);
                                     callback();
                                 });
                             } else {
-                                console.log(results.length + " references found for " + id + "... Not deleting. Will see again in another second.");
+                                appLog(results.length + " references found for " + id + "... Not deleting. Will see again in another second.");
                                 callback();
                                 setTimeout(function() {
                                     me.conditionalDelete(id, depth + 1);
                                 }, 1000);
                             }
-                        }, console.error, {});
+                        }, appError, {});
                     } else {
                         callback();
                     }
@@ -264,7 +264,7 @@ export default {
                         this.get(link, null, null, function(success) {
                             ary.push(JSON.parse(success));
                         }, function(failure) {
-                            console.log(failure);
+                            appLog(failure);
                         });
                     } else {
                         ary.push(JSON.parse(EcCompetency.getBlocking(selectedArray[i]).toJson()));
@@ -302,7 +302,7 @@ export default {
                             currentFramework = success["@graph"][0];
                         }
                     }, function(failure) {
-                        console.log(failure);
+                        appLog(failure);
                     });
                 }
             }
@@ -313,7 +313,7 @@ export default {
                 selectedFramework: currentFramework
             };
             message = JSON.parse(JSON.stringify(message));
-            console.log(message);
+            appLog(message);
             parent.postMessage(message, this.queryParams.origin);
             EcRemote.async = async;
         },
@@ -358,8 +358,8 @@ export default {
                 me.repo.saveTo(framework, function() {
                     me.$store.commit('lode/setIsAddingProperty', false);
                     me.$store.commit('editor/refreshLevels', true);
-                }, console.error);
-            }, console.error);
+                }, appError);
+            }, appError);
         },
         saveCheckedLevels: function(selectedCompetency, checkedOptions, allOptions) {
             var competencyId = EcRemoteLinkedData.trimVersionFromUrl(selectedCompetency["@id"]);
@@ -380,7 +380,7 @@ export default {
                     if (level.competency.indexOf(competencyId) === -1) {
                         level.competency.push(competencyId);
                         edits.push({operation: "update", id: level.shortId(), fieldChanged: ["competency"], initialValue: [initialComp], changedValue: [level.competency]});
-                        this.repo.saveTo(level, function() {}, console.error);
+                        this.repo.saveTo(level, function() {}, appError);
                     }
                     if (this.framework.level.indexOf(level.shortId()) === -1) {
                         this.framework.addLevel(level.shortId());
@@ -393,7 +393,7 @@ export default {
                     if (level.competency && level.competency.indexOf(competencyId) !== -1) {
                         EcArray.setRemove(level.competency, competencyId);
                         edits.push({operation: "update", id: level.shortId(), fieldChanged: ["competency"], initialValue: [initialComp], changedValue: [level.competency]});
-                        this.repo.saveTo(level, function() {}, console.error);
+                        this.repo.saveTo(level, function() {}, appError);
                     }
                     // If level doesn't have any competencies attached, remove it from the framework.
                     if ((!level.competency || (level.competency && level.competency.length === 0)) && this.framework.level.indexOf(level.shortId()) !== -1) {
@@ -418,7 +418,7 @@ export default {
             if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                 framework = EcEncryptedValue.toEncryptedValue(framework);
             }
-            this.repo.saveTo(framework, function() {}, console.error);
+            this.repo.saveTo(framework, function() {}, appError);
         },
         removeLevelFromFramework: function(levelId) {
             var initialLevels = this.framework.level ? this.framework.level.slice() : null;
@@ -491,7 +491,7 @@ export default {
                 if (this.$store.state.editor.private === true) {
                     r = EcEncryptedValue.toEncryptedValue(r);
                 }
-                this.repo.saveTo(r, function() {}, console.error);
+                this.repo.saveTo(r, function() {}, appError);
                 if (thing.type === 'Concept') {
                     if (framework.relation == null) {
                         framework.relation = [];
@@ -517,7 +517,7 @@ export default {
             if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                 framework = EcEncryptedValue.toEncryptedValue(framework);
             }
-            this.repo.saveTo(framework, function() {}, console.error);
+            this.repo.saveTo(framework, function() {}, appError);
         },
         addRelationAsCompetencyField: function(targets, thing, relationType, allowSave) {
             var me = this;
@@ -535,7 +535,7 @@ export default {
                     thing = EcEncryptedValue.toEncryptedValue(thing);
                 }
             }
-            me.repo.saveTo(thing, function() {}, console.error);
+            me.repo.saveTo(thing, function() {}, appError);
         },
         removeRelationFromFramework: function(source, property, target) {
             var me = this;
@@ -569,7 +569,7 @@ export default {
                 if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
                 }
-                me.repo.saveTo(framework, function() {}, console.error);
+                me.repo.saveTo(framework, function() {}, appError);
             });
         },
         ceasnRegistryUriTransform: function(uri) {

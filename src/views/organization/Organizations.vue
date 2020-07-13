@@ -106,7 +106,7 @@ export default {
             EcOrganization.get(organization.id, function(success) {
                 me.$store.commit('editor/organization', success);
                 me.$router.push({name: "organization", params: {organizationId: organization.id}});
-            }, console.error);
+            }, appError);
         },
         getName: function(field) {
             let name = EcArray.isArray(field) ? field : [field];

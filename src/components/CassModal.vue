@@ -269,7 +269,7 @@ export default {
                                 me.hide();
                             }
                         }, function(error) {
-                            console.error(error);
+                            appError(error);
                             me.hide();
                         });
                     }

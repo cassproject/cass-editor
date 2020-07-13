@@ -281,7 +281,7 @@ export default {
             this.$router.push({path: '/frameworks'});
         },
         addGroupIdentity(group) {
-            console.log("Adding group identity: " + "(" + group.shortId() + ") - " + group.getName());
+            appLog("Adding group identity: " + "(" + group.shortId() + ") - " + group.getName());
             let ecevGroupPpk = new EcEncryptedValue();
             ecevGroupPpk.copyFrom(group[this.GROUP_PPK_KEY]);
             let currentGroupPpkPem = ecevGroupPpk.decryptIntoString();
@@ -306,11 +306,11 @@ export default {
             }
         },
         searchRepositoryForGroupsFailure(msg) {
-            console.log("Group search failure: " + msg);
+            appLog("Group search failure: " + msg);
             this.goToAppHome();
         },
         addGroupIdentities: function() {
-            console.log(" Adding group identities...");
+            appLog(" Adding group identities...");
             let paramObj = {};
             paramObj.size = this.GROUP_SEARCH_SIZE;
             EcOrganization.search(window.repo, '', this.searchRepositoryForGroupsSuccess, this.searchRepositoryForGroupsFailure, paramObj);
@@ -388,25 +388,25 @@ export default {
             this.validateLinkPersonData();
         },
         handleCreatePersonSuccess() {
-            console.log("Person created.");
+            appLog("Person created.");
             if (this.amCreatingAccount) {
                 this.goToAppHome();
             } else this.addGroupIdentities();
         },
         createPersonObjectToLinkToIdentity() {
-            console.log("Creating person object for identity...");
+            appLog("Creating person object for identity...");
             let p = new Person();
             p.assignId(window.repo.selectedServer, this.identityToLinkToPerson.ppk.toPk().fingerprint());
             p.addOwner(this.identityToLinkToPerson.ppk.toPk());
             p.name = this.createLinkPersonName;
             p.email = this.createLinkPersonEmail;
-            console.log(p);
+            appLog(p);
             this.$store.commit('user/loggedOnPerson', p);
             this.linkedPerson = p;
             EcRepository.save(p, this.handleCreatePersonSuccess, this.handleAttemptLoginFetchIdentityFailure);
         },
         handleCreateAccountFetchIdentitySuccess() {
-            console.log("Creating new account identity object...");
+            appLog("Creating new account identity object...");
             let ident = new EcIdentity();
             ident.displayName = this.createLinkPersonName;
             ident.ppk = EcPpk.generateKey();
@@ -415,25 +415,25 @@ export default {
             this.ecRemoteIdentMgr.commit(this.createPersonObjectToLinkToIdentity, this.handleAttemptLoginFetchIdentityFailure);
         },
         handleCreateAccountRemoteIdentityMgrCreateSuccess() {
-            console.log("Creating new account manager fetch...");
+            appLog("Creating new account manager fetch...");
             this.ecRemoteIdentMgr.fetch(this.handleCreateAccountFetchIdentitySuccess, this.handleAttemptLoginFetchIdentityFailure);
         },
         handleCreateAccountConfigureFromServerSuccess: function(obj) {
-            console.log("EcRemoteIdentityManager creating...");
-            console.log("Creating new account login...");
+            appLog("EcRemoteIdentityManager creating...");
+            appLog("Creating new account login...");
             this.ecRemoteIdentMgr.startLogin(this.createAccountUsername, this.createAccountPassword);
             this.ecRemoteIdentMgr.create(this.handleCreateAccountRemoteIdentityMgrCreateSuccess, this.handleAttemptLoginFetchIdentityFailure);
         },
         createNewAccountIdentityAndPerson() {
-            console.log("Creating new account...");
-            console.log("EcRemoteIdentityManager Configuring from server...");
+            appLog("Creating new account...");
+            appLog("EcRemoteIdentityManager Configuring from server...");
             this.ecRemoteIdentMgr = new EcRemoteIdentityManager();
             this.ecRemoteIdentMgr.server = window.repo.selectedServer;
             this.ecRemoteIdentMgr.configureFromServer(this.handleCreateAccountConfigureFromServerSuccess, this.handleAttemptLoginConfigureFromServerFail);
         },
         searchPersonsForNewAccountSuccess(ecRemoteLda) {
-            console.log("New account person search success: ");
-            console.log(ecRemoteLda);
+            appLog("New account person search success: ");
+            appLog(ecRemoteLda);
             let emailExists = false;
             for (let ecrld of ecRemoteLda) {
                 let ep = new EcPerson();
@@ -451,7 +451,7 @@ export default {
         },
         searchPersonsForNewAccountFailure(msg) {
             this.loginBusy = false;
-            console.log('New account person search failure: ' + msg);
+            appLog('New account person search failure: ' + msg);
         },
         verifyEmailAddressForNewAccountAndGo() {
             this.loginBusy = true;
@@ -495,7 +495,7 @@ export default {
             }
         },
         verifyEmailAddressForLinkPersonAndGo() {
-            console.log('Validating link person email...');
+            appLog('Validating link person email...');
             let paramObj = {};
             paramObj.size = this.PERSON_SEARCH_SIZE;
             window.repo.searchWithParams("@type:Person AND email:\"" + this.createLinkPersonEmail + "\"", paramObj, null,
@@ -514,8 +514,8 @@ export default {
             return true;
         },
         findLinkedPersonPersonSearchSuccess(ecRemoteLda) {
-            console.log("Linked person person search success: ");
-            console.log(ecRemoteLda);
+            appLog("Linked person person search success: ");
+            appLog(ecRemoteLda);
             this.identityToLinkToPerson = EcIdentityManager.ids[0];
             let matchingPersonRecordFound = false;
             for (let ecrld of ecRemoteLda) {
@@ -525,22 +525,22 @@ export default {
                     matchingPersonRecordFound = true;
                     this.$store.commit('user/loggedOnPerson', ep);
                     this.linkedPerson = ep;
-                    console.log('Matching person record found: ');
-                    console.log(ep);
+                    appLog('Matching person record found: ');
+                    appLog(ep);
                 }
             }
             if (matchingPersonRecordFound) this.addGroupIdentities();
             else {
-                console.log('Matching person record NOT found');
+                appLog('Matching person record NOT found');
                 this.showCreateLinkedPerson();
             }
         },
         findLinkedPersonPersonSearchFailure(msg) {
             this.loginBusy = false;
-            console.log('Linked person person search failure: ' + msg);
+            appLog('Linked person person search failure: ' + msg);
         },
         findLinkedPersonForIdentity: function() {
-            console.log("Finding linked person for identity...");
+            appLog("Finding linked person for identity...");
             let identFingerprint = EcIdentityManager.ids[0].ppk.toPk().fingerprint();
             let paramObj = {};
             paramObj.size = this.PERSON_SEARCH_SIZE;
@@ -558,7 +558,7 @@ export default {
             this.loginBusy = false;
         },
         handleAttemptLoginConfigureFromServerSuccess: function(obj) {
-            console.log("Fetching identity...");
+            appLog("Fetching identity...");
             this.ecRemoteIdentMgr.startLogin(this.username, this.password); // Creates the hashes for storage and retrieval of keys.
             this.ecRemoteIdentMgr.fetch(this.handleAttemptLoginFetchIdentitySuccess, this.handleAttemptLoginFetchIdentityFailure); // Retrieves the identities and encryption keys from the server.
         },
@@ -572,7 +572,7 @@ export default {
             this.identityFetchFailed = false;
             this.configRetrieveFailed = false;
             if (this.areLoginParamsValid()) {
-                console.log("Attempting CaSS login....");
+                appLog("Attempting CaSS login....");
                 this.loginBusy = true;
                 EcIdentityManager.clearContacts();
                 EcIdentityManager.clearIdentities();
