@@ -83,6 +83,7 @@ Vue.config.warnHandler = function(msg, vm, trace) {
 global.appLog = function(x) {
     /* eslint-disable no-console */
     if (process.env.NODE_ENV !== 'production') {
+        // console.trace(x);
         console.log(x);
     }
     /* eslint-enable no-console */
