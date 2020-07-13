@@ -6,6 +6,7 @@
             <div class="left-side">
                 <div
                     class="dropdown"
+                    v-click-outside="closeViewDropDown"
                     :class="{ 'is-active': showPropertyViewDropDown}">
                     <div class="dropdown-trigger">
                         <button
@@ -61,6 +62,7 @@
                 <!-- share: export or manage users -->
                 <div
                     class="dropdown"
+                    v-click-outside="closeShareDropDown"
                     :class="{ 'is-active': showShareDropdown}">
                     <div class="dropdown-trigger">
                         <button
@@ -193,6 +195,16 @@ export default {
         };
     },
     methods: {
+        closeViewDropDown: function() {
+            if (this.showPropertyViewDropDown) {
+                this.showPropertyViewDropDown = false;
+            }
+        },
+        closeShareDropDown: function() {
+            if (this.showShareDropdown) {
+                this.showShareDropdown = false;
+            }
+        },
         handleExportClick: function() {
             if (this.canExport) {
                 this.$emit('showExportModal');
