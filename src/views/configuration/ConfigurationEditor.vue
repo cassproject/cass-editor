@@ -284,14 +284,14 @@ export default {
             this.configViewMode = "detail";
         },
         handleDeleteConfigurationSuccess() {
-            console.log("Config delete success");
+            appLog("Config delete success");
             this.configToDelete = {};
             this.buildConfigList();
             this.configBusy = false;
             this.showListView();
         },
         handleDeleteConfigurationFailure(msg) {
-            console.error("failed to delete configuration: " + msg);
+            appError("failed to delete configuration: " + msg);
             this.configToDelete = {};
             this.configBusy = false;
         },
@@ -722,7 +722,7 @@ export default {
             cco.context = this.DEFAULT_CONFIGURATION_CONTEXT;
             cco.type = this.DEFAULT_CONFIGURATION_TYPE;
             this.addAllIdentityPksAsOwners(cco);
-            console.log(this.currentConfig);
+            appLog(this.currentConfig);
             if (this.currentConfig.isNew) cco.generateId(window.repo.selectedServer);
             else cco.id = this.currentConfig.id;
             cco.setName(this.currentConfig.name.trim());
@@ -738,18 +738,18 @@ export default {
             this.complexConfigObject = cco;
         },
         saveConfigToRepositorySuccess(msg) {
-            console.log("Config save success");
+            appLog("Config save success");
             this.buildConfigList();
             this.configBusy = false;
             this.showListView();
         },
         saveConfigToRepositoryFailure(msg) {
-            console.log("Config save failure: " + msg);
+            appLog("Config save failure: " + msg);
             this.configBusy = false;
             this.showListView();
         },
         saveCurrentConfig(enforcedLevels, defaultOwners, defaultReaders, defaultCommenters) {
-            console.log("saveCurrentConfig: ");
+            appLog("saveCurrentConfig: ");
             if (enforcedLevels && enforcedLevels.length > 0) {
                 this.currentConfig.enforceLevelValues = true;
                 this.currentConfig.enforcedLevelValues = enforcedLevels;
@@ -758,8 +758,8 @@ export default {
             this.currentConfig.defaultReaders = defaultReaders;
             this.currentConfig.defaultCommenters = defaultCommenters;
             this.generateComplexConfigObjectFromCurrentConfig();
-            console.log("complexConfigObject: ");
-            console.log(JSON.stringify(this.complexConfigObject));
+            appLog("complexConfigObject: ");
+            appLog(JSON.stringify(this.complexConfigObject));
             this.configBusy = true;
             EcRepository.save(this.complexConfigObject, this.saveConfigToRepositorySuccess, this.saveConfigToRepositoryFailure);
         },
@@ -1112,8 +1112,8 @@ export default {
             return simpleConfigObj;
         },
         searchRepositoryForConfigsSuccess(ecRemoteLda) {
-            console.log("Config search success: ");
-            console.log(ecRemoteLda);
+            appLog("Config search success: ");
+            appLog(ecRemoteLda);
             this.configList = [];
             for (let ecrld of ecRemoteLda) {
                 let t = new Thing();
@@ -1124,7 +1124,7 @@ export default {
             this.configBusy = false;
         },
         searchRepositoryForConfigsFailure(msg) {
-            console.log("Config search failure: " + msg);
+            appLog("Config search failure: " + msg);
             this.configBusy = false;
         },
         buildConfigListFromRepository() {

@@ -6,23 +6,23 @@
         <cass-modal class="cass-modal" />
         <DynamicModal />
 
-        <router-view
+        <!-- <router-view
             :showSideNav="showSideNav"
             @sideBarEvent="onSidebarEvent"
-            name="topbar" />
+            name="topbar" /> -->
         <router-view
-            :class="[{ 'clear-side-bar': showSideNav}, {'clear-right-aside': showRightAside}]" />
+            :class="[{ 'clear-side-bar': showSideNav}, { 'clear-narrow-side-bar': !showSideNav}, {'clear-right-aside': showRightAside}]" />
         <router-view
             :showSideNav="showSideNav"
             @createNewFramework="createNewFramework"
             @createNewConceptScheme="createNewConceptScheme"
             name="sidebar" />
+        <vue-progress-bar />
     </div>
 </template>
 
 <script>
 import {mapState} from 'vuex';
-
 import common from '@/mixins/common.js';
 import cassModal from './components/CassModal.vue';
 import DynamicModal from './components/modals/DynamicModal.vue';
@@ -31,7 +31,8 @@ export default {
     mixins: [common],
     name: "App",
     components: {
-        DynamicModal
+        DynamicModal,
+        cassModal
     },
     data: function() {
         return {
@@ -77,7 +78,7 @@ export default {
                 try {
                     window.addEventListener('message', this.cappend, false);
                 } catch (e) {
-                    console.error(e);
+                    appError(e);
                 }
 
                 this.openWebSocket(r);
@@ -97,7 +98,7 @@ export default {
                                 me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
                                 me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
                                 me.$router.push({name: "conceptScheme", params: {frameworkId: me.queryParams.frameworkId}});
-                            }, console.error);
+                            }, appError);
                         } else {
                             EcFramework.get(me.queryParams.frameworkId, function(success) {
                                 me.$store.commit('editor/framework', success);
@@ -105,7 +106,7 @@ export default {
                                 me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
                                 me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
                                 me.$router.push({name: "framework", params: {frameworkId: me.queryParams.frameworkId}});
-                            }, console.error);
+                            }, appError);
                         }
                     }
                     if (me.queryParams.action === "import") {
@@ -161,8 +162,8 @@ export default {
                         selectedIds.push(event.data.selected[i]);
                     }
                 }
-                console.log("I got " + event.data.selected.length + " selected items from the iframe");
-                console.log(event.data.selected);
+                appLog("I got " + event.data.selected.length + " selected items from the iframe");
+                appLog(event.data.selected);
                 if (this.$store.getters['editor/conceptMode'] === true && event.data.type === 'Concept' && this.$store.state.editor.selectCompetencyRelation) {
                     this.addAlignments(selectedIds, selectedCompetency, this.$store.state.editor.selectCompetencyRelation);
                 } else if (event.data.type === 'Concept') {
@@ -201,16 +202,16 @@ export default {
             }
 
             connection.onopen = function() {
-                console.log("WebSocket open.");
+                appLog("WebSocket open.");
             };
 
             connection.onerror = function(error) {
-                console.log(error);
+                appLog(error);
             };
 
             // Re-establish connection on close.
             connection.onclose = function(evt) {
-                console.log(evt);
+                appLog(evt);
                 me.$store.commit('editor/webSocketBackoffIncrease');
                 setTimeout(function() {
                     me.openWebSocket(r);
@@ -308,7 +309,7 @@ export default {
 
             connection.onmessage = function(e) {
                 var resp = e.data;
-                console.log('Server: ' + resp);
+                appLog('Server: ' + resp);
                 if (!EcArray.isArray(resp) && resp.startsWith("[")) {
                     resp = JSON.parse(resp);
                 }
@@ -320,13 +321,13 @@ export default {
                     if (me.$store.state.editor.framework == null) return;
                     me.repo.precache(resp, function() {
                         for (var i = 0; i < resp.length; i++) {
-                            EcRepository.get(resp[i], connection.changedObject, console.error);
+                            EcRepository.get(resp[i], connection.changedObject, appError);
                         }
                     });
                 } else {
                     delete EcRepository.cache[resp];
                     delete EcRepository.cache[EcRemoteLinkedData.trimVersionFromUrl(resp)];
-                    EcRepository.get(resp, connection.changedObject, console.error);
+                    EcRepository.get(resp, connection.changedObject, appError);
                 }
             };
         },
@@ -365,7 +366,7 @@ export default {
                 if (me.$route.name !== 'framework') {
                     me.$router.push({name: "framework"});
                 }
-            }, console.error);
+            }, appError);
         },
         createNewConceptScheme: function() {
             let me = this;
@@ -392,7 +393,7 @@ export default {
                 if (me.$route.name !== 'conceptScheme') {
                     me.$router.push({name: "conceptScheme"});
                 }
-            }, console.error);
+            }, appError);
         },
         createNew: function() {
             this.setDefaultLanguage();
@@ -439,7 +440,7 @@ export default {
                             action: "response",
                             message: "identityOk"
                         };
-                        console.log(message);
+                        appLog(message);
                         parent.postMessage(message, me.queryParams.origin);
                     }
                 };
@@ -451,7 +452,7 @@ export default {
                 var message = {
                     message: "waiting"
                 };
-                console.log(message);
+                appLog(message);
                 parent.postMessage(message, this.queryParams.origin);
             } else {
                 callback();
@@ -484,7 +485,7 @@ export default {
                         action: "response",
                         message: "templateOk"
                     };
-                    console.log(message);
+                    appLog(message);
                     parent.postMessage(message, this.queryParams.origin);
                 } else if (data.action === "set") {
                     if (data.id != null) {
@@ -504,14 +505,14 @@ export default {
                             action: "response",
                             message: "setOk"
                         };
-                        console.log(message);
+                        appLog(message);
                         parent.postMessage(message, me.queryParams.origin);
                     }, function(failure) {
                         var message = {
                             action: "response",
                             message: "setFail"
                         };
-                        console.log(message);
+                        appLog(message);
                         parent.postMessage(message, me.queryParams.origin);
                     });
                 } else if (data.action === "export") {
@@ -575,7 +576,7 @@ export default {
                                 data: data
                             }, me.queryParams.origin);
                         }, function(failure) {
-                            console.log(failure);
+                            appLog(failure);
                         });
                     } else if (v === "cassrdfjson") {
                         this.get(link, null, {"Accept": "application/rdf+json"}, function(success) {
@@ -588,7 +589,7 @@ export default {
                                 data: data
                             }, me.queryParams.origin);
                         }, function(failure) {
-                            console.log(failure);
+                            appLog(failure);
                         });
                     } else if (v === "cassrdfxml") {
                         this.get(link, null, {"Accept": "application/rdf+xml"}, function(success) {
@@ -601,7 +602,7 @@ export default {
                                 data: data
                             }, me.queryParams.origin);
                         }, function(failure) {
-                            console.log(failure);
+                            appLog(failure);
                         });
                     } else if (v === "cassturtle") {
                         this.get(link, null, {"Accept": "text/turtle"}, function(success) {
@@ -614,7 +615,7 @@ export default {
                                 data: data
                             }, me.queryParams.origin);
                         }, function(failure) {
-                            console.log(failure);
+                            appLog(failure);
                         });
                     } else if (v === "ceasn" || v === "ctdlasn") {
                         this.get(fid.replace("/data/", "/ceasn/"), null, null, function(success) {
@@ -639,7 +640,7 @@ export default {
                                     data: data
                                 }, me.queryParams.origin);
                             }, function(failure) {
-                                console.log(failure);
+                                appLog(failure);
                             });
                         } else {
                             this.get(this.repo.selectedServer + "ims/case/v1p0/CFItems/" + guid, null, null, function(success) {
@@ -652,7 +653,7 @@ export default {
                                     data: data
                                 }, me.queryParams.origin);
                             }, function(failure) {
-                                console.log(failure);
+                                appLog(failure);
                             });
                         }
                     }
@@ -661,6 +662,18 @@ export default {
         },
         // Removes newlines from public key in owner and reader fields
         removeNewlines: function(entity) {
+            if (entity["owner"] != null) {
+                for (var i = 0; i < entity["owner"].length; i++) {
+                    var owner = entity["owner"][i];
+                    entity["owner"][i] = EcPk.fromPem(owner).toPem();
+                }
+            }
+            if (entity["reader"] != null) {
+                for (var i = 0; i < entity["reader"].length; i++) {
+                    var owner = entity["reader"][i];
+                    entity["reader"][i] = EcPk.fromPem(owner).toPem();
+                }
+            }
             if (entity["@owner"] != null) {
                 for (var i = 0; i < entity["@owner"].length; i++) {
                     var owner = entity["@owner"][i];
@@ -693,7 +706,7 @@ export default {
             if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[resource.id] !== true) {
                 resource = EcEncryptedValue.toEncryptedValue(resource);
             }
-            this.repo.saveTo(resource, function() {}, console.error);
+            this.repo.saveTo(resource, function() {}, appError);
         },
         showModal(val, data) {
             let params = {};
@@ -764,7 +777,7 @@ export default {
                                 me.afterCopy();
                                 callback();
                             }, function(error) {
-                                console.error(error);
+                                appError(error);
                                 me.afterCopy();
                                 callback();
                             });
@@ -795,7 +808,7 @@ export default {
                                 me.afterCopy();
                                 callback();
                             }, function(error) {
-                                console.error(error);
+                                appError(error);
                                 me.afterCopy();
                                 callback();
                             });
@@ -853,7 +866,7 @@ export default {
                                         callback();
                                     },
                                     function(error) {
-                                        console.error(error);
+                                        appError(error);
                                         me.afterCopy();
                                         callback();
                                     });
@@ -910,7 +923,7 @@ export default {
                                         callback();
                                     },
                                     function(error) {
-                                        console.error(error);
+                                        appError(error);
                                         me.afterCopy();
                                         callback();
                                     });
@@ -929,7 +942,7 @@ export default {
                 if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
                 }
-                this.repo.saveTo(framework, function() {}, console.error);
+                this.repo.saveTo(framework, function() {}, appError);
             }
         },
         appendCompetencies: function(results, newLink) {
@@ -946,7 +959,7 @@ export default {
                         thing.competency = [thing.competency];
                     }
                     thing.competency.push(selectedCompetency.shortId());
-                    this.repo.saveTo(thing, function() {}, console.error);
+                    this.repo.saveTo(thing, function() {}, appError);
                 }
             }
             for (var i = 0; i < results.length; i++) {
@@ -997,7 +1010,7 @@ export default {
                             if (this.$store.state.editor.private === true) {
                                 r = EcEncryptedValue.toEncryptedValue(r);
                             }
-                            this.repo.saveTo(r, function() {}, console.error);
+                            this.repo.saveTo(r, function() {}, appError);
                         }
                     }
                 }
@@ -1007,7 +1020,7 @@ export default {
             }
             this.repo.saveTo(framework, function() {
                 me.$store.commit('editor/framework', EcFramework.getBlocking(framework.id));
-            }, console.error);
+            }, appError);
         },
         importParentStyles: function() {
             var parentStyleSheets = parent.document.styleSheets;
@@ -1060,11 +1073,10 @@ export default {
         })
     },
     mounted: function() {
-
     },
     watch: {
         currentRoute: function(val) {
-            console.log("logged in", this.loggedInPerson);
+            appLog("logged in", this.loggedInPerson);
             if (!this.isLoggedIn && val === '/users') {
                 this.$router.push({path: '/'});
             }
@@ -1112,6 +1124,9 @@ export default {
     }
     .clear-side-bar {
         margin-left: 300px;
+    }
+    .clear-narrow-side-bar {
+        margin-left: 4rem;
     }
     .clear-right-aside {
         margin-right: 340px;

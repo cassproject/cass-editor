@@ -149,7 +149,7 @@ export default {
                     me.parentFrameworks.push({name: success[i].getName(), url: success[i].shortId()});
                 }
             }, function(failure) {
-                console.error(failure);
+                appError(failure);
                 me.parentFrameworks = [];
             }, null);
         } else if (this.dynamicModalContent.objectType === "Competency") {
@@ -158,7 +158,7 @@ export default {
                     me.parentFrameworks.push({name: success[i].getName(), url: success[i].shortId()});
                 }
             }, function(failure) {
-                console.error(failure);
+                appError(failure);
                 me.parentFrameworks = [];
             }, null);
         } else {

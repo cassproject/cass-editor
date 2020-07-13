@@ -3,11 +3,11 @@
         <RightAside v-if="showRightAside" />
         <!-- begin framework -->
         <div class="framework-content">
-            <FrameworkEditorToolbar
-                @showExportModal="onOpenExportModal"
-                @changeProperties="changeProperties"
-                :selectedArray="selectedArray" />
             <div class="framework-body columns is-multiline is-gapless is-paddingless is-marginless">
+                <FrameworkEditorToolbar
+                    @showExportModal="onOpenExportModal"
+                    @changeProperties="changeProperties"
+                    :selectedArray="selectedArray" />
                 <div class="column is-12">
                     <div class="container">
                         <Component
@@ -561,13 +561,13 @@ export default {
             var me = this;
             if (this.framework.configuration) {
                 var c = EcRepository.getBlocking(this.framework.configuration);
-                console.log("c is: ", c);
+                appLog("c is: ", c);
                 if (c) {
-                    console.log("c is: ", c);
+                    appLog("c is: ", c);
                     this.config = c;
                     this.configSetOnFramework = true;
                 }
-                console.log("c is: ", c);
+                appLog("c is: ", c);
             }
             if (!this.config && localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId")) {
                 // If no framework configuration, use browser default
@@ -615,7 +615,7 @@ export default {
         },
         refreshPage: function() {
             if (!this.framework) {
-                console.log("no framework to refresh");
+                appLog("no framework to refresh");
                 return;
             }
             if (EcRepository.shouldTryUrl(this.framework.id) === false) {
@@ -690,7 +690,7 @@ export default {
         onOpenExportModal() {
             let params = {};
             var me = this;
-            console.log("options", typeof me.frameworkExportOptions);
+            appLog("options", typeof me.frameworkExportOptions);
             params = {
                 type: "export",
                 selectedExportOption: '',

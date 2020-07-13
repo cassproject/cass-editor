@@ -731,7 +731,7 @@ export default {
         },
         refreshPage: function() {
             if (!this.framework) {
-                console.log("no framework to refresh");
+                appLog("no framework to refresh");
                 return;
             }
             if (EcRepository.shouldTryUrl(this.framework.id) === false) {
@@ -763,7 +763,7 @@ export default {
             this.get(link, null, {"Accept": "text/n4"}, function(success) {
                 me.download(fileName + ".n4", success);
             }, function(failure) {
-                console.log(failure);
+                appLog(failure);
             });
         },
         exportRdfJson: function(link) {
@@ -772,7 +772,7 @@ export default {
             this.get(link, null, {"Accept": "application/rdf+json"}, function(success) {
                 me.download(fileName + ".rdf.json", success);
             }, function(failure) {
-                console.log(failure);
+                appLog(failure);
             });
         },
         exportRdfXml: function(link) {
@@ -781,7 +781,7 @@ export default {
             this.get(link, null, {"Accept": "application/rdf+xml"}, function(success) {
                 me.download(fileName + ".rdf.xml", success);
             }, function(failure) {
-                console.log(failure);
+                appLog(failure);
             });
         },
         exportTurtle: function(link) {
@@ -790,7 +790,7 @@ export default {
             this.get(link, null, {"Accept": "text/turtle"}, function(success) {
                 me.download(fileName + ".turtle", success);
             }, function(failure) {
-                console.log(failure);
+                appLog(failure);
             });
         },
         exportCtdlasnJsonld: function(link) {
@@ -808,7 +808,7 @@ export default {
             return n;
         },
         deleteObject: function(thing) {
-            console.log("deleting " + thing.id);
+            appLog("deleting " + thing.id);
             var me = this;
             if (thing.shortId() === this.framework.shortId()) {
                 // delete scheme
@@ -818,12 +818,12 @@ export default {
                     // Delete the framework, delete all non-used stuff.
                     EcConcept.search(me.repo, "skos\\:inScheme:\"" + framework.shortId() + "\"", function(concepts) {
                         for (var i = 0; i < concepts.length; i++) {
-                            me.repo.deleteRegistered(concepts[i], console.log, console.error);
+                            me.repo.deleteRegistered(concepts[i], appLog, appError);
                         }
-                    }, console.error);
+                    }, appError);
                     me.$store.commit('editor/framework', null);
                     me.$router.push({name: "frameworks"});
-                }, console.log);
+                }, appLog);
             } else {
                 // Delete concept and fields
                 this.deleteConceptInner(thing);
@@ -846,15 +846,15 @@ export default {
                         }
                         repo.saveTo(concept, function() {
                             me.$store.commit('editor/framework', me.framework);
-                        }, console.error);
-                    }, console.error);
+                        }, appError);
+                    }, appError);
                 }
             }
             if (c["skos:narrower"] != null) {
                 for (var i = 0; i < c["skos:narrower"].length; i++) {
                     EcConcept.get(c["skos:narrower"][i], function(concept) {
                         me.deleteConceptInner(concept);
-                    }, console.error);
+                    }, appError);
                 }
             }
             if (c["skos:topConceptOf"] != null) {
@@ -868,7 +868,7 @@ export default {
                 }
                 repo.saveTo(framework, function() {
                     me.$store.commit('editor/framework', me.framework);
-                }, console.error);
+                }, appError);
             }
             this.spitEvent("conceptDeleted", c.shortId(), "editFrameworkPage");
             me.editsToUndo.push({operation: "delete", obj: c});
@@ -876,7 +876,7 @@ export default {
                 me.$store.commit('editor/framework', me.framework);
                 me.$store.commit('editor/addEditsToUndo', JSON.parse(JSON.stringify(me.editsToUndo)));
                 me.editsToUndo.splice(0, me.editsToUndo.length);
-            }, console.error);
+            }, appError);
         },
         exportObject: function(concept, exportType) {
             var guid;
@@ -916,7 +916,7 @@ export default {
         onOpenExportModal() {
             let params = {};
             var me = this;
-            console.log("options", typeof me.conceptSchemeExportOptions);
+            appLog("options", typeof me.conceptSchemeExportOptions);
             params = {
                 type: "export",
                 selectedExportOption: '',

@@ -36,6 +36,31 @@
                                     <span v-else>Import a framework</span>
                                 </h1>
                             </div>
+                            <div
+                                class="column is-12"
+                                v-if="importType=='file'">
+                                <p class="is-size-6">
+                                    Competency frameworks can be imported into CaSS from the file formats listed below.
+                                </p>
+                                <p class="is-size-6">
+                                    To begin, click inside the “Files to Upload” box below or drag and drop a file into the box.
+                                </p>
+                                <p class="is-size-6">
+                                    Once your file has been uploaded, CaSS will detect a competency framework from the file and display details about your framework.
+                                </p>
+                                <p class="is-size-6">
+                                    Click “Accept and Review” to review and edit your framework.
+                                </p>
+                                <p class="is-size-6">
+                                    Changes and additions can be made to the framework in the editor. When you are done editing your framework, click “Done Editing”.
+                                </p>
+                                <p class="is-size-6">
+                                    Once you are done editing, your framework is available in CaSS and may be exported in a variety of standard formats or saved by pressing “Done”.
+                                </p>
+                                <p class="is-size-6">
+                                    If your framework is not detected by CaSS or not imported properly, you can help us by sending your file to <a href="mailto:cass@eduworks.com?subject=File+to+Improve+CaSS+Importer">cass@eduworks.com</a>.
+                                </p>
+                            </div>
                             <!-- ready state details -->
                             <div class="column is-12">
                                 <p
@@ -105,7 +130,8 @@
                             :importCsvColumnTarget="importCsvColumnTarget"
                             :csvColumns="csvColumns"
                             @analyzeCsvRelation="analyzeCsvRelation($event)"
-                            @importCase="handleImportFromTabs($event)" />
+                            @importCase="handleImportFromTabs($event)"
+                            @deleteObject="deleteObject" />
                         <!-- import details -->
                         <!--
                             we shouldn't need to check for isT3Type here, since this information
@@ -114,7 +140,8 @@
                         -->
                         <ImportDetails
                             :detailsDetected="detailsDetected"
-                            v-if="importTransition === 'detail'" />
+                            v-if="importTransition === 'detail'"
+                            @deleteObject="deleteObject" />
                         <!-- import preview -->
                         <div
                             v-if="importFramework && importTransition === 'preview'"
@@ -497,7 +524,7 @@ export default {
                 }, function(status) {
                     me.$store.commit('app/importStatus', status);
                 },
-                console.error,
+                appError,
                 this.repo,
                 false);
         },
@@ -539,7 +566,7 @@ export default {
             this.editingNode = false;
         },
         handleDoneLoading: function() {
-            console.log("done loading");
+            appLog("done loading");
             this.hierarchyIsdoneLoading = true;
         },
         showModal(val, data) {
@@ -635,7 +662,7 @@ export default {
             this.fileChange(this.importFile);
         },
         fileChange: function(e) {
-            console.log('file change', e);
+            appLog('file change', e);
             this.$store.commit('app/clearImportErrors');
             this.$store.commit('app/importTransition', 'process');
             this.$store.commit('app/firstImport', true);
@@ -644,7 +671,7 @@ export default {
         analyzeImportFile: function() {
             var me = this;
             var file = this.importFile[0];
-            console.log("file is", file);
+            appLog("file is", file);
             var feedback;
             if (file.name.endsWith(".csv")) {
                 if (this.conceptMode) {
@@ -808,7 +835,7 @@ export default {
             }
         },
         analyzeCsvRelation: function(e) {
-            console.log(e);
+            appLog(e);
             var files = e.target.files || e.dataTransfer.files;
             if (!files.length) {
                 this.csvRelationFile = null;
@@ -885,7 +912,7 @@ export default {
                 f.generateId(this.queryParams.newObjectEndpoint == null ? this.repo.selectedServer : this.queryParams.newObjectEndpoint);
             }
             f["schema:dateCreated"] = new Date().toISOString();
-            console.log(this.importFrameworkName);
+            appLog(this.importFrameworkName);
             f.setName(this.importFrameworkName);
             f.setDescription(this.importFrameworkDescription);
             let me = this;
@@ -1017,7 +1044,7 @@ export default {
                         f.assignId(me.repo.selectedServer, uuid);
                     }
                     me.repo.search("(@id:\"" + f.shortId() + "\") AND (@type:Framework)", function() {}, function(frameworks) {
-                        console.log(frameworks);
+                        appLog(frameworks);
                         me.$store.commit('app/importStatus', 'looking for existing framwork...');
                         if (frameworks.length > 0) {
                             me.$store.commit('app/importStatus', 'framework found...');
@@ -1034,7 +1061,7 @@ export default {
                 },
                 /* TO DO - ERROR HANDLING HERE */
                 function(error) {
-                    console.log("error here");
+                    appLog("error here");
                     if (error === "") {
                         error = "Server unresponsive.";
                     }
@@ -1071,8 +1098,8 @@ export default {
             f.level = [];
             f["schema:dateCreated"] = new Date().toISOString();
             toSave.push(f);
-            console.log("d", d);
-            console.log("message: ", JSON.parse(f.toJson()));
+            appLog("d", d);
+            appLog("message: ", JSON.parse(f.toJson()));
             var cs = {};
             if (!d.competencies) {
                 me.$store.commit('app/importStatus', "Error importing competencies.");
@@ -1089,7 +1116,11 @@ export default {
                     c.assignId(me.repo.selectedServer, d.competencies[i].id);
                 }
                 cs[d.competencies[i].id] = c.shortId();
-                if (d.competencies[i].name != null) { c.setName(d.competencies[i].name.trim()); }
+                if (d.competencies[i].name != null) {
+                    c.setName(d.competencies[i].name.trim());
+                } else {
+                    c.setName("Unknown name");
+                }
                 if (d.competencies[i].name !== d.competencies[i].description && d.competencies[i].description) { c.setDescription(d.competencies[i].description.trim()); }
                 if (d.competencies[i]["ceasn:codedNotation"] != null) {
                     c["ceasn:codedNotation"] = d.competencies[i]["ceasn:codedNotation"];
@@ -1111,7 +1142,7 @@ export default {
                     f.addRelation(c.shortId());
                     toSave.push(c);
                 } else {
-                    console.log(JSON.parse(c.toJson()));
+                    appLog(JSON.parse(c.toJson()));
                 }
             }
             me.repo.multiput(toSave, function() {
@@ -1237,7 +1268,7 @@ export default {
             }, function(failure) {
                 me.$store.commit('app/importTransition', 'process');
                 me.$store.commit('app/importStatus', "Import failed. Check your import file for any errors.");
-                console.log(failure.statusText);
+                appLog(failure.statusText);
                 me.$store.commit('app/addImportError', failure);
             });
             if (me.conceptMode) {
@@ -1274,17 +1305,17 @@ export default {
                 }, function(failure) {
                     me.$store.commit('app/importTransition', 'process');
                     me.$store.commit('app/addImportError', "Failed to save: " + failure);
-                    console.error(failure);
+                    appError(failure);
                 });
             }, function(failure) {
                 me.$store.commit('app/importTransition', 'process');
                 me.$store.commit('app/addImportError', failure);
-                console.error(failure);
+                appError(failure);
             }, ceo);
         },
         importFromFile: function() {
             let me = this;
-            console.log("this.importFileType", me.importFileType);
+            appLog("this.importFileType", me.importFileType);
             me.$store.commit('app/importTransition', 'process');
             if (me.importFileType === "csv") {
                 me.importCsv();
@@ -1307,7 +1338,7 @@ export default {
             }
         },
         connectToServer: function() {
-            console.log("connecting to server");
+            appLog("connecting to server");
             this.caseDocs.splice(0, this.caseDocs.length);
             // To do: add import from CaSS Server
             this.caseDetectEndpoint();
@@ -1392,7 +1423,7 @@ export default {
                     var me = this;
                     var id = this.caseDocs[firstIndex].id;
                     me.repo.search("(@id:\"" + id + "\") AND (@type:Framework)", function() {}, function(frameworks) {
-                        console.log(frameworks);
+                        appLog(frameworks);
                         if (frameworks.length > 0) {
                             me.$store.commit('app/importStatus', 'framework found...');
                             me.showModal('duplicateOverwriteOnly', [me.caseDocs[firstIndex], firstIndex]);
@@ -1420,7 +1451,7 @@ export default {
             EcRemote.postInner(this.repo.selectedServer, "ims/case/harvest?caseEndpoint=" + this.importServerUrl + "&dId=" + uuid, formData, null, function(success) {
                 me.caseDocs[firstIndex].loading = false;
                 me.caseDocs[firstIndex].success = true;
-                console.log(id);
+                appLog(id);
                 EcFramework.get(id, function(f) {
                     // me.$store.commit('app/importFramework', f);
                     // Preserve the framework so we can set it as importFramework when they're all done
@@ -1428,7 +1459,7 @@ export default {
                     me.spitEvent("importFinished", f.shortId(), "importPage");
                     me.importCase();
                 }, function(error) {
-                    console.error(error);
+                    appError(error);
                     me.importCase();
                 });
             }, function(failure) {
@@ -1487,7 +1518,7 @@ export default {
                 me.importSuccess();
                 me.spitEvent("importFinished", me.importFramework.shortId(), "importPage");
             }, function(failure) {
-                console.log("failure", failure);
+                appLog("failure", failure);
                 me.$store.commit('app/addImportError', failure);
                 me.$store.commit('app/importTransition', 'process');
             });
@@ -1502,7 +1533,7 @@ export default {
                     var id = graph[0]["@id"];
                     if (id) {
                         me.repo.search("(@id:\"" + id + "\") AND (@type:Framework)", function() {}, function(frameworks) {
-                            console.log(frameworks);
+                            appLog(frameworks);
                             if (frameworks.length > 0) {
                                 me.$store.commit('app/importStatus', 'framework found...');
                                 me.showModal('duplicateOverwriteOnly', [result]);

@@ -224,17 +224,17 @@ export default {
                 for (var i = 0; i < this.framework.owner.length; i++) {
                     var pk = EcPk.fromPem(this.framework.owner[i]);
                     EcPerson.getByPk(window.repo, pk, function(success) {
-                        console.log(success);
+                        appLog(success);
                         var user = {header: success.name, view: "admin", id: success.shortId(), changed: false, pk: pk};
                         me.users.push(user);
                     }, function(failure) {
                         // If it's not a Person, check organizations
                         this.getOrganizationByEcPk(pk, function(success) {
-                            console.log(success);
+                            appLog(success);
                             var org = {header: success.name, view: "admin", id: success.shortId(), changed: false, pk: pk};
                             me.groups.push(org);
                         }, function(error) {
-                            console.error(error);
+                            appError(error);
                         });
                     });
                 }
@@ -243,17 +243,17 @@ export default {
                 for (var i = 0; i < this.framework.reader.length; i++) {
                     var pk = EcPk.fromPem(this.framework.reader[i]);
                     EcPerson.getByPk(window.repo, pk, function(success) {
-                        console.log(success);
+                        appLog(success);
                         var user = {header: success.name, view: "view", id: success.shortId(), changed: false, pk: pk};
                         me.users.push(user);
                     }, function(failure) {
                         // If it's not a Person, check organizations
                         this.getOrganizationByEcPk(pk, function(success) {
-                            console.log(success);
+                            appLog(success);
                             var org = {header: success.name, view: "view", id: success.shortId(), changed: false, pk: pk};
                             me.groups.push(org);
                         }, function(error) {
-                            console.error(error);
+                            appError(error);
                         });
                     });
                 }
@@ -264,22 +264,22 @@ export default {
             paramObj.size = 10000;
             let me = this;
             EcPerson.search(window.repo, '', function(success) {
-                console.log(success);
+                appLog(success);
                 for (var i = 0; i < success.length; i++) {
                     let person = {id: success[i].shortId(), name: success[i].name, pk: me.getPersonEcPk(success[i])};
                     me.possibleGroupsAndUsers.push(person);
                 }
             }, function(failure) {
-                console.error(failure);
+                appError(failure);
             }, paramObj);
             EcOrganization.search(window.repo, '', function(success) {
-                console.log(success);
+                appLog(success);
                 for (var i = 0; i < success.length; i++) {
                     let org = {id: success[i].shortId(), name: success[i].name, pk: me.getOrganizationEcPk(success[i])};
                     me.possibleGroupsAndUsers.push(org);
                 }
             }, function(failure) {
-                console.error(failure);
+                appError(failure);
             }, paramObj);
         },
         filterResults: function() {

@@ -141,26 +141,26 @@ export default {
             }
         },
         saveCommentSuccess: function() {
-            console.log("Save comment succeeded");
+            appLog("Save comment succeeded");
             this.updateStoredFrameworkCommentData();
             this.commentIsBusy = false;
             this.closeModal();
         },
         saveCommentFailed: function(msg) {
             this.commentIsBusy = false;
-            console.log("Save comment failed: " + msg);
+            appLog("Save comment failed: " + msg);
         },
         saveComment: function() {
             if (this.commentText.trim().length > 0) {
                 if (!this.loggedInPerson || !this.loggedInPerson.id) alert('Not logged in. How did you get here?');
                 else {
                     this.loggedInPersonEcPk = this.getPersonEcPk(this.loggedInPerson);
-                    if (!this.loggedInPersonEcPk) console.log("Could not determine person EcPk for comment");
+                    if (!this.loggedInPersonEcPk) appLog("Could not determine person EcPk for comment");
                     else {
                         this.commentIsBusy = true;
                         this.commentToSave = this.buildCommentObject();
-                        console.log("commentToSave");
-                        console.log(this.commentToSave);
+                        appLog("commentToSave");
+                        appLog(this.commentToSave);
                         EcRepository.save(this.commentToSave, this.saveCommentSuccess, this.saveCommentFailed);
                     }
                 }

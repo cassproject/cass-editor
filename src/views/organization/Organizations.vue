@@ -81,8 +81,8 @@ export default {
                         search += " OR ";
                     }
                     var id = EcIdentityManager.ids[i];
-                    search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
-                    search += " OR @owner:\"" + addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
+                    search += "\\*owner:\"" + id.ppk.toPk().toPem() + "\"";
+                    search += " OR \\*owner:\"" + addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
                 }
                 search += ")";
             }
@@ -106,7 +106,7 @@ export default {
             EcOrganization.get(organization.id, function(success) {
                 me.$store.commit('editor/organization', success);
                 me.$router.push({name: "organization", params: {organizationId: organization.id}});
-            }, console.error);
+            }, appError);
         },
         getName: function(field) {
             let name = EcArray.isArray(field) ? field : [field];

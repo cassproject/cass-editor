@@ -300,9 +300,6 @@ export default {
                 },
                 "headings": ["Keys", "General", "Tagging", "Connections", "Context", "Rights"],
                 "primaryProperties": [
-                    "@id",
-                    "registryURL",
-                    "ctid",
                     "http://schema.org/name",
                     "http://schema.org/description"
                 ],
@@ -319,6 +316,9 @@ export default {
                     "https://purl.org/ctdlasn/terms/educationLevelType"
                 ],
                 "tertiaryProperties": [
+                    "@id",
+                    "registryURL",
+                    "ctid",
                     "http://schema.org/validFrom",
                     "http://schema.org/validThrough",
                     "https://purl.org/ctdlasn/terms/publicationStatusType",
@@ -675,9 +675,6 @@ export default {
                 },
                 "headings": ["Keys", "General", "Context", "Tagging", "Scales", "Connections"],
                 "primaryProperties": [
-                    "@id",
-                    "registryURL",
-                    "ctid",
                     "https://purl.org/ctdlasn/terms/competencyLabel",
                     "http://schema.org/name",
                     "http://schema.org/description",
@@ -700,6 +697,9 @@ export default {
                     "https://purl.org/ctdlasn/terms/taskEmbodied"
                 ],
                 "tertiaryProperties": [
+                    "@id",
+                    "registryURL",
+                    "ctid",
                     "https://purl.org/ctdlasn/terms/educationLevelType",
                     "https://purl.org/ctdlasn/terms/derivedFrom",
                     "http://schema.org/identifier",
@@ -1097,9 +1097,6 @@ export default {
                 },
                 "headings": ["Keys", "General", "Tagging", "Context", "Rights"],
                 "primaryProperties": [
-                    "@id",
-                    "registryURL",
-                    "ctid",
                     "http://purl.org/dc/terms/title",
                     "http://purl.org/dc/terms/description"
                 ],
@@ -1111,6 +1108,9 @@ export default {
                     "http://purl.org/dc/elements/1.1/source"
                 ],
                 "tertiaryProperties": [
+                    "@id",
+                    "registryURL",
+                    "ctid",
                     "https://purl.org/ctdlasn/terms/conceptKeyword",
                     "https://purl.org/ctdlasn/terms/conceptTerm",
                     "http://www.w3.org/2004/02/skos/core#changeNote",
@@ -1485,9 +1485,6 @@ export default {
                 },
                 "headings": ["Keys", "General", "Other Labels", "Documentation", "Connections"],
                 "primaryProperties": [
-                    "@id",
-                    "registryURL",
-                    "ctid",
                     "http://www.w3.org/2004/02/skos/core#prefLabel",
                     "http://www.w3.org/2004/02/skos/core#definition",
                     "http://www.w3.org/2004/02/skos/core#notation"
@@ -1502,6 +1499,9 @@ export default {
                     "http://www.w3.org/2004/02/skos/core#related"
                 ],
                 "tertiaryProperties": [
+                    "@id",
+                    "registryURL",
+                    "ctid",
                     "http://www.w3.org/2004/02/skos/core#altLabel",
                     "http://www.w3.org/2004/02/skos/core#hiddenLabel",
                     "http://www.w3.org/2004/02/skos/core#note",
