@@ -66,10 +66,10 @@ export default {
             this.$store.commit('editor/setFrameworkCommentList', nfcl);
         },
         deleteCommentSuccess() {
-            console.log('Comment delete succeeded');
+            appLog('Comment delete succeeded');
         },
         deleteCommentFailure(msg) {
-            console.log('Comment delete failed: ' + msg);
+            appLog('Comment delete failed: ' + msg);
         },
         confirmDelete: function() {
             let repo = window.repo;

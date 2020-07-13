@@ -213,13 +213,13 @@ export default {
             var me = this;
             if (this.container == null) return null;
             if (!this.once) return this.structure;
-            console.log("Computing hierarchy.");
+            appLog("Computing hierarchy.");
             var precache = [];
             if (this.container["skos:hasTopConcept"] != null) { precache = precache.concat(this.container["skos:hasTopConcept"]); }
             if (precache.length > 0) {
                 this.repo.multiget(precache, function(success) {
                     me.computeHierarchy();
-                }, console.error, console.log);
+                }, appError, appLog);
             } else {
                 me.computeHierarchy();
             }
@@ -366,7 +366,7 @@ export default {
             }
         },
         endDrag: function(foo) {
-            console.log(foo.oldIndex, foo.newIndex);
+            appLog(foo.oldIndex, foo.newIndex);
             var toId = null;
             var plusup = 0;
             if (this.shiftKey) {
@@ -422,7 +422,7 @@ export default {
                 }
                 this.repo.saveTo(container, function() {
                     me.computeHierarchy();
-                }, console.error);
+                }, appError);
             } else {
                 var moveComp = EcConcept.getBlocking(fromId);
                 var fromContainer = EcConcept.getBlocking(fromContainerId);
@@ -495,10 +495,10 @@ export default {
                         moveComp = EcEncryptedValue.toEncryptedValue(moveComp);
                     }
                     me.repo.saveTo(toContainer, function() {
-                        me.repo.saveTo(moveComp, console.log, console.error);
+                        me.repo.saveTo(moveComp, appLog, appError);
                         me.computeHierarchy();
-                    }, console.log);
-                }, console.error);
+                    }, appLog);
+                }, appError);
             }
             this.dragging = false;
         },
@@ -558,8 +558,8 @@ export default {
                 this.repo.saveTo(c, function() {
                     me.repo.saveTo(me.container, function() {
                         me.once = true;
-                    }, console.error);
-                }, console.error);
+                    }, appError);
+                }, appError);
             } else {
                 c["skos:broader"] = [containerId];
                 var parent = EcConcept.getBlocking(containerId);
@@ -594,12 +594,12 @@ export default {
                     me.repo.saveTo(parent, function() {
                         me.repo.saveTo(me.container, function() {
                             me.once = true;
-                        }, console.error);
-                    }, console.error);
-                }, console.error);
+                        }, appError);
+                    }, appError);
+                }, appError);
             }
             this.$store.commit("editor/newCompetency", c.shortId());
-            console.log("Added node: ", JSON.parse(c.toJson()));
+            appLog("Added node: ", JSON.parse(c.toJson()));
         },
         select: function(objId, checked) {
             if (checked) {

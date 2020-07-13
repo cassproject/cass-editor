@@ -39,9 +39,7 @@ module.exports = {
          * 'no-compare-neg-zero': 1, // eslint:recommended
          * 'no-cond-assign': 0, // eslint:recommended
          */
-        // Revert no-console once console statements are fixed
-        // 'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-        'no-console': 'off',
+        'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
         'no-constant-condition': 2,
         // 'no-control-regex': 2, // eslint:recommended
         'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',

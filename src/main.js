@@ -76,8 +76,25 @@ Vue.config.warnHandler = function(msg, vm, trace) {
     if (msg === 'Invalid prop: type check failed for prop "clickToLoad". Expected Boolean, got String with value "true".') return;
     if (msg === 'Avoid using non-primitive value as key, use string/number value instead.') return;
     if (msg === "Duplicate keys detected: '[object Object]'. This may cause an update error.") return;
-    console.error(("[Vue warn]: " + msg + trace));
+    appError(("[Vue warn]: " + msg + trace));
     // `trace` is the component hierarchy trace
+};
+
+global.appLog = function(x) {
+    /* eslint-disable no-console */
+    if (process.env.NODE_ENV !== 'production') {
+        // console.trace(x);
+        console.log(x);
+    }
+    /* eslint-enable no-console */
+};
+
+global.appError = function(x) {
+    /* eslint-disable no-console */
+    if (process.env.NODE_ENV !== 'production') {
+        console.error(x);
+    }
+    /* eslint-enable no-console */
 };
 
 window.app = new Vue({

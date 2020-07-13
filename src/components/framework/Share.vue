@@ -436,14 +436,14 @@ export default {
             this.isOpenAutocomplete = false;
         },
         successfulClip({value, event}) {
-            console.log('success', value);
+            appLog('success', value);
             this.clipStatus = 'success';
             setTimeout(() => {
                 this.clipStatus = 'ready';
             }, 1000);
         },
         errorClip({value, event}) {
-            console.log('error', value);
+            appLog('error', value);
             this.slipStatus = 'error';
             setTimeout(() => {
                 this.clipStatus = 'ready';
@@ -455,7 +455,7 @@ export default {
                 for (var i = 0; i < this.framework.owner.length; i++) {
                     var pk = EcPk.fromPem(this.framework.owner[i]);
                     EcPerson.getByPk(window.repo, pk, function(success) {
-                        console.log(success);
+                        appLog(success);
                         if (success) {
                             var user = {header: success.name, email: success.email, view: "admin", id: success.shortId(), changed: false, pk: pk};
                             me.users.push(user);
@@ -463,13 +463,13 @@ export default {
                     }, function(failure) {
                         // If it's not a Person, check organizations
                         me.getOrganizationByEcPk(pk, function(success) {
-                            console.log(success);
+                            appLog(success);
                             if (success) {
                                 var org = {header: success.name, view: "admin", id: success.shortId(), changed: false, pk: pk};
                                 me.groups.push(org);
                             }
                         }, function(error) {
-                            console.error(error);
+                            appError(error);
                         });
                     });
                 }
@@ -478,7 +478,7 @@ export default {
                 for (var i = 0; i < this.framework.reader.length; i++) {
                     var pk = EcPk.fromPem(this.framework.reader[i]);
                     EcPerson.getByPk(window.repo, pk, function(success) {
-                        console.log(success);
+                        appLog(success);
                         if (success) {
                             var user = {header: success.name, email: success.email, view: "view", id: success.shortId(), changed: false, pk: pk};
                             me.users.push(user);
@@ -486,13 +486,13 @@ export default {
                     }, function(failure) {
                         // If it's not a Person, check organizations
                         me.getOrganizationByEcPk(pk, function(success) {
-                            console.log(success);
+                            appLog(success);
                             if (success) {
                                 var org = {header: success.name, view: "view", id: success.shortId(), changed: false, pk: pk};
                                 me.groups.push(org);
                             }
                         }, function(error) {
-                            console.error(error);
+                            appError(error);
                         });
                     });
                 }
@@ -503,22 +503,22 @@ export default {
             paramObj.size = 10000;
             let me = this;
             EcPerson.search(window.repo, '', function(success) {
-                console.log(success);
+                appLog(success);
                 for (var i = 0; i < success.length; i++) {
                     let person = {id: success[i].shortId(), name: success[i].name, email: success[i].email, pk: me.getPersonEcPk(success[i])};
                     me.possibleGroupsAndUsers.push(person);
                 }
             }, function(failure) {
-                console.error(failure);
+                appError(failure);
             }, paramObj);
             EcOrganization.search(window.repo, '', function(success) {
-                console.log(success);
+                appLog(success);
                 for (var i = 0; i < success.length; i++) {
                     let org = {id: success[i].shortId(), name: success[i].name, pk: me.getOrganizationEcPk(success[i])};
                     me.possibleGroupsAndUsers.push(org);
                 }
             }, function(failure) {
-                console.error(failure);
+                appError(failure);
             }, paramObj);
         },
         filterResults: function() {
@@ -773,7 +773,7 @@ export default {
                 me.repo.saveTo(f, function() {
                     me.confirmMakePublic = false;
                     me.isProcessing = false;
-                }, console.error);
+                }, appError);
                 framework = f;
                 if (framework.competency && framework.competency.length > 0) {
                     new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
@@ -832,7 +832,7 @@ export default {
             this.repo.saveTo(f, function() {
                 me.confirmMakePrivate = false;
                 me.isProcessing = false;
-            }, console.error);
+            }, appError);
         },
         handleMakePrivateConceptScheme: function() {
             var me = this;
@@ -853,7 +853,7 @@ export default {
                     me.confirmMakePrivate = false;
                     me.isProcessing = false;
                 }
-            }, console.error);
+            }, appError);
         },
         handleMakePublicConceptScheme: function() {
             var me = this;
@@ -861,9 +861,9 @@ export default {
             this.$store.commit('editor/private', false);
             framework = EcEncryptedValue.toEncryptedValue(framework);
             var cs = new EcConceptScheme();
-            console.log(framework);
-            console.log(framework.decryptIntoObject());
-            console.log(cs);
+            appLog(framework);
+            appLog(framework.decryptIntoObject());
+            appLog(cs);
             cs.copyFrom(framework.decryptIntoObject());
             delete cs.reader;
             framework = cs;
@@ -876,7 +876,7 @@ export default {
                     me.confirmMakePublic = false;
                     me.isProcessing = false;
                 }
-            }, console.error);
+            }, appError);
         },
         encryptConcepts: function(c) {
             var toSave = [];
@@ -897,7 +897,7 @@ export default {
                 }, done);
             }, function(conceptIds) {
                 for (var i = 0; i < toSave.length; i++) {
-                    me.repo.saveTo(toSave[i], function() {}, console.error);
+                    me.repo.saveTo(toSave[i], function() {}, appError);
                 }
                 me.confirmMakePrivate = false;
                 me.isProcessing = false;

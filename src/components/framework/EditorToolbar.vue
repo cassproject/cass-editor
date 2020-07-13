@@ -246,7 +246,7 @@ export default {
             this.repo.deleteRegistered(EcRepository.getBlocking(id), function() {
                 me.editsFinishedCounter++;
             }, function(failure) {
-                console.log(failure);
+                appLog(failure);
                 me.editsFinishedCounter++;
                 me.$Progress.fail();
             });
@@ -263,7 +263,7 @@ export default {
                 me.editsFinishedCounter++;
                 me.$Progress.finish();
             }, function(failure) {
-                console.log(failure);
+                appLog(failure);
                 me.editsFinishedCounter++;
                 me.$Progress.fail();
             });
@@ -287,7 +287,7 @@ export default {
                 });
                 me.$store.commit('editor/changedObject', success.shortId());
             }, function(error) {
-                console.error(error);
+                appError(error);
                 me.editsFinishedCounter++;
                 me.$Progress.fail();
             });
@@ -339,7 +339,7 @@ export default {
                 me.repo.saveTo(rld, function() {
                     me.editsFinishedCounter++;
                 }, function(error) {
-                    console.error(error);
+                    appError(error);
                     me.editsFinishedCounter++;
                 });
             }

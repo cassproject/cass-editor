@@ -160,11 +160,11 @@ export default {
             }
         },
         basicSort: function(val) {
-            console.log(val);
+            appLog(val);
             this.$store.commit("app/sortResults", {id: val});
         },
         basicFilter: function(val) {
-            console.log(val);
+            appLog(val);
             var filter;
             if (val === true) {
                 filter = {
@@ -219,7 +219,7 @@ export default {
         },
         filteredSearchTo: function() {
             let filterValues = this.applySearchTo.filter(item => item.checked === true);
-            console.log('filtered value', filterValues);
+            appLog('filtered value', filterValues);
             return filterValues;
         },
         quickFilters: function() {
@@ -227,7 +227,7 @@ export default {
         },
         filteredQuickFilters: function() {
             let filterValues = this.quickFilters.filter(item => item.checked === true);
-            console.log('filtered value', filterValues);
+            appLog('filtered value', filterValues);
             return filterValues;
         },
         sortResults: function() {
