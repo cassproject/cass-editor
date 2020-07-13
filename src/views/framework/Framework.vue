@@ -3,11 +3,11 @@
         <RightAside v-if="showRightAside" />
         <!-- begin framework -->
         <div class="framework-content">
-            <FrameworkEditorToolbar
-                @showExportModal="onOpenExportModal"
-                @changeProperties="changeProperties"
-                :selectedArray="selectedArray" />
             <div class="framework-body columns is-multiline is-gapless is-paddingless is-marginless">
+                <FrameworkEditorToolbar
+                    @showExportModal="onOpenExportModal"
+                    @changeProperties="changeProperties"
+                    :selectedArray="selectedArray" />
                 <div class="column is-12">
                     <div class="container">
                         <Component

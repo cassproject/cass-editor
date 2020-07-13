@@ -5,26 +5,46 @@
         class="menu has-background-primary has-text-white">
         <div
             class="menu-label has-text-white is-size-3">
-            <span v-if="showSideNav" class="icon is-pulled-right" @click="$store.commit('app/closeSideNav')">
-                <i class="fa fa-chevron-down" />
-            </span>
-            <span v-else class="icon has-text-centered" @click="$store.commit('app/showSideNav')">
-                <i class="fa fa-chevron-right" />
-            </span>
+            <div
+                v-if="showSideNav"
+                class="icon is-pulled-right"
+                @click="$store.commit('app/closeSideNav')">
+                <i class="fa fa-times" />
+            </div>
+            <div
+                v-else
+                class="buttons is-centered"
+                @click="$store.commit('app/showSideNav')">
+                <div class="button is-text has-text-white">
+                    <span class="icon icon has-text-centered">
+                        <i class="fa fa-bars has-text-centered" />
+                    </span>
+                </div>
+            </div>
             <template v-if="displayName !== 'No user'">
-                <span class="icon has-text-centered" v-if='!showSideNav'>
-                    <i class="far fa-user-circle" />
-                </span>
+                <div class="has-text-centered">
+                    <span
+                        class="icon has-text-centered"
+                        v-if="!showSideNav">
+                        <i class="far fa-user-circle" />
+                    </span>
+                </div>
                 <h3 class="is-size-2 has-text-weight-semibold">
                     <span v-if="showSideNav">{{ displayName }}</span>
                 </h3>
-                <p v-if="showSideNav" class="is-size-5">
+                <p
+                    v-if="showSideNav"
+                    class="is-size-5">
                     {{ loggedOnPerson.email }}
                 </p>
-                <p v-if="showSideNav" class="is-size-5">
+                <p
+                    v-if="showSideNav"
+                    class="is-size-5">
                     {{ loggedOnPerson.type }}
                 </p>
-                <div class="buttons is-right" v-if="showSideNav">
+                <div
+                    class="buttons is-right"
+                    v-if="showSideNav">
                     <router-link
                         class="button is-outlined is-link"
                         to="/login">
@@ -34,23 +54,39 @@
                         <span v-if="showSideNav">logout</span>
                     </router-link>
                 </div>
-                <router-link
-                    v-if="!showSideNav"
-                    class="button is-text has-text-link is-medium"
-                    to="/login">
-                    <span class="icon">
-                        <i class="fa fa-sign-out-alt" />
-                    </span>
-                </router-link>
+                <div
+                    class="buttons is-centered"
+                    v-else>
+                    <router-link
+                        class="button is-text has-text-link is-medium"
+                        to="/login">
+                        <span class="icon">
+                            <i class="fa fa-sign-out-alt" />
+                        </span>
+                    </router-link>
+                </div>
             </template>
             <template v-else>
                 <router-link
+                    v-if="showSideNav"
                     class="button is-outlined is-link"
                     to="/login">
                     <span class="icon">
                         <i class="fa fa-sign-in-alt" />
                     </span><span v-if="showSideNav">login</span>
                 </router-link>
+                <div
+                    v-if="!showSideNav"
+                    class="buttons is-centered"
+                    to="/login">
+                    <router-link
+                        to="/login"
+                        class="button  is-outlined is-link">
+                        <span class="icon">
+                            <i class="fa fa-sign-in-alt" />
+                        </span>
+                    </router-link>
+                </div>
             </template>
             <!-- might need later to close -->
             <div
@@ -97,7 +133,9 @@
                     <span v-if="showSideNav"> Crosswalk</span>
                 </router-link>
             </li>
-            <li class="has-text-white" v-if="showSideNav">
+            <li
+                class="has-text-white"
+                v-if="showSideNav">
                 <router-link
                     to="/import"
                     @click.native="$store.commit('editor/conceptMode', false)">
@@ -132,7 +170,9 @@
                         <i class="fa fa-plus" />
                     </span>Concept Scheme</a>
             </li>
-            <li class="has-text-white" v-if="showSideNav">
+            <li
+                class="has-text-white"
+                v-if="showSideNav">
                 <router-link
                     to="/import"
                     @click.native="$store.commit('editor/conceptMode', true)">
@@ -241,9 +281,22 @@ export default {
 }
 
 .menu.is-narrow {
+    margin: auto !important;
+    padding: .25rem !important;
     width: 4rem;
-    .menu-list a {
-        padding: .5em !important;
+    .menu-label {
+        div.open-nav {
+            display: block;
+            margin: auto;
+            padding: .5rem 0rem;
+        }
+    }
+    .menu-list {
+        margin: auto !important;
+        display: block;
+        a {
+            padding: .5em !important;
+        }
     }
 }
 </style>

@@ -6,7 +6,7 @@
     }
 }
 #crosswalk {
-    height: calc(100vh - 3.25rem);
+    height: calc(100vh);
     overflow: hidden;
     background-color: white;
     .lode__Framework {
@@ -62,7 +62,7 @@
     .crosswalk-column {
         overflow:hidden;
         display: flex;
-        height: calc(100vh - 95px);
+        height: calc(100vh - 24px);
         flex-direction: column;
     }
     .crosswalk__title {
@@ -183,7 +183,7 @@
             ul.lode__hierarchy-ul {
                 overflow: scroll;
                 
-                height: calc(100% - 3.5rem); // account for top buttons
+                height: calc(100% - 0rem); // account for top buttons
                 padding: 0rem .5rem;
               
                 li.lode__hierarchy-li {

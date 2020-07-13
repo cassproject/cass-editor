@@ -165,7 +165,8 @@
                                 class="column is-6 source">
                                 <Thing
                                     :obj="frameworkSource"
-                                    :repo="repo" />
+                                    :repo="repo"
+                                    :view="view" />
                                 <Hierarchy
                                     :container="frameworkSource"
                                     view="crosswalk"
@@ -201,7 +202,8 @@
                                 v-if="loadCrosswalkTarget">
                                 <Thing
                                     :obj="frameworkTarget"
-                                    :repo="repo" />
+                                    :repo="repo"
+                                    :view="view" />
                                 <Hierarchy
                                     :container="frameworkTarget"
                                     view="crosswalk"
