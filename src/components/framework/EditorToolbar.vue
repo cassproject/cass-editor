@@ -463,7 +463,7 @@ export default {
 
 #framework-editor-toolbar {
     border-bottom: solid 1px $light;
-    top: 3.25rem;
+    top: 0rem;
     z-index: 10;
     height: 1.75rem;
     position: fixed;

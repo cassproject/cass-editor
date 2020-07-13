@@ -6,12 +6,12 @@
         <cass-modal class="cass-modal" />
         <DynamicModal />
 
-        <router-view
+        <!-- <router-view
             :showSideNav="showSideNav"
             @sideBarEvent="onSidebarEvent"
-            name="topbar" />
+            name="topbar" /> -->
         <router-view
-            :class="[{ 'clear-side-bar': showSideNav}, {'clear-right-aside': showRightAside}]" />
+            :class="[{ 'clear-side-bar': showSideNav}, { 'clear-narrow-side-bar': !showSideNav}, {'clear-right-aside': showRightAside}]" />
         <router-view
             :showSideNav="showSideNav"
             @createNewFramework="createNewFramework"
@@ -1124,6 +1124,9 @@ export default {
     }
     .clear-side-bar {
         margin-left: 300px;
+    }
+    .clear-narrow-side-bar {
+        margin-left: 4rem;
     }
     .clear-right-aside {
         margin-right: 340px;

@@ -1,47 +1,29 @@
 <template>
     <aside
-        id="app-side-nav-bar"
-        :class="{'is-narrow': !showSideNav}"
-        class="menu has-background-primary has-text-white">
+        id="app-narrow-side-nav-bar"
+        class="has-background-primary has-text-white"
+        :class="{ 'narrow-menu': !showSideNav}">
         <div
             class="menu-label has-text-white is-size-3">
-            <span v-if="showSideNav" class="icon is-pulled-right" @click="$store.commit('app/closeSideNav')">
-                <i class="fa fa-chevron-down" />
-            </span>
-            <span v-else class="icon has-text-centered" @click="$store.commit('app/showSideNav')">
-                <i class="fa fa-chevron-right" />
-            </span>
             <template v-if="displayName !== 'No user'">
-                <span class="icon has-text-centered" v-if='!showSideNav'>
-                    <i class="far fa-user-circle" />
-                </span>
                 <h3 class="is-size-2 has-text-weight-semibold">
-                    <span v-if="showSideNav">{{ displayName }}</span>
+                    {{ displayName }}
                 </h3>
-                <p v-if="showSideNav" class="is-size-5">
+                <p class="is-size-5">
                     {{ loggedOnPerson.email }}
                 </p>
-                <p v-if="showSideNav" class="is-size-5">
+                <p class="is-size-5">
                     {{ loggedOnPerson.type }}
                 </p>
-                <div class="buttons is-right" v-if="showSideNav">
+                <div class="buttons is-right">
                     <router-link
                         class="button is-outlined is-link"
                         to="/login">
                         <span class="icon">
-                            <i class="fa fa-sign-out-alt" />
+                            <i class="fa fa-sign-in-alt" />
                         </span>
-                        <span v-if="showSideNav">logout</span>
                     </router-link>
                 </div>
-                <router-link
-                    v-if="!showSideNav"
-                    class="button is-text has-text-link is-medium"
-                    to="/login">
-                    <span class="icon">
-                        <i class="fa fa-sign-out-alt" />
-                    </span>
-                </router-link>
             </template>
             <template v-else>
                 <router-link
@@ -49,7 +31,7 @@
                     to="/login">
                     <span class="icon">
                         <i class="fa fa-sign-in-alt" />
-                    </span><span v-if="showSideNav">login</span>
+                    </span>
                 </router-link>
             </template>
             <!-- might need later to close -->
@@ -64,7 +46,6 @@
 
         <!-- GENERAL MENU -->
         <div
-            v-if="showSideNav"
             class="menu-label has-text-weight-bold">
             Competencies & Frameworks
         </div>
@@ -72,44 +53,31 @@
             class="menu-list">
             <li class="has-text-white">
                 <router-link to="/frameworks">
-                    <span class="icon">
-                        <i class="fa fa-list-alt" />
-                    </span>
-                    <span v-if="showSideNav"> Frameworks</span>
+                    Frameworks
                 </router-link>
             </li>
             <li
-                v-if="showSideNav"
                 class="has-text-white"
                 @click="$emit('createNewFramework')">
-                <a>
-                    <span class="icon">
-                        <i class="fa fa-plus" />
-                    </span><span v-if="showSideNav"> Framework</span></a>
+                <a> New Framework</a>
             </li>
             <!-- hidding this for now -->
             <li
                 class="has-text-white">
                 <router-link to="/crosswalk">
-                    <span class="icon">
-                        <i class="fa fa-network-wired" />
-                    </span>
-                    <span v-if="showSideNav"> Crosswalk</span>
+                    Crosswalk Frameworks
                 </router-link>
             </li>
-            <li class="has-text-white" v-if="showSideNav">
+            <li class="has-text-white">
                 <router-link
                     to="/import"
                     @click.native="$store.commit('editor/conceptMode', false)">
-                    <span class="icon">
-                        <i class="fa fa-upload" />
-                    </span><span v-if="showSideNav">Import</span>
+                    Import
                 </router-link>
             </li>
         </ul>
         <!-- CONCEPT SCHEMES -->
         <div
-            v-if="showSideNav"
             class="menu-label has-text-weight-bold">
             Concept Schemes
         </div>
@@ -117,35 +85,24 @@
             class="menu-list">
             <li class="has-text-white">
                 <router-link to="/concepts">
-                    <span class="icon">
-                        <i class="fa fa-layer-group" />
-                    </span>
-                    <span v-if="showSideNav">Concepts</span>
+                    Concepts
                 </router-link>
             </li>
             <li
-                v-if="showSideNav"
                 class="has-text-white"
                 @click="$emit('createNewConceptScheme')">
-                <a>
-                    <span class="icon">
-                        <i class="fa fa-plus" />
-                    </span>Concept Scheme</a>
+                <a> New Concept Scheme</a>
             </li>
-            <li class="has-text-white" v-if="showSideNav">
+            <li class="has-text-white">
                 <router-link
                     to="/import"
                     @click.native="$store.commit('editor/conceptMode', true)">
-                    <span class="icon">
-                        <i class="fa fa-upload" />
-                    </span>
                     Import
                 </router-link>
             </li>
         </ul>
         <ul class="menu-list" />
         <div
-            v-if="showSideNav"
             class="menu-label has-text-weight-bold">
             Configuration
         </div>
@@ -153,16 +110,12 @@
             class="menu-list">
             <li>
                 <router-link to="/configuration">
-                    <span class="icon">
-                        <i class="fa fa-cog" />
-                    </span><span v-if="showSideNav">Configurations</span>
+                    Configurations
                 </router-link>
             </li>
             <li v-if="isLoggedOn">
                 <router-link to="/users">
-                    <span class="icon">
-                        <i class="fa fa-users" />
-                    </span><span v-if="showSideNav">Users and Groups</span>
+                    Users/Groups
                 </router-link>
             </li>
         </ul>
@@ -173,7 +126,7 @@
 import {mapState} from 'vuex';
 import {cassUtil} from './../mixins/cassUtil';
 export default {
-    name: 'SideNav',
+    name: 'NarrowSideNav',
     props: {
         method: {
             default: ''
@@ -228,22 +181,18 @@ export default {
     }
 };
 </script>
-<style lang="scss">
+<style>
 #app-side-nav-bar {
     position: fixed;
     z-index: 2;
     top: 0;
     left:0;
-    height: calc(100vh);
-    margin-top: 0rem;
+    height: calc(100vh - 3.25rem);
+    margin-top: 3.25rem;
     bottom: 0;
     overflow-y: scroll;
 }
-
-.menu.is-narrow {
+.narrow-menu {
     width: 4rem;
-    .menu-list a {
-        padding: .5em !important;
-    }
 }
 </style>
