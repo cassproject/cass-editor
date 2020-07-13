@@ -219,7 +219,7 @@ export default {
                 Task.asyncImmediate(function(callback) {
                     if (depth === undefined || depth == null) depth = 0;
                     if (id == null || id === undefined) {
-                        console.trace("ID is undefined.");
+                        appLog("ID is undefined.");
                     }
                     if (depth < 5) {
                         EcFramework.search(me.repo, "\"" + id + "\"", function(results) {
