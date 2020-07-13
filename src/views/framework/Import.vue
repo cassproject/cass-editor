@@ -36,6 +36,32 @@
                                     <span v-else>Import a framework</span>
                                 </h1>
                             </div>
+                            <div
+                                class="column is-12"
+                                v-if="importType=='file'">
+                                <p class="is-size-6">
+                                    Competency frameworks can be imported into CaSS from the file formats listed below.
+                                </p>
+                                <br>
+                                <li class="is-size-6">
+                                    To begin, click inside the “Files to Upload” box below or drag and drop a file into the box.
+                                </li>
+                                <li class="is-size-6">
+                                    Once your file has been uploaded, CaSS will detect a competency framework from the file and display details about your framework.
+                                </li>
+                                <li class="is-size-6">
+                                    Click “Accept and Review” to review and edit your framework.
+                                </li>
+                                <li class="is-size-6">
+                                    Changes and additions can be made to the framework in the editor. When you are done editing your framework, click “Done Editing”.
+                                </li>
+                                <li class="is-size-6">
+                                    Once you are done editing, your framework is available in CaSS and may be exported in a variety of standard formats or saved by pressing “Done”.
+                                </li>
+                                <li class="is-size-6">
+                                    If your framework is not detected by CaSS or not imported properly, you can help us by sending your file to <a href="mailto:cass@eduworks.com?subject=File+to+Improve+CaSS+Importer">cass@eduworks.com</a>.
+                                </li>
+                            </div>
                             <!-- ready state details -->
                             <div class="column is-12">
                                 <p
@@ -105,7 +131,8 @@
                             :importCsvColumnTarget="importCsvColumnTarget"
                             :csvColumns="csvColumns"
                             @analyzeCsvRelation="analyzeCsvRelation($event)"
-                            @importCase="handleImportFromTabs($event)" />
+                            @importCase="handleImportFromTabs($event)"
+                            @deleteObject="deleteObject" />
                         <!-- import details -->
                         <!--
                             we shouldn't need to check for isT3Type here, since this information
@@ -114,7 +141,8 @@
                         -->
                         <ImportDetails
                             :detailsDetected="detailsDetected"
-                            v-if="importTransition === 'detail'" />
+                            v-if="importTransition === 'detail'"
+                            @deleteObject="deleteObject" />
                         <!-- import preview -->
                         <div
                             v-if="importFramework && importTransition === 'preview'"

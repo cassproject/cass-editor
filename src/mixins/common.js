@@ -219,7 +219,7 @@ export default {
                 Task.asyncImmediate(function(callback) {
                     if (depth === undefined || depth == null) depth = 0;
                     if (id == null || id === undefined) {
-                        console.trace("ID is undefined.");
+                        appLog("ID is undefined.");
                     }
                     if (depth < 5) {
                         EcFramework.search(me.repo, "\"" + id + "\"", function(results) {
@@ -335,7 +335,9 @@ export default {
             } else {
                 optionalLevelUrl = optionalLevelUrl[0];
                 var c = EcRepository.getBlocking(optionalLevelUrl);
-                if (!EcArray.isArray(c.competency)) {
+                if (!c.competency) {
+                    c.competency = [];
+                } else if (!EcArray.isArray(c.competency)) {
                     c.competency = [c.competency];
                 }
                 c.competency.push(selectedCompetency);
