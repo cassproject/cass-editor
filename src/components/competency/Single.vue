@@ -204,8 +204,5 @@ export default {
             }
         }
     }
-    .modal-card-title {
-        max-width: 95%;
-    }
 }
 </style>

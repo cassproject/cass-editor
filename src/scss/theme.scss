@@ -101,6 +101,8 @@ $table-row-hover-background-color: rgba($dark, .1);
 $table-row-active-background-color: rgba($link, .2);
 $table-striped-row-even-background-color: rgba($dark, .2);
 
+$modal-content-width: 800px;
+
 
 @import "./../../node_modules/bulma/bulma";
 @import "./../../node_modules/bulma/sass/utilities/_all.sass";
