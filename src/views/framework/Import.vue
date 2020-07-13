@@ -42,24 +42,25 @@
                                 <p class="is-size-6">
                                     Competency frameworks can be imported into CaSS from the file formats listed below.
                                 </p>
-                                <p class="is-size-6">
+                                <br>
+                                <li class="is-size-6">
                                     To begin, click inside the “Files to Upload” box below or drag and drop a file into the box.
-                                </p>
-                                <p class="is-size-6">
+                                </li>
+                                <li class="is-size-6">
                                     Once your file has been uploaded, CaSS will detect a competency framework from the file and display details about your framework.
-                                </p>
-                                <p class="is-size-6">
+                                </li>
+                                <li class="is-size-6">
                                     Click “Accept and Review” to review and edit your framework.
-                                </p>
-                                <p class="is-size-6">
+                                </li>
+                                <li class="is-size-6">
                                     Changes and additions can be made to the framework in the editor. When you are done editing your framework, click “Done Editing”.
-                                </p>
-                                <p class="is-size-6">
+                                </li>
+                                <li class="is-size-6">
                                     Once you are done editing, your framework is available in CaSS and may be exported in a variety of standard formats or saved by pressing “Done”.
-                                </p>
-                                <p class="is-size-6">
+                                </li>
+                                <li class="is-size-6">
                                     If your framework is not detected by CaSS or not imported properly, you can help us by sending your file to <a href="mailto:cass@eduworks.com?subject=File+to+Improve+CaSS+Importer">cass@eduworks.com</a>.
-                                </p>
+                                </li>
                             </div>
                             <!-- ready state details -->
                             <div class="column is-12">
