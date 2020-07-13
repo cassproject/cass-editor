@@ -304,7 +304,7 @@ export default {
                 }
             });
         },
-        expand: async function(o, after) {
+        expand: function(o, after) {
             var toExpand = JSON.parse(o.toJson());
             if (toExpand["@context"] != null && toExpand["@context"].startsWith("http://")) {
                 toExpand["@context"] = toExpand["@context"].replace("http://", "https://");
@@ -312,37 +312,42 @@ export default {
             if (toExpand["@context"] != null && toExpand["@context"].indexOf("skos") !== -1) {
                 toExpand["@context"] = "https://schema.cassproject.org/0.4/skos/";
             }
-            var expanded = await jsonld.expand(toExpand);
-            if (expanded && expanded[0]) {
-                after(expanded[0]);
-            } else {
-                after(null);
-            }
+            jsonld.expand(toExpand, function(err, expanded) {
+                if (err == null) {
+                    after(expanded[0]);
+                } else {
+                    after(null);
+                }
+            });
         },
-        saveExpanded: async function(expandedCompetency) {
+        saveExpanded: function(expandedCompetency) {
             var me = this;
             var context = "https://schema.cassproject.org/0.4";
             if (expandedCompetency["@type"][0].toLowerCase().indexOf("concept") !== -1) {
                 context = "https://schema.cassproject.org/0.4/skos";
             }
-            var compacted = await jsonld.compact(expandedCompetency, this.$store.state.lode.rawSchemata[context]);
-            if (compacted) {
-                var rld = new EcRemoteLinkedData();
-                rld.copyFrom(compacted);
-                rld.context = context;
-                delete rld["@context"];
-                rld = me.turnFieldsBackIntoArrays(rld);
-                rld["schema:dateModified"] = new Date().toISOString();
-                if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
-                    rld = EcEncryptedValue.toEncryptedValue(rld);
+            jsonld.compact(expandedCompetency, this.$store.state.lode.rawSchemata[context], function(err, compacted) {
+                if (err != null) {
+                    appError(err);
                 }
-                me.repo.saveTo(rld, function() {
-                    me.editsFinishedCounter++;
-                }, function(error) {
-                    appError(error);
-                    me.editsFinishedCounter++;
-                });
-            }
+                if (compacted) {
+                    var rld = new EcRemoteLinkedData();
+                    rld.copyFrom(compacted);
+                    rld.context = context;
+                    delete rld["@context"];
+                    rld = me.turnFieldsBackIntoArrays(rld);
+                    rld["schema:dateModified"] = new Date().toISOString();
+                    if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
+                        rld = EcEncryptedValue.toEncryptedValue(rld);
+                    }
+                    me.repo.saveTo(rld, function() {
+                        me.editsFinishedCounter++;
+                    }, function(error) {
+                        appError(error);
+                        me.editsFinishedCounter++;
+                    });
+                }
+            });
         },
         // Compact operation removes arrays when length is 1, but some fields need to be arrays in the data that's saved
         turnFieldsBackIntoArrays: function(rld) {
