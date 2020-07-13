@@ -106,7 +106,7 @@
                 <div
                     v-if="showAddComments"
                     @click="handleClickAddComment"
-                    class="button is-text has-text-primary">
+                    class="button is-text is-small has-text-primary">
                     <span class="icon">
                         <i class="fas fa-comment-medical" />
                     </span>
