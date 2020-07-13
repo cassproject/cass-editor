@@ -335,7 +335,9 @@ export default {
             } else {
                 optionalLevelUrl = optionalLevelUrl[0];
                 var c = EcRepository.getBlocking(optionalLevelUrl);
-                if (!EcArray.isArray(c.competency)) {
+                if (!c.competency) {
+                    c.competency = [];
+                } else if (!EcArray.isArray(c.competency)) {
                     c.competency = [c.competency];
                 }
                 c.competency.push(selectedCompetency);
