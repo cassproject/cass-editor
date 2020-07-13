@@ -1,6 +1,8 @@
 @import './variables.scss';
 #framework, #concept {
     margin-top: 2rem !important;
+}
+#framework, #concept, #import {
 .framework-wrapper {
     max-width: 1400px;
     width: 100%;
@@ -124,9 +126,6 @@ drag, drag, and chosen states
 .modal.lode__thing-editing {
     background-color: transparent;
     .modal-card {
-        max-width: 680px;
-        min-width: 300px;
-        width: 100%;
         .buttons {
             padding: .5rem 0rem;
         }

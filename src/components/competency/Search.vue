@@ -14,7 +14,7 @@ placed anywhere in a structured html element such as a <section> or a <div>
                 <br><span
                     class="subtitle has-text-white"
                     v-if="copyOrLink">
-                    Sharing settings for {{ frameworkName }}
+                    {{ frameworkName }}
                 </span>
                 <span
                     v-else
@@ -619,8 +619,6 @@ export default {
 <style lang="scss">
     @import '@/scss/frameworks.scss';
 .search-modal, .modal.lode__thing-editing {
-    max-height: 100%;
-    min-height: 600px;
     .breadcrumb {
         padding-left: .125rem;
     }

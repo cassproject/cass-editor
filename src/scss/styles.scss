@@ -230,10 +230,14 @@ iframe {
 .buttons.is-spaced {
     justify-content: space-between;
 }
+
 .modal-card-foot {
     .buttons.is-spaced {
         width: 100% !important;
     }
+}
+.modal-card-title {
+    max-width: calc(100% - 16px);
 }
 
 .table {
