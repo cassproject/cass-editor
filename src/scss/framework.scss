@@ -1,6 +1,8 @@
 @import './variables.scss';
 #framework, #concept {
     margin-top: 2rem !important;
+}
+#framework, #concept, #import {
 .framework-wrapper {
     max-width: 1400px;
     width: 100%;
