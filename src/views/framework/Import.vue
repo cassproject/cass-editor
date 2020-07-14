@@ -38,7 +38,7 @@
                             </div>
                             <div
                                 class="column is-12"
-                                v-if="importType=='file'">
+                                v-if="importType=='file' && !conceptMode">
                                 <p class="is-size-6">
                                     Competency frameworks can be imported into CaSS from the file formats listed below.
                                 </p>

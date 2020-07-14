@@ -138,7 +138,7 @@
                 v-if="showSideNav">
                 <router-link
                     to="/import"
-                    @click.native="$store.commit('editor/conceptMode', false)">
+                    @click.native="$store.commit('editor/conceptMode', false); $store.dispatch('app/clearImport');">
                     <span class="icon">
                         <i class="fa fa-upload" />
                     </span><span v-if="showSideNav">Import</span>
@@ -175,7 +175,7 @@
                 v-if="showSideNav">
                 <router-link
                     to="/import"
-                    @click.native="$store.commit('editor/conceptMode', true)">
+                    @click.native="$store.commit('editor/conceptMode', true); $store.dispatch('app/clearImport');">
                     <span class="icon">
                         <i class="fa fa-upload" />
                     </span>
