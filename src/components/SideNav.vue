@@ -66,7 +66,7 @@
                     </router-link>
                 </div>
             </template>
-            <template v-else>
+            <template v-else-if="loginEnabled">
                 <router-link
                     v-if="showSideNav"
                     class="button is-outlined is-link"
@@ -125,7 +125,8 @@
             </li>
             <!-- hidding this for now -->
             <li
-                class="has-text-white">
+                class="has-text-white"
+                v-if="crosswalkEnabled">
                 <router-link to="/crosswalk">
                     <span class="icon">
                         <i class="fa fa-network-wired" />
@@ -185,20 +186,20 @@
         </ul>
         <ul class="menu-list" />
         <div
-            v-if="showSideNav"
+            v-if="showSideNav && (configurationsEnabled || userManagementEnabled)"
             class="menu-label has-text-weight-bold">
             Configuration
         </div>
         <ul
             class="menu-list">
-            <li>
+            <li v-if="configurationsEnabled">
                 <router-link to="/configuration">
                     <span class="icon">
                         <i class="fa fa-cog" />
                     </span><span v-if="showSideNav">Configurations</span>
                 </router-link>
             </li>
-            <li v-if="isLoggedOn">
+            <li v-if="isLoggedOn && userManagementEnabled">
                 <router-link to="/users">
                     <span class="icon">
                         <i class="fa fa-users" />
@@ -239,6 +240,12 @@ export default {
     },
 
     computed: {
+        ...mapState({
+            crosswalkEnabled: state => state.featuresEnabled.crosswalkEnabled,
+            userManagementEnabled: state => state.featuresEnabled.userManagementEnabled,
+            configurationsEnabled: state => state.featuresEnabled.configurationsEnabled,
+            loginEnabled: state => state.featuresEnabled.loginEnabled
+        }),
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];
         },

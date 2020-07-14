@@ -66,6 +66,12 @@ export default {
                 if (this.queryParams.concepts === 'true') {
                     this.$store.commit('editor/conceptMode', true);
                 }
+                if (this.queryParams.ceasnDataFields === 'true') {
+                    this.$store.commit('featuresEnabled/configurationsEnabled', false);
+                    this.$store.commit('featuresEnabled/userManagementEnabled', false);
+                    this.$store.commit('featuresEnabled/searchByOwnerNameEnabled', false);
+                    this.$store.commit('featuresEnabled/loginEnabled', false);
+                }
             }
             for (var i = 0; i < servers.length; i++) {
                 var r = new EcRepository();

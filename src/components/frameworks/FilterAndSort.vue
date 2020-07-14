@@ -25,7 +25,7 @@
         </div>
         <div
             class="section"
-            v-if="!($store.getters['editor/conceptMode'] && !loggedIn)">
+            v-if="showQuickFilterHeading && !($store.getters['editor/conceptMode'] && !loggedIn)">
             <h3 class="title is-size-4">
                 Quick Filters
             </h3>
@@ -136,7 +136,8 @@ export default {
                     label: 'Owner name',
                     enabled: true
                 }
-            ]
+            ],
+            showQuickFilterHeading: true
         };
     },
     computed: {
@@ -150,9 +151,22 @@ export default {
         },
         loggedIn: function() {
             return EcIdentityManager.ids && EcIdentityManager.ids.length;
+        },
+        searchByOwnerNameEnabled: function() {
+            return this.$store.state.featuresEnabled.searchByOwnerNameEnabled;
+        },
+        configurationsEnabled: function() {
+            return this.$store.state.featuresEnabled.configurationsEnabled;
         }
     },
     mounted: function() {
+        if (!this.searchByOwnerNameEnabled) {
+            for (var i = 0; i < this.applySearchTo.length; i++) {
+                if (this.applySearchTo[i].id === "ownerName") {
+                    this.applySearchTo[i].enabled = false;
+                }
+            }
+        }
         if (!this.loggedIn) {
             for (var i = 0; i < this.quickFilters.length; i++) {
                 if (this.quickFilters[i].id !== "configMatchDefault") {
@@ -160,13 +174,20 @@ export default {
                 }
             }
         }
-        if (this.$store.getters['editor/conceptMode']) {
+        if (this.$store.getters['editor/conceptMode'] || !this.configurationsEnabled) {
             for (var i = 0; i < this.quickFilters.length; i++) {
                 if (this.quickFilters[i].id === "configMatchDefault") {
                     this.quickFilters[i].enabled = false;
                 }
             }
         }
+        let showFilters = false;
+        for (var i = 0; i < this.quickFilters.length; i++) {
+            if (this.quickFilters[i].enabled === true) {
+                showFilters = true;
+            }
+        }
+        this.showQuickFilterHeading = showFilters;
     },
     watch: {
         applySearchTo: {

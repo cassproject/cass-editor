@@ -5,6 +5,7 @@ import editor from './modules/editor.js';
 import app from './modules/app.js';
 import user from './modules/user.js';
 import crosswalk from './modules/crosswalk.js';
+import featuresEnabled from './modules/featuresEnabled.js';
 
 Vue.use(Vuex);
 
@@ -14,6 +15,7 @@ export default new Vuex.Store({
         editor,
         app,
         user,
-        crosswalk
+        crosswalk,
+        featuresEnabled
     }
 });
