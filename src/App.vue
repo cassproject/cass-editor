@@ -66,6 +66,12 @@ export default {
                 if (this.queryParams.concepts === 'true') {
                     this.$store.commit('editor/conceptMode', true);
                 }
+                if (this.queryParams.ceasnDataFields === 'true') {
+                    this.$store.commit('featuresEnabled/configurationsEnabled', false);
+                    this.$store.commit('featuresEnabled/userManagementEnabled', false);
+                    this.$store.commit('featuresEnabled/searchByOwnerNameEnabled', false);
+                    this.$store.commit('featuresEnabled/loginEnabled', false);
+                }
             }
             for (var i = 0; i < servers.length; i++) {
                 var r = new EcRepository();
@@ -164,7 +170,7 @@ export default {
                 }
                 appLog("I got " + event.data.selected.length + " selected items from the iframe");
                 appLog(event.data.selected);
-                if (this.$store.getters['editor/conceptMode'] === true && event.data.type === 'Concept' && this.$store.state.editor.selectCompetencyRelation) {
+                /* if (this.$store.getters['editor/conceptMode'] === true && event.data.type === 'Concept' && this.$store.state.editor.selectCompetencyRelation) {
                     this.addAlignments(selectedIds, selectedCompetency, this.$store.state.editor.selectCompetencyRelation);
                 } else if (event.data.type === 'Concept') {
                     this.attachUrlProperties(selectedIds);
@@ -177,7 +183,7 @@ export default {
                     this.showModal("copyOrLink", selectedIds);
                 } else if (event.data.selected.length <= 0) {
                     alert("No items have been selected.");
-                }
+                }*/
             } else if (event.data.message === "back") {
                 this.$router.push({name: "framework", params: {frameworkId: this.$store.state.editor.framework.id}});
             } else if (event.data.message === "highlightedCompetencies") {

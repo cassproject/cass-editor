@@ -4,7 +4,7 @@
             class="hierarchy-buttons columns is-gapless is-paddingless is-mobile is-marginless is-paddingless">
             <!-- CONTROLS FOR SELECT: ENABLED MULTI EDIT  -->
             <div
-                v-if="view !== 'import'"
+                v-if="(canEdit && view !== 'import') || queryParams.select"
                 id="check-radio-all-column"
                 class="column is-narrow">
                 <div
@@ -40,7 +40,7 @@
                 <div
                     v-if="selectButtonText"
                     @click="$emit('selectButtonClick', selectedArray)"
-                    class="button is-small is-outlined is-primary">
+                    class="button is-outlined is-primary">
                     {{ selectButtonText }}
                 </div>
             </div>
@@ -90,6 +90,59 @@
                         <span>
                             create new
                         </span>
+                    </div>
+                </div>
+            </div>
+            <!-- IMPORT WORKFLOW BUTTONS -->
+            <div
+                class="column"
+                v-if="view === 'import'">
+                <div class="buttons is-right">
+                    <!-- import details options -->
+                    <div
+                        class="buttons is-small is-right">
+                        <!-- cancel button -->
+                        <div
+                            @click="cancelImport"
+                            class=" button is-light is-small is-pulled-right is-dark is-outlined">
+                            <span>
+                                Cancel
+                            </span>
+                            <span class="icon">
+                                <i class="fa fa-times-circle" />
+                            </span>
+                        </div>
+                        <!--  start over -->
+                        <div
+                            @click="$store.dispatch('app/clearImport')"
+                            class="button is-small is-dark is-outlined is-pulled-right">
+                            <span>
+                                import again
+                            </span>
+                            <span class="icon">
+                                <i class="fa fa-redo-alt" />
+                            </span>
+                        </div>
+                        <!-- open in editor -->
+                        <div
+                            @click="openFramework"
+                            class="button is-small is-dark is-outlined is-pulled-right">
+                            <span>view in editor</span>
+                            <span class="icon">
+                                <i class="fa fa-edit" />
+                            </span>
+                        </div>
+                        <!--  home -->
+                        <router-link
+                            class="button is-small is-primary is-outlined is -pulled-right"
+                            to="/">
+                            <span>
+                                Done
+                            </span>
+                            <span class="icon">
+                                <i class="fa fa-home" />
+                            </span>
+                        </router-link>
                     </div>
                 </div>
             </div>
@@ -616,6 +669,15 @@ export default {
         },
         onDraggableCheck: function(checked) {
             this.isDraggable = checked;
+        },
+        cancelImport: function() {
+            this.deleteObject(this.container);
+            this.$store.dispatch('app/clearImport');
+        },
+        openFramework: function() {
+            var f = EcConceptScheme.getBlocking(this.container.shortId());
+            this.$store.commit('editor/framework', f);
+            this.$router.push({name: "conceptScheme", params: {frameworkId: this.container.id}});
         }
     }
 };

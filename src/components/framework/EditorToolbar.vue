@@ -160,7 +160,9 @@
                     </span>
                 </div>
             </div>
-            <div class="right-side">
+            <div
+                class="right-side"
+                v-if="configurationsEnabled">
                 <div
                     class="button is-small is-text is-pulled-right"
                     v-if="canEditFramework && !conceptMode"
@@ -452,6 +454,9 @@ export default {
             } else {
                 return true;
             }
+        },
+        configurationsEnabled: function() {
+            return this.$store.state.featuresEnabled.configurationsEnabled;
         }
     },
     watch: {

@@ -38,7 +38,7 @@
                             </div>
                             <div
                                 class="column is-12"
-                                v-if="importType=='file'">
+                                v-if="importType=='file' && !conceptMode">
                                 <p class="is-size-6">
                                     Competency frameworks can be imported into CaSS from the file formats listed below.
                                 </p>
@@ -59,7 +59,7 @@
                                     Once you are done editing, your framework is available in CaSS and may be exported in a variety of standard formats or saved by pressing “Done”.
                                 </li>
                                 <li class="is-size-6">
-                                    If your framework is not detected by CaSS or not imported properly, you can help us by sending your file to <a href="mailto:cass@eduworks.com?subject=File+to+Improve+CaSS+Importer">cass@eduworks.com</a>.
+                                    If your framework is not detected by CaSS or not imported properly, let us know at <a href="mailto:cass@eduworks.com?subject=File+to+Improve+CaSS+Importer">cass@eduworks.com</a> and we will look into the inquiry and provide a response.
                                 </li>
                             </div>
                             <!-- ready state details -->
@@ -175,7 +175,7 @@
                                 :obj="changedObj ? changedObj : importFramework"
                                 :repo="repo"
                                 class="framework-title"
-                                :profile="conceptMode ? null : t3FrameworkProfile" />
+                                :profile="conceptMode ? ctdlAsnConceptSchemeProfile : t3FrameworkProfile" />
 
                             <Hierarchy
                                 :class="{'is-hidden': !hierarchyIsdoneLoading}"
@@ -200,7 +200,8 @@
                                 :repo="repo"
                                 @selectedArray="selectedArrayEvent"
                                 :newFramework="true"
-                                @deleteObject="deleteObject" />
+                                @deleteObject="deleteObject"
+                                @exportObject="exportObject" />
                             <ConceptHierarchy
                                 :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                 view="import"
@@ -215,7 +216,8 @@
                                 :repo="repo"
                                 @selectedArray="selectedArrayEvent"
                                 :newFramework="true"
-                                @deleteObject="deleteObject" />
+                                @deleteObject="deleteObject"
+                                :profile="ctdlAsnConceptProfile" />
                         </div>
                         <!-- import light view -->
                         <div
@@ -228,7 +230,7 @@
                                 :obj="changedObj ? changedObj : importFramework"
                                 :parentNotEditable="true"
                                 class="framework-title"
-                                :profile="conceptMode ? null : t3FrameworkProfile" />
+                                :profile="conceptMode ? ctdlAsnConceptSchemeProfile : t3FrameworkProfile" />
                             <Hierarchy
                                 v-if="importFramework && !conceptMode"
                                 view="importLight"
@@ -247,7 +249,8 @@
                                 edgeTargetProperty="target"
                                 :repo="repo"
                                 :newFramework="true"
-                                @deleteObject="deleteObject" />
+                                @deleteObject="deleteObject"
+                                @exportObject="exportObject" />
                             <ConceptHierarchy
                                 :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                 view="import"
@@ -258,7 +261,8 @@
                                 :repo="repo"
                                 @selectedArray="selectedArrayEvent"
                                 :newFramework="true"
-                                @deleteObject="deleteObject" />
+                                @deleteObject="deleteObject"
+                                :profile="ctdlAsnConceptProfile" />
                         </div>
                     </div>
                 </div>
@@ -272,18 +276,24 @@ import Hierarchy from '@/lode/components/lode/Hierarchy.vue';
 import common from '@/mixins/common.js';
 import competencyEdits from '@/mixins/competencyEdits.js';
 import t3Profile from '@/mixins/t3Profile.js';
+import ctdlasnProfile from '@/mixins/ctdlasnProfile.js';
 import Thing from '@/lode/components/lode/Thing.vue';
 import ThingEditing from '@/lode/components/lode/ThingEditing.vue';
 import ImportTabs from '@/components/import/ImportTabs.vue';
 import ImportDetails from '@/components/import/ImportDetails.vue';
 import ConceptHierarchy from '@/views/conceptScheme/ConceptHierarchy.vue';
+import getLevelsAndRelations from '@/mixins/getLevelsAndRelations.js';
+import exports from '@/mixins/exports.js';
 
 export default {
     name: "Import",
     mixins: [
         common,
         competencyEdits,
-        t3Profile
+        t3Profile,
+        ctdlasnProfile,
+        exports,
+        getLevelsAndRelations
     ],
     components: {
         Hierarchy,
@@ -389,10 +399,10 @@ export default {
             }
         },
         frameworkSize: function() {
+            if (this.conceptMode) {
+                return null;
+            }
             if (this.importFramework && this.importFramework.competency) {
-                if (this.conceptMode) {
-                    return null;
-                }
                 return this.importFramework.competency.length;
             } else {
                 return 0;
@@ -619,8 +629,36 @@ export default {
             // reveal modal
             this.$modal.show(params);
         },
-        // pulled over from Thing.vue in LODE - should be different for this case
-
+        exportObject: function(type) {
+            var guid;
+            if (EcRepository.shouldTryUrl(this.importFramework.id) === false) {
+                guid = EcCrypto.md5(this.importFramework.id);
+            } else {
+                guid = this.importFramework.getGuid();
+            }
+            var link = this.repo.selectedServer + "data/" + guid;
+            if (type === "asn") {
+                this.exportAsn(link);
+            } else if (type === "jsonld") {
+                this.exportJsonld(link);
+            } else if (type === "rdfQuads") {
+                this.exportRdfQuads(link);
+            } else if (type === "rdfJson") {
+                this.exportRdfJson(link);
+            } else if (type === "rdfXml") {
+                this.exportRdfXml(link);
+            } else if (type === "turtle") {
+                this.exportTurtle(link);
+            } else if (type === "ctdlasnJsonld") {
+                this.exportCtdlasnJsonld(link);
+            } else if (type === "ctdlasnCsv") {
+                this.exportCtdlasnCsv(link);
+            } else if (type === "csv") {
+                this.exportCsv();
+            } else if (type === "case") {
+                this.exportCasePackages(guid);
+            }
+        },
         unsupportedFile: function(val) {
             this.$store.commit('app/importFileType', val);
             let error = "File type " + fileType + " is unsupported in this workflow";
@@ -760,7 +798,7 @@ export default {
                         me.$store.commit('app/importTransition', 'process');
                     }
                 }, function(failure) {
-                    if (file.name.endsWith(".json")) {
+                    if (file.name.endsWith(".json") && !me.conceptMode) {
                         // If JSON-LD doesn't work, try JSON
                         ASNImport.analyzeFile(file, function(data) {
                             me.$store.commit('app/importFileType', 'asn');
