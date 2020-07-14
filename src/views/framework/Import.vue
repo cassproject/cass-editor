@@ -175,7 +175,7 @@
                                 :obj="changedObj ? changedObj : importFramework"
                                 :repo="repo"
                                 class="framework-title"
-                                :profile="conceptMode ? null : t3FrameworkProfile" />
+                                :profile="conceptMode ? ctdlAsnConceptSchemeProfile : t3FrameworkProfile" />
 
                             <Hierarchy
                                 :class="{'is-hidden': !hierarchyIsdoneLoading}"
@@ -216,7 +216,8 @@
                                 :repo="repo"
                                 @selectedArray="selectedArrayEvent"
                                 :newFramework="true"
-                                @deleteObject="deleteObject" />
+                                @deleteObject="deleteObject"
+                                :profile="ctdlAsnConceptProfile" />
                         </div>
                         <!-- import light view -->
                         <div
@@ -229,7 +230,7 @@
                                 :obj="changedObj ? changedObj : importFramework"
                                 :parentNotEditable="true"
                                 class="framework-title"
-                                :profile="conceptMode ? null : t3FrameworkProfile" />
+                                :profile="conceptMode ? ctdlAsnConceptSchemeProfile : t3FrameworkProfile" />
                             <Hierarchy
                                 v-if="importFramework && !conceptMode"
                                 view="importLight"
@@ -260,7 +261,8 @@
                                 :repo="repo"
                                 @selectedArray="selectedArrayEvent"
                                 :newFramework="true"
-                                @deleteObject="deleteObject" />
+                                @deleteObject="deleteObject"
+                                :profile="ctdlAsnConceptProfile" />
                         </div>
                     </div>
                 </div>
@@ -274,6 +276,7 @@ import Hierarchy from '@/lode/components/lode/Hierarchy.vue';
 import common from '@/mixins/common.js';
 import competencyEdits from '@/mixins/competencyEdits.js';
 import t3Profile from '@/mixins/t3Profile.js';
+import ctdlasnProfile from '@/mixins/ctdlasnProfile.js';
 import Thing from '@/lode/components/lode/Thing.vue';
 import ThingEditing from '@/lode/components/lode/ThingEditing.vue';
 import ImportTabs from '@/components/import/ImportTabs.vue';
@@ -288,6 +291,7 @@ export default {
         common,
         competencyEdits,
         t3Profile,
+        ctdlasnProfile,
         exports,
         getLevelsAndRelations
     ],
@@ -395,10 +399,10 @@ export default {
             }
         },
         frameworkSize: function() {
+            if (this.conceptMode) {
+                return null;
+            }
             if (this.importFramework && this.importFramework.competency) {
-                if (this.conceptMode) {
-                    return null;
-                }
                 return this.importFramework.competency.length;
             } else {
                 return 0;
@@ -794,7 +798,7 @@ export default {
                         me.$store.commit('app/importTransition', 'process');
                     }
                 }, function(failure) {
-                    if (file.name.endsWith(".json")) {
+                    if (file.name.endsWith(".json") && !me.conceptMode) {
                         // If JSON-LD doesn't work, try JSON
                         ASNImport.analyzeFile(file, function(data) {
                             me.$store.commit('app/importFileType', 'asn');
