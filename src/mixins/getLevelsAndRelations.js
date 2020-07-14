@@ -20,7 +20,11 @@ export default {
             return this.$store.getters['editor/refreshLevels'];
         },
         relationArray: function() {
-            return this.framework.relation;
+            if (this.framework) {
+                return this.framework.relation;
+            } else if (this.importFramework) {
+                return this.importFramework.relation;
+            }
         }
     },
     methods: {
@@ -57,13 +61,13 @@ export default {
             });
         },
         updateRelations: function() {
-            if (!this.framework.relation) {
+            if (!this.framework?.relation && !this.importFramework?.relation) {
                 this.relations = {};
                 return;
             }
             var me = this;
             var relations = [];
-            new EcAsyncHelper().each(this.framework.relation, function(relationId, done) {
+            new EcAsyncHelper().each((this.framework ? this.framework.relation : this.importFramework.relation), function(relationId, done) {
                 EcAlignment.get(relationId, function(a) {
                     if (a && a.source && a.target) {
                         var relation = {};

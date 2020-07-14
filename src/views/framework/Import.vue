@@ -277,13 +277,15 @@ import ThingEditing from '@/lode/components/lode/ThingEditing.vue';
 import ImportTabs from '@/components/import/ImportTabs.vue';
 import ImportDetails from '@/components/import/ImportDetails.vue';
 import ConceptHierarchy from '@/views/conceptScheme/ConceptHierarchy.vue';
+import getLevelsAndRelations from '@/mixins/getLevelsAndRelations.js';
 
 export default {
     name: "Import",
     mixins: [
         common,
         competencyEdits,
-        t3Profile
+        t3Profile,
+        getLevelsAndRelations
     ],
     components: {
         Hierarchy,
