@@ -4,7 +4,7 @@
             class="hierarchy-buttons columns is-gapless is-paddingless is-mobile is-marginless is-paddingless">
             <!-- CONTROLS FOR SELECT: ENABLED MULTI EDIT  -->
             <div
-                v-if="view !== 'import'"
+                v-if="(canEdit && view !== 'import') || queryParams.select"
                 id="check-radio-all-column"
                 class="column is-narrow">
                 <div
@@ -40,7 +40,7 @@
                 <div
                     v-if="selectButtonText"
                     @click="$emit('selectButtonClick', selectedArray)"
-                    class="button is-small is-outlined is-primary">
+                    class="button is-outlined is-primary">
                     {{ selectButtonText }}
                 </div>
             </div>
