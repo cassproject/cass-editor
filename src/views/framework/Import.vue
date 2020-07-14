@@ -200,7 +200,8 @@
                                 :repo="repo"
                                 @selectedArray="selectedArrayEvent"
                                 :newFramework="true"
-                                @deleteObject="deleteObject" />
+                                @deleteObject="deleteObject"
+                                @exportObject="exportObject" />
                             <ConceptHierarchy
                                 :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                 view="import"
@@ -247,7 +248,8 @@
                                 edgeTargetProperty="target"
                                 :repo="repo"
                                 :newFramework="true"
-                                @deleteObject="deleteObject" />
+                                @deleteObject="deleteObject"
+                                @exportObject="exportObject" />
                             <ConceptHierarchy
                                 :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                 view="import"
@@ -278,6 +280,7 @@ import ImportTabs from '@/components/import/ImportTabs.vue';
 import ImportDetails from '@/components/import/ImportDetails.vue';
 import ConceptHierarchy from '@/views/conceptScheme/ConceptHierarchy.vue';
 import getLevelsAndRelations from '@/mixins/getLevelsAndRelations.js';
+import exports from '@/mixins/exports.js';
 
 export default {
     name: "Import",
@@ -285,6 +288,7 @@ export default {
         common,
         competencyEdits,
         t3Profile,
+        exports,
         getLevelsAndRelations
     ],
     components: {
@@ -621,8 +625,36 @@ export default {
             // reveal modal
             this.$modal.show(params);
         },
-        // pulled over from Thing.vue in LODE - should be different for this case
-
+        exportObject: function(type) {
+            var guid;
+            if (EcRepository.shouldTryUrl(this.importFramework.id) === false) {
+                guid = EcCrypto.md5(this.importFramework.id);
+            } else {
+                guid = this.importFramework.getGuid();
+            }
+            var link = this.repo.selectedServer + "data/" + guid;
+            if (type === "asn") {
+                this.exportAsn(link);
+            } else if (type === "jsonld") {
+                this.exportJsonld(link);
+            } else if (type === "rdfQuads") {
+                this.exportRdfQuads(link);
+            } else if (type === "rdfJson") {
+                this.exportRdfJson(link);
+            } else if (type === "rdfXml") {
+                this.exportRdfXml(link);
+            } else if (type === "turtle") {
+                this.exportTurtle(link);
+            } else if (type === "ctdlasnJsonld") {
+                this.exportCtdlasnJsonld(link);
+            } else if (type === "ctdlasnCsv") {
+                this.exportCtdlasnCsv(link);
+            } else if (type === "csv") {
+                this.exportCsv();
+            } else if (type === "case") {
+                this.exportCasePackages(guid);
+            }
+        },
         unsupportedFile: function(val) {
             this.$store.commit('app/importFileType', val);
             let error = "File type " + fileType + " is unsupported in this workflow";
