@@ -59,7 +59,7 @@
                                     Once you are done editing, your framework is available in CaSS and may be exported in a variety of standard formats or saved by pressing “Done”.
                                 </li>
                                 <li class="is-size-6">
-                                    If your framework is not detected by CaSS or not imported properly, you can help us by sending your file to <a href="mailto:cass@eduworks.com?subject=File+to+Improve+CaSS+Importer">cass@eduworks.com</a>.
+                                    If your framework is not detected by CaSS or not imported properly, let us know at <a href="mailto:cass@eduworks.com?subject=File+to+Improve+CaSS+Importer">cass@eduworks.com</a> and we will look into the inquiry and provide a response.
                                 </li>
                             </div>
                             <!-- ready state details -->
