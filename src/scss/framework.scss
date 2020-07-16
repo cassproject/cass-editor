@@ -2,6 +2,15 @@
 #framework, #concept {
     margin-top: 2rem !important;
 }
+.is-id {
+    width: 200px;
+    max-width: 100%;
+    display: inline-block;
+    direction: rtl;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
 #framework, #concept, #import {
 .framework-wrapper {
     max-width: 1400px;
@@ -98,7 +107,8 @@ drag, drag, and chosen states
 
 
 .uneditable {
-    word-break: break-all;
+    width: 100%;
+    overflow-x: scroll;
 }
 
 .lode__thing:hover {
@@ -163,12 +173,10 @@ drag, drag, and chosen states
     }
     .read-only__link {
         .field .control .uneditable {
-            padding-right: .5rem;
-            font-size: .7rem;
         }
-        .field .control {
-            padding-right: .5rem;
+        .field .control.is-expanded {
             font-size: .7rem;
+            padding-right: .25rem;
         }
     }
     .lode__Property {
@@ -396,9 +404,7 @@ drag, drag, and chosen states
         .lode__Framework {
             transform: translateX(0);
             width: 100%;
-            a {
-                display:none;
-            }
+
             .top-actions, .bottom-actions {
                 padding: .5rem .5rem;
             }
@@ -601,9 +607,7 @@ drag, drag, and chosen states
     .lode__Competency, .lode__Concept {
         transform: translateX(0);
         border-left: none;
-        a {
-            display:none;
-        }
+
         cursor: pointer;
         // hidden element for clicking
         .clickable-hierarchy {
