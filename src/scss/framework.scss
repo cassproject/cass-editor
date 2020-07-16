@@ -1,15 +1,18 @@
 @import './variables.scss';
 #framework, #concept {
     margin-top: 2rem !important;
+    height: calc(100% - 2rem);
 }
 .is-id {
     width: 200px;
+    text-align: left;
     max-width: 100%;
     display: inline-block;
     direction: rtl;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+    color: $dark;
 }
 #framework, #concept, #import {
 .framework-wrapper {
@@ -175,7 +178,7 @@ drag, drag, and chosen states
         .field .control .uneditable {
         }
         .field .control.is-expanded {
-            font-size: .7rem;
+            font-size: .8rem;
             padding-right: .25rem;
         }
     }
