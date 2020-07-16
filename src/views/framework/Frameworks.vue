@@ -10,7 +10,7 @@
                 :searchType="type === 'ConceptScheme' ? 'concept scheme' : 'framework'" />
             <div
                 v-if="!conceptMode"
-                class="container is-fluid">
+                class="container is-fluid show-only-mine">
                 <!-- show my frameworks radio -->
                 <div class="control">
                     <div v-if="queryParams.show !== 'mine' && queryParams.conceptShow !== 'mine' && numIdentities">
