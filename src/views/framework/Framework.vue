@@ -160,7 +160,7 @@ export default {
             return this.$store.getters['app/showRightAside'];
         },
         dynamicThingComponent: function() {
-            if (this.editingFramework || (this.$store.getters['editor/newFramework'] === this.framework.shortId())) {
+            if (this.editingFramework || (this.framework && this.$store.getters['editor/newFramework'] === this.framework.shortId())) {
                 return 'ThingEditing';
             } else {
                 return 'Thing';
@@ -512,7 +512,7 @@ export default {
             }
         },
         defaultFrameworkConfiguration: function() {
-            return this.$store.getters['editor/framework'].configuration;
+            return this.$store.getters['editor/framework'] ? this.$store.getters['editor/framework'].configuration : null;
         }
     },
     components: {
