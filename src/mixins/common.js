@@ -174,6 +174,9 @@ export default {
             this.get(url, null, null, function(data) {
                 var name = null;
                 if (data) {
+                    if (data[0] === "<") {
+                        return;
+                    }
                     data = JSON.parse(data);
                     if (data['ceterms:name']) {
                         name = data['ceterms:name'];
