@@ -140,7 +140,7 @@ export default {
                 null,
                 function(resources) {
                     for (var i = 0; i < resources.length; i++) {
-                        let resourceType = resources[i].educationalAlignment.alignmentType;
+                        let resourceType = resources[i].educationalAlignment.alignmentType + " (resource)";
                         if (!alignments[resourceType]) {
                             alignments[resourceType] = {};
                         }

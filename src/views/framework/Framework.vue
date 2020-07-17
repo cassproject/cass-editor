@@ -330,27 +330,29 @@ export default {
                             profile[key]["heading"] = relationshipsHeading;
                         }
                     }
-                    if (this.config.alignConfig) {
-                        for (let i = 0; i < this.config.alignConfig.length; i++) {
-                            let key = this.config.alignConfig[i];
-                            let me = this;
-                            profile["tertiaryProperties"].push(key);
-                            profile[key] = {};
-                            profile[key]["@id"] = key;
-                            profile[key]["@type"] = ["http://www.w3.org/2000/01/rdf-schema#Property"];
-                            profile[key]["http://schema.org/rangeIncludes"] = [{"@id": "http://schema.org/URL"}];
-                            profile[key]["http://www.w3.org/2000/01/rdf-schema#label"] = [{"@language": "en", "@value": key}];
-                            profile[key]["http://www.w3.org/2000/01/rdf-schema#comment"] = [{"@language": "en", "@value": key}];
-                            profile[key]["valuesIndexed"] = function() { return me.alignments[key]; };
-                            profile[key]["remove"] = function(competency, id) { return me.removeResourceAlignment(id); };
-                            profile[key]["add"] = function(selectedCompetencyId, values) { return me.addResourceAlignments(selectedCompetencyId, key, values); };
-                            profile[key]["save"] = function() {};
-                            profile[key]["update"] = function(value) { return me.updateResourceAlignments(key, value); };
-                            if (relationshipsHeading) {
-                                profile[key]["heading"] = relationshipsHeading;
-                            }
-                            profile[key]["resource"] = true;
+                }
+                if (this.config.alignConfig) {
+                    var keys = EcObject.keys(this.config.alignConfig);
+                    for (let i = 0; i < this.config.alignConfig.length; i++) {
+                        let key = this.config.alignConfig[i] + " (resource)";
+                        let me = this;
+                        profile["tertiaryProperties"].push(key);
+                        profile[key] = {};
+                        profile[key]["@id"] = key;
+                        profile[key]["@type"] = ["http://www.w3.org/2000/01/rdf-schema#Property"];
+                        profile[key]["http://schema.org/rangeIncludes"] = [{"@id": "http://schema.org/URL"}];
+                        profile[key]["http://www.w3.org/2000/01/rdf-schema#label"] = [{"@language": "en", "@value": key}];
+                        profile[key]["http://www.w3.org/2000/01/rdf-schema#comment"] = [{"@language": "en", "@value": key}];
+                        profile[key]["valuesIndexed"] = function() { return me.alignments[key]; };
+                        profile[key]["remove"] = function(competency, id) { return me.removeResourceAlignment(id); };
+                        profile[key]["add"] = function(selectedCompetencyId, values) { return me.addResourceAlignments(selectedCompetencyId, key, values); };
+                        profile[key]["save"] = function() {};
+                        profile[key]["update"] = function(value) { return me.updateResourceAlignments(key, value); };
+                        if (relationshipsHeading) {
+                            profile[key]["heading"] = relationshipsHeading;
                         }
+                        console.log(key);
+                        profile[key]["resource"] = true;
                     }
                 }
                 return profile;
@@ -734,6 +736,7 @@ export default {
         },
         addResourceAlignments: function(selectedCompetencyId, alignmentType, values) {
             let me = this;
+            alignmentType = alignmentType.substring(0, alignmentType.indexOf(' '));
             for (let i = 0; i < values.length; i++) {
                 let c = new CreativeWork();
                 c.generateId(this.repo.selectedServer);
