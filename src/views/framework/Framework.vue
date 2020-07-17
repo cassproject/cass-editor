@@ -351,7 +351,6 @@ export default {
                         if (relationshipsHeading) {
                             profile[key]["heading"] = relationshipsHeading;
                         }
-                        console.log(key);
                         profile[key]["resource"] = true;
                     }
                 }
