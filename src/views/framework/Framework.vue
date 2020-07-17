@@ -345,6 +345,7 @@ export default {
                             profile[key]["remove"] = function(source, target) { };
                             profile[key]["add"] = function(selectedCompetencyId, values) { return me.addResourceAlignments(selectedCompetencyId, key, values); };
                             profile[key]["save"] = function() {};
+                            profile[key]["update"] = function(value) { return me.updateResourceAlignments(key, value); };
                             if (relationshipsHeading) {
                                 profile[key]["heading"] = relationshipsHeading;
                             }
@@ -748,6 +749,21 @@ export default {
                     let edits = [{operation: "addNew", id: c.shortId()}];
                     me.$store.commit('editor/addEditsToUndo', edits);
                     me.$store.commit('editor/refreshAlignments', true);
+                }, appError);
+            }
+        },
+        updateResourceAlignments: function(alignmentType, value) {
+            let me = this;
+            if (value["name"] && value["@value"]) {
+                var c = EcRepository.getBlocking(value["@id"]);
+                let initialName = c.name;
+                let initialUrl = c.url;
+                c.name = value["name"];
+                c.url = value["@value"];
+                this.repo.saveTo(c, function() {
+                    let edits = [{operation: "update", id: c.shortId(), fieldChanged: ["name", "url"], initialValue: [initialName, initialUrl], changedValue: [c.name, c.url]}];
+                    me.$store.commit('editor/addEditsToUndo', edits);
+                    me.$store.commit('editor/refreshAlignments');
                 }, appError);
             }
         }
