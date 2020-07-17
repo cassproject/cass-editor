@@ -2,175 +2,209 @@
     <div
         id="framework-editor-toolbar">
         <!-- property view -->
-        <div class="fet__wrapper">
-            <div class="left-side">
-                <div
-                    class="dropdown"
-                    v-click-outside="closeViewDropDown"
-                    :class="{ 'is-active': showPropertyViewDropDown}">
-                    <div class="dropdown-trigger">
-                        <button
-                            class="button is-small is-text"
-                            @click="showPropertyViewDropDown = !showPropertyViewDropDown"
-                            aria-haspopup="true">
-                            <span>View</span>
-                            <span class="icon is-small">
-                                <i
-                                    class="fas fa-angle-down has-text-link"
-                                    aria-hidden="true" />
+        <div class="container">
+            <div class="columns is-spaced">
+                <!-- view options -->
+                <!-- primary -->
+                <div class="column is-narrow">
+                    <div class='buttons'>
+                        <div
+                            @click="changeProperties('primary')"
+                            class="button is-outlined is-primary is-small">
+                            <span class="icon">
+                                <i class="fas fa-check-square" />
                             </span>
-                        </button>
-                    </div>
-                    <div
-                        class="dropdown-menu"
-                        id="property-dropdown"
-                        role="menu">
-                        <div class="dropdown-content">
-                            <a
-                                @click="changeProperties('primary')"
-                                class="dropdown-item">
-                                <span
-                                    :class="activeView==='primary'? '' : 'is-hidden'"
-                                    class="icon">
-                                    <i class="fa fa-check has-text-primary" />
-                                </span>
-                                Primary Properties
-                            </a>
-                            <a
-                                @click="changeProperties('secondary')"
-                                class="dropdown-item">
-                                <span
-                                    :class="activeView==='secondary'? '' : 'is-hidden'"
-                                    class="icon">
-                                    <i class="fa fa-check has-text-link" />
-                                </span>
-                                Secondary Properties
-                            </a>
-                            <a
-                                @click="changeProperties('tertiary')"
-                                class="dropdown-item">
-                                <span
-                                    :class="activeView==='tertiary'? '' : 'is-hidden'"
-                                    class="icon">
-                                    <i class="fa fa-check" />
-                                </span>
-                                Tertiary Properties
-                            </a>
+                            <span>Primary</span>
+                        </div>
+                        <!-- secondary -->
+                        <div
+                            @click="changeProperties('secondary')"
+                            :class="activeView !== 'primary' ? 'is-primary' : 'is-dark'"
+                            class="button is-outlined is-small">
+                            <span
+                                v-if="activeView === 'primary'"
+                                class="icon">
+                                <i class="fas fa-square" />
+                            </span>
+                            <span
+                                v-else
+                                class="icon">
+                                <i class="fas fa-check-square" />
+                            </span>
+                            <span>Secondary</span>
+                        </div>
+                        <!-- tertiary -->
+                        <div
+                            :class="activeView === 'tertiary' ? 'is-primary' : 'is-dark'"
+                            @click="changeProperties('tertiary')"
+                            class="button is-outlined is-small">
+                            <span
+                                v-if="activeView === 'tertiary'"
+                                class="icon">
+                                <i class="fas fa-check-square" />
+                            </span>
+                            <span
+                                v-else
+                                class="icon">
+                                <i class="fas fa-square" />
+                            </span>
+                            <span>Tertiary</span>
                         </div>
                     </div>
                 </div>
-                <!-- share: export or manage users -->
+                <!-- divider -->
+                <div class="column is-narrow">
+                    <div class="vl" />
+                </div>
+                <!-- export -->
                 <div
-                    class="dropdown"
-                    v-click-outside="closeShareDropDown"
-                    :class="{ 'is-active': showShareDropdown}">
-                    <div class="dropdown-trigger">
-                        <button
-                            class="button is-small is-text"
-                            @click="showShareDropdown = !showShareDropdown"
-                            aria-haspopup="true">
-                            <span>Framework</span>
-                            <span class="icon is-small">
-                                <i
-                                    class="fas fa-angle-down has-text-link"
-                                    aria-hidden="true" />
-                            </span>
-                        </button>
-                    </div>
+                    class="column is-narrow"
+                    v-if="canExport">
                     <div
-                        class="dropdown-menu"
-                        id="share-menu"
-                        role="menu">
-                        <div class="dropdown-content">
-                            <a
-                                :class="{ 'is-disabled': !canExport}"
-                                @click="handleExportClick()"
-                                class="dropdown-item">
-                                Export
-                            </a>
-                            <a
-                                @click="showManageUsersModal(); showShareDropdown = false;"
-                                class="dropdown-item"
-                                v-if="loggedIn">
-                                Manage Users
-                            </a>
-                            <a
-                                @click="showManageUsersModal(); showShareDropdown = false;"
-                                class="dropdown-item"
-                                v-else>
-                                Get Shareable Link
-                            </a>
+                        :class="{ 'is-disabled': !canExport}"
+                        @click="handleExportClick()"
+                        class="button is-outlined is-primary is-small">
+                        <span class="icon">
+                            <i class="fas fa-file-export" />
+                        </span>
+                        <span>export</span>
+                    </div>
+                </div>
+                <div
+                    class="column is-narrow"
+                    v-else>
+                    <div
+                        :class="{ 'is-disabled': !canExport}"
+                        disabled="true"
+                        class="button is-outlined is-primary is-small">
+                        <span class="icon">
+                            <i class="fas fa-file-export" />
+                        </span>
+                        <span>export</span>
+                    </div>
+                </div>
+                <div class="column is-narrow">
+                    <div class="vl" />
+                </div>
+                <!-- manage users -->
+                <div class="column is-narrow">
+                    <div
+                        v-if="loggedIn"
+                        @click="showManageUsersModal(); showShareDropdown = false;"
+                        class="button is-outlined is-primary is-small">
+                        <span class="icon">
+                            <i class="fas fa-users" />
+                        </span>
+                        <span>
+                            Users
+                        </span>
+                    </div>
+                    <!-- get share link -->
+                    <div
+                        v-else
+                        @click="showManageUsersModal(); showShareDropdown = false;"
+                        class="button is-outlined is-primary is-small">
+                        <span class="icon">
+                            <i class="fas fa-share" />
+                        </span>
+                        <span>
+                            Share
+                        </span>
+                    </div>
+                </div>
+                <div class="column is-narrow">
+                    <div class="vl" />
+                </div>
+                <!-- comments -->
+                <div
+                    class="column is-narrow"
+                    v-if="showAddComments || showViewComments">
+                    <!-- show comments -->
+                    <div class="buttons">
+                        <div
+                            @click="handleClickAddComment"
+                            class="button is-outlined is-small is-primary">
+                            <span class="icon">
+                                <i class="fas fa-comment-medical" />
+                            </span>
+                        </div>
+                        <div
+                            v-if="showViewComments"
+                            @click="$store.commit('app/showRightAside', 'Comments')"
+                            class="button is-outlined is-small is-dark">
+                            <span class="icon">
+                                <i class="fas fa-comments" />
+                            </span>
                         </div>
                     </div>
                 </div>
-                <!-- hook this button up to add a new node at the top of the
-            hierarchy in editing mode -->
-                <div
-                    v-if="showAddComments"
-                    @click="handleClickAddComment"
-                    class="button is-text is-small has-text-primary">
-                    <span class="icon">
-                        <i class="fas fa-comment-medical" />
-                    </span>
+                <div class="column is-narrow">
+                    <div class="vl" />
                 </div>
                 <div
-                    v-if="showViewComments"
-                    @click="$store.commit('app/showRightAside', 'Comments')"
-                    class="button is-text is-small has-text-dark">
-                    <span class="icon">
-                        <i class="fas fa-comments" />
-                    </span>
-                </div>
-                <div
-                    class="button is-small is-text has-text-dark"
-                    @click="onClickUndo"
+                    class="column is-narrow"
                     v-if="canEditFramework">
-                    <span class="icon">
-                        <i class="fas fa-undo-alt " />
-                    </span>
+                    <div class="buttons">
+                        <div
+                            class="button is-small is-outlined is-primary"
+                            @click="onClickUndo">
+                            <span class="icon">
+                                <i class="fas fa-undo-alt " />
+                            </span>
+                        </div>
+                        <div
+                            @click="$store.commit('app/showRightAside', 'Versions')"
+                            class="button is-outlined is-small is-primary">
+                            <span class="icon">
+                                <i class="fas fa-history" />
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-narrow">
+                    <div class="vl" />
+                </div>
+                <div class="column is-narrow" v-if="canEditFramework">
+                    <div class="buttons">
+                        <div
+                            class="button is-small is-outlined is-primary"
+                            @click="copyClick">
+                            <span class="icon">
+                                <i class="fa fa-copy" />
+                            </span>
+                        </div>
+                        <div
+                            class="button is-small is-outlined is-primary"
+                            @click="cutClick">
+                            <span class="icon">
+                                <i class="fas handle fa-cut" />
+                            </span>
+                        </div>
+                        <div
+                            class="button is-outlined is-primary is-small"
+                            @click="pasteClick"
+                            title="paste">
+                            <span class="icon">
+                                <i class="fa fa-paste" />
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-narrow">
+                    <div class="vl" />
                 </div>
                 <div
-                    @click="$store.commit('app/showRightAside', 'Versions')"
-                    class="button is-text is-small"
-                    v-if="canEditFramework">
-                    <span class="icon">
-                        <i class="fas fa-history has-text-dark" />
-                    </span>
-                </div>
-                <div
-                    class="button is-small is-text has-text-primary"
-                    @click="copyClick">
-                    <span class="icon ">
-                        <i class="fa fa-copy is-size-7" />
-                    </span>
-                </div>
-                <div
-                    class="button is-small is-text has-text-primary"
-                    @click="cutClick">
-                    <span class="icon">
-                        <i class="fas handle fa-cut" />
-                    </span>
-                </div>
-                <div
-                    class="button is-small is-text has-text-primary"
-                    @click="pasteClick"
-                    title="paste">
-                    <span class="icon">
-                        <i class="fa fa-paste is-size-7" />
-                    </span>
-                </div>
-            </div>
-            <div
-                class="right-side"
-                v-if="configurationsEnabled">
-                <div
-                    class="button is-small is-text is-pulled-right"
-                    v-if="canEditFramework && !conceptMode"
-                    @click="showManageConfigurationModal(); showShareDropdown = false;">
-                    <span class="icon">
-                        <i class="fas fa-cog has-text-dark" />
-                    </span>
-                    <span>{{ defaultFrameworkConfigName }}</span>
+                    class="column is-narrow"
+                    v-if="configurationsEnabled">
+                    <div
+                        class="button is-small is-outlined is-primary is-pulled-right"
+                        v-if="canEditFramework && !conceptMode"
+                        @click="showManageConfigurationModal(); showShareDropdown = false;">
+                        <span class="icon">
+                            <i class="fas fa-cog has-text-dark" />
+                        </span>
+                        <span>{{ defaultFrameworkConfigName }}</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -486,11 +520,11 @@ export default {
     width: calc(100% - 300px);
 }
 #framework-editor-toolbar {
-    border-bottom: solid 1px $light;
+    border-bottom: solid 1px rgba($dark, .5);
     top: 0rem;
-    width: calc(100% - 4rem);
+    width: calc(100% - 5rem);
     z-index: 10;
-    height: 1.75rem;
+    height: 2.5rem;
     position: fixed;
     padding: 4px;
     background-color:$light;
@@ -512,7 +546,7 @@ export default {
             justify-content: flex-start;
         }
     }
-    .dropdown, .button, .framework-search {
+    .dropdown, .framework-search {
         padding: 0px .5rem;
     }
     .framework-search {
@@ -526,6 +560,11 @@ export default {
     }
     .fet_view-options {
 
+    }
+    .vl {
+        border:1px solid rgba($dark, .5);
+        height:100%;
+        width: 0px;
     }
 }
 </style>

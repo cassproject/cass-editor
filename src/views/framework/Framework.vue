@@ -2,15 +2,18 @@
     <div id="framework">
         <RightAside v-if="showRightAside" />
         <!-- begin framework -->
-        <div class="framework-content">
+        <div
+            class="framework-content"
+            id="framework-content">
             <div class="framework-body columns is-multiline is-gapless is-paddingless is-marginless">
                 <FrameworkEditorToolbar
                     @showExportModal="onOpenExportModal"
                     @changeProperties="changeProperties"
                     :selectedArray="selectedArray" />
                 <div class="column is-12">
-                    <div class="container">
+                    <div class="container is-paddingless ">
                         <Component
+                            :class="parentObjectClass"
                             :is="dynamicThingComponent"
                             :id="'scroll-' + framework.shortId().split('/').pop()"
                             :obj="framework"
@@ -23,45 +26,43 @@
                             @editNodeEvent="onEditNode()"
                             @doneEditingNodeEvent="onDoneEditingNode()"
                             :properties="properties">
-                            <div class="lode__framework__info-bar">
-                                <span
-                                    class="tag is-medium-grey has-text-dark"
-                                    v-if="framework.competency && framework.competency.length == 1">
-                                    {{ framework.competency.length }} item
-                                </span>
-                                <span
-                                    class="tag is-medium-grey has-text-dark"
-                                    v-else-if="framework.competency && framework.competency.length > 1">
-                                    {{ framework.competency.length }} items
-                                </span>
-                                <span
-                                    class="tag is-medium-grey has-text-dark"
-                                    v-if="timestamp"
-                                    :title="new Date(timestamp)">
-                                    Last modified {{ lastModified }}
-                                </span>
-                                <span
-                                    class="tag is-medium-grey has-text-dark"
-                                    v-if="framework['schema:dateCreated']"
-                                    :title="new Date(framework['schema:dateCreated'])">
-                                    Created {{ $moment(framework['schema:dateCreated']).fromNow() }}
-                                </span>
-                                <span
-                                    class="tag is-medium-grey has-text-dark"
-                                    v-if="framework['Approved']"
-                                    :title="framework['Approved']">
-                                    Approved
-                                </span>
-                                <span
-                                    class="tag is-medium-grey has-text-dark"
-                                    v-if="framework['Published']"
-                                    :title="framework['Published']">Published</span>
-                            </div>
+                            <template #frameworkDetails>
+                                <div class="lode__framework__info-bar">
+                                    <span
+                                        class="tag is-medium-grey has-text-dark"
+                                        v-if="framework.competency && framework.competency.length == 1">
+                                        {{ framework.competency.length }} item
+                                    </span>
+                                    <span
+                                        class="tag is-medium-grey has-text-dark"
+                                        v-else-if="framework.competency && framework.competency.length > 1">
+                                        {{ framework.competency.length }} items
+                                    </span>
+                                    <span
+                                        class="tag is-medium-grey has-text-dark"
+                                        v-if="timestamp"
+                                        :title="new Date(timestamp)">
+                                        Last modified {{ lastModified }}
+                                    </span>
+                                    <span
+                                        class="tag is-medium-grey has-text-dark"
+                                        v-if="framework['schema:dateCreated']"
+                                        :title="new Date(framework['schema:dateCreated'])">
+                                        Created {{ $moment(framework['schema:dateCreated']).fromNow() }}
+                                    </span>
+                                    <span
+                                        class="tag is-medium-grey has-text-dark"
+                                        v-if="framework['Approved']"
+                                        :title="framework['Approved']">
+                                        Approved
+                                    </span>
+                                    <span
+                                        class="tag is-medium-grey has-text-dark"
+                                        v-if="framework['Published']"
+                                        :title="framework['Published']">Published</span>
+                                </div>
+                            </template>
                         </Component>
-                    </div>
-                </div>
-                <div class="column is-12">
-                    <div class="container">
                         <Hierarchy
                             :container="framework"
                             containerType="Framework"
@@ -104,15 +105,25 @@ import ctdlasnProfile from '@/mixins/ctdlasnProfile.js';
 import t3Profile from '@/mixins/t3Profile.js';
 import tlaProfile from '@/mixins/tlaProfile.js';
 import saveAs from 'file-saver';
+import debounce from 'lodash/debounce';
 
 export default {
     name: "Framework",
     props: {
         profileOverride: Object
     },
+    components: {
+        FrameworkButtons: () => import('@/components/FrameworkButtons.vue'),
+        Hierarchy: () => import('@/lode/components/lode/Hierarchy.vue'),
+        Thing: () => import('@/lode/components/lode/Thing.vue'),
+        ThingEditing: () => import('@/lode/components/lode/ThingEditing.vue'),
+        FrameworkEditorToolbar: () => import('@/components/framework/EditorToolbar.vue'),
+        RightAside: () => import('@/components/framework/RightAside.vue')
+    },
     mixins: [common, exports, competencyEdits, ctdlasnProfile, t3Profile, tlaProfile, getLevelsAndRelations],
     data: function() {
         return {
+            parentObjectClass: 'parent-object',
             showVersionHistory: false,
             showEditMultiple: false,
             showClipboardSuccessModal: false,
@@ -515,13 +526,6 @@ export default {
             return this.$store.getters['editor/framework'] ? this.$store.getters['editor/framework'].configuration : null;
         }
     },
-    components: {
-        Hierarchy: () => import('@/lode/components/lode/Hierarchy.vue'),
-        Thing: () => import('@/lode/components/lode/Thing.vue'),
-        ThingEditing: () => import('@/lode/components/lode/ThingEditing.vue'),
-        FrameworkEditorToolbar: () => import('@/components/framework/EditorToolbar.vue'),
-        RightAside: () => import('@/components/framework/RightAside.vue')
-    },
     created: function() {
         // Set configuration create() happens before mount, make sure framework exists in case
         // the page was being refreshed and no longer exists.
@@ -538,6 +542,12 @@ export default {
             this.updateLevels();
             this.updateRelations();
         }
+        let documentBody = document.getElementById('framework');
+        documentBody.addEventListener('scroll', debounce(this.scrollFunction, 100));
+    },
+    beforeDestroy() {
+        let documentBody = document.getElementById('framework');
+        documentBody.removeEventListener('scroll', debounce(this.scrollFunction, 100));
     },
     watch: {
         shortId: function() {
@@ -554,6 +564,15 @@ export default {
         }
     },
     methods: {
+        scrollFunction(e) {
+            let documentObject = document.getElementsByClassName('parent-object');
+            let scrollValue = e.target.scrollTop;
+            if (scrollValue > 1) {
+                this.parentObjectClass = 'parent-object scrolled';
+            } else {
+                this.parentObjectClass = 'parent-object';
+            }
+        },
         handleSearch: function(e) {
             this.$store.commit('app/showModal', e);
         },
