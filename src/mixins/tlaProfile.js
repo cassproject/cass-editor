@@ -399,7 +399,7 @@ export default {
                     "noTextEditing": "true",
                     "heading": "General"
                 },
-                "https://purl.org/ctdlasn/terms/listId": {
+                "https://purl.org/ctdlasn/terms/listID": {
                     "@id": "https://purl.org/ctdlasn/terms/listID",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
@@ -592,7 +592,7 @@ export default {
                     "https://schema.cassproject.org/0.4/Level",
                     "http://purl.org/dc/terms/type",
                     "https://purl.org/ctdlasn/terms/educationLevelType",
-                    "https://purl.org/ctdlasn/terms/listId",
+                    "https://purl.org/ctdlasn/terms/listID",
                     "https://purl.org/ctdlasn/terms/codedNotation",
                     "https://purl.org/ctdlasn/terms/derivedFrom",
                     "http://schema.org/identifier",
