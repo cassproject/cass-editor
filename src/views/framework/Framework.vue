@@ -745,6 +745,8 @@ export default {
                     c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                 }
                 this.repo.saveTo(c, function() {
+                    let edits = [{operation: "addNew", id: c.shortId()}];
+                    me.$store.commit('editor/addEditsToUndo', edits);
                     me.$store.commit('editor/refreshAlignments', true);
                 }, appError);
             }
