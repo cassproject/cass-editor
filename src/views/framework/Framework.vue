@@ -342,7 +342,7 @@ export default {
                             profile[key]["http://www.w3.org/2000/01/rdf-schema#label"] = [{"@language": "en", "@value": key}];
                             profile[key]["http://www.w3.org/2000/01/rdf-schema#comment"] = [{"@language": "en", "@value": key}];
                             profile[key]["valuesIndexed"] = function() { return me.alignments[key]; };
-                            profile[key]["remove"] = function(source, target) { };
+                            profile[key]["remove"] = function(competency, id) { return me.removeResourceAlignment(id); };
                             profile[key]["add"] = function(selectedCompetencyId, values) { return me.addResourceAlignments(selectedCompetencyId, key, values); };
                             profile[key]["save"] = function() {};
                             profile[key]["update"] = function(value) { return me.updateResourceAlignments(key, value); };
@@ -763,9 +763,17 @@ export default {
                 this.repo.saveTo(c, function() {
                     let edits = [{operation: "update", id: c.shortId(), fieldChanged: ["name", "url"], initialValue: [initialName, initialUrl], changedValue: [c.name, c.url]}];
                     me.$store.commit('editor/addEditsToUndo', edits);
-                    me.$store.commit('editor/refreshAlignments');
+                    me.$store.commit('editor/refreshAlignments', true);
                 }, appError);
             }
+        },
+        removeResourceAlignment: function(resourceId) {
+            let c = EcRepository.getBlocking(resourceId);
+            let me = this;
+            this.repo.deleteRegistered(c, function() {
+                me.$store.commit('editor/addEditsToUndo', [{operation: "delete", obj: c}]);
+                me.$store.commit('editor/refreshAlignments', true);
+            }, appError);
         }
     }
 };
