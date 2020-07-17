@@ -1,10 +1,10 @@
 <template>
     <div class="right-aside__filter-and-sort">
-        <h3 class="title is-size-3">
+        <h3 class="title is-size-4">
             Filter and Sort
         </h3>
-        <div class="section">
-            <h3 class="title is-size-4">
+        <div class="filter-sort-section">
+            <h3 class="filter-sort-header">
                 Sort by
             </h3>
             <div
@@ -19,14 +19,16 @@
                         v-model="sortBy"
                         :value="{id: option.id, label: option.label}"
                         name="sortResults">
-                    <label :for="option.id">{{ option.label }}</label>
+                    <label
+                        class="label"
+                        :for="option.id">{{ option.label }}</label>
                 </template>
             </div>
         </div>
         <div
-            class="section"
+            class="filter-sort-section"
             v-if="showQuickFilterHeading && !($store.getters['editor/conceptMode'] && !loggedIn)">
-            <h3 class="title is-size-4">
+            <h3 class="filter-sort-header">
                 Quick Filters
             </h3>
             <div
@@ -40,14 +42,16 @@
                         type="checkbox"
                         v-model="option.checked"
                         :name="option.id">
-                    <label :for="option.id">{{ option.label }}</label>
+                    <label
+                        class="label"
+                        :for="option.id">{{ option.label }}</label>
                 </template>
             </div>
         </div>
         <div
-            class="section"
+            class="filter-sort-section"
             v-if="!$store.getters['editor/conceptMode']">
-            <h3 class="title is-size-4">
+            <h3 class="filter-sort-header">
                 Apply search term to
             </h3>
             <div
@@ -61,7 +65,9 @@
                         v-model="option.checked"
                         type="checkbox"
                         :name="option.id">
-                    <label :for="option.id">{{ option.label }}</label>
+                    <label
+                        class="label"
+                        :for="option.id">{{ option.label }}</label>
                 </template>
             </div>
         </div>
@@ -87,6 +93,12 @@ export default {
             ],
             quickFilters: [
                 {
+                    id: 'configMatchDefault',
+                    checked: false,
+                    label: 'Configuration matches default',
+                    enabled: true
+                },
+                {
                     id: 'ownedByMe',
                     checked: false,
                     label: 'Owned by me',
@@ -97,13 +109,8 @@ export default {
                     checked: false,
                     label: 'Not owned by me',
                     enabled: true
-                },
-                {
-                    id: 'configMatchDefault',
-                    checked: false,
-                    label: 'Configuration matches default',
-                    enabled: true
                 }
+
             ],
             applySearchTo: [
                 {
@@ -207,3 +214,14 @@ export default {
     }
 };
 </script>
+
+<style lang="scss">
+.filter-sort-section {
+    padding-top: .75rem;
+}
+.filter-sort-header {
+    padding-bottom: .5rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+</style>

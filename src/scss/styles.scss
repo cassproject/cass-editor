@@ -267,12 +267,12 @@ iframe {
 */ 
 @media screen and (min-width: 0px) {
     html {
-      font-size: calc(16px + 6 * ((100vw - 320px) / 680));
+      font-size: 16px;
     }
   }
   @media screen and (min-width: 1200px) {
     html {
-      font-size: 22px;
+      font-size: 18px;
     }
   } 
   
