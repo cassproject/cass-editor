@@ -300,10 +300,10 @@ export default {
                         profile[key]["save"] = function(selectedCompetency, checkedOptions, allOptions) { me.saveCheckedLevels(selectedCompetency, checkedOptions, allOptions); };
                     }
                 }
+                var relationshipsHeading = null;
                 if (this.config.relationshipConfig) {
                     var keys = EcObject.keys(this.config.relationshipConfig);
                     var relationshipsPriority;
-                    var relationshipsHeading = null;
                     if (profile["relationshipsPriority"] && profile["relationshipsPriority"].length > 0) {
                         relationshipsPriority = profile["relationshipsPriority"] + "Properties";
                     } else {
@@ -328,6 +328,27 @@ export default {
                         profile[key]["save"] = function() {};
                         if (relationshipsHeading) {
                             profile[key]["heading"] = relationshipsHeading;
+                        }
+                    }
+                    if (this.config.alignConfig) {
+                        for (let i = 0; i < this.config.alignConfig.length; i++) {
+                            let key = this.config.alignConfig[i];
+                            let me = this;
+                            profile["tertiaryProperties"].push(key);
+                            profile[key] = {};
+                            profile[key]["@id"] = key;
+                            profile[key]["@type"] = ["http://www.w3.org/2000/01/rdf-schema#Property"];
+                            profile[key]["http://schema.org/rangeIncludes"] = [{"@id": "http://schema.org/URL"}];
+                            profile[key]["http://www.w3.org/2000/01/rdf-schema#label"] = [{"@language": "en", "@value": key}];
+                            profile[key]["http://www.w3.org/2000/01/rdf-schema#comment"] = [{"@language": "en", "@value": key}];
+                            profile[key]["valuesIndexed"] = function() { return me.alignments[key]; };
+                            profile[key]["remove"] = function(source, target) { };
+                            profile[key]["add"] = function(selectedCompetencyId, values) { return me.addResourceAlignments(selectedCompetencyId, key, values); };
+                            profile[key]["save"] = function() {};
+                            if (relationshipsHeading) {
+                                profile[key]["heading"] = relationshipsHeading;
+                            }
+                            profile[key]["resource"] = true;
                         }
                     }
                 }
@@ -537,6 +558,7 @@ export default {
         } else {
             this.updateLevels();
             this.updateRelations();
+            this.updateAlignments();
         }
     },
     watch: {
@@ -708,6 +730,24 @@ export default {
         preloadRelations: function() {
             var relation = this.relations;
             var level = this.levels;
+        },
+        addResourceAlignments: function(selectedCompetencyId, alignmentType, values) {
+            let me = this;
+            for (let i = 0; i < values.length; i++) {
+                let c = new CreativeWork();
+                c.generateId(this.repo.selectedServer);
+                c.name = values[i]["name"];
+                c.url = values[i]["@value"];
+                c.educationalAlignment = new AlignmentObject();
+                c.educationalAlignment.targetUrl = selectedCompetencyId;
+                c.educationalAlignment.alignmentType = alignmentType;
+                if (EcIdentityManager.ids.length > 0) {
+                    c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                }
+                this.repo.saveTo(c, function() {
+                    me.$store.commit('editor/refreshAlignments', true);
+                }, appError);
+            }
         }
     }
 };

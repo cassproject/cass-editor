@@ -36,6 +36,7 @@ const state = {
     recomputeHierarchy: false,
     selectedCompetenciesAsProperties: null,
     refreshLevels: false,
+    refreshAlignments: false,
     conceptMode: false,
     cutId: null,
     copyId: null,
@@ -142,6 +143,9 @@ const mutations = {
     refreshLevels(state, boolean) {
         state.refreshLevels = boolean;
     },
+    refreshAlignments(state, boolean) {
+        state.refreshAlignments = boolean;
+    },
     conceptMode(state, boolean) {
         state.conceptMode = boolean;
     },
@@ -245,6 +249,9 @@ const getters = {
     },
     refreshLevels: function(state) {
         return state.refreshLevels;
+    },
+    refreshAlignments: function(state) {
+        return state.refreshAlignments;
     },
     conceptMode: function(state) {
         return state.conceptMode;
