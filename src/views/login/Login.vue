@@ -180,6 +180,7 @@
                         </div>
                     </div>
                     <!-- errors login failed -->
+                    <!--
                     <div
                         class="field"
                         v-if="identityFetchFailed">
@@ -190,6 +191,7 @@
                         v-if="configRetrieveFailed">
                         <p><b>Could not retrieve configuration from selected server: {{ configFailMsg }}</b></p>
                     </div>
+                    -->
                 </section>
                 <!-- footer with actions -->
                 <footer class="modal-card-foot has-background-white">
