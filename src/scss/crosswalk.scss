@@ -72,8 +72,6 @@
             .is-spaced {
                 justify-content: space-between;
             }
-            .button { 
-            }
         }
     }
     .crosswalk__buttons {
@@ -160,6 +158,18 @@
         flex: 10;
         .crosswalk__double-heirarchy__column {
             height: 100%;
+            .source .lode__thing .lode__Framework .lode__Property.lode__name span.value,
+            .target .lode__thing .lode__Framework .lode__Property.lode__name span.value{
+                width: 300px;
+                text-align: left;
+                max-width: 100%;
+                display: inline-block;
+                direction: ltr;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+                color: $dark;
+            }
         }
         .columns {
             margin: .25rem;
@@ -416,8 +426,8 @@
             }
             li.list-ul__item:hover {
                 background-color: $cass-lightest;
-                #arrow-icon {
-                    display:block;
+                .arrow-icon {
+                    visibility:visible;
                 }
             }
             .list-ul__item{
@@ -436,9 +446,6 @@
                         font-weight: 600;
                     }
                 }
-
-            }
-            .list-ul__item:hover {
             }
             .lode__thing {
                 .bottom-actions, .top-actions {
@@ -447,9 +454,6 @@
                 .lode__Framework {
                     transform: translateX(0);
                     cursor: pointer;
-                    .lode__Framework {
-
-                    }
                     .lode__Thing-ul {
                         padding: 0rem .5rem;
                         width: 100%;

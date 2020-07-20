@@ -147,7 +147,6 @@
                 </div>
             </div>
         </div>
-        <hr>
         <template
             v-if="hierarchy">
             <draggable

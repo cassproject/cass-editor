@@ -8,6 +8,7 @@
                 @showExportModal="onOpenExportModal" />
             <div class="framework-wrapper">
                 <Component
+                    :class="parentObjectClass"
                     :is="dynamicThingComponent"
                     :id="'scroll-' + framework.shortId().split('/').pop()"
                     :obj="framework"
@@ -66,7 +67,7 @@
     </div>
 </template>
 <script>
-
+import debounce from 'lodash/debounce';
 import saveAs from 'file-saver';
 import common from '@/mixins/common.js';
 import ctdlasnProfile from '@/mixins/ctdlasnProfile.js';
@@ -76,6 +77,7 @@ export default {
     mixins: [common, ctdlasnProfile],
     data: function() {
         return {
+            parentObjectClass: 'parent-object',
             showVersionHistory: false,
             showEditMultiple: false,
             showClipboardSuccessModal: false,
@@ -696,6 +698,10 @@ export default {
         if (!this.framework) {
             this.$router.push({name: "frameworks"});
         }
+        let documentBody = document.getElementById('concept');
+        documentBody.addEventListener('scroll', debounce(this.scrollFunction, 100, {'leading': true}));
+    },
+    beforeDestroy() {
     },
     watch: {
         shortId: function() {
@@ -703,6 +709,15 @@ export default {
         }
     },
     methods: {
+        scrollFunction(e) {
+            let documentObject = document.getElementsByClassName('parent-object');
+            let scrollValue = e.target.scrollTop;
+            if (scrollValue !== 0) {
+                this.parentObjectClass = 'parent-object scrolled';
+            } else {
+                this.parentObjectClass = 'parent-object';
+            }
+        },
         handleSearch: function(e) {
             this.$store.commit('app/showModal', e);
         },
