@@ -4,10 +4,76 @@
         class="framework-list-page">
         <RightAside v-if="showRightAside" />
         <!-- search field -->
-        <div class="section is-medium">
-            <SearchBar
-                filterSet="all"
-                :searchType="type === 'ConceptScheme' ? 'concept scheme' : 'framework'" />
+        <div class="section">
+            <div class="container">
+                <h1
+                    class="title"
+                    v-if="conceptMode">
+                    Concept Schemes
+                </h1>
+                <h1
+                    class="title"
+                    v-else>
+                    Frameworks
+                </h1>
+                <h1 class="subtitle">
+                    List of available
+                    <span v-if="conceptMode">concepts</span>
+                    <span v-else>frameworks</span>
+                </h1>
+                <div
+                    v-if="conceptMode"
+                    class="buttons is-left">
+                    <div
+                        @click="$emit('createNewConceptScheme')"
+                        class="button is-outlined is-primary">
+                        <span class="icon">
+                            <i class="fa fa-plus" />
+                        </span><span>create new concept</span>
+                    </div>
+                    <router-link
+                        to="/import"
+                        @click.native="$store.commit('editor/conceptMode', true); $store.dispatch('app/clearImport');"
+                        class="button is-outlined is-primary">
+                        <span class="icon">
+                            <i class="fa fa-upload" />
+                        </span><span>import concept from file</span>
+                    </router-link>
+                </div>
+                <div
+                    v-else
+                    class="buttons is-left">
+                    <div
+                        @click="$emit('createNewFramework')"
+                        class="button is-outlined is-primary">
+                        <span class="icon">
+                            <i class="fa fa-plus" />
+                        </span><span>create new framework</span>
+                    </div>
+                    <router-link
+                        to="/import"
+                        @click.native="$store.commit('editor/conceptMode', false); $store.dispatch('app/clearImport');"
+                        class="button is-outlined is-primary">
+                        <span class="icon">
+                            <i class="fa fa-upload" />
+                        </span><span>import framework from file</span>
+                    </router-link>
+                    <router-link
+                        to="/crosswalk"
+                        class="button is-outlined is-primary">
+                        <span class="icon">
+                            <i class="fa fa-network-wired" />
+                        </span><span>crosswalk two frameworks</span>
+                    </router-link>
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="container">
+                <SearchBar
+                    filterSet="all"
+                    :searchType="type === 'ConceptScheme' ? 'concept scheme' : 'framework'" />
+            </div>
             <div
                 v-if="!conceptMode"
                 class="container is-fluid show-only-mine">
