@@ -171,12 +171,11 @@
                                 :is="dynamicThing"
                                 @editNodeEvent="onEditNode"
                                 @doneEditingNodeEvent="onDoneEditingNode"
-                                :class="{'is-hidden': !hierarchyIsdoneLoading}"
+                                :class="[{'is-hidden': !hierarchyIsdoneLoading}, parentObjectClass]"
                                 :obj="changedObj ? changedObj : importFramework"
                                 :repo="repo"
                                 class="framework-title"
                                 :profile="conceptMode ? ctdlAsnConceptSchemeProfile : t3FrameworkProfile" />
-
                             <Hierarchy
                                 :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                 view="importPreview"
@@ -225,6 +224,7 @@
                             class="import-light">
                             <Component
                                 :is="dynamicThing"
+                                :class="parentObjectClass"
                                 :editingNode="editingNode"
                                 @doneEditingNodeEvent="onDoneEditingNode"
                                 :obj="changedObj ? changedObj : importFramework"
@@ -272,6 +272,7 @@
 </template>
 
 <script>
+import debounce from 'lodash/debounce';
 import Hierarchy from '@/lode/components/lode/Hierarchy.vue';
 import common from '@/mixins/common.js';
 import competencyEdits from '@/mixins/competencyEdits.js';
@@ -305,6 +306,7 @@ export default {
     },
     data: function() {
         return {
+            parentObjectClass: 'parent-object',
             editingNode: false,
             hierarchyIsdoneLoading: false,
             frameworkBusy: true,
@@ -1609,6 +1611,16 @@ export default {
                     me.$store.commit('app/importTransition', 'process');
                 }
             });
+        },
+        scrollFunction(e) {
+            let documentObject = document.getElementsByClassName('parent-object');
+            let scrollValue = e.target.scrollTop;
+            console.log("scroll", scrollValue);
+            if (scrollValue !== 0) {
+                this.parentObjectClass = 'parent-object scrolled';
+            } else {
+                this.parentObjectClass = 'parent-object';
+            }
         }
     },
     beforeDestroy: function() {
@@ -1616,6 +1628,8 @@ export default {
     },
     mounted: function() {
         this.clearImport();
+        let documentBody = document.getElementById('import');
+        documentBody.addEventListener('scroll', debounce(this.scrollFunction, 100, {'leading': true}));
     }
 };
 </script>

@@ -303,6 +303,7 @@ export default {
         display: block;
         a {
             padding: .5em !important;
+            text-align: center;
         }
     }
 }

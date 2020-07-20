@@ -7,20 +7,23 @@
                 <!-- view options -->
                 <!-- primary -->
                 <div class="column is-narrow">
-                    <div class='buttons'>
+                    <div class="buttons">
                         <div
+                            title="View only primary properties"
                             @click="changeProperties('primary')"
-                            class="button is-outlined is-primary is-small">
+                            class="button is-text has-text-dark ">
                             <span class="icon">
                                 <i class="fas fa-check-square" />
                             </span>
-                            <span>Primary</span>
+                            <span class="is-hidden-touch">Primary</span>
+                            <span class="is-hidden-desktop">1st</span>
                         </div>
                         <!-- secondary -->
                         <div
+                            title="View primary and secondary properties"
                             @click="changeProperties('secondary')"
-                            :class="activeView !== 'primary' ? 'is-primary' : 'is-dark'"
-                            class="button is-outlined is-small">
+                            :class="activeView !== 'primary' ? 'has-text-dark' : 'has-text-dark'"
+                            class="button is-text ">
                             <span
                                 v-if="activeView === 'primary'"
                                 class="icon">
@@ -31,13 +34,15 @@
                                 class="icon">
                                 <i class="fas fa-check-square" />
                             </span>
-                            <span>Secondary</span>
+                            <span class="is-hidden-touch">Secondary</span>
+                            <span class="is-hidden-desktop">2nd</span>
                         </div>
                         <!-- tertiary -->
                         <div
-                            :class="activeView === 'tertiary' ? 'is-primary' : 'is-dark'"
+                            title="View all properties"
+                            :class="activeView === 'tertiary' ? 'has-text-dark' : 'has-text-dark'"
                             @click="changeProperties('tertiary')"
-                            class="button is-outlined is-small">
+                            class="button is-text ">
                             <span
                                 v-if="activeView === 'tertiary'"
                                 class="icon">
@@ -48,68 +53,9 @@
                                 class="icon">
                                 <i class="fas fa-square" />
                             </span>
-                            <span>Tertiary</span>
+                            <span class="is-hidden-touch">Tertiary</span>
+                            <span class="is-hidden-desktop">3rd</span>
                         </div>
-                    </div>
-                </div>
-                <!-- divider -->
-                <div class="column is-narrow">
-                    <div class="vl" />
-                </div>
-                <!-- export -->
-                <div
-                    class="column is-narrow"
-                    v-if="canExport">
-                    <div
-                        :class="{ 'is-disabled': !canExport}"
-                        @click="handleExportClick()"
-                        class="button is-outlined is-primary is-small">
-                        <span class="icon">
-                            <i class="fas fa-file-export" />
-                        </span>
-                        <span>export</span>
-                    </div>
-                </div>
-                <div
-                    class="column is-narrow"
-                    v-else>
-                    <div
-                        :class="{ 'is-disabled': !canExport}"
-                        disabled="true"
-                        class="button is-outlined is-primary is-small">
-                        <span class="icon">
-                            <i class="fas fa-file-export" />
-                        </span>
-                        <span>export</span>
-                    </div>
-                </div>
-                <div class="column is-narrow">
-                    <div class="vl" />
-                </div>
-                <!-- manage users -->
-                <div class="column is-narrow">
-                    <div
-                        v-if="loggedIn"
-                        @click="showManageUsersModal(); showShareDropdown = false;"
-                        class="button is-outlined is-primary is-small">
-                        <span class="icon">
-                            <i class="fas fa-users" />
-                        </span>
-                        <span>
-                            Users
-                        </span>
-                    </div>
-                    <!-- get share link -->
-                    <div
-                        v-else
-                        @click="showManageUsersModal(); showShareDropdown = false;"
-                        class="button is-outlined is-primary is-small">
-                        <span class="icon">
-                            <i class="fas fa-share" />
-                        </span>
-                        <span>
-                            Share
-                        </span>
                     </div>
                 </div>
                 <div class="column is-narrow">
@@ -122,23 +68,27 @@
                     <!-- show comments -->
                     <div class="buttons">
                         <div
+                            title="Add comment to framework"
                             @click="handleClickAddComment"
-                            class="button is-outlined is-small is-primary">
+                            class="button is-text  has-text-dark">
                             <span class="icon">
                                 <i class="fas fa-comment-medical" />
                             </span>
                         </div>
                         <div
+                            title="View all comments"
                             v-if="showViewComments"
                             @click="$store.commit('app/showRightAside', 'Comments')"
-                            class="button is-outlined is-small is-dark">
+                            class="button is-text  has-text-dark">
                             <span class="icon">
                                 <i class="fas fa-comments" />
                             </span>
                         </div>
                     </div>
                 </div>
-                <div class="column is-narrow">
+                <div
+                    v-if="showAddComments || showViewComments"
+                    class="column is-narrow">
                     <div class="vl" />
                 </div>
                 <div
@@ -146,64 +96,127 @@
                     v-if="canEditFramework">
                     <div class="buttons">
                         <div
-                            class="button is-small is-outlined is-primary"
+                            title="Undo recent change"
+                            class="button  is-text has-text-dark"
                             @click="onClickUndo">
                             <span class="icon">
                                 <i class="fas fa-undo-alt " />
                             </span>
                         </div>
                         <div
+                            title="View history"
                             @click="$store.commit('app/showRightAside', 'Versions')"
-                            class="button is-outlined is-small is-primary">
+                            class="button is-text  has-text-dark">
                             <span class="icon">
                                 <i class="fas fa-history" />
                             </span>
                         </div>
                     </div>
                 </div>
-                <div class="column is-narrow">
+                <div
+                    v-if="canEditFramework"
+                    class="column is-narrow">
                     <div class="vl" />
                 </div>
-                <div class="column is-narrow" v-if="canEditFramework">
+                <div
+                    class="column is-narrow"
+                    v-if="canEditFramework">
                     <div class="buttons">
                         <div
-                            class="button is-small is-outlined is-primary"
+                            title="Copy competency"
+                            class="button  is-text has-text-dark"
                             @click="copyClick">
                             <span class="icon">
                                 <i class="fa fa-copy" />
                             </span>
                         </div>
                         <div
-                            class="button is-small is-outlined is-primary"
+                            title="Cut competency"
+                            class="button  is-text has-text-dark"
                             @click="cutClick">
                             <span class="icon">
                                 <i class="fas handle fa-cut" />
                             </span>
                         </div>
                         <div
-                            class="button is-outlined is-primary is-small"
+                            class="button is-text has-text-dark "
                             @click="pasteClick"
-                            title="paste">
+                            title="Paste competency">
                             <span class="icon">
                                 <i class="fa fa-paste" />
                             </span>
                         </div>
                     </div>
                 </div>
-                <div class="column is-narrow">
+                <!-- divider -->
+                <div
+                    v-if="canEditFramework"
+                    class="column is-narrow">
                     <div class="vl" />
                 </div>
+                <!-- export -->
+                <div
+                    class="column is-narrow"
+                    v-if="canExport">
+                    <div
+                        title="Export framework"
+                        :class="{ 'is-disabled': !canExport}"
+                        @click="handleExportClick()"
+                        class="button is-text has-text-dark ">
+                        <span class="icon">
+                            <i class="fas fa-file-export" />
+                        </span>
+                    </div>
+                </div>
+                <!-- export -->
+                <div
+                    class="column is-narrow"
+                    v-else>
+                    <div
+                        title="Export unavailable"
+                        :class="{ 'is-disabled': !canExport}"
+                        disabled="true"
+                        class="button is-text has-text-dark ">
+                        <span class="icon">
+                            <i class="fas fa-file-export" />
+                        </span>
+                    </div>
+                </div>
+                <!-- manage users -->
+                <div class="column is-narrow">
+                    <div
+                        v-if="loggedIn"
+                        title="Manage users"
+                        @click="showManageUsersModal(); showShareDropdown = false;"
+                        class="button is-text has-text-dark ">
+                        <span class="icon">
+                            <i class="fas fa-users" />
+                        </span>
+                    </div>
+                    <!-- get share link -->
+                    <div
+                        v-else
+                        title="Get shareable link"
+                        @click="showManageUsersModal(); showShareDropdown = false;"
+                        class="button is-text has-text-dark ">
+                        <span class="icon">
+                            <i class="fas fa-share" />
+                        </span>
+                    </div>
+                </div>
+                <!-- configuration -->
                 <div
                     class="column is-narrow"
                     v-if="configurationsEnabled">
                     <div
-                        class="button is-small is-outlined is-primary is-pulled-right"
+                        title="Framework configuration"
+                        class="button  is-text has-text-dark is-pulled-right"
                         v-if="canEditFramework && !conceptMode"
                         @click="showManageConfigurationModal(); showShareDropdown = false;">
                         <span class="icon">
-                            <i class="fas fa-cog has-text-dark" />
+                            <i class="fas fa-cog" />
                         </span>
-                        <span>{{ defaultFrameworkConfigName }}</span>
+                        <span class="is-hidden-touch">{{ defaultFrameworkConfigName }}</span>
                     </div>
                 </div>
             </div>
@@ -524,10 +537,10 @@ export default {
     top: 0rem;
     width: calc(100% - 5rem);
     z-index: 10;
-    height: 2.5rem;
+    height: 2.6rem;
     position: fixed;
     padding: 4px;
-    background-color:$light;
+    background-color: white;
     .fet__wrapper {
         max-width: 1400px;
         display: flex;
@@ -562,7 +575,7 @@ export default {
 
     }
     .vl {
-        border:1px solid rgba($dark, .5);
+        border-right:1px solid rgba($dark, .3);
         height:100%;
         width: 0px;
     }

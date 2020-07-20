@@ -543,11 +543,9 @@ export default {
             this.updateRelations();
         }
         let documentBody = document.getElementById('framework');
-        documentBody.addEventListener('scroll', debounce(this.scrollFunction, 100));
+        documentBody.addEventListener('scroll', debounce(this.scrollFunction, 100, {'leading': true}));
     },
     beforeDestroy() {
-        let documentBody = document.getElementById('framework');
-        documentBody.removeEventListener('scroll', debounce(this.scrollFunction, 100));
     },
     watch: {
         shortId: function() {
@@ -567,7 +565,7 @@ export default {
         scrollFunction(e) {
             let documentObject = document.getElementsByClassName('parent-object');
             let scrollValue = e.target.scrollTop;
-            if (scrollValue > 1) {
+            if (scrollValue !== 0) {
                 this.parentObjectClass = 'parent-object scrolled';
             } else {
                 this.parentObjectClass = 'parent-object';

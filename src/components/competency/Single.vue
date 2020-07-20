@@ -31,7 +31,7 @@
                         :key="index">
                         <a
                             :title="parentFramework.name"
-                            class="single__li-a"
+                            class="single__li-a button is-text"
                             @click="goToFramework(parentFramework)">
                             <span>{{ parentFramework.name }}</span>
                             <div
@@ -61,7 +61,7 @@
                 </button>
                 <button
                     @click="$store.commit('app/closeModal')"
-                    class="button is-outlined is-large is-primary">
+                    class="button is-outlined is-primary">
                     return to framework editor
                 </button>
             </div>
@@ -201,7 +201,7 @@ export default {
         display: none;
     }
     .lode__thing:hover {
-        padding-lefT: 0rem;
+        padding-left: 0rem;
         color: $dark;
     }
     .lode__thing-editing {

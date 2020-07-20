@@ -1,7 +1,7 @@
 @import './variables.scss';
 #framework, #concept {
-    margin-top: 2.5rem !important;
-    height: calc(100% - 2.5rem);
+    margin-top: 2.6rem !important;
+    height: calc(100% - 2.6rem);
 }
 .is-id {
     width: 200px;
@@ -207,9 +207,6 @@ drag, drag, and chosen states
         z-index: 10;
         padding: .25rem .5rem !important;
         border-bottom: 1px solid rgba($dark, .5);
-        .container {
-            
-        }
     }
     .check-radio-all-column label {
         padding-left: 0rem !important;
@@ -238,7 +235,7 @@ drag, drag, and chosen states
                 padding-top: 1rem;
             }
             .lode__hierarchy-item {
-                padding: .25rem .5rem !important;
+                padding: 0rem .5rem !important;
                 .add-node-section {
                     width: 100%;
                     display:block;
@@ -312,26 +309,25 @@ drag, drag, and chosen states
             }
             .lode__hierarchy-item.is-focused {
                 background-color: rgba($link, .2);
-                border-radius: .25rem;
+                border-radius: 0rem;
             }
             .lode__hierarchy-item.is-selected {
-                background-color: rgba($link, .3);
-                border-radius: .25rem;
-                box-shadow: $two-dp;
+                background-color: rgba($link, .2);
+                border-radius: 0rem;
             }
             .lode__hierarchy-item.is-cut {
-                border-radius: .25rem;
+                border-radius: 0rem;
                 border: dashed 2px $dark;
                 opacity: 50%;
             }
             .lode__hierarchy-item.can-paste {
                 background-color: rgba($primary, .2);
-                border-radius: .25rem;
+                border-radius: 0rem;
                 border: dashed 2px $black;
             }
             ul.lode__hierarchy-sub-ul {
                 margin-left: 1.25rem;
-                padding: .25rem 0rem;
+                padding: 0rem 0rem;
                 li.lode__hierarchy-sub-li {
                     .lode__name {
                         font-size: 1rem; // top level competencies
@@ -354,10 +350,9 @@ drag, drag, and chosen states
         position: sticky;
         background-color: $white;
         top: 0px;
-        height: 100px;
-        z-index: 10;
+        z-index: 9;
         width: 100%;
-        transition: height .5s;
+        transition: height .1s;
         position: -webkit-sticky;
         .lode__Framework {
             display: flex;
@@ -366,7 +361,7 @@ drag, drag, and chosen states
         }
     }
     .parent-object.scrolled {
-        z-index: 10;
+        z-index: 8;
         height: 56px;
         overflow: hidden;
         .tag {
@@ -376,7 +371,8 @@ drag, drag, and chosen states
             .lode__Property {
                 display: none;
             }
-            .lode__Property.lode__name {
+            .lode__Property.lode__name,
+            .lode__Property.lode__title {
                 display: block;
             }
         }
@@ -388,7 +384,7 @@ drag, drag, and chosen states
     .lode__thing {
         padding: 0rem;
         padding-right: 0rem;
-        .lode__Competency, .lode__Concept, .lode__Framework {
+        .lode__Competency, .lode__Concept, .lode__ConceptScheme, .lode__Framework {
             .lode__thing-heading {
                 width: calc(100% - 7rem);
                 h3 {
@@ -411,14 +407,14 @@ drag, drag, and chosen states
                 }
             }
         }
-        .lode__Framework {
+        .lode__Framework, .lode__ConceptScheme {
             .comment-button {
                 top: 16px;
             }
             .lode__thing-heading {
                 padding: 0rem 6rem 0rem .5rem;
             }
-            .lode__Property.lode__name {
+            .lode__Property.lode__name, .lode__Property.lode__title {
                 font-size: 1.1rem;
                 font-family: $family-secondary;
                 font-weight: 600;
