@@ -8,7 +8,7 @@
                 @showExportModal="onOpenExportModal" />
             <div class="framework-wrapper">
                 <Component
-                    :class="parentObjectClass"
+                    :class="dynamicThingComponent === 'Thing' ? parentObjectClass: ''"
                     :is="dynamicThingComponent"
                     :id="'scroll-' + framework.shortId().split('/').pop()"
                     :obj="framework"
