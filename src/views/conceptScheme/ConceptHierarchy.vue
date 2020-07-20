@@ -68,7 +68,7 @@
                             <i class="fa fa-plus-circle" />
                         </span>
                         <span>
-                            Add Concept
+                            {{ addConceptOrChildText }}
                         </span>
                     </div>
                     <div
@@ -82,7 +82,7 @@
                     </div>
                     <div
                         v-if="addingNode"
-                        @click="add(container.shortId(), null); addingNode = false;"
+                        @click="onClickCreateNew"
                         class="button is-outlined is-primary ">
                         <span class="icon">
                             <i class="fa fa-plus" />
@@ -249,7 +249,8 @@ export default {
             expanded: true,
             isDraggable: true,
             shiftKey: false,
-            arrowKey: null
+            arrowKey: null,
+            addConceptOrChildText: "Add Concept"
         };
     },
     components: {
@@ -300,6 +301,11 @@ export default {
                 this.multipleSelected = true;
             } else {
                 this.multipleSelected = false;
+            }
+            if (this.selectedArray.length === 1) {
+                this.addConceptOrChildText = "Add Child";
+            } else {
+                this.addConceptOrChildText = "Add Concept";
             }
             this.$emit('selectedArray', this.selectedArray);
         },
@@ -677,6 +683,14 @@ export default {
             var f = EcConceptScheme.getBlocking(this.container.shortId());
             this.$store.commit('editor/framework', f);
             this.$router.push({name: "conceptScheme", params: {frameworkId: this.container.id}});
+        },
+        onClickCreateNew: function() {
+            let parent = this.container.shortId();
+            if (this.selectedArray.length === 1) {
+                parent = this.selectedArray[0];
+            }
+            this.add(parent, null);
+            this.addingNode = false;
         }
     }
 };
