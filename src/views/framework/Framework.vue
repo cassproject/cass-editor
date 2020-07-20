@@ -13,7 +13,7 @@
                 <div class="column is-12">
                     <div class="container is-paddingless ">
                         <Component
-                            :class="parentObjectClass"
+                            :class="dynamicThingComponent === 'Thing' ? parentObjectClass: ''"
                             :is="dynamicThingComponent"
                             :id="'scroll-' + framework.shortId().split('/').pop()"
                             :obj="framework"
