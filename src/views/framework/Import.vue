@@ -1615,7 +1615,6 @@ export default {
         scrollFunction(e) {
             let documentObject = document.getElementsByClassName('parent-object');
             let scrollValue = e.target.scrollTop;
-            console.log("scroll", scrollValue);
             if (scrollValue !== 0) {
                 this.parentObjectClass = 'parent-object scrolled';
             } else {

@@ -536,6 +536,7 @@ export default {
                 var framework = this.$store.getters['editor/framework'];
                 this.$store.commit('editor/framework', EcRepository.getBlocking(framework.shortId()));
                 this.$store.commit('editor/recomputeHierarchy', true);
+                this.$store.commit('editor/refreshAlignments', true);
             }
         },
         configuration: function() {
