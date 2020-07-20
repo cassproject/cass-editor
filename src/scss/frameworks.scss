@@ -31,12 +31,15 @@
                     .language {
                         display: none;
                     }
+                    .arrow-icon {
+                        visibility: hidden;
+                    }
 
             }
             li.list-ul__item:hover {
                 background-color: $cass-lightest;
-                #arrow-icon {
-                    display:block;
+                .arrow-icon {
+                    visibility:visible;
                 }
             }
             .list-ul__item{
@@ -63,7 +66,7 @@
                 .bottom-actions, .top-actions {
                     display: none !important;
                 }
-                .lode__Framework, .lode__ConceptScheme {
+                .lode__Framework, .lode__Concept, .lode__ConceptScheme, .lode__Concept {
                     transform: translateX(0);
                     cursor: pointer;
                     font-weight: 600;
@@ -81,7 +84,8 @@
     }
      .lode__Framework,
      .framework-list-page,
-     .lode__ConceptScheme {
+     .lode__ConceptScheme,
+     .lode__Concept {
         a {
             display:none;
         }

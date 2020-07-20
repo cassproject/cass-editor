@@ -426,8 +426,8 @@
             }
             li.list-ul__item:hover {
                 background-color: $cass-lightest;
-                #arrow-icon {
-                    display:block;
+                .arrow-icon {
+                    visibility:visible;
                 }
             }
             .list-ul__item{
@@ -446,9 +446,6 @@
                         font-weight: 600;
                     }
                 }
-
-            }
-            .list-ul__item:hover {
             }
             .lode__thing {
                 .bottom-actions, .top-actions {
@@ -457,9 +454,6 @@
                 .lode__Framework {
                     transform: translateX(0);
                     cursor: pointer;
-                    .lode__Framework {
-
-                    }
                     .lode__Thing-ul {
                         padding: 0rem .5rem;
                         width: 100%;
