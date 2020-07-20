@@ -121,7 +121,7 @@
                 <a>
                     <span class="icon">
                         <i class="fa fa-plus" />
-                    </span><span v-if="showSideNav"> Framework</span></a>
+                    </span><span v-if="showSideNav"> Create New</span></a>
             </li>
             <!-- hidding this for now -->
             <li
@@ -169,7 +169,7 @@
                 <a>
                     <span class="icon">
                         <i class="fa fa-plus" />
-                    </span>Concept Scheme</a>
+                    </span>Create New</a>
             </li>
             <li
                 class="has-text-white"
