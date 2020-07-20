@@ -121,10 +121,13 @@
                 <div
                     class="column is-narrow"
                     v-if="canEditFramework">
-                    <div class="buttons">
+                    <div
+                        class="buttons">
                         <div
+                            :disabled="!canCopyOrCut"
                             title="Copy competency"
-                            class="button  is-text has-text-dark"
+                            :class="canCopyOrCut ? 'has-text-dark' : 'is-disabled'"
+                            class="button  is-text"
                             @click="copyClick">
                             <span class="icon">
                                 <i class="fa fa-copy" />
@@ -132,15 +135,19 @@
                         </div>
                         <div
                             title="Cut competency"
-                            class="button  is-text has-text-dark"
+                            :disabled="!canCopyOrCut"
+                            class="button  is-text"
+                            :class="canCopyOrCut ? 'has-text-dark' : 'is-disabled'"
                             @click="cutClick">
                             <span class="icon">
                                 <i class="fas handle fa-cut" />
                             </span>
                         </div>
                         <div
+                            :disabled="!canPaste"
                             class="button is-text has-text-dark "
                             @click="pasteClick"
+                            :class="canPaste ? 'has-text-dark' : 'is-disabled'"
                             title="Paste competency">
                             <span class="icon">
                                 <i class="fa fa-paste" />
@@ -455,6 +462,20 @@ export default {
         }
     },
     computed: {
+        canCopyOrCut: function() {
+            if (this.selectedArray && this.selectedArray.length === 1) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        canPaste: function() {
+            if (this.$store.getters['editor/copyId'] !== null) {
+                return true;
+            } else {
+                return false;
+            }
+        },
         showAddComments() {
             if (this.$store.getters['editor/conceptMode'] === true) {
                 return false;

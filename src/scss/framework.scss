@@ -235,6 +235,7 @@ drag, drag, and chosen states
                 padding-top: 1rem;
             }
             .lode__hierarchy-item {
+                border: solid 2px transparent;
                 padding: 0rem .5rem !important;
                 .add-node-section {
                     width: 100%;
@@ -321,7 +322,7 @@ drag, drag, and chosen states
                 opacity: 50%;
             }
             .lode__hierarchy-item.can-paste {
-                background-color: rgba($primary, .2);
+                background-color: white;
                 border-radius: 0rem;
                 border: dashed 2px $black;
             }

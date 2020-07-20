@@ -179,17 +179,6 @@
                             <p><b>Login failed: Invalid Username/Password</b></p>
                         </div>
                     </div>
-                    <!-- errors login failed -->
-                    <div
-                        class="field"
-                        v-if="identityFetchFailed">
-                        <p><b>Login failed: {{ identityFailMsg }}</b></p>
-                    </div>
-                    <div
-                        class="field"
-                        v-if="configRetrieveFailed">
-                        <p><b>Could not retrieve configuration from selected server: {{ configFailMsg }}</b></p>
-                    </div>
                 </section>
                 <!-- footer with actions -->
                 <footer class="modal-card-foot has-background-white">
