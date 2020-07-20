@@ -500,7 +500,7 @@ export default {
             }
         },
         conceptMode: function() {
-            return this.$store.getters['editor/queryParams'].concepts === 'true';
+            return this.$store.getters['editor/conceptMode'];
         }
     }
 };

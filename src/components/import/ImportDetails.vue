@@ -50,7 +50,7 @@
             <!--accept details -->
             <div class="buttons is-right">
                 <div
-                    @click="$store.dispatch('app/clearImport')"
+                    @click="cancelImport"
                     class=" button is-light is-small is-pulled-right is-dark is-outlined">
                     <span>
                         Cancel
@@ -105,6 +105,12 @@ export default {
         },
         importStatus: function() {
             return this.$store.getters['app/importStatus'];
+        }
+    },
+    methods: {
+        cancelImport: function() {
+            this.$emit("deleteObject", this.importFramework);
+            this.$store.dispatch('app/clearImport');
         }
     }
 };

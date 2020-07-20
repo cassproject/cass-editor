@@ -10,7 +10,7 @@
                 :searchType="type === 'ConceptScheme' ? 'concept scheme' : 'framework'" />
             <div
                 v-if="!conceptMode"
-                class="container is-fluid">
+                class="container is-fluid show-only-mine">
                 <!-- show my frameworks radio -->
                 <div class="control">
                     <div v-if="queryParams.show !== 'mine' && queryParams.conceptShow !== 'mine' && numIdentities">
@@ -33,6 +33,7 @@
                     :click="frameworkClick"
                     :searchOptions="searchOptions"
                     :paramObj="paramObj"
+                    view="frameworks"
                     :disallowEdits="true">
                     <!-- TO DO move these template items to the "actions" right side area -->
                     <template
@@ -181,8 +182,8 @@ export default {
                             search += " OR ";
                         }
                         var id = EcIdentityManager.ids[i];
-                        search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
-                        search += " OR @owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
+                        search += "\\*owner:\"" + id.ppk.toPk().toPem() + "\"";
+                        search += " OR \\*owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
                     }
                     search += ")";
                 }
@@ -194,8 +195,8 @@ export default {
                         search += " OR ";
                     }
                     var id = EcIdentityManager.ids[i];
-                    search += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
-                    search += " OR @owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
+                    search += "\\*owner:\"" + id.ppk.toPk().toPem() + "\"";
+                    search += " OR \\*owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
                 }
                 search += ")";
             }
@@ -225,7 +226,7 @@ export default {
         },
         filteredQuickFilters: function() {
             let filterValues = this.quickFilters.filter(item => item.checked === true);
-            console.log('filtered value', filterValues);
+            appLog('filtered value', filterValues);
             return filterValues;
         },
         conceptMode: function() {
@@ -246,7 +247,7 @@ export default {
                     me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
                     me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "conceptScheme", params: {frameworkId: framework.id}});
-                }, console.error);
+                }, appError);
             } else {
                 EcFramework.get(framework.id, function(success) {
                     me.$store.commit('editor/framework', success);
@@ -254,7 +255,7 @@ export default {
                     me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
                     me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "framework", params: {frameworkId: framework.id}});
-                }, console.error);
+                }, appError);
             }
         },
         getName: function(field) {
@@ -322,6 +323,8 @@ export default {
                 this.sortBy = "schema:dateModified";
             } else if (this.sortResults.id === "dateCreated") {
                 this.sortBy = "schema:dateCreated";
+            } else {
+                this.sortBy = this.conceptMode ? "dcterms:title.keyword" : "name.keyword";
             }
         },
         filteredQuickFilters: function() {

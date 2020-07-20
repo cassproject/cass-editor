@@ -52,13 +52,12 @@ export default {
 
     #right-side-bar {
         position: fixed;
-        direction:rtl;
         border-left: solid 1px rgba($dark, .2);
         z-index: 10;
-        height: calc(100vh - 52px);
+        height: calc(100vh - 0px);
         overflow: auto;
         right: 0;
-        padding: 1.5rem 1rem .5rem 1.25rem;
+        padding: 1.5rem 1rem .5rem 1rem;
         width: 340px;
         transform: translateX(0);
         .right-aside-bar__title {

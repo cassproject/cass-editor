@@ -44,6 +44,11 @@
                     <span @click="addAnotherProperty">Add another property</span>
                 </div>
             </div>
+            <p
+                class="help is-danger"
+                v-if="errorMessage !== []">
+                {{ this.errorMessage[0] }}
+            </p>
         </section>
         <section
             v-if="isSearching"
@@ -99,6 +104,7 @@ export default {
     },
     data() {
         return {
+            showErrorMessages: false,
             isProcessing: false,
             addedPropertiesAndValues: [{"property": "", "value": "", "range": []}],
             repo: window.repo,
@@ -132,17 +138,6 @@ export default {
         }
     },
     methods: {
-        showModal() {
-            let params = {};
-
-            params = {
-                type: "errors",
-                title: "Errors saving",
-                text: this.errorMessage
-            };
-            // reveal modal
-            this.$modal.show(params);
-        },
         onCancel: function() {
             if (this.isSearching) {
                 this.isSearching = false;
@@ -219,8 +214,7 @@ export default {
             var me = this;
             this.errorMessage = [];
             if (me.addedPropertiesAndValues.length === 0 || (me.addedPropertiesAndValues[0].property === "")) {
-                me.addErrorMessage("Please select a property to add.");
-                return me.showModal();
+                return me.addErrorMessage("Saving to multiple required a property and value.");
             }
             this.isProcessing = true;
             for (var i = 0; i < this.selectedCompetencies.length; i++) {
@@ -234,7 +228,7 @@ export default {
                             var property = me.addedPropertiesAndValues[j].property.value;
                             var value = me.addedPropertiesAndValues[j].value;
                             var range = me.addedPropertiesAndValues[j].range;
-                            console.log("adding " + property + " " + JSON.stringify(expandedCompetency));
+                            appLog("adding " + property + " " + JSON.stringify(expandedCompetency));
 
                             properties.push(property);
                             if (expandedCompetency[property]) {
@@ -283,7 +277,7 @@ export default {
                             changedValues.push(expandedCompetency[property]);
                         }
                         if (me.errorMessage && me.errorMessage.length > 0) {
-                            me.showModal();
+                            return;
                         }
                         me.changedItemsForUndo.push({operation: "update", id: EcRemoteLinkedData.trimVersionFromUrl(expandedCompetency["@id"]), fieldChanged: properties, initialValue: initialValues, changedValue: changedValues, expandedProperty: true});
                         me.save(expandedCompetency);
@@ -302,7 +296,7 @@ export default {
         addAnotherProperty: function() {
             this.addedPropertiesAndValues.push({"property": "", "value": "", "range": []});
         },
-        expand: async function(o, after) {
+        expand: function(o, after) {
             var toExpand = JSON.parse(o.toJson());
             if (toExpand["@context"] != null && toExpand["@context"].startsWith("http://")) {
                 toExpand["@context"] = toExpand["@context"].replace("http://", "https://");
@@ -310,12 +304,13 @@ export default {
             if (toExpand["@context"] != null && toExpand["@context"].indexOf("skos") !== -1) {
                 toExpand["@context"] = "https://schema.cassproject.org/0.4/skos/";
             }
-            var expanded = await jsonld.expand(toExpand);
-            if (expanded && expanded[0]) {
-                after(expanded[0]);
-            } else {
-                after(null);
-            }
+            jsonld.expand(toExpand, function(err, expanded) {
+                if (err == null) {
+                    after(expanded[0]);
+                } else {
+                    after(null);
+                }
+            });
         },
         add: function(property, value, expandedCompetency) {
             if (expandedCompetency[property] === undefined || expandedCompetency[property] == null) {
@@ -327,25 +322,29 @@ export default {
             expandedCompetency[property].push(value);
             return expandedCompetency;
         },
-        save: async function(expandedCompetency) {
+        save: function(expandedCompetency) {
             var me = this;
             var context = "https://schema.cassproject.org/0.4";
             if (this.$store.getters['editor/queryParams'].concepts === "true") {
                 context += "/skos";
             }
-            var compacted = await jsonld.compact(expandedCompetency, this.$store.state.lode.rawSchemata[context]);
-            if (compacted) {
-                var rld = new EcRemoteLinkedData();
-                rld.copyFrom(compacted);
-                rld.context = context;
-                delete rld["@context"];
-                rld = me.turnFieldsBackIntoArrays(rld);
-                rld["schema:dateModified"] = new Date().toISOString();
-                if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
-                    rld = EcEncryptedValue.toEncryptedValue(rld);
+            jsonld.compact(expandedCompetency, this.$store.state.lode.rawSchemata[context], function(err, compacted) {
+                if (err != null) {
+                    appError(err);
                 }
-                me.repo.saveTo(rld, console.log, console.error);
-            }
+                if (compacted) {
+                    var rld = new EcRemoteLinkedData();
+                    rld.copyFrom(compacted);
+                    rld.context = context;
+                    delete rld["@context"];
+                    rld = me.turnFieldsBackIntoArrays(rld);
+                    rld["schema:dateModified"] = new Date().toISOString();
+                    if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
+                        rld = EcEncryptedValue.toEncryptedValue(rld);
+                    }
+                    me.repo.saveTo(rld, appLog, appError);
+                }
+            });
         },
         // Compact operation removes arrays when length is 1, but some fields need to be arrays in the data that's saved
         turnFieldsBackIntoArrays: function(rld) {

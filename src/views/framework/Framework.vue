@@ -3,11 +3,11 @@
         <RightAside v-if="showRightAside" />
         <!-- begin framework -->
         <div class="framework-content">
-            <FrameworkEditorToolbar
-                @showExportModal="onOpenExportModal"
-                @changeProperties="changeProperties"
-                :selectedArray="selectedArray" />
             <div class="framework-body columns is-multiline is-gapless is-paddingless is-marginless">
+                <FrameworkEditorToolbar
+                    @showExportModal="onOpenExportModal"
+                    @changeProperties="changeProperties"
+                    :selectedArray="selectedArray" />
                 <div class="column is-12">
                     <div class="container">
                         <Component
@@ -160,7 +160,7 @@ export default {
             return this.$store.getters['app/showRightAside'];
         },
         dynamicThingComponent: function() {
-            if (this.editingFramework || (this.$store.getters['editor/newFramework'] === this.framework.shortId())) {
+            if (this.editingFramework || (this.framework && this.$store.getters['editor/newFramework'] === this.framework.shortId())) {
                 return 'ThingEditing';
             } else {
                 return 'Thing';
@@ -300,10 +300,10 @@ export default {
                         profile[key]["save"] = function(selectedCompetency, checkedOptions, allOptions) { me.saveCheckedLevels(selectedCompetency, checkedOptions, allOptions); };
                     }
                 }
+                var relationshipsHeading = null;
                 if (this.config.relationshipConfig) {
                     var keys = EcObject.keys(this.config.relationshipConfig);
                     var relationshipsPriority;
-                    var relationshipsHeading = null;
                     if (profile["relationshipsPriority"] && profile["relationshipsPriority"].length > 0) {
                         relationshipsPriority = profile["relationshipsPriority"] + "Properties";
                     } else {
@@ -329,6 +329,29 @@ export default {
                         if (relationshipsHeading) {
                             profile[key]["heading"] = relationshipsHeading;
                         }
+                    }
+                }
+                if (this.config.alignConfig) {
+                    var keys = EcObject.keys(this.config.alignConfig);
+                    for (let i = 0; i < this.config.alignConfig.length; i++) {
+                        let key = this.config.alignConfig[i] + " (resource)";
+                        let me = this;
+                        profile["tertiaryProperties"].push(key);
+                        profile[key] = {};
+                        profile[key]["@id"] = key;
+                        profile[key]["@type"] = ["http://www.w3.org/2000/01/rdf-schema#Property"];
+                        profile[key]["http://schema.org/rangeIncludes"] = [{"@id": "http://schema.org/URL"}];
+                        profile[key]["http://www.w3.org/2000/01/rdf-schema#label"] = [{"@language": "en", "@value": key}];
+                        profile[key]["http://www.w3.org/2000/01/rdf-schema#comment"] = [{"@language": "en", "@value": key}];
+                        profile[key]["valuesIndexed"] = function() { return me.alignments[key]; };
+                        profile[key]["remove"] = function(competency, id) { return me.removeResourceAlignment(id); };
+                        profile[key]["add"] = function(selectedCompetencyId, values) { return me.addResourceAlignments(selectedCompetencyId, key, values); };
+                        profile[key]["save"] = function() {};
+                        profile[key]["update"] = function(value) { return me.updateResourceAlignments(key, value); };
+                        if (relationshipsHeading) {
+                            profile[key]["heading"] = relationshipsHeading;
+                        }
+                        profile[key]["resource"] = true;
                     }
                 }
                 return profile;
@@ -512,7 +535,7 @@ export default {
             }
         },
         defaultFrameworkConfiguration: function() {
-            return this.$store.getters['editor/framework'].configuration;
+            return this.$store.getters['editor/framework'] ? this.$store.getters['editor/framework'].configuration : null;
         }
     },
     components: {
@@ -537,6 +560,7 @@ export default {
         } else {
             this.updateLevels();
             this.updateRelations();
+            this.updateAlignments();
         }
     },
     watch: {
@@ -561,13 +585,13 @@ export default {
             var me = this;
             if (this.framework.configuration) {
                 var c = EcRepository.getBlocking(this.framework.configuration);
-                console.log("c is: ", c);
+                appLog("c is: ", c);
                 if (c) {
-                    console.log("c is: ", c);
+                    appLog("c is: ", c);
                     this.config = c;
                     this.configSetOnFramework = true;
                 }
-                console.log("c is: ", c);
+                appLog("c is: ", c);
             }
             if (!this.config && localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId")) {
                 // If no framework configuration, use browser default
@@ -615,7 +639,7 @@ export default {
         },
         refreshPage: function() {
             if (!this.framework) {
-                console.log("no framework to refresh");
+                appLog("no framework to refresh");
                 return;
             }
             if (EcRepository.shouldTryUrl(this.framework.id) === false) {
@@ -690,7 +714,7 @@ export default {
         onOpenExportModal() {
             let params = {};
             var me = this;
-            console.log("options", typeof me.frameworkExportOptions);
+            appLog("options", typeof me.frameworkExportOptions);
             params = {
                 type: "export",
                 selectedExportOption: '',
@@ -708,6 +732,50 @@ export default {
         preloadRelations: function() {
             var relation = this.relations;
             var level = this.levels;
+        },
+        addResourceAlignments: function(selectedCompetencyId, alignmentType, values) {
+            let me = this;
+            alignmentType = alignmentType.substring(0, alignmentType.indexOf(' '));
+            for (let i = 0; i < values.length; i++) {
+                let c = new CreativeWork();
+                c.generateId(this.repo.selectedServer);
+                c.name = values[i]["name"];
+                c.url = values[i]["@value"];
+                c.educationalAlignment = new AlignmentObject();
+                c.educationalAlignment.targetUrl = selectedCompetencyId;
+                c.educationalAlignment.alignmentType = alignmentType;
+                if (EcIdentityManager.ids.length > 0) {
+                    c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                }
+                this.repo.saveTo(c, function() {
+                    let edits = [{operation: "addNew", id: c.shortId()}];
+                    me.$store.commit('editor/addEditsToUndo', edits);
+                    me.$store.commit('editor/refreshAlignments', true);
+                }, appError);
+            }
+        },
+        updateResourceAlignments: function(alignmentType, value) {
+            let me = this;
+            if (value["name"] && value["@value"]) {
+                var c = EcRepository.getBlocking(value["@id"]);
+                let initialName = c.name;
+                let initialUrl = c.url;
+                c.name = value["name"];
+                c.url = value["@value"];
+                this.repo.saveTo(c, function() {
+                    let edits = [{operation: "update", id: c.shortId(), fieldChanged: ["name", "url"], initialValue: [initialName, initialUrl], changedValue: [c.name, c.url]}];
+                    me.$store.commit('editor/addEditsToUndo', edits);
+                    me.$store.commit('editor/refreshAlignments', true);
+                }, appError);
+            }
+        },
+        removeResourceAlignment: function(resourceId) {
+            let c = EcRepository.getBlocking(resourceId);
+            let me = this;
+            this.repo.deleteRegistered(c, function() {
+                me.$store.commit('editor/addEditsToUndo', [{operation: "delete", obj: c}]);
+                me.$store.commit('editor/refreshAlignments', true);
+            }, appError);
         }
     }
 };

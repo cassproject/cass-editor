@@ -67,7 +67,7 @@ describe('Import.vue', () => {
                 };
             }
         });
-        console.log("state is: ", mutations.editor);
+        appLog("state is: ", mutations.editor);
         let importPage = wrapper.find('#import-page');
         expect(importPage.exists()).toBe(true);
     });

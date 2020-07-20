@@ -2,7 +2,8 @@ export default {
     data() {
         return {
             levels: null,
-            relations: {}
+            relations: {},
+            alignments: {}
         };
     },
     watch: {
@@ -13,6 +14,11 @@ export default {
         },
         relationArray: function() {
             this.updateRelations();
+        },
+        refreshAlignments: function() {
+            if (this.refreshAlignments) {
+                this.updateAlignments();
+            }
         }
     },
     computed: {
@@ -20,7 +26,14 @@ export default {
             return this.$store.getters['editor/refreshLevels'];
         },
         relationArray: function() {
-            return this.framework.relation;
+            if (this.framework) {
+                return this.framework.relation;
+            } else if (this.importFramework) {
+                return this.importFramework.relation;
+            }
+        },
+        refreshAlignments: function() {
+            return this.$store.getters['editor/refreshAlignments'];
         }
     },
     methods: {
@@ -57,13 +70,13 @@ export default {
             });
         },
         updateRelations: function() {
-            if (!this.framework.relation) {
+            if (!this.framework?.relation && !this.importFramework?.relation) {
                 this.relations = {};
                 return;
             }
             var me = this;
             var relations = [];
-            new EcAsyncHelper().each(this.framework.relation, function(relationId, done) {
+            new EcAsyncHelper().each((this.framework ? this.framework.relation : this.importFramework.relation), function(relationId, done) {
                 EcAlignment.get(relationId, function(a) {
                     if (a && a.source && a.target) {
                         var relation = {};
@@ -105,6 +118,41 @@ export default {
                     relationObject[each.type][each.source].push(each.target);
                 }
                 me.relations = relationObject;
+            });
+        },
+        updateAlignments: function() {
+            var me = this;
+            if (this.$store.getters['editor/refreshAlignments'] === true) {
+                this.$store.commit('editor/refreshAlignments', false);
+            }
+            if (!this.framework) {
+                return;
+            }
+            if (!this.framework.competency) {
+                return;
+            }
+            var alignments = {};
+            new EcAsyncHelper().each(this.framework.competency, function(compId, done) {
+                var search = "@type:CreativeWork AND educationalAlignment.targetUrl:\"" + compId + "\"";
+                me.repo.searchWithParams(search, {
+                    size: 25
+                },
+                null,
+                function(resources) {
+                    for (var i = 0; i < resources.length; i++) {
+                        let resourceType = resources[i].educationalAlignment.alignmentType + " (resource)";
+                        if (!alignments[resourceType]) {
+                            alignments[resourceType] = {};
+                        }
+                        if (!alignments[resourceType][compId]) {
+                            alignments[resourceType][compId] = [];
+                        }
+                        alignments[resourceType][compId].push({"@id": resources[i].shortId(), "name": resources[i].name, "@value": resources[i].url});
+                    }
+                    done();
+                }, done);
+            }, function(compIds) {
+                me.alignments = alignments;
             });
         }
     }

@@ -2228,7 +2228,7 @@ export default {
             this.setDataFieldsFromAddLevelToSelectLevel();
         },
         buildLevelListForLevelSaveFailure(msg) {
-            console.log("Level search failure: " + msg);
+            appLog("Level search failure: " + msg);
             this.configDetailsBusy = false;
         },
         createAndSaveNewLevelSuccess() {
@@ -2237,7 +2237,7 @@ export default {
             EcLevel.search(window.repo, '', this.buildLevelListForLevelSaveSuccess, this.buildLevelListForLevelSaveFailure, paramObj);
         },
         createAndSaveNewLevelFailure(msg) {
-            console.log('Failed to save new level: ' + msg);
+            appLog('Failed to save new level: ' + msg);
             this.setDataFieldsFromAddLevelToSelectLevel();
         },
         createAndSaveNewLevel() {
@@ -2512,7 +2512,7 @@ export default {
         },
         updateExistingConfigCustomProperty() {
             let propToUpdate = this.getCustomProperty(this.customPropertyParent, this.customPropertyPropertyName);
-            if (!propToUpdate) console.log('!!!!Could not find existing custom property to update');
+            if (!propToUpdate) appLog('!!!!Could not find existing custom property to update');
             else {
                 propToUpdate.description = this.customPropertyDescription;
                 propToUpdate.label = this.customPropertyLabel;
@@ -2802,7 +2802,7 @@ export default {
             this.configDetailsBusy = false;
         },
         fetchGroupListForPermissionEntityFailure(msg) {
-            console.log("Group search failure: " + msg);
+            appLog("Group search failure: " + msg);
             this.configDetailsBusy = false;
         },
         fetchPersonListForPermissionEntitySuccess(ecpa) {
@@ -2815,7 +2815,7 @@ export default {
             EcOrganization.search(window.repo, '', this.fetchGroupListForPermissionEntitySuccess, this.fetchGroupListForPermissionEntityFailure, paramObj);
         },
         fetchPersonListForPermissionEntityFailure(msg) {
-            console.log("Person search failure: " + msg);
+            appLog("Person search failure: " + msg);
             this.configDetailsBusy = false;
         },
         initializePermissionEntityList() {
@@ -2836,7 +2836,7 @@ export default {
             this.initializePermissionEntityList();
         },
         initializeLevelListFailure(msg) {
-            console.log("Level search failure: " + msg);
+            appLog("Level search failure: " + msg);
             this.configDetailsBusy = false;
             // this.initializePermissionEntityList();
         },
@@ -2878,7 +2878,7 @@ export default {
                 }
             },
             set(val) {
-                console.log("val", val);
+                appLog("val", val);
                 if (val) {
                     this.$emit('setBrowserDefault', this.config.id);
                 } else {

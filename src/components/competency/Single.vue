@@ -18,7 +18,8 @@
                 :is="dynamicThing"
                 :uri="dynamicModalContent.uri"
                 :expandInModal="true"
-                @doneEditingNodeEvent="doneEditing" />
+                @doneEditingNodeEvent="doneEditing"
+                :profile="profile" />
             <div class="section">
                 <h4 class="header">
                     This item is listed in <b>{{ numberOfParentFrameworks }}</b> {{ dynamicModalContent.objectType === "Concept" ? "concept scheme" : "framework" }}<span v-if="numberOfParentFrameworks > 1">s</span>
@@ -98,6 +99,23 @@ export default {
         },
         numberOfParentFrameworks: function() {
             return this.parentFrameworks.length;
+        },
+        // Basic profile to be able to edit level names
+        profile: function() {
+            return {
+                "http://schema.org/name": {
+                    "@id": "http://schema.org/name",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "https://schema.cassproject.org/0.4/Level"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "The name of the Level"}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}],
+                    "isRequired": "true"
+                },
+                "alwaysProperties": ["http://schema.org/name"]
+            };
         }
     },
     methods: {
@@ -149,7 +167,7 @@ export default {
                     me.parentFrameworks.push({name: success[i].getName(), url: success[i].shortId()});
                 }
             }, function(failure) {
-                console.error(failure);
+                appError(failure);
                 me.parentFrameworks = [];
             }, null);
         } else if (this.dynamicModalContent.objectType === "Competency") {
@@ -158,7 +176,7 @@ export default {
                     me.parentFrameworks.push({name: success[i].getName(), url: success[i].shortId()});
                 }
             }, function(failure) {
-                console.error(failure);
+                appError(failure);
                 me.parentFrameworks = [];
             }, null);
         } else {
@@ -203,9 +221,6 @@ export default {
                 justify-content: space-between;
             }
         }
-    }
-    .modal-card-title {
-        max-width: 95%;
     }
 }
 </style>

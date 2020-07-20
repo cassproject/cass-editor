@@ -7,39 +7,39 @@ export default {
             window.open(link, '_blank');
         },
         exportRdfQuads: function(link) {
-            var fileName = this.framework.getName();
+            var fileName = this.framework ? this.framework.getName() : this.importFramework.getName();
             var me = this;
             this.get(link, null, {"Accept": "text/n4"}, function(success) {
                 me.download(fileName + ".n4", success);
             }, function(failure) {
-                console.log(failure);
+                appLog(failure);
             });
         },
         exportRdfJson: function(link) {
-            var fileName = this.framework.getName();
+            var fileName = this.framework ? this.framework.getName() : this.importFramework.getName();
             var me = this;
             this.get(link, null, {"Accept": "application/rdf+json"}, function(success) {
                 me.download(fileName + ".rdf.json", success);
             }, function(failure) {
-                console.log(failure);
+                appLog(failure);
             });
         },
         exportRdfXml: function(link) {
-            var fileName = this.framework.getName();
+            var fileName = this.framework ? this.framework.getName() : this.importFramework.getName();
             var me = this;
             this.get(link, null, {"Accept": "application/rdf+xml"}, function(success) {
                 me.download(fileName + ".rdf.xml", success);
             }, function(failure) {
-                console.log(failure);
+                appLog(failure);
             });
         },
         exportTurtle: function(link) {
-            var fileName = this.framework.getName();
+            var fileName = this.framework ? this.framework.getName() : this.importFramework.getName();
             var me = this;
             this.get(link, null, {"Accept": "text/turtle"}, function(success) {
                 me.download(fileName + ".turtle", success);
             }, function(failure) {
-                console.log(failure);
+                appLog(failure);
             });
         },
         exportCtdlasnJsonld: function(link) {
@@ -48,13 +48,13 @@ export default {
         exportCtdlasnCsv: function(link) {
             var me = this;
             EcRemote.getExpectingString(link.replace("/data/", "/ceasn/"), null, function(success) {
-                CSVExport.exportCTDLASN(JSON.parse(success), me.framework.getName());
+                CSVExport.exportCTDLASN(JSON.parse(success), me.framework ? me.framework.getName() : me.importFramework.getName());
             }, function(error) {
-                console.log(error);
+                appLog(error);
             });
         },
         exportCsv: function() {
-            CSVExport.exportFramework(this.framework.id, console.log, console.log);
+            CSVExport.exportFramework(this.framework ? this.framework.id : this.importFramework.id, appLog, appLog);
         },
         exportCasePackages: function(guid) {
             window.open(this.repo.selectedServer + "ims/case/v1p0/CFPackages/" + guid, '_blank');

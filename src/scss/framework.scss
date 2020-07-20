@@ -1,6 +1,20 @@
 @import './variables.scss';
-#framework, #concept, #import {
+#framework, #concept {
     margin-top: 2rem !important;
+    height: calc(100% - 2rem);
+}
+.is-id {
+    width: 200px;
+    text-align: left;
+    max-width: 100%;
+    display: inline-block;
+    direction: rtl;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    color: $dark;
+}
+#framework, #concept, #import {
 .framework-wrapper {
     max-width: 1400px;
     width: 100%;
@@ -96,7 +110,8 @@ drag, drag, and chosen states
 
 
 .uneditable {
-    word-break: break-all;
+    width: 100%;
+    overflow-x: scroll;
 }
 
 .lode__thing:hover {
@@ -124,9 +139,6 @@ drag, drag, and chosen states
 .modal.lode__thing-editing {
     background-color: transparent;
     .modal-card {
-        max-width: 680px;
-        min-width: 300px;
-        width: 100%;
         .buttons {
             padding: .5rem 0rem;
         }
@@ -164,12 +176,10 @@ drag, drag, and chosen states
     }
     .read-only__link {
         .field .control .uneditable {
-            padding-right: .5rem;
-            font-size: .7rem;
         }
-        .field .control {
-            padding-right: .5rem;
-            font-size: .7rem;
+        .field .control.is-expanded {
+            font-size: .8rem;
+            padding-right: .25rem;
         }
     }
     .lode__Property {
@@ -397,9 +407,7 @@ drag, drag, and chosen states
         .lode__Framework {
             transform: translateX(0);
             width: 100%;
-            a {
-                display:none;
-            }
+
             .top-actions, .bottom-actions {
                 padding: .5rem .5rem;
             }
@@ -602,9 +610,7 @@ drag, drag, and chosen states
     .lode__Competency, .lode__Concept {
         transform: translateX(0);
         border-left: none;
-        a {
-            display:none;
-        }
+
         cursor: pointer;
         // hidden element for clicking
         .clickable-hierarchy {

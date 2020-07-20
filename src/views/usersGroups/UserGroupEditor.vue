@@ -170,12 +170,12 @@ export default {
             }
         },
         saveCurrentUserGroupSuccess() {
-            console.log("Save user group success...");
+            appLog("Save user group success...");
             this.showListView();
             this.buildUserGroupData();
         },
         saveCurrentUserGroupFailure(msg) {
-            console.log("Save user group failure: " + msg);
+            appLog("Save user group failure: " + msg);
             this.userGroupBusy = false;
         },
         saveCurrentUserGroup(groupManagers, groupUsers) {
@@ -230,7 +230,7 @@ export default {
             this.setCurrentUserGroupManagerAndUserListsForDetailView();
         },
         fetchPersonListForDetailViewFailure(msg) {
-            console.log("Person search failure: " + msg);
+            appLog("Person search failure: " + msg);
             this.userGroupBusy = false;
         },
         fetchPersonListForDetailViewAndPopulateUserLists() {
@@ -271,8 +271,8 @@ export default {
             setTimeout(() => {
                 let newUserGroupPpk = EcPpk.generateKey();
                 newUserGroup[this.GROUP_PPK_KEY] = EcEncryptedValue.encryptValue(newUserGroupPpk.toPem(), this.GROUP_PPK_KEY, newUserGroup.owner, newUserGroup.reader);
-                console.log('New user group created: ');
-                console.log(newUserGroup);
+                appLog('New user group created: ');
+                appLog(newUserGroup);
                 this.currentUserGroup = newUserGroup;
                 this.userGroupBusy = false;
                 this.fetchPersonListForDetailViewAndPopulateUserLists();
@@ -294,8 +294,8 @@ export default {
             });
         },
         searchRepositoryForGroupsSuccess(ecoa) {
-            console.log("Group search success: ");
-            console.log(ecoa);
+            appLog("Group search success: ");
+            appLog(ecoa);
             if (ecoa && ecoa.length > 0) {
                 this.userGroupList = ecoa;
                 this.sortUserGroupList();
@@ -303,7 +303,7 @@ export default {
             this.userGroupBusy = false;
         },
         searchRepositoryForGroupsFailure(msg) {
-            console.log("Group search failure: " + msg);
+            appLog("Group search failure: " + msg);
             this.userGroupBusy = false;
         },
         buildUserGroupData() {

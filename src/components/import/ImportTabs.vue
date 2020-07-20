@@ -334,7 +334,7 @@
                         <div
                             class="button is-pulled-right is-outlined is-dark"
                             v-if="importFile && importType === 'file' && importFileType!=='pdf'"
-                            @click="resetImport">
+                            @click="cancelImport">
                             <span class="icon">
                                 <i class="fas fa-times" />
                             </span>
@@ -499,7 +499,7 @@
                             <div class="buttons is-right">
                                 <div
                                     class="button is-outlined is-dark"
-                                    @click="resetImport">
+                                    @click="cancelImport">
                                     Cancel
                                 </div>
                                 <div
@@ -890,6 +890,10 @@ export default {
         },
         resetImport: function() {
             this.$store.commit('app/resetImport');
+        },
+        cancelImport: function() {
+            this.$emit("deleteObject", this.importFramework);
+            this.resetImport();
         }
     },
     computed: {
