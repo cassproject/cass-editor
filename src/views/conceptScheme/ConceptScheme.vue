@@ -13,6 +13,7 @@
                     :id="'scroll-' + framework.shortId().split('/').pop()"
                     :obj="framework"
                     :repo="repo"
+                    :newFramework="newFramework"
                     :parentNotEditable="queryParams.view==='true'"
                     @deleteObject="deleteObject"
                     :profile="conceptSchemeProfile"
@@ -109,6 +110,9 @@ export default {
         };
     },
     computed: {
+        newFramework: function() {
+            return this.$store.getters['editor/newFramework'] === this.framework.shortId();
+        },
         showRightAside: function() {
             return this.$store.getters['app/showRightAside'];
         },
