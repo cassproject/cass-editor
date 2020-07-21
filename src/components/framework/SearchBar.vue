@@ -14,12 +14,12 @@
 <template>
     <div class="">
         <div
-            class="field">
+            class="field is-grouped">
             <p
-                class="control"
+                class="control is-expanded"
                 :class="{'has-icons-right': searchTerm === ''}">
                 <input
-                    class="input is-small"
+                    class="input"
                     ref="text"
                     type="search"
                     v-model="searchTerm"
@@ -31,27 +31,38 @@
                     <i class="fas fa-search" />
                 </span>
             </p>
-        </div>
-        <!-- filter option button opens side bar -->
-        <div
-            v-if="filterSet === 'all'"
-            class="buttons is-right">
+            <!-- filter option button opens side bar -->
             <div
-                @click="clearAllFilters()"
-                class="button is-dark is-outlined">
-                clear filters
+                v-if="filterSet === 'all'"
+                class="control">
+                <div
+                    @click="clearAllFilters()"
+                    title="Clear filters"
+                    class="button is-dark is-outlined">
+                    <span class="icon clear-filters">
+                        <i class="fas fa-filter fa-stack-1x" />
+                        <i class="fas fa-slash fa-stack-1x fa-lg has-text-danger" />
+                    </span>
+                </div>
             </div>
             <div
-                class="button is-primary is-outlined"
-                @click="$store.commit('app/showRightAside', 'FilterAndSort')">
-                filter options
+                class="control"
+                v-if="filterSet === 'all'">
+                <div
+                    class="button is-outlined is-dark"
+                    title="Filters"
+                    @click="$store.commit('app/showRightAside', 'FilterAndSort')">
+                    <span class="icon">
+                        <i class="fa fa-filter" />
+                    </span>
+                </div>
             </div>
         </div>
         <!-- info tags to remove filters -->
         <div
             v-if="filterSet === 'all' &&
                 (filteredQuickFilters.length > 0 || filteredSearchTo.length>0 || sortResults.label)"
-            class="section">
+            class="">
             <span
                 v-for="filter in filteredQuickFilters"
                 :key="filter"
@@ -242,4 +253,7 @@ export default {
     }
 };
 </script>
+
+<style lang="scss">
+</style>
 
