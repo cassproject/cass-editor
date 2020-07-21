@@ -164,6 +164,11 @@
                             v-if="createLinkPersonEmailExists">
                             That email is already in use
                         </div>
+                        <div
+                            class="is-size-7"
+                            v-if="createAccountUsernameUnavailable">
+                            That username is unavailable
+                        </div>
                     </div>
                     <!-- error messages -->
                     <div
@@ -261,6 +266,7 @@ export default {
         createLinkPersonNameInvalid: false,
         createLinkPersonEmailInvalid: false,
         createLinkPersonEmailExists: false,
+        createAccountUsernameUnavailable: false,
         identityToLinkToPerson: {},
         linkedPerson: {}
     }),
@@ -327,6 +333,7 @@ export default {
             this.createLinkPersonNameInvalid = false;
             this.createLinkPersonEmailInvalid = false;
             this.createLinkPersonEmailExists = false;
+            this.createAccountUsernameUnavailable = false;
             if (clearIdentityManager) {
                 this.ecRemoteIdentMgr = {};
                 EcIdentityManager.clearContacts();
@@ -355,6 +362,7 @@ export default {
             this.createLinkPersonNameInvalid = false;
             this.createLinkPersonEmailInvalid = false;
             this.createLinkPersonEmailExists = false;
+            this.createAccountUsernameUnavailable = false;
         },
         isValidEmail(email) {
             let re = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/igm;
@@ -420,6 +428,41 @@ export default {
             this.ecRemoteIdentMgr.server = window.repo.selectedServer;
             this.ecRemoteIdentMgr.configureFromServer(this.handleCreateAccountConfigureFromServerSuccess, this.handleAttemptLoginConfigureFromServerFail);
         },
+        handleCheckUsernameFetchIdentitySuccess: function(obj) {
+            appLog('handleCheckUsernameFetchIdentitySuccess !!!!');
+            this.createAccountOrLinkPersonDataInvalid = true;
+            this.createAccountUsernameUnavailable = true;
+            this.loginBusy = false;
+            EcIdentityManager.clearIdentities();
+            EcIdentityManager.clearContacts();
+        },
+        handleCheckUsernameFetchIdentityFailure: function(failMsg) {
+            appLog('handleCheckUsernameFetchIdentityFailure: ' + failMsg);
+            if (failMsg && failMsg.toLowerCase().trim().equals('user does not exist.')) {
+                this.createNewAccountIdentityAndPerson();
+            } else {
+                this.createAccountOrLinkPersonDataInvalid = true;
+                this.createAccountUsernameUnavailable = true;
+                this.loginBusy = false;
+                EcIdentityManager.clearIdentities();
+                EcIdentityManager.clearContacts();
+            }
+        },
+        handleCheckUsernameConfigureFromServerSuccess: function(obj) {
+            appLog("Fetching identity for username check...");
+            this.ecRemoteIdentMgr.startLogin(this.createAccountUsername, this.createAccountPassword); // Creates the hashes for storage and retrieval of keys.
+            this.ecRemoteIdentMgr.fetch(this.handleCheckUsernameFetchIdentitySuccess, this.handleCheckUsernameFetchIdentityFailure); // Retrieves the identities and encryption keys from the server.
+        },
+        handleCheckUsernameConfigureFromServerFail: function(failMsg) {
+            this.loginBusy = false;
+            appLog('New account configure from server for username check failure: ' + msg);
+        },
+        checkForExistingUsername: function() {
+            appLog("Check if new account username already exists");
+            this.ecRemoteIdentMgr = new EcRemoteIdentityManager();
+            this.ecRemoteIdentMgr.server = window.repo.selectedServer;
+            this.ecRemoteIdentMgr.configureFromServer(this.handleCheckUsernameConfigureFromServerSuccess, this.handleCheckUsernameConfigureFromServerFail); // Retrieves username and password salts from the serve
+        },
         searchPersonsForNewAccountSuccess(ecRemoteLda) {
             appLog("New account person search success: ");
             appLog(ecRemoteLda);
@@ -436,7 +479,10 @@ export default {
                 this.createAccountOrLinkPersonDataInvalid = true;
                 this.createLinkPersonEmailExists = true;
                 this.loginBusy = false;
-            } else this.createNewAccountIdentityAndPerson();
+            } else {
+                this.checkForExistingUsername();
+                // this.createNewAccountIdentityAndPerson();
+            }
         },
         searchPersonsForNewAccountFailure(msg) {
             this.loginBusy = false;
