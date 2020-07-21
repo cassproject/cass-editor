@@ -22,7 +22,7 @@
                 :profile="profile" />
             <div class="section">
                 <h4 class="header">
-                    This item is listed in <b>{{ numberOfParentFrameworks }}</b> {{ dynamicModalContent.objectType === "Concept" ? "concept scheme" : "framework" }}<span v-if="numberOfParentFrameworks > 1">s</span>
+                    This item is listed in <b>{{ numberOfParentFrameworks }}</b> {{ dynamicModalContent.objectType === "Concept" ? "concept scheme" : "framework" }}<span v-if="numberOfParentFrameworks > 1 || numberOfParentFrameworks === 0">s</span>
                 </h4>
                 <ul class="single__list">
                     <li
@@ -102,20 +102,24 @@ export default {
         },
         // Basic profile to be able to edit level names
         profile: function() {
-            return {
-                "http://schema.org/name": {
-                    "@id": "http://schema.org/name",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                        [{"@id": "https://schema.cassproject.org/0.4/Level"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                        [{"@language": "en", "@value": "The name of the Level"}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}],
-                    "isRequired": "true"
-                },
-                "alwaysProperties": ["http://schema.org/name"]
-            };
+            if (this.dynamicModalContent.objectType === "Level") {
+                return {
+                    "http://schema.org/name": {
+                        "@id": "http://schema.org/name",
+                        "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                        "http://schema.org/domainIncludes":
+                            [{"@id": "https://schema.cassproject.org/0.4/Level"}],
+                        "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                        "http://www.w3.org/2000/01/rdf-schema#comment":
+                            [{"@language": "en", "@value": "The name of the Level"}],
+                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}],
+                        "isRequired": "true"
+                    },
+                    "alwaysProperties": ["http://schema.org/name"]
+                };
+            } else {
+                return null;
+            }
         }
     },
     methods: {
@@ -139,7 +143,9 @@ export default {
             var concept = EcRepository.getBlocking(conceptId);
             if (concept["skos:topConceptOf"]) {
                 var scheme = EcConceptScheme.getBlocking(concept["skos:topConceptOf"]);
-                this.parentFrameworks.push({name: this.getDisplayStringFrom(scheme["dcterms:title"]), url: scheme.shortId()});
+                if (scheme) {
+                    this.parentFrameworks.push({name: this.getDisplayStringFrom(scheme["dcterms:title"]), url: scheme.shortId()});
+                }
             } else if (concept["skos:broader"]) {
                 this.findConceptTrail(concept["skos:broader"]);
             }
