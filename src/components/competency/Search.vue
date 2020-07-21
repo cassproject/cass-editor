@@ -221,9 +221,11 @@ export default {
         this.$store.commit('app/searchTerm', "");
         if (!this.copyOrLink && this.searchType === "Competency" && this.framework.competency) {
             for (var i = 0; i < this.framework.competency.length; i++) {
-                var comp = EcRepository.getBlocking(this.framework.competency[i]);
-                if (comp) {
-                    this.displayFirst.push(comp);
+                if (this.framework.competency[i] !== this.selectedCompetency.shortId()) {
+                    var comp = EcRepository.getBlocking(this.framework.competency[i]);
+                    if (comp) {
+                        this.displayFirst.push(comp);
+                    }
                 }
             }
         }
