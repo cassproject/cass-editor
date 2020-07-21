@@ -62,6 +62,34 @@
                                     If your framework is not detected by CaSS or not imported properly, let us know at <a href="mailto:cass@eduworks.com?subject=File+to+Improve+CaSS+Importer">cass@eduworks.com</a> and we will look into the inquiry and provide a response.
                                 </li>
                             </div>
+                            <div
+                                class="column is-12"
+                                v-else-if="importType=='server' && !conceptMode">
+                                <p class="is-size-6">
+                                    If you know the URL of a IMS CASE Repository, such as OpenSalt, you can import published frameworks from that repository.
+                                </p>
+                                <br>
+                                <li class="is-size-6">
+                                    This import maintains the URLs of the CASE frameworks and changes both the format and schema used to store the CASE frameworks in CaSS, but does not change any of the data.
+                                </li>
+                                <li class="is-size-6">
+                                    After entering the endpoint below, you can select which frameworks you would like to import.
+                                </li>
+                            </div>
+                            <div
+                                class="column is-12"
+                                v-else-if="importType=='url' && !conceptMode">
+                                <p class="is-size-6">
+                                    If you know the URL of a CTDL-ASN JSON-LD graph, you can import published frameworks by URL.
+                                </p>
+                                <br>
+                                <li class="is-size-6">
+                                    This import maintains the URLs of the original frameworks and changes both the format and schema used to store the CTDL-ASN frameworks in CaSS, but does not change any of the data.
+                                </li>
+                                <li class="is-size-6">
+                                    Please note that the Technology Skills framework below is very large and will take a long time to import.
+                                </li>
+                            </div>
                             <!-- ready state details -->
                             <div class="column is-12">
                                 <p
