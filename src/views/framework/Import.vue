@@ -175,7 +175,8 @@
                                 :obj="changedObj ? changedObj : importFramework"
                                 :repo="repo"
                                 class="framework-title"
-                                :profile="conceptMode ? ctdlAsnConceptSchemeProfile : t3FrameworkProfile" />
+                                :profile="conceptMode ? ctdlAsnConceptSchemeProfile : t3FrameworkProfile"
+                                properties="tertiary" />
                             <Hierarchy
                                 :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                 view="importPreview"
@@ -200,7 +201,8 @@
                                 @selectedArray="selectedArrayEvent"
                                 :newFramework="true"
                                 @deleteObject="deleteObject"
-                                @exportObject="exportObject" />
+                                @exportObject="exportObject"
+                                properties="tertiary" />
                             <ConceptHierarchy
                                 :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                 view="import"
@@ -216,7 +218,8 @@
                                 @selectedArray="selectedArrayEvent"
                                 :newFramework="true"
                                 @deleteObject="deleteObject"
-                                :profile="ctdlAsnConceptProfile" />
+                                :profile="ctdlAsnConceptProfile"
+                                properties="tertiary" />
                         </div>
                         <!-- import light view -->
                         <div
@@ -230,7 +233,8 @@
                                 :obj="changedObj ? changedObj : importFramework"
                                 :parentNotEditable="true"
                                 class="framework-title"
-                                :profile="conceptMode ? ctdlAsnConceptSchemeProfile : t3FrameworkProfile" />
+                                :profile="conceptMode ? ctdlAsnConceptSchemeProfile : t3FrameworkProfile"
+                                properties="tertiary" />
                             <Hierarchy
                                 v-if="importFramework && !conceptMode"
                                 view="importLight"
@@ -250,7 +254,8 @@
                                 :repo="repo"
                                 :newFramework="true"
                                 @deleteObject="deleteObject"
-                                @exportObject="exportObject" />
+                                @exportObject="exportObject"
+                                properties="tertiary" />
                             <ConceptHierarchy
                                 :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                 view="import"
@@ -262,7 +267,8 @@
                                 @selectedArray="selectedArrayEvent"
                                 :newFramework="true"
                                 @deleteObject="deleteObject"
-                                :profile="ctdlAsnConceptProfile" />
+                                :profile="ctdlAsnConceptProfile"
+                                properties="tertiary" />
                         </div>
                     </div>
                 </div>
