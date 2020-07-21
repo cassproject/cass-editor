@@ -277,6 +277,7 @@ export default {
                             changedValues.push(expandedCompetency[property]);
                         }
                         if (me.errorMessage && me.errorMessage.length > 0) {
+                            me.saveCount++;
                             return;
                         }
                         me.changedItemsForUndo.push({operation: "update", id: EcRemoteLinkedData.trimVersionFromUrl(expandedCompetency["@id"]), fieldChanged: properties, initialValue: initialValues, changedValue: changedValues, expandedProperty: true});
@@ -379,8 +380,12 @@ export default {
             if (this.saveCount === this.selectedCompetencies.length) {
                 // Done saving, close modal
                 this.isProcessing = false;
-                this.$store.commit('editor/addEditsToUndo', this.changedItemsForUndo);
-                this.$store.commit('app/closeModal');
+                if (this.changedItemsForUndo) {
+                    this.$store.commit('editor/addEditsToUndo', this.changedItemsForUndo);
+                }
+                if (!me.errorMessage || me.errorMessage.length === 0) {
+                    this.$store.commit('app/closeModal');
+                }
             }
         },
         removeAddingValueAtIndex: function() {
