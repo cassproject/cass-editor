@@ -2,9 +2,9 @@
     <div class="modal-card">
         <header class="modal-card-head has-background-primary">
             <p class="modal-card-title">
-                <span class="title has-text-white">Share Framework</span>
+                <span class="title has-text-white">Share {{ conceptOrFramework }}</span>
                 <br><span class="subtitle has-text-white has-text-weight-medium">
-                    Sharing settings for {{ frameworkName }} framework
+                    Sharing settings for {{ frameworkName }} {{ conceptOrFramework }}
                 </span>
             </p>
             <button
@@ -32,8 +32,8 @@
                 Confirm make private
             </h2>
             <p>
-                Making this framework private means only those users/groups in
-                your access list will have the ability to read, write, or edit this framework.
+                Making this {{ conceptOrFramework }} private means only those users/groups in
+                your access list will have the ability to read, write, or edit this {{ conceptOrFramework }}.
             </p>
         </section>
         <!-- confirm make public -->
@@ -44,8 +44,8 @@
                 Confirm make public
             </h2>
             <p>
-                Making this framework public means anyone with a link can access and read this framework.
-                Only those with admin access will be able to edit or delete the framework.
+                Making this {{ conceptOrFramework }} public means anyone with a link can access and read this {{ conceptOrFramework }}.
+                Only those with admin access will be able to edit or delete the {{ conceptOrFramework }}.
             </p>
         </section>
         <section
@@ -87,7 +87,7 @@
                 v-if="canEditFramework">
                 <!-- end share link -->
                 <div v-if="ownerCount === 0">
-                    To add users or groups or to make your framework private, first add yourself as an owner.
+                    To add users or groups or to make your {{ conceptOrFramework }} private, first add yourself as an owner.
                     <button @click="makeCurrentUserAnOwner">
                         Make me an owner
                     </button>
@@ -350,7 +350,7 @@ export default {
                     label: 'View',
                     value: 'view',
                     disabled: true,
-                    title: 'Make the framework private to add users/groups with view access'
+                    title: 'Make the ' + (this.$store.getters['editor/conceptMode'] ? 'concept scheme' : 'framework') + ' private to add users/groups with view access'
                 }
             ],
             groups: [],
@@ -370,7 +370,8 @@ export default {
             conceptsProcessed: 0,
             conceptsToProcess: 0,
             cantRemoveCurrentUserAsOwner: false,
-            ownerCount: 0
+            ownerCount: 0,
+            decryptingConcepts: false
         };
     },
     computed: {
@@ -412,6 +413,9 @@ export default {
         },
         loggedOnPerson: function() {
             return this.$store.getters['user/loggedOnPerson'];
+        },
+        conceptOrFramework: function() {
+            return this.$store.getters['editor/conceptMode'] ? 'concept scheme' : 'framework';
         }
     },
     mounted: function() {
@@ -441,7 +445,7 @@ export default {
                 } else {
                     this.privateFramework = false;
                     this.viewOptions[1].disabled = true;
-                    this.viewOptions[1].title = 'Make the framework private to add users/groups with view access';
+                    this.viewOptions[1].title = 'Make the ' + this.conceptOrFramework + ' private to add users/groups with view access';
                     if (this.ownerCount < 2) {
                         this.cantRemoveCurrentUserAsOwner = false;
                     }
@@ -720,6 +724,7 @@ export default {
                 me.cantRemoveCurrentUserAsOwner = false;
             }
             me.ownerCount = 0;
+            me.selectViewOrAdmin = 'admin';
         },
         makePrivate: function() {
             var me = this;
@@ -775,7 +780,9 @@ export default {
                 f["schema:dateModified"] = new Date().toISOString();
                 delete f.reader;
                 EcEncryptedValue.encryptOnSave(f.id, false);
-                me.repo.saveTo(f, function() {}, appError);
+                me.repo.saveTo(f, function() {
+                    me.$store.commit('editor/framework', f);
+                }, appError);
                 framework = f;
                 if (framework.competency && framework.competency.length > 0) {
                     new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
@@ -816,19 +823,22 @@ export default {
                                     me.repo.saveTo(r, done, done);
                                 }, done);
                             }, function(relationIds) {
-                                me.confirmMakePublic = false;
-                                me.isProcessing = false;
+                                me.finishedMakingPublic();
                             });
                         } else {
-                            me.confirmMakePublic = false;
-                            me.isProcessing = false;
+                            me.finishedMakingPublic();
                         }
                     });
                 } else {
-                    me.confirmMakePublic = false;
-                    me.isProcessing = false;
+                    me.finishedMakingPublic();
                 }
             }
+        },
+        finishedMakingPublic: function() {
+            this.confirmMakePublic = false;
+            this.isProcessing = false;
+            this.resetVariables();
+            this.getCurrentOwnersAndReaders();
         },
         encryptFramework: function(framework) {
             var me = this;
@@ -880,12 +890,13 @@ export default {
             framework = cs;
             EcEncryptedValue.encryptOnSave(cs.id, false);
             cs["schema:dateModified"] = new Date().toISOString();
+            me.decryptingConcepts = true;
             me.repo.saveTo(cs, function() {
+                me.$store.commit('editor/framework', cs);
                 if (cs["skos:hasTopConcept"]) {
                     me.decryptConcepts(cs);
                 } else {
-                    me.confirmMakePublic = false;
-                    me.isProcessing = false;
+                    me.finishedMakingPublic();
                 }
             }, appError);
         },
@@ -917,6 +928,7 @@ export default {
         decryptConcepts: function(c) {
             var me = this;
             var concepts = c["skos:hasTopConcept"] ? c["skos:hasTopConcept"] : c["skos:narrower"];
+            me.conceptsToProcess += concepts.length;
             new EcAsyncHelper().each(concepts, function(conceptId, done) {
                 EcRepository.get(conceptId, function(concept) {
                     var v;
@@ -934,11 +946,10 @@ export default {
                         me.decryptConcepts(concept);
                     }
                     concept["schema:dateModified"] = new Date().toISOString();
+                    me.conceptsProcessed++;
                     me.repo.saveTo(concept, done, done);
                 }, done);
             }, function(conceptIds) {
-                me.confirmMakePublic = false;
-                me.isProcessing = false;
             });
         },
         makeCurrentUserAnOwner: function() {
@@ -1004,19 +1015,19 @@ export default {
     watch: {
         conceptsProcessed: function() {
             if (this.conceptsToProcess && this.conceptsProcessed === this.conceptsToProcess) {
-                if (this.ownerCount > 0) {
-                    this.addAndRemoveFromFrameworkObject();
+                if (this.decryptingConcepts === true) {
+                    this.finishedMakingPublic();
                 } else {
-                    this.makeCurrentUserFrameworkOwner();
+                    if (this.ownerCount > 0) {
+                        this.addAndRemoveFromFrameworkObject();
+                    } else {
+                        this.makeCurrentUserFrameworkOwner();
+                    }
                 }
             }
         },
         confirmMakePublic: function() {
             this.checkIsPrivate();
-            if (!this.confirmMakePublic) {
-                this.resetVariables();
-                this.getCurrentOwnersAndReaders();
-            }
         },
         confirmMakePrivate: function() {
             this.checkIsPrivate();
