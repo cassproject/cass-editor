@@ -193,7 +193,7 @@
                 Readers can read, and comment on frameworks.
             </p>
             <div v-if="groupUsers.length === 0">
-                <p class="is-size-7">
+                <p class="is-size-6">
                     No users assigned to this group yet.
                 </p>
             </div>

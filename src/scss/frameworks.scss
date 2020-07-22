@@ -49,11 +49,8 @@
                 .framework-list-item__details {
                     color: $text;
                     font-weight: 300;
-                    font-size: $size-7;
+                    font-size: $size-6;
                     font-family: $family-primary;
-                    .details-value {
-
-                    }
                     .details-label {
                         font-weight: 600;
                     }
@@ -144,7 +141,7 @@
             color: rgba($dark, .9);
             .lode__description {
                 font-weight: 400;
-                font-size: $size-7;
+                font-size: $size-6;
             }
             .lode__name{
                 font-weight: 600;
@@ -152,7 +149,7 @@
             }
 
             label {
-                font-size: $size-7;
+                font-size: $size-6;
                 font-weight: 500;
             }
         }

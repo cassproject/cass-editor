@@ -35,7 +35,7 @@
                 <div
                     v-else
                     class="icon is-vcentered">
-                    <i class="fa fa-circle is-size-7 has-text-light" />
+                    <i class="fa fa-circle is-size-6 has-text-light" />
                 </div>
                 <div
                     v-if="selectButtonText"

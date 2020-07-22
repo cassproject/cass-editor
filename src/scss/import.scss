@@ -280,7 +280,7 @@ ul.processing-list {
                 span {
                     padding: 0rem .25rem;
                     width: auto;
-                    font-size: $size-7;
+                    font-size: $size-6;
                     font-weight: 600;
                     color: rgba($dark, .6);
                 }
@@ -374,4 +374,5 @@ ul.processing-list {
 
 .constrain-column {
     max-width: 100%;
+    min-width: 0;
 }

@@ -135,37 +135,37 @@
                             Please correct the following errors:
                         </div>
                         <div
-                            class="is-size-7"
+                            class="is-size-6"
                             v-if="createAccountUsernameInvalid">
                             Username is required
                         </div>
                         <div
-                            class="is-size-7"
+                            class="is-size-6"
                             v-if="createAccountPasswordInvalid">
                             Password is required
                         </div>
                         <div
-                            class="is-size-7"
+                            class="is-size-6"
                             v-if="createAccountPasswordMismatch">
                             Passwords do not match
                         </div>
                         <div
-                            class="is-size-7"
+                            class="is-size-6"
                             v-if="createLinkPersonNameInvalid">
                             Name is required
                         </div>
                         <div
-                            class="is-size-7"
+                            class="is-size-6"
                             v-if="createLinkPersonEmailInvalid">
                             Valid email is required
                         </div>
                         <div
-                            class="is-size-7"
+                            class="is-size-6"
                             v-if="createLinkPersonEmailExists">
                             That email is already in use
                         </div>
                         <div
-                            class="is-size-7"
+                            class="is-size-6"
                             v-if="createAccountUsernameUnavailable">
                             That username is unavailable
                         </div>

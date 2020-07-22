@@ -25,6 +25,7 @@
     display: none;
 }
 .constrain-column {
+    min-width: 0;
     max-width: 100%;
 }
 /* 
@@ -561,7 +562,7 @@ drag, drag, and chosen states
     }
     .lode__Property.lode__id {
         .control {
-            font-size: $size-7;
+            font-size: $size-6;
         }
     }
     .lode__Property.lode__description .field {
@@ -597,11 +598,20 @@ drag, drag, and chosen states
         justify-content: space-between;
         width: 100%;
         .thing-as-property__text {
+            text-align: left;
+            padding-left: .25rem;
+            font-size: $size-6;
             width: 100%;
+            display: inline-block;
+            direction: ltr;
+            text-align: left;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            color: $dark;
         }
         .competency-as-property {
             cursor: pointer;
-            font-size: .9rem;
             color: $text;
             vertical-align: super;
         }
