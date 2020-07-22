@@ -24,17 +24,6 @@
                 </span>
             </div>
         </section>
-        <!-- not permitted to remove -->
-        <section
-            v-else-if="cantRemoveOwner"
-            class="modal-card-body">
-            <h2 class="header is-size-3">
-                Not permitted
-            </h2>
-            <p>
-                You are not permitted to remove the only owner of a private framework.
-            </p>
-        </section>
         <!-- confirm make private -->
         <section
             v-else-if="confirmMakePrivate"
@@ -97,7 +86,7 @@
                 class="columns is-multiline "
                 v-if="canEditFramework">
                 <!-- end share link -->
-                <div v-if="!hasAnOwner">
+                <div v-if="ownerCount === 0">
                     To add users or groups or to make your framework private, first add yourself as an owner.
                     <button @click="makeCurrentUserAnOwner">
                         Make me an owner
@@ -159,7 +148,8 @@
                                         v-for="(option, index) in viewOptions"
                                         :key="index"
                                         :value="option.value"
-                                        :disabled="option.disabled">
+                                        :disabled="option.disabled"
+                                        :title="option.title">
                                         {{ option.label }}
                                     </option>
                                 </select>
@@ -265,7 +255,8 @@
                                     <td>
                                         <div
                                             class="button is-text is-small has-text-danger"
-                                            @click="removeOwnerOrReader(user, 'user')">
+                                            @click="removeOwnerOrReader(user, 'user')"
+                                            :disabled="cantRemoveCurrentUserAsOwner && user.currentUser">
                                             <div class="icon">
                                                 <i class="fa fa-trash" />
                                             </div>
@@ -352,12 +343,14 @@ export default {
                 {
                     label: 'Admin',
                     value: 'admin',
-                    disabled: false
+                    disabled: false,
+                    title: null
                 },
                 {
                     label: 'View',
                     value: 'view',
-                    disabled: true
+                    disabled: true,
+                    title: 'Make the framework private to add users/groups with view access'
                 }
             ],
             groups: [],
@@ -367,7 +360,7 @@ export default {
             possibleGroupsAndUsers: [],
             isOpenAutocomplete: false,
             userOrGroupToAdd: null,
-            selectViewOrAdmin: "view",
+            selectViewOrAdmin: "admin",
             removeReader: [],
             removeOwner: [],
             addReader: [],
@@ -376,8 +369,8 @@ export default {
             repo: window.repo,
             conceptsProcessed: 0,
             conceptsToProcess: 0,
-            cantRemoveOwner: false,
-            hasAnOwner: false
+            cantRemoveCurrentUserAsOwner: false,
+            ownerCount: 0
         };
     },
     computed: {
@@ -416,6 +409,9 @@ export default {
                 return false;
             }
             return true;
+        },
+        loggedOnPerson: function() {
+            return this.$store.getters['user/loggedOnPerson'];
         }
     },
     mounted: function() {
@@ -439,8 +435,16 @@ export default {
             if (EcRepository.getBlocking(this.framework.shortId())) {
                 if (EcRepository.getBlocking(this.framework.shortId()).type === "EncryptedValue") {
                     this.privateFramework = true;
+                    this.viewOptions[1].disabled = false;
+                    this.viewOptions[1].title = null;
+                    this.cantRemoveCurrentUserAsOwner = true;
                 } else {
                     this.privateFramework = false;
+                    this.viewOptions[1].disabled = true;
+                    this.viewOptions[1].title = 'Make the framework private to add users/groups with view access';
+                    if (this.ownerCount < 2) {
+                        this.cantRemoveCurrentUserAsOwner = false;
+                    }
                 }
             }
         },
@@ -463,17 +467,19 @@ export default {
         },
         getCurrentOwnersAndReaders: function() {
             var me = this;
-            me.viewOptions[1].disabled = true;
             if (this.framework.owner) {
                 for (var i = 0; i < this.framework.owner.length; i++) {
                     var pk = EcPk.fromPem(this.framework.owner[i]);
                     EcPerson.getByPk(window.repo, pk, function(success) {
                         appLog(success);
                         if (success) {
-                            var user = {header: success.name, email: success.email, view: "admin", id: success.shortId(), changed: false, pk: pk};
+                            let currentUser = false;
+                            if (me.loggedOnPerson.shortId() === success.shortId()) {
+                                currentUser = true;
+                            }
+                            var user = {header: success.name, email: success.email, view: "admin", id: success.shortId(), changed: false, pk: pk, currentUser: currentUser};
                             me.users.push(user);
-                            me.hasAnOwner = true;
-                            me.viewOptions[1].disabled = false;
+                            me.ownerCount++;
                         }
                     }, function(failure) {
                         // If it's not a Person, check organizations
@@ -482,8 +488,7 @@ export default {
                             if (success) {
                                 var org = {header: success.name, view: "admin", id: success.shortId(), changed: false, pk: pk};
                                 me.groups.push(org);
-                                me.hasAnOwner = true;
-                                me.viewOptions[1].disabled = false;
+                                me.ownerCount++;
                             }
                         }, function(error) {
                             appError(error);
@@ -693,27 +698,6 @@ export default {
             if (userOrGroup.view === "view") {
                 this.removeReader.push(userOrGroup.pk);
             } else if (userOrGroup.view === "admin") {
-                if (this.privateFramework) {
-                    let hasOtherOwners = false;
-                    for (let i = 0; i < this.users.length; i++) {
-                        if (this.users[i].view === "admin" && userOrGroup.pk !== this.users[i].pk) {
-                            hasOtherOwners = true;
-                            break;
-                        }
-                    }
-                    if (!hasOtherOwners) {
-                        for (let i = 0; i < this.groups.length; i++) {
-                            if (this.groups[i].view === "admin" && userOrGroup.pk !== this.groups[i].pk) {
-                                hasOtherOwners = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (!hasOtherOwners) {
-                        this.cantRemoveOwner = true;
-                        return;
-                    }
-                }
                 this.removeOwner.push(userOrGroup.pk);
             }
             this.saveSettings();
@@ -731,8 +715,10 @@ export default {
             me.conceptsProcessed = 0;
             me.conceptsToProcess = 0;
             me.isProcessing = false;
-            me.cantRemoveOwner = false;
-            me.hasAnOwner = false;
+            if (!me.privateFramework) {
+                me.cantRemoveCurrentUserAsOwner = false;
+            }
+            me.ownerCount = 0;
         },
         makePrivate: function() {
             var me = this;
@@ -849,6 +835,7 @@ export default {
             f = EcEncryptedValue.toEncryptedValue(f);
             this.repo.saveTo(f, function() {
                 me.confirmMakePrivate = false;
+                me.cantRemoveCurrentUserAsOwner = true;
                 me.isProcessing = false;
             }, appError);
         },
@@ -1011,7 +998,7 @@ export default {
     watch: {
         conceptsProcessed: function() {
             if (this.conceptsToProcess && this.conceptsProcessed === this.conceptsToProcess) {
-                if (this.hasAnOwner) {
+                if (this.ownerCount > 0) {
                     this.addAndRemoveFromFrameworkObject();
                 } else {
                     this.makeCurrentUserFrameworkOwner();
@@ -1025,6 +1012,11 @@ export default {
             this.checkIsPrivate();
             this.resetVariables();
             this.getCurrentOwnersAndReaders();
+        },
+        ownerCount: function() {
+            if (this.ownerCount > 1) {
+                this.cantRemoveCurrentUserAsOwner = true;
+            }
         }
     }
 };
