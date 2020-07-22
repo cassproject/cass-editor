@@ -34,7 +34,7 @@
                                     class="button is-outlined is-primary">
                                     <span class="icon">
                                         <i class="fa fa-plus" />
-                                    </span><span>new concept</span>
+                                    </span><span>new concept scheme</span>
                                 </div>
                                 <router-link
                                     to="/import"
@@ -42,7 +42,7 @@
                                     class="button is-outlined is-primary">
                                     <span class="icon">
                                         <i class="fa fa-upload" />
-                                    </span><span>import concept</span>
+                                    </span><span>import concept scheme</span>
                                 </router-link>
                             </div>
                             <div

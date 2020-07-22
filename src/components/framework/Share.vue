@@ -2,9 +2,9 @@
     <div class="modal-card">
         <header class="modal-card-head has-background-primary">
             <p class="modal-card-title">
-                <span class="title has-text-white">Share Framework</span>
+                <span class="title has-text-white">Share {{ conceptOrFramework }}</span>
                 <br><span class="subtitle has-text-white has-text-weight-medium">
-                    Sharing settings for {{ frameworkName }} framework
+                    Sharing settings for {{ frameworkName }} {{ conceptOrFramework }}
                 </span>
             </p>
             <button
@@ -24,17 +24,6 @@
                 </span>
             </div>
         </section>
-        <!-- not permitted to remove -->
-        <section
-            v-else-if="cantRemoveOwner"
-            class="modal-card-body">
-            <h2 class="header is-size-3">
-                Not permitted
-            </h2>
-            <p>
-                You are not permitted to remove the only owner of a private framework.
-            </p>
-        </section>
         <!-- confirm make private -->
         <section
             v-else-if="confirmMakePrivate"
@@ -43,8 +32,8 @@
                 Confirm make private
             </h2>
             <p>
-                Making this framework private means only those users/groups in
-                your access list will have the ability to read, write, or edit this framework.
+                Making this {{ conceptOrFramework }} private means only those users/groups in
+                your access list will have the ability to read, write, or edit this {{ conceptOrFramework }}.
             </p>
         </section>
         <!-- confirm make public -->
@@ -55,8 +44,8 @@
                 Confirm make public
             </h2>
             <p>
-                Making this framework public means anyone with a link can access and read this framework.
-                Only those with admin access will be able to edit or delete the framework.
+                Making this {{ conceptOrFramework }} public means anyone with a link can access and read this {{ conceptOrFramework }}.
+                Only those with admin access will be able to edit or delete the {{ conceptOrFramework }}.
             </p>
         </section>
         <section
@@ -97,8 +86,16 @@
                 class="columns is-multiline "
                 v-if="canEditFramework">
                 <!-- end share link -->
+                <div v-if="ownerCount === 0">
+                    To add users or groups or to make your {{ conceptOrFramework }} private, first add yourself as an owner.
+                    <button @click="makeCurrentUserAnOwner">
+                        Make me an owner
+                    </button>
+                </div>
                 <!-- input new groups or users -->
-                <div class="column is-12">
+                <div
+                    class="column is-12"
+                    v-else>
                     <div class="columns is-vcentered">
                         <div class="column">
                             <label class="label is-size-4">Add users or groups</label>
@@ -150,7 +147,9 @@
                                     <option
                                         v-for="(option, index) in viewOptions"
                                         :key="index"
-                                        :value="option.value">
+                                        :value="option.value"
+                                        :disabled="option.disabled"
+                                        :title="option.title">
                                         {{ option.label }}
                                     </option>
                                 </select>
@@ -256,7 +255,8 @@
                                     <td>
                                         <div
                                             class="button is-text is-small has-text-danger"
-                                            @click="removeOwnerOrReader(user, 'user')">
+                                            @click="removeOwnerOrReader(user, 'user')"
+                                            :disabled="cantRemoveCurrentUserAsOwner && user.currentUser">
                                             <div class="icon">
                                                 <i class="fa fa-trash" />
                                             </div>
@@ -341,12 +341,16 @@ export default {
             frameworkId: this.$store.state.editor.framework.shortId(),
             viewOptions: [
                 {
-                    label: 'View',
-                    value: 'view'
+                    label: 'Admin',
+                    value: 'admin',
+                    disabled: false,
+                    title: null
                 },
                 {
-                    label: 'Admin',
-                    value: 'admin'
+                    label: 'View',
+                    value: 'view',
+                    disabled: true,
+                    title: 'Make the ' + (this.$store.getters['editor/conceptMode'] ? 'concept scheme' : 'framework') + ' private to add users/groups with view access'
                 }
             ],
             groups: [],
@@ -356,7 +360,7 @@ export default {
             possibleGroupsAndUsers: [],
             isOpenAutocomplete: false,
             userOrGroupToAdd: null,
-            selectViewOrAdmin: "view",
+            selectViewOrAdmin: "admin",
             removeReader: [],
             removeOwner: [],
             addReader: [],
@@ -365,7 +369,9 @@ export default {
             repo: window.repo,
             conceptsProcessed: 0,
             conceptsToProcess: 0,
-            cantRemoveOwner: false
+            cantRemoveCurrentUserAsOwner: false,
+            ownerCount: 0,
+            decryptingConcepts: false
         };
     },
     computed: {
@@ -404,6 +410,12 @@ export default {
                 return false;
             }
             return true;
+        },
+        loggedOnPerson: function() {
+            return this.$store.getters['user/loggedOnPerson'];
+        },
+        conceptOrFramework: function() {
+            return this.$store.getters['editor/conceptMode'] ? 'concept scheme' : 'framework';
         }
     },
     mounted: function() {
@@ -427,8 +439,16 @@ export default {
             if (EcRepository.getBlocking(this.framework.shortId())) {
                 if (EcRepository.getBlocking(this.framework.shortId()).type === "EncryptedValue") {
                     this.privateFramework = true;
+                    this.viewOptions[1].disabled = false;
+                    this.viewOptions[1].title = null;
+                    this.cantRemoveCurrentUserAsOwner = true;
                 } else {
                     this.privateFramework = false;
+                    this.viewOptions[1].disabled = true;
+                    this.viewOptions[1].title = 'Make the ' + this.conceptOrFramework + ' private to add users/groups with view access';
+                    if (this.ownerCount < 2) {
+                        this.cantRemoveCurrentUserAsOwner = false;
+                    }
                 }
             }
         },
@@ -457,8 +477,13 @@ export default {
                     EcPerson.getByPk(window.repo, pk, function(success) {
                         appLog(success);
                         if (success) {
-                            var user = {header: success.name, email: success.email, view: "admin", id: success.shortId(), changed: false, pk: pk};
+                            let currentUser = false;
+                            if (me.loggedOnPerson.shortId() === success.shortId()) {
+                                currentUser = true;
+                            }
+                            var user = {header: success.name, email: success.email, view: "admin", id: success.shortId(), changed: false, pk: pk, currentUser: currentUser};
                             me.users.push(user);
+                            me.ownerCount++;
                         }
                     }, function(failure) {
                         // If it's not a Person, check organizations
@@ -467,6 +492,7 @@ export default {
                             if (success) {
                                 var org = {header: success.name, view: "admin", id: success.shortId(), changed: false, pk: pk};
                                 me.groups.push(org);
+                                me.ownerCount++;
                             }
                         }, function(error) {
                             appError(error);
@@ -475,6 +501,7 @@ export default {
                 }
             }
             if (this.framework.reader) {
+                this.cantRemoveCurrentUserAsOwner = true;
                 for (var i = 0; i < this.framework.reader.length; i++) {
                     var pk = EcPk.fromPem(this.framework.reader[i]);
                     EcPerson.getByPk(window.repo, pk, function(success) {
@@ -676,27 +703,6 @@ export default {
             if (userOrGroup.view === "view") {
                 this.removeReader.push(userOrGroup.pk);
             } else if (userOrGroup.view === "admin") {
-                if (this.privateFramework) {
-                    let hasOtherOwners = false;
-                    for (let i = 0; i < this.users.length; i++) {
-                        if (this.users[i].view === "admin" && userOrGroup.pk !== this.users[i].pk) {
-                            hasOtherOwners = true;
-                            break;
-                        }
-                    }
-                    if (!hasOtherOwners) {
-                        for (let i = 0; i < this.groups.length; i++) {
-                            if (this.groups[i].view === "admin" && userOrGroup.pk !== this.groups[i].pk) {
-                                hasOtherOwners = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (!hasOtherOwners) {
-                        this.cantRemoveOwner = true;
-                        return;
-                    }
-                }
                 this.removeOwner.push(userOrGroup.pk);
             }
             this.saveSettings();
@@ -714,7 +720,11 @@ export default {
             me.conceptsProcessed = 0;
             me.conceptsToProcess = 0;
             me.isProcessing = false;
-            me.cantRemoveOwner = false;
+            if (!me.privateFramework) {
+                me.cantRemoveCurrentUserAsOwner = false;
+            }
+            me.ownerCount = 0;
+            me.selectViewOrAdmin = 'admin';
         },
         makePrivate: function() {
             var me = this;
@@ -771,8 +781,7 @@ export default {
                 delete f.reader;
                 EcEncryptedValue.encryptOnSave(f.id, false);
                 me.repo.saveTo(f, function() {
-                    me.confirmMakePublic = false;
-                    me.isProcessing = false;
+                    me.$store.commit('editor/framework', f);
                 }, appError);
                 framework = f;
                 if (framework.competency && framework.competency.length > 0) {
@@ -814,11 +823,22 @@ export default {
                                     me.repo.saveTo(r, done, done);
                                 }, done);
                             }, function(relationIds) {
+                                me.finishedMakingPublic();
                             });
+                        } else {
+                            me.finishedMakingPublic();
                         }
                     });
+                } else {
+                    me.finishedMakingPublic();
                 }
             }
+        },
+        finishedMakingPublic: function() {
+            this.confirmMakePublic = false;
+            this.isProcessing = false;
+            this.resetVariables();
+            this.getCurrentOwnersAndReaders();
         },
         encryptFramework: function(framework) {
             var me = this;
@@ -831,6 +851,7 @@ export default {
             f = EcEncryptedValue.toEncryptedValue(f);
             this.repo.saveTo(f, function() {
                 me.confirmMakePrivate = false;
+                me.cantRemoveCurrentUserAsOwner = true;
                 me.isProcessing = false;
             }, appError);
         },
@@ -869,12 +890,13 @@ export default {
             framework = cs;
             EcEncryptedValue.encryptOnSave(cs.id, false);
             cs["schema:dateModified"] = new Date().toISOString();
+            me.decryptingConcepts = true;
             me.repo.saveTo(cs, function() {
+                me.$store.commit('editor/framework', cs);
                 if (cs["skos:hasTopConcept"]) {
                     me.decryptConcepts(cs);
                 } else {
-                    me.confirmMakePublic = false;
-                    me.isProcessing = false;
+                    me.finishedMakingPublic();
                 }
             }, appError);
         },
@@ -906,6 +928,7 @@ export default {
         decryptConcepts: function(c) {
             var me = this;
             var concepts = c["skos:hasTopConcept"] ? c["skos:hasTopConcept"] : c["skos:narrower"];
+            me.conceptsToProcess += concepts.length;
             new EcAsyncHelper().each(concepts, function(conceptId, done) {
                 EcRepository.get(conceptId, function(concept) {
                     var v;
@@ -923,18 +946,84 @@ export default {
                         me.decryptConcepts(concept);
                     }
                     concept["schema:dateModified"] = new Date().toISOString();
+                    me.conceptsProcessed++;
                     me.repo.saveTo(concept, done, done);
                 }, done);
             }, function(conceptIds) {
-                me.confirmMakePublic = false;
-                me.isProcessing = false;
             });
+        },
+        makeCurrentUserAnOwner: function() {
+            let me = this;
+            this.isProcessing = true;
+            if (this.$store.getters['editor/conceptMode'] === true) {
+                return this.makeCurrentUserAnOwnerForConceptObjects();
+            }
+            if (this.framework.competency && this.framework.competency.length > 0) {
+                new EcAsyncHelper().each(this.framework.competency, function(competencyId, done) {
+                    EcCompetency.get(competencyId, function(c) {
+                        c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                        me.repo.saveTo(c, done, done);
+                    }, done);
+                }, function(competencyIds) {
+                    if (me.framework.relation && me.framework.relation.length > 0) {
+                        new EcAsyncHelper().each(me.framework.relation, function(relationId, done) {
+                            EcAlignment.get(relationId, function(r) {
+                                r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                                me.repo.saveTo(r, done, done);
+                            }, done);
+                        }, function(relationIds) {
+                            me.makeCurrentUserFrameworkOwner();
+                        });
+                    } else {
+                        me.makeCurrentUserFrameworkOwner();
+                    }
+                });
+            } else {
+                me.makeCurrentUserFrameworkOwner();
+            }
+        },
+        makeCurrentUserFrameworkOwner: function() {
+            let f = this.framework;
+            let me = this;
+            f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            me.repo.saveTo(f, function() {
+                me.resetVariables();
+                me.$store.commit('editor/framework', f);
+                me.getCurrentOwnersAndReaders();
+            }, function() {});
+        },
+        makeCurrentUserAnOwnerForConceptObjects: function() {
+            if (this.framework["skos:hasTopConcept"]) {
+                this.makeCurrentUserAnOwnerForConcepts(this.framework["skos:hasTopConcept"]);
+            }
+        },
+        makeCurrentUserAnOwnerForConcepts: function(concepts) {
+            this.conceptsToProcess += concepts.length;
+            var me = this;
+            new EcAsyncHelper().each(concepts, function(conceptId, done) {
+                EcConcept.get(conceptId, function(c) {
+                    c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    if (c["skos:narrower"]) {
+                        me.addAndRemoveFromConceptArray(c["skos:narrower"]);
+                    }
+                    me.conceptsProcessed++;
+                    me.repo.saveTo(c, done, done);
+                }, done);
+            }, function() {});
         }
     },
     watch: {
         conceptsProcessed: function() {
             if (this.conceptsToProcess && this.conceptsProcessed === this.conceptsToProcess) {
-                this.addAndRemoveFromFrameworkObject();
+                if (this.decryptingConcepts === true) {
+                    this.finishedMakingPublic();
+                } else {
+                    if (this.ownerCount > 0) {
+                        this.addAndRemoveFromFrameworkObject();
+                    } else {
+                        this.makeCurrentUserFrameworkOwner();
+                    }
+                }
             }
         },
         confirmMakePublic: function() {
@@ -944,6 +1033,11 @@ export default {
             this.checkIsPrivate();
             this.resetVariables();
             this.getCurrentOwnersAndReaders();
+        },
+        ownerCount: function() {
+            if (this.ownerCount > 1) {
+                this.cantRemoveCurrentUserAsOwner = true;
+            }
         }
     }
 };
