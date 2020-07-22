@@ -620,7 +620,8 @@ export default {
 
 <style lang="scss">
     @import '@/scss/frameworks.scss';
-.search-modal, .modal.lode__thing-editing {
+.search-modal,
+.modal.lode__thing-editing {
     .breadcrumb {
         padding-left: .125rem;
     }
@@ -660,9 +661,10 @@ export default {
     .List {
         .list-ul {
             .list-ul__item {
-
                 padding: .5rem .25rem;
-
+                .search-selection__add-icon {
+                    visibility: hidden;
+                }
                 .search-selection__icon,
                 .search-selection__add-icon
                 {
@@ -675,9 +677,6 @@ export default {
                         height: 100%;
                         padding-right: 16px;
                     }
-                }
-                .search-selection__add-icon {
-                    visibility: hidden;
                 }
             }
             .list-ul__item:hover {
