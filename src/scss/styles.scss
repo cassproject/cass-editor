@@ -70,12 +70,10 @@ p {
     transform: translateX(0);
     padding-right: 8px;
     z-index: 10;
-    width: 120px;
+    width: 160px;
     border-radius: 5px;
-
     input {
-        border-radius: 5px;
-        height: 38px;
+        height: 44px;
         z-index: 10;
         margin-right: 12px;
     }
@@ -90,19 +88,19 @@ p {
     }
     
     .auto-complete {
-        width: 160px;
+        width: 100%;
         position: fixed;
-        top: 60px;
+        top: 66px;
         left: 0px;
-        margin-right: 8px;
+        padding-right:.5rem;
         color: $dark;
         z-index: 10;
         background-color: white;
         ul {
             z-index: 10;
-            min-height: 80px;
+            min-height: 40px;
             border-radius:  6px;
-            max-height: 200px;
+            max-height: 120px;
             background-color: white;
             overflow-y: scroll;
             color: $dark;
@@ -115,6 +113,7 @@ p {
             li:hover {
                 background-color: $link;
                 color: white;
+                cursor: pointer;
             }
         }
     }
@@ -258,7 +257,9 @@ iframe {
     }
 }
 
-
+.tag {
+    font-weight: 500;
+}
 /*  Responsive text 
     sets size to 16 - 22 depending on size 
 */ 
