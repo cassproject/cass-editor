@@ -346,7 +346,7 @@
                                     Please correct the following errors:
                                 </div>
                                 <div
-                                    class="is-size-7"
+                                    class="is-size-6"
                                     v-if="levelNameInvalid">
                                     Level name is required
                                 </div>
@@ -844,22 +844,22 @@
                             Please correct the following errors:
                         </div>
                         <div
-                            class="is-size-7"
+                            class="is-size-6"
                             v-if="customPropertyPropertyNameExists">
                             Property name is already in use
                         </div>
                         <div
-                            class="is-size-7"
+                            class="is-size-6"
                             v-if="customPropertyPropertyNameInvalid">
                             Property name is required
                         </div>
                         <div
-                            class="is-size-7"
+                            class="is-size-6"
                             v-if="customPropertyLabelInvalid">
                             Label is required
                         </div>
                         <div
-                            class="is-size-7"
+                            class="is-size-6"
                             v-if="customPropertyDescriptionInvalid">
                             Description is required
                         </div>
@@ -2961,7 +2961,7 @@ export default {
     }
     .description {
         padding-bottom: .75rem;
-        font-size: $size-7;
+        font-size: $size-6;
     }
 </style>
 
