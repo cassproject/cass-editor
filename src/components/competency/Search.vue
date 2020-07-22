@@ -68,7 +68,8 @@ placed anywhere in a structured html element such as a <section> or a <div>
                     :disallowEdits="true"
                     :selectingCompetency="true"
                     :selected="selectedIds"
-                    :displayFirst="displayFirst" />
+                    :displayFirst="displayFirst"
+                    :idsNotPermittedInSearch="idsNotPermittedInSearch" />
             </div>
         </template>
         <footer
@@ -122,6 +123,10 @@ export default {
         view: {
             type: String,
             default: 'modal'
+        },
+        idsNotPermittedInSearch: {
+            type: Array,
+            default: null
         }
     },
     components: {List, SearchBar},
@@ -222,9 +227,11 @@ export default {
         if (!this.copyOrLink && this.searchType === "Competency" && this.framework.competency) {
             for (var i = 0; i < this.framework.competency.length; i++) {
                 if (this.framework.competency[i] !== this.selectedCompetency.shortId()) {
-                    var comp = EcRepository.getBlocking(this.framework.competency[i]);
-                    if (comp) {
-                        this.displayFirst.push(comp);
+                    if (!this.idsNotPermittedInSearch || this.idsNotPermittedInSearch.length === 0 || !EcArray.has(this.idsNotPermittedInSearch, this.framework.competency[i])) {
+                        var comp = EcRepository.getBlocking(this.framework.competency[i]);
+                        if (comp) {
+                            this.displayFirst.push(comp);
+                        }
                     }
                 }
             }

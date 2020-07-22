@@ -42,7 +42,8 @@ const state = {
     copyId: null,
     paste: false,
     cutOrCopyContainerId: null,
-    nodeInFocus: null
+    nodeInFocus: null,
+    relations: {}
 };
 const mutations = {
     framework(state, f) {
@@ -163,6 +164,9 @@ const mutations = {
     },
     nodeInFocus(state, id) {
         state.nodeInFocus = id;
+    },
+    relations(state, obj) {
+        state.relations = obj;
     }
 };
 const actions = {
@@ -270,6 +274,9 @@ const getters = {
     },
     nodeInFocus: function(state) {
         return state.nodeInFocus;
+    },
+    relations: function(state) {
+        return state.relations;
     }
 };
 
