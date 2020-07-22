@@ -497,6 +497,7 @@ export default {
                 }
             }
             if (this.framework.reader) {
+                this.cantRemoveCurrentUserAsOwner = true;
                 for (var i = 0; i < this.framework.reader.length; i++) {
                     var pk = EcPk.fromPem(this.framework.reader[i]);
                     EcPerson.getByPk(window.repo, pk, function(success) {
@@ -774,10 +775,7 @@ export default {
                 f["schema:dateModified"] = new Date().toISOString();
                 delete f.reader;
                 EcEncryptedValue.encryptOnSave(f.id, false);
-                me.repo.saveTo(f, function() {
-                    me.confirmMakePublic = false;
-                    me.isProcessing = false;
-                }, appError);
+                me.repo.saveTo(f, function() {}, appError);
                 framework = f;
                 if (framework.competency && framework.competency.length > 0) {
                     new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
@@ -818,9 +816,17 @@ export default {
                                     me.repo.saveTo(r, done, done);
                                 }, done);
                             }, function(relationIds) {
+                                me.confirmMakePublic = false;
+                                me.isProcessing = false;
                             });
+                        } else {
+                            me.confirmMakePublic = false;
+                            me.isProcessing = false;
                         }
                     });
+                } else {
+                    me.confirmMakePublic = false;
+                    me.isProcessing = false;
                 }
             }
         },
@@ -1007,6 +1013,10 @@ export default {
         },
         confirmMakePublic: function() {
             this.checkIsPrivate();
+            if (!this.confirmMakePublic) {
+                this.resetVariables();
+                this.getCurrentOwnersAndReaders();
+            }
         },
         confirmMakePrivate: function() {
             this.checkIsPrivate();
