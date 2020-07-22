@@ -72,6 +72,7 @@ export default {
         updateRelations: function() {
             if (!this.framework?.relation && !this.importFramework?.relation) {
                 this.relations = {};
+                this.$store.commit('editor/relations', {});
                 return;
             }
             var me = this;
@@ -118,6 +119,7 @@ export default {
                     relationObject[each.type][each.source].push(each.target);
                 }
                 me.relations = relationObject;
+                me.$store.commit('editor/relations', me.relations);
             });
         },
         updateAlignments: function() {
