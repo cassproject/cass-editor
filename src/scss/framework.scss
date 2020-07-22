@@ -544,12 +544,14 @@ drag, drag, and chosen states
     }
 }
 
+.lode__Property.editing {
+    padding-top: 1rem;
+}
 .lode__Hierarchy {
     .lode__Property {
         .control {
             font-size: $size-6;
         }
-        
     }
     .lode__Property.lode__name {
         .control {
