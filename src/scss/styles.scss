@@ -231,6 +231,10 @@ iframe {
     .buttons.is-spaced {
         width: 100% !important;
     }
+    .buttons {
+        padding: 0;
+        margin: 0;
+    }
 }
 .modal-card-title {
     max-width: calc(100% - 16px);
