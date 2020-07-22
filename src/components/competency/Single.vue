@@ -2,11 +2,7 @@
     <div class="single modal-card">
         <header class="modal-card-head has-background-primary">
             <p class="modal-card-title has-text-white is-size-2">
-                <template v-if="dynamicModalContent.parentName && dynamicModalContent.parentName['@value']">
-                    <span>{{ dynamicModalContent.parentName['@value'] }}</span>
-                    <br><br>
-                </template>
-                <b>{{ dynamicModalContent.type }}</b>
+                Competency
             </p>
             <button
                 @click="$store.commit('app/closeModal')"
@@ -14,16 +10,74 @@
                 aria-label="close" />
         </header>
         <section class="modal-card-body">
-            <Component
-                :is="dynamicThing"
-                :uri="dynamicModalContent.uri"
-                :expandInModal="true"
-                @doneEditingNodeEvent="doneEditing"
-                :profile="profile" />
             <div class="section">
-                <h4 class="header">
-                    This item is listed in <b>{{ numberOfParentFrameworks }}</b> {{ dynamicModalContent.objectType === "Concept" ? "concept scheme" : "framework" }}<span v-if="numberOfParentFrameworks > 1 || numberOfParentFrameworks === 0">s</span>
+                <template v-if="numberOfParentFrameworks === 0">
+                    <h3 class="title">
+                        Orphan Competency
+                    </h3>
+                </template>
+                <template v-else-if="dynamicModalContent.type === 'Level'">
+                    <h3 class="title">
+                        Level
+                    </h3>
+                    <p class="subtitle">
+                        This competency has a level associated with it. Levels can be
+                        referenced in more than one framework. You can edit the level from here.
+                    </p>
+                </template>
+                <template v-else>
+                    <h3
+                        class="title">
+                        Relationship
+                    </h3>
+                    <p class="subtitle">
+                        This competency is related to a competency outside of this framework. Return to the framework
+                        to modify the relationship or navigate to the related competency to modify the related competency.
+                    </p>
+                </template>
+                <div
+                    class="columns"
+                    v-if="dynamicModalContent.parentName && dynamicModalContent.parentName['@value']">
+                    <div class="column is-4">
+                        <span class="has-text-weight-semibold has-text-centered">{{ dynamicModalContent.parentName['@value'] }}</span>
+                    </div>
+                    <div class="column is-2">
+                        <span class="tag is-large has-text-centered is-primary is-light">{{ dynamicModalContent.type }} </span>
+                    </div>
+                    <div class="column is-4 pl-4">
+                        <Component
+                            :is="dynamicThing"
+                            :uri="dynamicModalContent.uri"
+                            :expandInModal="true"
+                            @doneEditingNodeEvent="doneEditing"
+                            :profile="profile" />
+                    </div>
+                </div>
+                <div
+                    v-else
+                    class="columns">
+                    <div class="column is-12">
+                        <Component
+                            :is="dynamicThing"
+                            :uri="dynamicModalContent.uri"
+                            :expandInModal="true"
+                            @doneEditingNodeEvent="doneEditing"
+                            :profile="profile" />
+                    </div>
+                </div>
+                <h4
+                    class="header has-text-weight-normal pl-3"
+                    v-if="numberOfParentFrameworks !== 0">
+                    This <b>{{ dynamicModalContent.type }}</b> item is listed in <b>{{ numberOfParentFrameworks }}</b> {{ dynamicModalContent.objectType === "Concept" ? "concept scheme" : "framework" }}<span v-if="numberOfParentFrameworks > 1 || numberOfParentFrameworks === 0">s, including this framework.</span>
                 </h4>
+                <p
+                    class="is-size-6"
+                    v-else>
+                    This item isn't listed in any frameworks.  This is usually because someone added it to a framework, and then removed
+                    it rather than deleting it.  You can add this competency to an existing framework by navigating to your framework
+                    selecting 'add competency' and searching for this name in the search list.
+                </p>
+                <!-- list of parent frameworks -->
                 <ul class="single__list">
                     <li
                         class="single__list-element"
@@ -60,9 +114,16 @@
                     Edit {{ dynamicModalContent.type }}
                 </button>
                 <button
+                    v-if="numberOfParentFrameworks !== 0"
                     @click="$store.commit('app/closeModal')"
                     class="button is-outlined is-primary">
                     return to framework editor
+                </button>
+                <button
+                    v-else
+                    @click="$store.commit('app/closeModal')"
+                    class="button is-outlined is-primary">
+                    done
                 </button>
             </div>
         </footer>
@@ -197,6 +258,16 @@ export default {
     @import '@/scss/variables.scss';
 
 .single {
+    .language {
+        display: none;
+    }
+    .lode__type {
+        display: none;
+        text-transform: lowercase;
+    }
+    .lode__name {
+        font-weight: 600;
+    }
     .lode__thing {
         padding-left: 0rem;
         .field {
