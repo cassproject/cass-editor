@@ -963,7 +963,6 @@ export default {
         height: 37px;
         transform: translateX(0);
         outline: 0;
-        border-color: $dark;
         box-shadow: none;
     }
     .auto {
