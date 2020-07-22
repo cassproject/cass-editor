@@ -1,5 +1,5 @@
 <template>
-    <div class="modal-card">
+    <div class="modal-card lode__thing-editing multi-edit">
         <header class="modal-card-head has-background-primary">
             <h3 class="modal-card-title has-text-white is-size-3">
                 Edit Multiple Competencies
@@ -35,7 +35,7 @@
                     {{ item['error'] }}
                 </span>
             </div>
-            <!-- after adding one property, show button to add another -->
+            <!-- after adding one property, show button to add another HIDING FOR NOW
             <div class="buttons is-right">
                 <div class="button is-small is-outlined is-primary">
                     <span class="icon">
@@ -43,7 +43,7 @@
                     </span>
                     <span @click="addAnotherProperty">Add another property</span>
                 </div>
-            </div>
+            </div> -->
             <p
                 class="help is-danger"
                 v-if="errorMessage !== []">
@@ -80,8 +80,8 @@
                 <div
                     @click="addSelected"
                     title="Add Competency as Property"
-                    class="button is-outlined is-primary is-small">
-                    <span class="is-small export icon">
+                    class="button is-outlined is-primary">
+                    <span class="icon">
                         <i class="fa fa-check" />
                     </span>
                     <span>Add Selected</span>
@@ -402,5 +402,10 @@ export default {
     }
 };
 </script>
-<style>
+<style lang="scss">
+.multi-edit {
+    .lode__type {
+        display: none;
+    }
+}
 </style>
