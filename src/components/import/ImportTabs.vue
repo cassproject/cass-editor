@@ -231,7 +231,7 @@
                             v-for="item in csvImportDetails"
                             :key="item"
                             class="field">
-                            <label class="label is-size-5">
+                            <label class="label">
                                 {{ item.label }}
                             </label>
                             <div
@@ -288,7 +288,7 @@
                                 :key="item"
                                 class="field">
                                 <div class="field">
-                                    <label class="label is-size-5">
+                                    <label class="label">
                                         {{ item.label }}
                                     </label>
                                     <div class="select is-small">
@@ -316,7 +316,7 @@
                             v-for="item in medbiqDetails"
                             :key="item"
                             class="field">
-                            <label class="label is-size-5">
+                            <label class="label">
                                 {{ item.label }}
                             </label>
                             <div class="control">
@@ -366,7 +366,7 @@
                                 v-for="item in serverDetails"
                                 :key="item"
                                 class="field">
-                                <label class="label is-size-5">
+                                <label class="label">
                                     {{ item.label }}
                                 </label>
                                 <div class="field is-grouped">
@@ -481,7 +481,7 @@
                                     v-if="!doc.loading && !doc.success && !doc.error">
 
                                 <label
-                                    class="label has-text-weight-normal is-size-5"
+                                    class="label"
                                     :for="'check' + doc.id">{{ doc.name }}</label>
                                 <span class="icon is-pulled-right">
                                     <i
@@ -519,7 +519,7 @@
                             Import framework as text
                         </h3>
                         <div class="field">
-                            <label class="label is-size-5">
+                            <label class="label">
                                 Framework name
                             </label>
                         </div>
@@ -530,7 +530,7 @@
                                 placeholder="Framework Name">
                         </div>
                         <div class="field">
-                            <label class="label is-size-5">
+                            <label class="label">
                                 Paste Text
                             </label>
                             <div class="control">
@@ -563,7 +563,7 @@
                         </div>
                         <template v-if="importTransition === 'upload'">
                             <div class="field">
-                                <label class="label is-size-5">
+                                <label class="label">
                                     Paste URL of document
                                 </label>
                                 <div class="field is-grouped">
