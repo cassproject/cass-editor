@@ -145,11 +145,7 @@ input, textarea{
 }
 
 label {
-    font-weight: 600;
-    color: rgba($dark, .5);
-    width: 95%;
     text-transform: capitalize;
-    font-size: .7rem;
 }
 .button {
     text-transform: lowercase;
@@ -227,6 +223,9 @@ iframe {
     justify-content: space-between;
 }
 
+.modal-card {
+    max-width: calc(100% - 1rem);
+}
 .modal-card-foot {
     .buttons.is-spaced {
         width: 100% !important;
@@ -263,6 +262,11 @@ iframe {
 
 .tag {
     font-weight: 500;
+}
+
+.box {
+    border: solid 1px $primary;
+    box-shadow: none;
 }
 /*  Responsive text 
     sets size to 16 - 22 depending on size 
