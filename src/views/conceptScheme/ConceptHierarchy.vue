@@ -100,11 +100,11 @@
                 <div class="buttons is-right">
                     <!-- import details options -->
                     <div
-                        class="buttons is-small is-right">
+                        class="buttons is-right">
                         <!-- cancel button -->
                         <div
                             @click="cancelImport"
-                            class=" button is-light is-small is-pulled-right is-dark is-outlined">
+                            class=" button is-light is-pulled-right is-dark is-outlined">
                             <span>
                                 Cancel
                             </span>
@@ -115,7 +115,7 @@
                         <!--  start over -->
                         <div
                             @click="$store.dispatch('app/clearImport')"
-                            class="button is-small is-dark is-outlined is-pulled-right">
+                            class="button is-dark is-outlined is-pulled-right">
                             <span>
                                 import again
                             </span>
@@ -126,7 +126,7 @@
                         <!-- open in editor -->
                         <div
                             @click="openFramework"
-                            class="button is-small is-dark is-outlined is-pulled-right">
+                            class="button is-dark is-outlined is-pulled-right">
                             <span>view in editor</span>
                             <span class="icon">
                                 <i class="fa fa-edit" />
@@ -134,7 +134,7 @@
                         </div>
                         <!--  home -->
                         <router-link
-                            class="button is-small is-primary is-outlined is -pulled-right"
+                            class="button is-primary is-outlined is -pulled-right"
                             to="/">
                             <span>
                                 Done
