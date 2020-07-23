@@ -54,7 +54,7 @@
                                 <label class="label">Username</label>
                                 <input
                                     type="text"
-                                    class="input is-small"
+                                    class="input"
                                     v-model="username"
                                     placeholder="username">
                             </div>
@@ -64,7 +64,7 @@
                                 <label class="label">Password</label>
                                 <input
                                     type="password"
-                                    class="input is-small"
+                                    class="input"
                                     v-model="password"
                                     placeholder="password"
                                     @keyup.enter="attemptCassLogin">
@@ -80,7 +80,7 @@
                                 <label class="label">username</label>
                                 <input
                                     type="text"
-                                    class="input is-small"
+                                    class="input"
                                     v-model="createAccountUsername">
                             </div>
                         </div>
@@ -91,7 +91,7 @@
                             <div class="control">
                                 <label class="label">name</label>
                                 <input
-                                    class="input is-small "
+                                    class="input"
                                     type="text "
                                     v-model="createLinkPersonName">
                             </div>
@@ -102,7 +102,7 @@
                             <div class="control">
                                 <label class="label">email</label>
                                 <input
-                                    class="input is-small "
+                                    class="input"
                                     type="text "
                                     v-model="createLinkPersonEmail">
                             </div>
@@ -115,13 +115,13 @@
                                 <label class="label">password</label>
                                 <input
                                     type="password"
-                                    class="input is-small "
+                                    class="input"
                                     v-model="createAccountPassword">
                             </div>
                             <div class="control is-expanded">
                                 <label class="label">Confirm password</label>
                                 <input
-                                    class="input is-small "
+                                    class="input"
                                     type="password"
                                     v-model="createAccountPasswordRetype">
                             </div>
@@ -642,7 +642,10 @@ export default {
     }
     .container {
     }
-
+    .modal-card {
+        width: 600px;
+        max-width: calc(100% - 1rem);
+    }
     .card {
         border-radius: 10px;
         .card-header {
