@@ -67,7 +67,7 @@
                 </div>
                 <div class="buttons is-right">
                     <div
-                        class="button is-small is-outlined is-primary"
+                        class="button is-outlined is-primary"
                         @click="createNewUserGroup"
                         :disabled="!amLoggedIn"
                         :title="getCreateUserGroupButtonTitle">
@@ -81,11 +81,6 @@
                 </div>
             </div>
             <div v-if="userGroupViewMode.equals('detail')">
-                <div class="section">
-                    <h4 class="header is-size-3">
-                        User Group Details
-                    </h4>
-                </div>
                 <user-group-details
                     :group="currentUserGroup"
                     :personList="personList"
