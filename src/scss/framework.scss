@@ -168,10 +168,6 @@ drag, drag, and chosen states
     .property-section {
         padding-top: 1rem;
         padding-bottom: .25rem;
-        .property-header {
-            font-weight: 600;
-            padding-bottom: .25rem;
-        }
     }
     .read-only__link {
         .field .control .uneditable {
@@ -546,6 +542,9 @@ drag, drag, and chosen states
 }
 
 .lode__Property.editing {
+    .field.is-grouped {
+        padding-bottom: .5rem;
+    }
     padding-top: 1rem;
 }
 .lode__Hierarchy {
