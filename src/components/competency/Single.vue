@@ -47,6 +47,7 @@
                     <div class="column is-4 pl-4">
                         <Component
                             :is="dynamicThing"
+                            view="single"
                             :uri="dynamicModalContent.uri"
                             :expandInModal="true"
                             @doneEditingNodeEvent="doneEditing"
