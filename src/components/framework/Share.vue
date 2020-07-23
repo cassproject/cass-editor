@@ -98,7 +98,7 @@
                     v-else>
                     <div class="columns is-vcentered">
                         <div class="column">
-                            <label class="label is-size-4">Add users or groups</label>
+                            <label class="label">Add users or groups</label>
                         </div>
                         <div
                             class="column is-narrow"
@@ -142,7 +142,7 @@
                             </div>
                         </div>
                         <div class="control">
-                            <div class="select is-dark is-small">
+                            <div class="select is-dark">
                                 <select v-model="selectViewOrAdmin">
                                     <option
                                         v-for="(option, index) in viewOptions"
@@ -158,7 +158,7 @@
                         <div class="control is-narrow">
                             <div
                                 @click="saveSettings"
-                                class="button is-outlined is-primary is-small">
+                                class="button is-outlined is-primary">
                                 <span class="icon">
                                     <i class="fa fa-save" />
                                 </span>
