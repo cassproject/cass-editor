@@ -146,7 +146,7 @@
                                 Created:
                             </span>
                             <span class="details-value">
-                                {{ $moment(slotProps.item['schema:dateCreated']).fromNow() }}
+                                {{ $moment(new Date(slotProps.item['schema:dateCreated'])).fromNow() }}
                             </span>
                         </span>
                         <span
@@ -168,7 +168,7 @@
                                 Last modified:
                             </span>
                             <span class="details-value">
-                                {{ $moment(slotProps.item['schema:dateModified']).fromNow() }}
+                                {{ $moment(new Date(slotProps.item['schema:dateModified'])).fromNow() }}
                             </span>
                         </span>
                         <span
