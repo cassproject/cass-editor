@@ -13,7 +13,7 @@
         .lode__name {
             font-weight: 600;
             font-family: $family-secondary;
-            font-size: $size-4;
+            font-size: $size-5;
             .language {
                 display: none;
             }
@@ -82,11 +82,11 @@
         font-size: .6rem !important;
     }
     .crosswalk__steps {
-        flex-grow:1;
+        flex-grow:0;
         padding: .5rem;
         display: flex;
         flex-wrap: nowrap;
-        min-height: 1.5rem;
+        min-height: 3rem;
         font-size: 1rem;
         .step-item {
             margin-top: 0;
@@ -159,7 +159,9 @@
         .crosswalk__double-heirarchy__column {
             height: 100%;
             .source .lode__thing .lode__Framework .lode__Property.lode__name span.value,
-            .target .lode__thing .lode__Framework .lode__Property.lode__name span.value{
+            .source .lode__thing .lode__Framework .lode__Property.lode__name .property,
+            .target .lode__thing .lode__Framework .lode__Property.lode__name span.value,
+            .target .lode__thing .lode__Framework .lode__Property.lode__name .property{
                 width: 300px;
                 text-align: left;
                 max-width: 100%;
@@ -175,9 +177,6 @@
             margin: .25rem;
         };
         overflow: hidden;
-        .crosswalk__single-hierachy {
-            
-        }
         .lode__hierarchy {
             height: 100%;
             padding: 0rem;
@@ -255,14 +254,11 @@
                             }
                         }
                         .lode__name {
-                            .field {
-                                .field-body {
-                                    .field {
-                                        padding-left: 0rem;
-                                        font-size: .9rem !important; // top level competencies
-                                        font-weight: 600;
-                                    }
-                                }
+                            .language {
+                                display: none;
+                            }
+                            .value {
+                                font-weight: 600;
                             }
                         }
                         .lode__description {

@@ -142,7 +142,9 @@
                     @click.native="$store.commit('editor/conceptMode', false); $store.dispatch('app/clearImport');">
                     <span class="icon">
                         <i class="fa fa-upload" />
-                    </span><span v-if="showSideNav">Import</span>
+                    </span><span v-if="showSideNav">
+                        Import
+                    </span>
                 </router-link>
             </li>
         </ul>
@@ -159,7 +161,9 @@
                     <span class="icon">
                         <i class="fa fa-layer-group" />
                     </span>
-                    <span v-if="showSideNav">Concepts</span>
+                    <span v-if="showSideNav">
+                        Concepts
+                    </span>
                 </router-link>
             </li>
             <li
@@ -169,7 +173,11 @@
                 <a>
                     <span class="icon">
                         <i class="fa fa-plus" />
-                    </span>Create New</a>
+                    </span>
+                    <span>
+                        Create New
+                    </span>
+                </a>
             </li>
             <li
                 class="has-text-white"
