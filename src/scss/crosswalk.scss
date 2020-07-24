@@ -425,6 +425,9 @@
                         width: calc(100% - 56px);
                     }
             }
+            li.list-ul__item.source-framework {
+                display: none;
+            }
             li.list-ul__item:hover {
                 background-color: $cass-lightest;
                 .arrow-icon {
