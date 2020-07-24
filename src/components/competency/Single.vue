@@ -2,7 +2,7 @@
     <div class="single modal-card">
         <header class="modal-card-head has-background-primary">
             <p class="modal-card-title has-text-white is-size-2">
-                Competency
+                {{ dynamicModalContent.objectType }}
             </p>
             <button
                 @click="$store.commit('app/closeModal')"
@@ -13,7 +13,7 @@
             <div class="section">
                 <template v-if="numberOfParentFrameworks === 0">
                     <h3 class="title">
-                        Orphan Competency
+                        Orphan {{ dynamicModalContent.objectType }}
                     </h3>
                 </template>
                 <template v-else-if="dynamicModalContent.type === 'Level'">
