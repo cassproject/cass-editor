@@ -328,17 +328,18 @@
                             }
                         }
                     }
-                    .lode__hierarchy-item.show-aligned {
+                    .lode__hierarchy-item.show-aligned
+                    {
                         display: none;
                     }
                     .lode__hierarchy-item.show-aligned.is-crosswalk-aligned {
                         display: block;
                     }
-                    .lode__hierarchy-item.show-unaligned {
-                        display: block;
-                    }
-                    .lode__hierarchy-item.show-unaligned.is-crosswalk-aligned {
+                    .lode__hierarchy-item.show-unaligned  {
                         display: none;
+                    }
+                    .lode__hierarchy-item.show-unaligned.not-crosswalk-aligned {
+                        display: block;
                     }
                     .lode__hierarchy-item.show-all {
                         display: block;
