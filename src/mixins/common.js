@@ -371,6 +371,7 @@ export default {
             var initialLevels = this.framework.level ? this.framework.level.slice() : null;
             var frameworkChanged = false;
             var edits = [];
+            var me = this;
             for (var i = 0; i < allOptions.length; i++) {
                 if (!this.framework.level) {
                     this.framework.level = [];
@@ -385,7 +386,9 @@ export default {
                     if (level.competency.indexOf(competencyId) === -1) {
                         level.competency.push(competencyId);
                         edits.push({operation: "update", id: level.shortId(), fieldChanged: ["competency"], initialValue: [initialComp], changedValue: [level.competency]});
-                        this.repo.saveTo(level, function() {}, appError);
+                        this.repo.saveTo(level, function() {
+                            me.$store.commit('editor/refreshLevels', true);
+                        }, appError);
                     }
                     if (this.framework.level.indexOf(level.shortId()) === -1) {
                         this.framework.addLevel(level.shortId());
@@ -398,7 +401,9 @@ export default {
                     if (level.competency && level.competency.indexOf(competencyId) !== -1) {
                         EcArray.setRemove(level.competency, competencyId);
                         edits.push({operation: "update", id: level.shortId(), fieldChanged: ["competency"], initialValue: [initialComp], changedValue: [level.competency]});
-                        this.repo.saveTo(level, function() {}, appError);
+                        this.repo.saveTo(level, function() {
+                            me.$store.commit('editor/refreshLevels', true);
+                        }, appError);
                     }
                     // If level doesn't have any competencies attached, remove it from the framework.
                     if ((!level.competency || (level.competency && level.competency.length === 0)) && this.framework.level.indexOf(level.shortId()) !== -1) {
@@ -414,7 +419,6 @@ export default {
             this.$store.commit('editor/addEditsToUndo', edits);
             this.$store.commit('lode/setAddingChecked', []);
             this.$store.commit('lode/setIsAddingProperty', false);
-            this.$store.commit('editor/refreshLevels', true);
         },
         saveFramework: function() {
             this.framework["schema:dateModified"] = new Date().toISOString();
