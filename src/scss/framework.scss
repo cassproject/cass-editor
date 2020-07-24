@@ -3,17 +3,6 @@
     margin-top: 2.6rem !important;
     height: calc(100% - 2.6rem);
 }
-.is-id {
-    width: 200px;
-    text-align: left;
-    max-width: 100%;
-    display: inline-block;
-    direction: rtl;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    color: $dark;
-}
 #framework, #concept, #import {
 .framework-wrapper {
     max-width: 1400px;
@@ -113,6 +102,19 @@ drag, drag, and chosen states
     width: 100%;
     overflow-x: scroll;
 }
+.lode__thing {
+    .is-id {
+        width: 200px;
+        text-align: left;
+        max-width: calc(100% - 10rem);
+        display: inline-block;
+        direction: rtl;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        color: $dark;
+    }
+}
 .lode__thing:hover {
     padding: 0rem;
     padding-right: 0rem;
@@ -133,9 +135,19 @@ drag, drag, and chosen states
             visibility: visible;
         }
     }
-    
 }
 .modal.lode__thing-editing {
+    .is-id {
+        width: 200px;
+        text-align: left;
+        max-width: calc(100% - 0rem);
+        display: inline-block;
+        direction: rtl;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        color: $dark;
+    }
     background-color: transparent;
     .modal-card {
         .buttons {
@@ -354,7 +366,11 @@ drag, drag, and chosen states
         position: -webkit-sticky;
         .lode__Framework {
             display: flex;
-            margin: 0rem 1rem;
+            margin: 0rem 2rem;
+            .headings-group {
+                width: calc(100% - 1rem);
+                padding-right: 1rem;
+            }
             // border-bottom: solid 1px rgba($dark, .5);
         }
     }
@@ -372,6 +388,17 @@ drag, drag, and chosen states
             .lode__Property.lode__name,
             .lode__Property.lode__title {
                 display: block;
+                .property {
+                    text-align: left;
+                    max-width: 100%;
+                    width: 600px;
+                    display: inline-block;
+                    direction: ltr;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    color: $dark;
+                }
             }
         }
     }
@@ -384,7 +411,7 @@ drag, drag, and chosen states
         padding-right: 0rem;
         .lode__Competency, .lode__Concept, .lode__ConceptScheme, .lode__Framework {
             .lode__thing-heading {
-                width: calc(100% - 7rem);
+                width: calc(100% - 0rem);
                 h3 {
                     font-weight: 600;
                     font-size: $size-3;
@@ -410,7 +437,7 @@ drag, drag, and chosen states
                 top: 16px;
             }
             .lode__thing-heading {
-                padding: 0rem 6rem 0rem .5rem;
+                padding: 0rem 0rem 0rem .5rem;
             }
             .lode__Property.lode__name, .lode__Property.lode__title {
                 font-size: 1.1rem;
@@ -482,7 +509,6 @@ drag, drag, and chosen states
         }
     }
 }
-
 .framework-content {
     .hierarchy-item__buttons {
         display: flex;
@@ -520,8 +546,6 @@ drag, drag, and chosen states
     }
    
 }
-
-
 .add-property {
     background-color: white;
     border: solid 1px rgba($dark, .2);
@@ -545,7 +569,7 @@ drag, drag, and chosen states
     .field.is-grouped {
         padding-bottom: .5rem;
     }
-    padding-top: 1rem;
+    padding-bottom: .5rem;
 }
 .lode__Hierarchy {
     .lode__Property {
