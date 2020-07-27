@@ -391,11 +391,13 @@ export default {
     mounted() {
         this.$store.commit('crosswalk/resetCrosswalk');
         this.$store.commit('crosswalk/resetCrosswalkFrameworks');
+        this.$store.commit('app/searchTerm', "");
     },
     beforeDestroy: function() {
         this.$store.commit('crosswalk/resetCrosswalk');
         this.$store.commit('crosswalk/resetCrosswalkFrameworks');
         this.$store.commit('app/clearSearchFilters');
+        this.$store.commit('app/searchTerm', "");
     },
     watch: {
         step: function(val) {

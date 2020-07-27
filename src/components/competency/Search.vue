@@ -143,6 +143,10 @@ export default {
     },
     created: function() {
         this.sortBy = (this.$store.getters['editor/conceptMode'] === true || this.searchType === "Concept") ? "dcterms:title.keyword" : "name.keyword";
+        this.$store.commit('app/searchTerm', "");
+    },
+    beforeDestroy: function() {
+        this.$store.commit('app/searchTerm', "");
     },
     computed: {
         ...mapState({
