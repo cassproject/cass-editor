@@ -300,7 +300,7 @@ export default {
             }
         },
         canPaste: function() {
-            if (this.$store.getters['editor/copyId'] !== null || this.$store.getters['editor/cutId'] !== null) {
+            if ((this.$store.getters['editor/copyId'] !== null || this.$store.getters['editor/cutId'] !== null) && this.$store.getters['editor/nodeInFocus'] !== null) {
                 return true;
             } else {
                 return false;
