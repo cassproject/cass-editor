@@ -4,10 +4,82 @@
         class="framework-list-page">
         <RightAside v-if="showRightAside" />
         <!-- search field -->
-        <div class="section is-medium">
-            <SearchBar
-                filterSet="all"
-                :searchType="type === 'ConceptScheme' ? 'concept scheme' : 'framework'" />
+        <div :class="parentObjectClass">
+            <div class="section">
+                <div class="container">
+                    <div class="columns is-gapless is-paddingless">
+                        <div class="column is-narrow">
+                            <h1
+                                class="title"
+                                v-if="conceptMode">
+                                Concept Schemes
+                            </h1>
+                            <h1
+                                class="title"
+                                v-else>
+                                Frameworks
+                            </h1>
+                            <h1 class="subtitle">
+                                List of available
+                                <span v-if="conceptMode">concepts</span>
+                                <span v-else>frameworks</span>
+                            </h1>
+                        </div>
+                        <div class="column">
+                            <div
+                                v-if="conceptMode"
+                                class="buttons is-right concept-buttons">
+                                <div
+                                    @click="$emit('createNewConceptScheme')"
+                                    class="button is-outlined is-primary">
+                                    <span class="icon">
+                                        <i class="fa fa-plus" />
+                                    </span><span>new concept scheme</span>
+                                </div>
+                                <router-link
+                                    to="/import"
+                                    @click.native="$store.commit('editor/conceptMode', true); $store.dispatch('app/clearImport');"
+                                    class="button is-outlined is-primary">
+                                    <span class="icon">
+                                        <i class="fa fa-upload" />
+                                    </span><span>import concept scheme</span>
+                                </router-link>
+                            </div>
+                            <div
+                                v-else
+                                class="buttons is-right frameworks-buttons">
+                                <div
+                                    @click="$emit('createNewFramework')"
+                                    class="button is-outlined is-primary">
+                                    <span class="icon">
+                                        <i class="fa fa-plus" />
+                                    </span><span>create new</span>
+                                </div>
+                                <router-link
+                                    to="/import"
+                                    @click.native="$store.commit('editor/conceptMode', false); $store.dispatch('app/clearImport');"
+                                    class="button is-outlined is-primary">
+                                    <span class="icon">
+                                        <i class="fa fa-upload" />
+                                    </span><span>import framework</span>
+                                </router-link>
+                                <router-link
+                                    to="/crosswalk"
+                                    class="button is-outlined is-primary">
+                                    <span class="icon">
+                                        <i class="fa fa-network-wired" />
+                                    </span><span>crosswalk</span>
+                                </router-link>
+                            </div>
+                        </div>
+                    </div>
+                    <SearchBar
+                        filterSet="all"
+                        :searchType="type === 'ConceptScheme' ? 'concept scheme' : 'framework'" />
+                </div>
+            </div>
+        </div>
+        <div class="section">
             <div
                 v-if="!conceptMode"
                 class="container is-fluid show-only-mine">
@@ -74,7 +146,7 @@
                                 Created:
                             </span>
                             <span class="details-value">
-                                {{ $moment(slotProps.item['schema:dateCreated']).fromNow() }}
+                                {{ $moment(new Date(slotProps.item['schema:dateCreated'])).fromNow() }}
                             </span>
                         </span>
                         <span
@@ -96,7 +168,7 @@
                                 Last modified:
                             </span>
                             <span class="details-value">
-                                {{ $moment(slotProps.item['schema:dateModified']).fromNow() }}
+                                {{ $moment(new Date(slotProps.item['schema:dateModified'])).fromNow() }}
                             </span>
                         </span>
                         <span
@@ -130,6 +202,7 @@
     </div>
 </template>
 <script>
+import debounce from 'lodash/debounce';
 import List from '@/lode/components/lode/List.vue';
 import RightAside from '@/components/framework/RightAside.vue';
 import common from '@/mixins/common.js';
@@ -144,6 +217,7 @@ export default {
             showNotMine: false,
             filterByConfig: false,
             numIdentities: EcIdentityManager.ids.length,
+            parentObjectClass: 'frameworks-sticky',
             sortBy: null,
             defaultConfig: ""
         };
@@ -293,6 +367,15 @@ export default {
                 }, function() {
                 });
             }
+        },
+        scrollFunction(e) {
+            let documentObject = document.getElementsByClassName('frameworks-sticky');
+            let scrollValue = e.target.scrollTop;
+            if (scrollValue !== 0) {
+                this.parentObjectClass = 'frameworks-sticky scrolled';
+            } else {
+                this.parentObjectClass = 'frameworks-sticky';
+            }
         }
     },
     mounted: function() {
@@ -316,6 +399,8 @@ export default {
                 this.filterByConfig = true;
             }
         }
+        let documentBody = document.getElementById('frameworks');
+        documentBody.addEventListener('scroll', debounce(this.scrollFunction, 100, {'leading': true}));
     },
     watch: {
         sortResults: function() {
@@ -349,5 +434,29 @@ export default {
 
 <style lang="scss">
     @import './../../scss/frameworks.scss';
-
+.frameworks-sticky {
+    position: sticky;
+    background-color: $white;
+    top: 0px;
+    z-index: 9;
+    width: 100%;
+    transition: height .1s;
+    position: -webkit-sticky;
+    border-bottom: solid 1px rgba($dark, .3);
+}
+.frameworks-sticky.scrolled {
+    z-index: 8;
+    height: 136px;
+    top: 0;
+    overflow: hidden;
+    .title {
+        display: none;
+    }
+    .subtitle {
+        display: none;
+    }
+    .frameworks-buttons, .concept-buttons {
+        display: none;
+    }
+}
 </style>

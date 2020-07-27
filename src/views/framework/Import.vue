@@ -62,6 +62,34 @@
                                     If your framework is not detected by CaSS or not imported properly, let us know at <a href="mailto:cass@eduworks.com?subject=File+to+Improve+CaSS+Importer">cass@eduworks.com</a> and we will look into the inquiry and provide a response.
                                 </li>
                             </div>
+                            <div
+                                class="column is-12"
+                                v-else-if="importType=='server' && !conceptMode">
+                                <p class="is-size-6">
+                                    If you know the URL of a IMS CASE Repository, such as OpenSalt, you can import published frameworks from that repository.
+                                </p>
+                                <br>
+                                <li class="is-size-6">
+                                    This import maintains the URLs of the CASE frameworks and changes both the format and schema used to store the CASE frameworks in CaSS, but does not change any of the data.
+                                </li>
+                                <li class="is-size-6">
+                                    After entering the endpoint below, you can select which frameworks you would like to import.
+                                </li>
+                            </div>
+                            <div
+                                class="column is-12"
+                                v-else-if="importType=='url' && !conceptMode">
+                                <p class="is-size-6">
+                                    If you know the URL of a CTDL-ASN JSON-LD graph, you can import published frameworks by URL.
+                                </p>
+                                <br>
+                                <li class="is-size-6">
+                                    This import maintains the URLs of the original frameworks and changes both the format and schema used to store the CTDL-ASN frameworks in CaSS, but does not change any of the data.
+                                </li>
+                                <li class="is-size-6">
+                                    Please note that the Technology Skills framework below is very large and will take a long time to import.
+                                </li>
+                            </div>
                             <!-- ready state details -->
                             <div class="column is-12">
                                 <p
@@ -171,12 +199,12 @@
                                 :is="dynamicThing"
                                 @editNodeEvent="onEditNode"
                                 @doneEditingNodeEvent="onDoneEditingNode"
-                                :class="{'is-hidden': !hierarchyIsdoneLoading}"
+                                :class="[{'is-hidden': !hierarchyIsdoneLoading}, parentObjectClass]"
                                 :obj="changedObj ? changedObj : importFramework"
                                 :repo="repo"
                                 class="framework-title"
-                                :profile="conceptMode ? ctdlAsnConceptSchemeProfile : t3FrameworkProfile" />
-
+                                :profile="conceptMode ? ctdlAsnConceptSchemeProfile : t3FrameworkProfile"
+                                properties="tertiary" />
                             <Hierarchy
                                 :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                 view="importPreview"
@@ -201,7 +229,8 @@
                                 @selectedArray="selectedArrayEvent"
                                 :newFramework="true"
                                 @deleteObject="deleteObject"
-                                @exportObject="exportObject" />
+                                @exportObject="exportObject"
+                                properties="tertiary" />
                             <ConceptHierarchy
                                 :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                 view="import"
@@ -217,7 +246,8 @@
                                 @selectedArray="selectedArrayEvent"
                                 :newFramework="true"
                                 @deleteObject="deleteObject"
-                                :profile="ctdlAsnConceptProfile" />
+                                :profile="ctdlAsnConceptProfile"
+                                properties="tertiary" />
                         </div>
                         <!-- import light view -->
                         <div
@@ -225,12 +255,14 @@
                             class="import-light">
                             <Component
                                 :is="dynamicThing"
+                                :class="parentObjectClass"
                                 :editingNode="editingNode"
                                 @doneEditingNodeEvent="onDoneEditingNode"
                                 :obj="changedObj ? changedObj : importFramework"
                                 :parentNotEditable="true"
                                 class="framework-title"
-                                :profile="conceptMode ? ctdlAsnConceptSchemeProfile : t3FrameworkProfile" />
+                                :profile="conceptMode ? ctdlAsnConceptSchemeProfile : t3FrameworkProfile"
+                                properties="tertiary" />
                             <Hierarchy
                                 v-if="importFramework && !conceptMode"
                                 view="importLight"
@@ -250,7 +282,8 @@
                                 :repo="repo"
                                 :newFramework="true"
                                 @deleteObject="deleteObject"
-                                @exportObject="exportObject" />
+                                @exportObject="exportObject"
+                                properties="tertiary" />
                             <ConceptHierarchy
                                 :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                 view="import"
@@ -262,7 +295,8 @@
                                 @selectedArray="selectedArrayEvent"
                                 :newFramework="true"
                                 @deleteObject="deleteObject"
-                                :profile="ctdlAsnConceptProfile" />
+                                :profile="ctdlAsnConceptProfile"
+                                properties="tertiary" />
                         </div>
                     </div>
                 </div>
@@ -272,6 +306,7 @@
 </template>
 
 <script>
+import debounce from 'lodash/debounce';
 import Hierarchy from '@/lode/components/lode/Hierarchy.vue';
 import common from '@/mixins/common.js';
 import competencyEdits from '@/mixins/competencyEdits.js';
@@ -305,6 +340,7 @@ export default {
     },
     data: function() {
         return {
+            parentObjectClass: 'parent-object',
             editingNode: false,
             hierarchyIsdoneLoading: false,
             frameworkBusy: true,
@@ -1609,6 +1645,15 @@ export default {
                     me.$store.commit('app/importTransition', 'process');
                 }
             });
+        },
+        scrollFunction(e) {
+            let documentObject = document.getElementsByClassName('parent-object');
+            let scrollValue = e.target.scrollTop;
+            if (scrollValue !== 0) {
+                this.parentObjectClass = 'parent-object scrolled';
+            } else {
+                this.parentObjectClass = 'parent-object';
+            }
         }
     },
     beforeDestroy: function() {
@@ -1616,6 +1661,8 @@ export default {
     },
     mounted: function() {
         this.clearImport();
+        let documentBody = document.getElementById('import');
+        documentBody.addEventListener('scroll', debounce(this.scrollFunction, 100, {'leading': true}));
     }
 };
 </script>

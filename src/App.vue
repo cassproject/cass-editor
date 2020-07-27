@@ -11,6 +11,8 @@
             @sideBarEvent="onSidebarEvent"
             name="topbar" /> -->
         <router-view
+            @createNewFramework="createNewFramework"
+            @createNewConceptScheme="createNewConceptScheme"
             :class="[{ 'clear-side-bar': showSideNav}, { 'clear-narrow-side-bar': !showSideNav}, {'clear-right-aside': showRightAside}]" />
         <router-view
             :showSideNav="showSideNav"

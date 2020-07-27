@@ -5,6 +5,28 @@ textarea {
     resize: vertical !important;
 }
 #import {
+      .parent-object {
+            position: sticky;
+            background-color: $white;
+            top: 0px;
+            z-index: 9;
+            width: 100%;
+            transition: height .1s;
+            position: -webkit-sticky;
+            .lode__Framework {
+                display: flex;
+                margin: 0rem 1rem;
+                // border-bottom: solid 1px rgba($dark, .5);
+            }
+        }
+        .parent-object.scrolled {
+            z-index: 8;
+            height: 56px;
+            overflow: hidden;
+            .tag {
+                display: none;
+            }
+        }
         .lode__Competency, .lode__Framework {
             padding-right: 120px;
             .hierarchy-item__buttons {
@@ -258,7 +280,7 @@ ul.processing-list {
                 span {
                     padding: 0rem .25rem;
                     width: auto;
-                    font-size: $size-7;
+                    font-size: $size-6;
                     font-weight: 600;
                     color: rgba($dark, .6);
                 }
@@ -352,4 +374,5 @@ ul.processing-list {
 
 .constrain-column {
     max-width: 100%;
+    min-width: 0;
 }

@@ -35,7 +35,7 @@
                 <div
                     v-else
                     class="icon is-vcentered">
-                    <i class="fa fa-circle is-size-7 has-text-light" />
+                    <i class="fa fa-circle is-size-6 has-text-light" />
                 </div>
                 <div
                     v-if="selectButtonText"
@@ -68,7 +68,7 @@
                             <i class="fa fa-plus-circle" />
                         </span>
                         <span>
-                            Add Concept
+                            {{ addConceptOrChildText }}
                         </span>
                     </div>
                     <div
@@ -82,7 +82,7 @@
                     </div>
                     <div
                         v-if="addingNode"
-                        @click="add(container.shortId(), null); addingNode = false;"
+                        @click="onClickCreateNew"
                         class="button is-outlined is-primary ">
                         <span class="icon">
                             <i class="fa fa-plus" />
@@ -100,11 +100,11 @@
                 <div class="buttons is-right">
                     <!-- import details options -->
                     <div
-                        class="buttons is-small is-right">
+                        class="buttons is-right">
                         <!-- cancel button -->
                         <div
                             @click="cancelImport"
-                            class=" button is-light is-small is-pulled-right is-dark is-outlined">
+                            class=" button is-light is-pulled-right is-dark is-outlined">
                             <span>
                                 Cancel
                             </span>
@@ -115,7 +115,7 @@
                         <!--  start over -->
                         <div
                             @click="$store.dispatch('app/clearImport')"
-                            class="button is-small is-dark is-outlined is-pulled-right">
+                            class="button is-dark is-outlined is-pulled-right">
                             <span>
                                 import again
                             </span>
@@ -126,7 +126,7 @@
                         <!-- open in editor -->
                         <div
                             @click="openFramework"
-                            class="button is-small is-dark is-outlined is-pulled-right">
+                            class="button is-dark is-outlined is-pulled-right">
                             <span>view in editor</span>
                             <span class="icon">
                                 <i class="fa fa-edit" />
@@ -134,7 +134,7 @@
                         </div>
                         <!--  home -->
                         <router-link
-                            class="button is-small is-primary is-outlined is -pulled-right"
+                            class="button is-primary is-outlined is -pulled-right"
                             to="/">
                             <span>
                                 Done
@@ -147,7 +147,6 @@
                 </div>
             </div>
         </div>
-        <hr>
         <template
             v-if="hierarchy">
             <draggable
@@ -250,7 +249,8 @@ export default {
             expanded: true,
             isDraggable: true,
             shiftKey: false,
-            arrowKey: null
+            arrowKey: null,
+            addConceptOrChildText: "Add Concept"
         };
     },
     components: {
@@ -301,6 +301,11 @@ export default {
                 this.multipleSelected = true;
             } else {
                 this.multipleSelected = false;
+            }
+            if (this.selectedArray.length === 1) {
+                this.addConceptOrChildText = "Add Child";
+            } else {
+                this.addConceptOrChildText = "Add Concept";
             }
             this.$emit('selectedArray', this.selectedArray);
         },
@@ -678,6 +683,14 @@ export default {
             var f = EcConceptScheme.getBlocking(this.container.shortId());
             this.$store.commit('editor/framework', f);
             this.$router.push({name: "conceptScheme", params: {frameworkId: this.container.id}});
+        },
+        onClickCreateNew: function() {
+            let parent = this.container.shortId();
+            if (this.selectedArray.length === 1) {
+                parent = this.selectedArray[0];
+            }
+            this.add(parent, null);
+            this.addingNode = false;
         }
     }
 };

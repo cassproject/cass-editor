@@ -70,12 +70,10 @@ p {
     transform: translateX(0);
     padding-right: 8px;
     z-index: 10;
-    width: 120px;
+    width: 160px;
     border-radius: 5px;
-
     input {
-        border-radius: 5px;
-        height: 38px;
+        height: 44px;
         z-index: 10;
         margin-right: 12px;
     }
@@ -90,19 +88,19 @@ p {
     }
     
     .auto-complete {
-        width: 160px;
+        width: 100%;
         position: fixed;
-        top: 60px;
+        top: 66px;
         left: 0px;
-        margin-right: 8px;
+        padding-right:.5rem;
         color: $dark;
         z-index: 10;
         background-color: white;
         ul {
             z-index: 10;
-            min-height: 80px;
+            min-height: 40px;
             border-radius:  6px;
-            max-height: 200px;
+            max-height: 120px;
             background-color: white;
             overflow-y: scroll;
             color: $dark;
@@ -115,6 +113,7 @@ p {
             li:hover {
                 background-color: $link;
                 color: white;
+                cursor: pointer;
             }
         }
     }
@@ -146,11 +145,7 @@ input, textarea{
 }
 
 label {
-    font-weight: 600;
-    color: rgba($dark, .5);
-    width: 95%;
     text-transform: capitalize;
-    font-size: .7rem;
 }
 .button {
     text-transform: lowercase;
@@ -163,12 +158,9 @@ label {
 .lode__Property-ul{
     border-radius: .25rem;
     padding: 0rem .25rem;
-    .button {
-        
-    }
     .lode__description {
         font-weight: 400;
-        font-size: $size-7;
+        font-size: $size-6;
     }
     .lode__name {
         font-weight: 600;
@@ -231,9 +223,16 @@ iframe {
     justify-content: space-between;
 }
 
+.modal-card {
+    max-width: calc(100% - 1rem);
+}
 .modal-card-foot {
     .buttons.is-spaced {
         width: 100% !important;
+    }
+    .buttons {
+        padding: 0;
+        margin: 0;
     }
 }
 .modal-card-title {
@@ -244,7 +243,7 @@ iframe {
     thead {
         th {
             font-weight: 500;
-            font-size: $size-7;
+            font-size: $size-6;
             font-family: $family-secondary;
         }
     }
@@ -255,13 +254,20 @@ iframe {
         }
         tr {
         font-weight: 400;
-        font-size: $size-7;
+        font-size: $size-6;
         font-family: $family-primary;
         }
     }
 }
 
+.tag {
+    font-weight: 500;
+}
 
+.box {
+    border: solid 1px $primary;
+    box-shadow: none;
+}
 /*  Responsive text 
     sets size to 16 - 22 depending on size 
 */ 

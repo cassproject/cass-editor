@@ -68,7 +68,8 @@ placed anywhere in a structured html element such as a <section> or a <div>
                     :disallowEdits="true"
                     :selectingCompetency="true"
                     :selected="selectedIds"
-                    :displayFirst="displayFirst" />
+                    :displayFirst="displayFirst"
+                    :idsNotPermittedInSearch="idsNotPermittedInSearch" />
             </div>
         </template>
         <footer
@@ -122,6 +123,10 @@ export default {
         view: {
             type: String,
             default: 'modal'
+        },
+        idsNotPermittedInSearch: {
+            type: Array,
+            default: null
         }
     },
     components: {List, SearchBar},
@@ -221,9 +226,13 @@ export default {
         this.$store.commit('app/searchTerm', "");
         if (!this.copyOrLink && this.searchType === "Competency" && this.framework.competency) {
             for (var i = 0; i < this.framework.competency.length; i++) {
-                var comp = EcRepository.getBlocking(this.framework.competency[i]);
-                if (comp) {
-                    this.displayFirst.push(comp);
+                if (this.framework.competency[i] !== this.selectedCompetency.shortId()) {
+                    if (!this.idsNotPermittedInSearch || this.idsNotPermittedInSearch.length === 0 || !EcArray.has(this.idsNotPermittedInSearch, this.framework.competency[i])) {
+                        var comp = EcRepository.getBlocking(this.framework.competency[i]);
+                        if (comp) {
+                            this.displayFirst.push(comp);
+                        }
+                    }
                 }
             }
         }
@@ -618,7 +627,8 @@ export default {
 
 <style lang="scss">
     @import '@/scss/frameworks.scss';
-.search-modal, .modal.lode__thing-editing {
+.search-modal,
+.modal.lode__thing-editing {
     .breadcrumb {
         padding-left: .125rem;
     }
@@ -658,9 +668,10 @@ export default {
     .List {
         .list-ul {
             .list-ul__item {
-
                 padding: .5rem .25rem;
-
+                .search-selection__add-icon {
+                    visibility: hidden;
+                }
                 .search-selection__icon,
                 .search-selection__add-icon
                 {
@@ -673,9 +684,6 @@ export default {
                         height: 100%;
                         padding-right: 16px;
                     }
-                }
-                .search-selection__add-icon {
-                    visibility: hidden;
                 }
             }
             .list-ul__item:hover {

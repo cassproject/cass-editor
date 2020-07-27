@@ -100,7 +100,7 @@
             </div>
             <div v-if="custom && !readOnly">
                 <div
-                    class="button is-small is-primary"
+                    class="button is-small is-outlined is-primary"
                     @click="$emit('manage', propertyParent, propertyIndex)">
                     <span class="icon">
                         <i class="fa fa-cog" />
@@ -111,7 +111,7 @@
         <td>
             <div v-if="custom && !readOnly">
                 <div
-                    class="button is-small is-danger"
+                    class="button is-small is-outlined is-danger"
                     @click="$emit('delete', propertyParent, propertyIndex)">
                     <span class="icon">
                         <i class="fa fa-trash" />
