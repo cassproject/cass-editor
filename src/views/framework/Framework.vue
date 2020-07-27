@@ -10,9 +10,11 @@
                     @showExportModal="onOpenExportModal"
                     @changeProperties="changeProperties" />
                 <div class="column is-12">
-                    <div class="container is-paddingless ">
+                    <!-- loading section -- dummy content to show while loading dome elemnts -->
+                    <div
+                        class="container is-paddingless">
                         <Component
-                            :class="dynamicThingComponent === 'Thing' ? parentObjectClass: ''"
+                            :class="[dynamicThingComponent === 'Thing' ? parentObjectClass: '']"
                             :is="dynamicThingComponent"
                             :id="'scroll-' + framework.shortId().split('/').pop()"
                             :obj="framework"
@@ -62,7 +64,36 @@
                                 </div>
                             </template>
                         </Component>
+                        <div
+                            class="section"
+                            v-if="!hierarchyIsdoneLoading">
+                            <ul class="processing-list">
+                                <li />
+                                <li />
+                                <ul>
+                                    <li />
+                                    <li />
+                                    <li />
+                                    <ul>
+                                        <li />
+                                        <li />
+                                        <li />
+                                        <ul>
+                                            <li />
+                                            <li />
+                                        </ul>
+                                    </ul>
+                                </ul>
+                                <li />
+                                <li />
+                                <ul>
+                                    <li />
+                                    <li />
+                                </ul>
+                            </ul>
+                        </div>
                         <Hierarchy
+                            :class="{'is-hidden': !hierarchyIsdoneLoading}"
                             :container="framework"
                             containerType="Framework"
                             containerTypeGet="EcFramework"
@@ -122,6 +153,7 @@ export default {
     mixins: [common, exports, competencyEdits, ctdlasnProfile, t3Profile, tlaProfile, getLevelsAndRelations],
     data: function() {
         return {
+            hierarchyIsdoneLoading: false,
             parentObjectClass: 'parent-object',
             showVersionHistory: false,
             showEditMultiple: false,
@@ -585,6 +617,10 @@ export default {
         }
     },
     methods: {
+        handleDoneLoading: function() {
+            appLog("done loading");
+            this.hierarchyIsdoneLoading = true;
+        },
         scrollFunction(e) {
             let documentObject = document.getElementsByClassName('parent-object');
             let scrollValue = e.target.scrollTop;
@@ -748,6 +784,7 @@ export default {
         preloadRelations: function() {
             var relation = this.relations;
             var level = this.levels;
+            this.handleDoneLoading();
         },
         addResourceAlignments: function(selectedCompetencyId, alignmentType, values) {
             let me = this;
