@@ -110,43 +110,6 @@
                     class="column is-narrow">
                     <div class="vl" />
                 </div>
-                <!--<div
-                    class="column is-narrow"
-                    v-if="canEditFramework">
-                    <div
-                        class="buttons">
-                        <div
-                            :disabled="!canCopyOrCut"
-                            title="Copy competency"
-                            :class="canCopyOrCut ? 'has-text-dark' : 'is-disabled'"
-                            class="button  is-text"
-                            @click="copyClick">
-                            <span class="icon">
-                                <i class="fa fa-copy" />
-                            </span>
-                        </div>
-                        <div
-                            title="Cut competency"
-                            :disabled="!canCopyOrCut"
-                            class="button  is-text"
-                            :class="canCopyOrCut ? 'has-text-dark' : 'is-disabled'"
-                            @click="cutClick">
-                            <span class="icon">
-                                <i class="fas handle fa-cut" />
-                            </span>
-                        </div>
-                        <div
-                            :disabled="!canPaste"
-                            class="button is-text has-text-dark "
-                            @click="pasteClick"
-                            :class="canPaste ? 'has-text-dark' : 'is-disabled'"
-                            title="Paste competency">
-                            <span class="icon">
-                                <i class="fa fa-paste" />
-                            </span>
-                        </div>
-                    </div>
-                </div>-->
                 <!-- divider -->
                 <!-- export -->
                 <div
@@ -223,9 +186,6 @@ import {cassUtil} from '../../mixins/cassUtil';
 export default {
     name: 'EditorToolbar',
     mixins: [ cassUtil ],
-    props: {
-        selectedArray: Array
-    },
     data() {
         return {
             showPropertyViewDropDown: false,
@@ -429,40 +389,9 @@ export default {
             } else {
                 this.defaultFrameworkConfigName = "No configuration";
             }
-        },
-        cutClick: function() {
-            if (this.selectedArray && this.selectedArray.length === 1) {
-                this.$store.commit('editor/cutId', this.selectedArray[0]);
-            }
-            this.$store.commit('editor/copyId', null);
-            this.$store.commit('editor/paste', false);
-        },
-        copyClick: function() {
-            if (this.selectedArray && this.selectedArray.length === 1) {
-                this.$store.commit('editor/copyId', this.selectedArray[0]);
-            }
-            this.$store.commit('editor/cutId', null);
-            this.$store.commit('editor/paste', false);
-        },
-        pasteClick: function() {
-            this.$store.commit('editor/paste', true);
         }
     },
     computed: {
-        canCopyOrCut: function() {
-            if (this.selectedArray && this.selectedArray.length === 1) {
-                return true;
-            } else {
-                return false;
-            }
-        },
-        canPaste: function() {
-            if (this.$store.getters['editor/copyId'] !== null) {
-                return true;
-            } else {
-                return false;
-            }
-        },
         showAddComments() {
             if (this.$store.getters['editor/conceptMode'] === true) {
                 return false;

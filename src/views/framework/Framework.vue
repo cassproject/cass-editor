@@ -8,8 +8,7 @@
             <div class="framework-body columns is-multiline is-gapless is-paddingless is-marginless">
                 <FrameworkEditorToolbar
                     @showExportModal="onOpenExportModal"
-                    @changeProperties="changeProperties"
-                    :selectedArray="selectedArray" />
+                    @changeProperties="changeProperties" />
                 <div class="column is-12">
                     <div class="container is-paddingless ">
                         <Component
