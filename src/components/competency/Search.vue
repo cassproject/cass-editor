@@ -152,7 +152,8 @@ export default {
         ...mapState({
             selectedCompetency: state => state.editor.selectedCompetency,
             framework: state => state.editor.framework,
-            queryParams: state => state.editor.queryParams
+            queryParams: state => state.editor.queryParams,
+            addingProperty: state => state.lode.addingProperty
         }),
         nameOfSelectedCompetency: function() {
             if (this.selectedCompetency && this.selectedCompetency.name) {
