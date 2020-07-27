@@ -3,7 +3,7 @@
         id="framework-editor-toolbar">
         <!-- property view -->
         <div class="container">
-            <div class="columns is-spaced">
+            <div class="columns is-mobile is-spaced">
                 <!-- view options -->
                 <!-- primary -->
                 <div class="column is-narrow">
@@ -68,14 +68,6 @@
                     <!-- show comments -->
                     <div class="buttons">
                         <div
-                            title="Add comment to framework"
-                            @click="handleClickAddComment"
-                            class="button is-text  has-text-dark">
-                            <span class="icon">
-                                <i class="fas fa-comment-medical" />
-                            </span>
-                        </div>
-                        <div
                             title="View all comments"
                             v-if="showViewComments"
                             @click="$store.commit('app/showRightAside', 'Comments')"
@@ -118,7 +110,7 @@
                     class="column is-narrow">
                     <div class="vl" />
                 </div>
-                <div
+                <!--<div
                     class="column is-narrow"
                     v-if="canEditFramework">
                     <div
@@ -154,13 +146,8 @@
                             </span>
                         </div>
                     </div>
-                </div>
+                </div>-->
                 <!-- divider -->
-                <div
-                    v-if="canEditFramework"
-                    class="column is-narrow">
-                    <div class="vl" />
-                </div>
                 <!-- export -->
                 <div
                     class="column is-narrow"
