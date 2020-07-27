@@ -110,89 +110,104 @@
                     <!-- TO DO move these template items to the "actions" right side area -->
                     <template
                         v-slot:frameworkTags="slotProps">
-                        <span
-                            class="framework-list-item__details is-light"
-                            v-if="!conceptMode && slotProps.item.type === 'Framework'">
-                            <span>
-                                Items:
+                        <span class="framework-details has-text-weight-light family-primary is-size-7">
+                            <span
+                                class="framework-details__item"
+                                v-if="!conceptMode && slotProps.item.type === 'Framework'">
+                                <span class="has-text-weight-medium">
+                                    Items:
+                                </span>
+                                <span class="has-text-weight-light">
+                                    {{ slotProps.item.competency ? slotProps.item.competency.length : 0 }}
+                                </span>
                             </span>
-                            <span>
-                                {{ slotProps.item.competency ? slotProps.item.competency.length : 0 }}
+                            <span
+                                class="framework-details__item"
+                                v-if="slotProps.item.Published"
+                                :title="slotProps.item.Published">
+                                <span class="has-text-weight-medium">
+                                    Published:
+                                </span>
+                                <span class="has-text-weight-light" />
                             </span>
-                        </span>
-                        <span
-                            class="framework-list-item__details"
-                            v-if="slotProps.item.Published"
-                            :title="slotProps.item.Published">
-                            <span class="details-label">
-                                Published:
+                            <span
+                                class="framework-details__item"
+                                v-if="slotProps.item.Approved"
+                                :title="slotProps.item.Approved">
+                                <span class="has-texte-weight-medium">
+                                    Approved:
+                                </span>
+                                <span class="has-text-weight-light" />
                             </span>
-                            <span class="details-value" />
-                        </span>
-                        <span
-                            class="framework-list-item__details"
-                            v-if="slotProps.item.Approved"
-                            :title="slotProps.item.Approved">
-                            <span class="details-label">
-                                Approved:
+                            <span
+                                class="framework-details__item"
+                                v-if="slotProps.item['schema:dateCreated']"
+                                :title="new Date(slotProps.item['schema:dateCreated'])">
+                                <span class="has-text-weight-medium">
+                                    Created:
+                                </span>
+                                <span class="has-text-weight-light">
+                                    &nbsp; {{ $moment(new Date(slotProps.item['schema:dateCreated'])).fromNow() }}
+                                </span>
                             </span>
-                            <span class="details-value" />
-                        </span>
-                        <span
-                            class="framework-list-item__details"
-                            v-if="slotProps.item['schema:dateCreated']"
-                            :title="new Date(slotProps.item['schema:dateCreated'])">
-                            <span class="details-label">
-                                Created:
+                            <span
+                                class="framework-details__item"
+                                v-if="slotProps.item.getTimestamp()"
+                                :title="new Date(slotProps.item.getTimestamp())">
+                                <span class="has-text-weight-medium">
+                                    Last modified:
+                                </span>
+                                <span class="has-text-weight-light">
+                                    &nbsp; {{ $moment(slotProps.item.getTimestamp()).fromNow() }}
+                                </span>
                             </span>
-                            <span class="details-value">
-                                {{ $moment(new Date(slotProps.item['schema:dateCreated'])).fromNow() }}
+                            <span
+                                class="framework-details__item"
+                                v-else-if="slotProps.item['schema:dateModified']"
+                                :title="new Date(slotProps.item['schema:dateModified'])">
+                                <span class="has-text-weight-medium">
+                                    Last modified:
+                                </span>
+                                <span class="has-text-weight-light">
+                                    {{ $moment(new Date(slotProps.item['schema:dateModified'])).fromNow() }}
+                                </span>
                             </span>
-                        </span>
-                        <span
-                            class="framework-list-item__details"
-                            v-if="slotProps.item.getTimestamp()"
-                            :title="new Date(slotProps.item.getTimestamp())">
-                            <span class="details-label">
-                                Last modified:
+                            <span
+                                class="framework-details__item"
+                                v-if="slotProps.item['ceasn:publisherName'] && getName(slotProps.item['ceasn:publisherName'])">
+                                <span class="has-text-weight-medium">
+                                    Publisher:
+                                </span>
+                                <span class="has-text-weight-light">
+                                    {{ getName(slotProps.item['ceasn:publisherName']) }}
+                                </span>
                             </span>
-                            <span class="details-value">
-                                {{ $moment(slotProps.item.getTimestamp()).fromNow() }}
+                            <span
+                                class="framework-details__item"
+                                v-else-if="slotProps.item['schema:publisher'] && getName(slotProps.item['schema:publisher'])">
+                                <span class="has-text-weight-medium">
+                                    Publisher:
+                                </span>
+                                <span>
+                                    {{ getName(slotProps.item['schema:publisher']) }}
+                                </span>
                             </span>
-                        </span>
-                        <span
-                            class="framework-list-item__details"
-                            v-else-if="slotProps.item['schema:dateModified']"
-                            :title="new Date(slotProps.item['schema:dateModified'])">
-                            <span class="details-label">
-                                Last modified:
+                            <span
+                                class=""
+                                v-else-if="slotProps.item['schema:creator'] && getName(slotProps.item['schema:creator'])">
+                                <span class="has-text-weight-medium">
+                                    Creator
+                                </span>
+                                <span>
+                                    {{ getName(slotProps.item['schema:creator']) }}
+                                </span>
                             </span>
-                            <span class="details-value">
-                                {{ $moment(new Date(slotProps.item['schema:dateModified'])).fromNow() }}
-                            </span>
-                        </span>
-                        <span
-                            class="framework-list-item__details"
-                            v-if="slotProps.item['ceasn:publisherName'] && getName(slotProps.item['ceasn:publisherName'])">
-                            <span class="details-value">
-                                {{ getName(slotProps.item['ceasn:publisherName']) }}
-                            </span>
-                        </span>
-                        <span
-                            class="framework-list-item__details"
-                            v-else-if="slotProps.item['schema:publisher'] && getName(slotProps.item['schema:publisher'])">
-                            {{ getName(slotProps.item['schema:publisher']) }}
-                        </span>
-                        <span
-                            class="framework-list-item__details"
-                            v-else-if="slotProps.item['schema:creator'] && getName(slotProps.item['schema:creator'])">
-                            {{ getName(slotProps.item['schema:creator']) }}
-                        </span>
-                        <span
-                            class="framework-list-item__details"
-                            v-if="canEditItem(slotProps.item)">
-                            <span class="details-label">
-                                Editable
+                            <span
+                                class="framework-details__item"
+                                v-if="canEditItem(slotProps.item)">
+                                <span class="has-text-weight-medium">
+                                    Editable
+                                </span>
                             </span>
                         </span>
                     </template>
@@ -457,6 +472,20 @@ export default {
     }
     .frameworks-buttons, .concept-buttons {
         display: none;
+    }
+}
+.framework-details {
+    .framework-details__item {
+        border-right: 1px solid rgba($dark, .3);
+        padding: 0rem .25rem;
+    }
+    .framework-details__item:first-of-type {
+        border-right: 1px solid rgba($dark, .3);
+        padding: 0rem .25rem 0rem 0rem;
+    }
+    .framework-details__item:last-of-type {
+        border-right: 0px solid rgba($dark, .3);
+        padding: 0rem .25rem 0rem .25rem;
     }
 }
 </style>
