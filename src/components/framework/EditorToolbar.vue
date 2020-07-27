@@ -467,13 +467,10 @@ export default {
 
 <style lang="scss">
     @import './../../scss/variables.scss';
-.clear-side-bar #framework-editor-toolbar {
-    width: calc(100% - 300px);
-}
 #framework-editor-toolbar {
     border-bottom: solid 1px rgba($dark, .5);
     top: 0rem;
-    width: calc(100% - 5rem);
+    width: calc(100% - 4rem);
     z-index: 10;
     height: 2.6rem;
     position: fixed;

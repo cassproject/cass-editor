@@ -1113,7 +1113,7 @@ export default {
 </script>
 
 
-<style scoped lang="scss">
+<style lang="scss">
  @import './scss/variables.scss';
 .pagesFull {
     margin-top:40px;
@@ -1130,16 +1130,9 @@ export default {
     #app-content {
         height: 100%;
     }
-    .clear-side-bar {
-        margin-left: 300px;
-    }
     .clear-narrow-side-bar {
         margin-left: 4rem;
     }
-    .clear-right-aside {
-        margin-right: 340px;
-    }
-
 
     .menu {
         overflow-y: scroll;
