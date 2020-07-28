@@ -1145,7 +1145,7 @@
                             class="section box py-4 px-4"
                             id="configuration-details">
                             <h3 class="is-size-3 title">
-                                Basic details
+                                General details
                             </h3>
                             <div class="field">
                                 <label class="label">Name</label>
