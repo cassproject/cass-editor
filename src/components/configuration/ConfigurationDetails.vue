@@ -1935,7 +1935,7 @@
                     <p class="subtitle">
                         Alignments terms are used to map resources such as learning material, courses, and other
                         content to competencies in CAT. If enabled, the alignment type property will show up in
-                        the framework editor when aligning comeptencies to resources.
+                        the framework editor when aligning competencies to resources.
                     </p>
                     <div
                         class="table-container box py-4 px-4"
