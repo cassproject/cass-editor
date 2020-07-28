@@ -1350,7 +1350,7 @@
                     </h5>
                     <p class="subtitle">
                         Competency properties are the values that can be added, edited, and deleted
-                        for competency objects. Default competency properties are <b>id</b>, <b>name</b>, and <b>description</b>,
+                        for competency objects. Default competency properties are <b>id</b>, <b>name</b>, <b>description</b>,
                         and <b>type</b>. Properties added here will be available when editing competency level objects
                         in the framework editor.
                     </p>
