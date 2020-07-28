@@ -896,7 +896,7 @@
                                 <i class="fa fa-save" />
                             </span>
                             <span>
-                                apply new framework property
+                                apply new property
                             </span>
                         </button>
                     </div>
