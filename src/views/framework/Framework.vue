@@ -188,7 +188,8 @@ export default {
             properties: "primary",
             config: null,
             selectedArray: [],
-            configSetOnFramework: false
+            configSetOnFramework: false,
+            gotInitialLevelsRelationsAndAlignments: false
         };
     },
     computed: {
@@ -592,14 +593,6 @@ export default {
     mounted: function() {
         if (!this.framework) {
             this.$router.push({name: "frameworks"});
-        } else {
-            if (this.config.levelsConfig && this.config.levelsConfig.length > 0) {
-                this.updateLevels();
-            }
-            this.updateRelations();
-            if (this.config.alignConfig && this.config.alignConfig.length > 0) {
-                this.updateAlignments();
-            }
         }
         let documentBody = document.getElementById('framework');
         documentBody.addEventListener('scroll', debounce(this.scrollFunction, 100, {'leading': true}));
@@ -786,9 +779,17 @@ export default {
         },
         // Speed up load of secondary properties
         preloadRelations: function() {
-            var relation = this.relations;
-            var level = this.levels;
             this.handleDoneLoading();
+            if (!this.gotInitialLevelsRelationsAndAlignments) {
+                if (this.config.levelsConfig && this.config.levelsConfig.length > 0) {
+                    this.updateLevels();
+                }
+                this.updateRelations();
+                if (this.config.alignConfig && this.config.alignConfig.length > 0) {
+                    this.updateAlignments();
+                }
+                this.gotInitialLevelsRelationsAndAlignments = true;
+            }
         },
         addResourceAlignments: function(selectedCompetencyId, alignmentType, values) {
             let me = this;
