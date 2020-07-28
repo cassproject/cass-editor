@@ -1795,8 +1795,8 @@
                         Competency Relationships Configuration
                     </h5>
                     <p class="subtitle">
-                        Relationship can be added as properties on competencies to define how competencies
-                        within a framework or between two different frameworks relate to eachother. Enabled
+                        Relationships can be added as properties on competencies to define how competencies
+                        within a framework or between two different frameworks relate to each other. Enabled
                         relationships will be available in the property drop down when editing competencies in the framework editor.
                     </p>
                     <div
