@@ -24,7 +24,7 @@
                             placeholder="search for person...">
                     </div>
                     <h4 class="header is-size-3">
-                        Available Member List
+                        {{ addMemberModalSubTitle }}
                     </h4>
                     <div class="table-container">
                         <table class="table is-hoverable is-fullwidth">
@@ -387,6 +387,7 @@ export default {
             addMemberMode: '',
             showAddMemberModal: false,
             addMemberModalTitle: '',
+            addMemberModalSubTitle: '',
             selectedPersons: [],
             selectedPersonsFilter: '',
             localGroupManagers: this.groupManagers,
@@ -424,6 +425,7 @@ export default {
             this.selectedPersons = [];
             this.addMemberMode = '';
             this.addMemberModalTitle = '';
+            this.addMemberModalSubTitle = '';
             this.showAddMemberModal = false;
         },
         getPersonById(personId) {
@@ -447,6 +449,7 @@ export default {
             this.selectedPersons = [];
             this.addMemberMode = 'manager';
             this.addMemberModalTitle = 'Add Managers';
+            this.addMemberModalSubTitle = 'Available Managers';
             this.showAddMemberModal = true;
         },
         addUsers() {
@@ -454,6 +457,7 @@ export default {
             this.selectedPersons = [];
             this.addMemberMode = 'user';
             this.addMemberModalTitle = 'Add Members';
+            this.addMemberModalSubTitle = 'Available Members';
             this.showAddMemberModal = true;
         },
         removeManager(managerIdx) {
