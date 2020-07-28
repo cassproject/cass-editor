@@ -593,9 +593,13 @@ export default {
         if (!this.framework) {
             this.$router.push({name: "frameworks"});
         } else {
-            this.updateLevels();
+            if (this.config.levelsConfig && this.config.levelsConfig.length > 0) {
+                this.updateLevels();
+            }
             this.updateRelations();
-            this.updateAlignments();
+            if (this.config.alignConfig && this.config.alignConfig.length > 0) {
+                this.updateAlignments();
+            }
         }
         let documentBody = document.getElementById('framework');
         documentBody.addEventListener('scroll', debounce(this.scrollFunction, 100, {'leading': true}));
