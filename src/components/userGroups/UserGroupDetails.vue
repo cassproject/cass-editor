@@ -156,7 +156,7 @@
                             @click="validateCurrentGroupAndEmitSave">
                             <span class="icon">
                                 <i class="fa fa-save" />
-                            </span><span>save configuration</span>
+                            </span><span>save user group</span>
                         </div>
                     </div>
                 </nav>
