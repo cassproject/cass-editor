@@ -247,7 +247,7 @@
                                             class="button is-outlined is-small is-primary"
                                             v-if="!readOnly && !areAnyIdentitiesThisPerson(mgr)"
                                             @click="moveManagerToUser(mgrIdx)">
-                                            reassign as user
+                                            reassign as member
                                         </button>
                                     </td>
                                     <td>
