@@ -204,7 +204,7 @@
                             </span>
                             <span
                                 class="framework-details__item"
-                                v-if="canEditItem(slotProps.item)">
+                                v-if="canEditItem(slotProps.item) && queryParams.view !== 'true'">
                                 <span class="has-text-weight-medium">
                                     Editable
                                 </span>
