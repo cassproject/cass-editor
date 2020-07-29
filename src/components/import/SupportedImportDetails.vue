@@ -384,6 +384,7 @@
                 <p>
                     For this import, you use one JSON-LD file that includes a graph of the framework and all of its competencies.
                     Using this format, you can import a framework and competencies from a system that exports CTDL-ASN formatted JSON-LD.
+                    If you wish to edit the framework after importing this file type, please be sure you are signed in.
                 </p>
                 <div class="buttons is-right">
                     <a

@@ -75,6 +75,9 @@
                                 <li class="is-size-6">
                                     After entering the endpoint below, you can select which frameworks you would like to import.
                                 </li>
+                                <li class="is-size-6">
+                                    If you wish to edit the frameworks after importing, please be sure you are signed in.
+                                </li>
                             </div>
                             <div
                                 class="column is-12"
@@ -85,6 +88,9 @@
                                 <br>
                                 <li class="is-size-6">
                                     This import maintains the URLs of the original frameworks and changes both the format and schema used to store the CTDL-ASN frameworks in CaSS, but does not change any of the data.
+                                </li>
+                                <li class="is-size-6">
+                                    If you wish to edit the framework after importing by URL, please be sure you are signed in.
                                 </li>
                                 <li class="is-size-6">
                                     Please note that the Technology Skills framework below is very large and will take a long time to import.
