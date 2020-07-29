@@ -296,6 +296,12 @@ drag, drag, and chosen states
                         .lode__thing-heading {
                             
                         }
+                        .highlighted {
+                            background-color: $highlight;
+                            padding: .5rem;
+                            border-radius: 5px;
+                            box-shadow: $one-dp;
+                        }
                     }
                     .lode__name {
                         font-size: 1.1rem; // top level competencies
