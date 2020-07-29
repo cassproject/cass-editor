@@ -197,7 +197,7 @@ When linking a concept to a competency, the cass-editor can be configured to not
 ## Private frameworks and concept schemes by default.
 Users can make a framework or concept scheme private by clicking the checkbox in the edit pane (1.2) or clicking the user management button within a framework (1.3). This checkbox can be selected by default with the URL parameter `private=true`. Note that this will not change existing frameworks and concept schemes but will apply to newly created ones.
 
-## When selecting a concept to link to, allow editing (1.2) and earlier.
+## When selecting a concept to link to, allow editing (1.2 and earlier)
 When linking a concept to a competency or another concept, the cass-editor can be configured to allow the user to edit concepts or concept schemes. This functionality can be enabled by the URL parameter `editIframe=true`.
 
 ## Use canonical identifiers.
@@ -290,17 +290,17 @@ Most fields are not validated beyond the input type assigned to them. URLs, drop
 Validation can be accomplished through the configuration manager. Here you can set which fields are required, the type of value accepted, whether the field is limited to one value or can have multiple values, etc.
 
 # Keyboard Shortcuts
-&uarr; & &darr; - Navigate up and down the list of frameworks and competencies.  
-&larr; & &rarr; - Expand and contract nested competencies.  
-Enter - Select the current element.  (1.2 and earlier)
-Shift + Enter - Select all.  (1.2 and earlier)
-Backspace - Go back.  (1.2 and earlier)
-Tab - Switch focus between elements on the page.  
-Space - Select the element currently in focus. (1.3)
-Escape - Return to list navigation.  (1.2 and earlier)
-Shift + X - Drag competency  
-Shift + C - Drag and copy competency  
-Shift + V - Drop competency  
-Shift + U - Unlink competency  (1.2 and earlier)
-Shift + &uarr; & Shift + &darr; - Move competency up and down in the list.
-Shift + &larr; & Shift + &rarr; - Move competency indent and outdent in the list (1.3)
+* &uarr; & &darr; - Navigate up and down the list of frameworks and competencies.  
+* &larr; & &rarr; - Expand and contract nested competencies.  
+* Enter - Select the current element.  (1.2 and earlier)
+* Shift + Enter - Select all.  (1.2 and earlier)
+* Backspace - Go back.  (1.2 and earlier)
+* Tab - Switch focus between elements on the page.  
+* Space - Select the element currently in focus. (1.3)
+* Escape - Return to list navigation.  (1.2 and earlier)
+* Shift + X - Drag competency  
+* Shift + C - Drag and copy competency  
+* Shift + V - Drop competency  
+* Shift + U - Unlink competency  (1.2 and earlier)
+* Shift + &uarr; & Shift + &darr; - Move competency up and down in the list.
+* Shift + &larr; & Shift + &rarr; - Move competency indent and outdent in the list (1.3)
