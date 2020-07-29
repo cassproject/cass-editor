@@ -596,6 +596,9 @@ export default {
         }
         let documentBody = document.getElementById('framework');
         documentBody.addEventListener('scroll', debounce(this.scrollFunction, 100, {'leading': true}));
+        if (!this.framework.competency || this.framework.competency.length === 0) {
+            this.hierarchyIsdoneLoading = true;
+        }
     },
     beforeDestroy() {
     },
