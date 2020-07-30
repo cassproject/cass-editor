@@ -1,16 +1,16 @@
 ---
 home: true
-heroImage: /hero.png
+heroImage: /cass-logo.png
 heroText: CaSS Authoring Tools
-tagline: Manage Talent Inventory
-actionText: Installation →
+tagline: A collaborative interface for managing your competency frameworks.
+actionText: Get Started →
 actionLink: /installation/
 features:
-- title: Simplicity First
-  details: Minimal setup with markdown-centered project structure helps you focus on writing.
-- title: Vue-Powered
-  details: Enjoy the dev experience of Vue + webpack, use Vue components in markdown, and develop custom themes with Vue.
-- title: Performant
-  details: VuePress generates pre-rendered static HTML for each page, and runs as an SPA once a page is loaded.
+- title: Collaborate with your team
+  details: CaSS Authoring Tools supports user and group access to your authored competency frameworks.
+- title: Customized Comeptency Properties
+  details: Our Authoring Tools to support your organizations unique needs.  Use our custom competency properties to customize the abilities of the authoring tool.
+- title: Work with existing frameworks
+  details: CaSS can import and export a variety of file format and types.  Start working with your existing data.
 footer: MIT Licensed | Copyright © 2018-present Evan You
 ---

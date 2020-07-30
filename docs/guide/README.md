@@ -1,26 +1,33 @@
-# GUIDE
+# CaSS Getting Started Guide
 
 
 ## Installation and prep
 
-### Step 1
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vitae nulla dapibus mi mattis pharetra ac a nibh. Donec sit amet maximus neque. In sit amet imperdiet elit, vel volutpat odio. Praesent sit amet fringilla elit. Ut maximus justo sit amet lacinia vestibulum. Sed enim libero, vehicula eget blandit vel, sollicitudin ac orci. Nam molestie sem lacus, in condimentum neque rhoncus a.
+### Follow our installation guide
+Access the [installation guide](/installation) to get started installing CaSS.
 
 
-## Get ready
+## Familiarize yourself with our documentation
+CaSS is an open source project.  You can find information about the project on Github.  We have multiple documentation sources for exploring your options for utilizing CaSS. 
 
-### Installation
-Cras pretium accumsan felis sed imperdiet. Maecenas sollicitudin ligula ex. Ut commodo purus at mollis lobortis. Curabitur eu blandit nibh. Morbi lectus sapien, fringilla nec quam aliquet, viverra laoreet orci. Fusce pellentesque, urna in eleifend mattis, ipsum diam hendrerit augue, a ultrices arcu tortor id tellus. Maecenas non quam in arcu sollicitudin dictum. Aliquam tempor vestibulum purus quis eleifend.
+### CaSS on Github
+Visit our [Github](https://github.com/cassproject/CASS) to explore the code.
+
+### Developer Guide
+Access the [developer guide](http://devs.cassproject.org/) for detailed getting started documentation.
+
+### CaSS Official Documentation
+Access the [official documentation](http://docs.cassproject.org/) for detailed explanation on the moving parts of CaSS.
 
 
-## Try it
+## Explore the interfaces
 
-### Users and Group
-Nullam egestas mauris velit, nec ultrices ex dapibus ac. Fusce tristique orci vel nulla maximus fringilla. Fusce vel iaculis mi, sed fringilla ante. Vivamus vestibulum pellentesque ligula, id bibendum nibh vestibulum eu. Nulla a varius est. Cras pellentesque iaculis enim ut hendrerit. Quisque dictum tortor et tristique accumsan. Mauris commodo purus ac velit accumsan, a fringilla nibh ultricies. Curabitur nec purus in arcu laoreet laoreet sit amet at nulla.
+### CaSS Authoring Tools UI
+CaSS Authoring tools provide easy to use interfaces for authoring your frameworks and managing your organizations competency frameworks. Get started by creating a user account. 
 
 
-## Configuration
+## Join the community
 
-### Step 4
-Suspendisse tempor mi vitae blandit euismod. Donec blandit ornare nulla, et pellentesque nisl tincidunt sit amet. Curabitur nisi neque, sodales at magna at, ornare malesuada ante. Vestibulum sit amet sapien dui. Pellentesque volutpat lacus ac justo ullamcorper ornare. Ut efficitur lorem a neque imperdiet consequat. Duis elementum quam vitae nunc convallis, a sagittis massa aliquet.
+### Subscribe to our Slack Channel
+Request access to the [CaSS Slack Channel](https://docs.google.com/a/eduworks.com/forms/viewform?bc=transparent&embedded=true&f=Arial%252C%2BVerdana%252C%2Bsans-serif&hl=en&htc=%2523666666&id=1BMaboapV0IaS8iGnCJut2obPZ9y3CWkxXuvy-7krcgE&lc=%2523003965&pli=1&tc=%2523444444&ttl=0) to join the conversation.
 
