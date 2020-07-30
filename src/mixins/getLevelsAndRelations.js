@@ -84,7 +84,11 @@ export default {
                         var relationType = a.relationType;
                         var reciprocalRelation = null;
                         if (me.queryParams.ceasnDataFields === "true" && relationType === "narrows") {
-                            if (me.framework.competency.indexOf(a.target) !== -1) {
+                            let framework = me.framework;
+                            if (!framework) {
+                                framework = me.importFramework;
+                            }
+                            if (framework.competency.indexOf(a.target) !== -1) {
                                 relationType = "isChildOf";
                                 reciprocalRelation = "hasChild";
                             }
