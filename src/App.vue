@@ -388,7 +388,11 @@ export default {
             if (EcIdentityManager.ids.length > 0) {
                 framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
             }
-            framework["dcterms:title"] = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Concept Scheme"};
+            let name = "New Taxonomy";
+            if (this.queryParams.ceasnDataFields === 'true') {
+                name = "New Concept Scheme";
+            }
+            framework["dcterms:title"] = {"@language": this.$store.state.editor.defaultLanguage, "@value": name};
             framework["schema:dateCreated"] = new Date().toISOString();
             framework["schema:dateModified"] = new Date().toISOString();
             this.$store.commit('editor/newFramework', framework.shortId());
