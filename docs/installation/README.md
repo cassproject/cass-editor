@@ -9,15 +9,15 @@
 - At least 8 GB of hard drive space.
 
 
-## Version
+## CaSS Version Requirements
 
 Minimum CaSS version selection for inclusion of CaSS Authoring Tools should be **1.3**
 
 ## CAT/CaSS Installation
 
-## Linux (Debian, Ubuntu, Amazon and other Fedora derivatives)
+### Linux (Debian, Ubuntu, Amazon and other Fedora derivatives)
 
-### Install, Upgrade
+Install and Upgrade
 
 ```
 wget https://raw.githubusercontent.com/cassproject/CASS/master/scripts/cassInstall.sh
@@ -27,7 +27,7 @@ wget https://raw.githubusercontent.com/cassproject/CASS/master/scripts/cassInsta
 
 ## Docker
 
-Images for CASS are kept in Docker Hub under cassproject/cass.
+Images for CASS are kept in Docker Hub under [cassproject/cass](https://hub.docker.com/r/cassproject/cass).
 
 The following command will run the CaSS Standalone server with an interactive prompt and expose it on port 80 on the local machine.
 
@@ -68,11 +68,10 @@ From an elevated command line:
 ```
 choco install -y cass 
 
-choco install -y cass
 ```
 
 
-### Setup
+## Setup
 
 - Set up DNS endpoint
 - Set up HTTPS certificate

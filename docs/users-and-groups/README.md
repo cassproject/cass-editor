@@ -1,4 +1,7 @@
-# user and groups 
+# User Group Management
+
+In the CaSS authoring environment, user groups provide the capability to assign multiple users the ability to assume a single shared &#39;identity&#39;. Members of a group are granted access to any CaSS object that the group has been explicitly assigned.
+
 
 ## Accessing the CAT User Group Manager
 

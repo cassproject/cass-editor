@@ -4,7 +4,7 @@ heroImage: /hero.png
 heroText: CaSS Authoring Tools
 tagline: Manage Talent Inventory
 actionText: Installation →
-actionLink: /installation
+actionLink: /installation/
 features:
 - title: Simplicity First
   details: Minimal setup with markdown-centered project structure helps you focus on writing.

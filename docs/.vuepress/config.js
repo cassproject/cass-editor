@@ -4,16 +4,29 @@ module.exports = {
       nav: [
         { text: 'Home', link: '/' },
         { text: 'Guide', link: '/guide/' },
-        { text: 'Competency Configuration', link: '/competency-configuration/' }
+        { text: 'Configuration', link: '/configuration/' }
       ],
       displayAllHeaders: true, // Default: false
       activeHeaderLinks: true, // Default: true
       sidebar: [
-        '/',
-        '/guide/',
-        '/installation/',
-        '/competency-configuration/',
-        '/users-and-groups/'
+        {
+            title: 'Getting Started',
+            collapsable: false, // optional, defaults to true
+            children: [
+                '/installation/'
+            ]
+        },
+        {
+          title: 'Configuration',   // required
+          path: '/configuration/',      // optional, link of the title, which should be an absolute path and must exist
+          collapsable: false, // optional, defaults to true
+          sidebarDepth: 1,    // optional, defaults to 1
+          children: [
+            '/competency-properties/',
+            '/framework-properties/',
+            '/default-users/'
+          ]
+        }
       ]
     }
   }
