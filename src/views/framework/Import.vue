@@ -212,7 +212,7 @@
                                 :obj="changedObj ? changedObj : importFramework"
                                 :repo="repo"
                                 class="framework-title"
-                                :profile="conceptMode ? ctdlAsnConceptSchemeProfile : t3FrameworkProfile"
+                                :profile="containerProfile"
                                 properties="tertiary" />
                             <Hierarchy
                                 :class="{'is-hidden': !hierarchyIsdoneLoading}"
@@ -226,7 +226,7 @@
                                 containerNodeProperty="competency"
                                 containerEdgeProperty="relation"
                                 nodeType="EcCompetency"
-                                :profile="t3CompetencyProfile"
+                                :profile="hierarchyProfile"
                                 :viewOnly="false"
                                 :isDraggable="true"
                                 edgeType="EcAlignment"
@@ -270,7 +270,7 @@
                                 :obj="changedObj ? changedObj : importFramework"
                                 :parentNotEditable="true"
                                 class="framework-title"
-                                :profile="conceptMode ? ctdlAsnConceptSchemeProfile : t3FrameworkProfile"
+                                :profile="containerProfile"
                                 properties="tertiary" />
                             <Hierarchy
                                 v-if="importFramework && !conceptMode"
@@ -280,7 +280,7 @@
                                 containerNodeProperty="competency"
                                 containerEdgeProperty="relation"
                                 nodeType="EcCompetency"
-                                :profile="t3CompetencyProfile"
+                                :profile="hierarchyProfile"
                                 :editable="false"
                                 :viewOnly="true"
                                 edgeType="EcAlignment"
@@ -528,6 +528,28 @@ export default {
         },
         text: function() {
             return this.$store.getters['app/importText'];
+        },
+        containerProfile: function() {
+            if (this.conceptMode) {
+                return ctdlAsnConceptSchemeProfile;
+            }
+            if (this.isT3Import) {
+                return this.t3FrameworkProfile;
+            } else if (this.queryParams.ceasnDataFields === 'true') {
+                return this.ctdlAsnFrameworkProfile;
+            }
+            return this.t3FrameworkProfile;
+        },
+        hierarchyProfile: function() {
+            if (this.conceptMode) {
+                return ctdlAsnConceptProfile;
+            }
+            if (this.isT3Import) {
+                return this.t3CompetencyProfile;
+            } else if (this.queryParams.ceasnDataFields === 'true') {
+                return this.ctdlAsnFrameworkProfile;
+            }
+            return this.t3CompetencyProfile;
         }
     },
     watch: {
@@ -601,7 +623,7 @@ export default {
         onEditMultiple: function() {
             this.showEditMultiple = true;
             var payload = {
-                profile: this.t3CompetencyProfile,
+                profile: this.hierarchyProfile,
                 selectedCompetencies: this.selectedArray,
                 component: 'MultiEdit'
             };
