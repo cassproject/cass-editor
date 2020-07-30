@@ -12,18 +12,29 @@
                             <h1
                                 class="title"
                                 v-if="conceptMode">
-                                Concept Schemes
+                                {{ conceptSchemeString }}
                             </h1>
                             <h1
                                 class="title"
                                 v-else>
                                 Frameworks
                             </h1>
-                            <h1 class="subtitle">
+                            <h2 class="subtitle is-size-5">
                                 List of available
-                                <span v-if="conceptMode">concepts</span>
-                                <span v-else>frameworks</span>
-                            </h1>
+                                <span v-if="conceptMode && queryParams.ceasnDataFields === 'true'">concepts</span>
+                                <span v-else-if="conceptMode">taxonomies.</span>
+                                <p
+                                    class="is-size-6"
+                                    v-if="conceptMode && queryParams.ceasnDataFields !== 'true'">
+                                    <a
+                                        class="custom-link is-size-6"
+                                        href="https://en.wikipedia.org/wiki/Taxonomy_(general)"
+                                        target="_blank">Taxonomies
+                                    </a>
+                                    can be used to categorize and label competencies in frameworks.
+                                </p>
+                                <span v-if="conceptMode && queryParams.ceasnDataFields === 'true'">frameworks</span>
+                            </h2>
                         </div>
                         <div class="column">
                             <div
@@ -34,7 +45,7 @@
                                     class="button is-outlined is-primary">
                                     <span class="icon">
                                         <i class="fa fa-plus" />
-                                    </span><span>new concept scheme</span>
+                                    </span><span>new {{ conceptSchemeStringForButton }}</span>
                                 </div>
                                 <router-link
                                     to="/import"
@@ -42,7 +53,7 @@
                                     class="button is-outlined is-primary">
                                     <span class="icon">
                                         <i class="fa fa-upload" />
-                                    </span><span>import concept scheme</span>
+                                    </span><span>import {{ conceptSchemeStringForButton }}</span>
                                 </router-link>
                             </div>
                             <div
@@ -245,6 +256,20 @@ export default {
         this.setDefaultConfig();
     },
     computed: {
+        conceptSchemeString: function() {
+            if (this.queryParams.ceasnDataFields === 'true') {
+                return 'Concept Schemes';
+            } else {
+                return "Taxonomies";
+            }
+        },
+        conceptSchemeStringForButton: function() {
+            if (this.queryParams.ceasnDataFields === 'true') {
+                return 'Concept Scheme';
+            } else {
+                return "Taxonomy";
+            }
+        },
         showRightAside: function() {
             return this.$store.getters['app/showRightAside'];
         },

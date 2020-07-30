@@ -112,7 +112,7 @@ drag, drag, and chosen states
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
-        color: $dark;
+        color: $text;
     }
 }
 .lode__thing:hover {
@@ -146,7 +146,7 @@ drag, drag, and chosen states
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
-        color: $dark;
+        color: $text;
     }
     background-color: transparent;
     .modal-card {
