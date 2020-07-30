@@ -180,7 +180,7 @@
                     <span v-if="showSideNav && queryParams.ceasnDataFields === 'true'">
                         Concepts
                     </span>
-                    <span v-if="showSideNav">
+                    <span v-else-if="showSideNav">
                         Taxonomies
                     </span>
                 </router-link>
