@@ -155,11 +155,19 @@ label {
 .lode__Property-text{
     border-radius: .25rem;
 }
-.custom-link {
+.custom-link.local {
+    color: $text;
+    border-bottom: solid 2px $primary;
+}
+.custom-link.external {
     color: $text;
     border-bottom: solid 2px $link;
 }
-.custom-link:hover {
+.custom-link.local:hover {
+    color: $text;
+    border-bottom: solid 3px $primary;
+}
+.custom-link.external:hover {
     color: $text;
     border-bottom: solid 3px $link;
 }

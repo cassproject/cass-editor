@@ -11,7 +11,7 @@
                 CaSS Authoring Tools support authoring frameworks, importing existing frameworks from supported
                 document types, and editing competency frameworks within the system.  You can navigate to the
                 <router-link
-                    class="custom-link"
+                    class="custom-link local"
                     to="/frameworks">
                     frameworks page
                 </router-link> and start creating
@@ -28,7 +28,7 @@
                     <p class="is-size-6">
                         Navigate to the <router-link
                             to="/login"
-                            class="custom-link">
+                            class="custom-link local">
                             login screen
                         </router-link> and select create a new user.  Input your details. After creation,
                         login to your account using the username you created. You can now access the user and groups manager as well as create comments on frameworks.
@@ -42,7 +42,7 @@
                         If your team members have also created their account, and you are logged in, you can navigate to
                         the <router-link
                             to="/users"
-                            class="custom-link">
+                            class="custom-link local">
                             user/groups page
                         </router-link> and  configure a group with defined readers and authors.
                     </p>
@@ -53,7 +53,7 @@
                     </h4>
                     <p class="is-size-6">
                         The <router-link
-                            class="custom-link"
+                            class="custom-link local"
                             to="/configuration">
                             configuration manager
                         </router-link> allows you to have full control over the properties you can
@@ -67,7 +67,7 @@
                     </h4>
                     <p class="is-size-6">
                         Navigate to the <router-link
-                            class="custom-link"
+                            class="custom-link local"
                             to="/frameworks">
                             framework page
                         </router-link> and create a new framework. Give your framework a memorable name and save it.

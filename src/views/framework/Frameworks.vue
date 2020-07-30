@@ -27,7 +27,8 @@
                                     class="is-size-6"
                                     v-if="conceptMode && queryParams.ceasnDataFields !== 'true'">
                                     <a
-                                        class="custom-link is-size-6"
+                                        class="custom-link external is-size-6"
+                                        title="Wikipedia: Taxonomy (general)"
                                         href="https://en.wikipedia.org/wiki/Taxonomy_(general)"
                                         target="_blank">Taxonomies
                                     </a>
