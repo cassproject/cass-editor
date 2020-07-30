@@ -196,7 +196,7 @@
                     <span>
                         New
                         <span v-if="showSideNav && queryParams.ceasnDataFields === 'true'">
-                            Concept
+                            Concept Scheme
                         </span>
                         <span v-else-if="showSideNav">
                             Taxonomy
@@ -215,7 +215,7 @@
                     </span>
                     Import
                     <span v-if="showSideNav && queryParams.ceasnDataFields === 'true'">
-                        Concept
+                        Concept Scheme
                     </span>
                     <span v-else-if="showSideNav">
                         Taxonomy
