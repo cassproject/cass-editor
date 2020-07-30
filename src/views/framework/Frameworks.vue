@@ -33,7 +33,7 @@
                                     </a>
                                     can be used to categorize and label competencies in frameworks.
                                 </p>
-                                <span v-if="conceptMode && queryParams.ceasnDataFields === 'true'">frameworks</span>
+                                <span v-if="!conceptMode">frameworks</span>
                             </h2>
                         </div>
                         <div class="column">
