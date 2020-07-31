@@ -16,4 +16,4 @@ node_modules
 /dist/
 
 docs/.vuepress/dist/
-../public/docs/
+/public/docs/
