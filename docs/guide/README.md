@@ -4,7 +4,7 @@
 ## Installation and prep
 
 ### Follow our installation guide
-Access the [installation guide](/installation) to get started installing CaSS.
+Access the [installation guide](/docs/installation) to get started installing CaSS.
 
 
 ## Familiarize yourself with our documentation

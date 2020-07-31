@@ -59,7 +59,7 @@ It is highly recommended to accept the default for this field unless there is an
 
 ### Range/Type
 
-:::
+::: warning
 Only editable at the time of property creation.
 :::
 
@@ -185,7 +185,7 @@ Clicking the _manage levels_ button displays the _select enforced levels_ dialog
 
 To add a new level to the available level list, click on the _add level_ button in the _select enforced levels_ dialogue window.
 
- ![Add Levels](/docs/add-levels.png)
+ ![Add Levels](/docs/add-level.png)
 
 Once clicked, the _add new level_ dialogue is open. Enter the new level **name** (and optionally the new level **description** ). Clicking the _save new level_ button on the bottom right corner of the dialogue will create this level in CaSS and return you to the _select enforced levels_ dialogue.
 
