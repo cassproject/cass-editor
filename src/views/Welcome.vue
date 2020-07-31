@@ -278,7 +278,6 @@ export default {
     mounted: function() {
         let index = this.repo.selectedServer.lastIndexOf('api');
         this.baseRepoUrl = this.repo.selectedServer.slice(0, index);
-        console.log(this.baseRepoUrl);
     },
     computed: {
         ...mapState({
