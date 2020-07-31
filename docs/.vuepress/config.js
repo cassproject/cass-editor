@@ -1,5 +1,7 @@
 // .vuepress/config.js
 module.exports = {
+    base: '/docs/',
+    dest: 'public/docs',
     themeConfig: {
       nav: [
         { text: 'Home', link: '/' },
