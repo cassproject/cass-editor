@@ -257,7 +257,6 @@ export default {
         };
     },
     mounted: function() {
-        this.$store.commit('app/showSideNav');
     },
     computed: {
         ...mapState({
