@@ -3,6 +3,7 @@ module.exports = {
     base: '/docs/',
     dest: 'public/docs',
     themeConfig: {
+      logo: '/cass-logo.png',
       nav: [
         { text: 'Home', link: '/' },
         { text: 'Guide', link: '/guide/' }
