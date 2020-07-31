@@ -195,6 +195,10 @@ export default {
         if (this.ownedByMe) {
             this.basicFilter = true;
         }
+        let searchTerm = this.$store.getters['app/searchTerm'];
+        if (searchTerm && searchTerm.length > 0) {
+            this.searchTerm = searchTerm;
+        }
     },
     methods: {
         clearAllFilters: function() {

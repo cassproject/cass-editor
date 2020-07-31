@@ -274,14 +274,14 @@
                     </span>
                 </h2>
                 <p>
-                    CSV file imports are supported with CaSS.  In order to upload concept schemes as CSV files your concept scheme CSV files need to be formatted in a CaSS readable format.
+                    CSV file imports are supported with CaSS.  In order to upload {{ queryParams.ceasnDataFields === 'true' ? 'concept schemes' : 'taxonomies' }} as CSV files your {{ queryParams.ceasnDataFields === 'true' ? 'concept scheme' : 'taxonomy' }} CSV files need to be formatted in a CaSS readable format.
                 </p>
                 <h5 class="header is-size-4 has-text-weight-bold">
                     CTDL-ASN Formatted
                 </h5>
                 <p>
-                    For this import, you use one CSV. Each row in the CSV will represent one object, whether that be a concept, or a concept scheme. Particular fields will be used to determine hierarchy.
-                    Using this format, you can import several concept schemes, each with their own concepts. Concepts may not be shared across schemes, and each concept may only have one parent.
+                    For this import, you use one CSV. Each row in the CSV will represent one object, whether that be a concept, or a {{ queryParams.ceasnDataFields === 'true' ? 'concept scheme' : 'taxonomy' }}. Particular fields will be used to determine hierarchy.
+                    Using this format, you can import several {{ queryParams.ceasnDataFields === 'true' ? 'concept schemes' : 'taxonomies' }}, each with their own concepts. Concepts may not be shared across {{ queryParams.ceasnDataFields === 'true' ? 'schemes' : 'taxonomies' }}, and each concept may only have one parent.
                     It is also important that any field with multiple values be formatted exactly as in the sample file, e.g. entry 1|entry 2.
                 </p>
                 <div class="buttons is-right">
@@ -384,6 +384,7 @@
                 <p>
                     For this import, you use one JSON-LD file that includes a graph of the framework and all of its competencies.
                     Using this format, you can import a framework and competencies from a system that exports CTDL-ASN formatted JSON-LD.
+                    If you wish to edit the framework after importing this file type, please be sure you are signed in.
                 </p>
                 <div class="buttons is-right">
                     <a
@@ -410,13 +411,13 @@
                         <i class="fa fa-check-circle" />
                     </span>
                 </h2>
-                <p>CaSS supports importing concept schemes from JSON files in the below listed format.</p>
+                <p>CaSS supports importing {{ queryParams.ceasnDataFields === 'true' ? 'concept schemes' : 'taxonomies' }} from JSON files in the below listed format.</p>
                 <h5 class="header is-size-4 has-text-weight-bold">
                     CTDL-ASN formatted JSON-LD
                 </h5>
                 <p>
-                    For this import, you use one JSON-LD file that includes a graph of the concept scheme and all of its concepts.
-                    Using this format, you can import a concept scheme and concepts from a system that exports CTDL-ASN formatted JSON-LD.
+                    For this import, you use one JSON-LD file that includes a graph of the {{ queryParams.ceasnDataFields === 'true' ? 'concept scheme' : 'taxonomy' }} and all of its concepts.
+                    Using this format, you can import a {{ queryParams.ceasnDataFields === 'true' ? 'concept scheme' : 'taxonomy' }} and concepts from a system that exports CTDL-ASN formatted JSON-LD.
                 </p>
                 <div class="buttons is-right">
                     <a
@@ -501,6 +502,9 @@ export default {
         },
         conceptMode: function() {
             return this.$store.getters['editor/conceptMode'];
+        },
+        queryParams: function() {
+            return this.$store.getters['editor/queryParams'];
         }
     }
 };

@@ -119,6 +119,15 @@ $divider-background-color: $dark;
         padding-left: calc(360px + 1.75rem) !important;
         padding-right: 1.75rem !important;
     }
+    .clear-side-bar #framework-editor-toolbar {
+        width: calc(100% - 340px);
+    }
+     .clear-side-bar {
+        margin-left: 300px;
+    }
+    .clear-right-aside {
+        margin-right: 340px;
+    }
 }
 
 @include touch {
@@ -126,9 +135,27 @@ $divider-background-color: $dark;
         padding-left: 1.75rem !important;
         padding-right: 1.75rem !important;
     }
+     .clear-side-bar #framework-editor-toolbar {
+        width: 100%;
+    }
+    .clear-right-aside {
+        margin-right: 0px;
+    }
+    .clear-side-bar {
+        margin-left: 4rem;
+    }
 }
 
 @include mobile {
+    .clear-side-bar #framework-editor-toolbar {
+        width: 100%;
+    }
+    .clear-right-aside {
+        margin-right: 0px;
+    }
+    .clear-side-bar {
+        margin-left: 4rem;
+    }
 }
 
 .tag {

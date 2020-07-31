@@ -16,7 +16,6 @@ export default {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
                 }
                 repo.saveTo(framework, function() {
-                    me.confirmDialog = false;
                     me.$store.commit('editor/framework', thisFramework);
                 }, appError);
             }, appLog);

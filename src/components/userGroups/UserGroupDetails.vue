@@ -24,7 +24,7 @@
                             placeholder="search for person...">
                     </div>
                     <h4 class="header is-size-3">
-                        Available Member List
+                        {{ addMemberModalSubTitle }}
                     </h4>
                     <div class="table-container">
                         <table class="table is-hoverable is-fullwidth">
@@ -104,25 +104,25 @@
                     </a>
                     <a
                         class="panel-block"
-                        :class="{'is-active': tab === 'owners'}"
-                        @click="tab ='owners'">
+                        :class="{'is-active': tab === 'managers'}"
+                        @click="tab ='managers'">
                         <span class="panel-icon">
                             <i
                                 class="fas fa-list-alt"
                                 aria-hidden="true" />
                         </span>
-                        Default Owners
+                        Managers
                     </a>
                     <a
-                        :class="{'is-active': tab === 'readers'}"
+                        :class="{'is-active': tab === 'members'}"
                         class="panel-block"
-                        @click="tab = 'readers'">
+                        @click="tab = 'members'">
                         <span class="panel-icon">
                             <i
                                 class="fas fa-list-alt"
                                 aria-hidden="true" />
                         </span>
-                        Default Readers
+                        Members
                     </a>
                     <a
                         class="panel-block"
@@ -156,7 +156,7 @@
                             @click="validateCurrentGroupAndEmitSave">
                             <span class="icon">
                                 <i class="fa fa-save" />
-                            </span><span>save configuration</span>
+                            </span><span>save user group</span>
                         </div>
                     </div>
                 </nav>
@@ -200,7 +200,7 @@
                 </div>
                 <div
                     class="section box py-4 px-4"
-                    v-if="tab === 'owners' || tab === 'general'">
+                    v-if="tab === 'managers' || tab === 'general'">
                     <h5 class="title is-size-3">
                         Managers
                         <button
@@ -216,7 +216,7 @@
                         </button>
                     </h5>
                     <p class="subtitle">
-                        Managers can read, edit, comment, delete, and manage user access to frameworks.
+                        Managers can add and remove members and other managers to the group.  Managers also share the owner and reader privileges assigned to the group.
                     </p>
                     <div class="table-container">
                         <table class="table is-hoverable is-fullwidth">
@@ -247,7 +247,7 @@
                                             class="button is-outlined is-small is-primary"
                                             v-if="!readOnly && !areAnyIdentitiesThisPerson(mgr)"
                                             @click="moveManagerToUser(mgrIdx)">
-                                            reassign as user
+                                            reassign as member
                                         </button>
                                     </td>
                                     <td>
@@ -269,9 +269,9 @@
                 </div>
                 <div
                     class="section box py-4 px-4"
-                    v-if="tab === 'readers' || tab === 'general'">
+                    v-if="tab === 'members' || tab === 'general'">
                     <h5 class="title is-size-3">
-                        Users
+                        Members
                         <button
                             class="button is-family-primary is-small is-pulled-right is-outlined is-primary"
                             v-if="!readOnly"
@@ -280,16 +280,16 @@
                                 <i class="fa fa-user-plus" />
                             </span>
                             <span>
-                                add users
+                                add members
                             </span>
                         </button>
                     </h5>
                     <p class="subtitle">
-                        Readers can read, and comment on frameworks.
+                        Members share the owner and reader privileges assigned to the group.
                     </p>
                     <div v-if="groupUsers.length === 0">
                         <p class="help is-info">
-                            No users assigned to this group yet.
+                            No members assigned to this group yet.
                         </p>
                     </div>
                     <div
@@ -387,6 +387,7 @@ export default {
             addMemberMode: '',
             showAddMemberModal: false,
             addMemberModalTitle: '',
+            addMemberModalSubTitle: '',
             selectedPersons: [],
             selectedPersonsFilter: '',
             localGroupManagers: this.groupManagers,
@@ -424,6 +425,7 @@ export default {
             this.selectedPersons = [];
             this.addMemberMode = '';
             this.addMemberModalTitle = '';
+            this.addMemberModalSubTitle = '';
             this.showAddMemberModal = false;
         },
         getPersonById(personId) {
@@ -447,13 +449,15 @@ export default {
             this.selectedPersons = [];
             this.addMemberMode = 'manager';
             this.addMemberModalTitle = 'Add Managers';
+            this.addMemberModalSubTitle = 'Available Managers';
             this.showAddMemberModal = true;
         },
         addUsers() {
             this.selectedPersonsFilter = '';
             this.selectedPersons = [];
             this.addMemberMode = 'user';
-            this.addMemberModalTitle = 'Add Users';
+            this.addMemberModalTitle = 'Add Members';
+            this.addMemberModalSubTitle = 'Available Members';
             this.showAddMemberModal = true;
         },
         removeManager(managerIdx) {

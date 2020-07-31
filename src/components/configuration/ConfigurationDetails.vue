@@ -896,7 +896,7 @@
                                 <i class="fa fa-save" />
                             </span>
                             <span>
-                                apply new framework property
+                                apply new property
                             </span>
                         </button>
                     </div>
@@ -1145,7 +1145,7 @@
                             class="section box py-4 px-4"
                             id="configuration-details">
                             <h3 class="is-size-3 title">
-                                Basic details
+                                General details
                             </h3>
                             <div class="field">
                                 <label class="label">Name</label>
@@ -1350,8 +1350,8 @@
                     </h5>
                     <p class="subtitle">
                         Competency properties are the values that can be added, edited, and deleted
-                        for competency objects. Default competency properties are <b>id</b>, <b>name</b>, and <b>description</b>,
-                        and <b>type</b>. Properties added here will be be available when editing competency level objects
+                        for competency objects. Default competency properties are <b>id</b>, <b>name</b>, <b>description</b>,
+                        and <b>type</b>. Properties added here will be available when editing competency level objects
                         in the framework editor.
                     </p>
                     <div
@@ -1795,8 +1795,8 @@
                         Competency Relationships Configuration
                     </h5>
                     <p class="subtitle">
-                        Relationship can be added as properties on competencies to define how competencies
-                        within a framework or between two different frameworks relate to eachother. Enabled
+                        Relationships can be added as properties on competencies to define how competencies
+                        within a framework or between two different frameworks relate to each other. Enabled
                         relationships will be available in the property drop down when editing competencies in the framework editor.
                     </p>
                     <div
@@ -1935,7 +1935,7 @@
                     <p class="subtitle">
                         Alignments terms are used to map resources such as learning material, courses, and other
                         content to competencies in CAT. If enabled, the alignment type property will show up in
-                        the framework editor when aligning comeptencies to resources.
+                        the framework editor when aligning competencies to resources.
                     </p>
                     <div
                         class="table-container box py-4 px-4"

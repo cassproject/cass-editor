@@ -8,12 +8,13 @@
             <div class="framework-body columns is-multiline is-gapless is-paddingless is-marginless">
                 <FrameworkEditorToolbar
                     @showExportModal="onOpenExportModal"
-                    @changeProperties="changeProperties"
-                    :selectedArray="selectedArray" />
+                    @changeProperties="changeProperties" />
                 <div class="column is-12">
-                    <div class="container is-paddingless ">
+                    <!-- loading section -- dummy content to show while loading dome elemnts -->
+                    <div
+                        class="container is-paddingless">
                         <Component
-                            :class="dynamicThingComponent === 'Thing' ? parentObjectClass: ''"
+                            :class="[dynamicThingComponent === 'Thing' ? parentObjectClass: '']"
                             :is="dynamicThingComponent"
                             :id="'scroll-' + framework.shortId().split('/').pop()"
                             :obj="framework"
@@ -63,7 +64,36 @@
                                 </div>
                             </template>
                         </Component>
+                        <div
+                            class="section"
+                            v-if="!hierarchyIsdoneLoading">
+                            <ul class="processing-list">
+                                <li />
+                                <li />
+                                <ul>
+                                    <li />
+                                    <li />
+                                    <li />
+                                    <ul>
+                                        <li />
+                                        <li />
+                                        <li />
+                                        <ul>
+                                            <li />
+                                            <li />
+                                        </ul>
+                                    </ul>
+                                </ul>
+                                <li />
+                                <li />
+                                <ul>
+                                    <li />
+                                    <li />
+                                </ul>
+                            </ul>
+                        </div>
                         <Hierarchy
+                            :class="{'is-hidden': !hierarchyIsdoneLoading}"
                             :container="framework"
                             containerType="Framework"
                             containerTypeGet="EcFramework"
@@ -123,6 +153,7 @@ export default {
     mixins: [common, exports, competencyEdits, ctdlasnProfile, t3Profile, tlaProfile, getLevelsAndRelations],
     data: function() {
         return {
+            hierarchyIsdoneLoading: false,
             parentObjectClass: 'parent-object',
             showVersionHistory: false,
             showEditMultiple: false,
@@ -157,7 +188,8 @@ export default {
             properties: "primary",
             config: null,
             selectedArray: [],
-            configSetOnFramework: false
+            configSetOnFramework: false,
+            gotInitialLevelsRelationsAndAlignments: false
         };
     },
     computed: {
@@ -561,13 +593,12 @@ export default {
     mounted: function() {
         if (!this.framework) {
             this.$router.push({name: "frameworks"});
-        } else {
-            this.updateLevels();
-            this.updateRelations();
-            this.updateAlignments();
         }
         let documentBody = document.getElementById('framework');
         documentBody.addEventListener('scroll', debounce(this.scrollFunction, 100, {'leading': true}));
+        if (!this.framework.competency || this.framework.competency.length === 0) {
+            this.hierarchyIsdoneLoading = true;
+        }
     },
     beforeDestroy() {
     },
@@ -586,6 +617,10 @@ export default {
         }
     },
     methods: {
+        handleDoneLoading: function() {
+            appLog("done loading");
+            this.hierarchyIsdoneLoading = true;
+        },
         scrollFunction(e) {
             let documentObject = document.getElementsByClassName('parent-object');
             let scrollValue = e.target.scrollTop;
@@ -747,8 +782,17 @@ export default {
         },
         // Speed up load of secondary properties
         preloadRelations: function() {
-            var relation = this.relations;
-            var level = this.levels;
+            this.handleDoneLoading();
+            if (!this.gotInitialLevelsRelationsAndAlignments) {
+                if (this.config.levelsConfig && this.config.levelsConfig.length > 0) {
+                    this.updateLevels();
+                }
+                this.updateRelations();
+                if (this.config.alignConfig && this.config.alignConfig.length > 0) {
+                    this.updateAlignments();
+                }
+                this.gotInitialLevelsRelationsAndAlignments = true;
+            }
         },
         addResourceAlignments: function(selectedCompetencyId, alignmentType, values) {
             let me = this;

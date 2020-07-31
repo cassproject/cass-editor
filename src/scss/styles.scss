@@ -47,7 +47,8 @@ body{
 #concept,
 #concepts,
 #configuration,
-#user-groups {
+#user-groups.auto-complete,
+#welcome {
     height: 100%;
     overflow-x: hidden;
     overflow-y: scroll;
@@ -154,7 +155,22 @@ label {
 .lode__Property-text{
     border-radius: .25rem;
 }
-
+.custom-link.local {
+    color: $text;
+    border-bottom: solid 2px $primary;
+}
+.custom-link.external {
+    color: $text;
+    border-bottom: solid 2px $link;
+}
+.custom-link.local:hover {
+    color: $text;
+    border-bottom: solid 3px $primary;
+}
+.custom-link.external:hover {
+    color: $text;
+    border-bottom: solid 3px $link;
+}
 .lode__Property-ul{
     border-radius: .25rem;
     padding: 0rem .25rem;

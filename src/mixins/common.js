@@ -3,38 +3,50 @@ import dateFormat from 'dateformat';
 export default {
     computed: {
         ctids: function() {
+            let framework = this.framework;
+            if (!framework) {
+                framework = this.$store.getters['editor/framework'];
+            }
             if (this.queryParams.ceasnDataFields !== "true") {
                 return null;
             }
             var obj = {};
-            obj[this.framework.shortId()] = [{"@value": this.getCTID(this.framework.shortId())}];
-            if (this.framework.competency) {
-                for (var i = 0; i < this.framework.competency.length; i++) {
-                    obj[this.framework.competency[i]] = [{"@value": this.getCTID(this.framework.competency[i])}];
+            obj[framework.shortId()] = [{"@value": this.getCTID(framework.shortId())}];
+            if (framework.competency) {
+                for (var i = 0; i < framework.competency.length; i++) {
+                    obj[framework.competency[i]] = [{"@value": this.getCTID(framework.competency[i])}];
                 }
             }
             return obj;
         },
         registryURLs: function() {
+            let framework = this.framework;
+            if (!framework) {
+                framework = this.$store.getters['editor/framework'];
+            }
             if (this.queryParams.ceasnDataFields !== "true") {
                 return null;
             }
             var obj = {};
-            obj[this.framework.shortId()] = [{"@id": this.ceasnRegistryUriTransform(this.framework.shortId())}];
-            if (this.framework.competency) {
-                for (var i = 0; i < this.framework.competency.length; i++) {
-                    obj[this.framework.competency[i]] = [{"@id": this.ceasnRegistryUriTransform(this.framework.competency[i])}];
+            obj[framework.shortId()] = [{"@id": this.ceasnRegistryUriTransform(framework.shortId())}];
+            if (framework.competency) {
+                for (var i = 0; i < framework.competency.length; i++) {
+                    obj[framework.competency[i]] = [{"@id": this.ceasnRegistryUriTransform(framework.competency[i])}];
                 }
             }
             return obj;
         },
         conceptCtids: function() {
+            let framework = this.framework;
+            if (!framework) {
+                framework = this.$store.getters['editor/framework'];
+            }
             var me = this;
             if (this.queryParams.ceasnDataFields !== "true") {
                 return null;
             }
             var obj = {};
-            obj[this.framework.shortId()] = [{"@value": this.getCTID(this.framework.shortId())}];
+            obj[framework.shortId()] = [{"@value": this.getCTID(framework.shortId())}];
             var subCtids = function(ary) {
                 for (var i = 0; i < ary.length; i++) {
                     obj[ary[i]] = [{"@value": me.getCTID(ary[i])}];
@@ -44,12 +56,16 @@ export default {
                     }
                 }
             };
-            if (this.framework["skos:hasTopConcept"]) {
-                subCtids(this.framework["skos:hasTopConcept"]);
+            if (framework["skos:hasTopConcept"]) {
+                subCtids(framework["skos:hasTopConcept"]);
             }
             return obj;
         },
         conceptRegistryURLs: function() {
+            let framework = this.framework;
+            if (!framework) {
+                framework = this.$store.getters['editor/framework'];
+            }
             var me = this;
             if (this.queryParams.ceasnDataFields !== "true") {
                 return null;
@@ -64,8 +80,8 @@ export default {
                     }
                 }
             };
-            if (this.framework["skos:hasTopConcept"]) {
-                subURLs(this.framework["skos:hasTopConcept"]);
+            if (framework["skos:hasTopConcept"]) {
+                subURLs(framework["skos:hasTopConcept"]);
             }
             return obj;
         }

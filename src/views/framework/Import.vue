@@ -30,8 +30,11 @@
                             <div class="column is-12">
                                 <h1
                                     class="title is-size-1 has-text-black">
-                                    <span v-if="conceptMode">
+                                    <span v-if="conceptMode && queryParams.ceasnDataFields === 'true'">
                                         Import a concept scheme
+                                    </span>
+                                    <span v-else-if="conceptMode">
+                                        Import a taxonomy
                                     </span>
                                     <span v-else>Import a framework</span>
                                 </h1>
@@ -75,6 +78,9 @@
                                 <li class="is-size-6">
                                     After entering the endpoint below, you can select which frameworks you would like to import.
                                 </li>
+                                <li class="is-size-6">
+                                    If you wish to edit the frameworks after importing, please be sure you are signed in.
+                                </li>
                             </div>
                             <div
                                 class="column is-12"
@@ -87,6 +93,9 @@
                                     This import maintains the URLs of the original frameworks and changes both the format and schema used to store the CTDL-ASN frameworks in CaSS, but does not change any of the data.
                                 </li>
                                 <li class="is-size-6">
+                                    If you wish to edit the framework after importing by URL, please be sure you are signed in.
+                                </li>
+                                <li class="is-size-6">
                                     Please note that the Technology Skills framework below is very large and will take a long time to import.
                                 </li>
                             </div>
@@ -95,7 +104,7 @@
                                 <p
                                     v-if="importTransition === 'upload' && !importFile && conceptMode"
                                     class="is-size-6">
-                                    Upload documents to transform into CaSS Concept Schemes.
+                                    Upload documents to transform into CaSS {{ queryParams.ceasnDataFields === 'true' ? 'Concept Schemes' : 'Taxonomies' }}.
                                 </p>
                                 <p
                                     v-else-if="importTransition === 'upload' && !importFile"
@@ -203,7 +212,7 @@
                                 :obj="changedObj ? changedObj : importFramework"
                                 :repo="repo"
                                 class="framework-title"
-                                :profile="conceptMode ? ctdlAsnConceptSchemeProfile : t3FrameworkProfile"
+                                :profile="containerProfile"
                                 properties="tertiary" />
                             <Hierarchy
                                 :class="{'is-hidden': !hierarchyIsdoneLoading}"
@@ -217,7 +226,7 @@
                                 containerNodeProperty="competency"
                                 containerEdgeProperty="relation"
                                 nodeType="EcCompetency"
-                                :profile="t3CompetencyProfile"
+                                :profile="hierarchyProfile"
                                 :viewOnly="false"
                                 :isDraggable="true"
                                 edgeType="EcAlignment"
@@ -261,7 +270,7 @@
                                 :obj="changedObj ? changedObj : importFramework"
                                 :parentNotEditable="true"
                                 class="framework-title"
-                                :profile="conceptMode ? ctdlAsnConceptSchemeProfile : t3FrameworkProfile"
+                                :profile="containerProfile"
                                 properties="tertiary" />
                             <Hierarchy
                                 v-if="importFramework && !conceptMode"
@@ -271,7 +280,7 @@
                                 containerNodeProperty="competency"
                                 containerEdgeProperty="relation"
                                 nodeType="EcCompetency"
-                                :profile="t3CompetencyProfile"
+                                :profile="hierarchyProfile"
                                 :editable="false"
                                 :viewOnly="true"
                                 edgeType="EcAlignment"
@@ -519,6 +528,28 @@ export default {
         },
         text: function() {
             return this.$store.getters['app/importText'];
+        },
+        containerProfile: function() {
+            if (this.conceptMode) {
+                return ctdlAsnConceptSchemeProfile;
+            }
+            if (this.isT3Import) {
+                return this.t3FrameworkProfile;
+            } else if (this.queryParams.ceasnDataFields === 'true') {
+                return this.ctdlAsnFrameworkProfile;
+            }
+            return this.t3FrameworkProfile;
+        },
+        hierarchyProfile: function() {
+            if (this.conceptMode) {
+                return ctdlAsnConceptProfile;
+            }
+            if (this.isT3Import) {
+                return this.t3CompetencyProfile;
+            } else if (this.queryParams.ceasnDataFields === 'true') {
+                return this.ctdlAsnFrameworkProfile;
+            }
+            return this.t3CompetencyProfile;
         }
     },
     watch: {
@@ -592,7 +623,7 @@ export default {
         onEditMultiple: function() {
             this.showEditMultiple = true;
             var payload = {
-                profile: this.t3CompetencyProfile,
+                profile: this.hierarchyProfile,
                 selectedCompetencies: this.selectedArray,
                 component: 'MultiEdit'
             };
@@ -712,7 +743,11 @@ export default {
                     this.$store.commit('app/importTransition', 'preview');
                 }
             } else {
-                this.$store.commit('app/importStatus', "Concept Scheme Imported.");
+                let name = "Taxonomy";
+                if (this.queryParams.ceasnDataFields === 'true') {
+                    name = "Concept Scheme";
+                }
+                this.$store.commit('app/importStatus', name + " Imported.");
                 this.$store.commit('app/importTransition', 'preview');
             }
         },
@@ -752,7 +787,11 @@ export default {
                 if (this.conceptMode) {
                     CTDLASNCSVConceptImport.analyzeFile(file, function(frameworkCount, competencyCount) {
                         me.$store.commit('app/importFileType', 'conceptcsv');
-                        feedback = "Import " + frameworkCount + " concept schemes and " + competencyCount + " concepts.";
+                        let name = "taxonomies";
+                        if (this.queryParams.ceasnDataFields === 'true') {
+                            name = "concept schemes";
+                        }
+                        feedback = "Import " + frameworkCount + " " + name + " and " + competencyCount + " concepts.";
                         me.$store.commit('app/importStatus', feedback);
                         me.$store.commit('app/importTransition', 'info');
                     }, function(errorMsg) {
@@ -803,11 +842,19 @@ export default {
                     var feedback;
                     if (ctdlasn === "ctdlasnConcept") {
                         if (me.conceptMode) {
-                            me.$store.commit('app/importStatus', "1 Concept Scheme Detected.");
+                            if (me.queryParams.ceasnDataFields === 'true') {
+                                me.$store.commit('app/importStatus', "1 Concept Scheme Detected.");
+                            } else {
+                                me.$store.commit('app/importStatus', "1 Taxonomy Detected.");
+                            }
                             me.$store.commit('app/importFileType', 'ctdlasnjsonld');
                             me.$store.commit('app/importTransition', 'info');
                         } else {
-                            var message = "Concept Schemes must be imported in the concept scheme editor.";
+                            if (me.queryParams.ceasnDataFields === 'true') {
+                                var message = "Concept Schemes must be imported in the concept scheme editor.";
+                            } else {
+                                var message = "Taxonomies must be imported in the taxonomy editor.";
+                            }
                             invalid = true;
                             me.$store.commit('app/addImportError', message);
                             me.$store.commit('app/importTransition', 'process');
@@ -853,7 +900,11 @@ export default {
             } else if (file.name.endsWith(".xml")) {
                 if (this.conceptMode) {
                     me.$store.commit('app/importTransition', 'process');
-                    me.$store.commit('app/addImportError', "This is not a valid file format for concept schemes");
+                    if (me.queryParams.ceasnDataFields === 'true') {
+                        me.$store.commit('app/addImportError', "This is not a valid file format for concept schemes");
+                    } else {
+                        me.$store.commit('app/addImportError', "This is not a valid file format for taxonomies");
+                    }
                 } else {
                     MedbiqImport.analyzeFile(file, function(data) {
                         me.$store.commit('app/importFileType', 'medbiq');
@@ -869,7 +920,11 @@ export default {
             } else if (file.name.endsWith(".pdf")) {
                 if (this.conceptMode) {
                     me.$store.commit('app/importTransition', 'process');
-                    me.$store.commit('app/addImportError', "This is not a valid file format for concept schemes");
+                    if (me.queryParams.ceasnDataFields === 'true') {
+                        me.$store.commit('app/addImportError', "This is not a valid file format for concept schemes");
+                    } else {
+                        me.$store.commit('app/addImportError', "This is not a valid file format for taxonomies");
+                    }
                 } else {
                     me.$store.commit('app/importFileType', 'pdf');
                     me.firstImport = false;
@@ -880,7 +935,11 @@ export default {
             } else if (file.name.endsWith(".docx")) {
                 if (this.conceptMode) {
                     me.$store.commit('app/importTransition', 'process');
-                    me.$store.commit('app/addImportError', "This is not a valid file format for concept schemes");
+                    if (me.queryParams.ceasnDataFields === 'true') {
+                        me.$store.commit('app/addImportError', "This is not a valid file format for concept schemes");
+                    } else {
+                        me.$store.commit('app/addImportError', "This is not a valid file format for taxonomies");
+                    }
                 } else {
                     me.$store.commit('app/importFileType', "pdf");
                     me.firstImport = false;
@@ -890,7 +949,11 @@ export default {
             } else if (file.name.endsWith(".html")) {
                 if (this.conceptMode) {
                     me.$store.commit('app/importTransition', 'process');
-                    me.$store.commit('app/addImportError', "This is not a valid file format for concept schemes");
+                    if (me.queryParams.ceasnDataFields === 'true') {
+                        me.$store.commit('app/addImportError', "This is not a valid file format for concept schemes");
+                    } else {
+                        me.$store.commit('app/addImportError', "This is not a valid file format for taxonomies");
+                    }
                 } else {
                     me.$store.commit('app/importFileType', "pdf");
                     me.detailsDetected.fileType = "html";
@@ -1347,7 +1410,11 @@ export default {
                 me.$store.commit('app/addImportError', failure);
             });
             if (me.conceptMode) {
-                me.$store.commit('app/importStatus', "Importing Concept Scheme");
+                if (me.queryParams.ceasnDataFields === 'true') {
+                    me.$store.commit('app/importStatus', "Importing Concept Scheme");
+                } else {
+                    me.$store.commit('app/importStatus', "Importing Taxonomy");
+                }
             } else {
                 me.$store.commit('app/importStatus', 'Importing Framework');
             }
@@ -1631,7 +1698,11 @@ export default {
                     return;
                 }
                 if (graph[0]["@type"].indexOf("Concept") !== -1) {
-                    error = "Competency Editor cannot be used to import concept schemes.";
+                    if (me.ceasnDataFields === 'true') {
+                        error = "Competency Editor cannot be used to import concept schemes.";
+                    } else {
+                        error = "Competency Editor cannot be used to import taxonomies.";
+                    }
                     me.$store.commit('app/addImportError', error);
                     me.$store.commit('app/importTransition', 'process');
                 }

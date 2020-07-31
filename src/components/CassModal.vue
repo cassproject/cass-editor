@@ -1,6 +1,7 @@
 <template>
     <div
         class="modal is-small"
+        id="cass-modal"
         :class="[{'is-active': visible}, type, modalClass]">
         <div class="modal-background" />
         <div class="modal-card">
@@ -321,5 +322,7 @@ export default {
 </script>
 
 <style lang="scss">
-
+#cass-modal {
+    z-index: 50;
+}
 </style>

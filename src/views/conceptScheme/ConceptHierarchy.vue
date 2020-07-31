@@ -91,6 +91,39 @@
                             create new
                         </span>
                     </div>
+                    <div
+                        v-if="view === 'framework' || view === 'concept'"
+                        :disabled="!canCopyOrCut"
+                        title="Copy competency"
+                        :class="canCopyOrCut ? 'is-primary' : 'is-disabled'"
+                        class="button is-outlined"
+                        @click="copyClick">
+                        <span class="icon">
+                            <i class="fa fa-copy" />
+                        </span>
+                    </div>
+                    <div
+                        v-if="view === 'framework' || view === 'concept'"
+                        title="Cut competency"
+                        :disabled="!canCopyOrCut"
+                        class="button is-outlined"
+                        :class="canCopyOrCut ? 'is-primary' : 'is-disabled'"
+                        @click="cutClick">
+                        <span class="icon">
+                            <i class="fas handle fa-cut" />
+                        </span>
+                    </div>
+                    <div
+                        v-if="view === 'framework' || view === 'concept'"
+                        :disabled="!canPaste"
+                        class="button is-outlined "
+                        @click="pasteClick"
+                        :class="canPaste ? 'is-primary' : 'is-disabled'"
+                        title="Paste competency">
+                        <span class="icon">
+                            <i class="fa fa-paste" />
+                        </span>
+                    </div>
                 </div>
             </div>
             <!-- IMPORT WORKFLOW BUTTONS -->
@@ -259,6 +292,20 @@ export default {
     },
     mixins: [common],
     computed: {
+        canCopyOrCut: function() {
+            if (this.selectedArray && this.selectedArray.length === 1) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        canPaste: function() {
+            if ((this.$store.getters['editor/copyId'] !== null || this.$store.getters['editor/cutId'] !== null) && this.$store.getters['editor/nodeInFocus'] !== null) {
+                return true;
+            } else {
+                return false;
+            }
+        },
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];
         },
@@ -336,6 +383,23 @@ export default {
         window.removeEventListener('keydown', this.keydown);
     },
     methods: {
+        cutClick: function() {
+            if (this.selectedArray && this.selectedArray.length === 1) {
+                this.$store.commit('editor/cutId', this.selectedArray[0]);
+            }
+            this.$store.commit('editor/copyId', null);
+            this.$store.commit('editor/paste', false);
+        },
+        copyClick: function() {
+            if (this.selectedArray && this.selectedArray.length === 1) {
+                this.$store.commit('editor/copyId', this.selectedArray[0]);
+            }
+            this.$store.commit('editor/cutId', null);
+            this.$store.commit('editor/paste', false);
+        },
+        pasteClick: function() {
+            this.$store.commit('editor/paste', true);
+        },
         keydown(e) {
             if (this.canEdit) {
                 if (e.shiftKey) {

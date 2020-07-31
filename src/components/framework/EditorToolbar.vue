@@ -3,7 +3,7 @@
         id="framework-editor-toolbar">
         <!-- property view -->
         <div class="container">
-            <div class="columns is-spaced">
+            <div class="columns is-mobile is-spaced">
                 <!-- view options -->
                 <!-- primary -->
                 <div class="column is-narrow">
@@ -68,14 +68,6 @@
                     <!-- show comments -->
                     <div class="buttons">
                         <div
-                            title="Add comment to framework"
-                            @click="handleClickAddComment"
-                            class="button is-text  has-text-dark">
-                            <span class="icon">
-                                <i class="fas fa-comment-medical" />
-                            </span>
-                        </div>
-                        <div
                             title="View all comments"
                             v-if="showViewComments"
                             @click="$store.commit('app/showRightAside', 'Comments')"
@@ -103,64 +95,22 @@
                                 <i class="fas fa-undo-alt " />
                             </span>
                         </div>
-                        <div
+                        <!-- <div
                             title="View history"
                             @click="$store.commit('app/showRightAside', 'Versions')"
                             class="button is-text  has-text-dark">
                             <span class="icon">
                                 <i class="fas fa-history" />
                             </span>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <div
                     v-if="canEditFramework"
                     class="column is-narrow">
                     <div class="vl" />
-                </div>
-                <div
-                    class="column is-narrow"
-                    v-if="canEditFramework">
-                    <div
-                        class="buttons">
-                        <div
-                            :disabled="!canCopyOrCut"
-                            title="Copy competency"
-                            :class="canCopyOrCut ? 'has-text-dark' : 'is-disabled'"
-                            class="button  is-text"
-                            @click="copyClick">
-                            <span class="icon">
-                                <i class="fa fa-copy" />
-                            </span>
-                        </div>
-                        <div
-                            title="Cut competency"
-                            :disabled="!canCopyOrCut"
-                            class="button  is-text"
-                            :class="canCopyOrCut ? 'has-text-dark' : 'is-disabled'"
-                            @click="cutClick">
-                            <span class="icon">
-                                <i class="fas handle fa-cut" />
-                            </span>
-                        </div>
-                        <div
-                            :disabled="!canPaste"
-                            class="button is-text has-text-dark "
-                            @click="pasteClick"
-                            :class="canPaste ? 'has-text-dark' : 'is-disabled'"
-                            title="Paste competency">
-                            <span class="icon">
-                                <i class="fa fa-paste" />
-                            </span>
-                        </div>
-                    </div>
                 </div>
                 <!-- divider -->
-                <div
-                    v-if="canEditFramework"
-                    class="column is-narrow">
-                    <div class="vl" />
-                </div>
                 <!-- export -->
                 <div
                     class="column is-narrow"
@@ -236,9 +186,6 @@ import {cassUtil} from '../../mixins/cassUtil';
 export default {
     name: 'EditorToolbar',
     mixins: [ cassUtil ],
-    props: {
-        selectedArray: Array
-    },
     data() {
         return {
             showPropertyViewDropDown: false,
@@ -442,40 +389,9 @@ export default {
             } else {
                 this.defaultFrameworkConfigName = "No configuration";
             }
-        },
-        cutClick: function() {
-            if (this.selectedArray && this.selectedArray.length === 1) {
-                this.$store.commit('editor/cutId', this.selectedArray[0]);
-            }
-            this.$store.commit('editor/copyId', null);
-            this.$store.commit('editor/paste', false);
-        },
-        copyClick: function() {
-            if (this.selectedArray && this.selectedArray.length === 1) {
-                this.$store.commit('editor/copyId', this.selectedArray[0]);
-            }
-            this.$store.commit('editor/cutId', null);
-            this.$store.commit('editor/paste', false);
-        },
-        pasteClick: function() {
-            this.$store.commit('editor/paste', true);
         }
     },
     computed: {
-        canCopyOrCut: function() {
-            if (this.selectedArray && this.selectedArray.length === 1) {
-                return true;
-            } else {
-                return false;
-            }
-        },
-        canPaste: function() {
-            if (this.$store.getters['editor/copyId'] !== null) {
-                return true;
-            } else {
-                return false;
-            }
-        },
         showAddComments() {
             if (this.$store.getters['editor/conceptMode'] === true) {
                 return false;
@@ -551,13 +467,10 @@ export default {
 
 <style lang="scss">
     @import './../../scss/variables.scss';
-.clear-side-bar #framework-editor-toolbar {
-    width: calc(100% - 300px);
-}
 #framework-editor-toolbar {
     border-bottom: solid 1px rgba($dark, .5);
     top: 0rem;
-    width: calc(100% - 5rem);
+    width: calc(100% - 4rem);
     z-index: 10;
     height: 2.6rem;
     position: fixed;
