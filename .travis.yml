@@ -6,6 +6,7 @@ cache:
   - node_modules
 script:
 - sed -i 's/\/docs\//\/cass-editor\/docs\//g' ./src/views/Welcome.vue
+- sed -i 's/\/docs\//\/cass-editor\/docs\//g' ./docs/.vuepress/config.js
 - find ./docs -name '*.md' -exec sed -i 's/\/docs\//\/cass-editor\/docs\//g' {} \;
 - npm run docs:build
 - npm run build
