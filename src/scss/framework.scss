@@ -1,18 +1,7 @@
 @import './variables.scss';
 #framework, #concept {
-    margin-top: 2rem !important;
-    height: calc(100% - 2rem);
-}
-.is-id {
-    width: 200px;
-    text-align: left;
-    max-width: 100%;
-    display: inline-block;
-    direction: rtl;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    color: $dark;
+    margin-top: 2.6rem !important;
+    height: calc(100% - 2.6rem);
 }
 #framework, #concept, #import {
 .framework-wrapper {
@@ -25,6 +14,7 @@
     display: none;
 }
 .constrain-column {
+    min-width: 0;
     max-width: 100%;
 }
 /* 
@@ -63,7 +53,7 @@ drag, drag, and chosen states
     }
 }
 .chosen-drag {
-    border: dashed 2px grey;
+    border: dashed 2px $link;
     background-color: white;
     .no-child {
         display: none;
@@ -79,8 +69,9 @@ drag, drag, and chosen states
     }
 }
 .drag {
-    border: dashed 2px grey;
+    border: solid 2px grey;
     background-color: white;
+    display: none;
     .no-child {
         display: none;
     }
@@ -101,19 +92,29 @@ drag, drag, and chosen states
         display: none !important;
     }
 }
-
 .dragging.no-child {
     border: dashed 2px grey;
     min-height: 36px;
     margin-left: 5rem;
+    margin-bottom: .5rem;
 }
-
-
 .uneditable {
     width: 100%;
     overflow-x: scroll;
 }
-
+.lode__thing {
+    .is-id {
+        width: 200px;
+        text-align: left;
+        max-width: calc(100% - 10rem);
+        display: inline-block;
+        direction: rtl;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        color: $text;
+    }
+}
 .lode__thing:hover {
     padding: 0rem;
     padding-right: 0rem;
@@ -134,9 +135,19 @@ drag, drag, and chosen states
             visibility: visible;
         }
     }
-    
 }
 .modal.lode__thing-editing {
+    .is-id {
+        width: 200px;
+        text-align: left;
+        max-width: calc(100% - 0rem);
+        display: inline-block;
+        direction: rtl;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        color: $text;
+    }
     background-color: transparent;
     .modal-card {
         .buttons {
@@ -169,10 +180,6 @@ drag, drag, and chosen states
     .property-section {
         padding-top: 1rem;
         padding-bottom: .25rem;
-        .property-header {
-            font-weight: 600;
-            padding-bottom: .25rem;
-        }
     }
     .read-only__link {
         .field .control .uneditable {
@@ -203,7 +210,12 @@ drag, drag, and chosen states
 .lode__hierarchy {
     padding: 0rem .5rem;
     .hierarchy-buttons {
+        position: sticky;
+        top:56px;
+        background-color: white;
+        z-index: 10;
         padding: .25rem .5rem !important;
+        border-bottom: 1px solid rgba($dark, .5);
     }
     .check-radio-all-column label {
         padding-left: 0rem !important;
@@ -232,7 +244,8 @@ drag, drag, and chosen states
                 padding-top: 1rem;
             }
             .lode__hierarchy-item {
-                padding: .25rem .5rem !important;
+                border: solid 2px transparent;
+                padding: 0rem .5rem !important;
                 .add-node-section {
                     width: 100%;
                     display:block;
@@ -283,6 +296,12 @@ drag, drag, and chosen states
                         .lode__thing-heading {
                             
                         }
+                        .highlighted {
+                            background-color: $highlight;
+                            padding: .5rem;
+                            border-radius: 5px;
+                            box-shadow: $one-dp;
+                        }
                     }
                     .lode__name {
                         font-size: 1.1rem; // top level competencies
@@ -306,26 +325,25 @@ drag, drag, and chosen states
             }
             .lode__hierarchy-item.is-focused {
                 background-color: rgba($link, .2);
-                border-radius: .25rem;
+                border-radius: 0rem;
             }
             .lode__hierarchy-item.is-selected {
-                background-color: rgba($link, .3);
-                border-radius: .25rem;
-                box-shadow: $two-dp;
+                background-color: rgba($link, .2);
+                border-radius: 0rem;
             }
             .lode__hierarchy-item.is-cut {
-                border-radius: .25rem;
+                border-radius: 0rem;
                 border: dashed 2px $dark;
                 opacity: 50%;
             }
             .lode__hierarchy-item.can-paste {
-                background-color: rgba($primary, .2);
-                border-radius: .25rem;
+                background-color: white;
+                border-radius: 0rem;
                 border: dashed 2px $black;
             }
             ul.lode__hierarchy-sub-ul {
                 margin-left: 1.25rem;
-                padding: .25rem 0rem;
+                padding: 0rem 0rem;
                 li.lode__hierarchy-sub-li {
                     .lode__name {
                         font-size: 1rem; // top level competencies
@@ -338,11 +356,103 @@ drag, drag, and chosen states
         }
     }
 }
+ul.processing-list {
+    height: 100%;
+    width: 100%;
+    height: 400px;
+    ul {
+        padding-left: 24px;
+        li {
+            display: block;
+            animation: pulse 5s infinite;
+            height: 24px;
+            margin-top: 16px;
+            width: 100%;
+            background-color: rgba($light, .5);
+        }
+    }
+}
+// Displayed until hierarchy is done loading 
+.busy-hierarchy {
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    .busy-hierarchy__list-item {
+        background-color: rgba($light, .5);
+        animation: pulse 4s infinite;
+        width: 100%;
+        height: 48px;
+        padding:8px 8px 0px 8px;
+        margin: 8px;
+        color: transparent;
+    }
+    ul li {
+        height: 24px;
+        margin: 8px 8px 8px 24px;
+        background-color: rgba($light, .5);
+        animation: pulse 4s infinite;
+    }
+}
 
+@keyframes pulse {
+    0% {
+        background-color: rgba($dark, .5);
+    }
+    100% {
+        background-color: rgba($dark, .3);
+    }
+}
 .framework-content {
     .lode__thing .lode__Framework,
     .lode__thing .lode__ConceptScheme {
         padding: .5rem;
+    }
+    .parent-object {
+        position: sticky;
+        background-color: $white;
+        top: 0px;
+        z-index: 9;
+        width: 100%;
+        transition: height .1s;
+        position: -webkit-sticky;
+        .lode__Framework {
+            display: flex;
+            margin: 0rem 2rem;
+            .headings-group {
+                width: calc(100% - 1rem);
+                padding-right: 1rem;
+            }
+            // border-bottom: solid 1px rgba($dark, .5);
+        }
+    }
+    .parent-object.scrolled {
+        z-index: 8;
+        height: 56px;
+        overflow: hidden;
+        .tag {
+            display: none;
+        }
+        .lode__thing-heading {
+            .lode__Property {
+                display: none;
+            }
+            .lode__Property.lode__name,
+            .lode__Property.lode__title {
+                display: block;
+                .property {
+                    text-align: left;
+                    max-width: 100%;
+                    width: 600px;
+                    display: inline-block;
+                    direction: ltr;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    color: $dark;
+                }
+            }
+        }
     }
     .lode__framework__info-bar {
         margin-left: 0rem;
@@ -351,9 +461,9 @@ drag, drag, and chosen states
     .lode__thing {
         padding: 0rem;
         padding-right: 0rem;
-        .lode__Competency, .lode__Concept, .lode__Framework {
+        .lode__Competency, .lode__Concept, .lode__ConceptScheme, .lode__Framework {
             .lode__thing-heading {
-                width: calc(100% - 7rem);
+                width: calc(100% - 0rem);
                 h3 {
                     font-weight: 600;
                     font-size: $size-3;
@@ -374,14 +484,14 @@ drag, drag, and chosen states
                 }
             }
         }
-        .lode__Framework {
+        .lode__Framework, .lode__ConceptScheme {
             .comment-button {
                 top: 16px;
             }
             .lode__thing-heading {
-                padding: 0rem 6rem 0rem .5rem;
+                padding: 0rem 0rem 0rem .5rem;
             }
-            .lode__Property.lode__name {
+            .lode__Property.lode__name, .lode__Property.lode__title {
                 font-size: 1.1rem;
                 font-family: $family-secondary;
                 font-weight: 600;
@@ -451,14 +561,13 @@ drag, drag, and chosen states
         }
     }
 }
-
 .framework-content {
     .hierarchy-item__buttons {
-                display: flex;
-                position: absolute;
-                right: 0;
-                top: 16px;
-            }
+        display: flex;
+        position: absolute;
+        right: 0;
+        top: 16px;
+    }
     .lode__thing {
         padding: .125rem;
         padding-right: 1rem;
@@ -489,8 +598,6 @@ drag, drag, and chosen states
     }
    
 }
-
-
 .add-property {
     background-color: white;
     border: solid 1px rgba($dark, .2);
@@ -510,12 +617,17 @@ drag, drag, and chosen states
     }
 }
 
+.lode__Property.editing {
+    .field.is-grouped {
+        padding-bottom: .5rem;
+    }
+    padding-bottom: .5rem;
+}
 .lode__Hierarchy {
     .lode__Property {
         .control {
             font-size: $size-6;
         }
-        
     }
     .lode__Property.lode__name {
         .control {
@@ -525,7 +637,7 @@ drag, drag, and chosen states
     }
     .lode__Property.lode__id {
         .control {
-            font-size: $size-7;
+            font-size: $size-6;
         }
     }
     .lode__Property.lode__description .field {
@@ -561,11 +673,20 @@ drag, drag, and chosen states
         justify-content: space-between;
         width: 100%;
         .thing-as-property__text {
+            text-align: left;
+            padding-left: .25rem;
+            font-size: $size-6;
             width: 100%;
+            display: inline-block;
+            direction: ltr;
+            text-align: left;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            color: $dark;
         }
         .competency-as-property {
             cursor: pointer;
-            font-size: .9rem;
             color: $text;
             vertical-align: super;
         }

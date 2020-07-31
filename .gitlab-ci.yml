@@ -30,6 +30,7 @@ buildDev:
   - sed -i 's/cass-editor//g' vue.config.js
   - npm install
   - npm run lint
+  - npm run docs:build
   - npm run buildDev
   artifacts:
     paths:
@@ -56,6 +57,7 @@ buildQA:
 
   - npm install
   - npm run lint
+  - npm run docs:build
   - npm run build
   artifacts:
     paths:

@@ -31,12 +31,15 @@
                     .language {
                         display: none;
                     }
+                    .arrow-icon {
+                        visibility: hidden;
+                    }
 
             }
             li.list-ul__item:hover {
                 background-color: $cass-lightest;
-                #arrow-icon {
-                    display:block;
+                .arrow-icon {
+                    visibility:visible;
                 }
             }
             .list-ul__item{
@@ -46,11 +49,8 @@
                 .framework-list-item__details {
                     color: $text;
                     font-weight: 300;
-                    font-size: $size-7;
+                    font-size: $size-6;
                     font-family: $family-primary;
-                    .details-value {
-
-                    }
                     .details-label {
                         font-weight: 600;
                     }
@@ -63,7 +63,7 @@
                 .bottom-actions, .top-actions {
                     display: none !important;
                 }
-                .lode__Framework, .lode__ConceptScheme {
+                .lode__Framework, .lode__Concept, .lode__ConceptScheme, .lode__Concept {
                     transform: translateX(0);
                     cursor: pointer;
                     font-weight: 600;
@@ -81,7 +81,8 @@
     }
      .lode__Framework,
      .framework-list-page,
-     .lode__ConceptScheme {
+     .lode__ConceptScheme,
+     .lode__Concept {
         a {
             display:none;
         }
@@ -138,12 +139,9 @@
             margin: .125em 0em;
 
             color: rgba($dark, .9);
-            .button {
-
-            }
             .lode__description {
                 font-weight: 400;
-                font-size: $size-7;
+                font-size: $size-6;
             }
             .lode__name{
                 font-weight: 600;
@@ -151,7 +149,7 @@
             }
 
             label {
-                font-size: $size-7;
+                font-size: $size-6;
                 font-weight: 500;
             }
         }

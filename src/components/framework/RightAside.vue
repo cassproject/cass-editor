@@ -53,7 +53,7 @@ export default {
     #right-side-bar {
         position: fixed;
         border-left: solid 1px rgba($dark, .2);
-        z-index: 10;
+        z-index: 11;
         height: calc(100vh - 0px);
         overflow: auto;
         right: 0;

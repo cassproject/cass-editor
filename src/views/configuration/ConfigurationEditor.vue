@@ -135,7 +135,7 @@
                     <p v-if="configViewMode.equals('list')">
                         Configurations control the way your frameworks appear in the editor, as well as what properties, relationships,
                         and in some cases value types of properties and relationships you can add to your framework. If a browser configuration
-                        not set then the the system will default to your instance default. If you are the configuration administrator you will be
+                        is not set then the system will default to your instance default. If you are the configuration administrator you will be
                         able to manage the property settings and change which instance is the default.  Otherwise contact your CAT administrator.
                     </p>
                 </template>
@@ -1158,7 +1158,7 @@ export default {
             if (f) {
                 this.frameworkConfigId = configId;
                 window.repo.saveTo(f, function() {
-                    me.$store.commit('editor/framework', f);
+                    me.$store.commit('editor/framework', EcRepository.getBlocking(f.shortId()));
                 }, function() {});
             }
         },
@@ -1181,9 +1181,6 @@ export default {
             for (let i = 0; i < owners.length; i++) {
                 framework.addOwner(EcPk.fromPem(owners[i]));
             }
-            for (let i = 0; i < readers.length; i++) {
-                framework.addReader(EcPk.fromPem(readers[i]));
-            }
             let compsAndRelations = framework.competency ? framework.competency : [];
             if (framework.relation) {
                 compsAndRelations = compsAndRelations.concat(framework.relation);
@@ -1198,13 +1195,22 @@ export default {
                     for (let i = 0; i < owners.length; i++) {
                         obj.addOwner(EcPk.fromPem(owners[i]));
                     }
-                    for (let i = 0; i < readers.length; i++) {
-                        obj.addReader(EcPk.fromPem(readers[i]));
+                    if (readers.length > 0) {
+                        for (let i = 0; i < readers.length; i++) {
+                            obj.addReader(EcPk.fromPem(readers[i]));
+                        }
+                        obj = EcEncryptedValue.toEncryptedValue(obj);
                     }
                     window.repo.saveTo(obj, done, done);
                 }, done);
             }, function(competencyIds) {
             });
+            if (readers.length > 0) {
+                for (let i = 0; i < readers.length; i++) {
+                    framework.addReader(EcPk.fromPem(readers[i]));
+                }
+                framework = EcEncryptedValue.toEncryptedValue(framework);
+            }
             return framework;
         }
     },

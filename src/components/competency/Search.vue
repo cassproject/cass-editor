@@ -68,7 +68,8 @@ placed anywhere in a structured html element such as a <section> or a <div>
                     :disallowEdits="true"
                     :selectingCompetency="true"
                     :selected="selectedIds"
-                    :displayFirst="displayFirst" />
+                    :displayFirst="displayFirst"
+                    :idsNotPermittedInSearch="idsNotPermittedInSearch" />
             </div>
         </template>
         <footer
@@ -122,6 +123,10 @@ export default {
         view: {
             type: String,
             default: 'modal'
+        },
+        idsNotPermittedInSearch: {
+            type: Array,
+            default: null
         }
     },
     components: {List, SearchBar},
@@ -138,12 +143,17 @@ export default {
     },
     created: function() {
         this.sortBy = (this.$store.getters['editor/conceptMode'] === true || this.searchType === "Concept") ? "dcterms:title.keyword" : "name.keyword";
+        this.$store.commit('app/searchTerm', "");
+    },
+    beforeDestroy: function() {
+        this.$store.commit('app/searchTerm', "");
     },
     computed: {
         ...mapState({
             selectedCompetency: state => state.editor.selectedCompetency,
             framework: state => state.editor.framework,
-            queryParams: state => state.editor.queryParams
+            queryParams: state => state.editor.queryParams,
+            addingProperty: state => state.lode.addingProperty
         }),
         nameOfSelectedCompetency: function() {
             if (this.selectedCompetency && this.selectedCompetency.name) {
@@ -169,7 +179,7 @@ export default {
             if (this.queryParams && this.queryParams.filter != null) {
                 search += " AND (" + this.queryParams.filter + ")";
             }
-            if (this.showMine || (this.queryParams && this.$store.getters['editor/conceptMode'] === true && this.queryParams.show === "mine") ||
+            if (this.showMine || (this.queryParams && this.$store.getters['editor/conceptMode'] !== true && this.queryParams.show === "mine") ||
                 (this.queryParams && this.$store.getters['editor/conceptMode'] === true && this.queryParams.conceptShow === "mine")) {
                 if (EcIdentityManager.ids.length > 0) {
                     search += " AND (";
@@ -189,9 +199,14 @@ export default {
         paramObj: function() {
             let obj = {};
             obj.size = 20;
-            var order = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "asc" : "desc";
-            obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "long",  "missing" : "_last"}} ]';
-            if (EcIdentityManager.ids.length > 0 && this.queryParams && ((this.$store.getters['editor/conceptMode'] === true && this.queryParams.show === 'mine') ||
+            var searchTerm = this.$store.getters['app/searchTerm'];
+            if (!searchTerm || searchTerm.length === 0) {
+                var order = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "asc" : "desc";
+                obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "long",  "missing" : "_last"}} ]';
+            } else {
+                delete obj.sort;
+            }
+            if (EcIdentityManager.ids.length > 0 && this.queryParams && ((this.$store.getters['editor/conceptMode'] !== true && this.queryParams.show === 'mine') ||
                 (this.$store.getters['editor/conceptMode'] === true && this.queryParams.conceptShow === "mine"))) {
                 obj.ownership = 'me';
             }
@@ -221,9 +236,13 @@ export default {
         this.$store.commit('app/searchTerm', "");
         if (!this.copyOrLink && this.searchType === "Competency" && this.framework.competency) {
             for (var i = 0; i < this.framework.competency.length; i++) {
-                var comp = EcRepository.getBlocking(this.framework.competency[i]);
-                if (comp) {
-                    this.displayFirst.push(comp);
+                if (this.framework.competency[i] !== this.selectedCompetency.shortId()) {
+                    if (!this.idsNotPermittedInSearch || this.idsNotPermittedInSearch.length === 0 || !EcArray.has(this.idsNotPermittedInSearch, this.framework.competency[i])) {
+                        var comp = EcRepository.getBlocking(this.framework.competency[i]);
+                        if (comp) {
+                            this.displayFirst.push(comp);
+                        }
+                    }
                 }
             }
         }
@@ -618,7 +637,8 @@ export default {
 
 <style lang="scss">
     @import '@/scss/frameworks.scss';
-.search-modal, .modal.lode__thing-editing {
+.search-modal,
+.modal.lode__thing-editing {
     .breadcrumb {
         padding-left: .125rem;
     }
@@ -658,9 +678,10 @@ export default {
     .List {
         .list-ul {
             .list-ul__item {
-
                 padding: .5rem .25rem;
-
+                .search-selection__add-icon {
+                    visibility: hidden;
+                }
                 .search-selection__icon,
                 .search-selection__add-icon
                 {
@@ -673,9 +694,6 @@ export default {
                         height: 100%;
                         padding-right: 16px;
                     }
-                }
-                .search-selection__add-icon {
-                    visibility: hidden;
                 }
             }
             .list-ul__item:hover {

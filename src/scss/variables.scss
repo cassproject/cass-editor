@@ -29,6 +29,7 @@ $family-primary: 'Assistant',
 $family-secondary: 'Roboto Condensed',
 'sans-serif';
 
+$highlight: #feffb045;
 $black: $cass-black;
 $white: #ffffff;
 $light: $cass-light;
@@ -44,12 +45,12 @@ $dark:$cass-black;
 $text: #222222;
 
 
-$size-1: 1.4rem;
-$size-2: 1.3rem;
-$size-3: 1.2rem;
-$size-4: 1.1rem;
-$size-5: .9rem;
-$size-6: .8rem;
+$size-1: 2rem;
+$size-2: 1.75rem;
+$size-3: 1.5rem;
+$size-4: 1.25rem;
+$size-5: 1rem;
+$size-6: .85rem;
 $size-7: .7rem;
 
 
@@ -72,10 +73,10 @@ $subtitle-color: $black;
 $subtitle-family: $family-secondary;
 
 
-$one-dp:  0 1px 1px 0 rgba(0,0,0,0.14), 0 2px 1px -1px rgba(0,0,0,0.12), 0 1px 3px 0 rgba(0,0,0,0.20);
-$two-dp: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.20);
-$three-dp: 0 3px 4px 0 rgba(0,0,0,0.14), 0 3px 3px -2px rgba(0,0,0,0.12), 0 1px 8px 0 rgba(0,0,0,0.20);
-$four-dp: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.20);
+$one-dp: 0 1px 2px 0 rgba(0,0,0,0.10);
+$two-dp: 0 4px 8px 0 rgba(0,0,0,0.10);
+$three-dp: 	0 6px 12px 0 rgba(0,0,0,0.10);
+$four-dp: 	0 8px 16px 0 rgba(0,0,0,0.10);
 
 $border-radius: 4px;
 

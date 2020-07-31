@@ -14,3 +14,6 @@ pom\.xml\.versionsBackup
 \.project
 node_modules
 /dist/
+
+docs/.vuepress/dist/
+/public/docs/

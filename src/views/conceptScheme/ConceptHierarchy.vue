@@ -35,7 +35,7 @@
                 <div
                     v-else
                     class="icon is-vcentered">
-                    <i class="fa fa-circle is-size-7 has-text-light" />
+                    <i class="fa fa-circle is-size-6 has-text-light" />
                 </div>
                 <div
                     v-if="selectButtonText"
@@ -68,7 +68,7 @@
                             <i class="fa fa-plus-circle" />
                         </span>
                         <span>
-                            Add Concept
+                            {{ addConceptOrChildText }}
                         </span>
                     </div>
                     <div
@@ -82,13 +82,46 @@
                     </div>
                     <div
                         v-if="addingNode"
-                        @click="add(container.shortId(), null); addingNode = false;"
+                        @click="onClickCreateNew"
                         class="button is-outlined is-primary ">
                         <span class="icon">
                             <i class="fa fa-plus" />
                         </span>
                         <span>
                             create new
+                        </span>
+                    </div>
+                    <div
+                        v-if="view === 'framework' || view === 'concept'"
+                        :disabled="!canCopyOrCut"
+                        title="Copy competency"
+                        :class="canCopyOrCut ? 'is-primary' : 'is-disabled'"
+                        class="button is-outlined"
+                        @click="copyClick">
+                        <span class="icon">
+                            <i class="fa fa-copy" />
+                        </span>
+                    </div>
+                    <div
+                        v-if="view === 'framework' || view === 'concept'"
+                        title="Cut competency"
+                        :disabled="!canCopyOrCut"
+                        class="button is-outlined"
+                        :class="canCopyOrCut ? 'is-primary' : 'is-disabled'"
+                        @click="cutClick">
+                        <span class="icon">
+                            <i class="fas handle fa-cut" />
+                        </span>
+                    </div>
+                    <div
+                        v-if="view === 'framework' || view === 'concept'"
+                        :disabled="!canPaste"
+                        class="button is-outlined "
+                        @click="pasteClick"
+                        :class="canPaste ? 'is-primary' : 'is-disabled'"
+                        title="Paste competency">
+                        <span class="icon">
+                            <i class="fa fa-paste" />
                         </span>
                     </div>
                 </div>
@@ -100,11 +133,11 @@
                 <div class="buttons is-right">
                     <!-- import details options -->
                     <div
-                        class="buttons is-small is-right">
+                        class="buttons is-right">
                         <!-- cancel button -->
                         <div
                             @click="cancelImport"
-                            class=" button is-light is-small is-pulled-right is-dark is-outlined">
+                            class=" button is-light is-pulled-right is-dark is-outlined">
                             <span>
                                 Cancel
                             </span>
@@ -115,7 +148,7 @@
                         <!--  start over -->
                         <div
                             @click="$store.dispatch('app/clearImport')"
-                            class="button is-small is-dark is-outlined is-pulled-right">
+                            class="button is-dark is-outlined is-pulled-right">
                             <span>
                                 import again
                             </span>
@@ -126,7 +159,7 @@
                         <!-- open in editor -->
                         <div
                             @click="openFramework"
-                            class="button is-small is-dark is-outlined is-pulled-right">
+                            class="button is-dark is-outlined is-pulled-right">
                             <span>view in editor</span>
                             <span class="icon">
                                 <i class="fa fa-edit" />
@@ -134,7 +167,7 @@
                         </div>
                         <!--  home -->
                         <router-link
-                            class="button is-small is-primary is-outlined is -pulled-right"
+                            class="button is-primary is-outlined is -pulled-right"
                             to="/">
                             <span>
                                 Done
@@ -147,7 +180,6 @@
                 </div>
             </div>
         </div>
-        <hr>
         <template
             v-if="hierarchy">
             <draggable
@@ -250,7 +282,8 @@ export default {
             expanded: true,
             isDraggable: true,
             shiftKey: false,
-            arrowKey: null
+            arrowKey: null,
+            addConceptOrChildText: "Add Concept"
         };
     },
     components: {
@@ -259,6 +292,20 @@ export default {
     },
     mixins: [common],
     computed: {
+        canCopyOrCut: function() {
+            if (this.selectedArray && this.selectedArray.length === 1) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        canPaste: function() {
+            if ((this.$store.getters['editor/copyId'] !== null || this.$store.getters['editor/cutId'] !== null) && this.$store.getters['editor/nodeInFocus'] !== null) {
+                return true;
+            } else {
+                return false;
+            }
+        },
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];
         },
@@ -302,6 +349,11 @@ export default {
             } else {
                 this.multipleSelected = false;
             }
+            if (this.selectedArray.length === 1) {
+                this.addConceptOrChildText = "Add Child";
+            } else {
+                this.addConceptOrChildText = "Add Concept";
+            }
             this.$emit('selectedArray', this.selectedArray);
         },
         // Concepts can't just depend on fields on the container object like frameworks can for reactivity
@@ -331,6 +383,23 @@ export default {
         window.removeEventListener('keydown', this.keydown);
     },
     methods: {
+        cutClick: function() {
+            if (this.selectedArray && this.selectedArray.length === 1) {
+                this.$store.commit('editor/cutId', this.selectedArray[0]);
+            }
+            this.$store.commit('editor/copyId', null);
+            this.$store.commit('editor/paste', false);
+        },
+        copyClick: function() {
+            if (this.selectedArray && this.selectedArray.length === 1) {
+                this.$store.commit('editor/copyId', this.selectedArray[0]);
+            }
+            this.$store.commit('editor/cutId', null);
+            this.$store.commit('editor/paste', false);
+        },
+        pasteClick: function() {
+            this.$store.commit('editor/paste', true);
+        },
         keydown(e) {
             if (this.canEdit) {
                 if (e.shiftKey) {
@@ -678,6 +747,14 @@ export default {
             var f = EcConceptScheme.getBlocking(this.container.shortId());
             this.$store.commit('editor/framework', f);
             this.$router.push({name: "conceptScheme", params: {frameworkId: this.container.id}});
+        },
+        onClickCreateNew: function() {
+            let parent = this.container.shortId();
+            if (this.selectedArray.length === 1) {
+                parent = this.selectedArray[0];
+            }
+            this.add(parent, null);
+            this.addingNode = false;
         }
     }
 };

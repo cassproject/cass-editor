@@ -24,7 +24,7 @@
                             placeholder="search for person...">
                     </div>
                     <h4 class="header is-size-3">
-                        Available Member List
+                        {{ addMemberModalSubTitle }}
                     </h4>
                     <div class="table-container">
                         <table class="table is-hoverable is-fullwidth">
@@ -85,235 +85,280 @@
             </div>
         </div>
         <!-- ************************************** Content ************************************************ -->
-        <div class="section">
-            <div class="field">
-                <label class="label">Name: </label>
-                <div v-if="readOnly">
-                    {{ group.name }}
+        <div class="columns">
+            <div class="column is-3">
+                <nav :class="panelClass">
+                    <p class="panel-heading">
+                        Sections
+                    </p>
+                    <a
+                        class="panel-block"
+                        :class="{'is-active': tab === 'general'}"
+                        @click="tab ='general'">
+                        <span class="panel-icon">
+                            <i
+                                class="fas fa-list-alt"
+                                aria-hidden="true" />
+                        </span>
+                        General Details
+                    </a>
+                    <a
+                        class="panel-block"
+                        :class="{'is-active': tab === 'managers'}"
+                        @click="tab ='managers'">
+                        <span class="panel-icon">
+                            <i
+                                class="fas fa-list-alt"
+                                aria-hidden="true" />
+                        </span>
+                        Managers
+                    </a>
+                    <a
+                        :class="{'is-active': tab === 'members'}"
+                        class="panel-block"
+                        @click="tab = 'members'">
+                        <span class="panel-icon">
+                            <i
+                                class="fas fa-list-alt"
+                                aria-hidden="true" />
+                        </span>
+                        Members
+                    </a>
+                    <a
+                        class="panel-block"
+                        v-if="readOnly">
+                        <div
+                            class="buttons is-fullwidth is-right">
+                            <div
+                                class="button is-outlined is-primary"
+                                @click="$emit('back')">
+                                back
+                            </div>
+                        </div>
+                    </a>
+                    <div
+                        class="panel-block"
+                        v-if="!readOnly">
+                        <div
+                            class="button is-fullwidth is-outlined is-dark"
+                            @click="$emit('cancel')">
+                            <span class="icon">
+                                <i class="fa fa-arrow-left" />
+                            </span>
+                            <span>cancel</span>
+                        </div>
+                    </div>
+                    <div
+                        class="panel-block"
+                        v-if="!readOnly">
+                        <div
+                            class="button is-fullwidth  is-outlined is-primary"
+                            @click="validateCurrentGroupAndEmitSave">
+                            <span class="icon">
+                                <i class="fa fa-save" />
+                            </span><span>save user group</span>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+            <div class="column is-9">
+                <div
+                    class="section box px-4 py-4"
+                    v-if="tab === 'general'">
+                    <h3 class="is-size-3 title">
+                        General details
+                    </h3>
+                    <div class="field">
+                        <label class="label">Name: </label>
+                        <div v-if="readOnly">
+                            {{ group.name }}
+                        </div>
+                        <div
+                            div
+                            class="control"
+                            v-if="!readOnly">
+                            <input
+                                class="input"
+                                type="text"
+                                v-model="group.name">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Description: </label>
+                        <div v-if="readOnly">
+                            {{ group.description }}
+                        </div>
+                        <div
+                            class="control"
+                            v-if="!readOnly">
+                            <input
+                                class="input"
+                                type="text"
+                                v-model="group.description">
+                        </div>
+                    </div>
                 </div>
                 <div
-                    div
-                    class="control"
-                    v-if="!readOnly">
-                    <input
-                        class="input"
-                        type="text"
-                        v-model="group.name">
-                </div>
-            </div>
-            <div class="field">
-                <label class="label">Description: </label>
-                <div v-if="readOnly">
-                    {{ group.description }}
+                    class="section box py-4 px-4"
+                    v-if="tab === 'managers' || tab === 'general'">
+                    <h5 class="title is-size-3">
+                        Managers
+                        <button
+                            class="button is-pulled-right is-family-primary is-small is-outlined is-primary"
+                            v-if="!readOnly"
+                            @click="addManagers">
+                            <span class="icon">
+                                <i class="fa fa-user-plus" />
+                            </span>
+                            <span>
+                                add managers
+                            </span>
+                        </button>
+                    </h5>
+                    <p class="subtitle">
+                        Managers can add and remove members and other managers to the group.  Managers also share the owner and reader privileges assigned to the group.
+                    </p>
+                    <div class="table-container">
+                        <table class="table is-hoverable is-fullwidth">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        name
+                                    </th>
+                                    <th>
+                                        email
+                                    </th>
+                                    <th> reassign</th>
+                                    <th>remove</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    v-for="(mgr, mgrIdx) in localGroupManagers"
+                                    :key="mgrIdx">
+                                    <th>
+                                        {{ mgr.getName() }}
+                                    </th>
+                                    <td>
+                                        {{ mgr.email }}
+                                    </td>
+                                    <td>
+                                        <button
+                                            class="button is-outlined is-small is-primary"
+                                            v-if="!readOnly && !areAnyIdentitiesThisPerson(mgr)"
+                                            @click="moveManagerToUser(mgrIdx)">
+                                            reassign as member
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <div class="buttons is-centered">
+                                            <button
+                                                class="button is-outlined is-small is-danger"
+                                                v-if="!readOnly && !areAnyIdentitiesThisPerson(mgr)"
+                                                @click="removeManager(mgrIdx)">
+                                                <span class="icon">
+                                                    <i class="fa fa-trash" />
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <div
-                    class="control"
-                    v-if="!readOnly">
-                    <input
-                        class="input"
-                        type="text"
-                        v-model="group.description">
+                    class="section box py-4 px-4"
+                    v-if="tab === 'members' || tab === 'general'">
+                    <h5 class="title is-size-3">
+                        Members
+                        <button
+                            class="button is-family-primary is-small is-pulled-right is-outlined is-primary"
+                            v-if="!readOnly"
+                            @click="addUsers">
+                            <span class="icon">
+                                <i class="fa fa-user-plus" />
+                            </span>
+                            <span>
+                                add members
+                            </span>
+                        </button>
+                    </h5>
+                    <p class="subtitle">
+                        Members share the owner and reader privileges assigned to the group.
+                    </p>
+                    <div v-if="groupUsers.length === 0">
+                        <p class="help is-info">
+                            No members assigned to this group yet.
+                        </p>
+                    </div>
+                    <div
+                        class="table-container"
+                        v-if="groupUsers.length > 0">
+                        <table class="table is-hoverable is-fullwidth">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        name
+                                    </th>
+                                    <th>
+                                        email
+                                    </th>
+                                    <th>reassign</th>
+                                    <th>remove</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    v-for="(usr, usrIdx) in localGroupUsers"
+                                    :key="usrIdx">
+                                    <th>
+                                        {{ usr.getName() }}
+                                    </th>
+                                    <td>
+                                        {{ usr.email }}
+                                    </td>
+                                    <td>
+                                        <button
+                                            v-if="!readOnly && !areAnyIdentitiesThisPerson(usr)"
+                                            class="button is-outlined is-small is-primary"
+                                            @click="moveUserToManager(usrIdx)">
+                                            reassign as manager
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <div class="buttons is-centered">
+                                            <div
+                                                v-if="!readOnly && !areAnyIdentitiesThisPerson(usr)"
+                                                class="button is-outlined is-small is-danger"
+                                                @click="removeUser(usrIdx)">
+                                                <span class="icon">
+                                                    <i class="fa fa-trash" />
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- ************************************** Validation ************************************************ -->
+                    <div v-if="groupInvalid">
+                        <p>User Group is invalid:</p>
+                        <p v-if="groupNameInvalid">
+                            *User group name is required
+                        </p>
+                        <p v-if="groupDescriptionInvalid">
+                            *User group description is required
+                        </p>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="section">
-            <h5 class="header is-size-3">
-                Managers
-            </h5>
-            <p class="description">
-                Managers can read, edit, comment, delete, and manage user access to frameworks.
-            </p>
-            <div class="table-container">
-                <table class="table is-hoverable is-fullwidth">
-                    <thead>
-                        <tr>
-                            <th>
-                                name
-                            </th>
-                            <th>
-                                email
-                            </th>
-                            <th> reassign</th>
-                            <th>remove</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr
-                            v-for="(mgr, mgrIdx) in localGroupManagers"
-                            :key="mgrIdx">
-                            <th>
-                                {{ mgr.getName() }}
-                            </th>
-                            <td>
-                                {{ mgr.email }}
-                            </td>
-                            <td>
-                                <button
-                                    class="button is-outlined is-small is-primary"
-                                    v-if="!readOnly && !areAnyIdentitiesThisPerson(mgr)"
-                                    @click="moveManagerToUser(mgrIdx)">
-                                    reassign as user
-                                </button>
-                            </td>
-                            <td>
-                                <div class="buttons is-centered">
-                                    <button
-                                        class="button is-outlined is-small is-danger"
-                                        v-if="!readOnly && !areAnyIdentitiesThisPerson(mgr)"
-                                        @click="removeManager(mgrIdx)">
-                                        <span class="icon">
-                                            <i class="fa fa-trash" />
-                                        </span>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="buttons is-right">
-                <button
-                    class="button is-small is-outlined is-primary"
-                    v-if="!readOnly"
-                    @click="addManagers">
-                    <span class="icon">
-                        <i class="fa fa-user-plus" />
-                    </span>
-                    <span>
-                        add managers
-                    </span>
-                </button>
-            </div>
-        </div>
-        <div class="section">
-            <h5 class="header is-size-3">
-                Users
-            </h5>
-            <p class="description">
-                Readers can read, and comment on frameworks.
-            </p>
-            <div v-if="groupUsers.length === 0">
-                <p class="is-size-7">
-                    No users assigned to this group yet.
-                </p>
-            </div>
-            <div
-                class="table-container"
-                v-if="groupUsers.length > 0">
-                <table class="table is-hoverable is-fullwidth">
-                    <thead>
-                        <tr>
-                            <th>
-                                name
-                            </th>
-                            <th>
-                                email
-                            </th>
-                            <th>reassign</th>
-                            <th>remove</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr
-                            v-for="(usr, usrIdx) in localGroupUsers"
-                            :key="usrIdx">
-                            <th>
-                                {{ usr.getName() }}
-                            </th>
-                            <td>
-                                {{ usr.email }}
-                            </td>
-                            <td>
-                                <button
-                                    v-if="!readOnly && !areAnyIdentitiesThisPerson(usr)"
-                                    class="button is-outlined is-small is-primary"
-                                    @click="moveUserToManager(usrIdx)">
-                                    reassign as manager
-                                </button>
-                            </td>
-                            <td>
-                                <div class="buttons is-centered">
-                                    <div
-                                        v-if="!readOnly && !areAnyIdentitiesThisPerson(usr)"
-                                        class="button is-outlined is-small is-danger"
-                                        @click="removeUser(usrIdx)">
-                                        <span class="icon">
-                                            <i class="fa fa-trash" />
-                                        </span>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="buttons is-right">
-                <button
-                    class="button is-small is-outlined is-primary"
-                    v-if="!readOnly"
-                    @click="addUsers">
-                    <span class="icon">
-                        <i class="fa fa-user-plus" />
-                    </span>
-                    <span>
-                        add users
-                    </span>
-                </button>
-            </div>
-            <!-- ************************************** Validation ************************************************ -->
-            <div v-if="groupInvalid">
-                <p>User Group is invalid:</p>
-                <p v-if="groupNameInvalid">
-                    *User group name is required
-                </p>
-                <p v-if="groupDescriptionInvalid">
-                    *User group description is required
-                </p>
-            </div>
-        </div>
-        <!-- ************************************** Actions ************************************************ -->
-        <div class="section">
-            <div
-                class="buttons is-spaced"
-                v-if="!readOnly">
-                <button
-                    class="button is-outlined is-dark"
-                    @click="$emit('cancel')">
-                    <span class="icon">
-                        <i class="fa fa-times" />
-                    </span>
-                    <span>cancel</span>
-                </button>
-                <button
-                    class="button is-outlined is-primary"
-                    @click="validateCurrentGroupAndEmitSave">
-                    <span class="icon">
-                        <i class="fa fa-save" />
-                    </span>
-                    <span>
-                        save group
-                    </span>
-                </button>
-            </div>
-            <div v-else>
-                <button
-                    class="button is-outlined is-primary"
-                    @click="$emit('back')">
-                    <span class="icon">
-                        <i class="fa fa-arrow-left-alt" />
-                    </span>
-                    <span>
-                        back
-                    </span>
-                </button>
             </div>
         </div>
     </div>
 </template>
-
 <script>
 import {cassUtil} from '../../mixins/cassUtil';
-
 export default {
     mixins: [cassUtil],
     name: 'UserGroupDetails',
@@ -337,9 +382,12 @@ export default {
     },
     data: function() {
         return {
+            panelClass: 'panel',
+            tab: 'general',
             addMemberMode: '',
             showAddMemberModal: false,
             addMemberModalTitle: '',
+            addMemberModalSubTitle: '',
             selectedPersons: [],
             selectedPersonsFilter: '',
             localGroupManagers: this.groupManagers,
@@ -377,6 +425,7 @@ export default {
             this.selectedPersons = [];
             this.addMemberMode = '';
             this.addMemberModalTitle = '';
+            this.addMemberModalSubTitle = '';
             this.showAddMemberModal = false;
         },
         getPersonById(personId) {
@@ -400,13 +449,15 @@ export default {
             this.selectedPersons = [];
             this.addMemberMode = 'manager';
             this.addMemberModalTitle = 'Add Managers';
+            this.addMemberModalSubTitle = 'Available Managers';
             this.showAddMemberModal = true;
         },
         addUsers() {
             this.selectedPersonsFilter = '';
             this.selectedPersons = [];
             this.addMemberMode = 'user';
-            this.addMemberModalTitle = 'Add Users';
+            this.addMemberModalTitle = 'Add Members';
+            this.addMemberModalSubTitle = 'Available Members';
             this.showAddMemberModal = true;
         },
         removeManager(managerIdx) {
@@ -459,6 +510,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+    .panel {
+        top: 16px;
+        position: sticky;
+    }
     h3 {
         font-size: 2rem;
         padding-bottom: 1rem;

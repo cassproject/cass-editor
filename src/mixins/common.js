@@ -3,38 +3,50 @@ import dateFormat from 'dateformat';
 export default {
     computed: {
         ctids: function() {
+            let framework = this.framework;
+            if (!framework) {
+                framework = this.$store.getters['editor/framework'];
+            }
             if (this.queryParams.ceasnDataFields !== "true") {
                 return null;
             }
             var obj = {};
-            obj[this.framework.shortId()] = [{"@value": this.getCTID(this.framework.shortId())}];
-            if (this.framework.competency) {
-                for (var i = 0; i < this.framework.competency.length; i++) {
-                    obj[this.framework.competency[i]] = [{"@value": this.getCTID(this.framework.competency[i])}];
+            obj[framework.shortId()] = [{"@value": this.getCTID(framework.shortId())}];
+            if (framework.competency) {
+                for (var i = 0; i < framework.competency.length; i++) {
+                    obj[framework.competency[i]] = [{"@value": this.getCTID(framework.competency[i])}];
                 }
             }
             return obj;
         },
         registryURLs: function() {
+            let framework = this.framework;
+            if (!framework) {
+                framework = this.$store.getters['editor/framework'];
+            }
             if (this.queryParams.ceasnDataFields !== "true") {
                 return null;
             }
             var obj = {};
-            obj[this.framework.shortId()] = [{"@id": this.ceasnRegistryUriTransform(this.framework.shortId())}];
-            if (this.framework.competency) {
-                for (var i = 0; i < this.framework.competency.length; i++) {
-                    obj[this.framework.competency[i]] = [{"@id": this.ceasnRegistryUriTransform(this.framework.competency[i])}];
+            obj[framework.shortId()] = [{"@id": this.ceasnRegistryUriTransform(framework.shortId())}];
+            if (framework.competency) {
+                for (var i = 0; i < framework.competency.length; i++) {
+                    obj[framework.competency[i]] = [{"@id": this.ceasnRegistryUriTransform(framework.competency[i])}];
                 }
             }
             return obj;
         },
         conceptCtids: function() {
+            let framework = this.framework;
+            if (!framework) {
+                framework = this.$store.getters['editor/framework'];
+            }
             var me = this;
             if (this.queryParams.ceasnDataFields !== "true") {
                 return null;
             }
             var obj = {};
-            obj[this.framework.shortId()] = [{"@value": this.getCTID(this.framework.shortId())}];
+            obj[framework.shortId()] = [{"@value": this.getCTID(framework.shortId())}];
             var subCtids = function(ary) {
                 for (var i = 0; i < ary.length; i++) {
                     obj[ary[i]] = [{"@value": me.getCTID(ary[i])}];
@@ -44,12 +56,16 @@ export default {
                     }
                 }
             };
-            if (this.framework["skos:hasTopConcept"]) {
-                subCtids(this.framework["skos:hasTopConcept"]);
+            if (framework["skos:hasTopConcept"]) {
+                subCtids(framework["skos:hasTopConcept"]);
             }
             return obj;
         },
         conceptRegistryURLs: function() {
+            let framework = this.framework;
+            if (!framework) {
+                framework = this.$store.getters['editor/framework'];
+            }
             var me = this;
             if (this.queryParams.ceasnDataFields !== "true") {
                 return null;
@@ -64,8 +80,8 @@ export default {
                     }
                 }
             };
-            if (this.framework["skos:hasTopConcept"]) {
-                subURLs(this.framework["skos:hasTopConcept"]);
+            if (framework["skos:hasTopConcept"]) {
+                subURLs(framework["skos:hasTopConcept"]);
             }
             return obj;
         }
@@ -371,6 +387,7 @@ export default {
             var initialLevels = this.framework.level ? this.framework.level.slice() : null;
             var frameworkChanged = false;
             var edits = [];
+            var me = this;
             for (var i = 0; i < allOptions.length; i++) {
                 if (!this.framework.level) {
                     this.framework.level = [];
@@ -385,7 +402,9 @@ export default {
                     if (level.competency.indexOf(competencyId) === -1) {
                         level.competency.push(competencyId);
                         edits.push({operation: "update", id: level.shortId(), fieldChanged: ["competency"], initialValue: [initialComp], changedValue: [level.competency]});
-                        this.repo.saveTo(level, function() {}, appError);
+                        this.repo.saveTo(level, function() {
+                            me.$store.commit('editor/refreshLevels', true);
+                        }, appError);
                     }
                     if (this.framework.level.indexOf(level.shortId()) === -1) {
                         this.framework.addLevel(level.shortId());
@@ -398,7 +417,9 @@ export default {
                     if (level.competency && level.competency.indexOf(competencyId) !== -1) {
                         EcArray.setRemove(level.competency, competencyId);
                         edits.push({operation: "update", id: level.shortId(), fieldChanged: ["competency"], initialValue: [initialComp], changedValue: [level.competency]});
-                        this.repo.saveTo(level, function() {}, appError);
+                        this.repo.saveTo(level, function() {
+                            me.$store.commit('editor/refreshLevels', true);
+                        }, appError);
                     }
                     // If level doesn't have any competencies attached, remove it from the framework.
                     if ((!level.competency || (level.competency && level.competency.length === 0)) && this.framework.level.indexOf(level.shortId()) !== -1) {
@@ -414,7 +435,6 @@ export default {
             this.$store.commit('editor/addEditsToUndo', edits);
             this.$store.commit('lode/setAddingChecked', []);
             this.$store.commit('lode/setIsAddingProperty', false);
-            this.$store.commit('editor/refreshLevels', true);
         },
         saveFramework: function() {
             this.framework["schema:dateModified"] = new Date().toISOString();

@@ -20,7 +20,8 @@
                     User Groups
                 </h3>
                 <p class="description">
-                    User groups are combinations of users and access rules grouped under a name.
+                    User groups provide the capability to assign multiple users the ability to assume a single shared ‘identity’.
+                    Members of a group are granted access to any CaSS object that the group has been explicitly assigned.
                     These grouped rules can be applied at the configuration level in the
                     configuration management screen or at the framework level in the framework editor.
                 </p>
@@ -67,7 +68,7 @@
                 </div>
                 <div class="buttons is-right">
                     <div
-                        class="button is-small is-outlined is-primary"
+                        class="button is-outlined is-primary"
                         @click="createNewUserGroup"
                         :disabled="!amLoggedIn"
                         :title="getCreateUserGroupButtonTitle">
@@ -81,11 +82,6 @@
                 </div>
             </div>
             <div v-if="userGroupViewMode.equals('detail')">
-                <div class="section">
-                    <h4 class="header is-size-3">
-                        User Group Details
-                    </h4>
-                </div>
                 <user-group-details
                     :group="currentUserGroup"
                     :personList="personList"

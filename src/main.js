@@ -9,6 +9,7 @@ import Modal from './plugins/modalPlugin.js';
 import Clipboard from 'v-clipboard';
 import store from './store/index.js';
 import InfiniteLoading from 'vue-infinite-loading';
+
 var VueScrollTo = require('vue-scrollto');
 require("cassproject");
 

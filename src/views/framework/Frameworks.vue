@@ -4,10 +4,94 @@
         class="framework-list-page">
         <RightAside v-if="showRightAside" />
         <!-- search field -->
-        <div class="section is-medium">
-            <SearchBar
-                filterSet="all"
-                :searchType="type === 'ConceptScheme' ? 'concept scheme' : 'framework'" />
+        <div :class="parentObjectClass">
+            <div class="section">
+                <div class="container">
+                    <div class="columns is-gapless is-paddingless">
+                        <div class="column is-narrow">
+                            <h1
+                                class="title"
+                                v-if="conceptMode">
+                                {{ conceptSchemeString }}
+                            </h1>
+                            <h1
+                                class="title"
+                                v-else>
+                                Frameworks
+                            </h1>
+                            <h2 class="subtitle is-size-5">
+                                List of available
+                                <span v-if="conceptMode && queryParams.ceasnDataFields === 'true'">concepts</span>
+                                <span v-else-if="conceptMode">taxonomies.</span>
+                                <p
+                                    class="is-size-6"
+                                    v-if="conceptMode && queryParams.ceasnDataFields !== 'true'">
+                                    <a
+                                        class="custom-link external is-size-6"
+                                        title="Wikipedia: Taxonomy (general)"
+                                        href="https://en.wikipedia.org/wiki/Taxonomy_(general)"
+                                        target="_blank">Taxonomies
+                                    </a>
+                                    can be used to categorize and label competencies in frameworks.
+                                </p>
+                                <span v-if="!conceptMode">frameworks</span>
+                            </h2>
+                        </div>
+                        <div class="column">
+                            <div
+                                v-if="conceptMode"
+                                class="buttons is-right concept-buttons">
+                                <div
+                                    @click="$emit('createNewConceptScheme')"
+                                    class="button is-outlined is-primary">
+                                    <span class="icon">
+                                        <i class="fa fa-plus" />
+                                    </span><span>new {{ conceptSchemeStringForButton }}</span>
+                                </div>
+                                <router-link
+                                    to="/import"
+                                    @click.native="$store.commit('editor/conceptMode', true); $store.dispatch('app/clearImport');"
+                                    class="button is-outlined is-primary">
+                                    <span class="icon">
+                                        <i class="fa fa-upload" />
+                                    </span><span>import {{ conceptSchemeStringForButton }}</span>
+                                </router-link>
+                            </div>
+                            <div
+                                v-else
+                                class="buttons is-right frameworks-buttons">
+                                <div
+                                    @click="$emit('createNewFramework')"
+                                    class="button is-outlined is-primary">
+                                    <span class="icon">
+                                        <i class="fa fa-plus" />
+                                    </span><span>create new</span>
+                                </div>
+                                <router-link
+                                    to="/import"
+                                    @click.native="$store.commit('editor/conceptMode', false); $store.dispatch('app/clearImport');"
+                                    class="button is-outlined is-primary">
+                                    <span class="icon">
+                                        <i class="fa fa-upload" />
+                                    </span><span>import framework</span>
+                                </router-link>
+                                <router-link
+                                    to="/crosswalk"
+                                    class="button is-outlined is-primary">
+                                    <span class="icon">
+                                        <i class="fa fa-network-wired" />
+                                    </span><span>crosswalk</span>
+                                </router-link>
+                            </div>
+                        </div>
+                    </div>
+                    <SearchBar
+                        filterSet="all"
+                        :searchType="type === 'ConceptScheme' ? 'concept scheme' : 'framework'" />
+                </div>
+            </div>
+        </div>
+        <div class="section">
             <div
                 v-if="!conceptMode"
                 class="container is-fluid show-only-mine">
@@ -38,89 +122,104 @@
                     <!-- TO DO move these template items to the "actions" right side area -->
                     <template
                         v-slot:frameworkTags="slotProps">
-                        <span
-                            class="framework-list-item__details is-light"
-                            v-if="!conceptMode && slotProps.item.type === 'Framework'">
-                            <span>
-                                Items:
+                        <span class="framework-details has-text-weight-light family-primary is-size-7">
+                            <span
+                                class="framework-details__item"
+                                v-if="!conceptMode && slotProps.item.type === 'Framework'">
+                                <span class="has-text-weight-medium">
+                                    Items:
+                                </span>
+                                <span class="has-text-weight-light">
+                                    {{ slotProps.item.competency ? slotProps.item.competency.length : 0 }}
+                                </span>
                             </span>
-                            <span>
-                                {{ slotProps.item.competency ? slotProps.item.competency.length : 0 }}
+                            <span
+                                class="framework-details__item"
+                                v-if="slotProps.item.Published"
+                                :title="slotProps.item.Published">
+                                <span class="has-text-weight-medium">
+                                    Published:
+                                </span>
+                                <span class="has-text-weight-light" />
                             </span>
-                        </span>
-                        <span
-                            class="framework-list-item__details"
-                            v-if="slotProps.item.Published"
-                            :title="slotProps.item.Published">
-                            <span class="details-label">
-                                Published:
+                            <span
+                                class="framework-details__item"
+                                v-if="slotProps.item.Approved"
+                                :title="slotProps.item.Approved">
+                                <span class="has-texte-weight-medium">
+                                    Approved:
+                                </span>
+                                <span class="has-text-weight-light" />
                             </span>
-                            <span class="details-value" />
-                        </span>
-                        <span
-                            class="framework-list-item__details"
-                            v-if="slotProps.item.Approved"
-                            :title="slotProps.item.Approved">
-                            <span class="details-label">
-                                Approved:
+                            <span
+                                class="framework-details__item"
+                                v-if="slotProps.item['schema:dateCreated']"
+                                :title="new Date(slotProps.item['schema:dateCreated'])">
+                                <span class="has-text-weight-medium">
+                                    Created:
+                                </span>
+                                <span class="has-text-weight-light">
+                                    &nbsp; {{ $moment(new Date(slotProps.item['schema:dateCreated'])).fromNow() }}
+                                </span>
                             </span>
-                            <span class="details-value" />
-                        </span>
-                        <span
-                            class="framework-list-item__details"
-                            v-if="slotProps.item['schema:dateCreated']"
-                            :title="new Date(slotProps.item['schema:dateCreated'])">
-                            <span class="details-label">
-                                Created:
+                            <span
+                                class="framework-details__item"
+                                v-if="slotProps.item.getTimestamp()"
+                                :title="new Date(slotProps.item.getTimestamp())">
+                                <span class="has-text-weight-medium">
+                                    Last modified:
+                                </span>
+                                <span class="has-text-weight-light">
+                                    &nbsp; {{ $moment(slotProps.item.getTimestamp()).fromNow() }}
+                                </span>
                             </span>
-                            <span class="details-value">
-                                {{ $moment(slotProps.item['schema:dateCreated']).fromNow() }}
+                            <span
+                                class="framework-details__item"
+                                v-else-if="slotProps.item['schema:dateModified']"
+                                :title="new Date(slotProps.item['schema:dateModified'])">
+                                <span class="has-text-weight-medium">
+                                    Last modified:
+                                </span>
+                                <span class="has-text-weight-light">
+                                    {{ $moment(new Date(slotProps.item['schema:dateModified'])).fromNow() }}
+                                </span>
                             </span>
-                        </span>
-                        <span
-                            class="framework-list-item__details"
-                            v-if="slotProps.item.getTimestamp()"
-                            :title="new Date(slotProps.item.getTimestamp())">
-                            <span class="details-label">
-                                Last modified:
+                            <span
+                                class="framework-details__item"
+                                v-if="slotProps.item['ceasn:publisherName'] && getName(slotProps.item['ceasn:publisherName'])">
+                                <span class="has-text-weight-medium">
+                                    Publisher:
+                                </span>
+                                <span class="has-text-weight-light">
+                                    {{ getName(slotProps.item['ceasn:publisherName']) }}
+                                </span>
                             </span>
-                            <span class="details-value">
-                                {{ $moment(slotProps.item.getTimestamp()).fromNow() }}
+                            <span
+                                class="framework-details__item"
+                                v-else-if="slotProps.item['schema:publisher'] && getName(slotProps.item['schema:publisher'])">
+                                <span class="has-text-weight-medium">
+                                    Publisher:
+                                </span>
+                                <span>
+                                    {{ getName(slotProps.item['schema:publisher']) }}
+                                </span>
                             </span>
-                        </span>
-                        <span
-                            class="framework-list-item__details"
-                            v-else-if="slotProps.item['schema:dateModified']"
-                            :title="new Date(slotProps.item['schema:dateModified'])">
-                            <span class="details-label">
-                                Last modified:
+                            <span
+                                class=""
+                                v-else-if="slotProps.item['schema:creator'] && getName(slotProps.item['schema:creator'])">
+                                <span class="has-text-weight-medium">
+                                    Creator
+                                </span>
+                                <span>
+                                    {{ getName(slotProps.item['schema:creator']) }}
+                                </span>
                             </span>
-                            <span class="details-value">
-                                {{ $moment(slotProps.item['schema:dateModified']).fromNow() }}
-                            </span>
-                        </span>
-                        <span
-                            class="framework-list-item__details"
-                            v-if="slotProps.item['ceasn:publisherName'] && getName(slotProps.item['ceasn:publisherName'])">
-                            <span class="details-value">
-                                {{ getName(slotProps.item['ceasn:publisherName']) }}
-                            </span>
-                        </span>
-                        <span
-                            class="framework-list-item__details"
-                            v-else-if="slotProps.item['schema:publisher'] && getName(slotProps.item['schema:publisher'])">
-                            {{ getName(slotProps.item['schema:publisher']) }}
-                        </span>
-                        <span
-                            class="framework-list-item__details"
-                            v-else-if="slotProps.item['schema:creator'] && getName(slotProps.item['schema:creator'])">
-                            {{ getName(slotProps.item['schema:creator']) }}
-                        </span>
-                        <span
-                            class="framework-list-item__details"
-                            v-if="canEditItem(slotProps.item)">
-                            <span class="details-label">
-                                Editable
+                            <span
+                                class="framework-details__item"
+                                v-if="canEditItem(slotProps.item) && queryParams.view !== 'true'">
+                                <span class="has-text-weight-medium">
+                                    Editable
+                                </span>
                             </span>
                         </span>
                     </template>
@@ -130,6 +229,7 @@
     </div>
 </template>
 <script>
+import debounce from 'lodash/debounce';
 import List from '@/lode/components/lode/List.vue';
 import RightAside from '@/components/framework/RightAside.vue';
 import common from '@/mixins/common.js';
@@ -144,6 +244,7 @@ export default {
             showNotMine: false,
             filterByConfig: false,
             numIdentities: EcIdentityManager.ids.length,
+            parentObjectClass: 'frameworks-sticky',
             sortBy: null,
             defaultConfig: ""
         };
@@ -156,6 +257,20 @@ export default {
         this.setDefaultConfig();
     },
     computed: {
+        conceptSchemeString: function() {
+            if (this.queryParams.ceasnDataFields === 'true') {
+                return 'Concept Schemes';
+            } else {
+                return "Taxonomies";
+            }
+        },
+        conceptSchemeStringForButton: function() {
+            if (this.queryParams.ceasnDataFields === 'true') {
+                return 'Concept Scheme';
+            } else {
+                return "Taxonomy";
+            }
+        },
         showRightAside: function() {
             return this.$store.getters['app/showRightAside'];
         },
@@ -293,6 +408,15 @@ export default {
                 }, function() {
                 });
             }
+        },
+        scrollFunction(e) {
+            let documentObject = document.getElementsByClassName('frameworks-sticky');
+            let scrollValue = e.target.scrollTop;
+            if (scrollValue !== 0) {
+                this.parentObjectClass = 'frameworks-sticky scrolled';
+            } else {
+                this.parentObjectClass = 'frameworks-sticky';
+            }
         }
     },
     mounted: function() {
@@ -316,6 +440,8 @@ export default {
                 this.filterByConfig = true;
             }
         }
+        let documentBody = document.getElementById('frameworks');
+        documentBody.addEventListener('scroll', debounce(this.scrollFunction, 100, {'leading': true}));
     },
     watch: {
         sortResults: function() {
@@ -349,5 +475,43 @@ export default {
 
 <style lang="scss">
     @import './../../scss/frameworks.scss';
-
+.frameworks-sticky {
+    position: sticky;
+    background-color: $white;
+    top: 0px;
+    z-index: 9;
+    width: 100%;
+    transition: height .1s;
+    position: -webkit-sticky;
+    border-bottom: solid 1px rgba($dark, .3);
+}
+.frameworks-sticky.scrolled {
+    z-index: 8;
+    height: 136px;
+    top: 0;
+    overflow: hidden;
+    .title {
+        display: none;
+    }
+    .subtitle {
+        display: none;
+    }
+    .frameworks-buttons, .concept-buttons {
+        display: none;
+    }
+}
+.framework-details {
+    .framework-details__item {
+        border-right: 1px solid rgba($dark, .3);
+        padding: 0rem .25rem;
+    }
+    .framework-details__item:first-of-type {
+        border-right: 1px solid rgba($dark, .3);
+        padding: 0rem .25rem 0rem 0rem;
+    }
+    .framework-details__item:last-of-type {
+        border-right: 0px solid rgba($dark, .3);
+        padding: 0rem .25rem 0rem .25rem;
+    }
+}
 </style>

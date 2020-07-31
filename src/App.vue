@@ -11,6 +11,8 @@
             @sideBarEvent="onSidebarEvent"
             name="topbar" /> -->
         <router-view
+            @createNewFramework="createNewFramework"
+            @createNewConceptScheme="createNewConceptScheme"
             :class="[{ 'clear-side-bar': showSideNav}, { 'clear-narrow-side-bar': !showSideNav}, {'clear-right-aside': showRightAside}]" />
         <router-view
             :showSideNav="showSideNav"
@@ -386,7 +388,11 @@ export default {
             if (EcIdentityManager.ids.length > 0) {
                 framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
             }
-            framework["dcterms:title"] = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Concept Scheme"};
+            let name = "New Taxonomy";
+            if (this.queryParams.ceasnDataFields === 'true') {
+                name = "New Concept Scheme";
+            }
+            framework["dcterms:title"] = {"@language": this.$store.state.editor.defaultLanguage, "@value": name};
             framework["schema:dateCreated"] = new Date().toISOString();
             framework["schema:dateModified"] = new Date().toISOString();
             this.$store.commit('editor/newFramework', framework.shortId());
@@ -1111,7 +1117,7 @@ export default {
 </script>
 
 
-<style scoped lang="scss">
+<style lang="scss">
  @import './scss/variables.scss';
 .pagesFull {
     margin-top:40px;
@@ -1128,16 +1134,9 @@ export default {
     #app-content {
         height: 100%;
     }
-    .clear-side-bar {
-        margin-left: 300px;
-    }
     .clear-narrow-side-bar {
         margin-left: 4rem;
     }
-    .clear-right-aside {
-        margin-right: 340px;
-    }
-
 
     .menu {
         overflow-y: scroll;

@@ -4,18 +4,33 @@
         :class="{'is-narrow': !showSideNav}"
         class="menu has-background-primary has-text-white">
         <div
-            class="menu-label has-text-white is-size-3">
+            class="">
+            <router-link
+                v-if="queryParams.ceasnDataFields !== 'true'"
+                to="/">
+                <img
+                    v-if="showSideNav"
+                    class="cass-logo"
+                    :src="casslogo">
+                <img
+                    v-else
+                    class="cass-logo-square"
+                    :src="casslogoSquare">
+            </router-link>
             <div
                 v-if="showSideNav"
                 class="icon is-pulled-right"
                 @click="$store.commit('app/closeSideNav')">
                 <i class="fa fa-times" />
             </div>
+        </div>
+        <div
+            class="menu-label has-text-white is-size-3">
             <div
-                v-else
+                v-if="!showSideNav"
                 class="buttons is-centered"
                 @click="$store.commit('app/showSideNav')">
-                <div class="button is-text has-text-white">
+                <div class="button is-outlined is-white">
                     <span class="icon icon has-text-centered">
                         <i class="fa fa-bars has-text-centered" />
                     </span>
@@ -121,7 +136,7 @@
                 <a>
                     <span class="icon">
                         <i class="fa fa-plus" />
-                    </span><span v-if="showSideNav"> Framework</span></a>
+                    </span><span v-if="showSideNav">New framework</span></a>
             </li>
             <!-- hidding this for now -->
             <li
@@ -131,7 +146,7 @@
                     <span class="icon">
                         <i class="fa fa-network-wired" />
                     </span>
-                    <span v-if="showSideNav"> Crosswalk</span>
+                    <span v-if="showSideNav"> Crosswalk Frameworks</span>
                 </router-link>
             </li>
             <li
@@ -142,7 +157,9 @@
                     @click.native="$store.commit('editor/conceptMode', false); $store.dispatch('app/clearImport');">
                     <span class="icon">
                         <i class="fa fa-upload" />
-                    </span><span v-if="showSideNav">Import</span>
+                    </span><span v-if="showSideNav">
+                        Import Framework
+                    </span>
                 </router-link>
             </li>
         </ul>
@@ -150,7 +167,8 @@
         <div
             v-if="showSideNav"
             class="menu-label has-text-weight-bold">
-            Concept Schemes
+            <span v-if="queryParams.ceasnDataFields === 'true'">Concept Schemes</span>
+            <span v-else>Taxonomy</span>
         </div>
         <ul
             class="menu-list">
@@ -159,7 +177,12 @@
                     <span class="icon">
                         <i class="fa fa-layer-group" />
                     </span>
-                    <span v-if="showSideNav">Concepts</span>
+                    <span v-if="showSideNav && queryParams.ceasnDataFields === 'true'">
+                        Concepts
+                    </span>
+                    <span v-else-if="showSideNav">
+                        Taxonomies
+                    </span>
                 </router-link>
             </li>
             <li
@@ -169,7 +192,17 @@
                 <a>
                     <span class="icon">
                         <i class="fa fa-plus" />
-                    </span>Concept Scheme</a>
+                    </span>
+                    <span>
+                        New
+                        <span v-if="showSideNav && queryParams.ceasnDataFields === 'true'">
+                            Concept Scheme
+                        </span>
+                        <span v-else-if="showSideNav">
+                            Taxonomy
+                        </span>
+                    </span>
+                </a>
             </li>
             <li
                 class="has-text-white"
@@ -181,6 +214,12 @@
                         <i class="fa fa-upload" />
                     </span>
                     Import
+                    <span v-if="showSideNav && queryParams.ceasnDataFields === 'true'">
+                        Concept Scheme
+                    </span>
+                    <span v-else-if="showSideNav">
+                        Taxonomy
+                    </span>
                 </router-link>
             </li>
         </ul>
@@ -212,6 +251,8 @@
 
 <script>
 import {mapState} from 'vuex';
+import casslogo from '@/assets/cass-logo-white.svg';
+import casslogoSquare from '@/assets/cass-logo-square.png';
 import {cassUtil} from './../mixins/cassUtil';
 export default {
     name: 'SideNav',
@@ -226,6 +267,8 @@ export default {
     },
     data() {
         return {
+            casslogo: casslogo,
+            casslogoSquare: casslogoSquare,
             serverUrl: null,
             url: null
         };
@@ -244,7 +287,8 @@ export default {
             crosswalkEnabled: state => state.featuresEnabled.crosswalkEnabled,
             userManagementEnabled: state => state.featuresEnabled.userManagementEnabled,
             configurationsEnabled: state => state.featuresEnabled.configurationsEnabled,
-            loginEnabled: state => state.featuresEnabled.loginEnabled
+            loginEnabled: state => state.featuresEnabled.loginEnabled,
+            queryParams: state => state.editor.queryParams
         }),
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];
@@ -276,9 +320,23 @@ export default {
 };
 </script>
 <style lang="scss">
+.cass-logo {
+    max-width: 100px;
+    display: inline;
+    margin: auto;
+    width: 100%;
+    padding: 0rem .5rem;
+}
+.cass-logo-square {
+    max-width: 100px;
+    display: block;
+    margin: auto;
+    width: 100%;
+    padding: .5rem .5rem;
+}
 #app-side-nav-bar {
     position: fixed;
-    z-index: 2;
+    z-index: 12;
     top: 0;
     left:0;
     height: calc(100vh);
@@ -303,6 +361,7 @@ export default {
         display: block;
         a {
             padding: .5em !important;
+            text-align: center;
         }
     }
 }
