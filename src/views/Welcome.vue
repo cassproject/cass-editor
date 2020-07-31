@@ -212,6 +212,7 @@
                                 :href="baseRepoUrl + 'cass-vlrc'"
                                 target="_blank">Dashboards</a>
                         </li>
+                        <!--
                         <li>
                             <a
                                 class="custom-link external"
@@ -230,6 +231,7 @@
                                 :href="baseRepoUrl + 'cass-viewer'"
                                 target="_blank">Framework Explorer</a>
                         </li>
+                        -->
                     </ul>
                     <h2 class="header pt-4 has-text-weight-bold is-size-5">
                         Get in touch
