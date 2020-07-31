@@ -2,11 +2,11 @@
 home: true
 title: CaSS Authoring Tools
 description: Documentation for CaSS Authoring Tools open source tools for authoring and managing competency frameworks.
-heroImage: docs/cass-logo.png
+heroImage: /docs/cass-logo.png
 heroText: CaSS Authoring Tools
 tagline: A collaborative interface for managing your competency frameworks.
 actionText: Get Started →
-actionLink: /installation/
+actionLink: /guide/
 features:
 - title: Collaborate with your team
   details: CaSS Authoring Tools supports user and group access to your authored competency frameworks.

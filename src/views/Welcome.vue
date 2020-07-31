@@ -98,21 +98,21 @@
                         <li>
                             <a
                                 class="custom-link external"
-                                href=""
+                                href="/docs/framework-properties/"
                                 target="_blank">Framework properties documentation
                             </a>
                         </li>
                         <li>
                             <a
                                 class="custom-link external"
-                                href=""
+                                href="/docs/competency-properties/"
                                 target="_blank">
                                 Competency properties documentation</a>
                         </li>
                         <li>
                             <router-link
                                 class="custom-link external"
-                                href=""
+                                href="/docs/configuration/"
                                 target="_blank">
                                 Configuration Guide
                             </router-link>
@@ -120,7 +120,7 @@
                         <li>
                             <a
                                 class="custom-link external"
-                                href=""
+                                href="/docs/users-and-groups/"
                                 target="_blank">
                                 User groups documentation</a>
                         </li>
@@ -134,13 +134,13 @@
                         <li>
                             <a
                                 class="custom-link external"
-                                href=""
+                                href="https://adlnet.gov/resources/publications/2020/03/Competency-Framework-Development-Process-Report/"
                                 target="_blank">Authoring Report</a>
                         </li>
                         <li>
                             <a
                                 class="custom-link external"
-                                href=""
+                                href="https://cassproject.org"
                                 target="_blank">cassproject.org</a>
                         </li>
                         <li>
@@ -164,7 +164,7 @@
                         <li>
                             <a
                                 class="custom-link external"
-                                href=""
+                                href="https://adlnet.gov/"
                                 target="_blank">Advanced Distributed Learning Initiative</a>
                         </li>
                     </ul>
@@ -229,7 +229,7 @@
                         <li>
                             <a
                                 class="custom-link external"
-                                href=""
+                                href="https://docs.google.com/a/eduworks.com/forms/viewform?bc=transparent&embedded=true&f=Arial%252C%2BVerdana%252C%2Bsans-serif&hl=en&htc=%2523666666&id=1BMaboapV0IaS8iGnCJut2obPZ9y3CWkxXuvy-7krcgE&lc=%2523003965&pli=1&tc=%2523444444&ttl=0"
                                 target="_blank">Join the Slack Channel</a>
                         </li>
                         <li>
