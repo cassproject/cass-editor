@@ -99,7 +99,7 @@
                             <a
                                 class="custom-link external"
                                 href="/docs/framework-properties/"
-                                target="_blank">Framework properties documentation
+                                target="_blank">Framework properties
                             </a>
                         </li>
                         <li>
@@ -107,14 +107,14 @@
                                 class="custom-link external"
                                 href="/docs/competency-properties/"
                                 target="_blank">
-                                Competency properties documentation</a>
+                                Competency properties</a>
                         </li>
                         <li>
                             <router-link
                                 class="custom-link external"
                                 href="/docs/configuration/"
                                 target="_blank">
-                                Configuration Guide
+                                Configuration
                             </router-link>
                         </li>
                         <li>
@@ -122,7 +122,7 @@
                                 class="custom-link external"
                                 href="/docs/users-and-groups/"
                                 target="_blank">
-                                User groups documentation</a>
+                                User groups</a>
                         </li>
                     </ul>
 
@@ -194,7 +194,7 @@
 
 
                     <h2 class="header pt-4 has-text-weight-bold is-size-5">
-                        Legacy Demo Applications Using CaSS
+                        Legacy Demo CaSS Applications
                     </h2>
                     <ul>
                         <li>
