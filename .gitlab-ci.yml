@@ -57,6 +57,7 @@ buildQA:
 
   - npm install
   - npm run lint
+  - npm run docs:build
   - npm run build
   artifacts:
     paths:
