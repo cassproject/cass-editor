@@ -143,11 +143,6 @@ export default new Router({
             path: '/500',
             name: 'InternalError',
             component: () => import('./views/InternalError.vue')
-        },
-        {
-            path: '/*',
-            name: 'NotFound',
-            component: () => import('./views/NotFound.vue')
         }
     ]
 });
