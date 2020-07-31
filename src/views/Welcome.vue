@@ -110,12 +110,11 @@
                                 Competency properties</a>
                         </li>
                         <li>
-                            <router-link
+                            <a
                                 class="custom-link external"
                                 href="/docs/configuration/"
                                 target="_blank">
-                                Configuration
-                            </router-link>
+                                Configuration</a>
                         </li>
                         <li>
                             <a
@@ -170,24 +169,34 @@
                     </ul>
                     <h2 class="header pt-4  has-text-weight-bold is-size-5">
                         Import Example Frameworks
+                        <span
+                            class="icon is-small"
+                            v-if="importing">
+                            <i class="fa fa-spinner fa-pulse" />
+                        </span>
+                        <span
+                            v-if="error"
+                            class="help is-danger">
+                            {{ error }}
+                        </span>
                     </h2>
                     <ul>
                         <li>
                             <a
                                 class="custom-link external"
-                                href=""
+                                @click="importOnetBasicSkills"
                                 target="_blank">ONET: Basic Skills</a>
                         </li>
                         <li>
                             <a
                                 class="custom-link external"
-                                href=""
+                                @click="importHarvardEmotionalIntelligence"
                                 target="_blank">Harvard: Emotional Intelligence</a>
                         </li>
                         <li>
                             <a
                                 class="custom-link external"
-                                href=""
+                                @click="importACTCollaborativeProblemSolving"
                                 target="_blank">ACT: Collaborative Problem Solving</a>
                         </li>
                     </ul>
@@ -248,14 +257,21 @@
 <script>
 import {mapState} from 'vuex';
 import casslogo from '@/assets/cass-logo-white.svg';
+import common from '@/mixins/common.js';
+import harvard from 'file-loader!../../files/Harvard Emotional Intelligence.csv';
 
 export default {
     name: 'Welcome',
     data() {
         return {
-            casslogo: casslogo
+            casslogo: casslogo,
+            importing: false,
+            error: null,
+            repo: window.repo,
+            harvardFile: harvard
         };
     },
+    mixins: [common],
     mounted: function() {
     },
     computed: {
@@ -263,6 +279,115 @@ export default {
             loggedInPerson: state => state.user.loggedOnPerson,
             queryParams: state => state.editor.queryParams
         })
+    },
+    methods: {
+        importSuccess: function(framework) {
+            this.importing = false;
+            this.$router.push({name: "framework", params: {frameworkId: framework.shortId()}});
+        },
+        importOnetBasicSkills: function() {
+            let url = "https://www.onetcenter.org/ctdlasn/graph/ce-07c25f74-9119-11e8-b852-782bcb5df6ac";
+            let me = this;
+            this.importing = true;
+            this.error = null;
+            EcRemote.getExpectingString(url, null, function(result) {
+                result = JSON.parse(result);
+                var graph = result["@graph"];
+                if (graph != null) {
+                    me.importJsonLd(result);
+                } else {
+                    me.error = "Import Error";
+                    me.importing = false;
+                }
+            }, function(failure) {
+                me.error = "Import Error";
+                me.importing = false;
+            });
+        },
+        importJsonLd: function(data) {
+            var formData = new FormData();
+            if (data != null && data !== undefined) {
+                formData.append('data', JSON.stringify(data));
+            }
+            var identity = EcIdentityManager.ids[0];
+            if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
+            let me = this;
+            me.$store.commit('app/importFramework', null);
+            EcRemote.postInner(this.repo.selectedServer, "ctdlasn", formData, null, function(data) {
+                if (data.indexOf("ctdlasn") !== -1) {
+                    var data1 = data.substring(0, data.indexOf("ctdlasn"));
+                    var data2 = data.substring(data.indexOf("ctdlasn") + 7);
+                    data = data1 + "data" + data2;
+                }
+                var framework = EcFramework.getBlocking(data);
+                me.$store.commit('app/importFramework', framework);
+                me.$store.commit('editor/framework', framework);
+                me.spitEvent("importFinished", framework.shortId(), "importPage");
+                me.importSuccess(framework);
+            }, function(failure) {
+                me.error = "Import Error";
+                me.importing = false;
+            });
+        },
+        importHarvardEmotionalIntelligence: function() {
+            this.importing = true;
+            this.error = null;
+            let ceo = null;
+            if (EcIdentityManager.ids.length > 0) { ceo = EcIdentityManager.ids[0]; }
+            let me = this;
+            EcRemote.getExpectingString(me.harvardFile, null, function(result) {
+                CTDLASNCSVImport.importFrameworksAndCompetencies(me.repo, result, function(frameworks, competencies, relations) {
+                    if (me.queryParams.ceasnDataFields === true) {
+                        for (var i = 0; i < frameworks.length; i++) {
+                            if (frameworks[i]["schema:inLanguage"] == null || frameworks[i]["schema:inLanguage"] === undefined) {
+                                me.setDefaultLanguage();
+                                frameworks[i]["schema:inLanguage"] = defaultLanguage;
+                            }
+                        }
+                    }
+                    var all = frameworks.concat(competencies).concat(relations);
+                    me.repo.multiput(all, function() {
+                        for (var i = 0; i < frameworks.length; i++) {
+                            me.$store.commit('app/importFramework', frameworks[i]);
+                            me.$store.commit('editor/framework', frameworks[i]);
+                            me.spitEvent("importFinished", frameworks[i].shortId(), "importPage");
+                        }
+                        me.importSuccess(frameworks[0]);
+                    }, function(failure) {
+                        me.error = "Import Error";
+                        me.importing = false;
+                    });
+                }, function() {}, ceo);
+            }, function(failure) {
+                me.error = "Import Error";
+                me.importing = false;
+            });
+        },
+        importACTCollaborativeProblemSolving: function() {
+            this.importing = true;
+            this.error = null;
+            var me = this;
+            var serverUrl = "http://opensalt.opened.com/";
+            var id = "https://frameworks.act.org/uri/73a4ee28-ceeb-11e7-bfb5-b1077cd4fffe";
+            var uuid = "73a4ee28-ceeb-11e7-bfb5-b1077cd4fffe";
+            var identity = EcIdentityManager.ids[0];
+            var formData = new FormData();
+            if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
+            EcRemote.postInner(this.repo.selectedServer, "ims/case/harvest?caseEndpoint=" + serverUrl + "&dId=" + uuid, formData, null, function(success) {
+                EcFramework.get(id, function(f) {
+                    me.$store.commit('editor/framework', f);
+                    me.spitEvent("importFinished", f.shortId(), "importPage");
+                    me.$store.commit('app/importFramework', f);
+                    me.importSuccess(f);
+                }, function() {
+                    me.error = "Import Error";
+                    me.importing = false;
+                });
+            }, function(failure) {
+                me.error = "Import Error";
+                me.importing = false;
+            });
+        }
     }
 };
 </script>
