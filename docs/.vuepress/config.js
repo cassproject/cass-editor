@@ -13,20 +13,29 @@ module.exports = {
       sidebar: [
         {
             title: 'Getting Started',
-            collapsable: false, // optional, defaults to true
+            collapsable: true, // optional, defaults to true
             children: [
                 '/installation/'
             ]
         },
         {
-          title: 'Configuration',   // required
+          title: 'Authoring Configuration',   // required
           path: '/configuration/',      // optional, link of the title, which should be an absolute path and must exist
-          collapsable: false, // optional, defaults to true
+          collapsable: true, // optional, defaults to true
           sidebarDepth: 1,    // optional, defaults to 1
           children: [
             '/competency-properties/',
             '/framework-properties/',
             '/default-users/'
+          ]
+        },
+        {
+          title: 'Users and groups',   // required
+          path: '/users-and-groups/',      // optional, link of the title, which should be an absolute path and must exist
+          collapsable: true, // optional, defaults to true
+          sidebarDepth: 1,    // optional, defaults to 1
+          children: [
+            '/users-and-groups/'
           ]
         }
       ]

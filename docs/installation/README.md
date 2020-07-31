@@ -70,7 +70,6 @@ choco install -y cass
 
 ```
 
-
 ## Setup
 
 - Set up DNS endpoint

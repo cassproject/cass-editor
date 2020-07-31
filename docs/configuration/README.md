@@ -20,24 +20,24 @@ The CAT configuration manager can be accessed at any time by selecting the _conf
 lower left corner of the navigation menu.
 
 
-![Configurations Navigation Menu](/configurations.png)
+![Configurations Navigation Menu](/docs/configurations.png)
 
 Upon entering the configuration manager, a list of all existing configurations in the current CAT instance
 are displayed. Public configurations or configurations owned by the current logged in user can be
 managed or deleted by selecting one of the actions icons to the right of the configuration item. Unowned configurations can be viewed by selecting the appropriate action icon.
 
-![Configuration Action Browser Default](/browser-default.png)
+![Configuration Action Browser Default](/docs/browser-default.png)
 
 It is also possible for users to set their browser default configuration from this screen
 
-![Browser Default](/view-manage-delete.png)
+![Browser Default](/docs/view-manage-delete.png)
 
 
 ## Creating a New Configuration
 
 Configurations can be created by clicking the _create new configuration_ button at the bottom right corner of the configuration management list screen. By default all required fields are pre populated with default CaSS terminology and settings.
 
-![Create new Configuration](/create-new-configuration.png)
+![Create new Configuration](/docs/create-new-configuration.png)
 
 ## Managing a Configuration
 
@@ -45,7 +45,7 @@ After creating a new configuration or selecting the _manage_ action on an existi
 
 ### Configuration General Details
 
-![General Details](/general-details.png)
+![General Details](/docs/general-details.png)
 
 The general details configuration settings provide fields for editing the **name** and **description** of the configuration. From this section you can also toggle the _instance default_ switch and set your browser default.
 
@@ -57,7 +57,7 @@ Only a single configuration can be set to the instance default at any given time
 
 Configurations can be saved by clicking on the _save configuration_ button on the left side of the _configuration details_ screen.
 
-![Save Configuration](/save-configuration.png)
+![Save Configuration](/docs/save-configuration.png)
 
 
 
