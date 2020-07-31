@@ -209,25 +209,25 @@
                         <li>
                             <a
                                 class="custom-link external"
-                                href=""
+                                :href="baseRepoUrl + 'cass-vlrc'"
                                 target="_blank">Dashboards</a>
                         </li>
                         <li>
                             <a
                                 class="custom-link external"
-                                href=""
+                                :href="baseRepoUrl + 'cass-gap-analysis'"
                                 target="_blank">GAP Analysis</a>
                         </li>
                         <li>
                             <a
                                 class="custom-link external"
-                                href=""
+                                :href="baseRepoUrl + 'cass-profile'"
                                 target="_blank">Profile Explorer</a>
                         </li>
                         <li>
                             <a
                                 class="custom-link external"
-                                href=""
+                                :href="baseRepoUrl + 'cass-viewer'"
                                 target="_blank">Framework Explorer</a>
                         </li>
                     </ul>
@@ -268,11 +268,15 @@ export default {
             importing: false,
             error: null,
             repo: window.repo,
-            harvardFile: harvard
+            harvardFile: harvard,
+            baseRepoUrl: ""
         };
     },
     mixins: [common],
     mounted: function() {
+        let index = this.repo.selectedServer.lastIndexOf('api');
+        this.baseRepoUrl = this.repo.selectedServer.slice(0, index);
+        console.log(this.baseRepoUrl);
     },
     computed: {
         ...mapState({
