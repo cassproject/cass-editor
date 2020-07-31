@@ -95,14 +95,14 @@
                                 <i class="fas fa-undo-alt " />
                             </span>
                         </div>
-                        <div
+                        <!-- <div
                             title="View history"
                             @click="$store.commit('app/showRightAside', 'Versions')"
                             class="button is-text  has-text-dark">
                             <span class="icon">
                                 <i class="fas fa-history" />
                             </span>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <div
