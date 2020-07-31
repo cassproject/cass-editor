@@ -5,8 +5,7 @@ module.exports = {
     themeConfig: {
       nav: [
         { text: 'Home', link: '/' },
-        { text: 'Guide', link: '/guide/' },
-        { text: 'Configuration', link: '/configuration/' }
+        { text: 'Guide', link: '/guide/' }
       ],
       displayAllHeaders: true, // Default: false
       activeHeaderLinks: true, // Default: true
