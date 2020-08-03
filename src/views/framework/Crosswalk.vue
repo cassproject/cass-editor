@@ -332,6 +332,9 @@ import Thing from '@/lode/components/lode/Thing.vue';
 import SearchBar from '@/components/framework/SearchBar.vue';
 import common from '@/mixins/common.js';
 import {cassUtil} from '@/mixins/cassUtil.js';
+import t3Profile from '@/mixins/t3Profile.js';
+import tlaProfile from '@/mixins/tlaProfile.js';
+import ctdlProfile from '@/mixins/ctdlasnProfile.js';
 
 export default {
     name: 'FrameworkCrosswalk',
@@ -375,7 +378,7 @@ export default {
         sortBy: "name.keyword",
         showMine: false
     }),
-    mixins: [common, cassUtil],
+    mixins: [common, cassUtil, t3Profile, tlaProfile, ctdlProfile],
     props: {
         queryParams: {
             type: Object,
@@ -451,6 +454,9 @@ export default {
         }
     },
     computed: {
+        queryParamsComputed: function() {
+            return this.$store.getters['editor/queryParams'];
+        },
         setSearchToOnlyShowOwned: function() {
             if (this.step === 0) {
                 return true;
@@ -520,7 +526,8 @@ export default {
             alignmentsToDelete: state => state.crosswalk.alignmentsToDelete,
             targetState: state => state.crosswalk.targetState,
             sourceState: state => state.crosswalk.sourceState,
-            targetNodesToHighlight: state => state.crosswalk.targetNodesToHighlight
+            targetNodesToHighlight: state => state.crosswalk.targetNodesToHighlight,
+            enabledRelationshipTypes: state => state.crosswalk.enabledRelationshipTypes
         }),
         ...mapGetters({
             sortResults: 'app/sortResults',
@@ -797,12 +804,117 @@ export default {
                 );
             } else this.handleBuildFrameworkSourceRelationshipsSuccess([]);
         },
+        getLabelForRelationship: function(relObject, defaultLabel) {
+            try {
+                if (relObject && relObject["http://www.w3.org/2000/01/rdf-schema#label"] && relObject["http://www.w3.org/2000/01/rdf-schema#label"][0] &&
+                    relObject["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"]) {
+                    return relObject["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
+                } else return defaultLabel;
+            } catch (e) {
+                return defaultLabel;
+            }
+        },
+        getFallbackEnabledRelationshipTypes: function() {
+            appLog("Returning fallback relationship types for crosswalk");
+            let fallbackRelTypes = [];
+            fallbackRelTypes.push({relationship: 'narrows', label: 'narrows'});
+            fallbackRelTypes.push({relationship: 'broadens', label: 'broadens'});
+            fallbackRelTypes.push({relationship: 'isEquivalentTo', label: 'is equivalent to'});
+            fallbackRelTypes.push({relationship: 'desires', label: 'desires'});
+            fallbackRelTypes.push({relationship: 'requires', label: 'requires'});
+            fallbackRelTypes.push({relationship: 'isRelatedTo', label: 'is related to'});
+            return fallbackRelTypes;
+        },
+        getEnabledRelationshipTypesFromObject: function(relationshipContainerObj) {
+            try {
+                if (relationshipContainerObj) {
+                    appLog("Determining relationship types for crosswalk");
+                    let enabledRelTypes = [];
+                    if (relationshipContainerObj.isEnabledBy) enabledRelTypes.push({relationship: 'isEnabledBy', label: this.getLabelForRelationship(relationshipContainerObj.isEnabledBy, 'is enabled by')});
+                    if (relationshipContainerObj.requires) enabledRelTypes.push({relationship: 'requires', label: this.getLabelForRelationship(relationshipContainerObj.requires, 'requires')});
+                    if (relationshipContainerObj.desires) enabledRelTypes.push({relationship: 'desires', label: this.getLabelForRelationship(relationshipContainerObj.desires, 'desires')});
+                    if (relationshipContainerObj.narrows) enabledRelTypes.push({relationship: 'narrows', label: this.getLabelForRelationship(relationshipContainerObj.narrows, 'narrows')});
+                    if (relationshipContainerObj.isRelatedTo) enabledRelTypes.push({relationship: 'isRelatedTo', label: this.getLabelForRelationship(relationshipContainerObj.isRelatedTo, 'is related to')});
+                    if (relationshipContainerObj.isEquivalentTo) enabledRelTypes.push({relationship: 'isEquivalentTo', label: this.getLabelForRelationship(relationshipContainerObj.isEquivalentTo, 'is equivalent to')});
+                    if (relationshipContainerObj.broadens) enabledRelTypes.push({relationship: 'broadens', label: this.getLabelForRelationship(relationshipContainerObj.broadens, 'broadens')});
+                    if (relationshipContainerObj.majorRelated) enabledRelTypes.push({relationship: 'majorRelated', label: this.getLabelForRelationship(relationshipContainerObj.majorRelated, 'is majorly related to')});
+                    if (relationshipContainerObj.minorRelated) enabledRelTypes.push({relationship: 'minorRelated', label: this.getLabelForRelationship(relationshipContainerObj.minorRelated, 'is minorly related to')});
+                    if (relationshipContainerObj.isSimilarTo) enabledRelTypes.push({relationship: 'isSimilarTo', label: this.getLabelForRelationship(relationshipContainerObj.isSimilarTo, 'is similar to')});
+                    if (relationshipContainerObj.isPartiallySameAs) enabledRelTypes.push({relationship: 'isPartiallySameAs', label: this.getLabelForRelationship(relationshipContainerObj.isPartiallySameAs, 'is partially the same as')});
+                    if (relationshipContainerObj.enables) enabledRelTypes.push({relationship: 'enables', label: this.getLabelForRelationship(relationshipContainerObj.enables, 'enables')});
+                    if (relationshipContainerObj.hasChild) enabledRelTypes.push({relationship: 'hasChild', label: this.getLabelForRelationship(relationshipContainerObj.hasChild, 'has child')});
+                    if (relationshipContainerObj.isChildOf) enabledRelTypes.push({relationship: 'isChildOf', label: this.getLabelForRelationship(relationshipContainerObj.isChildOf, 'is child of')});
+                    return enabledRelTypes;
+                } else return this.getFallbackEnabledRelationshipTypes();
+            } catch (e) {
+                return this.getFallbackEnabledRelationshipTypes();
+            }
+        },
+        setEnabledRelationshipTypesFromT3ProfileConfig: function() {
+            appLog('Using T3 configuration for enabled relationship types');
+            let ert = this.getEnabledRelationshipTypesFromObject(this.t3CompetencyProfile);
+            this.$store.commit('crosswalk/enabledRelationshipTypes', ert);
+        },
+        setEnabledRelationshipTypesFromCeasnProfileConfig: function() {
+            appLog('Using CEASN configuration for enabled relationship types');
+            let ert = this.getEnabledRelationshipTypesFromObject(this.ctdlAsnCompetencyProfile);
+            this.$store.commit('crosswalk/enabledRelationshipTypes', ert);
+        },
+        setEnabledRelationshipTypesFromTlaProfileConfig: function() {
+            appLog('Using TLA configuration for enabled relationship types');
+            let ert = this.getEnabledRelationshipTypesFromObject(this.tlaCompetencyProfile);
+            this.$store.commit('crosswalk/enabledRelationshipTypes', ert);
+        },
+        setEnabledRelationshipListFromCatConfigObj: function(configObj) {
+            if (!configObj || !configObj.relationshipConfig) {
+                let ert = this.getFallbackEnabledRelationshipTypes();
+                this.$store.commit('crosswalk/enabledRelationshipTypes', ert);
+            } else {
+                let ert = this.getEnabledRelationshipTypesFromObject(configObj.relationshipConfig);
+                this.$store.commit('crosswalk/enabledRelationshipTypes', ert);
+            }
+        },
+        setEnabledRelationshipTypesFromOtherConfig: function() {
+            if (this.frameworkSource.configuration) {
+                appLog('Using framework configuration for enabled relationship types...');
+                let c = EcRepository.getBlocking(this.frameworkSource.configuration);
+                this.setEnabledRelationshipListFromCatConfigObj(c);
+            } else if (this.getDefaultBrowserConfigId() && !this.getDefaultBrowserConfigId().trim().equals('')) {
+                appLog('Using browser configuration for enabled relationship types...');
+                let c = EcRepository.getBlocking(this.getDefaultBrowserConfigId());
+                this.setEnabledRelationshipListFromCatConfigObj(c);
+            } else {
+                let me = this;
+                window.repo.searchWithParams("@type:Configuration", {'size': 10000}, null,
+                    function(ca) {
+                        let found = false;
+                        for (let c of ca) {
+                            if (c.isDefault === "true") {
+                                appLog('Using instance default configuration for enabled relationship types');
+                                me.setEnabledRelationshipListFromCatConfigObj(c);
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) me.setEnabledRelationshipListFromCatConfigObj(null);
+                    }, function() {
+                        me.setEnabledRelationshipListFromCatConfigObj(null);
+                    });
+            }
+        },
+        determineEnabledRelationshipTypesFromSourceConfiguration: function() {
+            if (this.$store.state.editor.t3Profile === true) this.setEnabledRelationshipTypesFromT3ProfileConfig();
+            else if (this.queryParamsComputed.ceasnDataFields === "true") this.setEnabledRelationshipTypesFromCeasnProfileConfig();
+            else if (this.queryParamsComputed.tlaProfile === "true") this.setEnabledRelationshipTypesFromTlaProfileConfig();
+            else this.setEnabledRelationshipTypesFromOtherConfig();
+        },
         frameworkClickSource: function(framework) {
-            var me = this;
+            let me = this;
             this.$store.commit('crosswalk/resetFrameworkSourceRelationships');
             /* Should we exclude framework A from framework B options */
             EcFramework.get(framework.id, function(success) {
                 me.$store.commit('crosswalk/frameworkSource', success);
+                me.determineEnabledRelationshipTypesFromSourceConfiguration();
                 me.buildFrameworkSourceRelationships();
             }, appError);
             this.$store.commit('app/searchTerm', '');

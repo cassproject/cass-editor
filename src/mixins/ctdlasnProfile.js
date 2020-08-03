@@ -1,6 +1,6 @@
 export default {
     computed: {
-        ctdlAsnFrameworkProfile: function() {
+        ctdlAsnFrameworkProfilFrameworkProfile: function() {
             var me = this;
             return {
                 "@id": {

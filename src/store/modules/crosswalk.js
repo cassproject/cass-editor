@@ -24,10 +24,14 @@ const state = {
     alignmentsToDelete: [],
     sourceState: 'ready',
     targetState: 'ready',
-    targetNodesToHighlight: []
+    targetNodesToHighlight: [],
+    enabledRelationshipTypes: []
 };
 
 const mutations = {
+    enabledRelationshipTypes(state, f) {
+        state.enabledRelationshipTypes = f;
+    },
     targetNodesToHighlight(state, f) {
         state.targetNodesToHighlight = f;
     },
@@ -237,6 +241,9 @@ const actions = {
 
 };
 const getters = {
+    enabledRelationshipTypes: function(state) {
+        return state.enabledRelationshipTypes;
+    },
     frameworkSource: function(state) {
         return state.frameworkSource;
     },
