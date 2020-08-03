@@ -25,10 +25,14 @@ const state = {
     sourceState: 'ready',
     targetState: 'ready',
     targetNodesToHighlight: [],
-    enabledRelationshipTypes: []
+    enabledRelationshipTypes: [],
+    enabledRelationshipTypesLastUpdate: null
 };
 
 const mutations = {
+    enabledRelationshipTypesLastUpdate(state, f) {
+        state.enabledRelationshipTypesLastUpdate = f;
+    },
     enabledRelationshipTypes(state, f) {
         state.enabledRelationshipTypes = f;
     },
@@ -241,6 +245,9 @@ const actions = {
 
 };
 const getters = {
+    enabledRelationshipTypesLastUpdate: function(state) {
+        return state.enabledRelationshipTypesLastUpdate;
+    },
     enabledRelationshipTypes: function(state) {
         return state.enabledRelationshipTypes;
     },

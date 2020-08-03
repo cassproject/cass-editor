@@ -854,24 +854,29 @@ export default {
             appLog('Using T3 configuration for enabled relationship types');
             let ert = this.getEnabledRelationshipTypesFromObject(this.t3CompetencyProfile);
             this.$store.commit('crosswalk/enabledRelationshipTypes', ert);
+            this.$store.commit('crosswalk/enabledRelationshipTypesLastUpdate', Date.now());
         },
         setEnabledRelationshipTypesFromCeasnProfileConfig: function() {
             appLog('Using CEASN configuration for enabled relationship types');
             let ert = this.getEnabledRelationshipTypesFromObject(this.ctdlAsnCompetencyProfile);
             this.$store.commit('crosswalk/enabledRelationshipTypes', ert);
+            this.$store.commit('crosswalk/enabledRelationshipTypesLastUpdate', Date.now());
         },
         setEnabledRelationshipTypesFromTlaProfileConfig: function() {
             appLog('Using TLA configuration for enabled relationship types');
             let ert = this.getEnabledRelationshipTypesFromObject(this.tlaCompetencyProfile);
             this.$store.commit('crosswalk/enabledRelationshipTypes', ert);
+            this.$store.commit('crosswalk/enabledRelationshipTypesLastUpdate', Date.now());
         },
         setEnabledRelationshipListFromCatConfigObj: function(configObj) {
             if (!configObj || !configObj.relationshipConfig) {
                 let ert = this.getFallbackEnabledRelationshipTypes();
                 this.$store.commit('crosswalk/enabledRelationshipTypes', ert);
+                this.$store.commit('crosswalk/enabledRelationshipTypesLastUpdate', Date.now());
             } else {
                 let ert = this.getEnabledRelationshipTypesFromObject(configObj.relationshipConfig);
                 this.$store.commit('crosswalk/enabledRelationshipTypes', ert);
+                this.$store.commit('crosswalk/enabledRelationshipTypesLastUpdate', Date.now());
             }
         },
         setEnabledRelationshipTypesFromOtherConfig: function() {
