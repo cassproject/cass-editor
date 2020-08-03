@@ -784,11 +784,11 @@ export default {
         preloadRelations: function() {
             this.handleDoneLoading();
             if (!this.gotInitialLevelsRelationsAndAlignments) {
-                if (this.config.levelsConfig && this.config.levelsConfig.length > 0) {
+                if (this.config && this.config.levelsConfig && this.config.levelsConfig.length > 0) {
                     this.updateLevels();
                 }
                 this.updateRelations();
-                if (this.config.alignConfig && this.config.alignConfig.length > 0) {
+                if (this.config && this.config.alignConfig && this.config.alignConfig.length > 0) {
                     this.updateAlignments();
                 }
                 this.gotInitialLevelsRelationsAndAlignments = true;
