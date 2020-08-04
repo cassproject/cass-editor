@@ -658,7 +658,7 @@ export default {
                     this.container["skos:hasTopConcept"] = [];
                 }
                 if (previousSibling == null || previousSibling === undefined) {
-                    this.container["skos:hasTopConcept"].unshift(c.shortId());
+                    this.container["skos:hasTopConcept"].push(c.shortId());
                 } else {
                     // Insert immediately after the sibling
                     var index = this.container["skos:hasTopConcept"].indexOf(previousSibling);
@@ -690,7 +690,7 @@ export default {
                     parent["skos:narrower"] = [];
                 }
                 if (previousSibling == null || previousSibling === undefined) {
-                    parent["skos:narrower"].unshift(c.shortId());
+                    parent["skos:narrower"].push(c.shortId());
                 } else {
                     // Insert immediately after the sibling
                     var index = parent["skos:narrower"].indexOf(previousSibling);
