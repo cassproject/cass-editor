@@ -887,7 +887,9 @@ export default {
                     appLog("Identified edge to remove: ", JSON.parse(a.toJson()));
                     this.framework.relation.splice(i--, 1);
                 }
-                this.once = true;
+                repo.saveTo(this.framework, function() {
+                    this.once = true;
+                }, function() {});
             }
         }
     }

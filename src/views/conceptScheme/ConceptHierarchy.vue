@@ -256,6 +256,10 @@ export default {
         subview: {
             type: String,
             default: ''
+        },
+        doneDragging: {
+            type: Boolean,
+            default: false
         }
     },
     data: function() {
@@ -361,6 +365,11 @@ export default {
             if (this.recomputeHierarchy) {
                 this.once = true;
                 this.$store.commit('editor/recomputeHierarchy', false);
+            }
+        },
+        doneDragging: function() {
+            if (this.doneDragging) {
+                this.dragging = false;
             }
         }
     },
@@ -488,6 +497,10 @@ export default {
             }
         },
         endDrag: function(foo) {
+            if (foo.to.id === 'framework_drag') {
+                this.dragging = false;
+                return;
+            }
             appLog(foo.oldIndex, foo.newIndex);
             var toId = null;
             var plusup = 0;
