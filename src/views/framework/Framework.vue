@@ -14,57 +14,66 @@
                     <!-- loading section -- dummy content to show while loading dome elemnts -->
                     <div
                         class="container is-paddingless">
-                        <Component
-                            :class="[dynamicThingComponent === 'Thing' ? parentObjectClass: '']"
-                            :is="dynamicThingComponent"
-                            :id="'scroll-' + framework.shortId().split('/').pop()"
-                            :obj="framework"
-                            :repo="repo"
-                            :newFramework="newFramework"
-                            :parentNotEditable="queryParams.view==='true'"
-                            :profile="frameworkProfile"
-                            @deleteObject="deleteObject"
-                            @removeObject="removeObject"
-                            @editNodeEvent="onEditNode()"
-                            @doneEditingNodeEvent="onDoneEditingNode()"
-                            :properties="properties">
-                            <template #frameworkDetails>
-                                <div class="lode__framework__info-bar">
-                                    <span
-                                        class="tag is-medium-grey has-text-dark"
-                                        v-if="framework.competency && framework.competency.length == 1">
-                                        {{ framework.competency.length }} item
-                                    </span>
-                                    <span
-                                        class="tag is-medium-grey has-text-dark"
-                                        v-else-if="framework.competency && framework.competency.length > 1">
-                                        {{ framework.competency.length }} items
-                                    </span>
-                                    <span
-                                        class="tag is-medium-grey has-text-dark"
-                                        v-if="timestamp"
-                                        :title="new Date(timestamp)">
-                                        Last modified {{ lastModified }}
-                                    </span>
-                                    <span
-                                        class="tag is-medium-grey has-text-dark"
-                                        v-if="framework['schema:dateCreated']"
-                                        :title="new Date(framework['schema:dateCreated'])">
-                                        Created {{ $moment(framework['schema:dateCreated']).fromNow() }}
-                                    </span>
-                                    <span
-                                        class="tag is-medium-grey has-text-dark"
-                                        v-if="framework['Approved']"
-                                        :title="framework['Approved']">
-                                        Approved
-                                    </span>
-                                    <span
-                                        class="tag is-medium-grey has-text-dark"
-                                        v-if="framework['Published']"
-                                        :title="framework['Published']">Published</span>
-                                </div>
-                            </template>
-                        </Component>
+                        <draggable
+                            v-bind="dragOptions"
+                            v-model="frameworkDrag"
+                            tag="ul"
+                            id="framework_drag"
+                            :disabled="canEdit !== true"
+                            :group="{ name: 'test' }"
+                            handle=".handle">
+                            <Component
+                                :class="[dynamicThingComponent === 'Thing' ? parentObjectClass: '']"
+                                :is="dynamicThingComponent"
+                                :id="'scroll-' + framework.shortId().split('/').pop()"
+                                :obj="framework"
+                                :repo="repo"
+                                :newFramework="newFramework"
+                                :parentNotEditable="queryParams.view==='true'"
+                                :profile="frameworkProfile"
+                                @deleteObject="deleteObject"
+                                @removeObject="removeObject"
+                                @editNodeEvent="onEditNode()"
+                                @doneEditingNodeEvent="onDoneEditingNode()"
+                                :properties="properties">
+                                <template #frameworkDetails>
+                                    <div class="lode__framework__info-bar">
+                                        <span
+                                            class="tag is-medium-grey has-text-dark"
+                                            v-if="framework.competency && framework.competency.length == 1">
+                                            {{ framework.competency.length }} item
+                                        </span>
+                                        <span
+                                            class="tag is-medium-grey has-text-dark"
+                                            v-else-if="framework.competency && framework.competency.length > 1">
+                                            {{ framework.competency.length }} items
+                                        </span>
+                                        <span
+                                            class="tag is-medium-grey has-text-dark"
+                                            v-if="timestamp"
+                                            :title="new Date(timestamp)">
+                                            Last modified {{ lastModified }}
+                                        </span>
+                                        <span
+                                            class="tag is-medium-grey has-text-dark"
+                                            v-if="framework['schema:dateCreated']"
+                                            :title="new Date(framework['schema:dateCreated'])">
+                                            Created {{ $moment(framework['schema:dateCreated']).fromNow() }}
+                                        </span>
+                                        <span
+                                            class="tag is-medium-grey has-text-dark"
+                                            v-if="framework['Approved']"
+                                            :title="framework['Approved']">
+                                            Approved
+                                        </span>
+                                        <span
+                                            class="tag is-medium-grey has-text-dark"
+                                            v-if="framework['Published']"
+                                            :title="framework['Published']">Published</span>
+                                    </div>
+                                </template>
+                            </Component>
+                        </draggable>
                         <div
                             class="section"
                             v-if="!hierarchyIsdoneLoading">
@@ -149,7 +158,8 @@ export default {
         Thing: () => import('@/lode/components/lode/Thing.vue'),
         ThingEditing: () => import('@/lode/components/lode/ThingEditing.vue'),
         FrameworkEditorToolbar: () => import('@/components/framework/EditorToolbar.vue'),
-        RightAside: () => import('@/components/framework/RightAside.vue')
+        RightAside: () => import('@/components/framework/RightAside.vue'),
+        draggable: () => import('vuedraggable')
     },
     mixins: [common, exports, competencyEdits, ctdlasnProfile, t3Profile, tlaProfile, getLevelsAndRelations],
     data: function() {
@@ -190,7 +200,21 @@ export default {
             config: null,
             selectedArray: [],
             configSetOnFramework: false,
-            gotInitialLevelsRelationsAndAlignments: false
+            gotInitialLevelsRelationsAndAlignments: false,
+            dragOptions: {
+                scroll: true,
+                swapThreshold: 0.75,
+                disabled: false,
+                emptyInsertThreshold: 36,
+                animation: 0,
+                ghostClass: 'ghost-drag',
+                chosenClass: 'chosen-drag',
+                dragClass: 'drag',
+                scrollSensitivity: 30,
+                scrollSpeed: 5,
+                forceFallback: true
+            },
+            frameworkDrag: []
         };
     },
     computed: {
@@ -580,6 +604,12 @@ export default {
         },
         defaultFrameworkConfiguration: function() {
             return this.$store.getters['editor/framework'] ? this.$store.getters['editor/framework'].configuration : null;
+        },
+        canEdit: function() {
+            if (this.queryParams.view === 'true') {
+                return false;
+            }
+            return this.framework.canEditAny(EcIdentityManager.getMyPks());
         }
     },
     created: function() {
@@ -615,6 +645,13 @@ export default {
         },
         defaultFrameworkConfiguration: function() {
             this.getConfiguration();
+        },
+        frameworkDrag: function() {
+            if (this.frameworkDrag.length > 0) {
+                let id = EcRemoteLinkedData.trimVersionFromUrl(this.frameworkDrag[0].obj.id);
+                this.moveToTopLevel(id);
+                this.frameworkDrag = [];
+            }
         }
     },
     methods: {
@@ -838,6 +875,20 @@ export default {
                 me.$store.commit('editor/addEditsToUndo', [{operation: "delete", obj: c}]);
                 me.$store.commit('editor/refreshAlignments', true);
             }, appError);
+        },
+        moveToTopLevel: function(id) {
+            for (var i = 0; i < this.framework.relation.length; i++) {
+                var a = EcAlignment.getBlocking(this.framework.relation[i]);
+                if (a == null) { continue; }
+                if (a.relationType === "narrows") {
+                    if (a[this.edgeTargetProperty] == null) continue;
+                    if (a[this.edgeSourceProperty] == null) continue;
+                    if (a[this.edgeSourceProperty] !== id) continue;
+                    appLog("Identified edge to remove: ", JSON.parse(a.toJson()));
+                    this.framework.relation.splice(i--, 1);
+                }
+                this.once = true;
+            }
         }
     }
 };
