@@ -106,7 +106,7 @@ drag, drag, and chosen states
     .is-id {
         width: 200px;
         text-align: left;
-        max-width: calc(100% - 10rem);
+        max-width: calc(100%);
         display: inline-block;
         direction: rtl;
         text-overflow: ellipsis;
@@ -622,6 +622,10 @@ ul.processing-list {
         padding-bottom: .5rem;
     }
     padding-bottom: .5rem;
+}
+.lode__Competency .lode__Property:first-of-type,
+.lode__Concept .lode__Property:first-of-type {
+    padding-right: 5rem !important;
 }
 .lode__Hierarchy {
     .lode__Property {
