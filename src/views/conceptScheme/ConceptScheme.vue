@@ -4,6 +4,7 @@
         <!-- begin framework -->
         <div class="framework-content">
             <FrameworkEditorToolbar
+                :properties="properties"
                 @changeProperties="changeProperties"
                 @showExportModal="onOpenExportModal" />
             <div class="framework-wrapper">

@@ -186,6 +186,12 @@ import {cassUtil} from '../../mixins/cassUtil';
 export default {
     name: 'EditorToolbar',
     mixins: [ cassUtil ],
+    props: {
+        properties: {
+            type: String,
+            default: 'primary'
+        }
+    },
     data() {
         return {
             showPropertyViewDropDown: false,
@@ -229,9 +235,18 @@ export default {
             this.$store.commit('app/showModal', {component: 'Configuration'});
         },
         changeProperties(type) {
-            this.$emit('changeProperties', type);
+            let properties = this.properties;
+            let newType = type;
+            /* If clicking something that is selected, reduce
+               to lower level view, essentially unclicking */
+            if (newType === 'secondary' && properties === 'secondary') {
+                newType = 'primary';
+            } else if (newType === 'tertiary' && properties === 'tertiary') {
+                newType = 'secondary';
+            }
+            this.$emit('changeProperties', newType);
             this.showPropertyViewDropDown = false;
-            this.activeView = type;
+            this.activeView = newType;
         },
         onClickUndo: function() {
             this.$Progress.start();

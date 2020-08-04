@@ -7,6 +7,7 @@
             id="framework-content">
             <div class="framework-body columns is-multiline is-gapless is-paddingless is-marginless">
                 <FrameworkEditorToolbar
+                    :properties="properties"
                     @showExportModal="onOpenExportModal"
                     @changeProperties="changeProperties" />
                 <div class="column is-12">
