@@ -7,6 +7,9 @@ export default {
             if (!framework) {
                 framework = this.$store.getters['editor/framework'];
             }
+            if (!framework || !framework.id) {
+                return null;
+            }
             if (this.queryParams.ceasnDataFields !== "true") {
                 return null;
             }
@@ -24,6 +27,9 @@ export default {
             if (!framework) {
                 framework = this.$store.getters['editor/framework'];
             }
+            if (!framework || !framework.id) {
+                return null;
+            }
             if (this.queryParams.ceasnDataFields !== "true") {
                 return null;
             }
@@ -40,6 +46,9 @@ export default {
             let framework = this.framework;
             if (!framework) {
                 framework = this.$store.getters['editor/framework'];
+            }
+            if (!framework || !framework.id) {
+                return null;
             }
             var me = this;
             if (this.queryParams.ceasnDataFields !== "true") {
@@ -65,6 +74,9 @@ export default {
             let framework = this.framework;
             if (!framework) {
                 framework = this.$store.getters['editor/framework'];
+            }
+            if (!framework || !framework.id) {
+                return null;
             }
             var me = this;
             if (this.queryParams.ceasnDataFields !== "true") {
