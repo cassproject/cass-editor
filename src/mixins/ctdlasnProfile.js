@@ -298,7 +298,7 @@ export default {
                     "max": 1,
                     "heading": "Rights"
                 },
-                "headings": ["Keys", "General", "Tagging", "Connections", "Context", "Rights"],
+                "headings": ["General", "Tagging", "Connections", "Context", "Rights", "Keys"],
                 "primaryProperties": [
                     "http://schema.org/name",
                     "http://schema.org/description"
@@ -673,7 +673,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Task Embodied"}],
                     "heading": "Connections"
                 },
-                "headings": ["Keys", "General", "Context", "Tagging", "Scales", "Connections"],
+                "headings": ["General", "Context", "Tagging", "Scales", "Connections", "Keys"],
                 "primaryProperties": [
                     "https://purl.org/ctdlasn/terms/competencyLabel",
                     "http://schema.org/name",
@@ -1095,7 +1095,7 @@ export default {
                     "heading": "Rights",
                     "max": 1
                 },
-                "headings": ["Keys", "General", "Tagging", "Context", "Rights"],
+                "headings": ["General", "Tagging", "Context", "Rights", "Keys"],
                 "primaryProperties": [
                     "http://purl.org/dc/terms/title",
                     "http://purl.org/dc/terms/description"
@@ -1483,7 +1483,7 @@ export default {
                     "noTextEditing": "true",
                     "heading": "Connections"
                 },
-                "headings": ["Keys", "General", "Other Labels", "Documentation", "Connections"],
+                "headings": ["General", "Other Labels", "Documentation", "Connections", "Keys"],
                 "primaryProperties": [
                     "http://www.w3.org/2004/02/skos/core#prefLabel",
                     "http://www.w3.org/2004/02/skos/core#definition",
