@@ -4,50 +4,60 @@
         <!-- begin framework -->
         <div class="framework-content">
             <FrameworkEditorToolbar
+                :properties="properties"
                 @changeProperties="changeProperties"
                 @showExportModal="onOpenExportModal" />
             <div class="framework-wrapper">
-                <Component
-                    :class="dynamicThingComponent === 'Thing' ? parentObjectClass: ''"
-                    :is="dynamicThingComponent"
-                    :id="'scroll-' + framework.shortId().split('/').pop()"
-                    :obj="framework"
-                    :repo="repo"
-                    view="concept"
-                    :newFramework="newFramework"
-                    :parentNotEditable="queryParams.view==='true'"
-                    @deleteObject="deleteObject"
-                    :profile="conceptSchemeProfile"
-                    @editNodeEvent="onEditNode()"
-                    @doneEditingNodeEvent="onDoneEditingNode()"
-                    :properties="properties">
-                    <div class="lode__framework__info-bar">
-                        <span
-                            class="tag is-medium-grey has-text-dark"
-                            v-if="timestamp"
-                            :title="new Date(timestamp)">
-                            Last modified {{ lastModified }}
-                        </span>
-                        <span
-                            class="tag is-medium-grey has-text-dark"
-                            v-if="framework['schema:dateCreated']"
-                            :title="new Date(framework['schema:dateCreated'])">
-                            Created {{ $moment(framework['schema:dateCreated']).fromNow() }}
-                        </span>
-                        <span
-                            class="tag is-medium-grey has-text-dark"
-                            v-if="framework['Approved']"
-                            :title="framework['Approved']">
-                            Approved
-                        </span>
-                        <span
-                            class="tag is-medium-grey has-text-dark"
-                            v-if="framework['Published']"
-                            :title="framework['Published']">
-                            Published
-                        </span>
-                    </div>
-                </Component>
+                <draggable
+                    v-bind="dragOptions"
+                    v-model="frameworkDrag"
+                    tag="ul"
+                    id="framework_drag"
+                    :disabled="canEdit !== true"
+                    :group="{ name: 'test' }"
+                    handle=".handle">
+                    <Component
+                        :class="dynamicThingComponent === 'Thing' ? parentObjectClass: ''"
+                        :is="dynamicThingComponent"
+                        :id="'scroll-' + framework.shortId().split('/').pop()"
+                        :obj="framework"
+                        :repo="repo"
+                        view="concept"
+                        :newFramework="newFramework"
+                        :parentNotEditable="queryParams.view==='true'"
+                        @deleteObject="deleteObject"
+                        :profile="conceptSchemeProfile"
+                        @editNodeEvent="onEditNode()"
+                        @doneEditingNodeEvent="onDoneEditingNode()"
+                        :properties="properties">
+                        <div class="lode__framework__info-bar">
+                            <span
+                                class="tag is-medium-grey has-text-dark"
+                                v-if="timestamp"
+                                :title="new Date(timestamp)">
+                                Last modified {{ lastModified }}
+                            </span>
+                            <span
+                                class="tag is-medium-grey has-text-dark"
+                                v-if="framework['schema:dateCreated']"
+                                :title="new Date(framework['schema:dateCreated'])">
+                                Created {{ $moment(framework['schema:dateCreated']).fromNow() }}
+                            </span>
+                            <span
+                                class="tag is-medium-grey has-text-dark"
+                                v-if="framework['Approved']"
+                                :title="framework['Approved']">
+                                Approved
+                            </span>
+                            <span
+                                class="tag is-medium-grey has-text-dark"
+                                v-if="framework['Published']"
+                                :title="framework['Published']">
+                                Published
+                            </span>
+                        </div>
+                    </Component>
+                </draggable>
                 <ConceptHierarchy
                     :container="framework"
                     containerType="ConceptScheme"
@@ -64,7 +74,8 @@
                     @searchThings="handleSearch($event)"
                     @selectButtonClick="onSelectButtonClick"
                     :properties="properties"
-                    @selectedArray="selectedArrayEvent" />
+                    @selectedArray="selectedArrayEvent"
+                    :doneDragging="doneDragging" />
             </div>
         </div>
     </div>
@@ -108,7 +119,22 @@ export default {
             properties: "primary",
             config: null,
             selectedArray: [],
-            editsToUndo: []
+            editsToUndo: [],
+            dragOptions: {
+                scroll: true,
+                swapThreshold: 0.75,
+                disabled: false,
+                emptyInsertThreshold: 36,
+                animation: 0,
+                ghostClass: 'ghost-drag',
+                chosenClass: 'chosen-drag',
+                dragClass: 'drag',
+                scrollSensitivity: 30,
+                scrollSpeed: 5,
+                forceFallback: true
+            },
+            frameworkDrag: [],
+            doneDragging: false
         };
     },
     computed: {
@@ -685,6 +711,12 @@ export default {
                     "http://www.w3.org/2004/02/skos/core#related"
                 ]
             };
+        },
+        canEdit: function() {
+            if (this.queryParams.view === 'true') {
+                return false;
+            }
+            return this.framework.canEditAny(EcIdentityManager.getMyPks());
         }
     },
     components: {
@@ -692,7 +724,8 @@ export default {
         ThingEditing: () => import('@/lode/components/lode/ThingEditing.vue'),
         FrameworkEditorToolbar: () => import('@/components/framework/EditorToolbar.vue'),
         RightAside: () => import('@/components/framework/RightAside.vue'),
-        ConceptHierarchy: () => import('./ConceptHierarchy.vue')
+        ConceptHierarchy: () => import('./ConceptHierarchy.vue'),
+        draggable: () => import('vuedraggable')
     },
     created: function() {
         if (this.framework !== null) {
@@ -712,6 +745,14 @@ export default {
     watch: {
         shortId: function() {
             this.refreshPage();
+        },
+        frameworkDrag: function() {
+            if (this.frameworkDrag.length > 0) {
+                let id = EcRemoteLinkedData.trimVersionFromUrl(this.frameworkDrag[0].obj.id);
+                this.moveToTopLevel(id);
+                this.frameworkDrag = [];
+                this.doneDragging = true;
+            }
         }
     },
     methods: {
@@ -956,6 +997,27 @@ export default {
         },
         onSelectButtonClick: function(ids) {
             this.selectButton(ids);
+        },
+        moveToTopLevel: function(id) {
+            let me = this;
+            let concept = EcConcept.getBlocking(id);
+            if (concept["skos:broader"]) {
+                if (!EcArray.isArray(concept["skos:broader"])) {
+                    concept["skos:broader"] = [concept["skos:broader"]];
+                }
+                let parent = EcConcept.getBlocking(concept["skos:broader"][0]);
+                let fromIndex = parent["skos:narrower"].indexOf(id);
+                parent["skos:narrower"].splice(fromIndex, 1);
+                repo.saveTo(parent, function() {}, function() {});
+                delete concept["skos:broader"];
+            }
+            this.framework["skos:hasTopConcept"].push(id);
+            concept["skos:topConceptOf"] = this.framework.shortId();
+            repo.saveTo(concept, function() {
+                repo.saveTo(me.framework, function() {
+                    me.refreshPage();
+                }, function() {});
+            }, function() {});
         }
     }
 };
