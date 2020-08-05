@@ -407,6 +407,7 @@ ul.processing-list {
     }
 }
 .framework-content {
+    margin-bottom: 240px;
     .lode__thing .lode__Framework,
     .lode__thing .lode__ConceptScheme {
         padding: .5rem;
@@ -437,7 +438,7 @@ ul.processing-list {
             display: none;
         }
         .hierarchy-item__buttons {
-            right: 78px !important;
+            right: 10rem !important;
         }
         .lode__thing-heading {
             .lode__Property {
