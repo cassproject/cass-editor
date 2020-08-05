@@ -17,7 +17,7 @@
                         <draggable
                             v-bind="dragOptions"
                             v-model="frameworkDrag"
-                            tag="ul"
+                            tag="div"
                             id="framework_drag"
                             :disabled="canEdit !== true"
                             :group="{ name: 'test' }"
@@ -626,7 +626,7 @@ export default {
             this.$router.push({name: "frameworks"});
         }
         let documentBody = document.getElementById('framework');
-        documentBody.addEventListener('scroll', debounce(this.scrollFunction, 100, {'leading': true}));
+        documentBody.addEventListener('scroll', debounce(this.scrollFunction, 10, {'immediate': true}));
         if (!this.framework.competency || this.framework.competency.length === 0) {
             this.hierarchyIsdoneLoading = true;
         }
@@ -662,7 +662,7 @@ export default {
         scrollFunction(e) {
             let documentObject = document.getElementsByClassName('parent-object');
             let scrollValue = e.target.scrollTop;
-            if (scrollValue !== 0) {
+            if (scrollValue > 12) {
                 this.parentObjectClass = 'parent-object scrolled';
             } else {
                 this.parentObjectClass = 'parent-object';

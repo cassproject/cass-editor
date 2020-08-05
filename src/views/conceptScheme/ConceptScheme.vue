@@ -738,7 +738,7 @@ export default {
             this.$router.push({name: "frameworks"});
         }
         let documentBody = document.getElementById('concept');
-        documentBody.addEventListener('scroll', debounce(this.scrollFunction, 100, {'leading': true}));
+        documentBody.addEventListener('scroll', debounce(this.scrollFunction, 10, {'immediate': true}));
     },
     beforeDestroy() {
     },
@@ -759,7 +759,7 @@ export default {
         scrollFunction(e) {
             let documentObject = document.getElementsByClassName('parent-object');
             let scrollValue = e.target.scrollTop;
-            if (scrollValue !== 0) {
+            if (scrollValue > 20) {
                 this.parentObjectClass = 'parent-object scrolled';
             } else {
                 this.parentObjectClass = 'parent-object';

@@ -429,6 +429,7 @@ ul.processing-list {
     .parent-object.scrolled {
         z-index: 8;
         position: fixed;
+        width: 80%;
         height: 56px;
         overflow: hidden;
         .tag {
