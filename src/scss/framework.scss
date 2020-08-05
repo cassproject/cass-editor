@@ -37,6 +37,9 @@ drag, drag, and chosen states
 .sortable-fallback {
     border: dashed 2px green;
 }
+.no-child {
+    display: none;
+}
 .ghost-drag {
     .no-child {
         display: none;
@@ -106,7 +109,7 @@ drag, drag, and chosen states
     .is-id {
         width: 200px;
         text-align: left;
-        max-width: calc(100% - 10rem);
+        max-width: calc(100%);
         display: inline-block;
         direction: rtl;
         text-overflow: ellipsis;
@@ -409,13 +412,10 @@ ul.processing-list {
         padding: .5rem;
     }
     .parent-object {
-        position: sticky;
         background-color: $white;
-        top: 0px;
         z-index: 9;
         width: 100%;
-        transition: height .1s;
-        position: -webkit-sticky;
+        transition: height .5s;
         .lode__Framework {
             display: flex;
             margin: 0rem 2rem;
@@ -428,6 +428,7 @@ ul.processing-list {
     }
     .parent-object.scrolled {
         z-index: 8;
+        position: fixed;
         height: 56px;
         overflow: hidden;
         .tag {
@@ -622,6 +623,10 @@ ul.processing-list {
         padding-bottom: .5rem;
     }
     padding-bottom: .5rem;
+}
+.lode__Competency .lode__Property:first-of-type,
+.lode__Concept .lode__Property:first-of-type {
+    padding-right: 5rem !important;
 }
 .lode__Hierarchy {
     .lode__Property {
