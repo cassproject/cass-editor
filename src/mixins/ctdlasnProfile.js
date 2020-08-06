@@ -40,6 +40,7 @@ export default {
                     "readOnly": "true",
                     "valuesIndexed": function() { return me.ctids; },
                     "max": 1,
+                    "isRequired": "true",
                     "heading": "Keys"
                 },
                 "http://schema.org/name": {
@@ -50,7 +51,7 @@ export default {
                     "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The name or title of this competency framework. One name or title per language."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name*"}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}],
                     "isRequired": "true",
                     "onePerLanguage": "true",
                     "heading": "General"
@@ -65,6 +66,7 @@ export default {
                     [{"@language": "en", "@value": "A short description of this framework. One description per language."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}],
                     "onePerLanguage": "true",
+                    "isRequired": "true",
                     "heading": "General"
                 },
                 "http://schema.org/creator": {
@@ -102,6 +104,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The entity responsible for making this competency framework available. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Publisher"}],
+                    "isRequired": "true",
                     "heading": "General"
                 },
                 "http://schema.org/inLanguage": {
@@ -112,7 +115,7 @@ export default {
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The primary language used in or by this competency framework or competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "In Language*"}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "In Language"}],
                     "isRequired": "true",
                     "heading": "General"
                 },
@@ -372,6 +375,7 @@ export default {
                     "readOnly": "true",
                     "valuesIndexed": function() { return me.ctids; },
                     "max": 1,
+                    "isRequired": "true",
                     "heading": "Keys"
                 },
                 "https://purl.org/ctdlasn/terms/competencyLabel": {
@@ -394,7 +398,7 @@ export default {
                     "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The text of the competency. One per language."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Competency Text*"}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Competency Text"}],
                     "isRequired": "true",
                     "onePerLanguage": "true",
                     "heading": "General"
@@ -750,6 +754,7 @@ export default {
                     "readOnly": "true",
                     "valuesIndexed": function() { return me.ctids; },
                     "max": 1,
+                    "isRequired": "true",
                     "heading": "Keys"
                 },
                 "http://purl.org/dc/terms/title": {
@@ -775,6 +780,7 @@ export default {
                     [{"@language": "en", "@value": "A short description of this resource. One definition per language"}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}],
                     "heading": "General",
+                    "isRequired": "true",
                     "onePerLanguage": "true"
                 },
                 "http://purl.org/dc/terms/creator": {
@@ -861,6 +867,7 @@ export default {
                         }
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Language"}],
+                    "isRequired": "true",
                     "heading": "General"
                 },
                 "http://purl.org/dc/elements/1.1/source": {
@@ -884,6 +891,7 @@ export default {
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Source"}],
                     "heading": "General",
+                    "isRequired": "true",
                     "max": 1
                 },
                 "https://purl.org/ctdlasn/terms/conceptKeyword": {
@@ -1001,6 +1009,7 @@ export default {
                         {display: "Published", val: "http://credreg.net/ctdlasn/vocabs/publicationStatus/Published"},
                         {display: "Deprecated", val: "http://credreg.net/ctdlasn/vocabs/publicationStatus/Deprecated"}
                     ],
+                    "isRequired": "true",
                     "max": 1
                 },
                 "http://purl.org/dc/terms/dateCopyrighted": {
@@ -1163,6 +1172,7 @@ export default {
                     "readOnly": "true",
                     "valuesIndexed": function() { return me.conceptCtids; },
                     "max": 1,
+                    "isRequired": "true",
                     "heading": "Keys"
                 },
                 "http://www.w3.org/2004/02/skos/core#prefLabel": {
