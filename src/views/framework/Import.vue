@@ -239,7 +239,7 @@
                                 :newFramework="true"
                                 @deleteObject="deleteObject"
                                 @exportObject="exportObject"
-                                properties="tertiary" />
+                                :properties="importType === 'text' ? 'primary' : 'tertiary'" />
                             <ConceptHierarchy
                                 :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                 view="import"
@@ -292,7 +292,7 @@
                                 :newFramework="true"
                                 @deleteObject="deleteObject"
                                 @exportObject="exportObject"
-                                properties="tertiary" />
+                                :properties="importType === 'text' ? 'primary' : 'tertiary'" />
                             <ConceptHierarchy
                                 :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                 view="import"
