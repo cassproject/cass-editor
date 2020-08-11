@@ -542,6 +542,7 @@
                         <div class="field">
                             <button
                                 class="button is-pulled-right is-primary is-outlined"
+                                :disabled="!importFrameworkName || !importText || importFrameworkName.trim().length === 0"
                                 @click="$store.commit('app/importStatus', 'parseText')">
                                 Import
                             </button>

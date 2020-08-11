@@ -407,10 +407,12 @@ ul.processing-list {
     }
 }
 .framework-content {
+    margin-bottom: 240px;
     .lode__thing .lode__Framework,
     .lode__thing .lode__ConceptScheme {
         padding: .5rem;
     }
+    #framework-drag {}
     .parent-object {
         background-color: $white;
         z-index: 9;
@@ -429,10 +431,14 @@ ul.processing-list {
     .parent-object.scrolled {
         z-index: 8;
         position: fixed;
-        height: 56px;
+        width: 100%;
+        height: 58px;
         overflow: hidden;
         .tag {
             display: none;
+        }
+        .hierarchy-item__buttons {
+            right: 10rem !important;
         }
         .lode__thing-heading {
             .lode__Property {
@@ -626,7 +632,7 @@ ul.processing-list {
 }
 .lode__Competency .lode__Property:first-of-type,
 .lode__Concept .lode__Property:first-of-type {
-    padding-right: 5rem !important;
+    padding-right: 6rem !important;
 }
 .lode__Hierarchy {
     .lode__Property {
