@@ -1676,6 +1676,7 @@ export default {
             this.repo.multiput(toSave, function() {
                 me.importSuccess();
                 me.spitEvent("importFinished", me.importFramework.shortId(), "importPage");
+                me.hierarchyIsdoneLoading = true;
             }, function(failure) {
                 appLog("failure", failure);
                 me.$store.commit('app/addImportError', failure);
