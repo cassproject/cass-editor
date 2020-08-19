@@ -884,7 +884,7 @@ export default {
                         }
                     }, appError);
                     me.$store.commit('editor/framework', null);
-                    me.$router.push({name: "frameworks"});
+                    me.$router.push({name: "concepts"});
                 }, appLog);
             } else {
                 // Delete concept and fields
