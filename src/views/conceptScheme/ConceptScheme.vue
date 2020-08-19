@@ -797,7 +797,7 @@ export default {
                 return;
             }
             if (EcRepository.shouldTryUrl(this.framework.id) === false) {
-                this.schemeExportGuid = EcCrypto.md5(this.framework.id);
+                this.schemeExportGuid = EcCrypto.md5(this.framework.shortId());
             } else {
                 this.schemeExportGuid = this.framework.getGuid();
             }
@@ -943,7 +943,7 @@ export default {
         exportObject: function(concept, exportType) {
             var guid;
             if (EcRepository.shouldTryUrl(concept.id) === false) {
-                guid = EcCrypto.md5(concept.id);
+                guid = EcCrypto.md5(concept.shortId());
             } else {
                 guid = concept.getGuid();
             }

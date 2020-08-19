@@ -716,7 +716,7 @@ export default {
         exportObject: function(type) {
             var guid;
             if (EcRepository.shouldTryUrl(this.importFramework.id) === false) {
-                guid = EcCrypto.md5(this.importFramework.id);
+                guid = EcCrypto.md5(this.importFramework.shortId());
             } else {
                 guid = this.importFramework.getGuid();
             }
