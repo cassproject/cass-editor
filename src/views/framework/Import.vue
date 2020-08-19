@@ -1696,7 +1696,9 @@ export default {
                             appLog(frameworks);
                             if (frameworks.length > 0) {
                                 me.$store.commit('app/importStatus', 'framework found...');
-                                me.showModal('duplicateOverwriteOnly', [result]);
+                                if (me.importType === 'url') {
+                                    me.showModal('duplicateOverwriteOnly', [result]);
+                                }
                             } else {
                                 me.$store.commit('app/importStatus', 'no match, saving new framework...');
                                 me.importJsonLd(result);
