@@ -408,6 +408,8 @@ export default {
             ident.displayName = this.createLinkPersonName;
             ident.ppk = EcPpk.generateKey();
             EcIdentityManager.addIdentity(ident);
+            EcIdentityManager.saveContacts();
+            EcIdentityManager.saveIdentities();
             this.identityToLinkToPerson = ident;
             this.ecRemoteIdentMgr.commit(this.createPersonObjectToLinkToIdentity, this.handleAttemptLoginFetchIdentityFailure);
         },
@@ -562,6 +564,8 @@ export default {
                     this.linkedPerson = ep;
                     appLog('Matching person record found: ');
                     appLog(ep);
+                    EcIdentityManager.saveContacts();
+                    EcIdentityManager.saveIdentities();
                 }
             }
             if (matchingPersonRecordFound) this.addGroupIdentities();
