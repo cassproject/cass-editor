@@ -154,9 +154,38 @@ export default {
                 ss.href = this.queryParams.css;
                 document.getElementsByTagName("head")[0].appendChild(ss);
             }
+            EcIdentityManager.readContacts();
+            EcIdentityManager.readIdentities();
+            if (EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
+                this.findLinkedPersonForIdentity();
+            }
         },
         onSidebarEvent: function() {
             this.showSideNav = !this.showSideNav;
+        },
+        findLinkedPersonForIdentity: function() {
+            appLog("Finding linked person for identity...");
+            let identFingerprint = EcIdentityManager.ids[0].ppk.toPk().fingerprint();
+            let paramObj = {};
+            paramObj.size = 10000;
+            window.repo.searchWithParams("@type:Person AND @id:\"" + identFingerprint + "\"", paramObj, null,
+                this.findLinkedPersonPersonSearchSuccess, this.findLinkedPersonPersonSearchFailure);
+        },
+        findLinkedPersonPersonSearchSuccess(ecRemoteLda) {
+            appLog("Linked person person search success: ");
+            appLog(ecRemoteLda);
+            for (let ecrld of ecRemoteLda) {
+                let ep = new EcPerson();
+                ep.copyFrom(ecrld);
+                if (ep.getGuid().equals(EcIdentityManager.ids[0].ppk.toPk().fingerprint())) {
+                    this.$store.commit('user/loggedOnPerson', ep);
+                    appLog('Matching person record found: ');
+                    appLog(ep);
+                }
+            }
+        },
+        findLinkedPersonPersonSearchFailure(msg) {
+            appLog('Linked person person search failure: ' + msg);
         },
         cappend: function(event) {
             if (event.data.message === "selected") {
