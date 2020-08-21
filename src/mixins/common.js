@@ -323,7 +323,7 @@ export default {
                 if (this.framework != null) {
                     var link;
                     if (EcRepository.shouldTryUrl(this.framework.id) === false) {
-                        link = this.repo.selectedServer + "ceasn/" + EcCrypto.md5(this.framework.id);
+                        link = this.repo.selectedServer + "ceasn/" + EcCrypto.md5(this.framework.shortId());
                     } else {
                         link = this.framework.id.replace("/data/", "/ceasn/");
                     }
