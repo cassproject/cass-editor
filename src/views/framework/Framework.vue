@@ -733,7 +733,7 @@ export default {
                 return;
             }
             if (EcRepository.shouldTryUrl(this.framework.id) === false) {
-                this.frameworkExportGuid = EcCrypto.md5(this.framework.id);
+                this.frameworkExportGuid = EcCrypto.md5(this.framework.shortId());
             } else {
                 this.frameworkExportGuid = this.framework.getGuid();
             }
@@ -751,7 +751,7 @@ export default {
         exportObject: function(selectedCompetency, exportType) {
             var guid;
             if (EcRepository.shouldTryUrl(selectedCompetency.id) === false) {
-                guid = EcCrypto.md5(selectedCompetency.id);
+                guid = EcCrypto.md5(selectedCompetency.shortId());
             } else {
                 guid = selectedCompetency.getGuid();
             }

@@ -99,6 +99,23 @@
                                     Please note that the Technology Skills framework below is very large and will take a long time to import.
                                 </li>
                             </div>
+                            <div
+                                class="column is-12"
+                                v-else-if="importType=='text' && !conceptMode">
+                                <p class="is-size-6">
+                                    If you have a list of competency names, you can organize them into a new framework by pasting here.
+                                </p>
+                                <br>
+                                <li class="is-size-6">
+                                    Copy and paste or start typing, listing each competency on a separate line.
+                                </li>
+                                <li class="is-size-6">
+                                    Use spaces to indicate indenture.
+                                </li>
+                                <li class="is-size-6">
+                                    Below the text box, you will see a preview of the hierarchy you are creating and can make any needed adjustments before importing.
+                                </li>
+                            </div>
                             <!-- ready state details -->
                             <div class="column is-12">
                                 <p
@@ -699,7 +716,7 @@ export default {
         exportObject: function(type) {
             var guid;
             if (EcRepository.shouldTryUrl(this.importFramework.id) === false) {
-                guid = EcCrypto.md5(this.importFramework.id);
+                guid = EcCrypto.md5(this.importFramework.shortId());
             } else {
                 guid = this.importFramework.getGuid();
             }
@@ -1659,6 +1676,7 @@ export default {
             this.repo.multiput(toSave, function() {
                 me.importSuccess();
                 me.spitEvent("importFinished", me.importFramework.shortId(), "importPage");
+                me.hierarchyIsdoneLoading = true;
             }, function(failure) {
                 appLog("failure", failure);
                 me.$store.commit('app/addImportError', failure);
@@ -1678,7 +1696,9 @@ export default {
                             appLog(frameworks);
                             if (frameworks.length > 0) {
                                 me.$store.commit('app/importStatus', 'framework found...');
-                                me.showModal('duplicateOverwriteOnly', [result]);
+                                if (me.importType === 'url') {
+                                    me.showModal('duplicateOverwriteOnly', [result]);
+                                }
                             } else {
                                 me.$store.commit('app/importStatus', 'no match, saving new framework...');
                                 me.importJsonLd(result);
