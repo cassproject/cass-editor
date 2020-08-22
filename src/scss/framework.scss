@@ -38,36 +38,73 @@ drag, drag, and chosen states
     border: dashed 2px green;
 }
 .no-child {
-    display: none;
+    min-height: 1px;
 }
 .ghost-drag {
+    border: dashed 2px transparent;
+    min-height: 32px;
     .no-child {
-        display: none;
     }
     .lode__hierarchy-item {
         border-radius: 5px;
     }
+      .handle-button {
+        visibility: visible !important;
+    }
     .comment-button, .edit-button {
         visibility: hidden;
     }
-
+    ul.lode__hierarchy-sub-ul {
+        .handle-button {
+            visibility: hidden;
+        }
+        .handle-button:hover {
+            visibility: hidden;
+        }
+    }
     .add-node-section {
         visibility: hidden !important;
     }
 }
 .chosen-drag {
-    border: dashed 2px $link;
+    border: dashed 2px $link !important;
     background-color: white;
+    min-height: 32px;
     .no-child {
-        display: none;
     }
     .comment-button, .edit-button {
-        visibility: hidden;
+        visibility: hidden !important;
     }
-    i.fa-arrows-alt {
+    .handle-button {
         visibility: visible;
     }
+    ul.lode__hierarchy-sub-ul {
+        .handle-button {
+            visibility: hidden;
+        }
+        .handle-button:hover {
+            visibility: hidden;
+        }
+    }
     .add-node-section {
+        visibility: hidden !important;
+    }
+}
+.chosen-drag.ghost-drag {
+    .no-child {
+    }
+    .handle-button {
+        visibility: visible;
+    }
+    ul.lode__hierarchy-sub-ul {
+        .handle-button {
+            visibility: hidden;
+        }
+        .handle-button:hover {
+            visibility: hidden;
+        }
+    }
+    .comment-button, .edit-button {
         visibility: hidden !important;
     }
 }
@@ -76,7 +113,6 @@ drag, drag, and chosen states
     background-color: white;
     display: none;
     .no-child {
-        display: none;
     }
     .lode__type {
         display: none;
@@ -85,21 +121,38 @@ drag, drag, and chosen states
         display: none;
     }
     .comment-button, .edit-button {
-        visibility: hidden;
+        visibility: hidden !important;
     }
-     i.fa-arrows-alt{
+    .handle-button {
         visibility: visible;
-        color: $cass-primary-down;
+    }
+    ul.lode__hierarchy-sub-ul {
+        .handle-button {
+            visibility: hidden;
+        }
+        .handle-button:hover {
+            visibility: hidden;
+        }
     }
     .add-node-section {
         display: none !important;
     }
 }
+.dragging {
+    .handle-button {
+        visibility: hidden !important;
+    }
+    .handle-button:hover {
+            visibility: hidden !important;
+        }
+}
 .dragging.no-child {
-    border: dashed 2px grey;
-    min-height: 36px;
+    min-height: 1px;
     margin-left: 5rem;
-    margin-bottom: .5rem;
+    display: block;
+    .chosen-drag .no-child {
+        display: none !important;
+    }
 }
 .uneditable {
     width: 100%;
@@ -235,8 +288,10 @@ drag, drag, and chosen states
         }
         margin-top: .5rem;
         margin-bottom: .25rem;
-        li.lode__hierarchy-li {
-            padding-bottom: .5rem;
+        li.lode__hierarchy-li,
+        li.lode__hierarchy-sub-li {
+            // padding-bottom: .25rem;
+            border: solid 2px transparent;
             .check-radio-column .field {
                 padding-top: .25rem;
             }
@@ -348,6 +403,7 @@ drag, drag, and chosen states
                 margin-left: 1.25rem;
                 padding: 0rem 0rem;
                 li.lode__hierarchy-sub-li {
+                    border: solid 2px transparent;
                     .lode__name {
                         font-size: 1rem; // top level competencies
                         color: rgba($text, .95);
