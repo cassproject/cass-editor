@@ -10,6 +10,9 @@
     margin: auto;
     display: block;
 }
+.extra-space-for-scroll {
+    height: 200px;
+}
 .lode__type {
     display: none;
 }
@@ -463,7 +466,7 @@ ul.processing-list {
     }
 }
 .framework-content {
-    margin-bottom: 240px;
+    // margin-bottom: 240px;
     .lode__thing .lode__Framework,
     .lode__thing .lode__ConceptScheme {
         padding: .5rem;

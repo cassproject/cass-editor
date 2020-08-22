@@ -134,6 +134,9 @@
                 </div>
             </div>
         </div>
+        <div
+            v-if="scrolled"
+            class="extra-space-for-scroll" />
     </div>
 </template>
 <script>
@@ -164,6 +167,7 @@ export default {
     mixins: [common, exports, competencyEdits, ctdlasnProfile, t3Profile, tlaProfile, getLevelsAndRelations],
     data: function() {
         return {
+            scrolled: false,
             hierarchyIsdoneLoading: false,
             parentObjectClass: 'parent-object',
             showVersionHistory: false,
@@ -665,10 +669,12 @@ export default {
         scrollFunction(e) {
             let documentObject = document.getElementsByClassName('parent-object');
             let scrollValue = e.target.scrollTop;
-            if (scrollValue > 140) {
+            if (scrollValue > 0) {
                 this.parentObjectClass = 'parent-object scrolled';
+                this.scrolled = true;
             } else {
                 this.parentObjectClass = 'parent-object';
+                this.scrolled = false;
             }
         },
         handleSearch: function(e) {
