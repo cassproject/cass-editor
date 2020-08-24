@@ -83,7 +83,7 @@
                 </div>
             </div>
             <div
-                class="columns is-multiline "
+                class="columns is-multiline is-mobile"
                 v-if="canEditFramework">
                 <!-- end share link -->
                 <div v-if="ownerCount === 0">
@@ -96,7 +96,7 @@
                 <div
                     class="column is-12"
                     v-else>
-                    <div class="columns is-vcentered">
+                    <div class="columns is-vcentered is-mobile">
                         <div class="column">
                             <label class="label">Add users or groups</label>
                         </div>
