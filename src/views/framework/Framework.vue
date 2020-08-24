@@ -890,9 +890,9 @@ export default {
                 var a = EcAlignment.getBlocking(this.framework.relation[i]);
                 if (a == null) { continue; }
                 if (a.relationType === "narrows") {
-                    if (a[this.edgeTargetProperty] == null) continue;
-                    if (a[this.edgeSourceProperty] == null) continue;
-                    if (a[this.edgeSourceProperty] !== id) continue;
+                    if (a.target == null) continue;
+                    if (a.source == null) continue;
+                    if (a.source !== id) continue;
                     appLog("Identified edge to remove: ", JSON.parse(a.toJson()));
                     this.framework.relation.splice(i--, 1);
                 }
