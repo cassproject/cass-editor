@@ -564,7 +564,7 @@ export default {
                     var framework = this.$store.state.editor.framework;
                     if (this.$store.state.editor.selectedCompetency != null) {
                         var selectedCompetency = this.$store.state.editor.selectedCompetency;
-                        if (EcRepository.shouldTryUrl(selectedCompetency.id) === false) {
+                        if (EcRepository.shouldTryUrl(selectedCompetency.id) === false && selectedCompetency.id.indexOf(this.repo.selectedServer) === -1) {
                             link = this.repo.selectedServer + "data/" + EcCrypto.md5(selectedCompetency.shortId());
                             fid = this.repo.selectedServer + "data/" + EcCrypto.md5(framework.shortId());
                             guid = EcCrypto.md5(selectedCompetency.shortId());
@@ -574,7 +574,7 @@ export default {
                             guid = selectedCompetency.getGuid();
                         }
                     } else {
-                        if (EcRepository.shouldTryUrl(framework.id) === false) {
+                        if (EcRepository.shouldTryUrl(framework.id) === false && framework.id.indexOf(this.repo.selectedServer) === -1) {
                             link = this.repo.selectedServer + "data/" + EcCrypto.md5(framework.shortId());
                             fid = this.repo.selectedServer + "data/" + EcCrypto.md5(framework.shortId());
                             guid = EcCrypto.md5(framework.shortId());

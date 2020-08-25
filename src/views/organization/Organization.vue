@@ -92,7 +92,7 @@ export default {
     components: {Thing},
     created: function() {
         this.organization = this.$store.state.editor.organization;
-        if (EcRepository.shouldTryUrl(this.organization.id) === false) {
+        if (EcRepository.shouldTryUrl(this.organization.id) === false && this.organization.id.indexOf(this.repo.selectedServer) === -1) {
             this.exportGuid = EcCrypto.md5(this.organization.id);
         } else {
             this.exportGuid = this.organization.getGuid();
