@@ -287,7 +287,7 @@ export default {
                 if (this.queryParams.selectVerbose === "true" && this.$store.getters['editor/conceptMode'] !== true) {
                     if (this.queryParams.selectExport === "ctdlasn") {
                         var link;
-                        if (EcRepository.shouldTryUrl(selectedArray[i]) === false) {
+                        if (EcRepository.shouldTryUrl(selectedArray[i]) === false && selectedArray[i].indexOf(this.repo.selectedServer) === -1) {
                             link = this.repo.selectedServer + "ceasn/" + EcCrypto.md5(selectedArray[i]);
                         } else {
                             link = selectedArray[i].replace("/data/", "/ceasn/");
@@ -322,7 +322,7 @@ export default {
             if (this.queryParams.selectExport === "ctdlasn" && this.$store.getters['editor/conceptMode'] !== true) {
                 if (this.framework != null) {
                     var link;
-                    if (EcRepository.shouldTryUrl(this.framework.id) === false) {
+                    if (EcRepository.shouldTryUrl(this.framework.id) === false && this.framework.id.indexOf(this.repo.selectedServer) === -1) {
                         link = this.repo.selectedServer + "ceasn/" + EcCrypto.md5(this.framework.shortId());
                     } else {
                         link = this.framework.id.replace("/data/", "/ceasn/");

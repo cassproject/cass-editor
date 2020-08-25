@@ -741,7 +741,7 @@ export default {
                 appLog("no framework to refresh");
                 return;
             }
-            if (EcRepository.shouldTryUrl(this.framework.id) === false) {
+            if (EcRepository.shouldTryUrl(this.framework.id) === false && this.framework.id.indexOf(this.repo.selectedServer) === -1) {
                 this.frameworkExportGuid = EcCrypto.md5(this.framework.shortId());
             } else {
                 this.frameworkExportGuid = this.framework.getGuid();
@@ -759,7 +759,7 @@ export default {
         },
         exportObject: function(selectedCompetency, exportType) {
             var guid;
-            if (EcRepository.shouldTryUrl(selectedCompetency.id) === false) {
+            if (EcRepository.shouldTryUrl(selectedCompetency.id) === false && selectedCompetency.id.indexOf(this.repo.selectedServer) === -1) {
                 guid = EcCrypto.md5(selectedCompetency.shortId());
             } else {
                 guid = selectedCompetency.getGuid();
@@ -886,18 +886,19 @@ export default {
             }, appError);
         },
         moveToTopLevel: function(id) {
+            var me = this;
             for (var i = 0; i < this.framework.relation.length; i++) {
                 var a = EcAlignment.getBlocking(this.framework.relation[i]);
                 if (a == null) { continue; }
                 if (a.relationType === "narrows") {
-                    if (a[this.edgeTargetProperty] == null) continue;
-                    if (a[this.edgeSourceProperty] == null) continue;
-                    if (a[this.edgeSourceProperty] !== id) continue;
+                    if (a.target == null) continue;
+                    if (a.source == null) continue;
+                    if (a.source !== id) continue;
                     appLog("Identified edge to remove: ", JSON.parse(a.toJson()));
                     this.framework.relation.splice(i--, 1);
                 }
                 repo.saveTo(this.framework, function() {
-                    this.once = true;
+                    me.once = true;
                 }, function() {});
             }
         }
