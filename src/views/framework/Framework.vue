@@ -741,7 +741,7 @@ export default {
                 appLog("no framework to refresh");
                 return;
             }
-            if (EcRepository.shouldTryUrl(this.framework.id) === false) {
+            if (EcRepository.shouldTryUrl(this.framework.id) === false && this.framework.id.indexOf(this.repo.selectedServer) === -1) {
                 this.frameworkExportGuid = EcCrypto.md5(this.framework.shortId());
             } else {
                 this.frameworkExportGuid = this.framework.getGuid();
@@ -759,7 +759,7 @@ export default {
         },
         exportObject: function(selectedCompetency, exportType) {
             var guid;
-            if (EcRepository.shouldTryUrl(selectedCompetency.id) === false) {
+            if (EcRepository.shouldTryUrl(selectedCompetency.id) === false && selectedCompetency.id.indexOf(this.repo.selectedServer) === -1) {
                 guid = EcCrypto.md5(selectedCompetency.shortId());
             } else {
                 guid = selectedCompetency.getGuid();
