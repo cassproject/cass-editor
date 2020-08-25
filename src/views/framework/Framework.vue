@@ -886,6 +886,7 @@ export default {
             }, appError);
         },
         moveToTopLevel: function(id) {
+            var me = this;
             for (var i = 0; i < this.framework.relation.length; i++) {
                 var a = EcAlignment.getBlocking(this.framework.relation[i]);
                 if (a == null) { continue; }
@@ -897,7 +898,7 @@ export default {
                     this.framework.relation.splice(i--, 1);
                 }
                 repo.saveTo(this.framework, function() {
-                    this.once = true;
+                    me.once = true;
                 }, function() {});
             }
         }
