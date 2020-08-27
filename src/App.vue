@@ -1163,7 +1163,7 @@ export default {
     #app-content {
         height: 100%;
     }
-    .clear-narrow-side-bar {
+    .clear-narrow-side-bar :not(.legacyIframe) {
         margin-left: 4rem;
     }
 

@@ -207,10 +207,12 @@
                     </h2>
                     <ul>
                         <li>
-                            <a
+                            <router-link
                                 class="custom-link external"
-                                :href="baseRepoUrl + 'cass-vlrc'"
-                                target="_blank">Dashboards</a>
+                                to="/vlrc"
+                                target="_blank">
+                                Dashboards
+                            </router-link>
                         </li>
                         <!--
                         <li>

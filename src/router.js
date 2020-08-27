@@ -143,6 +143,11 @@ export default new Router({
             path: '/500',
             name: 'InternalError',
             component: () => import('./views/InternalError.vue')
+        },
+        {
+            path: '/vlrc',
+            name: 'vlrc',
+            component: () => import('./legacy/VlrcIframe.vue')
         }
     ]
 });
