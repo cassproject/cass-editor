@@ -214,26 +214,30 @@
                                 Dashboards
                             </router-link>
                         </li>
-                        <!--
                         <li>
-                            <a
+                            <router-link
                                 class="custom-link external"
-                                :href="baseRepoUrl + 'cass-gap-analysis'"
-                                target="_blank">GAP Analysis</a>
+                                to="/gap-analysis"
+                                target="_blank">
+                                Gap Analysis
+                            </router-link>
                         </li>
                         <li>
-                            <a
+                            <router-link
                                 class="custom-link external"
-                                :href="baseRepoUrl + 'cass-profile'"
-                                target="_blank">Profile Explorer</a>
+                                to="/profile"
+                                target="_blank">
+                                Profile Explorer
+                            </router-link>
                         </li>
                         <li>
-                            <a
+                            <router-link
                                 class="custom-link external"
-                                :href="baseRepoUrl + 'cass-viewer'"
-                                target="_blank">Framework Explorer</a>
+                                to="/viewer"
+                                target="_blank">
+                                Framework Explorer
+                            </router-link>
                         </li>
-                        -->
                     </ul>
                     <h2 class="header pt-4 has-text-weight-bold is-size-5">
                         Get in touch
