@@ -15,7 +15,7 @@
                             <span class="icon">
                                 <i class="fas fa-check-square" />
                             </span>
-                            <span class="is-hidden-touch">Primary</span>
+                            <span class="is-hidden-touch">{{ ceasnDataFields ? "Low Detail" : "Primary" }}</span>
                             <span class="is-hidden-desktop">1st</span>
                         </div>
                         <!-- secondary -->
@@ -34,7 +34,7 @@
                                 class="icon">
                                 <i class="fas fa-check-square" />
                             </span>
-                            <span class="is-hidden-touch">Secondary</span>
+                            <span class="is-hidden-touch">{{ ceasnDataFields ? "Moderate Detail" : "Secondary" }}</span>
                             <span class="is-hidden-desktop">2nd</span>
                         </div>
                         <!-- tertiary -->
@@ -53,7 +53,7 @@
                                 class="icon">
                                 <i class="fas fa-square" />
                             </span>
-                            <span class="is-hidden-touch">Tertiary</span>
+                            <span class="is-hidden-touch">{{ ceasnDataFields ? "High Detail" : "Tertiary" }}</span>
                             <span class="is-hidden-desktop">3rd</span>
                         </div>
                     </div>
@@ -424,6 +424,9 @@ export default {
         },
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];
+        },
+        ceasnDataFields: function() {
+            return this.queryParams.ceasnDataFields === 'true';
         },
         canEditFramework: function() {
             if (this.queryParams && this.queryParams.view === 'true') {
