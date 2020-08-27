@@ -143,6 +143,26 @@ export default new Router({
             path: '/500',
             name: 'InternalError',
             component: () => import('./views/InternalError.vue')
+        },
+        {
+            path: '/vlrc',
+            name: 'vlrc',
+            component: () => import('./legacy/VlrcIframe.vue')
+        },
+        {
+            path: '/gap-analysis',
+            name: 'gap-analysis',
+            component: () => import('./legacy/GapAnalysisIframe.vue')
+        },
+        {
+            path: '/profile',
+            name: 'profile',
+            component: () => import('./legacy/ProfileIframe.vue')
+        },
+        {
+            path: '/viewer',
+            name: 'viewer',
+            component: () => import('./legacy/ViewerIframe.vue')
         }
     ]
 });

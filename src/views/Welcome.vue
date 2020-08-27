@@ -207,31 +207,37 @@
                     </h2>
                     <ul>
                         <li>
-                            <a
+                            <router-link
                                 class="custom-link external"
-                                :href="baseRepoUrl + 'cass-vlrc'"
-                                target="_blank">Dashboards</a>
-                        </li>
-                        <!--
-                        <li>
-                            <a
-                                class="custom-link external"
-                                :href="baseRepoUrl + 'cass-gap-analysis'"
-                                target="_blank">GAP Analysis</a>
+                                to="/vlrc"
+                                target="_blank">
+                                Dashboards
+                            </router-link>
                         </li>
                         <li>
-                            <a
+                            <router-link
                                 class="custom-link external"
-                                :href="baseRepoUrl + 'cass-profile'"
-                                target="_blank">Profile Explorer</a>
+                                to="/gap-analysis"
+                                target="_blank">
+                                Gap Analysis
+                            </router-link>
                         </li>
                         <li>
-                            <a
+                            <router-link
                                 class="custom-link external"
-                                :href="baseRepoUrl + 'cass-viewer'"
-                                target="_blank">Framework Explorer</a>
+                                to="/profile"
+                                target="_blank">
+                                Profile Explorer
+                            </router-link>
                         </li>
-                        -->
+                        <li>
+                            <router-link
+                                class="custom-link external"
+                                to="/viewer"
+                                target="_blank">
+                                Framework Explorer
+                            </router-link>
+                        </li>
                     </ul>
                     <h2 class="header pt-4 has-text-weight-bold is-size-5">
                         Get in touch
