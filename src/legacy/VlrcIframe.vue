@@ -21,7 +21,6 @@ export default {
         let index = this.repo.selectedServer.lastIndexOf('api');
         this.baseRepoUrl = this.repo.selectedServer.slice(0, index);
         this.origin = window.location.origin;
-        console.log(this.origin);
     },
     created: function() {
         window.addEventListener('message', this.sendIdentity);
