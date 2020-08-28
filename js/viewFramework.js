@@ -50,7 +50,7 @@ function select() {
 		if (queryParams.selectVerbose == "true" && queryParams.concepts != "true") {
 			if (queryParams.selectExport == "ctdlasn") {
 				var link;
-				if (EcRepository.shouldTryUrl($(this).attr("id")) == false) {
+				if (EcRepository.shouldTryUrl($(this).attr("id")) == false && $(this).attr("id").indexOf(repo.selectedServer) == -1) {
 					link = repo.selectedServer + "ceasn/" + EcCrypto.md5($(this).attr("id"));
 				} else {
 					link = $(this).attr("id").replace("/data/", "/ceasn/");
@@ -89,7 +89,7 @@ function select() {
 	if (queryParams.selectExport == "ctdlasn" && queryParams.concepts != "true") {
 		if (framework != null) {
 			var link;
-			if (EcRepository.shouldTryUrl(framework.id) == false) {
+			if (EcRepository.shouldTryUrl(framework.id) == false && framework.id.indexOf(repo.selectedServer) === -1) {
 				link = repo.selectedServer + "ceasn/" + EcCrypto.md5(framework.id);
 			} else {
 				link = framework.id.replace("/data/", "/ceasn/");
@@ -2119,13 +2119,13 @@ exportSelected = function () {
 	var link;
 	var guid;
 	if (selectedCompetency != null) {
-		if (EcRepository.shouldTryUrl(selectedCompetency.id) == false) {
+		if (EcRepository.shouldTryUrl(selectedCompetency.id) == false && selectedCompetency.id.indexOf(repo.selectedServer) === -1) {
 			guid = EcCrypto.md5(selectedCompetency.id);
 		} else {
 			guid = selectedCompetency.getGuid();
 		}
 	} else {
-		if (EcRepository.shouldTryUrl(framework.id) == false) {
+		if (EcRepository.shouldTryUrl(framework.id) == false && framework.id.indexOf(repo.selectedServer) === -1) {
 			guid = EcCrypto.md5(framework.id);
 		} else {
 			guid = framework.getGuid();

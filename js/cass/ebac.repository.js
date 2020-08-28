@@ -1,4 +1,75 @@
 /**
+ *  A representation of a file.
+ * 
+ *  @author fritz.ray@eduworks.com
+ *  @module com.eduworks.ec
+ *  @class GeneralFile
+ *  @extends EcRemoteLinkedData
+ *  @constructor
+ */
+var GeneralFile = function() {
+    EcRemoteLinkedData.call(this, General.context, GeneralFile.myType);
+};
+GeneralFile = stjs.extend(GeneralFile, EcRemoteLinkedData, [], function(constructor, prototype) {
+    constructor.TYPE_0_1 = "http://schema.eduworks.com/general/0.1/file";
+    constructor.TYPE_0_2 = "http://schema.eduworks.com/general/0.2/file";
+    constructor.myType = GeneralFile.TYPE_0_2;
+    /**
+     *  Optional checksum of the file, used to verify if the file has been
+     *  transmitted correctly.
+     * 
+     *  @property checksum
+     *  @type String
+     */
+    prototype.checksum = null;
+    /**
+     *  Mime type of the file.
+     * 
+     *  @property mimeType
+     *  @type String
+     */
+    prototype.mimeType = null;
+    /**
+     *  Base-64 encoded version of the bytestream of a file.
+     * 
+     *  @property data
+     *  @type String
+     */
+    prototype.data = null;
+    /**
+     *  Name of the file, used to distinguish it
+     * 
+     *  @property name
+     *  @type String
+     */
+    prototype.name = null;
+    /**
+     *  Helper method to force the browser to download the file.
+     * 
+     *  @memberOf GeneralFile
+     *  @method download
+     */
+    prototype.download = function() {
+        var blob = base64ToBlob(this.data, this.mimeType);
+        saveAs(blob, this.name);
+    };
+    prototype.upgrade = function() {
+        EcRemoteLinkedData.prototype.upgrade.call(this);
+        if (GeneralFile.TYPE_0_1.equals(this.type)) {
+            var me = (this);
+            if (me["@context"] == null && me["@schema"] != null) 
+                me["@context"] = me["@schema"];
+            this.setContextAndType(General.context_0_2, GeneralFile.TYPE_0_2);
+        }
+    };
+    prototype.getTypes = function() {
+        var a = new Array();
+        a.push(GeneralFile.TYPE_0_2);
+        a.push(GeneralFile.TYPE_0_1);
+        return a;
+    };
+}, {owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+/**
  *  Represents an encrypted piece of data. Provides helper functions for
  *  encryption/decryption of JSON-LD objects, and provides some searchability of
  *  the data within.
@@ -913,77 +984,6 @@ EcEncryptedValue = stjs.extend(EcEncryptedValue, EbacEncryptedValue, [], functio
     };
 }, {encryptOnSaveMap: {name: "Map", arguments: [null, null]}, secret: {name: "Array", arguments: [null]}, owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
- *  A representation of a file.
- * 
- *  @author fritz.ray@eduworks.com
- *  @module com.eduworks.ec
- *  @class GeneralFile
- *  @extends EcRemoteLinkedData
- *  @constructor
- */
-var GeneralFile = function() {
-    EcRemoteLinkedData.call(this, General.context, GeneralFile.myType);
-};
-GeneralFile = stjs.extend(GeneralFile, EcRemoteLinkedData, [], function(constructor, prototype) {
-    constructor.TYPE_0_1 = "http://schema.eduworks.com/general/0.1/file";
-    constructor.TYPE_0_2 = "http://schema.eduworks.com/general/0.2/file";
-    constructor.myType = GeneralFile.TYPE_0_2;
-    /**
-     *  Optional checksum of the file, used to verify if the file has been
-     *  transmitted correctly.
-     * 
-     *  @property checksum
-     *  @type String
-     */
-    prototype.checksum = null;
-    /**
-     *  Mime type of the file.
-     * 
-     *  @property mimeType
-     *  @type String
-     */
-    prototype.mimeType = null;
-    /**
-     *  Base-64 encoded version of the bytestream of a file.
-     * 
-     *  @property data
-     *  @type String
-     */
-    prototype.data = null;
-    /**
-     *  Name of the file, used to distinguish it
-     * 
-     *  @property name
-     *  @type String
-     */
-    prototype.name = null;
-    /**
-     *  Helper method to force the browser to download the file.
-     * 
-     *  @memberOf GeneralFile
-     *  @method download
-     */
-    prototype.download = function() {
-        var blob = base64ToBlob(this.data, this.mimeType);
-        saveAs(blob, this.name);
-    };
-    prototype.upgrade = function() {
-        EcLinkedData.prototype.upgrade.call(this);
-        if (GeneralFile.TYPE_0_1.equals(this.type)) {
-            var me = (this);
-            if (me["@context"] == null && me["@schema"] != null) 
-                me["@context"] = me["@schema"];
-            this.setContextAndType(General.context_0_2, GeneralFile.TYPE_0_2);
-        }
-    };
-    prototype.getTypes = function() {
-        var a = new Array();
-        a.push(GeneralFile.TYPE_0_2);
-        a.push(GeneralFile.TYPE_0_1);
-        return a;
-    };
-}, {owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
-/**
  *  Repository object used to interact with the CASS Repository web services.
  *  Should be used for all CRUD and search operations
  * 
@@ -1063,9 +1063,10 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
             }
         }
         if (!EcRepository.shouldTryUrl(url)) {
-            if (EcRepository.repos.length == 1) 
-                url = EcRemoteLinkedData.veryShortId(EcRepository.repos[0].selectedServer, EcCrypto.md5(url));
-             else {
+            if (EcRepository.repos.length == 1) {
+                if (!url.startsWith(EcRepository.repos[0].selectedServer)) 
+                    url = EcRemoteLinkedData.veryShortId(EcRepository.repos[0].selectedServer, EcCrypto.md5(url));
+            } else {
                 EcRepository.find(url, "Could not locate object. May be due to EcRepository.alwaysTryUrl flag.", new Object(), 0, success, failure);
                 return;
             }
@@ -1126,8 +1127,6 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
             return true;
         if (EcRepository.repos.length == 0) 
             return true;
-        if (url.indexOf("/api/") != -1 || url.indexOf("/data/") != -1) 
-            return true;
         var validUrlFound = false;
         for (var i = 0; i < EcRepository.repos.length; i++) {
             if (EcRepository.repos[i].selectedServer == null) 
@@ -1161,7 +1160,7 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
              else {
                 var done = false;
                 for (var i = 0; i < strings.length; i++) {
-                    if (strings[i].id == url) {
+                    if (strings[i].id == url || strings[i].shortId() == url) {
                         if (done) 
                             log("Searching for exact ID:" + url + ", found more than one@:" + repo.selectedServer);
                         done = true;
@@ -1197,7 +1196,7 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
             return EcRepository.findBlocking(url, error, history, i + 1);
          else {
             for (var j = 0; j < strings.length; j++) {
-                if (strings[j].id == url) {
+                if (strings[j].id == url || strings[j].shortId() == url) {
                     delete (EcRepository.fetching)[url];
                     if (EcRepository.caching) {
                         (EcRepository.cache)[url] = strings[j];
@@ -1231,9 +1230,11 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
             }
         }
         if (!EcRepository.shouldTryUrl(originalUrl)) {
-            if (EcRepository.repos.length == 1) 
-                url = EcRemoteLinkedData.veryShortId(EcRepository.repos[0].selectedServer, EcCrypto.md5(url));
-             else {
+            if (EcRepository.repos.length == 1) {
+                if (!url.startsWith(EcRepository.repos[0].selectedServer)) {
+                    url = EcRemoteLinkedData.veryShortId(EcRepository.repos[0].selectedServer, EcCrypto.md5(url));
+                }
+            } else {
                 return EcRepository.findBlocking(originalUrl, "Could not locate object. May be due to EcRepository.alwaysTryUrl flag.", new Object(), 0);
             }
         }
@@ -1437,7 +1438,7 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
                 failure("Data is malformed.");
                 return;
             }
-            if (EcRepository.alwaysTryUrl || this.constructor.shouldTryUrl(d.id)) 
+            if (EcRepository.alwaysTryUrl || this.constructor.shouldTryUrl(d.id) || d.id.indexOf(this.selectedServer) != -1) 
                 d.updateTimestamp();
             if (d.owner != null) 
                 for (var j = 0; j < d.owner.length; j++) 
@@ -1482,23 +1483,31 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
         if (EcRepository.caching) {
             delete (EcRepository.cache)[data.id];
             delete (EcRepository.cache)[data.shortId()];
+            if (repo != null) 
+                delete (EcRepository.cache)[EcRemoteLinkedData.veryShortId(repo.selectedServer, data.getGuid())];
         }
         if (data.invalid()) {
             failure("Data is malformed.");
             return;
         }
-        if (EcRepository.alwaysTryUrl || repo == null || repo.constructor.shouldTryUrl(data.id)) 
+        if (EcRepository.alwaysTryUrl || repo == null || repo.constructor.shouldTryUrl(data.id) || (repo != null && data.id.indexOf(repo.selectedServer) != -1)) 
             data.updateTimestamp();
         var fd = new FormData();
         fd.append("data", data.toJson());
         var afterSignatureSheet = function(signatureSheet) {
             fd.append("signatureSheet", signatureSheet);
-            if (!EcRepository.alwaysTryUrl) 
-                if (repo != null) 
+            if (!EcRepository.alwaysTryUrl) {
+                if (repo != null) {
+                    if (data.id.indexOf(repo.selectedServer) != -1) {
+                        EcRemote.postExpectingString(data.id, "", fd, success, failure);
+                        return;
+                    }
                     if (!repo.constructor.shouldTryUrl(data.id) || data.id.indexOf(repo.selectedServer) == -1) {
                         EcRemote.postExpectingString(EcRemote.urlAppend(repo.selectedServer, "data/" + data.getDottedType() + "/" + EcCrypto.md5(data.shortId())), "", fd, success, failure);
                         return;
                     }
+                }
+            }
             EcRemote.postExpectingString(data.id, "", fd, success, failure);
         };
         var offset = 0;
@@ -1612,9 +1621,10 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
         if (EcRepository.caching) {
             delete (EcRepository.cache)[data.id];
             delete (EcRepository.cache)[data.shortId()];
+            delete (EcRepository.cache)[EcRemoteLinkedData.veryShortId(this.selectedServer, data.getGuid())];
         }
         var targetUrl;
-        if (EcRepository.shouldTryUrl(data.id)) 
+        if (EcRepository.shouldTryUrl(data.id) || data.id.indexOf(this.selectedServer) != -1) 
             targetUrl = EcRemote.urlAppend(this.selectedServer, "data/" + data.getDottedType() + "/" + data.getGuid());
          else 
             targetUrl = EcRemote.urlAppend(this.selectedServer, "data/" + data.getDottedType() + "/" + EcCrypto.md5(data.shortId()));
@@ -1717,6 +1727,7 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
                     }
                     (EcRepository.cache)[d.shortId()] = d;
                     (EcRepository.cache)[d.id] = d;
+                    (EcRepository.cache)[EcRemoteLinkedData.veryShortId(me.selectedServer, d.getGuid())] = d;
                 }
             }
             if (success != null) {
@@ -2013,9 +2024,9 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
                 query = "(" + query + ")";
             }
             if (ownership == "public") {
-                query += " AND (_missing_:@owner)";
+                query += " AND (_missing_:owner) AND (_missing_:@owner)";
             } else if (ownership == "owned") {
-                query += " AND (_exists_:@owner)";
+                query += " AND (_exists_:owner OR _exists_:@owner)";
             } else if (ownership == "me") {
                 query += " AND (";
                 for (var i = 0; i < EcIdentityManager.ids.length; i++) {
@@ -2023,7 +2034,7 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
                         query += " OR ";
                     }
                     var id = EcIdentityManager.ids[i];
-                    query += "@owner:\"" + id.ppk.toPk().toPem() + "\"";
+                    query += "\\*owner:\"" + id.ppk.toPk().toPem() + "\"";
                 }
                 query += ")";
             }
@@ -2347,6 +2358,7 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
             if (EcRepository.caching) {
                 (EcRepository.cache)[d.shortId()] = d;
                 (EcRepository.cache)[d.id] = d;
+                (EcRepository.cache)[EcRemoteLinkedData.veryShortId(this.selectedServer, d.getGuid())] = d;
             }
             if (eachSuccess != null) {
                 eachSuccess(results[i]);
@@ -2453,6 +2465,8 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
                         if (p1.isAny(result.getTypes())) {
                             result.copyFrom(p1);
                             set(result);
+                        } else {
+                            set(null);
                         }
                     }, EcAsyncHelper.setNull(set));
                 }, function(results) {

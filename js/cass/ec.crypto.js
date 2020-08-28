@@ -1,5 +1,41 @@
-var CryptoKey = function() {};
-CryptoKey = stjs.extend(CryptoKey, null, [], null, {}, {});
+/**
+ *  @author Fritz
+ *  @class EcCrypto
+ */
+var EcCrypto = function() {};
+EcCrypto = stjs.extend(EcCrypto, null, [], function(constructor, prototype) {
+    /**
+     *  Turn on (defualt off) caching of decrypted data.
+     *  @property caching
+     *  @type boolean
+     */
+    constructor.caching = false;
+    constructor.decryptionCache = new Object();
+    /**
+     *  Calculate MD5 hash of a string.
+     *  @param {String} s String to MD5
+     *  @return {String} MD5 hash
+     *  @static
+     *  @method md5
+     */
+    constructor.md5 = function(s) {
+        var m = forge.md.md5.create();
+        m.update(s);
+        return m.digest().toHex();
+    };
+    /**
+     *  Calculate SHA-256 hash of a string.
+     *  @param {String} s String to SHA-256
+     *  @return {String} SHA-256 hash
+     *  @static
+     *  @method sha256
+     */
+    constructor.sha256 = function(s) {
+        var m = forge.md.sha256.create();
+        m.update(s, "utf8");
+        return m.digest().toHex();
+    };
+}, {decryptionCache: "Object"}, {});
 var AlgorithmIdentifier = function() {};
 AlgorithmIdentifier = stjs.extend(AlgorithmIdentifier, null, [], function(constructor, prototype) {
     prototype.name = null;
@@ -10,6 +46,59 @@ AlgorithmIdentifier = stjs.extend(AlgorithmIdentifier, null, [], function(constr
     prototype.iv = null;
     prototype.counter = null;
 }, {iv: "ArrayBuffer", counter: "ArrayBuffer"}, {});
+/**
+ *  AES encryption tasks common across all variants of AES.
+ *  @class EcAes
+ *  @module com.eduworks.ec
+ *  @author fritz.ray@eduworks.com
+ */
+var EcAes = function() {};
+EcAes = stjs.extend(EcAes, null, [], function(constructor, prototype) {
+    /**
+     *  Generates a random secret of length @i
+     *  @method newSecret
+     *  @static
+     *  @param {integer} i Length of secret
+     *  @return {string} String representing the new secret, encoded using Base64.
+     */
+    constructor.newSecret = function(i) {
+        return forge.util.encode64(forge.random.getBytesSync(i));
+    };
+    /**
+     *  Generates a random Initialization Vector of length @i
+     *  @method newIv
+     *  @static
+     *  @param {integer} i Length of initialization Vector
+     *  @return {string} String representing the new Initialization Vector, encoded using Base64.
+     */
+    constructor.newIv = function(i) {
+        return forge.util.encode64(forge.random.getBytesSync(i));
+    };
+}, {}, {});
+var SubtleCrypto = function() {};
+SubtleCrypto = stjs.extend(SubtleCrypto, null, [], function(constructor, prototype) {
+    prototype.encrypt = function(algorithm, key, data) {
+        return null;
+    };
+    prototype.decrypt = function(algorithm, key, data) {
+        return null;
+    };
+    prototype.sign = function(algorithm, key, data) {
+        return null;
+    };
+    prototype.verify = function(algorithm, key, signature, data) {
+        return null;
+    };
+    prototype.generateKey = function(algorithm, extractable, keyUsages) {
+        return null;
+    };
+    prototype.deriveBits = function(algorithm, baseKey, length) {
+        return null;
+    };
+    prototype.importKey = function(format, keyData, algorithm, extractable, keyUsages) {
+        return null;
+    };
+}, {}, {});
 var jwk = function() {};
 jwk = stjs.extend(jwk, null, [], function(constructor, prototype) {
     prototype.kty = null;
@@ -122,101 +211,126 @@ EcPk = stjs.extend(EcPk, null, [], function(constructor, prototype) {
     if (EcPk.cache == null) 
         EcPk.cache = new Object();
 })();
-/**
- *  AES encryption tasks common across all variants of AES.
- *  @class EcAes
- *  @module com.eduworks.ec
- *  @author fritz.ray@eduworks.com
- */
-var EcAes = function() {};
-EcAes = stjs.extend(EcAes, null, [], function(constructor, prototype) {
-    /**
-     *  Generates a random secret of length @i
-     *  @method newSecret
-     *  @static
-     *  @param {integer} i Length of secret
-     *  @return {string} String representing the new secret, encoded using Base64.
-     */
-    constructor.newSecret = function(i) {
-        return forge.util.encode64(forge.random.getBytesSync(i));
-    };
-    /**
-     *  Generates a random Initialization Vector of length @i
-     *  @method newIv
-     *  @static
-     *  @param {integer} i Length of initialization Vector
-     *  @return {string} String representing the new Initialization Vector, encoded using Base64.
-     */
-    constructor.newIv = function(i) {
-        return forge.util.encode64(forge.random.getBytesSync(i));
-    };
-}, {}, {});
-/**
- *  @author Fritz
- *  @class EcCrypto
- */
-var EcCrypto = function() {};
-EcCrypto = stjs.extend(EcCrypto, null, [], function(constructor, prototype) {
-    /**
-     *  Turn on (defualt off) caching of decrypted data.
-     *  @property caching
-     *  @type boolean
-     */
-    constructor.caching = false;
-    constructor.decryptionCache = new Object();
-    /**
-     *  Calculate MD5 hash of a string.
-     *  @param {String} s String to MD5
-     *  @return {String} MD5 hash
-     *  @static
-     *  @method md5
-     */
-    constructor.md5 = function(s) {
-        var m = forge.md.md5.create();
-        m.update(s);
-        return m.digest().toHex();
-    };
-    /**
-     *  Calculate SHA-256 hash of a string.
-     *  @param {String} s String to SHA-256
-     *  @return {String} SHA-256 hash
-     *  @static
-     *  @method sha256
-     */
-    constructor.sha256 = function(s) {
-        var m = forge.md.sha256.create();
-        m.update(s, "utf8");
-        return m.digest().toHex();
-    };
-}, {decryptionCache: "Object"}, {});
+var CryptoKey = function() {};
+CryptoKey = stjs.extend(CryptoKey, null, [], null, {}, {});
 var EcAesParameters = function(iv) {
     this.iv = forge.util.decode64(iv);
 };
 EcAesParameters = stjs.extend(EcAesParameters, null, [], function(constructor, prototype) {
     prototype.iv = null;
 }, {iv: "forge.payload"}, {});
-var SubtleCrypto = function() {};
-SubtleCrypto = stjs.extend(SubtleCrypto, null, [], function(constructor, prototype) {
-    prototype.encrypt = function(algorithm, key, data) {
-        return null;
+/**
+ *  Helper methods for performing RSA Encryption methods. Uses Optimal Asymmetric
+ *  Encryption Padding (OAEP) encryption and decryption. Uses RSA SSA PKCS#1 v1.5
+ *  (RSASSA-PKCS1-V1_5) signing and verifying with UTF8 encoding.
+ * 
+ *  @author fritz.ray@eduworks.com
+ *  @module com.eduworks.ec
+ *  @class EcRsaOaep
+ */
+var EcRsaOaep = function() {};
+EcRsaOaep = stjs.extend(EcRsaOaep, null, [], function(constructor, prototype) {
+    /**
+     *  Encrypts a block of plaintext (no more than 256 bytes) with a public key
+     *  using RSA OAEP encryption. Returns a base64 encoded ciphertext.
+     * 
+     *  @param {EcPk}   pk Public Key.
+     *  @param {string} plaintext Plaintext. Does not perform encoding.
+     *  @method encrypt
+     *  @static
+     */
+    constructor.encrypt = function(pk, plaintext) {
+        if ((typeof httpStatus) != "undefined") {
+            return rsaEncrypt(plaintext, pk.toPem());
+        }
+        return forge.util.encode64(pk.pk.encrypt(forge.util.encodeUtf8(plaintext), "RSA-OAEP"));
     };
-    prototype.decrypt = function(algorithm, key, data) {
-        return null;
+    /**
+     *  Decrypts a block of ciphertext (no more than 256 bytes) with a private
+     *  key using RSA OAEP encryption. Returns a unencoded plaintext.
+     * 
+     *  @param {EcPpk}  ppk Public private keypair.
+     *  @param {string} ciphertext Ciphertext.
+     *  @return {string} Unencoded plaintext.
+     *  @method decrypt
+     *  @static
+     */
+    constructor.decrypt = function(ppk, ciphertext) {
+        if (EcCrypto.caching) {
+            var cacheGet = null;
+            cacheGet = (EcCrypto.decryptionCache)[ppk.toPem() + ciphertext];
+            if (cacheGet != null) {
+                return cacheGet;
+            }
+        }
+        var result;
+        if ((typeof httpStatus) != "undefined") {
+            result = rsaDecrypt(ciphertext, ppk.toPem());
+        } else {
+            result = forge.util.decodeUtf8(ppk.ppk.decrypt(forge.util.decode64(ciphertext), "RSA-OAEP"));
+        }
+        if (EcCrypto.caching) {
+            (EcCrypto.decryptionCache)[ppk.toPem() + ciphertext] = result;
+        }
+        return result;
     };
-    prototype.sign = function(algorithm, key, data) {
-        return null;
+    /**
+     *  Creates a signature for the provided text using the public private
+     *  keypair. May be verified with the public key. Uses SHA1 hash with a UTF8
+     *  decoding of the text. Returns base64 encoded signature.
+     * 
+     *  @param {EcPpk}  ppk Public private keypair.
+     *  @param {string} text Text to sign.
+     *  @return Base64 encoded signature.
+     *  @method sign
+     *  @static
+     */
+    constructor.sign = function(ppk, text) {
+        if ((typeof httpStatus) != "undefined") {
+            return rsaSign(text, ppk.toPem());
+        }
+        var s = forge.md.sha1.create();
+        s.update(forge.util.encodeUtf8(text), "utf8");
+        return forge.util.encode64(ppk.ppk.sign(s));
     };
-    prototype.verify = function(algorithm, key, signature, data) {
-        return null;
+    /**
+     *  Creates a signature for the provided text using the public private
+     *  keypair. May be verified with the public key. Uses SHA256 hash with a
+     *  UTF8 decoding of the text. Returns base64 encoded signature.
+     * 
+     *  @param {EcPpk}  ppk Public private keypair.
+     *  @param {string} text Text to sign.
+     *  @return Base64 encoded signature.
+     *  @method signSha256
+     *  @static
+     */
+    constructor.signSha256 = function(ppk, text) {
+        var s = forge.md.sha256.create();
+        s.update(forge.util.encodeUtf8(text), "utf8");
+        return forge.util.encode64(ppk.ppk.sign(s));
     };
-    prototype.generateKey = function(algorithm, extractable, keyUsages) {
-        return null;
-    };
-    prototype.deriveBits = function(algorithm, baseKey, length) {
-        return null;
-    };
-    prototype.importKey = function(format, keyData, algorithm, extractable, keyUsages) {
-        return null;
+    /**
+     *  Verifies the integrity of the provided text using a signature and a
+     *  public key. Uses SHA1 hash with a UTF8 decoding of the text.
+     * 
+     *  @param {EcPk}   pk Public key.
+     *  @param {string} text Text to verify.
+     *  @param {string} signature Base64 encoded signature.
+     *  @return True IFF the signature is valid.
+     *  @static
+     *  @method verify
+     */
+    constructor.verify = function(pk, text, signature) {
+        if ((typeof httpStatus) != "undefined") {
+            return rsaVerify(signature, pk.toPem(), text);
+        }
+        var s = forge.md.sha1.create();
+        s.update(forge.util.encodeUtf8(text), "utf8");
+        try {
+            return pk.verify(s.digest().bytes(), forge.util.decode64(signature));
+        }catch (ex) {
+            return false;
+        }
     };
 }, {}, {});
 /**
@@ -375,120 +489,6 @@ EcPpk = stjs.extend(EcPpk, null, [], function(constructor, prototype) {
     if (EcPpk.cache == null) 
         EcPpk.cache = new Object();
 })();
-/**
- *  Helper methods for performing RSA Encryption methods. Uses Optimal Asymmetric
- *  Encryption Padding (OAEP) encryption and decryption. Uses RSA SSA PKCS#1 v1.5
- *  (RSASSA-PKCS1-V1_5) signing and verifying with UTF8 encoding.
- * 
- *  @author fritz.ray@eduworks.com
- *  @module com.eduworks.ec
- *  @class EcRsaOaep
- */
-var EcRsaOaep = function() {};
-EcRsaOaep = stjs.extend(EcRsaOaep, null, [], function(constructor, prototype) {
-    /**
-     *  Encrypts a block of plaintext (no more than 256 bytes) with a public key
-     *  using RSA OAEP encryption. Returns a base64 encoded ciphertext.
-     * 
-     *  @param {EcPk}   pk Public Key.
-     *  @param {string} plaintext Plaintext. Does not perform encoding.
-     *  @method encrypt
-     *  @static
-     */
-    constructor.encrypt = function(pk, plaintext) {
-        if ((typeof httpStatus) != "undefined") {
-            return rsaEncrypt(plaintext, pk.toPem());
-        }
-        return forge.util.encode64(pk.pk.encrypt(forge.util.encodeUtf8(plaintext), "RSA-OAEP"));
-    };
-    /**
-     *  Decrypts a block of ciphertext (no more than 256 bytes) with a private
-     *  key using RSA OAEP encryption. Returns a unencoded plaintext.
-     * 
-     *  @param {EcPpk}  ppk Public private keypair.
-     *  @param {string} ciphertext Ciphertext.
-     *  @return {string} Unencoded plaintext.
-     *  @method decrypt
-     *  @static
-     */
-    constructor.decrypt = function(ppk, ciphertext) {
-        if (EcCrypto.caching) {
-            var cacheGet = null;
-            cacheGet = (EcCrypto.decryptionCache)[ppk.toPem() + ciphertext];
-            if (cacheGet != null) {
-                return cacheGet;
-            }
-        }
-        var result;
-        if ((typeof httpStatus) != "undefined") {
-            result = rsaDecrypt(ciphertext, ppk.toPem());
-        } else {
-            result = forge.util.decodeUtf8(ppk.ppk.decrypt(forge.util.decode64(ciphertext), "RSA-OAEP"));
-        }
-        if (EcCrypto.caching) {
-            (EcCrypto.decryptionCache)[ppk.toPem() + ciphertext] = result;
-        }
-        return result;
-    };
-    /**
-     *  Creates a signature for the provided text using the public private
-     *  keypair. May be verified with the public key. Uses SHA1 hash with a UTF8
-     *  decoding of the text. Returns base64 encoded signature.
-     * 
-     *  @param {EcPpk}  ppk Public private keypair.
-     *  @param {string} text Text to sign.
-     *  @return Base64 encoded signature.
-     *  @method sign
-     *  @static
-     */
-    constructor.sign = function(ppk, text) {
-        if ((typeof httpStatus) != "undefined") {
-            return rsaSign(text, ppk.toPem());
-        }
-        var s = forge.md.sha1.create();
-        s.update(forge.util.encodeUtf8(text), "utf8");
-        return forge.util.encode64(ppk.ppk.sign(s));
-    };
-    /**
-     *  Creates a signature for the provided text using the public private
-     *  keypair. May be verified with the public key. Uses SHA256 hash with a
-     *  UTF8 decoding of the text. Returns base64 encoded signature.
-     * 
-     *  @param {EcPpk}  ppk Public private keypair.
-     *  @param {string} text Text to sign.
-     *  @return Base64 encoded signature.
-     *  @method signSha256
-     *  @static
-     */
-    constructor.signSha256 = function(ppk, text) {
-        var s = forge.md.sha256.create();
-        s.update(forge.util.encodeUtf8(text), "utf8");
-        return forge.util.encode64(ppk.ppk.sign(s));
-    };
-    /**
-     *  Verifies the integrity of the provided text using a signature and a
-     *  public key. Uses SHA1 hash with a UTF8 decoding of the text.
-     * 
-     *  @param {EcPk}   pk Public key.
-     *  @param {string} text Text to verify.
-     *  @param {string} signature Base64 encoded signature.
-     *  @return True IFF the signature is valid.
-     *  @static
-     *  @method verify
-     */
-    constructor.verify = function(pk, text, signature) {
-        if ((typeof httpStatus) != "undefined") {
-            return rsaVerify(signature, pk.toPem(), text);
-        }
-        var s = forge.md.sha1.create();
-        s.update(forge.util.encodeUtf8(text), "utf8");
-        try {
-            return pk.verify(s.digest().bytes(), forge.util.decode64(signature));
-        }catch (ex) {
-            return false;
-        }
-    };
-}, {}, {});
 /**
  *  Encrypts data synchronously using AES-256-CTR. Requires secret and iv to be 32 bytes.
  *  Output is encoded in base64 for easier handling.

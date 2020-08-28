@@ -1,126 +1,148 @@
 /**
- *  Implementation of a Rollup Rule object with methods for interacting with CASS
- *  services on a server.
- * 
- *  @author fritz.ray@eduworks.com
- *  @author devlin.junker@eduworks.com
- *  @module org.cassproject
- *  @class EcRollupRule
- *  @constructor
- *  @extends RollupRule
+ *  Created by fray on 11/29/17.
  */
-var EcRollupRule = function() {
-    RollupRule.call(this);
+var EcConcept = function() {
+    Concept.call(this);
+    var me = (this);
+    if (EcConcept.template != null) {
+        var you = (EcConcept.template);
+        for (var key in you) {
+            if ((typeof you[key]) != "function") 
+                me[key.replace("@", "")] = you[key];
+        }
+    }
 };
-EcRollupRule = stjs.extend(EcRollupRule, RollupRule, [], function(constructor, prototype) {
+EcConcept = stjs.extend(EcConcept, Concept, [], function(constructor, prototype) {
+    constructor.template = null;
     /**
-     *  Retrieves a rollup rule from the server
+     *  Retrieves a concept from it's server asynchronously
      * 
-     *  @param {String}                  id
-     *                                   ID of the rollup rule to retrieve
-     *  @param {Callback1<EcRollupRule>} success
-     *                                   Callback triggered on successful retrieving rollup rule,
-     *                                   returns the rollup rule
-     *  @param {Callback1<String>}       failure
-     *                                   Callback triggered if error retrieving rollup rule
-     *  @memberOf EcRollupRule
+     *  @param {String}            id
+     *                             ID of the concept to retrieve from the server
+     *  @param {Callback1<String>} success
+     *                             Callback triggered after retrieving the concept,
+     *                             returns the concept retrieved
+     *  @param {Callback1<String>} failure
+     *                             Callback triggered if error retrieving concept
+     *  @memberOf EcConcept
      *  @method get
      *  @static
      */
     constructor.get = function(id, success, failure) {
-        EcRepository.getAs(id, new EcRollupRule(), success, failure);
-    };
-    constructor.getBlocking = function(id) {
-        return EcRepository.getBlockingAs(id, new EcRollupRule());
+        EcRepository.getAs(id, new EcConcept(), success, failure);
     };
     /**
-     *  Searches for levels with a string query
+     *  Retrieves a concept from it's server synchronously, the call
+     *  blocks until it is successful or an error occurs
      * 
-     *  @param {EcRepository}                   repo
-     *                                          Repository to search for levels
-     *  @param {String}                         query
-     *                                          query string to use in search
-     *  @param {Callback1<Array<EcRollupRule>>} success
-     *                                          Callback triggered when searches successfully
-     *  @param {Callback1<String>}              failure
-     *                                          Callback triggered if an error occurs while searching
-     *  @param {Object}                         paramObj
-     *                                          Search parameters object to pass in
-     *  @memberOf EcRollupRule
+     *  @param {String} id
+     *                  ID of the concept to retrieve
+     *  @return EcConcept
+     *  The concept retrieved
+     *  @memberOf EcConcept
+     *  @method getBlocking
+     *  @static
+     */
+    constructor.getBlocking = function(id) {
+        return EcRepository.getBlockingAs(id, new EcConcept());
+    };
+    /**
+     *  Searches a repository for competencies that match the search query
+     * 
+     *  @param {EcRepository}                  repo
+     *                                         Repository to search using the query
+     *  @param {String}                        query
+     *                                         Query string to pass to the search web service
+     *  @param {Callback1<Array<EcConcept>> success
+     *                                         Callback triggered after completing the search, returns the results
+     *  @param {Callback1<String>}             failure
+     *                                         Callback triggered if error searching
+     *  @param {Object}                        paramObj
+     *                                         Parameter object for search
+     *  @memberOf EcConcept
      *  @method search
      *  @static
      */
     constructor.search = function(repo, query, success, failure, paramObj) {
         EcRepository.searchAs(repo, query, function() {
-            return new EcRollupRule();
+            return new EcConcept();
         }, success, failure, paramObj);
     };
-    /**
-     *  Method for setting a rollup rule name
-     * 
-     *  @param name
-     *  @memberOf EcRollupRule
-     *  @method setName
-     */
-    prototype.setName = function(name) {
-        this.name = name;
-    };
-    /**
-     *  Method for setting a rollup rule description
-     * 
-     *  @param {String} description
-     *  @memberOf EcRollupRule
-     *  @method setDescription
-     */
-    prototype.setDescription = function(description) {
-        this.description = description;
-    };
-    /**
-     *  Saves this rollup rules details on the server specified by its ID
-     * 
-     *  @param {Callback1<String>} success
-     *                             Callback triggered on successful save of rollup rule
-     *  @param {Callback1<String>} failure
-     *                             Callback triggered if error saving rollup rule
-     *  @memberOf EcRollupRule
-     *  @method save
-     */
-    prototype.save = function(success, failure, repo) {
-        if (this.rule == null || this.rule == "") {
-            var msg = "RollupRule Rule cannot be empty";
-            if (failure != null) 
-                failure(msg);
-             else 
-                console.error(msg);
-            return;
+}, {template: "Object", topConceptOf: "ConceptScheme", semanticRelation: "Concept", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+/**
+ *  Created by fray on 11/29/17.
+ */
+var EcConceptScheme = function() {
+    ConceptScheme.call(this);
+    var me = (this);
+    if (EcConceptScheme.template != null) {
+        var you = (EcConceptScheme.template);
+        for (var key in you) {
+            if ((typeof you[key]) != "function") 
+                me[key.replace("@", "")] = you[key];
         }
-        if (this.competency == null || this.competency == "") {
-            var msg = "RollupRule's Competency cannot be empty";
-            if (failure != null) 
-                failure(msg);
-             else 
-                console.error(msg);
-            return;
-        }
-        if (repo == null) 
-            EcRepository.save(this, success, failure);
-         else 
-            repo.saveTo(this, success, failure);
+    }
+};
+EcConceptScheme = stjs.extend(EcConceptScheme, ConceptScheme, [], function(constructor, prototype) {
+    constructor.template = null;
+    /**
+     *  Retrieves a concept scheme from the server, specified by the ID
+     * 
+     *  @param {String}                 id
+     *                                  ID of the concept scheme to retrieve
+     *  @param {Callback1<EcConceptScheme>} success
+     *                                  Callback triggered after successfully retrieving the concept scheme,
+     *                                  returns the retrieved concept scheme
+     *  @param {Callback1<String>}      failure
+     *                                  Callback triggered if an error occurs while retrieving the concept scheme
+     *  @memberOf EcConceptScheme
+     *  @method get
+     *  @static
+     */
+    constructor.get = function(id, success, failure) {
+        EcRepository.getAs(id, new EcConceptScheme(), success, failure);
     };
     /**
-     *  Deletes this rollup rule from the server specified by it's ID
+     *  Retrieves a concept scheme from the server in a blocking fashion, specified by the ID
      * 
-     *  @param {Callback1<String>} success
-     *                             Callback triggered on successful deleting the rollup rle
-     *  @param {Callback1<String>} failure
-     *                             Callback triggered if error deleting the rollup rule
-     *  @memberOf EcRollupRule
-     *  @method _delete
+     *  @param {String}                 id
+     *                                  ID of the concept scheme to retrieve
+     *  @param {Callback1<EcConceptScheme>} success
+     *                                  Callback triggered after successfully retrieving the concept scheme,
+     *                                  returns the retrieved concept scheme
+     *  @param {Callback1<String>}      failure
+     *                                  Callback triggered if an error occurs while retrieving the concept scheme
+     *  @memberOf EcConceptScheme
+     *  @method getBlocking
+     *  @static
      */
-    prototype._delete = function(success, failure) {
-        EcRepository.DELETE(this, success, failure);
+    constructor.getBlocking = function(id) {
+        return EcRepository.getBlockingAs(id, new EcConceptScheme());
     };
-}, {about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+    /**
+     *  Searches the repository given for concept schemes using the query passed in
+     * 
+     *  @param {EcRepository}                 repo
+     *                                        Repository to search for concept schemes
+     *  @param {String}                       query
+     *                                        Query string used to search for a concept scheme
+     *  @param {Callback1<Array<EcConceptScheme>} success
+     *                                        Callback triggered when the search successfully returns,
+     *                                        returns search results
+     *  @param {Callback1<String>}            failure
+     *                                        Callback triggered if an error occurs while searching
+     *  @param {Object}                       paramObj
+     *                                        Parameter object for search
+     *  @memberOf EcConceptScheme
+     *  @method search
+     *  @static
+     */
+    constructor.search = function(repo, query, success, failure, paramObj) {
+        EcRepository.searchAs(repo, query, function() {
+            return new EcConceptScheme();
+        }, success, failure, paramObj);
+    };
+}, {template: "Object", hasTopConcept: "Concept", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  Implementation of an alignment object with methods for interacting with CASS
  *  services on a server.
@@ -362,152 +384,7 @@ EcAlignment = stjs.extend(EcAlignment, Relation, [], function(constructor, proto
     prototype._delete = function(success, failure) {
         EcRepository.DELETE(this, success, failure);
     };
-}, {about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
-/**
- *  Created by fray on 11/29/17.
- */
-var EcConceptScheme = function() {
-    ConceptScheme.call(this);
-    var me = (this);
-    if (EcConceptScheme.template != null) {
-        var you = (EcConceptScheme.template);
-        for (var key in you) {
-            if ((typeof you[key]) != "function") 
-                me[key.replace("@", "")] = you[key];
-        }
-    }
-};
-EcConceptScheme = stjs.extend(EcConceptScheme, ConceptScheme, [], function(constructor, prototype) {
-    constructor.template = null;
-    /**
-     *  Retrieves a concept scheme from the server, specified by the ID
-     * 
-     *  @param {String}                 id
-     *                                  ID of the concept scheme to retrieve
-     *  @param {Callback1<EcConceptScheme>} success
-     *                                  Callback triggered after successfully retrieving the concept scheme,
-     *                                  returns the retrieved concept scheme
-     *  @param {Callback1<String>}      failure
-     *                                  Callback triggered if an error occurs while retrieving the concept scheme
-     *  @memberOf EcConceptScheme
-     *  @method get
-     *  @static
-     */
-    constructor.get = function(id, success, failure) {
-        EcRepository.getAs(id, new EcConceptScheme(), success, failure);
-    };
-    /**
-     *  Retrieves a concept scheme from the server in a blocking fashion, specified by the ID
-     * 
-     *  @param {String}                 id
-     *                                  ID of the concept scheme to retrieve
-     *  @param {Callback1<EcConceptScheme>} success
-     *                                  Callback triggered after successfully retrieving the concept scheme,
-     *                                  returns the retrieved concept scheme
-     *  @param {Callback1<String>}      failure
-     *                                  Callback triggered if an error occurs while retrieving the concept scheme
-     *  @memberOf EcConceptScheme
-     *  @method getBlocking
-     *  @static
-     */
-    constructor.getBlocking = function(id) {
-        return EcRepository.getBlockingAs(id, new EcConceptScheme());
-    };
-    /**
-     *  Searches the repository given for concept schemes using the query passed in
-     * 
-     *  @param {EcRepository}                 repo
-     *                                        Repository to search for concept schemes
-     *  @param {String}                       query
-     *                                        Query string used to search for a concept scheme
-     *  @param {Callback1<Array<EcConceptScheme>} success
-     *                                        Callback triggered when the search successfully returns,
-     *                                        returns search results
-     *  @param {Callback1<String>}            failure
-     *                                        Callback triggered if an error occurs while searching
-     *  @param {Object}                       paramObj
-     *                                        Parameter object for search
-     *  @memberOf EcConceptScheme
-     *  @method search
-     *  @static
-     */
-    constructor.search = function(repo, query, success, failure, paramObj) {
-        EcRepository.searchAs(repo, query, function() {
-            return new EcConceptScheme();
-        }, success, failure, paramObj);
-    };
-}, {template: "Object", hasTopConcept: "Concept", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
-/**
- *  Created by fray on 11/29/17.
- */
-var EcConcept = function() {
-    Concept.call(this);
-    var me = (this);
-    if (EcConcept.template != null) {
-        var you = (EcConcept.template);
-        for (var key in you) {
-            if ((typeof you[key]) != "function") 
-                me[key.replace("@", "")] = you[key];
-        }
-    }
-};
-EcConcept = stjs.extend(EcConcept, Concept, [], function(constructor, prototype) {
-    constructor.template = null;
-    /**
-     *  Retrieves a concept from it's server asynchronously
-     * 
-     *  @param {String}            id
-     *                             ID of the concept to retrieve from the server
-     *  @param {Callback1<String>} success
-     *                             Callback triggered after retrieving the concept,
-     *                             returns the concept retrieved
-     *  @param {Callback1<String>} failure
-     *                             Callback triggered if error retrieving concept
-     *  @memberOf EcConcept
-     *  @method get
-     *  @static
-     */
-    constructor.get = function(id, success, failure) {
-        EcRepository.getAs(id, new EcConcept(), success, failure);
-    };
-    /**
-     *  Retrieves a concept from it's server synchronously, the call
-     *  blocks until it is successful or an error occurs
-     * 
-     *  @param {String} id
-     *                  ID of the concept to retrieve
-     *  @return EcConcept
-     *  The concept retrieved
-     *  @memberOf EcConcept
-     *  @method getBlocking
-     *  @static
-     */
-    constructor.getBlocking = function(id) {
-        return EcRepository.getBlockingAs(id, new EcConcept());
-    };
-    /**
-     *  Searches a repository for competencies that match the search query
-     * 
-     *  @param {EcRepository}                  repo
-     *                                         Repository to search using the query
-     *  @param {String}                        query
-     *                                         Query string to pass to the search web service
-     *  @param {Callback1<Array<EcConcept>> success
-     *                                         Callback triggered after completing the search, returns the results
-     *  @param {Callback1<String>}             failure
-     *                                         Callback triggered if error searching
-     *  @param {Object}                        paramObj
-     *                                         Parameter object for search
-     *  @memberOf EcConcept
-     *  @method search
-     *  @static
-     */
-    constructor.search = function(repo, query, success, failure, paramObj) {
-        EcRepository.searchAs(repo, query, function() {
-            return new EcConcept();
-        }, success, failure, paramObj);
-    };
-}, {template: "Object", topConceptOf: "ConceptScheme", semanticRelation: "Concept", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "SchemaEvent", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  The sequence that assertions should be built as such: 1. Generate the ID. 2.
  *  Add the owner. 3. Set the subject. 4. Set the agent. Further functions may be
@@ -1224,7 +1101,130 @@ EcAssertion = stjs.extend(EcAssertion, Assertion, [], function(constructor, prot
     prototype.getSearchStringByTypeAndCompetency = function(competency) {
         return "(" + this.getSearchStringByType() + " AND competency:\"" + competency.shortId() + "\")";
     };
-}, {codebooks: "Object", subject: "EcEncryptedValue", agent: "EcEncryptedValue", evidence: {name: "Array", arguments: ["EcEncryptedValue"]}, assertionDate: "EcEncryptedValue", expirationDate: "EcEncryptedValue", decayFunction: "EcEncryptedValue", negative: "EcEncryptedValue", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {codebooks: "Object", subject: "EcEncryptedValue", agent: "EcEncryptedValue", evidence: {name: "Array", arguments: ["EcEncryptedValue"]}, assertionDate: "EcEncryptedValue", expirationDate: "EcEncryptedValue", decayFunction: "EcEncryptedValue", negative: "EcEncryptedValue", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "SchemaEvent", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+/**
+ *  Implementation of a Rollup Rule object with methods for interacting with CASS
+ *  services on a server.
+ * 
+ *  @author fritz.ray@eduworks.com
+ *  @author devlin.junker@eduworks.com
+ *  @module org.cassproject
+ *  @class EcRollupRule
+ *  @constructor
+ *  @extends RollupRule
+ */
+var EcRollupRule = function() {
+    RollupRule.call(this);
+};
+EcRollupRule = stjs.extend(EcRollupRule, RollupRule, [], function(constructor, prototype) {
+    /**
+     *  Retrieves a rollup rule from the server
+     * 
+     *  @param {String}                  id
+     *                                   ID of the rollup rule to retrieve
+     *  @param {Callback1<EcRollupRule>} success
+     *                                   Callback triggered on successful retrieving rollup rule,
+     *                                   returns the rollup rule
+     *  @param {Callback1<String>}       failure
+     *                                   Callback triggered if error retrieving rollup rule
+     *  @memberOf EcRollupRule
+     *  @method get
+     *  @static
+     */
+    constructor.get = function(id, success, failure) {
+        EcRepository.getAs(id, new EcRollupRule(), success, failure);
+    };
+    constructor.getBlocking = function(id) {
+        return EcRepository.getBlockingAs(id, new EcRollupRule());
+    };
+    /**
+     *  Searches for levels with a string query
+     * 
+     *  @param {EcRepository}                   repo
+     *                                          Repository to search for levels
+     *  @param {String}                         query
+     *                                          query string to use in search
+     *  @param {Callback1<Array<EcRollupRule>>} success
+     *                                          Callback triggered when searches successfully
+     *  @param {Callback1<String>}              failure
+     *                                          Callback triggered if an error occurs while searching
+     *  @param {Object}                         paramObj
+     *                                          Search parameters object to pass in
+     *  @memberOf EcRollupRule
+     *  @method search
+     *  @static
+     */
+    constructor.search = function(repo, query, success, failure, paramObj) {
+        EcRepository.searchAs(repo, query, function() {
+            return new EcRollupRule();
+        }, success, failure, paramObj);
+    };
+    /**
+     *  Method for setting a rollup rule name
+     * 
+     *  @param name
+     *  @memberOf EcRollupRule
+     *  @method setName
+     */
+    prototype.setName = function(name) {
+        this.name = name;
+    };
+    /**
+     *  Method for setting a rollup rule description
+     * 
+     *  @param {String} description
+     *  @memberOf EcRollupRule
+     *  @method setDescription
+     */
+    prototype.setDescription = function(description) {
+        this.description = description;
+    };
+    /**
+     *  Saves this rollup rules details on the server specified by its ID
+     * 
+     *  @param {Callback1<String>} success
+     *                             Callback triggered on successful save of rollup rule
+     *  @param {Callback1<String>} failure
+     *                             Callback triggered if error saving rollup rule
+     *  @memberOf EcRollupRule
+     *  @method save
+     */
+    prototype.save = function(success, failure, repo) {
+        if (this.rule == null || this.rule == "") {
+            var msg = "RollupRule Rule cannot be empty";
+            if (failure != null) 
+                failure(msg);
+             else 
+                console.error(msg);
+            return;
+        }
+        if (this.competency == null || this.competency == "") {
+            var msg = "RollupRule's Competency cannot be empty";
+            if (failure != null) 
+                failure(msg);
+             else 
+                console.error(msg);
+            return;
+        }
+        if (repo == null) 
+            EcRepository.save(this, success, failure);
+         else 
+            repo.saveTo(this, success, failure);
+    };
+    /**
+     *  Deletes this rollup rule from the server specified by it's ID
+     * 
+     *  @param {Callback1<String>} success
+     *                             Callback triggered on successful deleting the rollup rle
+     *  @param {Callback1<String>} failure
+     *                             Callback triggered if error deleting the rollup rule
+     *  @memberOf EcRollupRule
+     *  @method _delete
+     */
+    prototype._delete = function(success, failure) {
+        EcRepository.DELETE(this, success, failure);
+    };
+}, {about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "SchemaEvent", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  Implementation of a Level object with methods for interacting with CASS
  *  services on a server.
@@ -1414,7 +1414,7 @@ EcLevel = stjs.extend(EcLevel, Level, [], function(constructor, prototype) {
     prototype._delete = function(success, failure) {
         EcRepository.DELETE(this, success, failure);
     };
-}, {about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "SchemaEvent", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  Implementation of a Competency object with methods for interacting with CASS
  *  services on a server.
@@ -1781,7 +1781,7 @@ EcCompetency = stjs.extend(EcCompetency, Competency, [], function(constructor, p
             }
         }, failure);
     };
-}, {relDone: {name: "Map", arguments: [null, null]}, levelDone: {name: "Map", arguments: [null, null]}, template: "Object", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {relDone: {name: "Map", arguments: [null, null]}, levelDone: {name: "Map", arguments: [null, null]}, template: "Object", about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "SchemaEvent", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  Implementation of a Framework object with methods for interacting with CASS
  *  services on a server.
@@ -2155,4 +2155,4 @@ EcFramework = stjs.extend(EcFramework, Framework, [], function(constructor, prot
             }
         });
     };
-}, {relDone: {name: "Map", arguments: [null, null]}, levelDone: {name: "Map", arguments: [null, null]}, template: "Object", competency: {name: "Array", arguments: [null]}, relation: {name: "Array", arguments: [null]}, level: {name: "Array", arguments: [null]}, rollupRule: {name: "Array", arguments: [null]}, about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "Event", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {relDone: {name: "Map", arguments: [null, null]}, levelDone: {name: "Map", arguments: [null, null]}, template: "Object", competency: {name: "Array", arguments: [null]}, relation: {name: "Array", arguments: [null]}, level: {name: "Array", arguments: [null]}, rollupRule: {name: "Array", arguments: [null]}, about: "Thing", educationalAlignment: "AlignmentObject", associatedMedia: "MediaObject", funder: "Person", audio: "AudioObject", workExample: "CreativeWork", provider: "Person", encoding: "MediaObject", character: "Person", audience: "Audience", sourceOrganization: "Organization", isPartOf: "CreativeWork", video: "VideoObject", publication: "PublicationEvent", contributor: "Organization", reviews: "Review", hasPart: "CreativeWork", releasedEvent: "PublicationEvent", contentLocation: "Place", aggregateRating: "AggregateRating", locationCreated: "Place", accountablePerson: "Person", spatialCoverage: "Place", offers: "Offer", editor: "Person", copyrightHolder: "Person", recordedAt: "SchemaEvent", publisher: "Person", interactionStatistic: "InteractionCounter", exampleOfWork: "CreativeWork", mainEntity: "Thing", author: "Person", timeRequired: "Duration", translator: "Person", comment: "Comment", inLanguage: "Language", review: "Review", license: "CreativeWork", encodings: "MediaObject", isBasedOn: "Product", creator: "Person", sponsor: "Organization", producer: "Person", mentions: "Thing", identifier: "Object", image: "Object", potentialAction: "Action", mainEntityOfPage: "Object", owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});

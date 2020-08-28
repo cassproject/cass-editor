@@ -249,7 +249,7 @@ function frameworkSearchByCompetency(server, searchTerm, retry) {
             if (subSearch != "")
                 subSearch += " OR ";
             subSearch += "competency:\"" + competencies[v].shortId() + "\"";
-            if (!EcRepository.shouldTryUrl(competencies[v].id)) {
+            if (!EcRepository.shouldTryUrl(competencies[v].id) && competencies[v].id.indexOf(repo.selectedServer) === -1) {
                 if (subSearch != "")
                     subSearch += " OR ";
                 var m = forge.md.md5.create();

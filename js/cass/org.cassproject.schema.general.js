@@ -1,4 +1,24 @@
 /**
+ *  Location of strings that store the current namespace for general Eduworks Objects.
+ * 
+ *  @author fritz.ray@eduworks.com
+ *  @class General
+ *  @module com.eduworks.ec
+ */
+var General = function() {};
+General = stjs.extend(General, null, [], function(constructor, prototype) {
+    constructor.context_0_2 = "http://schema.eduworks.com/general/0.2";
+    constructor.context_0_1 = "http://schema.eduworks.com/general/0.1";
+    /**
+     *  The latest version of the Eduworks Object namespace.
+     * 
+     *  @property context
+     *  @static
+     *  @type {string}
+     */
+    constructor.context = "http://schema.eduworks.com/general/0.2";
+}, {}, {});
+/**
  *  Location of strings that store the current namespace for EBAC/KBAC.
  * 
  *  @author fritz.ray@eduworks.com
@@ -19,26 +39,6 @@ Ebac = stjs.extend(Ebac, null, [], function(constructor, prototype) {
      *  @type string (URL)
      */
     constructor.context = Ebac.context_0_4;
-}, {}, {});
-/**
- *  Location of strings that store the current namespace for general Eduworks Objects.
- * 
- *  @author fritz.ray@eduworks.com
- *  @class General
- *  @module com.eduworks.ec
- */
-var General = function() {};
-General = stjs.extend(General, null, [], function(constructor, prototype) {
-    constructor.context_0_2 = "http://schema.eduworks.com/general/0.2";
-    constructor.context_0_1 = "http://schema.eduworks.com/general/0.1";
-    /**
-     *  The latest version of the Eduworks Object namespace.
-     * 
-     *  @property context
-     *  @static
-     *  @type {string}
-     */
-    constructor.context = "http://schema.eduworks.com/general/0.2";
 }, {}, {});
 /**
  *  Data wrapper to represent remotely hosted data. Includes necessary KBAC fields for
@@ -288,11 +288,15 @@ EcRemoteLinkedData = stjs.extend(EcRemoteLinkedData, EcLinkedData, [], function(
     prototype.toSignableJson = function() {
         var d = JSON.parse(this.toJson());
         if (this.type.indexOf("http://schema.eduworks.com/") != -1 && this.type.indexOf("/0.1/") != -1) {
+            delete (d)["signature"];
+            delete (d)["owner"];
+            delete (d)["reader"];
             delete (d)["@signature"];
             delete (d)["@owner"];
             delete (d)["@reader"];
             delete (d)["@id"];
         } else {
+            delete (d)["signature"];
             delete (d)["@signature"];
             delete (d)["@id"];
         }
@@ -302,7 +306,7 @@ EcRemoteLinkedData = stjs.extend(EcRemoteLinkedData, EcLinkedData, [], function(
     };
     /**
      *  Sign this object using a private key.
-     *  Does not check for ownership, objects signed with keys absent from @owner or @reader may be removed.
+     *  Does not check for ownership, objects signed with keys absent from owner or reader may be removed.
      * 
      *  @param {EcPpk} ppk Public private keypair.
      *  @method signWith
@@ -522,9 +526,9 @@ EcRemoteLinkedData = stjs.extend(EcRemoteLinkedData, EcLinkedData, [], function(
         for (var i = 0; i < types.length; i++) {
             if (result != "") 
                 result += " OR ";
-            result += "@encryptedType:\"" + types[i] + "\"";
+            result += "\\*encryptedType:\"" + types[i] + "\"";
             var lastSlash = types[i].lastIndexOf("/");
-            result += " OR (@context:\"" + Ebac.context + "\" AND @encryptedType:\"" + types[i].substring(lastSlash + 1) + "\")";
+            result += " OR (@context:\"" + Ebac.context + "\" AND \\*encryptedType:\"" + types[i].substring(lastSlash + 1) + "\")";
         }
         return "(" + result + ")";
     };
@@ -554,5 +558,28 @@ EcRemoteLinkedData = stjs.extend(EcRemoteLinkedData, EcLinkedData, [], function(
         var headers = {};
         headers["Accept"] = "text/turtle";
         EcRemote.postWithHeadersExpectingString(id, "", fd, headers, success, failure);
+    };
+    /**
+     *  Upgrades the object to the latest version, performing transforms and the like.
+     * 
+     *  @method upgrade
+     */
+    prototype.upgrade = function() {
+        var me = (this);
+        if (me["@owner"] != null) {
+            me["owner"] = me["@owner"];
+        }
+        if (me["@reader"] != null) {
+            me["reader"] = me["@reader"];
+        }
+        if (me["@signature"] != null) {
+            me["signature"] = me["@signature"];
+        }
+        if (me["@encryptedType"] != null) {
+            me["encryptedType"] = me["@encryptedType"];
+        }
+        if (me["@encryptedContext"] != null) {
+            me["encryptedContext"] = me["@encryptedContext"];
+        }
     };
 }, {owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});

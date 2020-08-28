@@ -496,7 +496,7 @@ var messageListener = function (evt) {
 			var fid;
 			var guid;
 			if (selectedCompetency != null) {
-				if (EcRepository.shouldTryUrl(selectedCompetency.id) == false) {
+				if (EcRepository.shouldTryUrl(selectedCompetency.id) == false && selectedCompetency.id.indexOf(repo.selectedServer) === -1) {
 					link = repo.selectedServer + "data/" + EcCrypto.md5(selectedCompetency.id);
 					fid = repo.selectedServer + "data/" + EcCrypto.md5(framework.id);
 					guid = EcCrypto.md5(selectedCompetency.id);
@@ -506,7 +506,7 @@ var messageListener = function (evt) {
 					guid = selectedCompetency.getGuid();
 				}
 			} else {
-				if (EcRepository.shouldTryUrl(framework.id) == false) {
+				if (EcRepository.shouldTryUrl(framework.id) == false && framework.id.indexOf(repo.selectedServer) === -1) {
 					link = repo.selectedServer + "data/" + EcCrypto.md5(framework.id);
 					fid = repo.selectedServer + "data/" + EcCrypto.md5(framework.id);
 					guid = EcCrypto.md5(framework.id);
