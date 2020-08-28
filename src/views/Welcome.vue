@@ -205,7 +205,7 @@
                     <h2 class="header pt-4 has-text-weight-bold is-size-5">
                         Legacy Demo CaSS Applications
                     </h2>
-                    <ul>
+                    <ul v-if="linkToLegacyDemos">
                         <li>
                             <router-link
                                 class="custom-link external"
@@ -239,6 +239,9 @@
                             </router-link>
                         </li>
                     </ul>
+                    <p v-else>
+                        Log in to access
+                    </p>
                     <h2 class="header pt-4 has-text-weight-bold is-size-5">
                         Get in touch
                     </h2>
@@ -289,7 +292,10 @@ export default {
         ...mapState({
             loggedInPerson: state => state.user.loggedOnPerson,
             queryParams: state => state.editor.queryParams
-        })
+        }),
+        linkToLegacyDemos: function() {
+            return (EcIdentityManager.ids && EcIdentityManager.ids.length > 0);
+        }
     },
     methods: {
         importSuccess: function(framework) {
