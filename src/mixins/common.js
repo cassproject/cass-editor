@@ -467,6 +467,7 @@ export default {
             ]);
             this.conditionalDelete(levelId);
             this.saveFramework();
+            this.$store.commit('editor/refreshLevels', true);
         },
         addRelationsToFramework: function(selectedCompetency, property, values) {
             if (values.length > 0) {

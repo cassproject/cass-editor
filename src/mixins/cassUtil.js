@@ -37,9 +37,11 @@ export const cassUtil = {
         },
         getPersonEcPk(personObj) {
             let personFingerprint = this.generateProbablePersonFingerprintFromShortId(personObj.shortId());
-            for (let pkPem of personObj.owner) {
-                let ecPk = EcPk.fromPem(pkPem);
-                if (personFingerprint.equals(ecPk.fingerprint())) return ecPk;
+            if (personObj.owner) {
+                for (let pkPem of personObj.owner) {
+                    let ecPk = EcPk.fromPem(pkPem);
+                    if (personFingerprint.equals(ecPk.fingerprint())) return ecPk;
+                }
             }
             return null;
         },

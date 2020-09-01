@@ -541,26 +541,6 @@ export default {
                     "max": 1,
                     "heading": "Scales"
                 },
-                "hasChild": {
-                    "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "The referenced competency is lower in some arbitrary hierarchy than this competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Has Child"}],
-                    "valuesIndexed": function() { return me.relations["hasChild"]; },
-                    "noTextEditing": "true",
-                    "readOnly": "true",
-                    "heading": "Connections"
-                },
-                "isChildOf": {
-                    "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "The referenced competency is higher in some arbitrary hierarchy than this competency."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Child Of"}],
-                    "valuesIndexed": function() { return me.relations["isChildOf"]; },
-                    "noTextEditing": "true",
-                    "readOnly": "true",
-                    "heading": "Connections"
-                },
                 "narrows": {
                     "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
@@ -687,30 +667,28 @@ export default {
                     "https://purl.org/ctdlasn/terms/codedNotation"
                 ],
                 "secondaryProperties": [
-                    "hasChild",
-                    "isChildOf",
+                    "https://purl.org/ctdlasn/terms/abilityEmbodied",
+                    "https://purl.org/ctdlasn/terms/knowledgeEmbodied",
+                    "https://purl.org/ctdlasn/terms/skillEmbodied",
+                    "https://purl.org/ctdlasn/terms/taskEmbodied",
+                    "http://schema.org/keywords",
+                    "https://purl.org/ctdlasn/terms/conceptTerm",
+                    "https://purl.org/ctdlasn/terms/complexityLevel",
+                    "https://purl.org/ctdlasn/terms/weight"
+                ],
+                "tertiaryProperties": [
+                    "@id",
+                    "registryURL",
+                    "ctid",
                     "narrows",
                     "broadens",
                     "isEquivalentTo",
                     "majorRelated",
                     "minorRelated",
                     "requires",
-                    "https://purl.org/ctdlasn/terms/abilityEmbodied",
-                    "https://purl.org/ctdlasn/terms/knowledgeEmbodied",
-                    "https://purl.org/ctdlasn/terms/skillEmbodied",
-                    "https://purl.org/ctdlasn/terms/taskEmbodied"
-                ],
-                "tertiaryProperties": [
-                    "@id",
-                    "registryURL",
-                    "ctid",
                     "https://purl.org/ctdlasn/terms/educationLevelType",
                     "https://purl.org/ctdlasn/terms/derivedFrom",
-                    "http://schema.org/identifier",
-                    "http://schema.org/keywords",
-                    "https://purl.org/ctdlasn/terms/conceptTerm",
-                    "https://purl.org/ctdlasn/terms/complexityLevel",
-                    "https://purl.org/ctdlasn/terms/weight"
+                    "http://schema.org/identifier"
                 ]
             };
         },
@@ -1107,12 +1085,14 @@ export default {
                 "headings": ["General", "Tagging", "Context", "Rights", "Keys"],
                 "primaryProperties": [
                     "http://purl.org/dc/terms/title",
-                    "http://purl.org/dc/terms/description"
+                    "http://purl.org/dc/terms/description",
+                    "https://purl.org/ctdlasn/terms/conceptKeyword",
+                    "https://purl.org/ctdlasn/terms/conceptTerm",
+                    "https://purl.org/ctdlasn/terms/publisherName"
                 ],
                 "secondaryProperties": [
                     "http://purl.org/dc/terms/creator",
                     "http://purl.org/dc/terms/publisher",
-                    "https://purl.org/ctdlasn/terms/publisherName",
                     "http://purl.org/dc/terms/language",
                     "http://purl.org/dc/elements/1.1/source"
                 ],
@@ -1120,8 +1100,6 @@ export default {
                     "@id",
                     "registryURL",
                     "ctid",
-                    "https://purl.org/ctdlasn/terms/conceptKeyword",
-                    "https://purl.org/ctdlasn/terms/conceptTerm",
                     "http://www.w3.org/2004/02/skos/core#changeNote",
                     "http://www.w3.org/2004/02/skos/core#historyNote",
                     "https://purl.org/ctdlasn/terms/publicationStatusType",
@@ -1332,52 +1310,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Change Note"}],
                     "heading": "Documentation"
                 },
-                "http://www.w3.org/2004/02/skos/core#broader": {
-                    "@id": "http://www.w3.org/2004/02/skos/core#broader",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes": [
-                        {
-                            "@id": "http://schema.cassproject.org/0.4/skos/Concept"
-                        }
-                    ],
-                    "http://schema.org/rangeIncludes": [
-                        {
-                            "@id": "https://schema.cassproject.org/0.4/skos/Concept"
-                        }
-                    ],
-                    "http://www.w3.org/2000/01/rdf-schema#comment": [
-                        {
-                            "@language": "en",
-                            "@value": "Concept that is broader in some way than this concept."
-                        }
-                    ],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Broader"}],
-                    "noTextEditing": "true",
-                    "heading": "Connections"
-                },
-                "http://www.w3.org/2004/02/skos/core#narrower": {
-                    "@id": "http://www.w3.org/2004/02/skos/core#narrower",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes": [
-                        {
-                            "@id": "http://schema.cassproject.org/0.4/skos/Concept"
-                        }
-                    ],
-                    "http://schema.org/rangeIncludes": [
-                        {
-                            "@id": "https://schema.cassproject.org/0.4/skos/Concept"
-                        }
-                    ],
-                    "http://www.w3.org/2000/01/rdf-schema#comment": [
-                        {
-                            "@language": "en",
-                            "@value": "Concept that is narrower in some way than this concept."
-                        }
-                    ],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Narrower"}],
-                    "noTextEditing": "true",
-                    "heading": "Connections"
-                },
                 "http://www.w3.org/2004/02/skos/core#broadMatch": {
                     "@id": "http://www.w3.org/2004/02/skos/core#broadMatch",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -1497,11 +1429,10 @@ export default {
                 "primaryProperties": [
                     "http://www.w3.org/2004/02/skos/core#prefLabel",
                     "http://www.w3.org/2004/02/skos/core#definition",
-                    "http://www.w3.org/2004/02/skos/core#notation"
+                    "http://www.w3.org/2004/02/skos/core#notation",
+                    "http://www.w3.org/2004/02/skos/core#altLabel"
                 ],
                 "secondaryProperties": [
-                    "http://www.w3.org/2004/02/skos/core#broader",
-                    "http://www.w3.org/2004/02/skos/core#narrower",
                     "http://www.w3.org/2004/02/skos/core#broadMatch",
                     "http://www.w3.org/2004/02/skos/core#closeMatch",
                     "http://www.w3.org/2004/02/skos/core#exactMatch",
@@ -1512,7 +1443,6 @@ export default {
                     "@id",
                     "registryURL",
                     "ctid",
-                    "http://www.w3.org/2004/02/skos/core#altLabel",
                     "http://www.w3.org/2004/02/skos/core#hiddenLabel",
                     "http://www.w3.org/2004/02/skos/core#note",
                     "http://www.w3.org/2004/02/skos/core#changeNote"
