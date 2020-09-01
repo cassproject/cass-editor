@@ -564,7 +564,7 @@ export default {
             if (this.isT3Import) {
                 return this.t3CompetencyProfile;
             } else if (this.queryParams.ceasnDataFields === 'true') {
-                return this.ctdlAsnFrameworkProfile;
+                return this.ctdlAsnCompetencyProfile;
             }
             return this.t3CompetencyProfile;
         }
@@ -1402,6 +1402,9 @@ export default {
                     data = data1 + "data" + data2;
                 }
                 var framework;
+                if (EcRepository.cache) {
+                    delete EcRepository.cache[data];
+                }
                 if (me.conceptMode) {
                     framework = EcConceptScheme.getBlocking(data);
                 } else {
