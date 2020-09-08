@@ -468,6 +468,9 @@ export default {
                     this.filterByConfig = true;
                 }
             }
+        },
+        conceptMode: function() {
+            this.sortBy = this.conceptMode ? "dcterms:title.keyword" : "name.keyword";
         }
     }
 };
