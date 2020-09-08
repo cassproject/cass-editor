@@ -1,10 +1,3 @@
-var PapaParseParams = function() {};
-PapaParseParams = stjs.extend(PapaParseParams, null, [], function(constructor, prototype) {
-    prototype.complete = null;
-    prototype.header = null;
-    prototype.error = null;
-    prototype.encoding = null;
-}, {complete: {name: "Callback1", arguments: ["Object"]}, error: {name: "Callback1", arguments: ["Object"]}}, {});
 /**
  *  Base class for all importers, can hold helper functions
  *  that are useful for all importers
@@ -34,443 +27,13 @@ Importer = stjs.extend(Importer, null, [], function(constructor, prototype) {
  */
 var Exporter = function() {};
 Exporter = stjs.extend(Exporter, null, [], null, {}, {});
-var TabStructuredImport = function() {};
-TabStructuredImport = stjs.extend(TabStructuredImport, null, [], function(constructor, prototype) {
-    /**
-     *  Method to create competencies (and relationships if the parameters are passed in)
-     *  based on a CSV file and references to which columns correspond to which pieces
-     *  of data.
-     * 
-     *  @param {Object}                        text
-     *                                         Text to extract competencies from
-     *  @param {String}                        serverUrl
-     *                                         URL Prefix for the created competencies (and relationships?)
-     *  @param {EcIdentity}                    owner
-     *                                         EcIdentity that will own the created competencies (and relationships?)
-     *  @param {Callback2<Array<EcCompetency>, Array<EcAlignment>>} success
-     *                                         Callback triggered after the competencies (and relationships?) have been created
-     *  @param {Callback1<Object>}             [failure]
-     *                                         Callback triggered if an error during creating the competencies
-     *  @param {Callback1<Object>}             [incremental]
-     *                                         Callback triggered incrementally during creation of competencies to indicate progress,
-     *                                         returns an object indicating the number of competencies (and relationships?) created so far
-     *  @param {EcRepository}                  repo
-     *                                         Repository to save any new data to, or to use to generate IDs.
-     *  @memberOf TabStructuredImport
-     *  @method importCompetencies
-     *  @static
-     */
-    constructor.importCompetencies = function(text, serverUrl, owner, success, failure, incremental, repo, hashNameForId) {
-        var lines = text.split("\n");
-        var competencies = new Array();
-        var alignments = new Array();
-        for (var i = 0; i < lines.length; i++) 
-            TabStructuredImport.parseLinesIntoHierarchy(lines, competencies, alignments, i, serverUrl, hashNameForId, repo);
-        success(competencies, alignments);
-    };
-    constructor.parseLinesIntoHierarchy = function(lines, competencies, alignments, index, serverUrl, hashNameForId, repo) {
-        var parentI = -1;
-        for (var i = index - 1; i >= 0; i--) {
-            if (TabStructuredImport.tabs(lines[i]) < TabStructuredImport.tabs(lines[index])) {
-                parentI = i;
-                break;
-            }
-        }
-        var c = null;
-        for (var i = 0; i < competencies.length; i++) {
-            if (competencies[i].getName().trim() == lines[index].trim()) {
-                c = competencies[i];
-                break;
-            }
-        }
-        if (c == null) {
-            c = new EcCompetency();
-            if (hashNameForId) 
-                c.assignId(serverUrl, EcCrypto.md5(lines[index].trim()));
-             else if (serverUrl != repo.selectedServer) 
-                c.generateShortId(serverUrl);
-             else 
-                c.generateId(serverUrl);
-            c.setName(lines[index]);
-            competencies.push(c);
-        }
-        if (parentI != -1) {
-            var parent = null;
-            for (var i = 0; i < competencies.length; i++) {
-                if (competencies[i].getName().trim() == lines[parentI].trim()) {
-                    parent = competencies[i];
-                    break;
-                }
-            }
-            if (parent != null && parent.shortId() != c.shortId()) {
-                var a = new EcAlignment();
-                if (serverUrl != repo.selectedServer) 
-                    a.generateShortId(serverUrl);
-                 else 
-                    a.generateId(serverUrl);
-                a.relationType = EcAlignment.NARROWS;
-                a.source = c.shortId();
-                a.target = parent.shortId();
-                alignments.push(a);
-            }
-        }
-    };
-    constructor.tabs = function(line) {
-        var tabs = 0;
-        for (var i = 0; i < line.length; i++) {
-            var c = line.charAt(i);
-            if (c == '\t' || c == ' ') 
-                tabs++;
-             else 
-                return tabs;
-        }
-        return tabs;
-    };
-}, {}, {});
-/**
- *  Importer methods to copy or link to competencies that already
- *  exist in another framework in a CASS instance.
- * 
- *  @author devlin.junker@eduworks.com
- *  @module org.cassproject
- *  @class FrameworkImport
- *  @static
- *  @extends Importer
- */
-var FrameworkImport = function() {};
-FrameworkImport = stjs.extend(FrameworkImport, null, [], function(constructor, prototype) {
-    constructor.savedComp = 0;
-    constructor.savedRel = 0;
-    constructor.targetUsable = null;
-    constructor.competencies = null;
-    constructor.relations = null;
-    constructor.compMap = null;
-    /**
-     *  Copies or links competencies that exist in one framework in a CASS instance,
-     *  to another different framework in the same CASS instance.
-     * 
-     *  @param {EcFramework}                    source
-     *                                          Framework to copy or link the competencies from
-     *  @param {EcFramework}                    target
-     *                                          Framework to add the copied or linked competencies to
-     *  @param {boolean}                        copy
-     *                                          Flag indicating whether or not to copy or link the competencies in the source framework
-     *  @param {String}                         serverUrl
-     *                                          URL Prefix for the created competencies if copied
-     *  @param {EcIdentity}                     owner
-     *                                          EcIdentity that will own the created competencies if copied
-     *  @param {Callback1<Array<EcCompetency>>} success
-     *                                          Callback triggered after succesfully copying or linking all of the competencies,
-     *                                          returns an array of the new or linked competencies
-     *  @param {Callback1<Object>}              [failure]
-     *                                          Callback triggered if an error occurred while creating the competencies
-     *  @memberOf FrameworkImport
-     *  @method importCompetencies
-     *  @static
-     */
-    constructor.importCompetencies = function(source, target, copy, serverUrl, owner, success, failure, repo) {
-        if (source == null) {
-            failure("Source Framework not set");
-            return;
-        }
-        if (target == null) {
-            failure("Target Framework not Set");
-            return;
-        }
-        FrameworkImport.targetUsable = target;
-        if (source.competency == null || source.competency.length == 0) {
-            failure("Source Has No Competencies");
-            return;
-        }
-        FrameworkImport.competencies = [];
-        FrameworkImport.relations = [];
-        if (copy) {
-            FrameworkImport.compMap = {};
-            FrameworkImport.savedComp = 0;
-            FrameworkImport.savedRel = 0;
-            for (var i = 0; i < source.competency.length; i++) {
-                var id = source.competency[i];
-                EcCompetency.get(id, function(comp) {
-                    var competency = new EcCompetency();
-                    competency.copyFrom(comp);
-                    if (repo == null || repo.selectedServer.indexOf(serverUrl) != -1) 
-                        competency.generateId(serverUrl);
-                     else 
-                        competency.generateShortId(serverUrl);
-                    FrameworkImport.compMap[comp.shortId()] = competency.shortId();
-                    if (owner != null) 
-                        competency.addOwner(owner.ppk.toPk());
-                    var id = competency.id;
-                    Task.asyncImmediate(function(o) {
-                        var keepGoing = o;
-                        competency.save(function(str) {
-                            FrameworkImport.savedComp++;
-                            FrameworkImport.targetUsable.addCompetency(id);
-                            if (FrameworkImport.savedComp == FrameworkImport.competencies.length) {
-                                FrameworkImport.targetUsable.save(function(p1) {
-                                    for (var i = 0; i < source.relation.length; i++) {
-                                        var id = source.relation[i];
-                                        EcAlignment.get(id, function(rel) {
-                                            var relation = new EcAlignment();
-                                            relation.copyFrom(rel);
-                                            if (repo == null || repo.selectedServer.indexOf(serverUrl) != -1) 
-                                                relation.generateId(serverUrl);
-                                             else 
-                                                relation.generateShortId(serverUrl);
-                                            relation.source = FrameworkImport.compMap[rel.source];
-                                            relation.target = FrameworkImport.compMap[rel.target];
-                                            if (owner != null) 
-                                                relation.addOwner(owner.ppk.toPk());
-                                            var id = relation.id;
-                                            Task.asyncImmediate(function(o) {
-                                                var keepGoing2 = o;
-                                                relation.save(function(str) {
-                                                    FrameworkImport.savedRel++;
-                                                    FrameworkImport.targetUsable.addRelation(id);
-                                                    if (FrameworkImport.savedRel == FrameworkImport.relations.length) {
-                                                        FrameworkImport.targetUsable.save(function(p1) {
-                                                            success(FrameworkImport.competencies, FrameworkImport.relations);
-                                                        }, function(p1) {
-                                                            failure(p1);
-                                                        }, repo);
-                                                    }
-                                                    keepGoing2();
-                                                }, function(str) {
-                                                    failure("Trouble Saving Copied Competency");
-                                                    keepGoing2();
-                                                }, repo);
-                                            });
-                                            FrameworkImport.relations.push(relation);
-                                        }, function(str) {
-                                            failure(str);
-                                        });
-                                    }
-                                }, function(p1) {
-                                    failure(p1);
-                                }, repo);
-                            }
-                            keepGoing();
-                        }, function(str) {
-                            failure("Trouble Saving Copied Competency");
-                            keepGoing();
-                        }, repo);
-                    });
-                    FrameworkImport.competencies.push(competency);
-                }, function(str) {
-                    failure(str);
-                });
-            }
-        } else {
-            for (var i = 0; i < source.competency.length; i++) {
-                if (target.competency == null || (target.competency.indexOf(source.competency[i]) == -1 && target.competency.indexOf(EcRemoteLinkedData.trimVersionFromUrl(source.competency[i])) == -1)) {
-                    EcCompetency.get(source.competency[i], function(comp) {
-                        FrameworkImport.competencies.push(comp);
-                        FrameworkImport.targetUsable.addCompetency(comp.id);
-                        if (FrameworkImport.competencies.length == source.competency.length) {
-                            delete (FrameworkImport.targetUsable)["competencyObjects"];
-                            FrameworkImport.targetUsable.save(function(p1) {
-                                for (var i = 0; i < source.relation.length; i++) {
-                                    if (target.relation == null || (target.relation.indexOf(source.relation[i]) == -1 && target.relation.indexOf(EcRemoteLinkedData.trimVersionFromUrl(source.competency[i])) == -1)) {
-                                        EcAlignment.get(source.relation[i], function(relation) {
-                                            FrameworkImport.relations.push(relation);
-                                            FrameworkImport.targetUsable.addRelation(relation.id);
-                                            if (FrameworkImport.relations.length == source.relation.length) {
-                                                delete (FrameworkImport.targetUsable)["competencyObjects"];
-                                                Task.asyncImmediate(function(o) {
-                                                    var keepGoing = o;
-                                                    FrameworkImport.targetUsable.save(function(p1) {
-                                                        success(FrameworkImport.competencies, FrameworkImport.relations);
-                                                        keepGoing();
-                                                    }, function(p1) {
-                                                        failure(p1);
-                                                        keepGoing();
-                                                    }, repo);
-                                                });
-                                            }
-                                        }, function(p1) {
-                                            failure(p1);
-                                        });
-                                    }
-                                }
-                            }, function(p1) {
-                                failure(p1);
-                            }, repo);
-                        }
-                    }, function(p1) {
-                        failure(p1);
-                    });
-                }
-            }
-        }
-    };
-}, {targetUsable: "EcFramework", competencies: {name: "Array", arguments: ["EcCompetency"]}, relations: {name: "Array", arguments: ["EcAlignment"]}, compMap: {name: "Map", arguments: [null, null]}}, {});
-/**
- *  Importer methods to create competencies based on a
- *  Medbiquitous competency XML file
- * 
- *  @author devlin.junker@eduworks.com
- *  @author fritz.ray@eduworks.com
- *  @module org.cassproject
- *  @class MedbiqImport
- *  @static
- *  @extends Importer
- */
-var MedbiqImport = function() {
-    Importer.call(this);
-};
-MedbiqImport = stjs.extend(MedbiqImport, Importer, [], function(constructor, prototype) {
-    constructor.INCREMENTAL_STEP = 5;
-    constructor.medbiqXmlCompetencies = null;
-    constructor.progressObject = null;
-    constructor.saved = 0;
-    /**
-     *  Does the legwork of looking for competencies in the XML
-     * 
-     *  @param {Object} obj
-     *                  Parsed XML Object
-     *  @memberOf MedbiqImport
-     *  @method medbiqXmlLookForCompetencyObject
-     *  @private
-     *  @static
-     */
-    constructor.medbiqXmlLookForCompetencyObject = function(obj) {
-        if (Importer.isObject(obj) || Importer.isArray(obj)) 
-            for (var key in (obj)) {
-                if (key == "CompetencyObject") 
-                    MedbiqImport.medbiqXmlParseCompetencyObject((obj)[key]);
-                 else 
-                    MedbiqImport.medbiqXmlLookForCompetencyObject((obj)[key]);
-            }
-    };
-    /**
-     *  Does the legwork of parsing the competencies out of the parsed XML
-     * 
-     *  @param {Object} obj
-     *                  Parsed XML Object
-     *  @memberOf MedbiqImport
-     *  @method medbiqXmlParseCompetencyObject
-     *  @private
-     *  @static
-     */
-    constructor.medbiqXmlParseCompetencyObject = function(obj) {
-        if (Importer.isArray(obj)) {
-            for (var key in (obj)) {
-                MedbiqImport.medbiqXmlParseCompetencyObject((obj)[key]);
-            }
-        } else {
-            var newCompetency = new EcCompetency();
-            if ((obj)["lom"] != null && ((obj)["lom"])["general"] != null) {
-                newCompetency.name = ((((obj)["lom"])["general"])["title"])["string"].toString();
-                if ((((obj)["lom"])["general"])["description"] != null) 
-                    newCompetency.description = ((((obj)["lom"])["general"])["description"])["string"].toString();
-                if ((((obj)["lom"])["general"])["identifier"] != null) 
-                    newCompetency.url = ((((obj)["lom"])["general"])["identifier"])["entry"].toString();
-                if (newCompetency.description == null) 
-                    newCompetency.description = "";
-                MedbiqImport.medbiqXmlCompetencies.push(newCompetency);
-            }
-        }
-    };
-    /**
-     *  Analyzes a Medbiquitous XML file for competencies and saves them for use in the import process
-     * 
-     *  @param {Object}                         file
-     *                                          Medbiquitous XML file
-     *  @param {Callback1<Array<EcCompetency>>} success
-     *                                          Callback triggered on succesfully analyzing competencies,
-     *                                          returns an array of all of the competencies found
-     *  @param {Callback1<String>}              [failure]
-     *                                          Callback triggered on error analyzing file
-     *  @memberOf MedbiqImport
-     *  @method analyzeFile
-     *  @static
-     */
-    constructor.analyzeFile = function(file, success, failure) {
-        if (file == null) {
-            failure("No file to analyze");
-            return;
-        }
-        if ((file)["name"] == null) {
-            failure("Invalid file");
-            return;
-        } else if (!((file)["name"]).endsWith(".xml")) {
-            failure("Invalid file type");
-            return;
-        }
-        var reader = new FileReader();
-        reader.onload = function(e) {
-            var result = ((e)["target"])["result"];
-            var jsonObject = new X2JS().xml_str2json(result);
-            MedbiqImport.medbiqXmlCompetencies = [];
-            MedbiqImport.medbiqXmlLookForCompetencyObject(jsonObject);
-            success(MedbiqImport.medbiqXmlCompetencies);
-        };
-        reader.onerror = function(p1) {
-            failure("Error Reading File");
-        };
-        reader.readAsText(file, "UTF-8");
-    };
-    /**
-     *  Method for actually creating the competencies in the CASS repository after a
-     *  Medbiquitous XML file has been parsed. Must be called after analyzeFile
-     * 
-     *  @param {String}                         serverUrl
-     *                                          URL Prefix for the created competencies (and relationships?)
-     *  @param {EcIdentity}                     owner
-     *                                          EcIdentity that will own the created competencies (and relationships?)
-     *  @param {Callback1<Array<EcCompetency>>} success
-     *                                          Callback triggered after successfully creating the competencies from the XML file
-     *  @param {Callback1<Object>}              [failure]
-     *                                          Callback triggered if there is an error while creating the competencies
-     *  @param {Callback1<Object>}              [incremental]
-     *                                          Callback triggered incrementally while the competencies are being created to show progress,
-     *                                          returns an object indicating the number of competencies created so far
-     *  @memberOf MedbiqImport
-     *  @method importCompetencies
-     *  @static
-     */
-    constructor.importCompetencies = function(serverUrl, owner, success, failure, incremental, repo) {
-        MedbiqImport.progressObject = null;
-        MedbiqImport.saved = 0;
-        for (var i = 0; i < MedbiqImport.medbiqXmlCompetencies.length; i++) {
-            var comp = MedbiqImport.medbiqXmlCompetencies[i];
-            if (repo == null || repo.selectedServer.indexOf(serverUrl) != -1) 
-                comp.generateId(serverUrl);
-             else 
-                comp.generateShortId(serverUrl);
-            if (owner != null) 
-                comp.addOwner(owner.ppk.toPk());
-            MedbiqImport.saveCompetency(success, failure, incremental, comp, repo);
-        }
-    };
-    constructor.saveCompetency = function(success, failure, incremental, comp, repo) {
-        Task.asyncImmediate(function(o) {
-            var keepGoing = o;
-            var scs = function(p1) {
-                MedbiqImport.saved++;
-                if (MedbiqImport.saved % MedbiqImport.INCREMENTAL_STEP == 0) {
-                    if (MedbiqImport.progressObject == null) 
-                        MedbiqImport.progressObject = new Object();
-                    (MedbiqImport.progressObject)["competencies"] = MedbiqImport.saved;
-                    incremental(MedbiqImport.progressObject);
-                }
-                if (MedbiqImport.saved == MedbiqImport.medbiqXmlCompetencies.length) {
-                    if (MedbiqImport.progressObject == null) 
-                        MedbiqImport.progressObject = new Object();
-                    (MedbiqImport.progressObject)["competencies"] = MedbiqImport.saved;
-                    incremental(MedbiqImport.progressObject);
-                    success(MedbiqImport.medbiqXmlCompetencies);
-                }
-                keepGoing();
-            };
-            var err = function(p1) {
-                failure("Failed to Save Competency");
-                keepGoing();
-            };
-            comp.save(scs, err, repo);
-        });
-    };
-}, {medbiqXmlCompetencies: {name: "Array", arguments: ["EcCompetency"]}, progressObject: "Object"}, {});
+var PapaParseParams = function() {};
+PapaParseParams = stjs.extend(PapaParseParams, null, [], function(constructor, prototype) {
+    prototype.complete = null;
+    prototype.header = null;
+    prototype.error = null;
+    prototype.encoding = null;
+}, {complete: {name: "Callback1", arguments: ["Object"]}, error: {name: "Callback1", arguments: ["Object"]}}, {});
 /**
  *  Import methods to handle an ASN JSON file containing a framework,
  *  competencies and relationships, and store them in a CASS instance
@@ -834,8 +397,87 @@ ASNImport = stjs.extend(ASNImport, Importer, [], function(constructor, prototype
         }, repo);
     };
 }, {jsonFramework: "Object", jsonCompetencies: {name: "Map", arguments: [null, "Object"]}, importedFramework: "EcFramework", competencies: {name: "Map", arguments: [null, "EcCompetency"]}, progressObject: "Object"}, {});
-var CTDLASNCSVImport = function() {};
-CTDLASNCSVImport = stjs.extend(CTDLASNCSVImport, null, [], function(constructor, prototype) {
+/**
+ *  Importer methods to create competencies based on a
+ *  Medbiquitous competency XML file
+ * 
+ *  @author devlin.junker@eduworks.com
+ *  @author fritz.ray@eduworks.com
+ *  @module org.cassproject
+ *  @class MedbiqImport
+ *  @static
+ *  @extends Importer
+ */
+var MedbiqImport = function() {
+    Importer.call(this);
+};
+MedbiqImport = stjs.extend(MedbiqImport, Importer, [], function(constructor, prototype) {
+    constructor.INCREMENTAL_STEP = 5;
+    constructor.medbiqXmlCompetencies = null;
+    constructor.progressObject = null;
+    constructor.saved = 0;
+    /**
+     *  Does the legwork of looking for competencies in the XML
+     * 
+     *  @param {Object} obj
+     *                  Parsed XML Object
+     *  @memberOf MedbiqImport
+     *  @method medbiqXmlLookForCompetencyObject
+     *  @private
+     *  @static
+     */
+    constructor.medbiqXmlLookForCompetencyObject = function(obj) {
+        if (Importer.isObject(obj) || Importer.isArray(obj)) 
+            for (var key in (obj)) {
+                if (key == "CompetencyObject") 
+                    MedbiqImport.medbiqXmlParseCompetencyObject((obj)[key]);
+                 else 
+                    MedbiqImport.medbiqXmlLookForCompetencyObject((obj)[key]);
+            }
+    };
+    /**
+     *  Does the legwork of parsing the competencies out of the parsed XML
+     * 
+     *  @param {Object} obj
+     *                  Parsed XML Object
+     *  @memberOf MedbiqImport
+     *  @method medbiqXmlParseCompetencyObject
+     *  @private
+     *  @static
+     */
+    constructor.medbiqXmlParseCompetencyObject = function(obj) {
+        if (Importer.isArray(obj)) {
+            for (var key in (obj)) {
+                MedbiqImport.medbiqXmlParseCompetencyObject((obj)[key]);
+            }
+        } else {
+            var newCompetency = new EcCompetency();
+            if ((obj)["lom"] != null && ((obj)["lom"])["general"] != null) {
+                newCompetency.name = ((((obj)["lom"])["general"])["title"])["string"].toString();
+                if ((((obj)["lom"])["general"])["description"] != null) 
+                    newCompetency.description = ((((obj)["lom"])["general"])["description"])["string"].toString();
+                if ((((obj)["lom"])["general"])["identifier"] != null) 
+                    newCompetency.url = ((((obj)["lom"])["general"])["identifier"])["entry"].toString();
+                if (newCompetency.description == null) 
+                    newCompetency.description = "";
+                MedbiqImport.medbiqXmlCompetencies.push(newCompetency);
+            }
+        }
+    };
+    /**
+     *  Analyzes a Medbiquitous XML file for competencies and saves them for use in the import process
+     * 
+     *  @param {Object}                         file
+     *                                          Medbiquitous XML file
+     *  @param {Callback1<Array<EcCompetency>>} success
+     *                                          Callback triggered on succesfully analyzing competencies,
+     *                                          returns an array of all of the competencies found
+     *  @param {Callback1<String>}              [failure]
+     *                                          Callback triggered on error analyzing file
+     *  @memberOf MedbiqImport
+     *  @method analyzeFile
+     *  @static
+     */
     constructor.analyzeFile = function(file, success, failure) {
         if (file == null) {
             failure("No file to analyze");
@@ -843,265 +485,355 @@ CTDLASNCSVImport = stjs.extend(CTDLASNCSVImport, null, [], function(constructor,
         }
         if ((file)["name"] == null) {
             failure("Invalid file");
-        } else if (!((file)["name"]).endsWith(".csv")) {
+            return;
+        } else if (!((file)["name"]).endsWith(".xml")) {
             failure("Invalid file type");
-        }
-        Papa.parse(file, {encoding: "UTF-8", complete: function(results) {
-            var tabularData = (results)["data"];
-            var colNames = tabularData[0];
-            var nameToCol = new Object();
-            for (var i = 0; i < colNames.length; i++) 
-                (nameToCol)[colNames[i]] = i;
-            var frameworkCounter = 0;
-            var competencyCounter = 0;
-            var typeCol = (nameToCol)["@type"];
-            if (typeCol == null) {
-                this.error("No @type in CSV.");
-                return;
-            }
-            for (var i = 0; i < tabularData.length; i++) {
-                if (i == 0) 
-                    continue;
-                var col = tabularData[i];
-                if (col[typeCol] != null && col[typeCol].trim() == "ceasn:CompetencyFramework") 
-                    frameworkCounter++;
-                 else if (col[typeCol] != null && col[typeCol].trim() == "ceasn:Competency") 
-                    competencyCounter++;
-                 else if (col[typeCol] == null || col[typeCol] == "") 
-                    continue;
-                 else {
-                    this.error("Found unknown type:" + col[typeCol]);
-                    return;
-                }
-            }
-            success(frameworkCounter, competencyCounter);
-        }, error: failure});
-    };
-    constructor.importFrameworksAndCompetencies = function(repo, file, success, failure, ceo) {
-        if (file == null) {
-            failure("No file to analyze");
             return;
         }
-        if ((file)["name"] == null) {
-            failure("Invalid file");
-        } else if (!((file)["name"]).endsWith(".csv")) {
-            failure("Invalid file type");
-        }
-        Papa.parse(file, {header: true, encoding: "UTF-8", complete: function(results) {
-            var tabularData = (results)["data"];
-            var frameworks = new Object();
-            var frameworkArray = new Array();
-            var frameworkRows = new Object();
-            var competencies = new Array();
-            var competencyRows = new Object();
-            var relations = new Array();
-            var relationById = new Object();
-            new EcAsyncHelper().each(tabularData, function(pretranslatedE, callback0) {
-                if ((pretranslatedE)["@type"] == "ceasn:CompetencyFramework") {
-                    var translator = new EcLinkedData(null, null);
-                    translator.copyFrom(pretranslatedE);
-                    CTDLASNCSVImport.cleanUpTranslator(translator);
-                    translator.recast("https://schema.cassproject.org/0.4/ceasn2cass", "https://schema.cassproject.org/0.4", function(e) {
-                        var f = new EcFramework();
-                        f.copyFrom(e);
-                        if ((e)["owner"] != null) {
-                            var id = new EcIdentity();
-                            id.ppk = EcPpk.fromPem((e)["owner"]);
-                            f.addOwner(id.ppk.toPk());
-                            EcIdentityManager.addIdentityQuietly(id);
-                        }
-                        if (ceo != null) 
-                            f.addOwner(ceo.ppk.toPk());
-                        if (EcFramework.template != null && (EcFramework.template)[("schema:dateCreated")] != null) {
-                            CTDLASNCSVImport.setDateCreated(e, f);
-                        }
-                        (frameworks)[f.id] = f;
-                        (frameworkRows)[f.id] = e;
-                        (f)["ceasn:hasChild"] = null;
-                        (f)["ceasn:hasTopChild"] = null;
-                        frameworkArray.push(f);
-                        f.competency = new Array();
-                        f.relation = new Array();
-                        callback0();
-                    }, failure);
-                } else if ((pretranslatedE)["@type"] == "ceasn:Competency") {
-                    var translator = new EcLinkedData(null, null);
-                    translator.copyFrom(pretranslatedE);
-                    CTDLASNCSVImport.cleanUpTranslator(translator);
-                    translator.recast("https://schema.cassproject.org/0.4/ceasn2cass", "https://schema.cassproject.org/0.4", function(e) {
-                        var f = new EcCompetency();
-                        f.copyFrom(e);
-                        if ((e)["id"] == null) {
-                            callback0();
-                            return;
-                        }
-                        if ((e)["ceasn:isPartOf"] != null) {
-                            ((frameworks)[(e)["ceasn:isPartOf"]]).competency.push(f.shortId());
-                        } else {
-                            var parent = e;
-                            var done = false;
-                             while (!done && parent != null){
-                                if ((parent)["ceasn:isChildOf"] != null && (parent)["ceasn:isChildOf"] != "") {
-                                    parent = (competencyRows)[(parent)["ceasn:isChildOf"]];
-                                } else if ((parent)["ceasn:isTopChildOf"] != null && (parent)["ceasn:isTopChildOf"] != "") {
-                                    parent = (frameworkRows)[(parent)["ceasn:isTopChildOf"]];
-                                    done = true;
-                                }
-                            }
-                            if (!done) {
-                                this.error("Could not find framework:" + (e)["type"]);
-                                return;
-                            }
-                            if (parent != null) {
-                                if ((parent)["type"] == "Framework") {
-                                    (e)["ceasn:isPartOf"] = (parent)["id"];
-                                    ((frameworks)[(parent)["id"]]).competency.push(f.shortId());
-                                } else {
-                                    this.error("Object cannot trace to framework:" + (e)["type"]);
-                                    return;
-                                }
-                            } else {
-                                this.error("Object has no framework:" + (e)["type"]);
-                                return;
-                            }
-                        }
-                        if ((e)["owner"] == null) {
-                            if (((frameworkRows)[(e)["ceasn:isPartOf"]])["owner"] != null) 
-                                (e)["owner"] = ((frameworkRows)[(e)["ceasn:isPartOf"]])["owner"];
-                        }
-                        var id = new EcIdentity();
-                        if ((e)["owner"] != null) {
-                            id.ppk = EcPpk.fromPem((e)["owner"]);
-                            if (id.ppk != null) 
-                                f.addOwner(id.ppk.toPk());
-                            EcIdentityManager.addIdentityQuietly(id);
-                        }
-                        if (ceo != null) 
-                            f.addOwner(ceo.ppk.toPk());
-                        if (EcCompetency.template != null && (EcCompetency.template)[("schema:dateCreated")] != null) {
-                            CTDLASNCSVImport.setDateCreated(e, f);
-                        }
-                        if ((e)["ceasn:isChildOf"] != null) {
-                            CTDLASNCSVImport.createEachRelation(e, "ceasn:isChildOf", Relation.NARROWS, repo, ceo, id, relations, relationById, frameworks, -1);
-                        }
-                        if ((e)["ceasn:broadAlignment"] != null) {
-                            CTDLASNCSVImport.createRelations(e, "ceasn:broadAlignment", Relation.NARROWS, repo, ceo, id, relations, relationById, frameworks);
-                        }
-                        if ((e)["ceasn:narrowAlignment"] != null) {
-                            CTDLASNCSVImport.createRelations(e, "ceasn:narrowAlignment", Relation.NARROWS, repo, ceo, id, relations, relationById, frameworks);
-                        }
-                        if ((e)["sameAs"] != null) {
-                            CTDLASNCSVImport.createRelations(e, "sameAs", Relation.IS_EQUIVALENT_TO, repo, ceo, id, relations, relationById, frameworks);
-                        }
-                        if ((e)["ceasn:majorAlignment"] != null) {
-                            CTDLASNCSVImport.createRelations(e, "ceasn:majorAlignment", "majorRelated", repo, ceo, id, relations, relationById, frameworks);
-                        }
-                        if ((e)["ceasn:minorAlignment"] != null) {
-                            CTDLASNCSVImport.createRelations(e, "ceasn:minorAlignment", "minorRelated", repo, ceo, id, relations, relationById, frameworks);
-                        }
-                        if ((e)["ceasn:prerequisiteAlignment"] != null) {
-                            CTDLASNCSVImport.createRelations(e, "ceasn:prerequisiteAlignment", Relation.REQUIRES, repo, ceo, id, relations, relationById, frameworks);
-                        }
-                        (f)["ceasn:isTopChildOf"] = null;
-                        (f)["ceasn:isChildOf"] = null;
-                        (f)["ceasn:isPartOf"] = null;
-                        (f)["ceasn:broadAlignment"] = null;
-                        (f)["ceasn:narrowAlignment"] = null;
-                        (f)["sameAs"] = null;
-                        (f)["ceasn:majorAlignment"] = null;
-                        (f)["ceasn:minorAlignment"] = null;
-                        (f)["ceasn:prerequisiteAlignment"] = null;
-                        (f)["ceasn:hasChild"] = null;
-                        competencies.push(f);
-                        (competencyRows)[f.id] = e;
-                        callback0();
-                    }, failure);
-                } else if ((pretranslatedE)["@type"] == null || (pretranslatedE)["@type"] == "") {
-                    callback0();
-                    return;
-                } else {
-                    this.error("Found unknown type:" + (pretranslatedE)["@type"]);
-                    callback0();
-                    return;
-                }
-            }, function(strings) {
-                success(frameworkArray, competencies, relations);
-            });
-        }, error: failure});
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var result = ((e)["target"])["result"];
+            var jsonObject = new X2JS().xml_str2json(result);
+            MedbiqImport.medbiqXmlCompetencies = [];
+            MedbiqImport.medbiqXmlLookForCompetencyObject(jsonObject);
+            success(MedbiqImport.medbiqXmlCompetencies);
+        };
+        reader.onerror = function(p1) {
+            failure("Error Reading File");
+        };
+        reader.readAsText(file, "UTF-8");
     };
-    constructor.cleanUpTranslator = function(translator) {
-        for (var key in (translator)) {
-            if ((translator)[key] == "") {
-                (translator)[key] = null;
-            } else if ((translator)[key] != null) {
-                var thisKey = (translator)[key];
-                if ((typeof thisKey) == "string") {
-                    if (((translator)[key]).trim().length == 0) {
-                        (translator)[key] = null;
-                    } else if ((thisKey).indexOf("|") != -1) {
-                        thisKey = (thisKey).split("|");
-                        (translator)[key] = thisKey;
-                        for (var i = 0; i < (thisKey).length; i++) {
-                            if ((thisKey)[i] != (thisKey)[i].trim()) {
-                                var thisVal = (thisKey)[i].trim();
-                                (thisKey)[i] = thisVal;
-                            }
-                        }
-                    }
+    /**
+     *  Method for actually creating the competencies in the CASS repository after a
+     *  Medbiquitous XML file has been parsed. Must be called after analyzeFile
+     * 
+     *  @param {String}                         serverUrl
+     *                                          URL Prefix for the created competencies (and relationships?)
+     *  @param {EcIdentity}                     owner
+     *                                          EcIdentity that will own the created competencies (and relationships?)
+     *  @param {Callback1<Array<EcCompetency>>} success
+     *                                          Callback triggered after successfully creating the competencies from the XML file
+     *  @param {Callback1<Object>}              [failure]
+     *                                          Callback triggered if there is an error while creating the competencies
+     *  @param {Callback1<Object>}              [incremental]
+     *                                          Callback triggered incrementally while the competencies are being created to show progress,
+     *                                          returns an object indicating the number of competencies created so far
+     *  @memberOf MedbiqImport
+     *  @method importCompetencies
+     *  @static
+     */
+    constructor.importCompetencies = function(serverUrl, owner, success, failure, incremental, repo) {
+        MedbiqImport.progressObject = null;
+        MedbiqImport.saved = 0;
+        for (var i = 0; i < MedbiqImport.medbiqXmlCompetencies.length; i++) {
+            var comp = MedbiqImport.medbiqXmlCompetencies[i];
+            if (repo == null || repo.selectedServer.indexOf(serverUrl) != -1) 
+                comp.generateId(serverUrl);
+             else 
+                comp.generateShortId(serverUrl);
+            if (owner != null) 
+                comp.addOwner(owner.ppk.toPk());
+            MedbiqImport.saveCompetency(success, failure, incremental, comp, repo);
+        }
+    };
+    constructor.saveCompetency = function(success, failure, incremental, comp, repo) {
+        Task.asyncImmediate(function(o) {
+            var keepGoing = o;
+            var scs = function(p1) {
+                MedbiqImport.saved++;
+                if (MedbiqImport.saved % MedbiqImport.INCREMENTAL_STEP == 0) {
+                    if (MedbiqImport.progressObject == null) 
+                        MedbiqImport.progressObject = new Object();
+                    (MedbiqImport.progressObject)["competencies"] = MedbiqImport.saved;
+                    incremental(MedbiqImport.progressObject);
                 }
-                if (key != key.trim()) {
-                    var trimKey = key.trim();
-                    (translator)[trimKey] = (translator)[key];
-                    (translator)[key] = null;
+                if (MedbiqImport.saved == MedbiqImport.medbiqXmlCompetencies.length) {
+                    if (MedbiqImport.progressObject == null) 
+                        MedbiqImport.progressObject = new Object();
+                    (MedbiqImport.progressObject)["competencies"] = MedbiqImport.saved;
+                    incremental(MedbiqImport.progressObject);
+                    success(MedbiqImport.medbiqXmlCompetencies);
                 }
+                keepGoing();
+            };
+            var err = function(p1) {
+                failure("Failed to Save Competency");
+                keepGoing();
+            };
+            comp.save(scs, err, repo);
+        });
+    };
+}, {medbiqXmlCompetencies: {name: "Array", arguments: ["EcCompetency"]}, progressObject: "Object"}, {});
+var TabStructuredImport = function() {};
+TabStructuredImport = stjs.extend(TabStructuredImport, null, [], function(constructor, prototype) {
+    /**
+     *  Method to create competencies (and relationships if the parameters are passed in)
+     *  based on a CSV file and references to which columns correspond to which pieces
+     *  of data.
+     * 
+     *  @param {Object}                        text
+     *                                         Text to extract competencies from
+     *  @param {String}                        serverUrl
+     *                                         URL Prefix for the created competencies (and relationships?)
+     *  @param {EcIdentity}                    owner
+     *                                         EcIdentity that will own the created competencies (and relationships?)
+     *  @param {Callback2<Array<EcCompetency>, Array<EcAlignment>>} success
+     *                                         Callback triggered after the competencies (and relationships?) have been created
+     *  @param {Callback1<Object>}             [failure]
+     *                                         Callback triggered if an error during creating the competencies
+     *  @param {Callback1<Object>}             [incremental]
+     *                                         Callback triggered incrementally during creation of competencies to indicate progress,
+     *                                         returns an object indicating the number of competencies (and relationships?) created so far
+     *  @param {EcRepository}                  repo
+     *                                         Repository to save any new data to, or to use to generate IDs.
+     *  @memberOf TabStructuredImport
+     *  @method importCompetencies
+     *  @static
+     */
+    constructor.importCompetencies = function(text, serverUrl, owner, success, failure, incremental, repo, hashNameForId) {
+        var lines = text.split("\n");
+        var competencies = new Array();
+        var alignments = new Array();
+        for (var i = 0; i < lines.length; i++) 
+            TabStructuredImport.parseLinesIntoHierarchy(lines, competencies, alignments, i, serverUrl, hashNameForId, repo);
+        success(competencies, alignments);
+    };
+    constructor.parseLinesIntoHierarchy = function(lines, competencies, alignments, index, serverUrl, hashNameForId, repo) {
+        var parentI = -1;
+        for (var i = index - 1; i >= 0; i--) {
+            if (TabStructuredImport.tabs(lines[i]) < TabStructuredImport.tabs(lines[index])) {
+                parentI = i;
+                break;
+            }
+        }
+        var c = null;
+        for (var i = 0; i < competencies.length; i++) {
+            if (competencies[i].getName().trim() == lines[index].trim()) {
+                c = competencies[i];
+                break;
+            }
+        }
+        if (c == null) {
+            c = new EcCompetency();
+            if (hashNameForId) 
+                c.assignId(serverUrl, EcCrypto.md5(lines[index].trim()));
+             else if (serverUrl != repo.selectedServer) 
+                c.generateShortId(serverUrl);
+             else 
+                c.generateId(serverUrl);
+            c.setName(lines[index]);
+            competencies.push(c);
+        }
+        if (parentI != -1) {
+            var parent = null;
+            for (var i = 0; i < competencies.length; i++) {
+                if (competencies[i].getName().trim() == lines[parentI].trim()) {
+                    parent = competencies[i];
+                    break;
+                }
+            }
+            if (parent != null && parent.shortId() != c.shortId()) {
+                var a = new EcAlignment();
+                if (serverUrl != repo.selectedServer) 
+                    a.generateShortId(serverUrl);
+                 else 
+                    a.generateId(serverUrl);
+                a.relationType = EcAlignment.NARROWS;
+                a.source = c.shortId();
+                a.target = parent.shortId();
+                alignments.push(a);
             }
         }
     };
-    constructor.createRelations = function(e, field, type, repo, ceo, id, relations, relationById, frameworks) {
-        if (!EcArray.isArray((e)[field])) {
-            var makeArray = Array((e)[field]);
-            (e)[field] = makeArray;
+    constructor.tabs = function(line) {
+        var tabs = 0;
+        for (var i = 0; i < line.length; i++) {
+            var c = line.charAt(i);
+            if (c == '\t' || c == ' ') 
+                tabs++;
+             else 
+                return tabs;
         }
-        for (var i = 0; i < ((e)[field]).length; i++) {
-            CTDLASNCSVImport.createEachRelation(e, field, type, repo, ceo, id, relations, relationById, frameworks, i);
-        }
-    };
-    constructor.createEachRelation = function(e, field, type, repo, ceo, id, relations, relationById, frameworks, i) {
-        var r = new EcAlignment();
-        r.generateId(repo.selectedServer);
-        if (ceo != null) 
-            r.addOwner(ceo.ppk.toPk());
-        if (id.ppk != null) 
-            r.addOwner(id.ppk.toPk());
-        r.relationType = type;
-        if (field == "ceasn:narrowAlignment") {
-            r.source = ((e)[field])[i];
-            r.target = (e)["id"];
-        } else {
-            r.source = (e)["id"];
-            if (i != -1) {
-                r.target = ((e)[field])[i];
-            } else {
-                r.target = ((e)[field]);
-            }
-        }
-        relations.push(r);
-        (relationById)[r.shortId()] = r;
-        ((frameworks)[(e)["ceasn:isPartOf"]]).relation.push(r.shortId());
-    };
-    constructor.setDateCreated = function(importObject, object) {
-        if ((importObject)["ceasn:dateCreated"] == null && (importObject)["schema:dateCreated"] == null) {
-            var timestamp = object.getTimestamp();
-            var date;
-            if (timestamp != null) {
-                date = new Date(parseInt(timestamp)).toISOString();
-            } else {
-                date = new Date().toISOString();
-            }
-            (object)["schema:dateCreated"] = date;
-        }
+        return tabs;
     };
 }, {}, {});
+/**
+ *  Importer methods to copy or link to competencies that already
+ *  exist in another framework in a CASS instance.
+ * 
+ *  @author devlin.junker@eduworks.com
+ *  @module org.cassproject
+ *  @class FrameworkImport
+ *  @static
+ *  @extends Importer
+ */
+var FrameworkImport = function() {};
+FrameworkImport = stjs.extend(FrameworkImport, null, [], function(constructor, prototype) {
+    constructor.savedComp = 0;
+    constructor.savedRel = 0;
+    constructor.targetUsable = null;
+    constructor.competencies = null;
+    constructor.relations = null;
+    constructor.compMap = null;
+    /**
+     *  Copies or links competencies that exist in one framework in a CASS instance,
+     *  to another different framework in the same CASS instance.
+     * 
+     *  @param {EcFramework}                    source
+     *                                          Framework to copy or link the competencies from
+     *  @param {EcFramework}                    target
+     *                                          Framework to add the copied or linked competencies to
+     *  @param {boolean}                        copy
+     *                                          Flag indicating whether or not to copy or link the competencies in the source framework
+     *  @param {String}                         serverUrl
+     *                                          URL Prefix for the created competencies if copied
+     *  @param {EcIdentity}                     owner
+     *                                          EcIdentity that will own the created competencies if copied
+     *  @param {Callback1<Array<EcCompetency>>} success
+     *                                          Callback triggered after succesfully copying or linking all of the competencies,
+     *                                          returns an array of the new or linked competencies
+     *  @param {Callback1<Object>}              [failure]
+     *                                          Callback triggered if an error occurred while creating the competencies
+     *  @memberOf FrameworkImport
+     *  @method importCompetencies
+     *  @static
+     */
+    constructor.importCompetencies = function(source, target, copy, serverUrl, owner, success, failure, repo) {
+        if (source == null) {
+            failure("Source Framework not set");
+            return;
+        }
+        if (target == null) {
+            failure("Target Framework not Set");
+            return;
+        }
+        FrameworkImport.targetUsable = target;
+        if (source.competency == null || source.competency.length == 0) {
+            failure("Source Has No Competencies");
+            return;
+        }
+        FrameworkImport.competencies = [];
+        FrameworkImport.relations = [];
+        if (copy) {
+            FrameworkImport.compMap = {};
+            FrameworkImport.savedComp = 0;
+            FrameworkImport.savedRel = 0;
+            for (var i = 0; i < source.competency.length; i++) {
+                var id = source.competency[i];
+                EcCompetency.get(id, function(comp) {
+                    var competency = new EcCompetency();
+                    competency.copyFrom(comp);
+                    if (repo == null || repo.selectedServer.indexOf(serverUrl) != -1) 
+                        competency.generateId(serverUrl);
+                     else 
+                        competency.generateShortId(serverUrl);
+                    FrameworkImport.compMap[comp.shortId()] = competency.shortId();
+                    if (owner != null) 
+                        competency.addOwner(owner.ppk.toPk());
+                    var id = competency.id;
+                    Task.asyncImmediate(function(o) {
+                        var keepGoing = o;
+                        competency.save(function(str) {
+                            FrameworkImport.savedComp++;
+                            FrameworkImport.targetUsable.addCompetency(id);
+                            if (FrameworkImport.savedComp == FrameworkImport.competencies.length) {
+                                FrameworkImport.targetUsable.save(function(p1) {
+                                    for (var i = 0; i < source.relation.length; i++) {
+                                        var id = source.relation[i];
+                                        EcAlignment.get(id, function(rel) {
+                                            var relation = new EcAlignment();
+                                            relation.copyFrom(rel);
+                                            if (repo == null || repo.selectedServer.indexOf(serverUrl) != -1) 
+                                                relation.generateId(serverUrl);
+                                             else 
+                                                relation.generateShortId(serverUrl);
+                                            relation.source = FrameworkImport.compMap[rel.source];
+                                            relation.target = FrameworkImport.compMap[rel.target];
+                                            if (owner != null) 
+                                                relation.addOwner(owner.ppk.toPk());
+                                            var id = relation.id;
+                                            Task.asyncImmediate(function(o) {
+                                                var keepGoing2 = o;
+                                                relation.save(function(str) {
+                                                    FrameworkImport.savedRel++;
+                                                    FrameworkImport.targetUsable.addRelation(id);
+                                                    if (FrameworkImport.savedRel == FrameworkImport.relations.length) {
+                                                        FrameworkImport.targetUsable.save(function(p1) {
+                                                            success(FrameworkImport.competencies, FrameworkImport.relations);
+                                                        }, function(p1) {
+                                                            failure(p1);
+                                                        }, repo);
+                                                    }
+                                                    keepGoing2();
+                                                }, function(str) {
+                                                    failure("Trouble Saving Copied Competency");
+                                                    keepGoing2();
+                                                }, repo);
+                                            });
+                                            FrameworkImport.relations.push(relation);
+                                        }, function(str) {
+                                            failure(str);
+                                        });
+                                    }
+                                }, function(p1) {
+                                    failure(p1);
+                                }, repo);
+                            }
+                            keepGoing();
+                        }, function(str) {
+                            failure("Trouble Saving Copied Competency");
+                            keepGoing();
+                        }, repo);
+                    });
+                    FrameworkImport.competencies.push(competency);
+                }, function(str) {
+                    failure(str);
+                });
+            }
+        } else {
+            for (var i = 0; i < source.competency.length; i++) {
+                if (target.competency == null || (target.competency.indexOf(source.competency[i]) == -1 && target.competency.indexOf(EcRemoteLinkedData.trimVersionFromUrl(source.competency[i])) == -1)) {
+                    EcCompetency.get(source.competency[i], function(comp) {
+                        FrameworkImport.competencies.push(comp);
+                        FrameworkImport.targetUsable.addCompetency(comp.id);
+                        if (FrameworkImport.competencies.length == source.competency.length) {
+                            delete (FrameworkImport.targetUsable)["competencyObjects"];
+                            FrameworkImport.targetUsable.save(function(p1) {
+                                for (var i = 0; i < source.relation.length; i++) {
+                                    if (target.relation == null || (target.relation.indexOf(source.relation[i]) == -1 && target.relation.indexOf(EcRemoteLinkedData.trimVersionFromUrl(source.competency[i])) == -1)) {
+                                        EcAlignment.get(source.relation[i], function(relation) {
+                                            FrameworkImport.relations.push(relation);
+                                            FrameworkImport.targetUsable.addRelation(relation.id);
+                                            if (FrameworkImport.relations.length == source.relation.length) {
+                                                delete (FrameworkImport.targetUsable)["competencyObjects"];
+                                                Task.asyncImmediate(function(o) {
+                                                    var keepGoing = o;
+                                                    FrameworkImport.targetUsable.save(function(p1) {
+                                                        success(FrameworkImport.competencies, FrameworkImport.relations);
+                                                        keepGoing();
+                                                    }, function(p1) {
+                                                        failure(p1);
+                                                        keepGoing();
+                                                    }, repo);
+                                                });
+                                            }
+                                        }, function(p1) {
+                                            failure(p1);
+                                        });
+                                    }
+                                }
+                            }, function(p1) {
+                                failure(p1);
+                            }, repo);
+                        }
+                    }, function(p1) {
+                        failure(p1);
+                    });
+                }
+            }
+        }
+    };
+}, {targetUsable: "EcFramework", competencies: {name: "Array", arguments: ["EcCompetency"]}, relations: {name: "Array", arguments: ["EcAlignment"]}, compMap: {name: "Map", arguments: [null, null]}}, {});
 /**
  *  Export methods to handle exporting two CSV file , one of competencies
  *  and one of relationships representing a framework
@@ -1746,6 +1478,274 @@ CSVImport = stjs.extend(CSVImport, null, [], function(constructor, prototype) {
         });
     };
 }, {importCsvLookup: "Object", progressObject: "Object"}, {});
+var CTDLASNCSVImport = function() {};
+CTDLASNCSVImport = stjs.extend(CTDLASNCSVImport, null, [], function(constructor, prototype) {
+    constructor.analyzeFile = function(file, success, failure) {
+        if (file == null) {
+            failure("No file to analyze");
+            return;
+        }
+        if ((file)["name"] == null) {
+            failure("Invalid file");
+        } else if (!((file)["name"]).endsWith(".csv")) {
+            failure("Invalid file type");
+        }
+        Papa.parse(file, {encoding: "UTF-8", complete: function(results) {
+            var tabularData = (results)["data"];
+            var colNames = tabularData[0];
+            var nameToCol = new Object();
+            for (var i = 0; i < colNames.length; i++) 
+                (nameToCol)[colNames[i]] = i;
+            var frameworkCounter = 0;
+            var competencyCounter = 0;
+            var typeCol = (nameToCol)["@type"];
+            if (typeCol == null) {
+                this.error("No @type in CSV.");
+                return;
+            }
+            for (var i = 0; i < tabularData.length; i++) {
+                if (i == 0) 
+                    continue;
+                var col = tabularData[i];
+                if (col[typeCol] != null && col[typeCol].trim() == "ceasn:CompetencyFramework") 
+                    frameworkCounter++;
+                 else if (col[typeCol] != null && col[typeCol].trim() == "ceasn:Competency") 
+                    competencyCounter++;
+                 else if (col[typeCol] == null || col[typeCol] == "") 
+                    continue;
+                 else {
+                    this.error("Found unknown type:" + col[typeCol]);
+                    return;
+                }
+            }
+            success(frameworkCounter, competencyCounter);
+        }, error: failure});
+    };
+    constructor.importFrameworksAndCompetencies = function(repo, file, success, failure, ceo) {
+        if (file == null) {
+            failure("No file to analyze");
+            return;
+        }
+        if ((file)["name"] == null) {
+            failure("Invalid file");
+        } else if (!((file)["name"]).endsWith(".csv")) {
+            failure("Invalid file type");
+        }
+        Papa.parse(file, {header: true, encoding: "UTF-8", complete: function(results) {
+            var tabularData = (results)["data"];
+            var frameworks = new Object();
+            var frameworkArray = new Array();
+            var frameworkRows = new Object();
+            var competencies = new Array();
+            var competencyRows = new Object();
+            var relations = new Array();
+            var relationById = new Object();
+            new EcAsyncHelper().each(tabularData, function(pretranslatedE, callback0) {
+                if ((pretranslatedE)["@type"] == "ceasn:CompetencyFramework") {
+                    var translator = new EcLinkedData(null, null);
+                    translator.copyFrom(pretranslatedE);
+                    CTDLASNCSVImport.cleanUpTranslator(translator);
+                    translator.recast("https://schema.cassproject.org/0.4/ceasn2cass", "https://schema.cassproject.org/0.4", function(e) {
+                        var f = new EcFramework();
+                        f.copyFrom(e);
+                        if ((e)["owner"] != null) {
+                            var id = new EcIdentity();
+                            id.ppk = EcPpk.fromPem((e)["owner"]);
+                            f.addOwner(id.ppk.toPk());
+                            EcIdentityManager.addIdentityQuietly(id);
+                        }
+                        if (ceo != null) 
+                            f.addOwner(ceo.ppk.toPk());
+                        if (EcFramework.template != null && (EcFramework.template)[("schema:dateCreated")] != null) {
+                            CTDLASNCSVImport.setDateCreated(e, f);
+                        }
+                        (frameworks)[f.id] = f;
+                        (frameworkRows)[f.id] = e;
+                        (f)["ceasn:hasChild"] = null;
+                        (f)["ceasn:hasTopChild"] = null;
+                        frameworkArray.push(f);
+                        f.competency = new Array();
+                        f.relation = new Array();
+                        callback0();
+                    }, failure);
+                } else if ((pretranslatedE)["@type"] == "ceasn:Competency") {
+                    var translator = new EcLinkedData(null, null);
+                    translator.copyFrom(pretranslatedE);
+                    CTDLASNCSVImport.cleanUpTranslator(translator);
+                    translator.recast("https://schema.cassproject.org/0.4/ceasn2cass", "https://schema.cassproject.org/0.4", function(e) {
+                        var f = new EcCompetency();
+                        f.copyFrom(e);
+                        if ((e)["id"] == null) {
+                            callback0();
+                            return;
+                        }
+                        if ((e)["ceasn:isPartOf"] != null) {
+                            ((frameworks)[(e)["ceasn:isPartOf"]]).competency.push(f.shortId());
+                        } else {
+                            var parent = e;
+                            var done = false;
+                             while (!done && parent != null){
+                                if ((parent)["ceasn:isChildOf"] != null && (parent)["ceasn:isChildOf"] != "") {
+                                    parent = (competencyRows)[(parent)["ceasn:isChildOf"]];
+                                } else if ((parent)["ceasn:isTopChildOf"] != null && (parent)["ceasn:isTopChildOf"] != "") {
+                                    parent = (frameworkRows)[(parent)["ceasn:isTopChildOf"]];
+                                    done = true;
+                                }
+                            }
+                            if (!done) {
+                                this.error("Could not find framework:" + (e)["type"]);
+                                return;
+                            }
+                            if (parent != null) {
+                                if ((parent)["type"] == "Framework") {
+                                    (e)["ceasn:isPartOf"] = (parent)["id"];
+                                    ((frameworks)[(parent)["id"]]).competency.push(f.shortId());
+                                } else {
+                                    this.error("Object cannot trace to framework:" + (e)["type"]);
+                                    return;
+                                }
+                            } else {
+                                this.error("Object has no framework:" + (e)["type"]);
+                                return;
+                            }
+                        }
+                        if ((e)["owner"] == null) {
+                            if (((frameworkRows)[(e)["ceasn:isPartOf"]])["owner"] != null) 
+                                (e)["owner"] = ((frameworkRows)[(e)["ceasn:isPartOf"]])["owner"];
+                        }
+                        var id = new EcIdentity();
+                        if ((e)["owner"] != null) {
+                            id.ppk = EcPpk.fromPem((e)["owner"]);
+                            if (id.ppk != null) 
+                                f.addOwner(id.ppk.toPk());
+                            EcIdentityManager.addIdentityQuietly(id);
+                        }
+                        if (ceo != null) 
+                            f.addOwner(ceo.ppk.toPk());
+                        if (EcCompetency.template != null && (EcCompetency.template)[("schema:dateCreated")] != null) {
+                            CTDLASNCSVImport.setDateCreated(e, f);
+                        }
+                        if ((e)["ceasn:isChildOf"] != null) {
+                            CTDLASNCSVImport.createEachRelation(e, "ceasn:isChildOf", Relation.NARROWS, repo, ceo, id, relations, relationById, frameworks, -1);
+                        }
+                        if ((e)["ceasn:broadAlignment"] != null) {
+                            CTDLASNCSVImport.createRelations(e, "ceasn:broadAlignment", Relation.NARROWS, repo, ceo, id, relations, relationById, frameworks);
+                        }
+                        if ((e)["ceasn:narrowAlignment"] != null) {
+                            CTDLASNCSVImport.createRelations(e, "ceasn:narrowAlignment", Relation.NARROWS, repo, ceo, id, relations, relationById, frameworks);
+                        }
+                        if ((e)["sameAs"] != null) {
+                            CTDLASNCSVImport.createRelations(e, "sameAs", Relation.IS_EQUIVALENT_TO, repo, ceo, id, relations, relationById, frameworks);
+                        }
+                        if ((e)["ceasn:majorAlignment"] != null) {
+                            CTDLASNCSVImport.createRelations(e, "ceasn:majorAlignment", "majorRelated", repo, ceo, id, relations, relationById, frameworks);
+                        }
+                        if ((e)["ceasn:minorAlignment"] != null) {
+                            CTDLASNCSVImport.createRelations(e, "ceasn:minorAlignment", "minorRelated", repo, ceo, id, relations, relationById, frameworks);
+                        }
+                        if ((e)["ceasn:prerequisiteAlignment"] != null) {
+                            CTDLASNCSVImport.createRelations(e, "ceasn:prerequisiteAlignment", Relation.REQUIRES, repo, ceo, id, relations, relationById, frameworks);
+                        }
+                        (f)["ceasn:isTopChildOf"] = null;
+                        (f)["ceasn:isChildOf"] = null;
+                        (f)["ceasn:isPartOf"] = null;
+                        (f)["ceasn:broadAlignment"] = null;
+                        (f)["ceasn:narrowAlignment"] = null;
+                        (f)["sameAs"] = null;
+                        (f)["ceasn:majorAlignment"] = null;
+                        (f)["ceasn:minorAlignment"] = null;
+                        (f)["ceasn:prerequisiteAlignment"] = null;
+                        (f)["ceasn:hasChild"] = null;
+                        competencies.push(f);
+                        (competencyRows)[f.id] = e;
+                        callback0();
+                    }, failure);
+                } else if ((pretranslatedE)["@type"] == null || (pretranslatedE)["@type"] == "") {
+                    callback0();
+                    return;
+                } else {
+                    this.error("Found unknown type:" + (pretranslatedE)["@type"]);
+                    callback0();
+                    return;
+                }
+            }, function(strings) {
+                success(frameworkArray, competencies, relations);
+            });
+        }, error: failure});
+    };
+    constructor.cleanUpTranslator = function(translator) {
+        for (var key in (translator)) {
+            if ((translator)[key] == "") {
+                (translator)[key] = null;
+            } else if ((translator)[key] != null) {
+                var thisKey = (translator)[key];
+                if ((typeof thisKey) == "string") {
+                    if (((translator)[key]).trim().length == 0) {
+                        (translator)[key] = null;
+                    } else if ((thisKey).indexOf("|") != -1) {
+                        thisKey = (thisKey).split("|");
+                        (translator)[key] = thisKey;
+                        for (var i = 0; i < (thisKey).length; i++) {
+                            if ((thisKey)[i] != (thisKey)[i].trim()) {
+                                var thisVal = (thisKey)[i].trim();
+                                (thisKey)[i] = thisVal;
+                            }
+                        }
+                    }
+                }
+                if (key != key.trim()) {
+                    var trimKey = key.trim();
+                    (translator)[trimKey] = (translator)[key];
+                    (translator)[key] = null;
+                }
+            }
+        }
+    };
+    constructor.createRelations = function(e, field, type, repo, ceo, id, relations, relationById, frameworks) {
+        if (!EcArray.isArray((e)[field])) {
+            var makeArray = Array((e)[field]);
+            (e)[field] = makeArray;
+        }
+        for (var i = 0; i < ((e)[field]).length; i++) {
+            CTDLASNCSVImport.createEachRelation(e, field, type, repo, ceo, id, relations, relationById, frameworks, i);
+        }
+    };
+    constructor.createEachRelation = function(e, field, type, repo, ceo, id, relations, relationById, frameworks, i) {
+        var r = new EcAlignment();
+        r.generateId(repo.selectedServer);
+        if (ceo != null) 
+            r.addOwner(ceo.ppk.toPk());
+        if (id.ppk != null) 
+            r.addOwner(id.ppk.toPk());
+        r.relationType = type;
+        if (field == "ceasn:narrowAlignment") {
+            r.source = ((e)[field])[i];
+            r.target = (e)["id"];
+        } else {
+            r.source = (e)["id"];
+            if (i != -1) {
+                r.target = ((e)[field])[i];
+            } else {
+                r.target = ((e)[field]);
+            }
+        }
+        relations.push(r);
+        (relationById)[r.shortId()] = r;
+        ((frameworks)[(e)["ceasn:isPartOf"]]).relation.push(r.shortId());
+    };
+    constructor.setDateCreated = function(importObject, object) {
+        if ((importObject)["ceasn:dateCreated"] == null && (importObject)["schema:dateCreated"] == null) {
+            var timestamp = object.getTimestamp();
+            var date;
+            if (timestamp != null) {
+                date = new Date(parseInt(timestamp)).toISOString();
+            } else {
+                date = new Date().toISOString();
+            }
+            (object)["schema:dateCreated"] = date;
+        }
+    };
+}, {}, {});
 var CTDLASNCSVConceptImport = function() {};
 CTDLASNCSVConceptImport = stjs.extend(CTDLASNCSVConceptImport, null, [], function(constructor, prototype) {
     constructor.analyzeFile = function(file, success, failure) {

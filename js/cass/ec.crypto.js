@@ -1,41 +1,5 @@
-/**
- *  @author Fritz
- *  @class EcCrypto
- */
-var EcCrypto = function() {};
-EcCrypto = stjs.extend(EcCrypto, null, [], function(constructor, prototype) {
-    /**
-     *  Turn on (defualt off) caching of decrypted data.
-     *  @property caching
-     *  @type boolean
-     */
-    constructor.caching = false;
-    constructor.decryptionCache = new Object();
-    /**
-     *  Calculate MD5 hash of a string.
-     *  @param {String} s String to MD5
-     *  @return {String} MD5 hash
-     *  @static
-     *  @method md5
-     */
-    constructor.md5 = function(s) {
-        var m = forge.md.md5.create();
-        m.update(s);
-        return m.digest().toHex();
-    };
-    /**
-     *  Calculate SHA-256 hash of a string.
-     *  @param {String} s String to SHA-256
-     *  @return {String} SHA-256 hash
-     *  @static
-     *  @method sha256
-     */
-    constructor.sha256 = function(s) {
-        var m = forge.md.sha256.create();
-        m.update(s, "utf8");
-        return m.digest().toHex();
-    };
-}, {decryptionCache: "Object"}, {});
+var CryptoKey = function() {};
+CryptoKey = stjs.extend(CryptoKey, null, [], null, {}, {});
 var AlgorithmIdentifier = function() {};
 AlgorithmIdentifier = stjs.extend(AlgorithmIdentifier, null, [], function(constructor, prototype) {
     prototype.name = null;
@@ -46,59 +10,6 @@ AlgorithmIdentifier = stjs.extend(AlgorithmIdentifier, null, [], function(constr
     prototype.iv = null;
     prototype.counter = null;
 }, {iv: "ArrayBuffer", counter: "ArrayBuffer"}, {});
-/**
- *  AES encryption tasks common across all variants of AES.
- *  @class EcAes
- *  @module com.eduworks.ec
- *  @author fritz.ray@eduworks.com
- */
-var EcAes = function() {};
-EcAes = stjs.extend(EcAes, null, [], function(constructor, prototype) {
-    /**
-     *  Generates a random secret of length @i
-     *  @method newSecret
-     *  @static
-     *  @param {integer} i Length of secret
-     *  @return {string} String representing the new secret, encoded using Base64.
-     */
-    constructor.newSecret = function(i) {
-        return forge.util.encode64(forge.random.getBytesSync(i));
-    };
-    /**
-     *  Generates a random Initialization Vector of length @i
-     *  @method newIv
-     *  @static
-     *  @param {integer} i Length of initialization Vector
-     *  @return {string} String representing the new Initialization Vector, encoded using Base64.
-     */
-    constructor.newIv = function(i) {
-        return forge.util.encode64(forge.random.getBytesSync(i));
-    };
-}, {}, {});
-var SubtleCrypto = function() {};
-SubtleCrypto = stjs.extend(SubtleCrypto, null, [], function(constructor, prototype) {
-    prototype.encrypt = function(algorithm, key, data) {
-        return null;
-    };
-    prototype.decrypt = function(algorithm, key, data) {
-        return null;
-    };
-    prototype.sign = function(algorithm, key, data) {
-        return null;
-    };
-    prototype.verify = function(algorithm, key, signature, data) {
-        return null;
-    };
-    prototype.generateKey = function(algorithm, extractable, keyUsages) {
-        return null;
-    };
-    prototype.deriveBits = function(algorithm, baseKey, length) {
-        return null;
-    };
-    prototype.importKey = function(format, keyData, algorithm, extractable, keyUsages) {
-        return null;
-    };
-}, {}, {});
 var jwk = function() {};
 jwk = stjs.extend(jwk, null, [], function(constructor, prototype) {
     prototype.kty = null;
@@ -164,7 +75,7 @@ EcPk = stjs.extend(EcPk, null, [], function(constructor, prototype) {
      */
     prototype.toPem = function() {
         if (this.defaultPem == null) 
-            this.defaultPem = forge.pki.publicKeyToPem(this.pk).replaceAll("\r?\n", "");
+            this.defaultPem = forge.pki.publicKeyToPem(this.pk).replaceAll("\r", "").replaceAll("\n", "");
         return this.defaultPem;
     };
     /**
@@ -175,7 +86,7 @@ EcPk = stjs.extend(EcPk, null, [], function(constructor, prototype) {
      *  @method toPkcs1Pem
      */
     prototype.toPkcs1Pem = function() {
-        return forge.pki.publicKeyToRSAPublicKeyPem(this.pk).replaceAll("\r?\n", "");
+        return forge.pki.publicKeyToRSAPublicKeyPem(this.pk).replaceAll("\r", "").replaceAll("\n", "");
     };
     /**
      *  Encodes the public key into a PEM encoded SubjectPublicKeyInfo (PKCS#8) formatted RSA Public Key.
@@ -185,7 +96,7 @@ EcPk = stjs.extend(EcPk, null, [], function(constructor, prototype) {
      *  @method toPkcs8Pem
      */
     prototype.toPkcs8Pem = function() {
-        return forge.pki.publicKeyToPem(this.pk).replaceAll("\r?\n", "");
+        return forge.pki.publicKeyToPem(this.pk).replaceAll("\r", "").replaceAll("\n", "");
     };
     prototype.toJwk = function() {
         if (this.jwk == null) 
@@ -211,14 +122,259 @@ EcPk = stjs.extend(EcPk, null, [], function(constructor, prototype) {
     if (EcPk.cache == null) 
         EcPk.cache = new Object();
 })();
-var CryptoKey = function() {};
-CryptoKey = stjs.extend(CryptoKey, null, [], null, {}, {});
+/**
+ *  AES encryption tasks common across all variants of AES.
+ *  @class EcAes
+ *  @module com.eduworks.ec
+ *  @author fritz.ray@eduworks.com
+ */
+var EcAes = function() {};
+EcAes = stjs.extend(EcAes, null, [], function(constructor, prototype) {
+    /**
+     *  Generates a random secret of length @i
+     *  @method newSecret
+     *  @static
+     *  @param {integer} i Length of secret
+     *  @return {string} String representing the new secret, encoded using Base64.
+     */
+    constructor.newSecret = function(i) {
+        return forge.util.encode64(forge.random.getBytesSync(i));
+    };
+    /**
+     *  Generates a random Initialization Vector of length @i
+     *  @method newIv
+     *  @static
+     *  @param {integer} i Length of initialization Vector
+     *  @return {string} String representing the new Initialization Vector, encoded using Base64.
+     */
+    constructor.newIv = function(i) {
+        return forge.util.encode64(forge.random.getBytesSync(i));
+    };
+}, {}, {});
+/**
+ *  @author Fritz
+ *  @class EcCrypto
+ */
+var EcCrypto = function() {};
+EcCrypto = stjs.extend(EcCrypto, null, [], function(constructor, prototype) {
+    /**
+     *  Turn on (defualt off) caching of decrypted data.
+     *  @property caching
+     *  @type boolean
+     */
+    constructor.caching = false;
+    constructor.decryptionCache = new Object();
+    /**
+     *  Calculate MD5 hash of a string.
+     *  @param {String} s String to MD5
+     *  @return {String} MD5 hash
+     *  @static
+     *  @method md5
+     */
+    constructor.md5 = function(s) {
+        var m = forge.md.md5.create();
+        m.update(s);
+        return m.digest().toHex();
+    };
+    /**
+     *  Calculate SHA-256 hash of a string.
+     *  @param {String} s String to SHA-256
+     *  @return {String} SHA-256 hash
+     *  @static
+     *  @method sha256
+     */
+    constructor.sha256 = function(s) {
+        var m = forge.md.sha256.create();
+        m.update(s, "utf8");
+        return m.digest().toHex();
+    };
+}, {decryptionCache: "Object"}, {});
 var EcAesParameters = function(iv) {
     this.iv = forge.util.decode64(iv);
 };
 EcAesParameters = stjs.extend(EcAesParameters, null, [], function(constructor, prototype) {
     prototype.iv = null;
 }, {iv: "forge.payload"}, {});
+var SubtleCrypto = function() {};
+SubtleCrypto = stjs.extend(SubtleCrypto, null, [], function(constructor, prototype) {
+    prototype.encrypt = function(algorithm, key, data) {
+        return null;
+    };
+    prototype.decrypt = function(algorithm, key, data) {
+        return null;
+    };
+    prototype.sign = function(algorithm, key, data) {
+        return null;
+    };
+    prototype.verify = function(algorithm, key, signature, data) {
+        return null;
+    };
+    prototype.generateKey = function(algorithm, extractable, keyUsages) {
+        return null;
+    };
+    prototype.deriveBits = function(algorithm, baseKey, length) {
+        return null;
+    };
+    prototype.importKey = function(format, keyData, algorithm, extractable, keyUsages) {
+        return null;
+    };
+}, {}, {});
+/**
+ *  Helper classes for dealing with RSA Private Keys.
+ * 
+ *  @author fritz.ray@eduworks.com
+ *  @class EcPpk
+ *  @module com.eduworks.ec
+ */
+var EcPpk = function() {};
+EcPpk = stjs.extend(EcPpk, null, [], function(constructor, prototype) {
+    constructor.cache = null;
+    prototype.defaultPem = null;
+    prototype.jwk = null;
+    prototype.key = null;
+    prototype.signKey = null;
+    prototype.ppk = null;
+    prototype.defaultPk = null;
+    /**
+     *  Decodes a PEM encoded PrivateKeyInfo (PKCS#8) or RSAPrivateKey (PKCS#1) formatted RSA Public Key.
+     *  (In case you were curious.)
+     * 
+     *  @param {string} pem PEM as a string.
+     *  @return {EcPk} Object used to perform public key operations.
+     *  @method fromPem
+     *  @static
+     */
+    constructor.fromPem = function(pem) {
+        var pk = (EcPpk.cache)[pem];
+        if (pk != null) 
+            return pk;
+        pk = new EcPpk();
+        try {
+            pk.ppk = forge.pki.privateKeyFromPem(pem);
+        }catch (ex) {
+            return null;
+        }
+        (EcPpk.cache)[pem] = pk;
+        return pk;
+    };
+    /**
+     *  Generates an RSA Keypair using web workers.
+     * 
+     *  @param {function(EcPpk)} callback Method called when the keypair is generated.
+     *  @method generateKeyAsync
+     *  @static
+     */
+    constructor.generateKeyAsync = function(callback) {
+        var o = new Object();
+        (o)["workers"] = -1;
+        forge.pki.rsa.generateKeyPair(o, function(err, keypair) {
+            var ppk = new EcPpk();
+            ppk.ppk = keypair.privateKey;
+            callback(ppk);
+        });
+    };
+    /**
+     *  Generates an RSA Keypair synchronously. Can take a while.
+     * 
+     *  @return {EcPpk} Public private keypair.
+     *  @method generateKey
+     *  @static
+     */
+    constructor.generateKey = function() {
+        var o = new Object();
+        (o)["workers"] = -1;
+        var keypair = forge.pki.rsa.generateKeyPair(o, null);
+        var ppk = new EcPpk();
+        ppk.ppk = keypair.privateKey;
+        return ppk;
+    };
+    /**
+     *  Returns true iff the PEM forms of the public private keypair match.
+     *  Can also match against a public key if the public portion of the keypair match.
+     * 
+     *  @param {EcPpk|EcPk} Key to compare to.
+     *  @return boolean If they match.
+     *  @method equals
+     */
+    prototype.equals = function(obj) {
+        if (stjs.isInstanceOf(obj.constructor, EcPpk)) 
+            return this.toPem().equals((obj).toPem());
+        if (stjs.isInstanceOf(obj.constructor, EcPk)) 
+            return this.toPk().toPem().equals((obj).toPem());
+        return Object.prototype.equals.call(this, obj);
+    };
+    /**
+     *  Encodes the private key into a PEM encoded RSAPrivateKey (PKCS#1) formatted RSA Public Key.
+     *  (In case you were curious.)
+     * 
+     *  @return {string} PEM encoded public key without whitespace.
+     *  @method toPem
+     */
+    prototype.toPem = function() {
+        if (this.defaultPem == null) 
+            this.defaultPem = forge.pki.privateKeyToPem(this.ppk).replaceAll("\r", "").replaceAll("\n", "");
+        return this.defaultPem;
+    };
+    /**
+     *  Encodes the private key into a PEM encoded RSAPrivateKey (PKCS#1) formatted RSA Public Key.
+     *  (In case you were curious.)
+     * 
+     *  @return {string} PEM encoded public key without whitespace.
+     *  @method toPkcs1Pem
+     */
+    prototype.toPkcs1Pem = function() {
+        return forge.pki.privateKeyToPem(this.ppk).replaceAll("\r", "").replaceAll("\n", "");
+    };
+    /**
+     *  Encodes the private key into a PEM encoded PrivateKeyInfo (PKCS#8) formatted RSA Public Key.
+     *  (In case you were curious.)
+     * 
+     *  @return {string} PEM encoded public key without whitespace.
+     *  @method toPkcs8Pem
+     */
+    prototype.toPkcs8Pem = function() {
+        return forge.pki.privateKeyInfoToPem(forge.pki.wrapRsaPrivateKey(forge.pki.privateKeyToAsn1(this.ppk))).replaceAll("\r", "").replaceAll("\n", "");
+    };
+    prototype.toJwk = function() {
+        if (this.jwk == null) 
+            this.jwk = pemJwk.pem2jwk(forge.pki.privateKeyToPem(this.ppk));
+        return this.jwk;
+    };
+    prototype.toPkcs8 = function() {
+        return forge.pki.wrapRsaPrivateKey(forge.pki.privateKeyToAsn1(this.ppk));
+    };
+    /**
+     *  Extracts the public key portion from the public private keypair.
+     * 
+     *  @return {EcPk} Public Key Helper.
+     *  @method toPk
+     */
+    prototype.toPk = function() {
+        if (this.defaultPk != null) 
+            return this.defaultPk;
+        var pk = this.defaultPk = new EcPk();
+        pk.pk = forge.pki.rsa.setPublicKey(this.ppk.n, this.ppk.e);
+        return pk;
+    };
+    /**
+     *  Returns true if this PPK is in an array of PPKs.
+     * 
+     *  @param {Array<EcPpk>} ppks Array of ppks
+     *  @return true iff this PPK in ppks.
+     *  @method inArray
+     */
+    prototype.inArray = function(ppks) {
+        for (var i = 0; i < ppks.length; i++) {
+            if (ppks[i].equals(this)) 
+                return true;
+        }
+        return false;
+    };
+}, {cache: "Object", jwk: "Object", key: "CryptoKey", signKey: "CryptoKey", ppk: "forge.ppk", defaultPk: "EcPk"}, {});
+(function() {
+    if (EcPpk.cache == null) 
+        EcPpk.cache = new Object();
+})();
 /**
  *  Helper methods for performing RSA Encryption methods. Uses Optimal Asymmetric
  *  Encryption Padding (OAEP) encryption and decryption. Uses RSA SSA PKCS#1 v1.5
@@ -333,162 +489,6 @@ EcRsaOaep = stjs.extend(EcRsaOaep, null, [], function(constructor, prototype) {
         }
     };
 }, {}, {});
-/**
- *  Helper classes for dealing with RSA Private Keys.
- * 
- *  @author fritz.ray@eduworks.com
- *  @class EcPpk
- *  @module com.eduworks.ec
- */
-var EcPpk = function() {};
-EcPpk = stjs.extend(EcPpk, null, [], function(constructor, prototype) {
-    constructor.cache = null;
-    prototype.defaultPem = null;
-    prototype.jwk = null;
-    prototype.key = null;
-    prototype.signKey = null;
-    prototype.ppk = null;
-    prototype.defaultPk = null;
-    /**
-     *  Decodes a PEM encoded PrivateKeyInfo (PKCS#8) or RSAPrivateKey (PKCS#1) formatted RSA Public Key.
-     *  (In case you were curious.)
-     * 
-     *  @param {string} pem PEM as a string.
-     *  @return {EcPk} Object used to perform public key operations.
-     *  @method fromPem
-     *  @static
-     */
-    constructor.fromPem = function(pem) {
-        var pk = (EcPpk.cache)[pem];
-        if (pk != null) 
-            return pk;
-        pk = new EcPpk();
-        try {
-            pk.ppk = forge.pki.privateKeyFromPem(pem);
-        }catch (ex) {
-            return null;
-        }
-        (EcPpk.cache)[pem] = pk;
-        return pk;
-    };
-    /**
-     *  Generates an RSA Keypair using web workers.
-     * 
-     *  @param {function(EcPpk)} callback Method called when the keypair is generated.
-     *  @method generateKeyAsync
-     *  @static
-     */
-    constructor.generateKeyAsync = function(callback) {
-        var o = new Object();
-        (o)["workers"] = -1;
-        forge.pki.rsa.generateKeyPair(o, function(err, keypair) {
-            var ppk = new EcPpk();
-            ppk.ppk = keypair.privateKey;
-            callback(ppk);
-        });
-    };
-    /**
-     *  Generates an RSA Keypair synchronously. Can take a while.
-     * 
-     *  @return {EcPpk} Public private keypair.
-     *  @method generateKey
-     *  @static
-     */
-    constructor.generateKey = function() {
-        var o = new Object();
-        (o)["workers"] = -1;
-        var keypair = forge.pki.rsa.generateKeyPair(o, null);
-        var ppk = new EcPpk();
-        ppk.ppk = keypair.privateKey;
-        return ppk;
-    };
-    /**
-     *  Returns true iff the PEM forms of the public private keypair match.
-     *  Can also match against a public key if the public portion of the keypair match.
-     * 
-     *  @param {EcPpk|EcPk} Key to compare to.
-     *  @return boolean If they match.
-     *  @method equals
-     */
-    prototype.equals = function(obj) {
-        if (stjs.isInstanceOf(obj.constructor, EcPpk)) 
-            return this.toPem().equals((obj).toPem());
-        if (stjs.isInstanceOf(obj.constructor, EcPk)) 
-            return this.toPk().toPem().equals((obj).toPem());
-        return Object.prototype.equals.call(this, obj);
-    };
-    /**
-     *  Encodes the private key into a PEM encoded RSAPrivateKey (PKCS#1) formatted RSA Public Key.
-     *  (In case you were curious.)
-     * 
-     *  @return {string} PEM encoded public key without whitespace.
-     *  @method toPem
-     */
-    prototype.toPem = function() {
-        if (this.defaultPem == null) 
-            this.defaultPem = forge.pki.privateKeyToPem(this.ppk).replaceAll("\r?\n", "");
-        return this.defaultPem;
-    };
-    /**
-     *  Encodes the private key into a PEM encoded RSAPrivateKey (PKCS#1) formatted RSA Public Key.
-     *  (In case you were curious.)
-     * 
-     *  @return {string} PEM encoded public key without whitespace.
-     *  @method toPkcs1Pem
-     */
-    prototype.toPkcs1Pem = function() {
-        return forge.pki.privateKeyToPem(this.ppk).replaceAll("\r?\n", "");
-    };
-    /**
-     *  Encodes the private key into a PEM encoded PrivateKeyInfo (PKCS#8) formatted RSA Public Key.
-     *  (In case you were curious.)
-     * 
-     *  @return {string} PEM encoded public key without whitespace.
-     *  @method toPkcs8Pem
-     */
-    prototype.toPkcs8Pem = function() {
-        return forge.pki.privateKeyInfoToPem(forge.pki.wrapRsaPrivateKey(forge.pki.privateKeyToAsn1(this.ppk))).replaceAll("\r?\n", "");
-    };
-    prototype.toJwk = function() {
-        if (this.jwk == null) 
-            this.jwk = pemJwk.pem2jwk(forge.pki.privateKeyToPem(this.ppk));
-        return this.jwk;
-    };
-    prototype.toPkcs8 = function() {
-        return forge.pki.wrapRsaPrivateKey(forge.pki.privateKeyToAsn1(this.ppk));
-    };
-    /**
-     *  Extracts the public key portion from the public private keypair.
-     * 
-     *  @return {EcPk} Public Key Helper.
-     *  @method toPk
-     */
-    prototype.toPk = function() {
-        if (this.defaultPk != null) 
-            return this.defaultPk;
-        var pk = this.defaultPk = new EcPk();
-        pk.pk = forge.pki.rsa.setPublicKey(this.ppk.n, this.ppk.e);
-        return pk;
-    };
-    /**
-     *  Returns true if this PPK is in an array of PPKs.
-     * 
-     *  @param {Array<EcPpk>} ppks Array of ppks
-     *  @return true iff this PPK in ppks.
-     *  @method inArray
-     */
-    prototype.inArray = function(ppks) {
-        for (var i = 0; i < ppks.length; i++) {
-            if (ppks[i].equals(this)) 
-                return true;
-        }
-        return false;
-    };
-}, {cache: "Object", jwk: "Object", key: "CryptoKey", signKey: "CryptoKey", ppk: "forge.ppk", defaultPk: "EcPk"}, {});
-(function() {
-    if (EcPpk.cache == null) 
-        EcPpk.cache = new Object();
-})();
 /**
  *  Encrypts data synchronously using AES-256-CTR. Requires secret and iv to be 32 bytes.
  *  Output is encoded in base64 for easier handling.
