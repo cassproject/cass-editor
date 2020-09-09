@@ -135,7 +135,7 @@ function createParamObj(size) {
 	var paramObj = {};
 	paramObj.size = size;
 	var order = (sortBy == "name.keyword") ? "asc" : "desc";
-	paramObj.sort = '[ { "' + sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "long",  "missing" : "_last"}} ]';
+	paramObj.sort = '[ { "' + sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "keyword",  "missing" : "_last"}} ]';
 	if (queryParams.show != null && queryParams.show === 'mine')
 		paramObj.ownership = 'me';
 
