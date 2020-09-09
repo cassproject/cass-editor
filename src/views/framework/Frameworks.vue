@@ -140,7 +140,9 @@
                                 <span class="has-text-weight-medium">
                                     Published:
                                 </span>
-                                <span class="has-text-weight-light" />
+                                <span class="has-text-weight-light">
+                                    &nbsp; {{ slotProps.item.Published }}
+                                </span>
                             </span>
                             <span
                                 class="framework-details__item"
@@ -149,7 +151,9 @@
                                 <span class="has-texte-weight-medium">
                                     Approved:
                                 </span>
-                                <span class="has-text-weight-light" />
+                                <span class="has-text-weight-light">
+                                    &nbsp; {{ slotProps.item.Approved }}
+                                </span>
                             </span>
                             <span
                                 class="framework-details__item"
