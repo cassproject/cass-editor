@@ -58,7 +58,7 @@
                                             class="tag is-medium-grey has-text-dark"
                                             v-if="framework['schema:dateCreated']"
                                             :title="new Date(framework['schema:dateCreated'])">
-                                            Created {{ $moment(framework['schema:dateCreated']).fromNow() }}
+                                            Created {{ $moment(framework['schema:dateCreated']).format("MMM D YYYY") }}
                                         </span>
                                         <span
                                             class="tag is-medium-grey has-text-dark"
@@ -256,7 +256,7 @@ export default {
         lastModified: function() {
             if (this.framework == null) return "Unknown.";
             if (this.timestamp) {
-                return this.$moment(this.timestamp).fromNow();
+                return this.$moment(this.timestamp).format("MMM D YYYY");
             } else {
                 return null;
             }

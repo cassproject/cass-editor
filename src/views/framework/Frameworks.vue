@@ -163,7 +163,7 @@
                                     Created:
                                 </span>
                                 <span class="has-text-weight-light">
-                                    &nbsp; {{ $moment(new Date(slotProps.item['schema:dateCreated'])).fromNow() }}
+                                    &nbsp; {{ $moment(new Date(slotProps.item['schema:dateCreated'])).format("MMM D YYYY") }}
                                 </span>
                             </span>
                             <span
@@ -174,7 +174,7 @@
                                     Last modified:
                                 </span>
                                 <span class="has-text-weight-light">
-                                    &nbsp; {{ $moment(slotProps.item.getTimestamp()).fromNow() }}
+                                    &nbsp; {{ $moment(slotProps.item.getTimestamp()).format("MMM D YYYY") }}
                                 </span>
                             </span>
                             <span
@@ -185,7 +185,7 @@
                                     Last modified:
                                 </span>
                                 <span class="has-text-weight-light">
-                                    {{ $moment(new Date(slotProps.item['schema:dateModified'])).fromNow() }}
+                                    {{ $moment(new Date(slotProps.item['schema:dateModified'])).format("MMM D YYYY") }}
                                 </span>
                             </span>
                             <span
