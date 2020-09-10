@@ -87,7 +87,7 @@ export default {
                 },
                 {
                     id: 'lastEdited',
-                    label: 'last edited',
+                    label: 'last modified',
                     enabled: true
                 }
             ],
