@@ -422,6 +422,9 @@ export default {
                 name = "New Concept Scheme";
             }
             framework["dcterms:title"] = {"@language": this.$store.state.editor.defaultLanguage, "@value": name};
+            if (this.queryParams.ceasnDataFields === "true") {
+                framework["dcterms:language"] = [this.$store.state.editor.defaultLanguage];
+            }
             framework["schema:dateCreated"] = new Date().toISOString();
             framework["schema:dateModified"] = new Date().toISOString();
             this.$store.commit('editor/newFramework', framework.shortId());
