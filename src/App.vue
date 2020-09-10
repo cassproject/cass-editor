@@ -257,7 +257,7 @@ export default {
 
             connection.changedObject = function(wut) {
                 me.$store.commit('editor/changedObject', wut.shortId());
-                if (me.$route.name !== 'framework') {
+                if (me.$route.name !== 'framework' && me.$route.name !== 'conceptScheme') {
                     return;
                 }
 
