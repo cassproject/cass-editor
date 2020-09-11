@@ -178,7 +178,7 @@
                         <i class="fa fa-layer-group" />
                     </span>
                     <span v-if="showSideNav && queryParams.ceasnDataFields === 'true'">
-                        Concepts
+                        Concept Schemes
                     </span>
                     <span v-else-if="showSideNav">
                         Taxonomies

@@ -87,7 +87,7 @@ export default {
                 },
                 {
                     id: 'lastEdited',
-                    label: 'last edited',
+                    label: 'last modified',
                     enabled: true
                 }
             ],
@@ -124,6 +124,12 @@ export default {
                     checked: false,
                     label: 'Framework description',
                     enabled: true
+                },
+                {
+                    id: 'competencyLabel',
+                    checked: false,
+                    label: 'Competency label',
+                    enabled: false
                 },
                 {
                     id: 'competencyName',
@@ -164,6 +170,9 @@ export default {
         },
         configurationsEnabled: function() {
             return this.$store.state.featuresEnabled.configurationsEnabled;
+        },
+        queryParams: function() {
+            return this.$store.getters['editor/queryParams'];
         }
     },
     mounted: function() {
@@ -195,6 +204,17 @@ export default {
             }
         }
         this.showQuickFilterHeading = showFilters;
+        if (this.queryParams.ceasnDataFields === 'true') {
+            for (var i = 0; i < this.applySearchTo.length; i++) {
+                if (this.applySearchTo[i].id === "competencyLabel") {
+                    this.applySearchTo[i].enabled = true;
+                } else if (this.applySearchTo[i].id === "competencyName") {
+                    this.applySearchTo[i].label = "Competency text";
+                } else if (this.applySearchTo[i].id === "competencyDescription") {
+                    this.applySearchTo[i].label = "Competency comment";
+                }
+            }
+        }
     },
     watch: {
         applySearchTo: {
