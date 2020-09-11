@@ -207,36 +207,32 @@
                     </h2>
                     <ul v-if="linkToLegacyDemos">
                         <li>
-                            <router-link
+                            <a
                                 class="custom-link external"
-                                to="/vlrc"
-                                target="_blank">
+                                @click="openVlrc">
                                 Dashboards
-                            </router-link>
+                            </a>
                         </li>
                         <li>
-                            <router-link
+                            <a
                                 class="custom-link external"
-                                to="/gap-analysis"
-                                target="_blank">
+                                @click="openGapAnalysis">
                                 Gap Analysis
-                            </router-link>
+                            </a>
                         </li>
                         <li>
-                            <router-link
+                            <a
                                 class="custom-link external"
-                                to="/profile"
-                                target="_blank">
+                                @click="openProfileExplorer">
                                 Profile Explorer
-                            </router-link>
+                            </a>
                         </li>
                         <li>
-                            <router-link
+                            <a
                                 class="custom-link external"
-                                to="/viewer"
-                                target="_blank">
+                                @click="openFrameworkExplorer">
                                 Framework Explorer
-                            </router-link>
+                            </a>
                         </li>
                     </ul>
                     <p v-else>
@@ -404,6 +400,30 @@ export default {
                 me.error = "Import Error";
                 me.importing = false;
             });
+        },
+        openVlrc: function() {
+            const href = this.$router.resolve({
+                name: "vlrc"
+            });
+            window.open(href.href, '_blank');
+        },
+        openGapAnalysis: function() {
+            const href = this.$router.resolve({
+                name: "gap-analysis"
+            });
+            window.open(href.href, '_blank');
+        },
+        openProfileExplorer: function() {
+            const href = this.$router.resolve({
+                name: "profile"
+            });
+            window.open(href.href, '_blank');
+        },
+        openFrameworkExplorer: function() {
+            const href = this.$router.resolve({
+                name: "viewer"
+            });
+            window.open(href.href, '_blank');
         }
     }
 };
