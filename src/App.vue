@@ -257,7 +257,7 @@ export default {
 
             connection.changedObject = function(wut) {
                 me.$store.commit('editor/changedObject', wut.shortId());
-                if (me.$route.name !== 'framework') {
+                if (me.$route.name !== 'framework' && me.$route.name !== 'conceptScheme') {
                     return;
                 }
 
@@ -422,6 +422,9 @@ export default {
                 name = "New Concept Scheme";
             }
             framework["dcterms:title"] = {"@language": this.$store.state.editor.defaultLanguage, "@value": name};
+            if (this.queryParams.ceasnDataFields === "true") {
+                framework["dcterms:language"] = [this.$store.state.editor.defaultLanguage];
+            }
             framework["schema:dateCreated"] = new Date().toISOString();
             framework["schema:dateModified"] = new Date().toISOString();
             this.$store.commit('editor/newFramework', framework.shortId());
