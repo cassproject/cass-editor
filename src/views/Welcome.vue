@@ -403,27 +403,27 @@ export default {
         },
         openVlrc: function() {
             const href = this.$router.resolve({
-                name: "vlrc"
+                name: "welcome"
             });
-            window.open(href.href, '_blank');
+            window.open(href.href + "?vlrc=true", '_blank');
         },
         openGapAnalysis: function() {
             const href = this.$router.resolve({
-                name: "gap-analysis"
+                name: "welcome"
             });
-            window.open(href.href, '_blank');
+            window.open(href.href + "?gapAnalysis=true", '_blank');
         },
         openProfileExplorer: function() {
             const href = this.$router.resolve({
-                name: "profile"
+                name: "welcome"
             });
-            window.open(href.href, '_blank');
+            window.open(href.href + "?profile=true", '_blank');
         },
         openFrameworkExplorer: function() {
             const href = this.$router.resolve({
-                name: "viewer"
+                name: "welcome"
             });
-            window.open(href.href, '_blank');
+            window.open(href.href + "?viewer=true", '_blank');
         }
     }
 };
