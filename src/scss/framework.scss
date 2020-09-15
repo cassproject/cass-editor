@@ -258,7 +258,7 @@ drag, drag, and chosen states
         .lode__framework__info-bar {
             margin-left: 0rem;
         }
-        .lode__Property.lode__name {
+        .lode__Property.lode__name, .lode__Property.lode__competencyLabel {
             font-size: 1rem;
             font-family: $family-primary;
             font-weight: 600;
@@ -364,7 +364,7 @@ drag, drag, and chosen states
                             box-shadow: $one-dp;
                         }
                     }
-                    .lode__name {
+                    .lode__name, .lode__competencyLabel {
                         font-size: 1.1rem; // top level competencies
                         font-weight: 700;
                         color: rgba($text, .95);   
