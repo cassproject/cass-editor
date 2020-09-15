@@ -11,6 +11,7 @@
                         <div
                             title="View only primary properties"
                             @click="changeProperties('primary')"
+                            :class="activeView === 'primary' ? 'has-text-primary' : 'has-text-dark'"
                             class="button is-text has-text-dark ">
                             <span class="icon">
                                 <i class="fas fa-check-square" />
@@ -22,7 +23,7 @@
                         <div
                             title="View primary and secondary properties"
                             @click="changeProperties('secondary')"
-                            :class="activeView !== 'primary' ? 'has-text-dark' : 'has-text-dark'"
+                            :class="activeView === 'secondary' ? 'has-text-primary' : 'has-text-dark'"
                             class="button is-text ">
                             <span
                                 v-if="activeView === 'primary'"
@@ -40,7 +41,7 @@
                         <!-- tertiary -->
                         <div
                             title="View all properties"
-                            :class="activeView === 'tertiary' ? 'has-text-dark' : 'has-text-dark'"
+                            :class="activeView === 'tertiary' ? 'has-text-primary' : 'has-text-dark'"
                             @click="changeProperties('tertiary')"
                             class="button is-text ">
                             <span
