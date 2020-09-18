@@ -134,15 +134,6 @@ export default {
                             me.$router.push({name: "frameworks"});
                         }
                     }
-                    if (me.queryParams.vlrc === "true") {
-                        me.$router.push({name: 'vlrc'});
-                    } else if (me.queryParams.viewer === "true") {
-                        me.$router.push({name: 'viewer'});
-                    } else if (me.queryParams.profile === "true") {
-                        me.$router.push({name: 'profile'});
-                    } else if (me.queryParams.gapAnalysis === "true") {
-                        me.$router.push({name: 'gap-analysis'});
-                    }
                 }
             });
             if (parent !== window) {

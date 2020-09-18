@@ -196,19 +196,6 @@ export default {
                 return this.ctdlAsnConceptSchemeProfile;
             }
             return {
-                "@id": {
-                    "@id": "https://schema.cassproject.org/0.4/ConceptScheme/id",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "https://schema.cassproject.org/0.4/ConceptScheme"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "The URL of the concept scheme. If imported from another source, the URL of the concept scheme from which this one originates."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Canonical URL"}],
-                    "readOnly": "true",
-                    "max": 1,
-                    "heading": "Keys"
-                },
                 "http://purl.org/dc/terms/title": {
                     "@id": "http://purl.org/dc/terms/title",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -233,6 +220,19 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}],
                     "heading": "General",
                     "onePerLanguage": "true"
+                },
+                "@id": {
+                    "@id": "https://schema.cassproject.org/0.4/ConceptScheme/id",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/ConceptScheme"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "The URL of the concept scheme. If imported from another source, the URL of the concept scheme from which this one originates."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Canonical URL"}],
+                    "readOnly": "true",
+                    "max": 1,
+                    "heading": "Keys"
                 },
                 "http://purl.org/dc/terms/creator": {
                     "@id": "http://purl.org/dc/terms/creator",
@@ -349,11 +349,11 @@ export default {
                 },
                 "headings": ["Keys", "General"],
                 "primaryProperties": [
-                    "@id",
                     "http://purl.org/dc/terms/title",
                     "http://purl.org/dc/terms/description"
                 ],
                 "secondaryProperties": [
+                    "@id",
                     "http://purl.org/dc/terms/creator",
                     "http://purl.org/dc/terms/publisher",
                     "https://purl.org/ctdlasn/terms/publisherName",
@@ -368,19 +368,6 @@ export default {
                 return this.ctdlAsnConceptProfile;
             }
             return {
-                "@id": {
-                    "@id": "https://schema.cassproject.org/0.4/Concept/id",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "https://schema.cassproject.org/0.4/Concept"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "The URL of the concept. If imported from another source, the URL of the concept from which this one originates."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Canonical URL"}],
-                    "readOnly": "true",
-                    "max": 1,
-                    "heading": "Keys"
-                },
                 "http://www.w3.org/2004/02/skos/core#prefLabel": {
                     "@id": "http://www.w3.org/2004/02/skos/core#prefLabel",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -427,6 +414,19 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Definition"}],
                     "heading": "General",
                     "onePerLanguage": "true"
+                },
+                "@id": {
+                    "@id": "https://schema.cassproject.org/0.4/Concept/id",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Concept"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "The URL of the concept. If imported from another source, the URL of the concept from which this one originates."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Canonical URL"}],
+                    "readOnly": "true",
+                    "max": 1,
+                    "heading": "Keys"
                 },
                 "http://www.w3.org/2004/02/skos/core#notation": {
                     "@id": "http://www.w3.org/2004/02/skos/core#notation",
@@ -694,12 +694,12 @@ export default {
                 },
                 "headings": ["Keys", "General", "Other Labels", "Documentation", "Connections"],
                 "primaryProperties": [
-                    "@id",
                     "http://www.w3.org/2004/02/skos/core#prefLabel",
                     "http://www.w3.org/2004/02/skos/core#definition",
                     "http://www.w3.org/2004/02/skos/core#notation"
                 ],
                 "secondaryProperties": [
+                    "@id",
                     "http://www.w3.org/2004/02/skos/core#altLabel",
                     "http://www.w3.org/2004/02/skos/core#hiddenLabel",
                     "http://www.w3.org/2004/02/skos/core#note",
