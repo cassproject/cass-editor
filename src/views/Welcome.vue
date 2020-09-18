@@ -402,28 +402,16 @@ export default {
             });
         },
         openVlrc: function() {
-            const href = this.$router.resolve({
-                name: "welcome"
-            });
-            window.open(href.href + "?vlrc=true", '_blank');
+            this.$router.push({name: "vlrc"});
         },
         openGapAnalysis: function() {
-            const href = this.$router.resolve({
-                name: "welcome"
-            });
-            window.open(href.href + "?gapAnalysis=true", '_blank');
+            this.$router.push({name: "gapAnalysis"});
         },
         openProfileExplorer: function() {
-            const href = this.$router.resolve({
-                name: "welcome"
-            });
-            window.open(href.href + "?profile=true", '_blank');
+            this.$router.push({name: "profile"});
         },
         openFrameworkExplorer: function() {
-            const href = this.$router.resolve({
-                name: "welcome"
-            });
-            window.open(href.href + "?viewer=true", '_blank');
+            this.$router.push({name: "viewer"});
         }
     }
 };

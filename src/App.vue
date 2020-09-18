@@ -58,7 +58,11 @@ export default {
             var servers = ["https://dev.api.cassproject.org/api/"];
             var me = this;
             if (this.$route.query) {
-                this.$store.commit('editor/queryParams', this.$route.query);
+                let queryParams = JSON.parse(JSON.stringify(this.$route.query));
+                for (let key in window.queryParams) {
+                    queryParams[key] = window.queryParams[key];
+                }
+                this.$store.commit('editor/queryParams', queryParams);
                 if (this.queryParams.server) {
                     if (this.queryParams.server.endsWith && this.queryParams.server.endsWith("/") === false) {
                         this.queryParams.server += "/";
