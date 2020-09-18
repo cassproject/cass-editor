@@ -487,8 +487,8 @@ export default {
             }
         },
         searchPersonsForNewAccountFailure(msg) {
-            this.loginBusy = false;
-            appLog('New account person search failure: ' + msg);
+            // Search fails if the index doesn't exist yet.
+            this.checkForExistingUsername();
         },
         verifyEmailAddressForNewAccountAndGo() {
             this.loginBusy = true;
