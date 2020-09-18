@@ -291,19 +291,6 @@ export default {
                 return this.config.frameworkConfig;
             }
             return {
-                "@id": {
-                    "@id": "https://schema.cassproject.org/0.4/Framework/id",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "The URL of the framework."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Framework URL"}],
-                    "readOnly": "true",
-                    "max": 1,
-                    "heading": "Keys"
-                },
                 "http://schema.org/name": {
                     "@id": "http://schema.org/name",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -328,13 +315,25 @@ export default {
                     "heading": "General",
                     "onePerLanguage": "true"
                 },
+                "@id": {
+                    "@id": "https://schema.cassproject.org/0.4/Framework/id",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "The URL of the framework."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Framework URL"}],
+                    "readOnly": "true",
+                    "max": 1,
+                    "heading": "Keys"
+                },
                 "headings": ["Keys", "General"],
                 "primaryProperties": [
-                    "@id",
                     "http://schema.org/name",
                     "http://schema.org/description"
                 ],
-                "secondaryProperties": [],
+                "secondaryProperties": ["@id"],
                 "tertiaryProperties": []
             };
         },
@@ -436,19 +435,6 @@ export default {
             } else {
                 var me = this;
                 return {
-                    "@id": {
-                        "@id": "https://schema.cassproject.org/0.4/Competency/id",
-                        "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                        "http://schema.org/domainIncludes":
-                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
-                        "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
-                        "http://www.w3.org/2000/01/rdf-schema#comment":
-                        [{"@language": "en", "@value": "The URL of the competency."}],
-                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "URL"}],
-                        "readOnly": "true",
-                        "max": 1,
-                        "heading": "Keys"
-                    },
                     "http://schema.org/name": {
                         "@id": "http://schema.org/name",
                         "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -471,6 +457,19 @@ export default {
                         [{"@language": "en", "@value": "The description of the competency."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}],
                         "heading": "General"
+                    },
+                    "@id": {
+                        "@id": "https://schema.cassproject.org/0.4/Competency/id",
+                        "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                        "http://schema.org/domainIncludes":
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                        "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                        "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "The URL of the competency."}],
+                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "URL"}],
+                        "readOnly": "true",
+                        "max": 1,
+                        "heading": "Keys"
                     },
                     "https://schema.cassproject.org/0.4/scope": {
                         "@id": "https://schema.cassproject.org/0.4/scope",
@@ -589,11 +588,11 @@ export default {
                     },
                     "headings": ["Keys", "General", "Connections"],
                     "primaryProperties": [
-                        "@id",
                         "http://schema.org/name",
                         "http://schema.org/description"
                     ],
                     "secondaryProperties": [
+                        "@id",
                         "https://schema.cassproject.org/0.4/scope",
                         "https://schema.cassproject.org/0.4/Level"
                     ],
