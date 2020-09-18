@@ -73,17 +73,6 @@
                     </div>
                     <!-- inputs -->
                     <div class="section">
-                        <div
-                            class="field"
-                            v-if="amCreatingAccount">
-                            <div class="control">
-                                <label class="label">username</label>
-                                <input
-                                    type="text"
-                                    class="input"
-                                    v-model="createAccountUsername">
-                            </div>
-                        </div>
                         <!-- name and email -->
                         <div
                             class="field"
@@ -105,6 +94,17 @@
                                     class="input"
                                     type="text "
                                     v-model="createLinkPersonEmail">
+                            </div>
+                        </div>
+                        <div
+                            class="field"
+                            v-if="amCreatingAccount">
+                            <div class="control">
+                                <label class="label">username</label>
+                                <input
+                                    type="text"
+                                    class="input"
+                                    v-model="createAccountUsername">
                             </div>
                         </div>
                         <!--  password -->
@@ -487,8 +487,8 @@ export default {
             }
         },
         searchPersonsForNewAccountFailure(msg) {
-            this.loginBusy = false;
-            appLog('New account person search failure: ' + msg);
+            // Search fails if the index doesn't exist yet.
+            this.checkForExistingUsername();
         },
         verifyEmailAddressForNewAccountAndGo() {
             this.loginBusy = true;

@@ -405,7 +405,7 @@ export default {
             this.$router.push({name: "vlrc"});
         },
         openGapAnalysis: function() {
-            this.$router.push({name: "gapAnalysis"});
+            this.$router.push({name: "gap-analysis"});
         },
         openProfileExplorer: function() {
             this.$router.push({name: "profile"});
