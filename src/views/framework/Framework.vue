@@ -328,7 +328,7 @@ export default {
                     "max": 1,
                     "heading": "Keys"
                 },
-                "headings": ["Keys", "General"],
+                "headings": ["General", "Keys"],
                 "primaryProperties": [
                     "http://schema.org/name",
                     "http://schema.org/description"
@@ -586,7 +586,7 @@ export default {
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "desires", target); },
                         "heading": "Connections"
                     },
-                    "headings": ["Keys", "General", "Connections"],
+                    "headings": ["General", "Connections", "Keys"],
                     "primaryProperties": [
                         "http://schema.org/name",
                         "http://schema.org/description"
