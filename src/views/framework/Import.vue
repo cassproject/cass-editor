@@ -1677,9 +1677,8 @@ export default {
                 }
             }
             this.repo.multiput(toSave, function() {
-                me.importSuccess();
                 me.spitEvent("importFinished", me.importFramework.shortId(), "importPage");
-                me.hierarchyIsdoneLoading = true;
+                me.$router.push({name: "framework", params: {frameworkId: me.importFramework.shortId()}});
             }, function(failure) {
                 appLog("failure", failure);
                 me.$store.commit('app/addImportError', failure);
