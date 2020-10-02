@@ -63,6 +63,13 @@ body{
 p {
     font-style: normal;
 }
+.cat__bullet-list {
+    list-style-type: circle;
+    margin-left: 1rem;
+    li {
+        padding: .25rem;
+    }
+}
 .control.auto-complete__control.share {
     padding-right: 1px;
     border-radius: 5px 0px 0px 5px;
