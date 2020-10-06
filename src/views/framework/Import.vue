@@ -1130,12 +1130,18 @@ export default {
             if (EcIdentityManager.ids.length > 0) { ceo = EcIdentityManager.ids[0]; }
             let me = this;
             CTDLASNCSVImport.importFrameworksAndCompetencies(me.repo, me.importFile[0], function(frameworks, competencies, relations) {
-                if (me.queryParams.ceasnDataFields === true) {
-                    for (var i = 0; i < frameworks.length; i++) {
+                for (var i = 0; i < frameworks.length; i++) {
+                    if (me.queryParams.ceasnDataFields === true) {
                         if (frameworks[i]["schema:inLanguage"] == null || frameworks[i]["schema:inLanguage"] === undefined) {
                             me.setDefaultLanguage();
                             frameworks[i]["schema:inLanguage"] = defaultLanguage;
                         }
+                    }
+                    if (frameworks[i]["schema:dateModified"] == null || frameworks[i]["schema:dateModified"] === undefined) {
+                        frameworks[i]["schema:dateModified"] = new Date().toISOString();
+                    }
+                    if (frameworks[i]["schema:dateCreated"] == null || frameworks[i]["schema:dateCreated"] === undefined) {
+                        frameworks[i]["schema:dateCreated"] = new Date().toISOString();
                     }
                 }
                 var all = frameworks.concat(competencies).concat(relations);
