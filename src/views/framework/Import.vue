@@ -1157,7 +1157,16 @@ export default {
                         me.firstImport = false;
                         me.analyzeImportFile();
                     } else {
-                        me.importSuccess();
+                        if (frameworks.length === 1) {
+                            me.importSuccess();
+                        } else {
+                            // If multiple frameworks uploaded, go to list instead of the last framework in the spreadsheet
+                            me.$store.commit('app/sortResults', {
+                                id: 'dateCreated',
+                                label: 'created date'
+                            });
+                            me.$router.push({name: "frameworks"});
+                        }
                     }
                 }, function(failure) {
                     me.$store.commit('app/importStatus', failure);
