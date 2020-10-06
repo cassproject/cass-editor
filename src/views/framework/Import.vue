@@ -43,7 +43,9 @@
                         </span>
                         <span v-else>Import a framework</span>
                     </h1>
-                    <h2 class="subtitle">Import from file</h2>
+                    <h2 class="subtitle">
+                        Import from file
+                    </h2>
                 </template>
                 <!-- import from file gets three parts, details, preview, and light view -->
                 <template slot="import-framework">
@@ -185,7 +187,7 @@
             <ImportServer
                 :conceptMode="conceptMode"
                 :importTransition="importTransition"
-                :caseDocs="caseDocs"
+                @importCase="handleImportFromTabs($event)"
                 v-if="importType === 'server'">
                 <template slot="import-server-title">
                     <h1
@@ -198,7 +200,9 @@
                         </span>
                         <span v-else>Import a framework</span>
                     </h1>
-                    <h2 class="subtitle">Import from remote serve</h2>
+                    <h2 class="subtitle">
+                        Import from remote server
+                    </h2>
                 </template>
                 <template slot="import-framework">
                     <!-- import preview -->
@@ -345,7 +349,9 @@
                         </span>
                         <span v-else>Import from a URL source</span>
                     </h1>
-                    <h2 class="subtitle">Import from text</h2>
+                    <h2 class="subtitle">
+                        Import from URL source
+                    </h2>
                 </template>
                 <template slot="import-framework">
                     <!-- import preview -->
@@ -492,7 +498,9 @@
                         </span>
                         <span v-else>Import a framework</span>
                     </h1>
-                    <h2 class="subtitle">Import from text</h2>
+                    <h2 class="subtitle">
+                        Import from text
+                    </h2>
                 </template>
                 <template slot="import-framework">
                     <!-- import light view -->
@@ -560,15 +568,15 @@
                 @importCase="handleImportFromTabs($event)"
                 @deleteObject="deleteObject" />
             import details -->
-            <ImportDetails
+            <!--<ImportDetails
                 :detailsDetected="detailsDetected"
                 v-if="importTransition === 'detail'"
-                @deleteObject="deleteObject" />
-            <!-- import preview -->
+                @deleteObject="deleteObject" />-->
+            <!-- import preview
             <div
                 v-if="importFramework && importTransition === 'preview'"
                 class="import-preview">
-                <!-- loading section -- dummy content to show while loading dome elemnts -->
+                -- loading section -- dummy content to show while loading dome elemnts
                 <div
                     class="section"
                     v-if="!hierarchyIsdoneLoading">
@@ -641,7 +649,7 @@
                     @deleteObject="deleteObject"
                     :profile="ctdlAsnConceptProfile"
                     properties="tertiary" />
-            </div>
+            </div>-->
             <!-- import light view
             <div
                 v-else-if="importFramework && importTransition === 'light'"

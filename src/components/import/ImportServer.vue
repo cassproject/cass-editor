@@ -11,10 +11,10 @@
                     <div class="column is-12">
                         <ImportTabs />
                     </div>
-                    <div class='column is-12'>
+                    <div class="column is-12">
                         <!-- server input -->
                         <div
-                            class="section remote-server">
+                            class="remote-server">
                             <h3 class="title is-size-3 has-text-weight-medium">
                                 Import from remote server
                             </h3>
@@ -104,22 +104,20 @@
                                     </li>
                                     <li />
                                 </ul>
-                                <div class="section">
-                                    <div class="buttons is-centered">
-                                        <div
-                                            @click="resetImport()"
-                                            class="button is-primary">
-                                            <span class="icon">
-                                                <i class="fa fa-redo" />
-                                            </span>
-                                            <span>start over</span>
-                                        </div>
+                                <div class="buttons is-centered">
+                                    <div
+                                        @click="resetImport()"
+                                        class="button is-primary">
+                                        <span class="icon">
+                                            <i class="fa fa-redo" />
+                                        </span>
+                                        <span>start over</span>
                                     </div>
                                 </div>
                             </div>
                             <!-- HANDLE CASE DOCS -->
                             <div
-                                class="section"
+                                class=""
                                 v-if="caseDocs.length">
                                 <h3 class="subtitle has-text-weight-bold is-size-4">
                                     Found Frameworks
@@ -169,14 +167,21 @@
                             </div>
                         </div>
                     </div>
+                    <div class="column is-12">
+                        <slot name="import-framework">
+                            No framework
+                        </slot>
+                    </div>
                 </div>
             </div>
         </div>
-        <!-- list description -->
+        <!-- list description for right panel -->
         <div
             class="column is-3 import-information">
             <div class="section">
-                <h2 class="title is-size-4">Remote Server Import</h2>
+                <h2 class="title is-size-4">
+                    Remote Server Import
+                </h2>
                 <!--v-else-if="importType=='server' && !conceptMode"-->
                 <p class="is-size-5">
                     If you know the URL of a IMS CASE Repository, such as OpenSalt, you can import published frameworks from that repository.
@@ -201,51 +206,56 @@
 <script>
 import ImportTabs from '@/components/import/ImportTabs';
 import imports from '@/mixins/import.js';
+import common from '@/mixins/common.js';
 
 export default {
     name: 'ImportServer',
     components: {
         ImportTabs
     },
-    mixins: [ imports ],
+    mixins: [ imports, common ],
     props: {
         importTransition: {
             type: String,
             default: ''
-        },
-        caseDocs: {
-            type: Array,
-            default: () => { return []; }
         }
     },
     data() {
         return {
-            importServerUrl: [],
+            caseDocs: [],
             serverDetails: [
                 {
                     label: 'Paste URL endpoint of server'
                 }
-            ],
-            importErrors: []
+            ]
         };
     },
+    computed: {
+        importErrors: function() {
+            return this.$store.getters['app/importErrors'];
+        },
+        importServerUrl: {
+            get() {
+                return this.$store.getters['app/importServerUrl'];
+            },
+            set(url) {
+                this.$store.commit('app/importServerUrl', url);
+            }
+        }
+    },
     methods: {
-        connectToServer: function() {
-            appLog("connecting to server");
-            this.caseDocs.splice(0, this.caseDocs.length);
-            // To do: add import from CaSS Server
-            this.caseDetectEndpoint();
+        importCaseDocs: function() {
+            this.handleImportFromTabs(this.caseDocs);
+            this.$store.commit('app/importTransition', 'importingCaseFrameworks');
+        },
+        handleImportFromTabs: function(e) {
+            this.caseDocs = e;
+            this.importCase();
         }
     },
     watch: {
-        importTransition: function(val) {
-            if (val === 'processFiles') {
-                return this.uploadFiles(this.importFile);
-            } else if (val === 'uploadCsv' || val === 'uploadMedbiq' || val === 'uploadOtherNonPdf') {
-                this.importFromFile();
-            } else if (val === 'connectToServer') {
-                this.connectToServer();
-            }
+        importServerUrl: function(val) {
+            this.caseDocs = [];
         }
     }
 };

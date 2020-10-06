@@ -241,6 +241,14 @@ export default {
         }
     },
     methods: {
+        importCaseDocs: function() {
+            this.$emit('importCase', this.caseDocs);
+            this.$store.commit('app/importTransition', 'importingCaseFrameworks');
+        },
+        importFromUrl: function() {
+            this.$store.commit('app/importStatus', 'importFromUrl');
+            this.$store.commit('app/importTransition', 'importingFromUrl');
+        },
         showImportModal: function(type) {
             let modalObject = {
                 component: 'SupportedImportDetails',
@@ -253,16 +261,6 @@ export default {
             this.$store.commit('app/importType', 'file');
             this.$store.commit('app/importFramework', null);
             this.$store.commit('app/importTransition', 'upload');
-        },
-        clearFiles: function() {
-            this.$store.commit('app/clearImportFiles');
-        },
-        resetImport: function() {
-            this.$store.commit('app/resetImport');
-        },
-        cancelImport: function() {
-            this.$emit("deleteObject", this.importFramework);
-            this.resetImport();
         }
     },
     computed: {

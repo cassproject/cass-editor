@@ -8,90 +8,12 @@
                     <p>Nothing send from import.vue</p>
                 </slot>
                 <div class="columns is-multiline">
-                    <div class='column is-12'>
+                    <div class="column is-12">
                         <ImportTabs />
                     </div>
-                    <div class="column is-12">
-                        <!-- IMPORT SUPPORT -->
-                        <div
-                            class="columns is-centered">
-                            <div class="column is-narrow">
-                                <div
-                                    @click="showImportModal('pdf')"
-                                    class="button is-outlined is-warning is-small"
-                                    v-if="!conceptMode">
-                                    <span
-                                        title="PDF files are experimentally supported. Click to learn more."
-                                        class="icon">
-                                        <i class="fa fa-exclamation" />
-                                    </span>
-                                    <span>PDF</span>
-                                </div>
-                            </div>
-                            <div class="column is-narrow">
-                                <div
-                                    @click="showImportModal('docx')"
-                                    class="button is-outlined is-warning is-small"
-                                    v-if="!conceptMode">
-                                    <span
-                                        title="Word documents and Docx files are experimental. Click to learn more."
-                                        class="icon">
-                                        <i class="fa fa-exclamation" />
-                                    </span>
-                                    <span>DOCX/WORD</span>
-                                </div>
-                            </div>
-                            <div class="column is-narrow">
-                                <div
-                                    @click="showImportModal('csv')"
-                                    class="button is-outlined is-success is-small">
-                                    <span
-                                        title="CSV files are supported, click to learn more."
-                                        class="icon is-pulled-right">
-                                        <i class="fa fa-check" />
-                                    </span>
-                                    <span>CSV</span>
-                                </div>
-                            </div>
-                            <div class="column is-narrow">
-                                <div
-                                    @click="showImportModal('xml')"
-                                    class="button is-outlined is-success is-small"
-                                    v-if="!conceptMode">
-                                    <span
-                                        title="XML files are supported, click to learn more."
-                                        class="icon is-pulled-right">
-                                        <i class="fa fa-check" />
-                                    </span>
-                                    <span>XML</span>
-                                </div>
-                            </div>
-                            <div class="column is-narrow">
-                                <div
-                                    @click="showImportModal('json')"
-                                    class="button is-outlined is-success is-small">
-                                    <span
-                                        title="JSON files are supported, click to learn more."
-                                        class="icon is-pulled-right">
-                                        <i class="fa fa-check" />
-                                    </span>
-                                    <span>JSON</span>
-                                </div>
-                            </div>
-                            <div class="column is-narrow">
-                                <div
-                                    @click="showImportModal('html')"
-                                    class="button is-outlined is-success is-small"
-                                    v-if="!conceptMode">
-                                    <span
-                                        title="html files are fully supported at this time"
-                                        class="icon is-pulled-right">
-                                        <i class="fa fa-check" />
-                                    </span>
-                                    <span>HTML</span>
-                                </div>
-                            </div>
-                        </div>
+                    <div
+                        v-if="importTransition === 'process' || importTransition === 'upload'"
+                        class="column is-12">
                         <!-- file input -->
                         <div
                             class="has-dashed-border columns is-vcentered has-text-centered"
@@ -281,25 +203,104 @@
                             </div>
                         </div>
                     </div>
+                    <div class="column is-12">
+                        <slot name="import-framework">
+                            no framework
+                        </slot>
+                    </div>
                 </div>
             </div>
         </div>
         <div
-            class="column is-3 has-background-light"
+            class="column is-3 import-information"
             v-if="!conceptMode">
             <div class="section">
-                <h2 class="title is-size-4">Import From a File</h2>
+                <h2 class="title is-size-4">
+                    Import From a File
+                </h2>
                 <p class="has-text-weight-bold">
                     Supported File Types
                 </p>
-                <ul class="cat__bullet-list is-size-6">
-                    <li>PDF</li>
-                    <li>Docx/Word</li>
-                    <li>CSV</li>
-                    <li>XML</li>
-                    <li>JSON</li>
-                    <li>HTML</li>
-                </ul>
+                <!-- IMPORT SUPPORT -->
+                <div
+                    class="columns pt-4 is-multiline">
+                    <div class="column is-narrow">
+                        <div
+                            @click="showImportModal('pdf')"
+                            class="button is-outlined is-warning is-small"
+                            v-if="!conceptMode">
+                            <span
+                                title="PDF files are experimentally supported. Click to learn more."
+                                class="icon">
+                                <i class="fa fa-exclamation" />
+                            </span>
+                            <span>PDF</span>
+                        </div>
+                    </div>
+                    <div class="column is-narrow">
+                        <div
+                            @click="showImportModal('docx')"
+                            class="button is-outlined is-warning is-small"
+                            v-if="!conceptMode">
+                            <span
+                                title="Word documents and Docx files are experimental. Click to learn more."
+                                class="icon">
+                                <i class="fa fa-exclamation" />
+                            </span>
+                            <span>DOCX/WORD</span>
+                        </div>
+                    </div>
+                    <div class="column is-narrow">
+                        <div
+                            @click="showImportModal('csv')"
+                            class="button is-outlined is-success is-small">
+                            <span
+                                title="CSV files are supported, click to learn more."
+                                class="icon is-pulled-right">
+                                <i class="fa fa-check" />
+                            </span>
+                            <span>CSV</span>
+                        </div>
+                    </div>
+                    <div class="column is-narrow">
+                        <div
+                            @click="showImportModal('xml')"
+                            class="button is-outlined is-success is-small"
+                            v-if="!conceptMode">
+                            <span
+                                title="XML files are supported, click to learn more."
+                                class="icon is-pulled-right">
+                                <i class="fa fa-check" />
+                            </span>
+                            <span>XML</span>
+                        </div>
+                    </div>
+                    <div class="column is-narrow">
+                        <div
+                            @click="showImportModal('json')"
+                            class="button is-outlined is-success is-small">
+                            <span
+                                title="JSON files are supported, click to learn more."
+                                class="icon is-pulled-right">
+                                <i class="fa fa-check" />
+                            </span>
+                            <span>JSON</span>
+                        </div>
+                    </div>
+                    <div class="column is-narrow">
+                        <div
+                            @click="showImportModal('html')"
+                            class="button is-outlined is-success is-small"
+                            v-if="!conceptMode">
+                            <span
+                                title="html files are fully supported at this time"
+                                class="icon is-pulled-right">
+                                <i class="fa fa-check" />
+                            </span>
+                            <span>HTML</span>
+                        </div>
+                    </div>
+                </div>
                 <br>
                 <p class="has-text-weight-bold">
                     Steps to import from file
@@ -403,6 +404,14 @@ export default {
         importTransition: {
             type: String,
             default: ''
+        }
+    },
+    computed: {
+        importErrors: function() {
+            return this.$store.getters['app/importErrors'];
+        },
+        importStatus: function() {
+            return this.$store.getters['app/importStatus'];
         }
     },
     methods: {

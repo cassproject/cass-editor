@@ -8,6 +8,16 @@ export default {
         selectedArrayEvent: function(ary) {
             this.selectedArray = ary;
         },
+        clearFiles: function() {
+            this.$store.commit('app/clearImportFiles');
+        },
+        cancelImport: function() {
+            this.$emit("deleteObject", this.importFramework);
+            this.resetImport();
+        },
+        resetImport: function() {
+            this.$store.commit('app/resetImport');
+        },
         onEditMultiple: function() {
             this.showEditMultiple = true;
             var payload = {
@@ -19,10 +29,6 @@ export default {
         },
         handleSearch: function(e) {
             this.$store.commit('app/showModal', e);
-        },
-        handleImportFromTabs: function(e) {
-            this.caseDocs = e;
-            this.importCase();
         },
         onEditNode: function() {
             this.editingNode = true;
@@ -871,7 +877,7 @@ export default {
             }
         },
         connectToServer: function() {
-            appLog("connecting to server");
+            appLog("connecting to server 1");
             this.caseDocs.splice(0, this.caseDocs.length);
             // To do: add import from CaSS Server
             this.caseDetectEndpoint();
@@ -891,6 +897,7 @@ export default {
         caseGetDocsSuccess: function(result) {
             result = JSON.parse(result);
             let error;
+            this.caseDocs = [];
             if (result.CFDocuments == null) {
                 error = "No frameworks found. Please check the URL and try again.";
                 this.$store.commit('app/addImportError', error);
@@ -1056,6 +1063,13 @@ export default {
                 me.$store.commit('app/importTransition', 'process');
             });
         },
+        showImportModal: function(type) {
+            let modalObject = {
+                component: 'SupportedImportDetails',
+                documentContent: type
+            };
+            this.$store.commit('app/showModal', modalObject);
+        },
         importFromUrl: function() {
             let me = this;
             let error;
@@ -1122,7 +1136,10 @@ export default {
         }
     },
     watch: {
-        importStatus: function(val) {
+        importStatus: function(val, oldVal) {
+            if (val === oldVal) {
+                return;
+            }
             if (val === 'connectToServer') {
                 this.connectToServer();
             } else if (val === 'importFromUrl') {

@@ -1500,7 +1500,7 @@ export default {
             }
         },
         connectToServer: function() {
-            appLog("connecting to server");
+            appLog("connecting to server 2");
             this.caseDocs.splice(0, this.caseDocs.length);
             // To do: add import from CaSS Server
             this.caseDetectEndpoint();

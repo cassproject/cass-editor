@@ -5,11 +5,18 @@ textarea {
     resize: vertical !important;
 }
 #import {
+    #import-from-url,
+    #import-from-server,
+    #import-from-text,
+    #import-from-file {
+        min-height: 100vh;
+    }
     .import-container {
         min-height: 100vh;
     }
     .import-information {
-        min-height: 100vh;
+        min-height: 100%;
+        background-color: $light;
     }
     .parent-object {
         position: sticky;
