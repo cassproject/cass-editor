@@ -153,10 +153,14 @@ export default {
     @import '@/scss/variables.scss';
 
 #drag-and-drop {
-    min-height: 100%;
+    height: 100%;
 }
 #drag-and-drop.is-dragged-over {
+    height: 100% !important;
     background-color: rgba($cass-primary-up, .3);
     border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 </style>

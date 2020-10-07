@@ -44,7 +44,53 @@
                         <span v-else>Import a framework</span>
                     </h1>
                     <h2 class="subtitle">
-                        Import from file
+                        Import from file:
+                        <span
+                            v-if="importTransition === 'upload' && (!importFile || importFile.length === 0) && conceptMode"
+                            class="is-size-5 has-text-dark">
+                            Upload documents to transform into CaSS {{ queryParams.ceasnDataFields === 'true' ? 'Concept Schemes' : 'Taxonomies' }}.
+                        </span>
+                        <span
+                            v-else-if="importTransition === 'process'"
+                            class="is-size-5 has-text-dark">
+                            processing
+                        </span>
+                        <span
+                            v-else-if="importTransition === 'upload' && (!importFile || importFile.length === 0) "
+                            class="is-size-5">
+                            Upload documents to transform into CaSS Competency Frameworks.
+                        </span>
+                        <span v-else-if="importTransition === 'detail'">
+                            <span
+                                class="is-size-5">
+                                <span class="has-text-success has-text-weight-bold">
+                                    CaSS has detected a framework!
+                                </span>
+                                <br><br>
+                                Please review the competency framework and file details gathered below. To continue with the input of this competency framework, press Accept Details & Review. To cancel and review or change your input file, press cancel.
+                            </span>
+                        </span>
+                        <span v-if="importTransition === 'preview'">
+                            <span
+                                class=" is-size-5 has-text-success has-text-weight-bold"
+                                v-if="frameworkSize !== null">
+                                Import success, {{ frameworkSize }} competencies ready to edit.
+                            </span>
+                            <span
+                                class=" is-size-5 has-text-success has-text-weight-bold"
+                                v-else>
+                                Import success, concepts ready to edit.
+                            </span>
+                        </span>
+                        <span v-if="importTransition === 'light' && importType !== 'text'">
+                            <span
+                                class="is-size-5">
+                                <span class="has-text-success has-text-weight-bold">
+                                    Your import is complete!
+                                </span>
+                                <br><br>
+                            </span>
+                        </span>
                     </h2>
                 </template>
                 <!-- import from file gets three parts, details, preview, and light view -->
@@ -201,7 +247,7 @@
                         <span v-else>Import a framework</span>
                     </h1>
                     <h2 class="subtitle">
-                        Import from remote server
+                        Import from remote server: {{ importStatus }}
                     </h2>
                 </template>
                 <template slot="import-framework">
@@ -350,7 +396,7 @@
                         <span v-else>Import from a URL source</span>
                     </h1>
                     <h2 class="subtitle">
-                        Import from URL source
+                        Import from URL source: {{ importStatus }}
                     </h2>
                 </template>
                 <template slot="import-framework">
@@ -499,7 +545,7 @@
                         <span v-else>Import a framework</span>
                     </h1>
                     <h2 class="subtitle">
-                        Import from text
+                        Import from text: {{ importStatus }}
                     </h2>
                 </template>
                 <template slot="import-framework">

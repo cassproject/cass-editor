@@ -146,6 +146,7 @@ ul.processing-list {
     }
         .drag-file-area {
             width:100%;
+            height: 100%;
             display:block;
             border: 2px dashed $white;
             border-radius:1rem;
@@ -154,7 +155,7 @@ ul.processing-list {
     
         }
         #drop-area {
-            height: auto;
+            height: 300px;
             margin: 0px;
             padding: 0px;
             width: auto;

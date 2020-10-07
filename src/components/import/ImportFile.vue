@@ -325,53 +325,6 @@
                             If your framework is not detected by CaSS or not imported properly, let us know at <a href="mailto:cass@eduworks.com?subject=File+to+Improve+CaSS+Importer">cass@eduworks.com</a> and we will look into the inquiry and provide a response.
                         </li>
                     </ul>
-                    <p
-                        v-if="importTransition === 'upload' && !importFile && conceptMode"
-                        class="is-size-6">
-                        Upload documents to transform into CaSS {{ queryParams.ceasnDataFields === 'true' ? 'Concept Schemes' : 'Taxonomies' }}.
-                    </p>
-                    <p
-                        v-else-if="importTransition === 'upload' && !importFile"
-                        class="is-size-6">
-                        Upload documents to transform into CaSS Competency Frameworks.
-                    </p>
-                    <!-- ready state details -->
-                    <template v-if="importTransition === 'detail'">
-                        <p
-                            class="is-size-6">
-                            <span class="has-text-success has-text-weight-bold">
-                                CaSS has detected a framework!
-                            </span>
-                            <br><br>
-                            Please review the competency framework and file details gathered below. To continue with the input of this competency framework, press Accept Details & Review. To cancel and review or change your input file, press cancel.
-                        </p>
-                    </template>
-                    <template v-if="importTransition === 'preview'">
-                        <p
-                            class="">
-                            <span
-                                class=" is-size-6 has-text-success has-text-weight-bold"
-                                v-if="frameworkSize !== null">
-                                Import success, {{ frameworkSize }} competencies ready to edit.
-                            </span>
-                            <span
-                                class=" is-size-6 has-text-success has-text-weight-bold"
-                                v-else>
-                                Import success, concepts ready to edit.
-                            </span>
-                            <br><br>
-                            <!-- Please review the name and descriptions of the imported competencies. After making edits, "approve" the changes to view the imported competency details.-->
-                        </p>
-                    </template>
-                    <template v-if="importTransition === 'light' && importType !== 'text'">
-                        <p
-                            class="is-size-6">
-                            <span class="has-text-success has-text-weight-bold">
-                                Your import is complete!
-                            </span>
-                            <br><br>
-                        </p>
-                    </template>
                 </div>
             </template>
         </RightAside>
