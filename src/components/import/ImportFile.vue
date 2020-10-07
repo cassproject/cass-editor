@@ -2,7 +2,7 @@
     <div
         id="import-from-file"
         class="columns">
-        <div class="column is-9">
+        <div class="column is-12">
             <div class="section">
                 <slot name="import-file-title">
                     <p>Nothing send from import.vue</p>
@@ -211,172 +211,172 @@
                 </div>
             </div>
         </div>
-        <div
-            class="column is-3 import-information"
-            v-if="!conceptMode">
-            <div class="section">
-                <h2 class="title is-size-4">
-                    Import From a File
-                </h2>
-                <p class="has-text-weight-bold">
-                    Supported File Types
-                </p>
-                <!-- IMPORT SUPPORT -->
-                <div
-                    class="columns pt-4 is-multiline">
-                    <div class="column is-narrow">
-                        <div
-                            @click="showImportModal('pdf')"
-                            class="button is-outlined is-warning is-small"
-                            v-if="!conceptMode">
-                            <span
-                                title="PDF files are experimentally supported. Click to learn more."
-                                class="icon">
-                                <i class="fa fa-exclamation" />
-                            </span>
-                            <span>PDF</span>
+        <RightAside :allowClose="false">
+            <template slot="right-aside-content">
+                <div class="section">
+                    <h2 class="title is-size-4">
+                        Import From a File
+                    </h2>
+                    <p class="has-text-weight-bold">
+                        Supported File Types
+                    </p>
+                    <!-- IMPORT SUPPORT -->
+                    <div
+                        class="columns pt-4 is-multiline">
+                        <div class="column is-narrow">
+                            <div
+                                @click="showImportModal('pdf')"
+                                class="button is-outlined is-warning is-small"
+                                v-if="!conceptMode">
+                                <span
+                                    title="PDF files are experimentally supported. Click to learn more."
+                                    class="icon">
+                                    <i class="fa fa-exclamation" />
+                                </span>
+                                <span>PDF</span>
+                            </div>
+                        </div>
+                        <div class="column is-narrow">
+                            <div
+                                @click="showImportModal('docx')"
+                                class="button is-outlined is-warning is-small"
+                                v-if="!conceptMode">
+                                <span
+                                    title="Word documents and Docx files are experimental. Click to learn more."
+                                    class="icon">
+                                    <i class="fa fa-exclamation" />
+                                </span>
+                                <span>DOCX/WORD</span>
+                            </div>
+                        </div>
+                        <div class="column is-narrow">
+                            <div
+                                @click="showImportModal('csv')"
+                                class="button is-outlined is-success is-small">
+                                <span
+                                    title="CSV files are supported, click to learn more."
+                                    class="icon is-pulled-right">
+                                    <i class="fa fa-check" />
+                                </span>
+                                <span>CSV</span>
+                            </div>
+                        </div>
+                        <div class="column is-narrow">
+                            <div
+                                @click="showImportModal('xml')"
+                                class="button is-outlined is-success is-small"
+                                v-if="!conceptMode">
+                                <span
+                                    title="XML files are supported, click to learn more."
+                                    class="icon is-pulled-right">
+                                    <i class="fa fa-check" />
+                                </span>
+                                <span>XML</span>
+                            </div>
+                        </div>
+                        <div class="column is-narrow">
+                            <div
+                                @click="showImportModal('json')"
+                                class="button is-outlined is-success is-small">
+                                <span
+                                    title="JSON files are supported, click to learn more."
+                                    class="icon is-pulled-right">
+                                    <i class="fa fa-check" />
+                                </span>
+                                <span>JSON</span>
+                            </div>
+                        </div>
+                        <div class="column is-narrow">
+                            <div
+                                @click="showImportModal('html')"
+                                class="button is-outlined is-success is-small"
+                                v-if="!conceptMode">
+                                <span
+                                    title="html files are fully supported at this time"
+                                    class="icon is-pulled-right">
+                                    <i class="fa fa-check" />
+                                </span>
+                                <span>HTML</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="column is-narrow">
-                        <div
-                            @click="showImportModal('docx')"
-                            class="button is-outlined is-warning is-small"
-                            v-if="!conceptMode">
-                            <span
-                                title="Word documents and Docx files are experimental. Click to learn more."
-                                class="icon">
-                                <i class="fa fa-exclamation" />
+                    <br>
+                    <p class="has-text-weight-bold">
+                        Steps to import from file
+                    </p>
+                    <ul class="cat__bullet-list is-size-6">
+                        <li>
+                            Cick inside the “Files to Upload” box or drag and drop a file inside the dashed box.
+                        </li>
+                        <li>
+                            Once your file has been uploaded, CaSS will detect a competency framework from the file and display details about your framework.
+                        </li>
+                        <li>
+                            If the details are correct, click “Accept and Review” to review and edit your framework.
+                        </li>
+                        <li>
+                            An editable preview of your framework will be available. When you are done making changes, click “Done Editing”.
+                        </li>
+                        <li>
+                            An uneditable preview of your framework will display, your fraemwork is now in CaSS!
+                        </li>
+                        <li>
+                            click "done" to navigate to the framework in the editor where you can continue editing as well as export to a variety of formats.
+                        </li>
+                        <li>
+                            If your framework is not detected by CaSS or not imported properly, let us know at <a href="mailto:cass@eduworks.com?subject=File+to+Improve+CaSS+Importer">cass@eduworks.com</a> and we will look into the inquiry and provide a response.
+                        </li>
+                    </ul>
+                    <p
+                        v-if="importTransition === 'upload' && !importFile && conceptMode"
+                        class="is-size-6">
+                        Upload documents to transform into CaSS {{ queryParams.ceasnDataFields === 'true' ? 'Concept Schemes' : 'Taxonomies' }}.
+                    </p>
+                    <p
+                        v-else-if="importTransition === 'upload' && !importFile"
+                        class="is-size-6">
+                        Upload documents to transform into CaSS Competency Frameworks.
+                    </p>
+                    <!-- ready state details -->
+                    <template v-if="importTransition === 'detail'">
+                        <p
+                            class="is-size-6">
+                            <span class="has-text-success has-text-weight-bold">
+                                CaSS has detected a framework!
                             </span>
-                            <span>DOCX/WORD</span>
-                        </div>
-                    </div>
-                    <div class="column is-narrow">
-                        <div
-                            @click="showImportModal('csv')"
-                            class="button is-outlined is-success is-small">
+                            <br><br>
+                            Please review the competency framework and file details gathered below. To continue with the input of this competency framework, press Accept Details & Review. To cancel and review or change your input file, press cancel.
+                        </p>
+                    </template>
+                    <template v-if="importTransition === 'preview'">
+                        <p
+                            class="">
                             <span
-                                title="CSV files are supported, click to learn more."
-                                class="icon is-pulled-right">
-                                <i class="fa fa-check" />
+                                class=" is-size-6 has-text-success has-text-weight-bold"
+                                v-if="frameworkSize !== null">
+                                Import success, {{ frameworkSize }} competencies ready to edit.
                             </span>
-                            <span>CSV</span>
-                        </div>
-                    </div>
-                    <div class="column is-narrow">
-                        <div
-                            @click="showImportModal('xml')"
-                            class="button is-outlined is-success is-small"
-                            v-if="!conceptMode">
                             <span
-                                title="XML files are supported, click to learn more."
-                                class="icon is-pulled-right">
-                                <i class="fa fa-check" />
+                                class=" is-size-6 has-text-success has-text-weight-bold"
+                                v-else>
+                                Import success, concepts ready to edit.
                             </span>
-                            <span>XML</span>
-                        </div>
-                    </div>
-                    <div class="column is-narrow">
-                        <div
-                            @click="showImportModal('json')"
-                            class="button is-outlined is-success is-small">
-                            <span
-                                title="JSON files are supported, click to learn more."
-                                class="icon is-pulled-right">
-                                <i class="fa fa-check" />
+                            <br><br>
+                            <!-- Please review the name and descriptions of the imported competencies. After making edits, "approve" the changes to view the imported competency details.-->
+                        </p>
+                    </template>
+                    <template v-if="importTransition === 'light' && importType !== 'text'">
+                        <p
+                            class="is-size-6">
+                            <span class="has-text-success has-text-weight-bold">
+                                Your import is complete!
                             </span>
-                            <span>JSON</span>
-                        </div>
-                    </div>
-                    <div class="column is-narrow">
-                        <div
-                            @click="showImportModal('html')"
-                            class="button is-outlined is-success is-small"
-                            v-if="!conceptMode">
-                            <span
-                                title="html files are fully supported at this time"
-                                class="icon is-pulled-right">
-                                <i class="fa fa-check" />
-                            </span>
-                            <span>HTML</span>
-                        </div>
-                    </div>
+                            <br><br>
+                        </p>
+                    </template>
                 </div>
-                <br>
-                <p class="has-text-weight-bold">
-                    Steps to import from file
-                </p>
-                <ul class="cat__bullet-list is-size-6">
-                    <li>
-                        Cick inside the “Files to Upload” box or drag and drop a file inside the dashed box.
-                    </li>
-                    <li>
-                        Once your file has been uploaded, CaSS will detect a competency framework from the file and display details about your framework.
-                    </li>
-                    <li>
-                        If the details are correct, click “Accept and Review” to review and edit your framework.
-                    </li>
-                    <li>
-                        An editable preview of your framework will be available. When you are done making changes, click “Done Editing”.
-                    </li>
-                    <li>
-                        An uneditable preview of your framework will display, your fraemwork is now in CaSS!
-                    </li>
-                    <li>
-                        click "done" to navigate to the framework in the editor where you can continue editing as well as export to a variety of formats.
-                    </li>
-                    <li>
-                        If your framework is not detected by CaSS or not imported properly, let us know at <a href="mailto:cass@eduworks.com?subject=File+to+Improve+CaSS+Importer">cass@eduworks.com</a> and we will look into the inquiry and provide a response.
-                    </li>
-                </ul>
-                <p
-                    v-if="importTransition === 'upload' && !importFile && conceptMode"
-                    class="is-size-6">
-                    Upload documents to transform into CaSS {{ queryParams.ceasnDataFields === 'true' ? 'Concept Schemes' : 'Taxonomies' }}.
-                </p>
-                <p
-                    v-else-if="importTransition === 'upload' && !importFile"
-                    class="is-size-6">
-                    Upload documents to transform into CaSS Competency Frameworks.
-                </p>
-                <!-- ready state details -->
-                <template v-if="importTransition === 'detail'">
-                    <p
-                        class="is-size-6">
-                        <span class="has-text-success has-text-weight-bold">
-                            CaSS has detected a framework!
-                        </span>
-                        <br><br>
-                        Please review the competency framework and file details gathered below. To continue with the input of this competency framework, press Accept Details & Review. To cancel and review or change your input file, press cancel.
-                    </p>
-                </template>
-                <template v-if="importTransition === 'preview'">
-                    <p
-                        class="">
-                        <span
-                            class=" is-size-6 has-text-success has-text-weight-bold"
-                            v-if="frameworkSize !== null">
-                            Import success, {{ frameworkSize }} competencies ready to edit.
-                        </span>
-                        <span
-                            class=" is-size-6 has-text-success has-text-weight-bold"
-                            v-else>
-                            Import success, concepts ready to edit.
-                        </span>
-                        <br><br>
-                    <!-- Please review the name and descriptions of the imported competencies. After making edits, "approve" the changes to view the imported competency details.-->
-                    </p>
-                </template>
-                <template v-if="importTransition === 'light' && importType !== 'text'">
-                    <p
-                        class="is-size-6">
-                        <span class="has-text-success has-text-weight-bold">
-                            Your import is complete!
-                        </span>
-                        <br><br>
-                    </p>
-                </template>
-            </div>
-        </div>
+            </template>
+        </RightAside>
     </div>
 </template>
 
@@ -384,12 +384,14 @@
 import ImportTabs from '@/components/import/ImportTabs';
 import DragAndDrop from '@/components/import/DragAndDrop';
 import imports from '@/mixins/import';
+import RightAside from '@/components/framework/RightAside';
 
 export default {
     name: 'ImportFile',
     components: {
         ImportTabs,
-        DragAndDrop
+        DragAndDrop,
+        RightAside
     },
     mixins: [ imports ],
     props: {

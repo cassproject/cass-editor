@@ -2,7 +2,7 @@
     <div
         id="import-from-url"
         class="columns">
-        <div class="column is-9">
+        <div class="column is-12">
             <div class="section">
                 <slot name="import-url-title">
                     <p>No import type selected</p>
@@ -146,41 +146,44 @@
                 </div>
             </div>
         </div>
-        <div
-            class="column is-3 import-information">
-            <div class="section">
-                <h2 class="title is-size-4">
-                    Import From URL Source
-                </h2>
-                <!--v-else-if="importType=='url' && !conceptMode">-->
-                <p class="is-size-6">
-                    If you know the URL of a CTDL-ASN JSON-LD graph, you can import published frameworks by URL.
-                </p>
-                <br>
-                <ul class="cat__bullet-list is-size-6">
-                    <li>
-                        This import maintains the URLs of the original frameworks and changes both the format and schema used to store the CTDL-ASN frameworks in CaSS, but does not change any of the data.
-                    </li>
-                    <li>
-                        If you wish to edit the framework after importing by URL, please be sure you are signed in.
-                    </li>
-                    <li>
-                        Please note that the Technology Skills framework in the URL Import Examples is very large and will take a long time to import.
-                    </li>
-                </ul>
-            </div>
-        </div>
+        <RightAside :allowClose="false">
+            <template slot="right-aside-content">
+                <div class="section">
+                    <h2 class="title is-size-4">
+                        Import From URL Source
+                    </h2>
+                    <!--v-else-if="importType=='url' && !conceptMode">-->
+                    <p class="is-size-6">
+                        If you know the URL of a CTDL-ASN JSON-LD graph, you can import published frameworks by URL.
+                    </p>
+                    <br>
+                    <ul class="cat__bullet-list is-size-6">
+                        <li>
+                            This import maintains the URLs of the original frameworks and changes both the format and schema used to store the CTDL-ASN frameworks in CaSS, but does not change any of the data.
+                        </li>
+                        <li>
+                            If you wish to edit the framework after importing by URL, please be sure you are signed in.
+                        </li>
+                        <li>
+                            <b>Please note that the Technology Skills framework in the URL Import Examples is very large and will take a long time to import.</b>
+                        </li>
+                    </ul>
+                </div>
+            </template>
+        </RightAside>
     </div>
 </template>
 <script>
 import ImportTabs from '@/components/import/ImportTabs';
 import imports from '@/mixins/import.js';
 import common from '@/mixins/common.js';
+import RightAside from '@/components/framework/RightAside';
 
 export default {
     name: 'ImportUrl',
     components: {
-        ImportTabs
+        ImportTabs,
+        RightAside
     },
     mixins: [ imports, common ],
     data() {

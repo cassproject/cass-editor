@@ -2,7 +2,7 @@
     <div
         id="import-from-server"
         class="columns">
-        <div class="column is-9">
+        <div class="column is-12">
             <div class="section">
                 <slot name="import-server-title">
                     <p>Nothing send from import.vue</p>
@@ -176,30 +176,31 @@
             </div>
         </div>
         <!-- list description for right panel -->
-        <div
-            class="column is-3 import-information">
-            <div class="section">
-                <h2 class="title is-size-4">
-                    Remote Server Import
-                </h2>
-                <!--v-else-if="importType=='server' && !conceptMode"-->
-                <p class="is-size-5">
-                    If you know the URL of a IMS CASE Repository, such as OpenSalt, you can import published frameworks from that repository.
-                </p>
-                <br>
-                <ul class="cat__bullet-list">
-                    <li class="is-size-6">
-                        This import maintains the URLs of the CASE frameworks and changes both the format and schema used to store the CASE frameworks in CaSS, but does not change any of the data.
-                    </li>
-                    <li class="is-size-6">
-                        After entering the endpoint below, you can select which frameworks you would like to import.
-                    </li>
-                    <li class="is-size-6">
-                        If you wish to edit the frameworks after importing, please be sure you are signed in.
-                    </li>
-                </ul>
-            </div>
-        </div>
+        <RightAside :allowClose="false">
+            <template slot="right-aside-content">
+                <div class="section">
+                    <h2 class="title is-size-4">
+                        Remote Server Import
+                    </h2>
+                    <!--v-else-if="importType=='server' && !conceptMode"-->
+                    <p class="is-size-5">
+                        If you know the URL of a IMS CASE Repository, such as OpenSalt, you can import published frameworks from that repository.
+                    </p>
+                    <br>
+                    <ul class="cat__bullet-list">
+                        <li class="is-size-6">
+                            This import maintains the URLs of the CASE frameworks and changes both the format and schema used to store the CASE frameworks in CaSS, but does not change any of the data.
+                        </li>
+                        <li class="is-size-6">
+                            After entering the endpoint below, you can select which frameworks you would like to import.
+                        </li>
+                        <li class="is-size-6">
+                            If you wish to edit the frameworks after importing, please be sure you are signed in.
+                        </li>
+                    </ul>
+                </div>
+            </template>
+        </RightAside>
     </div>
 </template>
 
@@ -207,11 +208,12 @@
 import ImportTabs from '@/components/import/ImportTabs';
 import imports from '@/mixins/import.js';
 import common from '@/mixins/common.js';
-
+import RightAside from '@/components/framework/RightAside';
 export default {
     name: 'ImportServer',
     components: {
-        ImportTabs
+        ImportTabs,
+        RightAside
     },
     mixins: [ imports, common ],
     props: {
@@ -252,6 +254,9 @@ export default {
             this.caseDocs = e;
             this.importCase();
         }
+    },
+    mounted() {
+        this.$store.commit('app/showRightAside');
     },
     watch: {
         importServerUrl: function(val) {

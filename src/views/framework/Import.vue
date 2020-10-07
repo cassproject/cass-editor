@@ -22,7 +22,7 @@
 <template>
     <div
         id="import"
-        class="has-background-white">
+        class="clear-right-aside has-background-white">
         <!--- main body section -->
         <!-- top section import information -->
         <div class="container is-fluid import-container">
@@ -765,7 +765,6 @@ export default {
             csvRelationFile: null,
             csvRelationColumns: [],
             relationCount: 0,
-            caseDocs: [],
             caseCancel: false,
             selectedArray: [],
             frameworkExportOptions: [

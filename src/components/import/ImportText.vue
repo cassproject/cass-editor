@@ -2,7 +2,7 @@
     <div
         id="import-from-text"
         class="columns">
-        <div class="column is-9">
+        <div class="column is-12">
             <div class="section">
                 <slot name="import-text-title">
                     <p>No import type selected</p>
@@ -59,46 +59,47 @@
                 </div>
             </div>
         </div>
-        <div
-            class="column is-3 import-information">
-            <div class="section">
-                <h2 class="title is-size-4">
-                    Paste Text
-                </h2>
-                <!--v-else-if="importType=='text' && !conceptMode"-->
-                <p class="is-size-6">
-                    If you have a list of competency names, you can organize them into a new framework by pasting here.
-                </p>
-                <br>
-                <p class="has-text-weight-bold">
-                    Instructions
-                </p>
-                <ul class="cat__bullet-list is-size-6">
-                    <li>
-                        Copy and paste from a document or start typing in the text area.
-                    </li>
-                    <li>
-                        List each competency on a separate line.
-                    </li>
-                    <li>
-                        Use spaces to indicate indenture. (1) space indicates one level of indentation in the hierarchy.
-                    </li>
-                    <li>
-                        To the right of the text box, you will see a preview of the hierarchy you are creating and can make any needed adjustments before importing.
-                    </li>
-                    <li>
-                        Once you are done select the import button to complete the immport process and view the framework in the editor.
-                    </li>
-                </ul>
-                <p
-                    v-if="importTransition === 'light' && importType !== 'text'"
-                    class="is-size-6">
-                    <span class="has-text-success has-text-weight-bold">
-                        Your import is complete!
-                    </span>
-                </p>
-            </div>
-        </div>
+        <RightAside :allowClose="false">
+            <template slot="right-aside-content">
+                <div class="section">
+                    <h2 class="title is-size-4">
+                        Paste Text
+                    </h2>
+                    <!--v-else-if="importType=='text' && !conceptMode"-->
+                    <p class="is-size-6">
+                        If you have a list of competency names, you can organize them into a new framework by pasting here.
+                    </p>
+                    <br>
+                    <p class="has-text-weight-bold">
+                        Instructions
+                    </p>
+                    <ul class="cat__bullet-list is-size-6">
+                        <li>
+                            Copy and paste from a document or start typing in the text area.
+                        </li>
+                        <li>
+                            List each competency on a separate line.
+                        </li>
+                        <li>
+                            Use spaces to indicate indenture. (1) space indicates one level of indentation in the hierarchy.
+                        </li>
+                        <li>
+                            To the right of the text box, you will see a preview of the hierarchy you are creating and can make any needed adjustments before importing.
+                        </li>
+                        <li>
+                            Once you are done select the import button to complete the immport process and view the framework in the editor.
+                        </li>
+                    </ul>
+                    <p
+                        v-if="importTransition === 'light' && importType !== 'text'"
+                        class="is-size-6">
+                        <span class="has-text-success has-text-weight-bold">
+                            Your import is complete!
+                        </span>
+                    </p>
+                </div>
+            </template>
+        </RightAside>
     </div>
 </template>
 
@@ -106,10 +107,15 @@
 import ImportTabs from '@/components/import/ImportTabs';
 import imports from '@/mixins/import.js';
 import common from '@/mixins/common.js';
+import RightAside from '@/components/framework/RightAside';
 
 export default {
     name: 'ImportText',
     props: {
+    },
+    components: {
+        ImportTabs,
+        RightAside
     },
     mixins: [ imports, common ],
     data() {
@@ -153,9 +159,6 @@ export default {
         importTransition: function() {
             return this.$store.getters['app/importTransition'];
         }
-    },
-    components: {
-        ImportTabs
     }
 };
 </script>
