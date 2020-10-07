@@ -247,7 +247,19 @@
                         <span v-else>Import a framework</span>
                     </h1>
                     <h2 class="subtitle">
-                        Import from remote server: {{ importStatus }}
+                        Import from remote server:
+                        <span v-if="importTransition === 'process'">
+                            <span
+                                class="icon">
+                                <i class="fa fa-spinner fa-pulse fa-2x" />
+                            </span>
+                        </span>
+                        <span v-else-if="importTransition === 'importingCaseFrameworks'">
+                            Processing...
+                        </span>
+                        <span v-else>
+                            {{ importStatus }}
+                        </span>
                     </h2>
                 </template>
                 <template slot="import-framework">
