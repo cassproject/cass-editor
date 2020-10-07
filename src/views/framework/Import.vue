@@ -408,7 +408,19 @@
                         <span v-else>Import from a URL source</span>
                     </h1>
                     <h2 class="subtitle">
-                        Import from URL source: {{ importStatus }}
+                        Import from URL source:
+                        <span v-if="importTransition === 'upload'">
+                            Ready
+                        </span>
+                        <span v-else-if="importTransition === 'light'">
+                            Complete
+                        </span>
+                        <span v-else-if="importTransition === 'preview'">
+                            Processed, ready to edit
+                        </span>
+                        <span v-else>
+                            {{ importStatus }}
+                        </span>
                     </h2>
                 </template>
                 <template slot="import-framework">
@@ -557,7 +569,10 @@
                         <span v-else>Import a framework</span>
                     </h1>
                     <h2 class="subtitle">
-                        Import from text: {{ importStatus }}
+                        Import from text:
+                        <span>
+                            {{ importStatus }}
+                        </span>
                     </h2>
                 </template>
                 <template slot="import-framework">

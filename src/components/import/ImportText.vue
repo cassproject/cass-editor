@@ -11,15 +11,23 @@
                     <div class="column is-12">
                         <ImportTabs />
                     </div>
+                    <div class="column is-12">
+                        <h3 class="title is-size-3 has-text-weight-medium pl-4">
+                            Import framework as text &nbsp;
+                            <span
+                                class="button is-pulled-right is-large is-primary is-outlined"
+                                :disabled="!importFrameworkName || !importText || importFrameworkName.trim().length === 0"
+                                @click="$store.commit('app/importStatus', 'parseText')">
+                                Import
+                            </span>
+                        </h3>
+                    </div>
                     <div
                         class="column"
                         :class="importText !== '' ? 'is-6' :'is-12'">
                         <!-- text input -->
                         <div
                             class="section">
-                            <h3 class="title is-size-3 has-text-weight-medium">
-                                Import framework as text
-                            </h3>
                             <div class="field">
                                 <label class="label">
                                     Framework name
@@ -41,14 +49,6 @@
                                         class="textarea"
                                         v-model="rawImportText" />
                                 </div>
-                            </div>
-                            <div class="field">
-                                <button
-                                    class="button is-pulled-right is-primary is-outlined"
-                                    :disabled="!importFrameworkName || !importText || importFrameworkName.trim().length === 0"
-                                    @click="$store.commit('app/importStatus', 'parseText')">
-                                    Import
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -130,9 +130,6 @@ export default {
         }
     },
     computed: {
-        displayText() {
-            return this.rawImportText;
-        },
         importText() {
             // remove characters first
             return this.rawImportText;
