@@ -139,9 +139,7 @@
                         </div>
                     </div>
                     <div class="column is-12">
-                        <slot name="import-framework">
-                            No framework
-                        </slot>
+                        <slot name="import-framework" />
                     </div>
                 </div>
             </div>

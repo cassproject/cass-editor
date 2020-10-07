@@ -37,8 +37,9 @@
                                 </label>
                                 <div class="control">
                                     <textarea
+                                        @keypress="handleKeydown($event)"
                                         class="textarea"
-                                        v-model="importText" />
+                                        v-model="rawImportText" />
                                 </div>
                             </div>
                             <div class="field">
@@ -52,9 +53,7 @@
                         </div>
                     </div>
                     <div class="column is-6">
-                        <slot name="import-framework">
-                            this is my framework
-                        </slot>
+                        <slot name="import-framework" />
                     </div>
                 </div>
             </div>
@@ -78,10 +77,13 @@
                             Copy and paste from a document or start typing in the text area.
                         </li>
                         <li>
+                            Give your framework a name.
+                        </li>
+                        <li>
                             List each competency on a separate line.
                         </li>
                         <li>
-                            Use spaces to indicate indenture. (1) space indicates one level of indentation in the hierarchy.
+                            1 space space indicates one level of indentation in the hierarchy.
                         </li>
                         <li>
                             To the right of the text box, you will see a preview of the hierarchy you are creating and can make any needed adjustments before importing.
@@ -120,10 +122,21 @@ export default {
     mixins: [ imports, common ],
     data() {
         return {
-            importText: ''
+            rawImportText: ''
         };
     },
+    methods: {
+        handleKeydown: function(e) {
+        }
+    },
     computed: {
+        displayText() {
+            return this.rawImportText;
+        },
+        importText() {
+            // remove characters first
+            return this.rawImportText;
+        },
         text: function() {
             return this.$store.getters['app/importText'];
         },

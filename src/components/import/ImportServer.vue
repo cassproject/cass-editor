@@ -11,7 +11,9 @@
                     <div class="column is-12">
                         <ImportTabs />
                     </div>
-                    <div class="column is-12">
+                    <div
+                        class="column is-12"
+                        v-if="importTransition !== 'preview' && importTransition !== 'light'">
                         <!-- server input -->
                         <div
                             class="remote-server">
@@ -168,9 +170,7 @@
                         </div>
                     </div>
                     <div class="column is-12">
-                        <slot name="import-framework">
-                            No framework
-                        </slot>
+                        <slot name="import-framework" />
                     </div>
                 </div>
             </div>
