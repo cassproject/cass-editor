@@ -22,71 +22,72 @@
                         </div>
                         <template v-if="importTransition === 'upload'">
                             <div class="field">
-                                <label class="label">
-                                    Paste URL of document
-                                </label>
-                                <div class="field is-grouped">
-                                    <div class="control is-expanded">
-                                        <input
-                                            class="input"
-                                            v-model="importUrl"
-                                            type="url">
-                                    </div>
-                                    <div class="control">
-                                        <div
-                                            class="button is-outlined is-primary"
-                                            @click="importFromUrl">
-                                            <span class="file-icon">
-                                                <i class="fas fa-upload" />
-                                            </span>
-                                            <span>
-                                                Import
-                                            </span>
-                                        </div>
-                                    </div>
+                                <p class="control is-expanded">
+                                    <label class="label is-large">
+                                        Paste URL of document
+                                    </label>
+                                    <input
+                                        placeholder="paste your url here..."
+                                        class="input is-large"
+                                        v-model="importUrl"
+                                        type="url">
+                                </p>
+                            </div>
+                            <div class="field">
+                                <div class="buttons is-right">
+                                    <span
+                                        class="button is-outlined is-centered is-large is-primary"
+                                        @click="importFromUrl">
+                                        <span class="file-icon">
+                                            <i class="fas fa-upload" />
+                                        </span>
+                                        <span>
+                                            Import framework
+                                        </span>
+                                    </span>
                                 </div>
                             </div>
-                            <div class="columns is-multiline">
-                                <div class="column is-12">
-                                    <h3 class="title is-size-5">
-                                        URL Import Examples:
-                                    </h3>
-                                </div>
-                                <div class="column is-narrow">
-                                    <div
-                                        class="button is-small is-dark"
-                                        @click="importUrl='https://www.onetcenter.org/ctdlasn/graph/ce-07c257d6-9119-11e8-b852-782bcb5df6ac'">
-                                        O*NET Abilities Competency Framework
-                                    </div>
-                                </div>
-                                <div class="column is-narrow">
-                                    <div
-                                        class="button is-small is-dark"
-                                        @click="importUrl='https://www.onetcenter.org/ctdlasn/graph/ce-07c25f74-9119-11e8-b852-782bcb5df6ac'">
-                                        O*NET Basic Skills Competency Framework
-                                    </div>
-                                </div>
-                                <div class="column is-narrow">
-                                    <div
-                                        class="button is-small is-dark"
-                                        @click="importUrl='https://www.onetcenter.org/ctdlasn/graph/ce-07c264d7-9119-11e8-b852-782bcb5df6ac'">
-                                        O*NET Cross-Functional Skills Competency Framework
-                                    </div>
-                                </div>
-                                <div class="column is-narrow">
-                                    <div
-                                        class="button is-small is-dark"
-                                        @click="importUrl='https://www.onetcenter.org/ctdlasn/graph/ce-07c27a0f-9119-11e8-b852-782bcb5df6ac'">
-                                        O*NET Knowledge Competency Framework
-                                    </div>
-                                </div>
-                                <div class="column is-narrow">
-                                    <div
-                                        class="button is-small is-dark"
-                                        @click="importUrl='https://www.onetcenter.org/ctdlasn/graph/ce-9fab4187-d8e7-11e9-8250-782bcb5df6ac'">
-                                        O*NET Technology Skills Competency Framework
-                                    </div>
-                                </div>
+                            <div>
+                                <p class="title is-size-5">
+                                    Looking for examples? Try one of the following O*Net Competency Frameworks
+                                </p>
+                                <ul class="cat__bullet-list">
+                                    <li>
+                                        <span
+                                            class="custom-link local"
+                                            @click="importUrl='https://www.onetcenter.org/ctdlasn/graph/ce-07c257d6-9119-11e8-b852-782bcb5df6ac'">
+                                            Abilities Competency Framework
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span
+                                            class="custom-link local"
+                                            @click="importUrl='https://www.onetcenter.org/ctdlasn/graph/ce-07c25f74-9119-11e8-b852-782bcb5df6ac'">
+                                            Basic Skills Competency Framework
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span
+                                            class="custom-link local"
+                                            @click="importUrl='https://www.onetcenter.org/ctdlasn/graph/ce-07c264d7-9119-11e8-b852-782bcb5df6ac'">
+                                            Cross-Functional Skills Competency Framework
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span
+                                            class="custom-link local"
+                                            @click="importUrl='https://www.onetcenter.org/ctdlasn/graph/ce-07c27a0f-9119-11e8-b852-782bcb5df6ac'">
+                                            Knowledge Competency Framework
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span
+                                            class="custom-link local"
+                                            @click="importUrl='https://www.onetcenter.org/ctdlasn/graph/ce-9fab4187-d8e7-11e9-8250-782bcb5df6ac'">
+                                            Technology Skills Competency Framework
+                                        </span>
+                                    </li>
+                                </ul>
                             </div>
                         </template>
                         <div
@@ -151,10 +152,12 @@
                         Import From URL Source
                     </h2>
                     <!--v-else-if="importType=='url' && !conceptMode">-->
-                    <p class="is-size-6">
+                    <p class="is-size-6 pb-4">
                         If you know the URL of a CTDL-ASN JSON-LD graph, you can import published frameworks by URL.
                     </p>
-                    <br>
+                    <p class="has-text-weight-bold">
+                        URL Import Instructions
+                    </p>
                     <ul class="cat__bullet-list is-size-6">
                         <li>
                             This import maintains the URLs of the original frameworks and changes both the format and schema used to store the CTDL-ASN frameworks in CaSS, but does not change any of the data.

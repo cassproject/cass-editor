@@ -15,7 +15,7 @@
                         <h3 class="title is-size-3 has-text-weight-medium pl-4">
                             Import framework as text &nbsp;
                             <span
-                                class="button is-pulled-right is-large is-primary is-outlined"
+                                class="button is-pulled-right is-large is-primary is-outlined mr-4"
                                 :disabled="!importFrameworkName || !importText || importFrameworkName.trim().length === 0"
                                 @click="$store.commit('app/importStatus', 'parseText')">
                                 Import
@@ -32,12 +32,12 @@
                                 <label class="label">
                                     Framework name
                                 </label>
-                            </div>
-                            <div class="control">
-                                <input
-                                    class="input"
-                                    v-model="importFrameworkName"
-                                    placeholder="Framework Name">
+                                <div class="control">
+                                    <input
+                                        class="input"
+                                        v-model="importFrameworkName"
+                                        placeholder="Framework Name">
+                                </div>
                             </div>
                             <div class="field">
                                 <label class="label">
@@ -45,6 +45,7 @@
                                 </label>
                                 <div class="control">
                                     <textarea
+                                        placeholder="Start typing or paste your text here..."
                                         @keypress="handleKeydown($event)"
                                         class="textarea"
                                         v-model="rawImportText" />

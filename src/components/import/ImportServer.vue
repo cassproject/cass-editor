@@ -28,41 +28,42 @@
                                     <label class="label">
                                         {{ item.label }}
                                     </label>
-                                    <div class="field is-grouped">
+                                    <div class="field">
                                         <div class="control is-expanded">
                                             <input
-                                                class="input"
+                                                class="input is-large"
                                                 v-model="importServerUrl"
                                                 type="url">
                                         </div>
-                                        <div class="control">
+                                    </div>
+                                    <div class="field">
+                                        <div class="buttons is-right">
                                             <div
-                                                class="button is-pulled-right is-outlined is-primary"
+                                                class="button is-large is-outlined is-primary"
+                                                :disabled="importServerUrl === ''"
                                                 @click="$store.commit('app/importTransition', 'connectToServer')">
                                                 <span class="icon">
                                                     <i class="fas fa-network-wired" />
                                                 </span>
                                                 <span>
-                                                    connect
+                                                    connect to endpoint
                                                 </span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="columns is-multiline">
-                                    <div class="column is-12">
-                                        <h3 class="title is-size-4">
-                                            Remote Server Examples:
-                                        </h3>
-                                    </div>
-                                    <div class="column is-12">
-                                        <div
-                                            class="button is-dark is-small"
-                                            @click="importServerUrl='https://opensalt.net'">
-                                            OpenSalt.net
-                                        </div>
-                                    </div>
+                                <div class="py-4">
+                                    <h3 class="title is-size-5">
+                                        Looking for an example? Try out an example from use the <a @click="importServerUrl='https://opensalt.net'">OpenSalt.net endpoint</a> to test the workflow.
+                                    </h3>
                                 </div>
+                                <!--<div class="column is-12">
+                                    <div
+                                        class="button is-dark is-small"
+                                        @click="importServerUrl='https://opensalt.net'">
+                                        Use OpenSalt.net
+                                    </div>
+                                </div>-->
                             </template>
                             <div
                                 v-if="importTransition === 'connectToServer'"
@@ -124,6 +125,9 @@
                                 <h3 class="subtitle has-text-weight-bold is-size-4">
                                     Found Frameworks
                                 </h3>
+                                <p>
+                                    Select the framework you would like to import.
+                                </p>
                                 <div
                                     class="field is-grouped"
                                     v-for="doc in caseDocs"

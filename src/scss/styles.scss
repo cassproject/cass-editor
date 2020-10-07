@@ -164,6 +164,7 @@ label {
 }
 .custom-link.local {
     color: $text;
+    cursor: pointer;
     border-bottom: solid 2px $primary;
 }
 .custom-link.external {
