@@ -658,9 +658,6 @@ export default {
                 this.moveToTopLevel(id);
                 this.frameworkDrag = [];
             }
-        },
-        dynamicThingComponent: function() {
-            this.spitEvent('viewChanged');
         }
     },
     methods: {
@@ -725,8 +722,6 @@ export default {
             this.editingFramework = true;
         },
         onDoneEditingNode: function() {
-            this.framework = EcRepository.getBlocking(this.framework.shortId());
-            this.$store.commit('editor/framework', this.framework);
             this.$store.commit('editor/newFramework', null);
             this.editingFramework = false;
         },
