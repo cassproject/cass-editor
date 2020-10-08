@@ -15,24 +15,6 @@ textarea {
     #import-from-file {
         min-height: 100vh;
     }
-    .import-by-text-form {
-        position: sticky;
-        top: 40px;
-    }
-    .import-container {
-        min-height: 100vh;
-    }
-    .import-information {
-        height: 100vh;;
-        position: sticky;
-        position: -webkit-sticky; /* Safari */
-        top: 0;
-        right: 0;
-        bottom: 0;
-        background-color: $light;
-        position: absolute;
- 
-    }
     .parent-object {
         position: sticky;
         background-color: $white;
@@ -80,9 +62,24 @@ textarea {
             visibility: visible;
         }
     }
-
-    
-   
+    .import-by-text-form {
+        position: sticky;
+        top: 40px;
+    }
+    .import-container {
+        min-height: 100vh;
+    }
+    .import-information {
+        height: 100vh;;
+        position: sticky;
+        position: -webkit-sticky; /* Safari */
+        top: 0;
+        right: 0;
+        bottom: 0;
+        background-color: $light;
+        position: absolute;
+ 
+    }
 }
 ul.processing-list {
     height: 100%;
