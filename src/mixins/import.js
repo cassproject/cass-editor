@@ -372,32 +372,34 @@ export default {
         analyzeCsvRelation: function(e) {
             appLog(e);
             var files = e.target.files || e.dataTransfer.files;
+            var relationFile;
             if (!files.length) {
-                this.csvRelationFile = null;
+                relationFile = null;
             } else {
-                this.csvRelationFile = files[0];
+                relationFile = files[0];
             }
+            this.$store.commit('app/csvRelationFile', relationFile);
             let me = this;
-            CSVImport.analyzeFile(this.csvRelationFile, function(data) {
+            CSVImport.analyzeFile(relationFile, function(data) {
                 for (var i = 0; i < data[0].length; i++) {
                     let column = {};
                     column.name = data[0][i];
                     column.index = i;
                     me.csvRelationColumns.push(column);
                     if (column.name.toLowerCase().indexOf("source") !== -1) {
-                        me.importCsvColumnSource = column;
+                        me.importSourceColumn = column;
                     }
                     if (column.name.toLowerCase().indexOf("origin") !== -1) {
-                        me.importCsvColumnSource = column;
+                        me.importSourceColumn = column;
                     }
                     if (column.name.toLowerCase().indexOf("type") !== -1) {
-                        me.importCsvColumnRelationType = column;
+                        me.importRelationColumn = column;
                     }
                     if (column.name.toLowerCase().indexOf("target") !== -1) {
-                        me.importCsvColumnTarget = column;
+                        me.importTargetColumn = column;
                     }
                     if (column.name.toLowerCase().indexOf("destination") !== -1) {
-                        me.importCsvColumnTarget = column;
+                        me.importTargetColumn = column;
                     }
                 }
                 me.relationCount = (data.length - 1);
@@ -537,7 +539,6 @@ export default {
                         me.firstImport = false;
                         me.analyzeImportFile();
                     } else {
-                        // merged from dev @kristen
                         if (frameworks.length === 1) {
                             me.importSuccess();
                         } else {
@@ -894,154 +895,6 @@ export default {
                 me.$store.commit('app/addImportError', error);
                 me.$store.commit('app/importTransition', 'process');
             }
-        },
-        connectToServer: function() {
-            appLog("connecting to server 1");
-            this.caseDocs.splice(0, this.caseDocs.length);
-            // To do: add import from CaSS Server
-            this.caseDetectEndpoint();
-        },
-        caseDetectEndpoint: function() {
-            var me = this;
-            let serverUrl = this.importServerUrl;
-            if (!serverUrl.endsWith("/")) {
-                serverUrl += "/";
-            }
-            this.get(serverUrl, "ims/case/v1p0/CFDocuments", {"Accept": "application/json"}, function(success) {
-                me.caseGetDocsSuccess(success);
-            }, function(failure) {
-                me.caseGetServerSide();
-            });
-        },
-        caseGetDocsSuccess: function(result) {
-            result = JSON.parse(result);
-            let error;
-            this.caseDocs = [];
-            if (result.CFDocuments == null) {
-                error = "No frameworks found. Please check the URL and try again.";
-                this.$store.commit('app/addImportError', error);
-                me.$store.commit('app/importTransition', 'process');
-            } else {
-                let message = result.CFDocuments.length + " frameworks detected.";
-                this.$store.commit('app/importStatus', message);
-                this.$store.commit('app/importTransition', 'serverFrameworksDetected');
-                for (var i = 0; i < result.CFDocuments.length; i++) {
-                    var doc = result.CFDocuments[i];
-                    var obj = {};
-                    obj.name = doc.title;
-                    obj.id = doc.uri;
-                    obj.identifier = doc.identifier;
-                    obj.loading = false;
-                    obj.success = false;
-                    obj.error = false;
-                    obj.checked = false;
-                    this.caseDocs.push(obj);
-                }
-                this.caseCancel = false;
-            }
-        },
-        caseGetServerSide: function() {
-            var me = this;
-            EcRemote.getExpectingString(this.repo.selectedServer, "ims/case/getDocs?url=" + this.importServerUrl, function(success) {
-                me.caseGetDocsSuccess(success);
-            }, function(failure) {
-                me.$store.commit('app/importTransition', 'process');
-                me.$store.commit('app/addImportError', "No frameworks found. Please check the URL and try again.");
-            });
-        },
-        importCase: function(dataArray) {
-            if (dataArray) {
-                // User has clicked cancel on this import item
-                var firstIndex = dataArray[1];
-                this.caseDocs[firstIndex].loading = false;
-                this.caseDocs[firstIndex].error = true;
-            }
-            for (var i = this.caseDocs.length - 1; i >= 0; i--) {
-                if (!this.caseDocs[i].checked) {
-                    this.caseDocs.splice(i, 1);
-                } else if (this.caseDocs[i].success === false && this.caseDocs[i].error === false) {
-                    this.caseDocs[i].loading = true;
-                }
-            }
-            if (!this.caseCancel) {
-                let lis = 0;
-                let firstIndex = null;
-                for (var i = 0; i < this.caseDocs.length; i++) {
-                    if (this.caseDocs[i].loading === true) {
-                        lis++;
-                        if (firstIndex == null) {
-                            firstIndex = i;
-                        }
-                    }
-                }
-                if (lis === 0) {
-                    this.$store.commit('app/importFramework', this.$store.getters['editor/framework']);
-                    this.importSuccess();
-                    this.$store.commit('app/importStatus', "Import finished.");
-                } else {
-                    var me = this;
-                    var id = this.caseDocs[firstIndex].id;
-                    me.repo.search("(@id:\"" + id + "\") AND (@type:Framework)", function() {}, function(frameworks) {
-                        appLog(frameworks);
-                        if (frameworks.length > 0) {
-                            me.$store.commit('app/importStatus', 'framework found...');
-                            me.showModal('duplicateOverwriteOnly', [me.caseDocs[firstIndex], firstIndex]);
-                        } else {
-                            me.$store.commit('app/importStatus', 'no match, saving new framework...');
-                            me.continueCaseImport([me.caseDocs[firstIndex], firstIndex]);
-                        } /* TO DO - ERROR HANDLING HERE */
-                    }, function(error) {
-                        me.$store.commit('app/importStatus', error);
-                        me.$store.commit('app/importTransition', 'process');
-                        me.$store.commit('app/addImportError', error);
-                    });
-                }
-            }// if not canceled
-        },
-        continueCaseImport: function(dataArray) {
-            var data = dataArray[0];
-            var firstIndex = dataArray[1];
-            var me = this;
-            var id = data.id;
-            var uuid = data.identifier;
-            var identity = EcIdentityManager.ids[0];
-            var formData = new FormData();
-            if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
-            EcRemote.postInner(this.repo.selectedServer, "ims/case/harvest?caseEndpoint=" + this.importServerUrl + "&dId=" + uuid, formData, null, function(success) {
-                me.caseDocs[firstIndex].loading = false;
-                me.caseDocs[firstIndex].success = true;
-                appLog(id);
-                EcFramework.get(id, function(f) {
-                    // me.$store.commit('app/importFramework', f);
-                    // Preserve the framework so we can set it as importFramework when they're all done
-                    me.$store.commit('editor/framework', f);
-                    me.spitEvent("importFinished", f.shortId(), "importPage");
-                    me.importCase();
-                }, function(error) {
-                    appError(error);
-                    me.importCase();
-                });
-            }, function(failure) {
-                me.caseDocs[firstIndex].loading = false;
-                me.caseDocs[firstIndex].error = true;
-                me.importCase();
-            });
-        },
-        cancelCase: function() {
-            this.caseCancel = true;
-            var first = null;
-            for (var i = 0; i < this.caseDocs.length; i++) {
-                if (this.caseDocs[i].loading === true) {
-                    if (first == null) {
-                        first = i;
-                    } else {
-                        this.caseDocs[i].loading = false;
-                        this.caseDocs[i].error = true;
-                    }
-                }
-            }
-            this.clearImport();
-            this.$store.commit('app/importTransition', 'upload');
         },
         parseText: function() {
             var me = this;

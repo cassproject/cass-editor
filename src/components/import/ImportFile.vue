@@ -12,7 +12,7 @@
                         <ImportTabs />
                     </div>
                     <div
-                        v-if="importTransition === 'process' || importTransition === 'upload'"
+                        v-if="importTransition === 'process' || importTransition === 'upload' || importTransition === 'info'"
                         class="column is-12">
                         <!-- file input -->
                         <div
@@ -117,7 +117,7 @@
                                             class="file-input"
                                             type="file"
                                             name="relation-file"
-                                            @change="$emit('analyzeCsvRelation', $event)">
+                                            @change="analyzeCsvRelation">
                                         <span class="file-cta">
                                             <span class="file-icon">
                                                 <i class="fas fa-upload" />
@@ -316,7 +316,7 @@
                             An editable preview of your framework will be available. When you are done making changes, click “Done Editing”.
                         </li>
                         <li>
-                            An uneditable preview of your framework will display, your fraemwork is now in CaSS!
+                            An uneditable preview of your framework will display, your framework is now in CaSS!
                         </li>
                         <li>
                             click "done" to navigate to the framework in the editor where you can continue editing as well as export to a variety of formats.
@@ -359,6 +359,80 @@ export default {
             default: ''
         }
     },
+    data() {
+        return {
+            medbiqDetails: {
+                name: {
+                    label: 'Name the framework',
+                    value: this.importFrameworkName,
+                    type: 'string'
+                },
+                description: {
+                    label: 'Describe the framework (optional)',
+                    value: this.importFrameworkDescription,
+                    type: 'string'
+                }
+            },
+            csvImportDetails: {
+                name: {
+                    label: 'Name the framework',
+                    value: this.importFrameworkName,
+                    type: 'string'
+                },
+                description: {
+                    label: 'Describe the framework (optional)',
+                    value: this.importFrameworkDescription,
+                    type: 'string'
+                },
+                nameColumn: {
+                    label: 'Select the Name column',
+                    value: this.importNameColumn,
+                    type: 'column'
+                },
+                descriptionColumn: {
+                    label: 'Select the Description column (optional)',
+                    value: this.importDescriptionColumn,
+                    type: 'column'
+                },
+                scopeColumn: {
+                    label: 'Select the Scope column (optional)',
+                    value: this.importScopeColumn,
+                    type: 'column'
+                },
+                idColumn: {
+                    label: 'Select the ID column (optional). If chosen, this should be a URL from another CaSS system or a non-numeric ID',
+                    value: this.importIdColumn,
+                    type: 'column'
+                },
+                relationFile: {
+                    label: `Select a relation file (optional).
+                                The relation source/target must be in the
+                                form of ID or Name, and the relation types
+                                should be "requires", "desires", "narrows",
+                                "isEnabledBy", "isRelatedTo", or "isEquivalentTo`,
+                    value: '',
+                    type: 'file'
+                }
+            },
+            csvRelationDetails: {
+                sourceColumn: {
+                    label: 'Select the Source column',
+                    type: 'column',
+                    value: this.importSourceColumn
+                },
+                relationColumn: {
+                    label: 'Select the Relation Type column.',
+                    type: 'column',
+                    value: this.importRelationColumn
+                },
+                targetColumn: {
+                    label: 'Select the Target column.',
+                    type: 'column',
+                    value: this.importTargetColumn
+                }
+            }
+        };
+    },
     computed: {
         importInfoVisible: function() {
             return this.$store.getters['app/showRightAside'];
@@ -368,17 +442,153 @@ export default {
         },
         importStatus: function() {
             return this.$store.getters['app/importStatus'];
-        }
-    },
-    methods: {
-        clearFiles: function() {
-            this.$store.commit('app/clearImportFiles');
         },
         importFileType: function() {
             return this.$store.getters['app/importFileType'];
         },
         importType: function() {
             return this.$store.getters['app/importType'];
+        },
+        importFrameworkName: {
+            get: function() {
+                return this.$store.getters['app/importFrameworkName'];
+            },
+            set: function(val) {
+                this.$store.commit('app/importFrameworkName', val);
+            }
+        },
+        importFrameworkDescription: function() {
+            return this.$store.getters['app/importFrameworkDescription'];
+        },
+        importNameColumn: {
+            get() {
+                return this.$store.getters['app/importNameColumn'];
+            },
+            set(val) {
+                this.$store.commit('app/importNameColumn', val);
+            }
+        },
+        importDescriptionColumn: {
+            get() {
+                return this.$store.getters['app/importDescriptionColumn'];
+            },
+            set(val) {
+                this.$store.commit('app/importDescriptionColumn', val);
+            }
+        },
+        importScopeColumn: {
+            get() {
+                return this.$store.getters['app/importScopeColumn'];
+            },
+            set(val) {
+                this.$store.commit('app/importScopeColumn', val);
+            }
+        },
+        importIdColumn: {
+            get() {
+                return this.$store.getters['app/importIdColumn'];
+            },
+            set(val) {
+                this.$store.commit('app/importIdColumn', val);
+            }
+        },
+        importSourceColumn: {
+            get() {
+                return this.$store.getters['app/importSourceColumn'];
+            },
+            set(val) {
+                this.$store.commit('app/importSourceColumn', val);
+            }
+        },
+        importRelationColumn: {
+            get() {
+                return this.$store.getters['app/importRelationColumn'];
+            },
+            set(val) {
+                this.$store.commit('app/importRelationColumn', val);
+            }
+        },
+        importTargetColumn: {
+            get() {
+                return this.$store.getters['app/importTargetColumn'];
+            },
+            set(val) {
+                this.$store.commit('app/importTargetColumn', val);
+            }
+        },
+        csvColumns: function() {
+            return this.$store.getters['app/csvColumns'];
+        },
+        csvRelationColumns: function() {
+            return this.$store.getters['app/csvRelationColumns'];
+        },
+        csvRelationFile: function() {
+            return this.$store.getters['app/csvRelationFile'];
+        }
+    },
+    methods: {
+        clearFiles: function() {
+            this.$store.commit('app/clearImportFiles');
+        },
+        prepareToImportNonPdf: function() {
+            if (this.importFileType === 'csv') {
+                // prepare csv
+                // frameworkName
+                this.$store.commit('app/importFrameworkName', this.csvImportDetails.name.value);
+                this.$store.commit('app/importFrameworkDescription', this.csvImportDetails.description.value);
+                this.$store.commit('app/importNameColumn', this.csvImportDetails.nameColumn.value);
+                this.$store.commit('app/importDescriptionColumn', this.csvImportDetails.descriptionColumn.value);
+                this.$store.commit('app/importScopeColumn', this.csvImportDetails.scopeColumn.value);
+                this.$store.commit('app/importIdColumn', this.csvImportDetails.idColumn.value);
+                this.$store.commit('app/importSourceColumn', this.csvRelationDetails.sourceColumn.value);
+                this.$store.commit('app/importTargetColumn', this.csvRelationDetails.targetColumn.value);
+                this.$store.commit('app/importRelationColumn', this.csvRelationDetails.relationColumn.value);
+                // frameworkDescription
+                this.$store.commit('app/importTransition', 'uploadCsv');
+            } else if (this.importFileType === 'medbiq') {
+                this.$store.commit('app/importFrameworkName', this.csvImportDetails.name.value);
+                this.$store.commit('app/importFrameworkDescription', this.csvImportDetails.description.value);
+                this.$store.commit('app/importTransition', 'uploadMedbiq');
+            } else if (this.importFileType !== 'pdf') {
+                this.$store.commit('app/importTransition', 'uploadOtherNonPdf');
+            }
+        }
+    },
+    watch: {
+        importNameColumn: function() {
+            this.csvImportDetails.nameColumn.value = this.importNameColumn;
+        },
+        importDescriptionColumn: function() {
+            this.csvImportDetails.descriptionColumn.value = this.importDescriptionColumn;
+        },
+        importScopeColumn: function() {
+            this.csvImportDetails.scopeColumn.value = this.importScopeColumn;
+        },
+        importIdColumn: function() {
+            this.csvImportDetails.idColumn.value = this.importIdColumn;
+        },
+        importSourceColumn: function() {
+            this.csvRelationDetails.sourceColumn.value = this.importSourceColumn;
+        },
+        importRelationColumn: function() {
+            this.csvRelationDetails.relationColumn.value = this.importRelationColumn;
+        },
+        importTargetColumn: function() {
+            this.csvRelationDetails.targetColumn.value = this.importTargetColumn;
+        },
+        importFrameworkName: function() {
+            if (this.importFileType === "medbiq") {
+                this.medbiqDetails.name.value = this.importFrameworkName;
+            } else if (this.importFileType === "csv") {
+                this.csvImportDetails.name.value = this.importFrameworkName;
+            }
+        },
+        importFrameworkDescription: function() {
+            if (this.importFileType === "medbiq") {
+                this.medbiqDetails.description.value = this.importFrameworkDescription;
+            } else if (this.importFileType === "csv") {
+                this.csvImportDetails.description.value = this.importFrameworkDescription;
+            }
         }
     }
 };

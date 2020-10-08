@@ -86,7 +86,7 @@
                             List each competency on a separate line.
                         </li>
                         <li>
-                            1 space space indicates one level of indentation in the hierarchy.
+                            1 space indicates one level of indentation in the hierarchy.
                         </li>
                         <li>
                             To the right of the text box, you will see a preview of the hierarchy you are creating and can make any needed adjustments before importing.

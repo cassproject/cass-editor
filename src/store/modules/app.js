@@ -54,7 +54,10 @@ const state = {
             relationColumn: {},
             targetColumn: {}
         },
-        importText: ''
+        importText: '',
+        csvColumns: [],
+        csvRelationColumns: [],
+        csvRelationFile: null
     }
 };
 const mutations = {
@@ -127,7 +130,10 @@ const mutations = {
                 relationColumn: {},
                 targetColumn: {}
             },
-            importText: ''
+            importText: '',
+            csvColumns: [],
+            csvRelationColumns: [],
+            csvRelationFile: null
         };
     },
     importTransition: function(state, value) {
@@ -201,6 +207,15 @@ const mutations = {
     },
     importIdColumn: function(state, val) {
         state.import.importCsv.idColumn = val;
+    },
+    csvColumns: function(state, val) {
+        state.import.csvColumns = val;
+    },
+    csvRelationColumns: function(state, val) {
+        state.import.csvRelationColumns = val;
+    },
+    csvRelationFile: function(state, val) {
+        state.import.csvRelationFile = val;
     },
     searchTerm: function(state, value) {
         state.frameworks.searchTerm = value;
@@ -364,6 +379,15 @@ const getters = {
     },
     applySearchTo: state => {
         return state.frameworks.applySearchTo;
+    },
+    csvColumns: state => {
+        return state.import.csvColumns;
+    },
+    csvRelationColumns: state => {
+        return state.import.csvRelationColumns;
+    },
+    csvRelationFile: state => {
+        return state.import.csvRelationFile;
     }
 };
 

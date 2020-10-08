@@ -645,9 +645,6 @@ export default {
             },
             repo: window.repo,
             competencyCount: 0,
-            csvColumns: [],
-            csvRelationFile: null,
-            csvRelationColumns: [],
             relationCount: 0,
             caseCancel: false,
             selectedArray: [],
@@ -727,16 +724,6 @@ export default {
                 return 'Thing';
             }
         },
-        frameworkSize: function() {
-            if (this.conceptMode) {
-                return null;
-            }
-            if (this.importFramework && this.importFramework.competency) {
-                return this.importFramework.competency.length;
-            } else {
-                return 0;
-            }
-        },
         isT3Import: function() {
             if (this.importFileType === 'pdf') {
                 return true;
@@ -745,6 +732,25 @@ export default {
         },
         importStatus: function() {
             return this.$store.getters['app/importStatus'];
+        },
+        csvColumns: {
+            get() {
+                return this.$store.getters['app/csvColumns'];
+            },
+            set(val) {
+                this.$store.commit('app/csvColumns', val);
+            }
+        },
+        csvRelationColumns: {
+            get() {
+                return this.$store.getters['app/csvRelationColumns'];
+            },
+            set(val) {
+                this.$store.commit('app/csvRelationColumns', val);
+            }
+        },
+        csvRelationFile: function() {
+            return this.$store.getters['app/csvRelationFile'];
         },
         importCsvColumnName: {
             get() {
