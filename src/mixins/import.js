@@ -945,7 +945,6 @@ export default {
         importFromUrl: function() {
             let me = this;
             let error;
-            console.log("hello");
             EcRemote.getExpectingString(this.importUrl, null, function(result) {
                 result = JSON.parse(result);
                 var graph = result["@graph"];
