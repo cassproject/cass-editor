@@ -10,7 +10,6 @@
         id="right-side-bar"
         class="menu has-background-light">
         <button
-            v-if="allowClose"
             class="delete is-dark has-text-dark is-pulled-right"
             @click="$store.commit('app/closeRightAside')"
             aria-label="close" />
@@ -33,12 +32,6 @@ export default {
             isViewer: true
 
         };
-    },
-    props: {
-        allowClose: {
-            type: Boolean,
-            default: true
-        }
     },
     components: {
         Comments,
