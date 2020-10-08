@@ -516,7 +516,7 @@ export default {
                     if (me.queryParams.ceasnDataFields === true) {
                         if (frameworks[i]["schema:inLanguage"] == null || frameworks[i]["schema:inLanguage"] === undefined) {
                             me.setDefaultLanguage();
-                            frameworks[i]["schema:inLanguage"] = defaultLanguage;
+                            frameworks[i]["schema:inLanguage"] = me.$store.state.editor.defaultLanguage;
                         }
                     }
                     if (frameworks[i]["schema:dateModified"] == null || frameworks[i]["schema:dateModified"] === undefined) {
@@ -848,7 +848,7 @@ export default {
                     for (var i = 0; i < frameworks.length; i++) {
                         if (frameworks[i]["dcterms:language"] == null || frameworks[i]["dcterms:language"] === undefined) {
                             me.setDefaultLanguage();
-                            frameworks[i]["dcterms:language"] = defaultLanguage;
+                            frameworks[i]["dcterms:language"] = me.$store.state.editor.defaultLanguage;
                         }
                     }
                 }
@@ -906,7 +906,7 @@ export default {
             } else {
                 this.importFramework.generateId(this.repo.selectedServer);
             }
-            this.importFramework.name = this.importFrameworkName;
+            this.importFramework.name = this.$store.getters['app/importFrameworkName'];
             this.importFramework["schema:dateCreated"] = new Date().toISOString();
             this.importFramework["schema:dateModified"] = new Date().toISOString();
             var toSave = [this.importFramework];
@@ -945,7 +945,6 @@ export default {
         importFromUrl: function() {
             let me = this;
             let error;
-            console.log("hello");
             EcRemote.getExpectingString(this.importUrl, null, function(result) {
                 result = JSON.parse(result);
                 var graph = result["@graph"];
