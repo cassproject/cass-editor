@@ -5,7 +5,7 @@
 const state = {
     sideNavEnabled: true,
     showSideNav: false,
-    showRightAside: true,
+    showRightAside: false,
     rightAsideContent: '',
     canViewComments: false,
     canAddComments: false,

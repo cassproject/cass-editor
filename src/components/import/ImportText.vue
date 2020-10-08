@@ -1,7 +1,7 @@
 <template>
     <div
         id="import-from-text"
-        class="columns">
+        class="columns is-mobile">
         <div class="column is-12">
             <div class="section">
                 <slot name="import-text-title">
@@ -12,8 +12,7 @@
                         <ImportTabs />
                     </div>
                     <div class="column is-12">
-                        <h3 class="title is-size-3 has-text-weight-medium pl-4">
-                            Import framework as text &nbsp;
+                        <h3 class="title is-size-3 has-text-weight-medium">
                             <span
                                 class="button is-pulled-right is-large is-primary is-outlined mr-4"
                                 :disabled="!importFrameworkName || !importText || importFrameworkName.trim().length === 0"
@@ -27,7 +26,7 @@
                         :class="importText !== '' ? 'is-6' :'is-12'">
                         <!-- text input -->
                         <div
-                            class="section">
+                            class="">
                             <div class="field">
                                 <label class="label">
                                     Framework name
@@ -59,7 +58,7 @@
                 </div>
             </div>
         </div>
-        <RightAside :allowClose="false">
+        <RightAside v-if="importInfoVisible">
             <template slot="right-aside-content">
                 <div class="section">
                     <h2 class="title is-size-4">
@@ -131,6 +130,9 @@ export default {
         }
     },
     computed: {
+        importInfoVisible: function() {
+            return this.$store.getters['app/showRightAside'];
+        },
         importText() {
             // remove characters first
             return this.rawImportText;

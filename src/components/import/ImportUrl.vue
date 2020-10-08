@@ -1,7 +1,7 @@
 <template>
     <div
         id="import-from-url"
-        class="columns">
+        class="columns is-mobile">
         <div class="column is-12">
             <div class="section">
                 <slot name="import-url-title">
@@ -145,7 +145,7 @@
                 </div>
             </div>
         </div>
-        <RightAside :allowClose="false">
+        <RightAside v-if="importInfoVisible">
             <template slot="right-aside-content">
                 <div class="section">
                     <h2 class="title is-size-4">
@@ -194,6 +194,11 @@ export default {
             importUrl: '',
             repo: window.repo
         };
+    },
+    computed: {
+        importInfoVisible: function() {
+            return this.$store.getters['app/showRightAside'];
+        }
     },
     props: {
         importTransition: {

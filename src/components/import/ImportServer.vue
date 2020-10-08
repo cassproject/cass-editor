@@ -1,7 +1,7 @@
 <template>
     <div
         id="import-from-server"
-        class="columns">
+        class="columns is-mobile">
         <div class="column is-12">
             <div class="section">
                 <slot name="import-server-title">
@@ -17,9 +17,6 @@
                         <!-- server input -->
                         <div
                             class="remote-server">
-                            <h3 class="title is-size-3 has-text-weight-medium">
-                                Import from remote server
-                            </h3>
                             <template v-if="importTransition === 'upload'">
                                 <div
                                     v-for="item in serverDetails"
@@ -180,7 +177,7 @@
             </div>
         </div>
         <!-- list description for right panel -->
-        <RightAside :allowClose="false">
+        <RightAside v-if="importInfoVisible">
             <template slot="right-aside-content">
                 <div class="section">
                     <h2 class="title is-size-4">
@@ -237,6 +234,9 @@ export default {
         };
     },
     computed: {
+        importInfoVisible: function() {
+            return this.$store.getters['app/showRightAside'];
+        },
         importErrors: function() {
             return this.$store.getters['app/importErrors'];
         },
@@ -258,9 +258,6 @@ export default {
             this.caseDocs = e;
             this.importCase();
         }
-    },
-    mounted() {
-        this.$store.commit('app/showRightAside');
     },
     watch: {
         importServerUrl: function(val) {

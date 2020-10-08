@@ -5,6 +5,9 @@ export default {
         };
     },
     methods: {
+        showRightAside: function() {
+            this.$store.commit('app/showRightAside', {});
+        },
         selectedArrayEvent: function(ary) {
             this.selectedArray = ary;
         },
