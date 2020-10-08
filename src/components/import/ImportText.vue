@@ -3,7 +3,7 @@
         id="import-from-text"
         class="columns is-mobile">
         <div class="column is-12">
-            <div class="section">
+            <div class="container py-6">
                 <slot name="import-text-title">
                     <p>No import type selected</p>
                 </slot>
@@ -26,7 +26,10 @@
                         :class="importText !== '' ? 'is-6' :'is-12'">
                         <!-- text input -->
                         <div
-                            class="">
+                            class="import-by-text-form">
+                            <h3 class="label is-size-4">
+                                Import by text form
+                            </h3>
                             <div class="field">
                                 <label class="label">
                                     Framework name
@@ -46,7 +49,7 @@
                                     <textarea
                                         placeholder="Start typing or paste your text here..."
                                         @keypress="handleKeydown($event)"
-                                        class="textarea"
+                                        class="textarea import-text-textarea"
                                         v-model="rawImportText" />
                                 </div>
                             </div>

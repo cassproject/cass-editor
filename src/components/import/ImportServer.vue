@@ -3,7 +3,7 @@
         id="import-from-server"
         class="columns is-mobile">
         <div class="column is-12">
-            <div class="section">
+            <div class="container py-6">
                 <slot name="import-server-title">
                     <p>Nothing send from import.vue</p>
                 </slot>

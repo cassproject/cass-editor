@@ -4,12 +4,20 @@
 textarea {
     resize: vertical !important;
 }
+.import-text-textarea {
+    max-height: 75vh !important; 
+    resize: vertical !important;
+}
 #import {
     #import-from-url,
     #import-from-server,
     #import-from-text,
     #import-from-file {
         min-height: 100vh;
+    }
+    .import-by-text-form {
+        position: sticky;
+        top: 40px;
     }
     .import-container {
         min-height: 100vh;

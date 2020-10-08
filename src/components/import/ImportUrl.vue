@@ -3,7 +3,7 @@
         id="import-from-url"
         class="columns is-mobile">
         <div class="column is-12">
-            <div class="section">
+            <div class="container py-6">
                 <slot name="import-url-title">
                     <p>No import type selected</p>
                 </slot>
