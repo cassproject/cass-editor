@@ -869,7 +869,6 @@ export default {
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Source"}],
                     "heading": "General",
-                    "isRequired": "true",
                     "max": 1
                 },
                 "https://purl.org/ctdlasn/terms/conceptKeyword": {

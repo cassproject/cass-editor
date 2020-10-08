@@ -1,6 +1,6 @@
 <template>
     <iframe
-        :src="baseRepoUrl + 'cass-viewer?user=wait&origin=' + origin"
+        :src="baseRepoUrl + 'cass-viewer/?user=wait&origin=' + origin"
         height="100%"
         width="100%"
         class="legacyIframe" />

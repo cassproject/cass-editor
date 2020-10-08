@@ -13,7 +13,9 @@
             class="delete is-dark has-text-dark is-pulled-right"
             @click="$store.commit('app/closeRightAside')"
             aria-label="close" />
-        <Component :is="rightAsideContent" />
+        <slot name="right-aside-content">
+            <Component :is="rightAsideContent" />
+        </slot>
     </aside>
 </template>
 <script>
