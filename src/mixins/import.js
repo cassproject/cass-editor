@@ -185,7 +185,7 @@ export default {
                     CTDLASNCSVConceptImport.analyzeFile(file, function(frameworkCount, competencyCount) {
                         me.$store.commit('app/importFileType', 'conceptcsv');
                         let name = "taxonomies";
-                        if (this.queryParams.ceasnDataFields === 'true') {
+                        if (me.queryParams.ceasnDataFields === 'true') {
                             name = "concept schemes";
                         }
                         feedback = "Import " + frameworkCount + " " + name + " and " + competencyCount + " concepts.";

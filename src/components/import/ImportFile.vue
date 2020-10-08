@@ -302,7 +302,9 @@
                     <p class="has-text-weight-bold">
                         Steps to import from file
                     </p>
-                    <ul class="cat__bullet-list is-size-6">
+                    <ul
+                        class="cat__bullet-list is-size-6"
+                        v-if="!conceptMode">
                         <li>
                             Cick inside the “Files to Upload” box or drag and drop a file inside the dashed box.
                         </li>
@@ -323,6 +325,25 @@
                         </li>
                         <li>
                             If your framework is not detected by CaSS or not imported properly, let us know at <a href="mailto:cass@eduworks.com?subject=File+to+Improve+CaSS+Importer">cass@eduworks.com</a> and we will look into the inquiry and provide a response.
+                        </li>
+                    </ul>
+                    <ul
+                        class="cat__bullet-list is-size-6"
+                        v-else>
+                        <li>
+                            Cick inside the “Files to Upload” box or drag and drop a file inside the dashed box.
+                        </li>
+                        <li>
+                            Once your file has been uploaded, CaSS will detect a {{ taxonomyTerminology }} from the file and display details about your {{ taxonomyTerminology }}.
+                        </li>
+                        <li>
+                            If the details are correct, click “Import” to review and edit your {{ taxonomyTerminology }}.
+                        </li>
+                        <li>
+                            A preview of your {{ taxonomyTerminology }} will display, your {{ taxonomyTerminology }} is now in CaSS!
+                        </li>
+                        <li>
+                            click "done" to navigate to the {{ taxonomyTerminology }} in the editor where you can continue editing as well as export to a variety of formats.
                         </li>
                     </ul>
                 </div>
@@ -524,6 +545,13 @@ export default {
         },
         csvRelationFile: function() {
             return this.$store.getters['app/csvRelationFile'];
+        },
+        taxonomyTerminology: function() {
+            if (this.$store.getters['editor/queryParams'].ceasnDataFields === 'true') {
+                return 'concept scheme';
+            } else {
+                return 'taxonomy';
+            }
         }
     },
     methods: {

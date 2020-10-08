@@ -259,6 +259,9 @@ export default {
             } else {
                 return 0;
             }
+        },
+        queryParams: function() {
+            return this.$store.getters['editor/queryParams'];
         }
     }
 };

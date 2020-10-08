@@ -821,7 +821,7 @@ export default {
         },
         containerProfile: function() {
             if (this.conceptMode) {
-                return ctdlAsnConceptSchemeProfile;
+                return this.ctdlAsnConceptSchemeProfile;
             }
             if (this.isT3Import) {
                 return this.t3FrameworkProfile;
@@ -832,7 +832,7 @@ export default {
         },
         hierarchyProfile: function() {
             if (this.conceptMode) {
-                return ctdlAsnConceptProfile;
+                return this.ctdlAsnConceptProfile;
             }
             if (this.isT3Import) {
                 return this.t3CompetencyProfile;
