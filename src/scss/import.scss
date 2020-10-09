@@ -37,7 +37,10 @@ textarea {
             display: none;
         }
     }
-    .lode__Competency, .lode__Framework {
+    .lode__Competency,
+    .lode__Concept,
+    .lode__ConceptScheme,
+    .lode__Framework {
         .hierarchy-item__buttons {
             display: flex;
             visibility: hidden;
