@@ -917,14 +917,14 @@ CSVExport = stjs.extend(CSVExport, Exporter, [], function(constructor, prototype
                             var compExport = new CSVExport.CSVExportProcess();
                             compExport.buildExport(CSVExport.frameworkCompetencies, false);
                             compExport.downloadCSV(fw.getName() + " - Competencies.csv");
-                        } else {}
+                        }
                     }, function(s) {
                         CSVExport.frameworkCompetencies.push(null);
                         if (CSVExport.frameworkCompetencies.length == fw.competency.length) {
                             var compExport = new CSVExport.CSVExportProcess();
                             compExport.buildExport(CSVExport.frameworkCompetencies, false);
                             compExport.downloadCSV(fw.getName() + " - Competencies.csv");
-                        } else {}
+                        }
                     });
                 }
                 for (var i = 0; i < fw.relation.length; i++) {
@@ -937,7 +937,7 @@ CSVExport = stjs.extend(CSVExport, Exporter, [], function(constructor, prototype
                             compExport.downloadCSV(fw.getName() + " - Relations.csv");
                             if (success != null && success != undefined) 
                                 success();
-                        } else {}
+                        }
                     }, function(s) {
                         CSVExport.frameworkRelations.push(null);
                         if (CSVExport.frameworkRelations.length == fw.relation.length) {
@@ -946,7 +946,7 @@ CSVExport = stjs.extend(CSVExport, Exporter, [], function(constructor, prototype
                             compExport.downloadCSV(fw.getName() + " - Relations.csv");
                             if (success != null && success != undefined) 
                                 success();
-                        } else {}
+                        }
                     });
                 }
             }
