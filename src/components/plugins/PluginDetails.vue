@@ -4,17 +4,23 @@
         <div class="columns">
             <div class="column is-3">
                 <nav :class="panelClass">
-                    <a
+                    <p class="panel-heading">
+                        Actions
+                    </p>
+                    <div
                         class="panel-block"
                         v-if="readOnly">
                         <div class="buttons is-fullwidth is-right">
                             <div
                                 class="button is-outlined is-primary"
                                 @click="$emit('back')">
-                                back
+                                <span class="icon">
+                                    <i class="fa fa-arrow-left" />
+                                </span>
+                                <span>back</span>
                             </div>
                         </div>
-                    </a>
+                    </div>
                     <div
                         class="panel-block"
                         v-if="!readOnly">
@@ -31,7 +37,7 @@
                         class="panel-block"
                         v-if="!readOnly">
                         <div
-                            class="button is-fullwidth  is-outlined is-primary"
+                            class="button is-fullwidth is-outlined is-primary"
                             @click="validateCurrentPluginAndEmitSave">
                             <span class="icon">
                                 <i class="fa fa-save" />
@@ -46,51 +52,59 @@
                         Plugin details
                     </h3>
                     <div class="field">
-                        <label class="label">Name: </label>
+                        <label class="label">Location: </label>
                         <div v-if="readOnly">
-                            {{ plugin.name }}
+                            {{ plugin.url }}
                         </div>
                         <div
                             class="control"
                             v-if="!readOnly">
                             <input
                                 class="input"
-                                type="text"
-                                v-model="plugin.name">
+                                type="url"
+                                v-model="plugin.url">
                         </div>
                     </div>
+                </div>
+                <div class="section box px-4 py-4">
+                    <h3 class="is-size-3 title">
+                        Manifest information
+                    </h3>
                     <div class="field">
-                        <label class="label">Description: </label>
-                        <div v-if="readOnly">
-                            {{ plugin.description }}
+                        <div v-if="manifestRequestBusy">
+                            <span class="icon is-large has-text-center has-text-link">
+                                <i class="fas fa-2x fa-spinner is-info fa-pulse" />
+                            </span>
                         </div>
-                        <div
-                            class="control"
-                            v-if="!readOnly">
-                            <input
-                                class="input"
-                                type="text"
-                                v-model="plugin.description">
+                        <div v-if="!manifestRequestBusy">
+                            <div
+                                class="manifestNotLoaded"
+                                v-if="!manifestLoaded">
+                                <p><i class="fa fa-exclamation-triangle is-primary"/> Manifest data not loaded</p>
+                                <br>
+                                <div class="buttons is-fullwidth is-left">
+                                    <div
+                                        class="button is-outlined is-primary"
+                                        @click="loadManifestData">
+                                        <span class="icon">
+                                            <i class="fa fa-sync-alt" />
+                                        </span>
+                                        <span>load manifest data</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-if="manifestLoaded">
+                                {{manifestData}}
+                            </div>
                         </div>
                     </div>
                 </div>
-                <!-- ************************************** Validation ************************************************ -->
-                <!--
-                <div v-if="groupInvalid">
-                    <p>User Group is invalid:</p>
-                    <p v-if="groupNameInvalid">
-                        *User group name is required
-                    </p>
-                    <p v-if="groupDescriptionInvalid">
-                        *User group description is required
-                    </p>
-                </div>
-                -->
             </div>
         </div>
     </div>
 </template>
 <script>
+
 export default {
     name: 'PluginDetails',
     props: {
@@ -104,10 +118,32 @@ export default {
     },
     data: function() {
         return {
-            panelClass: 'panel'
+            panelClass: 'panel',
+            manifestLoaded: false,
+            manifestRequestBusy: false,
+            manifestData: ''
         };
     },
     methods: {
+        loadManifestData() {
+            // alert('TODO loadManifestData');
+            this.manifestRequestBusy = true;
+            let manifestUrl = '';
+            if (this.plugin.url.endsWith("/")) manifestUrl = this.plugin.url + "manifest.json";
+            else manifestUrl = this.plugin.url + "/manifest.json";
+            this.$http.get(manifestUrl).then(
+                function(response) {
+                    this.manifestData = response.data;
+                    this.manifestLoaded = true;
+                    this.manifestRequestBusy = false;
+                },
+                function(error) {
+                    this.manifestData = 'ERROR: ' + error.statusText;
+                    this.manifestLoaded = true;
+                    this.manifestRequestBusy = false;
+                }
+            );
+        },
         // setAllConfigValidationsChecksToValid() {
         //     this.groupInvalid = false;
         //     this.groupNameInvalid = false;
@@ -122,6 +158,8 @@ export default {
         }
     },
     computed: {
+    },
+    mounted: function() {
     }
 };
 </script>
@@ -150,6 +188,9 @@ export default {
         min-height: 20rem;
         max-height: 20rem;
         overflow: auto;
+    }
+    .manifestNotLoaded {
+        font-size: .9rem;
     }
 </style>
 

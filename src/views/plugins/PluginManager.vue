@@ -39,19 +39,7 @@
                         <thead>
                             <tr>
                                 <th>
-                                    name
-                                </th>
-                                <th>
-                                    description
-                                </th>
-                                <th>
                                     location
-                                </th>
-                                <th>
-                                    launch type
-                                </th>
-                                <th>
-                                    launch location
                                 </th>
                                 <th title="Curated/Managed by the CaSS Project">
                                     curated?
@@ -67,11 +55,7 @@
                                 v-for="pi in pluginList"
                                 :id="pi.id"
                                 :key="JSON.stringify(pi)"
-                                :name="pi.name"
-                                :description="pi.description"
                                 :url="pi.url"
-                                :launch-type="pi.launchType"
-                                :launch-location="pi.launchLocation"
                                 :is-curated="pi.isCurated"
                                 :is-owned="pi.isOwned"
                                 @enablePlugin="enablePlugin"
@@ -199,9 +183,17 @@ export default {
             this.setCurrentPlugin(pluginId);
             this.showDetailView();
         },
+        generateNewPluginObject() {
+            let p = {};
+            p.id = 'newPluginId';
+            p.url = '';
+            p.isCurated = false;
+            p.isOwned = true;
+            return p;
+        },
         addNewPlugin() {
-            // this.showDetailView();
-            alert('TODO addNewPlugin');
+            this.currentPlugin = this.generateNewPluginObject();
+            this.showDetailView();
         },
         getPluginsFromRepoSuccess(ecRemoteLda) {
             // TODO
@@ -221,14 +213,10 @@ export default {
         buildPluginListItemFromCuratedPlugin(curPlug) {
             let p = {};
             p.id = curPlug.id;
-            p.name = curPlug.name;
-            p.description = curPlug.description;
             p.url = curPlug.url;
-            p.launchType = curPlug.launchType;
-            p.launchLocation = curPlug.launchLocation;
             p.isCurated = true;
+            p.isNew = false;
             p.isOwned = false;
-            p.isEnabled = false;
             return p;
         },
         getPluginsFromCuratedList() {

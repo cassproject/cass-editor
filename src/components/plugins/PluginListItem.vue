@@ -1,20 +1,8 @@
 <template>
     <tr>
         <th>
-            <b>{{ name }}</b>
+            <b>{{ url }}</b>
         </th>
-        <td>
-            {{ description }}
-        </td>
-        <td>
-            {{ url }}
-        </td>
-        <td>
-            {{ launchType }}
-        </td>
-        <td>
-            {{ launchLocation }}
-        </td>
         <td>
             <span
                 v-if="isCurated"
@@ -77,23 +65,7 @@ export default {
             type: String,
             default: ''
         },
-        name: {
-            type: String,
-            default: ''
-        },
-        description: {
-            type: String,
-            default: ''
-        },
         url: {
-            type: String,
-            default: ''
-        },
-        launchType: {
-            type: String,
-            default: ''
-        },
-        launchLocation: {
             type: String,
             default: ''
         },

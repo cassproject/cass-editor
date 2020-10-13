@@ -3,20 +3,16 @@ export const curatedPlugins = {
         curatedPlugins: function() {
             return [
                 {
-                    "id": "curatedPlugin1",
-                    "name": "Plugin Test 1",
-                    "description": "Test plugin - google.com",
-                    "url": "https://www.google.com/",
-                    "launchType": "main",
-                    "launchLocation": "Plugin Test" // This will be the menu category if launchType = 'main', or the screen name if launchType = 'screen'
+                    "id": "vlrcTestPlugin1",
+                    "url": "https://cassproject.github.io/cass-vlrc"
                 },
                 {
-                    "id": "curatedPlugin2",
-                    "name": "Plugin Test 2",
-                    "description": "Test plugin - tomahawknation.com",
-                    "url": "https://www.tomahawknation.com/",
-                    "launchType": "main",
-                    "launchLocation": "Competencies & Frameworks" // This will be the menu category if launchType = 'main', or the screen name if launchType = 'screen'}];
+                    "id": "vlrcTestPlugin2",
+                    "url": "https://vlrc.cassproject.org/"
+                },
+                {
+                    "id": "vlrcTestPlugin3",
+                    "url": "https://raw.githubusercontent.com/cassproject/cass-vlrc/master/"
                 }
             ];
         }

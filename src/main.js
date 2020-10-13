@@ -9,6 +9,7 @@ import Modal from './plugins/modalPlugin.js';
 import Clipboard from 'v-clipboard';
 import store from './store/index.js';
 import InfiniteLoading from 'vue-infinite-loading';
+import VueResource from 'vue-resource';
 
 var VueScrollTo = require('vue-scrollto');
 require("cassproject");
@@ -46,6 +47,7 @@ Vue.use(VueScrollTo, {
     y: true
 });
 Vue.use(InfiniteLoading);
+Vue.use(VueResource);
 
 // directive for clicking outside elements and performing an action
 // add v-click-outside="method" to parent element to do something
