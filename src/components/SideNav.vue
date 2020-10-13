@@ -238,6 +238,13 @@
                     </span><span v-if="showSideNav">Configurations</span>
                 </router-link>
             </li>
+            <li v-if="pluginsEnabled">
+                <router-link to="/pluginManager">
+                    <span class="icon">
+                        <i class="fa fa-plug" />
+                    </span><span v-if="showSideNav">Plugins</span>
+                </router-link>
+            </li>
             <li v-if="isLoggedOn && userManagementEnabled">
                 <router-link to="/users">
                     <span class="icon">
@@ -287,6 +294,7 @@ export default {
             crosswalkEnabled: state => state.featuresEnabled.crosswalkEnabled,
             userManagementEnabled: state => state.featuresEnabled.userManagementEnabled,
             configurationsEnabled: state => state.featuresEnabled.configurationsEnabled,
+            pluginsEnabled: state => state.featuresEnabled.pluginsEnabled,
             loginEnabled: state => state.featuresEnabled.loginEnabled,
             queryParams: state => state.editor.queryParams
         }),

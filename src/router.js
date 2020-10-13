@@ -66,6 +66,15 @@ export default new Router({
             }
         },
         {
+            path: '/pluginManager',
+            name: 'pluginManager',
+            components: {
+                default: () => import('./views/plugins/PluginManager'),
+                sidebar: () => import('./components/SideNav.vue'),
+                topbar: () => import('./components/Topbar.vue')
+            }
+        },
+        {
             path: '/crosswalk',
             name: 'crosswalk',
             components: {
