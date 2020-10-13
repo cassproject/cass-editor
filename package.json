@@ -23,7 +23,7 @@
     "file-saver": "^2.0.2",
     "jsonld": "^1.8.1",
     "lodash": "^4.17.20",
-    "pure-uuid": "^1.6.0",
+    "pure-uuid": "^1.6.1",
     "v-clipboard": "^2.2.3",
     "vue": "^2.6.11",
     "vue-infinite-loading": "^2.4.5",
