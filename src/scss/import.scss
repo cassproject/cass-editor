@@ -4,58 +4,85 @@
 textarea {
     resize: vertical !important;
 }
+.import-text-textarea {
+    max-height: 75vh !important; 
+    resize: vertical !important;
+}
 #import {
-      .parent-object {
-            position: sticky;
-            background-color: $white;
+    #import-from-url,
+    #import-from-server,
+    #import-from-text,
+    #import-from-file {
+        min-height: 100vh;
+    }
+    .parent-object {
+        position: sticky;
+        background-color: $white;
+        top: 0px;
+        z-index: 9;
+        width: 100%;
+        transition: height .1s;
+        position: -webkit-sticky;
+        .lode__Framework {
+            display: flex;
+            margin: 0rem 1rem;
+            // border-bottom: solid 1px rgba($dark, .5);
+        }
+    }
+    .parent-object.scrolled {
+        z-index: 8;
+        height: 56px;
+        overflow: hidden;
+        .tag {
+            display: none;
+        }
+    }
+    .lode__Competency,
+    .lode__Concept,
+    .lode__ConceptScheme,
+    .lode__Framework {
+        .hierarchy-item__buttons {
+            display: flex;
+            visibility: hidden;
+            position: absolute;
+            right: 0;
             top: 0px;
-            z-index: 9;
-            width: 100%;
-            transition: height .1s;
-            position: -webkit-sticky;
-            .lode__Framework {
-                display: flex;
-                margin: 0rem 1rem;
-                // border-bottom: solid 1px rgba($dark, .5);
-            }
         }
-        .parent-object.scrolled {
-            z-index: 8;
-            height: 56px;
-            overflow: hidden;
-            .tag {
-                display: none;
-            }
+        .edit-button, .comment-button, .handle-button {
+            visibility: hidden;
+            margin: 0rem .25rem;
         }
-        .lode__Competency, .lode__Framework {
-            padding-right: 120px;
-            .hierarchy-item__buttons {
-                display: flex;
-                visibility: hidden;
-                position: absolute;
-                right: 0;
-                top: 0px;
-            }
-            .edit-button, .comment-button, .handle-button {
-                visibility: hidden;
-                margin: 0rem .25rem;
-            }
-        }
-    
-        .lode__Competency:hover {
-            .lode__thing-heading .lode__Property {
-                color: $primary !important;
-            }
-            .hierarchy-item__buttons {
-                visibility: visible;
-            }
-            .edit-button, .comment-button, .handle-button {
-                visibility: visible;
-            }
-        }
+    }
 
-    
-   
+    .lode__Competency:hover {
+        .lode__thing-heading .lode__Property {
+            color: $primary !important;
+        }
+        .hierarchy-item__buttons {
+            visibility: visible;
+        }
+        .edit-button, .comment-button, .handle-button {
+            visibility: visible;
+        }
+    }
+    .import-by-text-form {
+        position: sticky;
+        top: 40px;
+    }
+    .import-container {
+        min-height: 100vh;
+    }
+    .import-information {
+        height: 100vh;;
+        position: sticky;
+        position: -webkit-sticky; /* Safari */
+        top: 0;
+        right: 0;
+        bottom: 0;
+        background-color: $light;
+        position: absolute;
+ 
+    }
 }
 ul.processing-list {
     height: 100%;
@@ -127,6 +154,7 @@ ul.processing-list {
     }
         .drag-file-area {
             width:100%;
+            height: 100%;
             display:block;
             border: 2px dashed $white;
             border-radius:1rem;
@@ -135,7 +163,7 @@ ul.processing-list {
     
         }
         #drop-area {
-            height: auto;
+            height: 300px;
             margin: 0px;
             padding: 0px;
             width: auto;

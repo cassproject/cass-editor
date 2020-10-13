@@ -347,7 +347,7 @@ export default {
                     "heading": "General",
                     "max": 1
                 },
-                "headings": ["Keys", "General"],
+                "headings": ["General", "Keys"],
                 "primaryProperties": [
                     "http://purl.org/dc/terms/title",
                     "http://purl.org/dc/terms/description"
@@ -692,7 +692,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Related"}],
                     "heading": "Connections"
                 },
-                "headings": ["Keys", "General", "Other Labels", "Documentation", "Connections"],
+                "headings": ["General", "Other Labels", "Documentation", "Connections", "Keys"],
                 "primaryProperties": [
                     "http://www.w3.org/2004/02/skos/core#prefLabel",
                     "http://www.w3.org/2004/02/skos/core#definition",

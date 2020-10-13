@@ -125,7 +125,7 @@ export default {
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Derived From"}],
                     "max": 1,
-                    "heading": "Connections"
+                    "heading": "Relations"
                 },
                 "https://purl.org/ctdlasn/terms/isVersionOf": {
                     "@id": "https://purl.org/ctdlasn/terms/isVersionOf",
@@ -137,7 +137,7 @@ export default {
                     [{"@language": "en", "@value": "A related competency framework of which this competency framework is a version, edition, or adaptation."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Version Of"}],
                     "max": 1,
-                    "heading": "Connections"
+                    "heading": "Relations"
                 },
                 "http://purl.org/dc/elements/1.1/source": {
                     "@id": "http://purl.org/dc/elements/1.1/source",
@@ -152,7 +152,7 @@ export default {
                             For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.`}
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Source"}],
-                    "heading": "Connections"
+                    "heading": "Relations"
                 },
                 "https://purl.org/ctdlasn/terms/educationLevelType": {
                     "@id": "https://purl.org/ctdlasn/terms/educationLevelType",
@@ -270,7 +270,7 @@ export default {
                     "max": 1,
                     "heading": "Rights"
                 },
-                "headings": ["Keys", "General", "Tagging", "Connections", "Context", "Rights"],
+                "headings": ["Keys", "General", "Tagging", "Relations", "Context", "Rights"],
                 "primaryProperties": [
                     "@id",
                     "http://schema.org/name",
@@ -507,7 +507,7 @@ export default {
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "narrows", values); },
                     "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "narrows", target); },
-                    "heading": "Connections"
+                    "heading": "Relations"
                 },
                 "broadens": {
                     "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
@@ -519,7 +519,7 @@ export default {
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "broadens", values); },
                     "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "broadens", target); },
-                    "heading": "Connections"
+                    "heading": "Relations"
                 },
                 "isEquivalentTo": {
                     "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
@@ -531,7 +531,7 @@ export default {
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEquivalentTo", values); },
                     "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isEquivalentTo", target); },
-                    "heading": "Connections"
+                    "heading": "Relations"
                 },
                 "requires": {
                     "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
@@ -543,7 +543,7 @@ export default {
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "requires", values); },
                     "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "requires", target); },
-                    "heading": "Connections"
+                    "heading": "Relations"
                 },
                 "isEnabledBy": {
                     "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
@@ -555,7 +555,7 @@ export default {
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEnabledBy", values); },
                     "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isEnabledBy", target); },
-                    "heading": "Connections"
+                    "heading": "Relations"
                 },
                 "isRelatedTo": {
                     "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
@@ -567,7 +567,7 @@ export default {
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isRelatedTo", values); },
                     "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isRelatedTo", target); },
-                    "heading": "Connections"
+                    "heading": "Relations"
                 },
                 "desires": {
                     "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
@@ -579,9 +579,9 @@ export default {
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "desires", values); },
                     "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "desires", target); },
-                    "heading": "Connections"
+                    "heading": "Relations"
                 },
-                "headings": ["Keys", "General", "Context", "Tagging", "Scales", "Connections"],
+                "headings": ["Keys", "General", "Context", "Tagging", "Scales", "Relations"],
                 "primaryProperties": [
                     "@id",
                     "http://schema.org/name",
