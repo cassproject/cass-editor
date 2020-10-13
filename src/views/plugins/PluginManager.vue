@@ -1,15 +1,139 @@
 <template>
     <div id="plugin-manager">
-        PLUGIN MANAGER!!!
+        <!-- busy modal-->
+        <div
+            class="modal"
+            :class="[{'is-active': pluginManagerBusy}]">
+            <div class="modal-background" />
+            <div class="modal-content has-text-centered">
+                <span class="icon is-large has-text-center has-text-link">
+                    <i class="fas fa-2x fa-spinner is-info fa-pulse" />
+                </span>
+            </div>
+        </div>
+        <!-- plugin manager content-->
+        <div
+            class="container"
+            v-if="!pluginManagerBusy">
+            <div class="section">
+                <h3 class="title is-size-1">
+                    Plugin Management
+                </h3>
+                <p class="description">
+                    Plugins provide the capability to add additional CaSS components that are available to multiple users.
+                </p>
+            </div>
+            <div
+                class="section"
+                v-if="pluginManagerViewMode.equals('list')">
+                <h4 class="header is-size-3">
+                    Plugins
+                </h4>
+                <div v-if="pluginList.length === 0">
+                    <p>No plugins are available.</p>
+                </div>
+                <div
+                    class="table-container"
+                    v-if="pluginList.length > 0">
+                    <table class="table is-hoverable is-fullwidth">
+                        <thead>
+                            <tr>
+                                <th>
+                                    name
+                                </th>
+                                <th>
+                                    description
+                                </th>
+                                <th>
+                                    location
+                                </th>
+                                <th>
+                                    launch type
+                                </th>
+                                <th>
+                                    launch location
+                                </th>
+                                <th title="Curated/Managed by the CaSS Project">
+                                    curated?
+                                </th>
+                                <th>
+                                    enabled (locally)
+                                </th>
+                                <th />
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <plugin-list-item
+                                v-for="pi in pluginList"
+                                :id="pi.id"
+                                :key="JSON.stringify(pi)"
+                                :name="pi.name"
+                                :description="pi.description"
+                                :url="pi.url"
+                                :launch-type="pi.launchType"
+                                :launch-location="pi.launchLocation"
+                                :is-curated="pi.isCurated"
+                                :is-owned="pi.isOwned"
+                                @enablePlugin="enablePlugin"
+                                @disablePlugin="disablePlugin"
+                                @showDelete="showPluginDelete"
+                                @showDetails="showPluginDelete" />
+                        </tbody>
+                    </table>
+                </div>
+                <div class="buttons is-right">
+                    <div
+                        class="button is-outlined is-primary"
+                        @click="addNewPlugin"
+                        title="Add New Plugin">
+                        <span class="icon">
+                            <i class="fa fa-plus" />
+                        </span>
+                        <span>
+                            add new plugin
+                        </span>
+                    </div>
+                    <!--
+                    <div
+                        class="button is-outlined"
+                        @click="disableAllPlugins"
+                        title="Disable All Plugins">
+                        <span class="icon">
+                            <i class="fa fa-minus" />
+                        </span>
+                        <span>
+                            disable all plugins
+                        </span>
+                    </div>
+                    -->
+                </div>
+            </div>
+            <div v-if="pluginManagerViewMode.equals('detail')">
+                <!--
+                <user-group-details
+                        :group="currentUserGroup"
+                        :personList="personList"
+                        :groupManagers="currentUserGroupManagers"
+                        :groupUsers="currentUserGroupUsers"
+                        :readOnly="currentUserGroupIsReadOnly"
+                        @save="saveCurrentUserGroup"
+                        @cancel="cancelEditCurrentUserGroup"
+                        @back="backFromEditCurrentUserGroup" />
+                -->
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
 // @ is an alias to /src
+import PluginListItem from '../../components/plugins/PluginListItem';
 import {cassUtil} from '../../mixins/cassUtil';
+import {pluginUtil} from '../../mixins/pluginUtil';
+import {curatedPlugins} from '../../mixins/curatedPlugins';
 
 export default {
-    mixins: [cassUtil],
+    mixins: [cassUtil, pluginUtil, curatedPlugins],
     props: {
         view: {
             default: '',
@@ -18,16 +142,83 @@ export default {
     },
     name: 'PluginManager',
     components: {
+        PluginListItem
     },
     computed: {
     },
     data: () => ({
+        pluginManagerBusy: false,
+        pluginManagerViewMode: 'list',
+        pluginList: []
     }),
     methods: {
+        showPluginDetails(pluginId) {
+            // TODO
+        },
+        showPluginDelete(pluginId) {
+            // TODO
+        },
+        enablePlugin(pluginId) {
+            this.setPluginAsEnabled(pluginId);
+        },
+        disablePlugin(pluginId) {
+            this.setPluginAsDisabled(pluginId);
+        },
+        disableAllPlugins() {
+            this.setAllPluginsAsDisabled();
+            this.buildPluginList();
+        },
+        addNewPlugin() {
+            alert('TODO addNewPlugin');
+        },
+        getEnabledPlugins() {
+            // TODO
+            this.pluginManagerBusy = false;
+        },
+        getPluginsFromRepoSuccess(ecRemoteLda) {
+            // TODO
+            this.getEnabledPlugins();
+        },
+        getPluginsFromRepoFailure() {
+            appLog("Plugin search failure: " + msg);
+            this.getEnabledPlugins();
+        },
+        buildPluginListItemFromRepoPlugin(repoPlug) {
+            // TODO
+        },
+        getPluginsFromRepo() {
+            // TODO
+            this.getPluginsFromRepoSuccess(null);
+        },
+        buildPluginListItemFromCuratedPlugin(curPlug) {
+            let p = {};
+            p.id = curPlug.id;
+            p.name = curPlug.name;
+            p.description = curPlug.description;
+            p.url = curPlug.url;
+            p.launchType = curPlug.launchType;
+            p.launchLocation = curPlug.launchLocation;
+            p.isCurated = true;
+            p.isOwned = false;
+            p.isEnabled = false;
+            return p;
+        },
+        getPluginsFromCuratedList() {
+            for (let p of this.curatedPlugins) {
+                this.pluginList.push(this.buildPluginListItemFromCuratedPlugin(p));
+            }
+        },
+        buildPluginList() {
+            this.pluginManagerBusy = true;
+            this.pluginList = [];
+            this.getPluginsFromCuratedList();
+            this.getPluginsFromRepo();
+        }
     },
     updated() {
     },
     mounted() {
+        this.buildPluginList();
     }
 };
 </script>
