@@ -57,7 +57,7 @@
                                     curated?
                                 </th>
                                 <th>
-                                    enabled (locally)
+                                    enabled
                                 </th>
                                 <th />
                             </tr>
@@ -77,7 +77,7 @@
                                 @enablePlugin="enablePlugin"
                                 @disablePlugin="disablePlugin"
                                 @showDelete="showPluginDelete"
-                                @showDetails="showPluginDelete" />
+                                @showDetails="showPluginDetails" />
                         </tbody>
                     </table>
                 </div>
@@ -109,17 +109,12 @@
                 </div>
             </div>
             <div v-if="pluginManagerViewMode.equals('detail')">
-                <!--
-                <user-group-details
-                        :group="currentUserGroup"
-                        :personList="personList"
-                        :groupManagers="currentUserGroupManagers"
-                        :groupUsers="currentUserGroupUsers"
-                        :readOnly="currentUserGroupIsReadOnly"
-                        @save="saveCurrentUserGroup"
-                        @cancel="cancelEditCurrentUserGroup"
-                        @back="backFromEditCurrentUserGroup" />
-                -->
+                <plugin-details
+                    :plugin="currentPlugin"
+                    :readOnly="currentPluginIsReadOnly"
+                    @save="saveCurrentPlugin"
+                    @cancel="cancelEditCurrentPlugin"
+                    @back="backFromEditCurrentPlugin" />
             </div>
         </div>
     </div>
@@ -128,6 +123,7 @@
 <script>
 // @ is an alias to /src
 import PluginListItem from '../../components/plugins/PluginListItem';
+import PluginDetails from '../../components/plugins/PluginDetails';
 import {cassUtil} from '../../mixins/cassUtil';
 import {pluginUtil} from '../../mixins/pluginUtil';
 import {curatedPlugins} from '../../mixins/curatedPlugins';
@@ -142,17 +138,37 @@ export default {
     },
     name: 'PluginManager',
     components: {
-        PluginListItem
-    },
-    computed: {
+        PluginListItem,
+        PluginDetails
     },
     data: () => ({
         pluginManagerBusy: false,
         pluginManagerViewMode: 'list',
-        pluginList: []
+        pluginList: [],
+        currentPlugin: {}
     }),
+    computed: {
+        currentPluginIsReadOnly: function() {
+            if (!this.currentPlugin || !this.currentPlugin.isOwned) return true;
+            else if (this.currentPlugin.isOwned) return false;
+            else return true;
+        }
+    },
     methods: {
-        showPluginDetails(pluginId) {
+        showListView() {
+            this.pluginManagerViewMode = "list";
+        },
+        showDetailView() {
+            this.pluginManagerViewMode = "detail";
+        },
+        backFromEditCurrentPlugin() {
+            this.showListView();
+        },
+        cancelEditCurrentPlugin() {
+            this.buildPluginList();
+            this.showListView();
+        },
+        saveCurrentPlugin() {
             // TODO
         },
         showPluginDelete(pluginId) {
@@ -168,20 +184,32 @@ export default {
             this.setAllPluginsAsDisabled();
             this.buildPluginList();
         },
-        addNewPlugin() {
-            alert('TODO addNewPlugin');
+        getPluginById(pluginId) {
+            for (let p of this.pluginList) {
+                if (p.id.equals(pluginId)) {
+                    return p;
+                }
+            }
+            return null;
         },
-        getEnabledPlugins() {
-            // TODO
-            this.pluginManagerBusy = false;
+        setCurrentPlugin(pluginId) {
+            this.currentPlugin = this.getPluginById(pluginId);
+        },
+        showPluginDetails(pluginId) {
+            this.setCurrentPlugin(pluginId);
+            this.showDetailView();
+        },
+        addNewPlugin() {
+            // this.showDetailView();
+            alert('TODO addNewPlugin');
         },
         getPluginsFromRepoSuccess(ecRemoteLda) {
             // TODO
-            this.getEnabledPlugins();
+            this.pluginManagerBusy = false;
         },
         getPluginsFromRepoFailure() {
             appLog("Plugin search failure: " + msg);
-            this.getEnabledPlugins();
+            this.pluginManagerBusy = false;
         },
         buildPluginListItemFromRepoPlugin(repoPlug) {
             // TODO

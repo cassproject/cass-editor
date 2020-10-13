@@ -38,7 +38,7 @@
         <td>
             <div
                 v-if="isOwned"
-                title="Manage configuration"
+                title="Manage plugin"
                 class="button is-outlined is-small is-primary"
                 @click="$emit('showDetails', id)">
                 <span class="icon">
@@ -47,11 +47,20 @@
             </div>
             <div
                 v-if="isOwned"
-                title="Delete configuration"
+                title="Delete plugin"
                 class="button is-outlined is-small is-danger delete-btn"
                 @click="$emit('showDelete', id)">
                 <span class="icon">
                     <i class="fas fa-trash" />
+                </span>
+            </div>
+            <div
+                v-if="!isOwned"
+                title="View plugin"
+                class="button is-outlined is-small is-primary"
+                @click="$emit('showDetails', id)">
+                <span class="icon">
+                    <i class="fas fa-eye" />
                 </span>
             </div>
         </td>
