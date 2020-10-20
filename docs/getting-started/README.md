@@ -79,8 +79,10 @@ application areas:
 
 ## Application Login 
 
+::: tip
 Note: This section is not applicable to Credential Engine instances of
 CAT.
+:::
 
 By default, most CAT functionality is available without being logged in.
 You can search for, create, and manage public frameworks, competencies,
@@ -102,9 +104,7 @@ From the landing page users have the option to login or create a new
 account to access the CaSS Authoring Tool. At the login page users have
 the option to select the create account button shown below.
 
-![](/docs/create-account-button.png)
-
-CAT Login - Create Account Button
+![CAT Login - Create Account Button](/docs/create-account-button.png)
 
 From here, users will be prompted to input basic information required to
 register their account with the CaSS Authoring Tool.
@@ -114,25 +114,12 @@ hit the create button to begin the registration of their account. Once
 successfully registered, you will be automatically logged into the
 application.
 
-![](images/image15.png)
+![CAT Login - Create Account Submit Button](/docs/create-account-submit-button.png)
 
-CAT Login - Create Account Submit Button
 
-## Logging into an Existing Account 
+### Logging into an Existing Account 
 
 You can login with existing accounts by filling out the appropriate
 fields on the login form and clicking the login button.
 
-![](images/image61.png)
-
-CAT Login - Login Button
-
-Creating an Organization, Group, or Team 
-
-Note: This section is not applicable to Credential Engine instances of
-CAT.
-
-In CaSS Authoring Tools, user groups provide the capability to assign
-multiple users the ability to share permissions across an organization
-or team. Members of a group are granted access to any CaSS framework or
-competency that the group has been explicitly assigned.  
+![CAT Login - Login Button](/docs/login-button.png)
