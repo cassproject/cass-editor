@@ -14,9 +14,12 @@ module.exports = {
         {
             title: 'Getting Started',
             collapsable: true, // optional, defaults to true
-            children: [
-                '/installation/'
-            ]
+            path: '/getting-started/'
+        },
+        {
+            title: 'Installation',
+            collapsable: true, // optional, defaults to true
+            path: '/installation/'
         },
         {
           title: 'Authoring Configuration',   // required
