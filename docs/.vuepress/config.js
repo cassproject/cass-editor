@@ -47,6 +47,12 @@ module.exports = {
             ]
         },
         {
+            title: 'Managing Taxonomies',   // required
+            collapsable: true, // optional, defaults to true
+            path: '/taxonomies/',
+            sidebarDepth: 1  // optional, defaults to 1
+        },
+        {
             title: 'Installation',
             collapsable: true, // optional, defaults to true
             path: '/installation/'

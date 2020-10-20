@@ -123,3 +123,22 @@ You can login with existing accounts by filling out the appropriate
 fields on the login form and clicking the login button.
 
 ![CAT Login - Login Button](/docs/login-button.png)
+
+
+## Helpful Links 
+
+On the right side bar of the CaSS Authoring Tools welcome page you will
+find a list of documentation, resources, example framework imports,
+options for getting in touch with the CaSS community, and legacy
+applications of CaSS.
+
+![CAT Welcome - Helpful Links ](/docs/helpful-links.png)
+
+## Get in touch  
+
+
+- [Join the Slack
+    Channel](https://www.google.com/url?q=https://docs.google.com/a/eduworks.com/forms/viewform?bc%3Dtransparent%26embedded%3Dtrue%26f%3DArial%25252C%252BVerdana%25252C%252Bsans-serif%26hl%3Den%26htc%3D%252523666666%26id%3D1BMaboapV0IaS8iGnCJut2obPZ9y3CWkxXuvy-7krcgE%26lc%3D%252523003965%26pli%3D1%26tc%3D%252523444444%26ttl%3D0&sa=D&ust=1603207897946000&usg=AOvVaw3DXisffX2tTcQQH_sM4J67)
+- [Email us](mailto:cass@eduworks.com)
+
+
