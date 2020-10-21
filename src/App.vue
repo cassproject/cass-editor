@@ -163,6 +163,23 @@ export default {
             if (EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
                 this.findLinkedPersonForIdentity();
             }
+            // Preload schema so large frameworks are faster
+            let types = [
+                "https://schema.cassproject.org/0.4/skos/ConceptScheme/", "https://schema.cassproject.org/0.4/skos/Concept/", "https://schema.cassproject.org/0.4/skos/", "https://schema.cassproject.org/0.4/Framework/", "https://schema.cassproject.org/0.4/Competency/", "https://schema.cassproject.org/0.4/",
+                "https://schema.cassproject.org/0.4/skos/ConceptScheme", "https://schema.cassproject.org/0.4/skos/Concept", "https://schema.cassproject.org/0.4/skos", "https://schema.cassproject.org/0.4/Framework", "https://schema.cassproject.org/0.4/Competency", "https://schema.cassproject.org/0.4"
+            ];
+            for (let type of types) {
+                if (this.$store.state.lode.schemata[type] === undefined && type.indexOf("EncryptedValue") === -1) {
+                    EcRemote.getExpectingObject("", type, function(context) {
+                        me.$store.commit('lode/rawSchemata', {id: type, obj: context});
+                        jsonld.expand(context, function(err, expanded) {
+                            if (err == null) {
+                                me.$store.dispatch('lode/schemata', {id: type, obj: expanded});
+                            }
+                        });
+                    }, function() {});
+                }
+            }
         },
         onSidebarEvent: function() {
             this.showSideNav = !this.showSideNav;

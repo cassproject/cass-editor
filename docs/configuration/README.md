@@ -1,4 +1,8 @@
-# Framework and Competency Configurations
+# Configurations
+
+::: tip
+Note: This section is not applicable to Credential Engine instances of CAT.
+:::
 
 Configurations control the way frameworks and competencies appear in the editor, as well as what properties,
 relationships, and in some cases value types of properties and relationships that can be added to frameworks and competencies.

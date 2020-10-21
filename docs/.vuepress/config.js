@@ -14,30 +14,50 @@ module.exports = {
         {
             title: 'Getting Started',
             collapsable: true, // optional, defaults to true
+            path: '/getting-started/'
+        },
+        {
+            title: 'Organizations, Groups, Teams',
+            collapsable: true, // optional, defaults to true
             children: [
-                '/installation/'
+                '/organizations-and-groups/',
+                '/users-and-groups/'
             ]
         },
         {
-          title: 'Authoring Configuration',   // required
-          path: '/configuration/',      // optional, link of the title, which should be an absolute path and must exist
-          collapsable: true, // optional, defaults to true
-          sidebarDepth: 1,    // optional, defaults to 1
-          children: [
-            '/competency-properties/',
-            '/framework-properties/',
-            '/default-users/'
-          ]
+            title: 'Configuring Competencies & Frameworks',   // required
+            collapsable: true, // optional, defaults to true
+            sidebarDepth: 1,    // optional, defaults to 1
+            children: [
+                '/configuration/',
+                '/competency-properties/',
+                '/framework-properties/',
+                '/default-users/'
+            ]
         },
         {
-          title: 'Users and groups',   // required
-          path: '/users-and-groups/',      // optional, link of the title, which should be an absolute path and must exist
-          collapsable: true, // optional, defaults to true
-          sidebarDepth: 1,    // optional, defaults to 1
-          children: [
-            '/users-and-groups/'
-          ]
+            title: 'Managing Competency Frameworks',   // required
+            collapsable: true, // optional, defaults to true
+            sidebarDepth: 1,    // optional, defaults to 1
+            children: [
+                '/competency-and-framework-management/',
+                '/importing-framework/',
+                '/crosswalk-tool/',
+                '/exporting-framework/'
+            ]
+        },
+        {
+            title: 'Managing Taxonomies',   // required
+            collapsable: true, // optional, defaults to true
+            path: '/taxonomies/',
+            sidebarDepth: 1  // optional, defaults to 1
+        },
+        {
+            title: 'Installation',
+            collapsable: true, // optional, defaults to true
+            path: '/installation/'
         }
+        
       ]
     }
   }

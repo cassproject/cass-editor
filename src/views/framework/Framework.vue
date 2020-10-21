@@ -221,7 +221,9 @@ export default {
                 scrollSpeed: 5,
                 forceFallback: true
             },
-            frameworkDrag: []
+            frameworkDrag: [],
+            configHasAlignments: false,
+            configHasLevels: false
         };
     },
     computed: {
@@ -357,6 +359,8 @@ export default {
                     }
                 }
                 if (this.config.levelsConfig) {
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                    this.configHasLevels = true;
                     var me = this;
                     var key = EcObject.keys(this.config.levelsConfig);
                     key = key[0];
@@ -406,6 +410,8 @@ export default {
                     }
                 }
                 if (this.config.alignConfig) {
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                    this.configHasAlignments = true;
                     var keys = EcObject.keys(this.config.alignConfig);
                     for (let i = 0; i < this.config.alignConfig.length; i++) {
                         let key = this.config.alignConfig[i] + " (resource)";
@@ -829,11 +835,11 @@ export default {
         preloadRelations: function() {
             this.handleDoneLoading();
             if (!this.gotInitialLevelsRelationsAndAlignments) {
-                if (this.config && this.config.levelsConfig && this.config.levelsConfig.length > 0) {
+                if (this.configHasLevels) {
                     this.updateLevels();
                 }
                 this.updateRelations();
-                if (this.config && this.config.alignConfig && this.config.alignConfig.length > 0) {
+                if (this.configHasAlignments) {
                     this.updateAlignments();
                 }
                 this.gotInitialLevelsRelationsAndAlignments = true;
