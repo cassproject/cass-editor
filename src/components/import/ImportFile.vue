@@ -306,7 +306,7 @@
                         class="cat__bullet-list is-size-6"
                         v-if="!conceptMode">
                         <li>
-                            Cick inside the “Files to Upload” box or drag and drop a file inside the dashed box.
+                            Click inside the “Files to Upload” box or drag and drop a file inside the dashed box.
                         </li>
                         <li>
                             Once your file has been uploaded, CaSS will detect a competency framework from the file and display details about your framework.
@@ -331,7 +331,7 @@
                         class="cat__bullet-list is-size-6"
                         v-else>
                         <li>
-                            Cick inside the “Files to Upload” box or drag and drop a file inside the dashed box.
+                            Click inside the “Files to Upload” box or drag and drop a file inside the dashed box.
                         </li>
                         <li>
                             Once your file has been uploaded, CaSS will detect a {{ taxonomyTerminology }} from the file and display details about your {{ taxonomyTerminology }}.
