@@ -169,7 +169,6 @@ export default {
                 "https://schema.cassproject.org/0.4/skos/ConceptScheme", "https://schema.cassproject.org/0.4/skos/Concept", "https://schema.cassproject.org/0.4/skos", "https://schema.cassproject.org/0.4/Framework", "https://schema.cassproject.org/0.4/Competency", "https://schema.cassproject.org/0.4"
             ];
             for (let type of types) {
-                console.log(type);
                 if (this.$store.state.lode.schemata[type] === undefined && type.indexOf("EncryptedValue") === -1) {
                     EcRemote.getExpectingObject("", type, function(context) {
                         me.$store.commit('lode/rawSchemata', {id: type, obj: context});
