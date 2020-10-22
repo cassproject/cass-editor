@@ -94,7 +94,86 @@
                                 </div>
                             </div>
                             <div v-if="manifestLoaded">
-                                {{manifestData}}
+                                <div v-if="manifestError">
+                                    <p class="manifestLoadError">
+                                        <i class="fa fa-exclamation-triangle is-primary"/> Manifest load error: {{manifestData.error}}
+                                    </p>
+                                    <br>
+                                    <div class="buttons is-fullwidth is-left">
+                                        <div
+                                            class="button is-outlined is-primary"
+                                            @click="loadManifestData">
+                                            <span class="icon">
+                                                <i class="fa fa-sync-alt" />
+                                            </span>
+                                            <span>retry</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div
+                                    v-if="!manifestError"
+                                    class="columns is-centered is-multiline">
+                                    <div class="column is-4">
+                                        <div class="field">
+                                            <label class="label">Name: </label>
+                                            <div>
+                                                {{ manifestData.name }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="column is-8">
+                                        <div class="field">
+                                            <label class="label">Scope: </label>
+                                            <div>
+                                                {{ manifestData.scope }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="column is-12">
+                                        <div class="field">
+                                            <label class="label">Shortcuts: </label>
+                                            <div>
+                                                <table class="table is-hoverable is-fullwidth">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>
+                                                                name
+                                                            </th>
+                                                            <th>
+                                                                location
+                                                            </th>
+                                                            <th>
+                                                                category/screen
+                                                            </th>
+                                                            <th>
+                                                                url
+                                                            </th>
+                                                            <th />
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr
+                                                            v-for="(mds, idx) in manifestData.shortcuts"
+                                                            :key="idx">
+                                                            <th>
+                                                                <b>{{ mds.launchName }}</b>
+                                                            </th>
+                                                            <th>
+                                                                {{ mds.launchLocation }}
+                                                            </th>
+                                                            <th>
+                                                                {{ mds.launchCategory }}
+                                                            </th>
+                                                            <th>
+                                                                {{ mds.launchUrl }}
+                                                            </th>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -105,7 +184,10 @@
 </template>
 <script>
 
+import {pluginUtil} from '../../mixins/pluginUtil';
+
 export default {
+    mixins: [pluginUtil],
     name: 'PluginDetails',
     props: {
         plugin: {
@@ -120,35 +202,29 @@ export default {
         return {
             panelClass: 'panel',
             manifestLoaded: false,
+            manifestError: false,
             manifestRequestBusy: false,
-            manifestData: ''
+            manifestData: {}
         };
     },
     methods: {
-        loadManifestData() {
-            // alert('TODO loadManifestData');
-            this.manifestRequestBusy = true;
-            let manifestUrl = '';
-            if (this.plugin.url.endsWith("/")) manifestUrl = this.plugin.url + "manifest.json";
-            else manifestUrl = this.plugin.url + "/manifest.json";
-            this.$http.get(manifestUrl).then(
-                function(response) {
-                    this.manifestData = response.data;
-                    this.manifestLoaded = true;
-                    this.manifestRequestBusy = false;
-                },
-                function(error) {
-                    this.manifestData = 'ERROR: ' + error.statusText;
-                    this.manifestLoaded = true;
-                    this.manifestRequestBusy = false;
-                }
-            );
+        loadManifestDataComplete() {
+            this.manifestData = this.pluginManifestData[this.plugin.url];
+            if (!this.manifestData.loaded) this.manifestError = true;
+            this.manifestLoaded = true;
+            this.manifestRequestBusy = false;
+            console.log(this.pluginManifestData);
         },
-        // setAllConfigValidationsChecksToValid() {
-        //     this.groupInvalid = false;
-        //     this.groupNameInvalid = false;
-        //     this.groupDescriptionInvalid = false;
-        // },
+        loadManifestData() {
+            if (this.isValidUrl(this.plugin.url)) {
+                this.manifestRequestBusy = true;
+                let pluginUrls = [];
+                pluginUrls.push(this.plugin.url);
+                this.loadManifestDataForPluginUrlList(pluginUrls, this.loadManifestDataComplete);
+            } else {
+                appLog('invalid URL');
+            }
+        },
         validateCurrentPluginAndEmitSave() {
             // this.setAllConfigValidationsChecksToValid();
             // this.validateGroupFields();
@@ -191,6 +267,9 @@ export default {
     }
     .manifestNotLoaded {
         font-size: .9rem;
+    }
+    .manifestLoadError {
+        color: #D74C44;
     }
 </style>
 

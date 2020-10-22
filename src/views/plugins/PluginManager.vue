@@ -105,6 +105,7 @@
 </template>
 
 <script>
+
 // @ is an alias to /src
 import PluginListItem from '../../components/plugins/PluginListItem';
 import PluginDetails from '../../components/plugins/PluginDetails';
