@@ -65,6 +65,13 @@
                                 v-model="plugin.url">
                         </div>
                     </div>
+                    <!-- ************************************** Validation ************************************************ -->
+                    <div class="errorColor" v-if="pluginInvalid">
+                        <p>Plugin is invalid:</p>
+                        <p v-if="pluginUrlInvalid">
+                            *A valid URL is required for a plugin
+                        </p>
+                    </div>
                 </div>
                 <div class="section box px-4 py-4">
                     <h3 class="is-size-3 title">
@@ -95,7 +102,7 @@
                             </div>
                             <div v-if="manifestLoaded">
                                 <div v-if="manifestError">
-                                    <p class="manifestLoadError">
+                                    <p class="errorColor">
                                         <i class="fa fa-exclamation-triangle is-primary"/> Manifest load error: {{manifestData.error}}
                                     </p>
                                     <br>
@@ -204,7 +211,9 @@ export default {
             manifestLoaded: false,
             manifestError: false,
             manifestRequestBusy: false,
-            manifestData: {}
+            manifestData: {},
+            pluginInvalid: false,
+            pluginUrlInvalid: false
         };
     },
     methods: {
@@ -225,12 +234,19 @@ export default {
                 appLog('invalid URL');
             }
         },
+        validatePluginFields() {
+            if (!this.isValidUrl(this.plugin.url)) {
+                this.pluginInvalid = true;
+                this.pluginUrlInvalid = true;
+            }
+        },
         validateCurrentPluginAndEmitSave() {
-            // this.setAllConfigValidationsChecksToValid();
-            // this.validateGroupFields();
-            // if (!this.groupInvalid) {
-            //     this.$emit('save', this.localGroupManagers, this.localGroupUsers);
-            // }
+            this.pluginInvalid = false;
+            this.pluginUrlInvalid = false;
+            this.validatePluginFields();
+            if (!this.pluginInvalid) {
+                this.$emit('save');
+            }
         }
     },
     computed: {
@@ -268,7 +284,7 @@ export default {
     .manifestNotLoaded {
         font-size: .9rem;
     }
-    .manifestLoadError {
+    .errorColor {
         color: #D74C44;
     }
 </style>

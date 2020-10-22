@@ -5,6 +5,7 @@ export const pluginUtil = {
         DEFAULT_PLUGIN_LAUNCH_LOCATION: 'main',
         DEFAULT_PLUGIN_LAUNCH_CATEGORY: 'Plugins',
         PLUGIN_ENABLED_LS_KEY: 'cassAuthoringToolPluginsEnabled',
+        LOCAL_PLUGIN_LIST_KEY: 'cassAuthoringToolLocalPlugins',
         mdPluginUrlList: [],
         mdPluginSuccessCallback: null,
         numPluginManifestsToGet: 0,
@@ -145,6 +146,30 @@ export const pluginUtil = {
         setAllPluginsAsDisabled() {
             localStorage.removeItem(this.PLUGIN_ENABLED_LS_KEY);
             // TODO need to do some type of session plugin rebuild
+        },
+        getPluginListFromLocalStorage() {
+            let localPluginListString = localStorage.getItem(this.LOCAL_PLUGIN_LIST_KEY);
+            let localPluginList = [];
+            if (!localPluginListString) localPluginList = [];
+            else localPluginList = JSON.parse(localPluginListString);
+            return localPluginList;
+        },
+        addLocalPlugin(pluginUrl) {
+            let localPluginList = this.getPluginListFromLocalStorage();
+            if (!localPluginList.includes(pluginUrl)) localPluginList.push(pluginUrl);
+            localStorage.setItem(this.LOCAL_PLUGIN_LIST_KEY, JSON.stringify(localPluginList));
+        },
+        removeLocalPlugin(pluginUrl) {
+            let localPluginList = this.getPluginListFromLocalStorage();
+            if (localPluginList.includes(pluginUrl)) {
+                for (let i = 0; i < localPluginList.length; i++) {
+                    if (localPluginList[i].equals(pluginUrl)) {
+                        localPluginList.splice(i, 1);
+                        break;
+                    }
+                }
+                localStorage.setItem(this.LOCAL_PLUGIN_LIST_KEY, JSON.stringify(localPluginList));
+            }
         }
     },
     computed: {

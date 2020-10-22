@@ -11,6 +11,42 @@
                 </span>
             </div>
         </div>
+        <!-- plugin deletion confirm modal-->
+        <div
+            class="modal"
+            :class="[{'is-active': showConfirmDeletePluginModal}]">
+            <div class="modal-background" />
+            <div class="modal-card">
+                <header class="modal-card-head has-background-primary">
+                    <p class="modal-card-title">
+                        <span class="title has-text-white">
+                            Remove Plugin?
+                        </span>
+                    </p>
+                    <button
+                        class="delete"
+                        @click="cancelPluginDelete"
+                        aria-label="close" />
+                </header>
+                <section class="modal-card-body">
+                    Are you sure you wish to remove the plugin <b>'{{ pluginToDelete.url }}'</b>?
+                </section>
+                <footer class="modal-card-foot">
+                    <div class="buttons is-spaced">
+                        <button
+                            class="button is-dark is-outlined"
+                            @click="cancelPluginDelete">
+                            Cancel
+                        </button>
+                        <button
+                            class="button is-outlined is-primary"
+                            @click="deletePlugin">
+                            Remove
+                        </button>
+                    </div>
+                </footer>
+            </div>
+        </div>
         <!-- plugin manager content-->
         <div
             class="container"
@@ -130,7 +166,9 @@ export default {
         pluginManagerBusy: false,
         pluginManagerViewMode: 'list',
         pluginList: [],
-        currentPlugin: {}
+        currentPlugin: {},
+        showConfirmDeletePluginModal: false,
+        pluginToDelete: {}
     }),
     computed: {
         currentPluginIsReadOnly: function() {
@@ -154,10 +192,31 @@ export default {
             this.showListView();
         },
         saveCurrentPlugin() {
-            // TODO
+            this.pluginManagerBusy = true;
+            this.addLocalPlugin(this.currentPlugin.url);
+            this.setPluginAsEnabled(this.currentPlugin.url);
+            this.currentPlugin = {};
+            this.buildPluginList();
+            this.showListView();
+        },
+        deletePlugin() {
+            this.pluginManagerBusy = true;
+            this.setPluginAsDisabled(this.pluginToDelete.url);
+            this.removeLocalPlugin(this.pluginToDelete.url);
+            this.pluginToDelete = {};
+            this.showConfirmDeletePluginModal = false;
+            this.buildPluginList();
+        },
+        cancelPluginDelete() {
+            this.pluginToDelete = {};
+            this.showConfirmDeletePluginModal = false;
+        },
+        setPluginToDelete(pluginId) {
+            this.pluginToDelete = this.getPluginById(pluginId);
         },
         showPluginDelete(pluginId) {
-            // TODO
+            this.setPluginToDelete(pluginId);
+            this.showConfirmDeletePluginModal = true;
         },
         enablePlugin(pluginId) {
             this.setPluginAsEnabled(pluginId);
@@ -220,15 +279,30 @@ export default {
             p.isOwned = false;
             return p;
         },
+        buildPluginListItemFromLocalPlugin(localPlug) {
+            let p = {};
+            p.id = localPlug;
+            p.url = localPlug;
+            p.isCurated = false;
+            p.isNew = false;
+            p.isOwned = true;
+            return p;
+        },
         getPluginsFromCuratedList() {
             for (let p of this.curatedPlugins) {
                 this.pluginList.push(this.buildPluginListItemFromCuratedPlugin(p));
+            }
+        },
+        getPluginsFromLocalStorage() {
+            for (let p of this.getPluginListFromLocalStorage()) {
+                this.pluginList.push(this.buildPluginListItemFromLocalPlugin(p));
             }
         },
         buildPluginList() {
             this.pluginManagerBusy = true;
             this.pluginList = [];
             this.getPluginsFromCuratedList();
+            this.getPluginsFromLocalStorage();
             this.getPluginsFromRepo();
         }
     },
