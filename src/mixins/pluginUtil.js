@@ -11,7 +11,9 @@ export const pluginUtil = {
         numPluginManifestsToGet: 0,
         numPluginManifestsGotten: 0,
         mdPluginCurrentUrl: '',
-        pluginManifestData: {}
+        pluginManifestData: {},
+        pluginList: [],
+        buildPluginListSuccessCallback: null
     }),
     methods: {
         isValidUrl(s) {
@@ -72,7 +74,6 @@ export const pluginUtil = {
             return mdo;
         },
         getManifestDataForPluginSuccess(responseData) {
-            console.log("getManifestDataForPluginSuccess: " + this.mdPluginCurrentUrl);
             let mdo = {};
             try {
                 mdo = this.parsePluginManifest(responseData);
@@ -110,14 +111,51 @@ export const pluginUtil = {
                 }
             );
         },
+        removeIrrelevantPluginEntriesFromManifestData(pluginUrlList) {
+            let pluginMdKeys = Object.keys(this.pluginManifestData);
+            for (let pk of pluginMdKeys) {
+                if (!pluginUrlList.includes(pk)) delete this.pluginManifestData[pk];
+            }
+        },
+        buildManifestDataPluginUrlList(pluginUrlList) {
+            this.mdPluginUrlList = [];
+            let pluginMdKeys = Object.keys(this.pluginManifestData);
+            for (let pu of pluginUrlList) {
+                if (!pluginMdKeys.includes(pu)) this.mdPluginUrlList.push(pu);
+            }
+        },
+        prepDataForManifestLoad(pluginUrlList) {
+            // Trying to be smart with this so it doesn't try to load plugin manifest data it already has...
+            if (!this.pluginManifestData || Object.keys(this.pluginManifestData).length === 0) {
+                this.mdPluginUrlList = pluginUrlList;
+                this.pluginManifestData = {};
+            } else {
+                this.removeIrrelevantPluginEntriesFromManifestData(pluginUrlList);
+                this.buildManifestDataPluginUrlList(pluginUrlList);
+            }
+        },
         loadManifestDataForPluginUrlList(pluginUrlList, mdPluginSuccessCallback) {
             if (!pluginUrlList || pluginUrlList.length === 0) mdPluginSuccessCallback();
-            this.mdPluginSuccessCallback = mdPluginSuccessCallback;
-            this.numPluginManifestsToGet = pluginUrlList.length;
-            this.numPluginManifestsGotten = 0;
-            this.mdPluginUrlList = pluginUrlList;
-            this.pluginManifestData = {};
-            this.getManifestDataForPlugin(0);
+            else {
+                this.mdPluginSuccessCallback = mdPluginSuccessCallback;
+                this.prepDataForManifestLoad(pluginUrlList);
+                if (this.mdPluginUrlList.length === 0) mdPluginSuccessCallback();
+                else {
+                    this.numPluginManifestsToGet = this.mdPluginUrlList.length;
+                    this.numPluginManifestsGotten = 0;
+                    this.getManifestDataForPlugin(0);
+                }
+            }
+        },
+        getEnabledPluginUrlList() {
+            if (!this.pluginList || this.pluginList.length === 0) return [];
+            else {
+                let pul = [];
+                for (let pi of this.pluginList) {
+                    if (pi.isEnabled) pul.push(pi.url);
+                }
+                return pul;
+            }
         },
         getPluginEnabledMapFromLocalStorage() {
             let pluginEnabledMapString = localStorage.getItem(this.PLUGIN_ENABLED_LS_KEY);
@@ -170,6 +208,57 @@ export const pluginUtil = {
                 }
                 localStorage.setItem(this.LOCAL_PLUGIN_LIST_KEY, JSON.stringify(localPluginList));
             }
+        },
+        getPluginsFromRepoSuccess(ecRemoteLda) {
+            this.buildPluginListSuccessCallback();
+        },
+        getPluginsFromRepoFailure() {
+            appLog("Plugin search failure: " + msg);
+            this.buildPluginListSuccessCallback();
+        },
+        buildPluginListItemFromRepoPlugin(repoPlug) {
+            // TODO
+        },
+        getPluginsFromRepo() {
+            // TODO
+            this.getPluginsFromRepoSuccess(null);
+        },
+        buildPluginListItemFromCuratedPlugin(curPlug) {
+            let p = {};
+            p.id = curPlug.id;
+            p.url = curPlug.url;
+            p.isCurated = true;
+            p.isNew = false;
+            p.isOwned = false;
+            p.isEnabled = this.getIsPluginEnabled(curPlug.id);
+            return p;
+        },
+        buildPluginListItemFromLocalPlugin(localPlug) {
+            let p = {};
+            p.id = localPlug;
+            p.url = localPlug;
+            p.isCurated = false;
+            p.isNew = false;
+            p.isOwned = true;
+            p.isEnabled = this.getIsPluginEnabled(localPlug);
+            return p;
+        },
+        getPluginsFromCuratedList() {
+            for (let p of this.curatedPlugins) {
+                this.pluginList.push(this.buildPluginListItemFromCuratedPlugin(p));
+            }
+        },
+        getPluginsFromLocalStorage() {
+            for (let p of this.getPluginListFromLocalStorage()) {
+                this.pluginList.push(this.buildPluginListItemFromLocalPlugin(p));
+            }
+        },
+        buildPluginList(buildPluginListSuccessCallback) {
+            this.buildPluginListSuccessCallback = buildPluginListSuccessCallback;
+            this.pluginList = [];
+            this.getPluginsFromCuratedList();
+            this.getPluginsFromLocalStorage();
+            this.getPluginsFromRepo();
         }
     },
     computed: {

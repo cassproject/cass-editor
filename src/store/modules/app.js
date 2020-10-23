@@ -9,6 +9,7 @@ const state = {
     rightAsideContent: '',
     canViewComments: false,
     canAddComments: false,
+    pluginLastUpdate: null,
     framework: {
         showToolBar: true,
         commentsEnabled: true,
@@ -105,6 +106,9 @@ const mutations = {
     },
     clearImportFiles: function(state) {
         state.import.files = [];
+    },
+    pluginLastUpdate: function(state, value) {
+        state.pluginLastUpdate = value;
     },
     resetImport: function(state) {
         state.import = {
@@ -388,6 +392,9 @@ const getters = {
     },
     csvRelationFile: state => {
         return state.import.csvRelationFile;
+    },
+    pluginLastUpdate: state => {
+        return state.pluginLastUpdate;
     }
 };
 

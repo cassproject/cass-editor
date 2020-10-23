@@ -165,7 +165,6 @@ export default {
     data: () => ({
         pluginManagerBusy: false,
         pluginManagerViewMode: 'list',
-        pluginList: [],
         currentPlugin: {},
         showConfirmDeletePluginModal: false,
         pluginToDelete: {}
@@ -188,7 +187,7 @@ export default {
             this.showListView();
         },
         cancelEditCurrentPlugin() {
-            this.buildPluginList();
+            this.buildManagerPluginList();
             this.showListView();
         },
         saveCurrentPlugin() {
@@ -196,8 +195,9 @@ export default {
             this.addLocalPlugin(this.currentPlugin.url);
             this.setPluginAsEnabled(this.currentPlugin.url);
             this.currentPlugin = {};
-            this.buildPluginList();
+            this.buildManagerPluginList();
             this.showListView();
+            this.$store.commit('app/pluginLastUpdate', Date.now());
         },
         deletePlugin() {
             this.pluginManagerBusy = true;
@@ -205,7 +205,8 @@ export default {
             this.removeLocalPlugin(this.pluginToDelete.url);
             this.pluginToDelete = {};
             this.showConfirmDeletePluginModal = false;
-            this.buildPluginList();
+            this.buildManagerPluginList();
+            this.$store.commit('app/pluginLastUpdate', Date.now());
         },
         cancelPluginDelete() {
             this.pluginToDelete = {};
@@ -220,13 +221,16 @@ export default {
         },
         enablePlugin(pluginId) {
             this.setPluginAsEnabled(pluginId);
+            this.$store.commit('app/pluginLastUpdate', Date.now());
         },
         disablePlugin(pluginId) {
             this.setPluginAsDisabled(pluginId);
+            this.$store.commit('app/pluginLastUpdate', Date.now());
         },
         disableAllPlugins() {
             this.setAllPluginsAsDisabled();
-            this.buildPluginList();
+            this.buildManagerPluginList();
+            this.$store.commit('app/pluginLastUpdate', Date.now());
         },
         getPluginById(pluginId) {
             for (let p of this.pluginList) {
@@ -255,61 +259,18 @@ export default {
             this.currentPlugin = this.generateNewPluginObject();
             this.showDetailView();
         },
-        getPluginsFromRepoSuccess(ecRemoteLda) {
-            // TODO
+        buildPluginListFinished() {
             this.pluginManagerBusy = false;
         },
-        getPluginsFromRepoFailure() {
-            appLog("Plugin search failure: " + msg);
-            this.pluginManagerBusy = false;
-        },
-        buildPluginListItemFromRepoPlugin(repoPlug) {
-            // TODO
-        },
-        getPluginsFromRepo() {
-            // TODO
-            this.getPluginsFromRepoSuccess(null);
-        },
-        buildPluginListItemFromCuratedPlugin(curPlug) {
-            let p = {};
-            p.id = curPlug.id;
-            p.url = curPlug.url;
-            p.isCurated = true;
-            p.isNew = false;
-            p.isOwned = false;
-            return p;
-        },
-        buildPluginListItemFromLocalPlugin(localPlug) {
-            let p = {};
-            p.id = localPlug;
-            p.url = localPlug;
-            p.isCurated = false;
-            p.isNew = false;
-            p.isOwned = true;
-            return p;
-        },
-        getPluginsFromCuratedList() {
-            for (let p of this.curatedPlugins) {
-                this.pluginList.push(this.buildPluginListItemFromCuratedPlugin(p));
-            }
-        },
-        getPluginsFromLocalStorage() {
-            for (let p of this.getPluginListFromLocalStorage()) {
-                this.pluginList.push(this.buildPluginListItemFromLocalPlugin(p));
-            }
-        },
-        buildPluginList() {
+        buildManagerPluginList() {
             this.pluginManagerBusy = true;
-            this.pluginList = [];
-            this.getPluginsFromCuratedList();
-            this.getPluginsFromLocalStorage();
-            this.getPluginsFromRepo();
+            this.buildPluginList(this.buildPluginListFinished);
         }
     },
     updated() {
     },
     mounted() {
-        this.buildPluginList();
+        this.buildManagerPluginList();
     }
 };
 </script>
