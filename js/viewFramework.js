@@ -47,43 +47,45 @@ function select() {
 			ary.push(selectedCompetency.shortId());
 
 	$("input:checked").parent().each(function (f) {
-		if (queryParams.selectVerbose == "true" && queryParams.concepts != "true") {
-			if (queryParams.selectExport == "ctdlasn") {
-				var link;
-				if (EcRepository.shouldTryUrl($(this).attr("id")) == false && $(this).attr("id").indexOf(repo.selectedServer) == -1) {
-					link = repo.selectedServer + "ceasn/" + EcCrypto.md5($(this).attr("id"));
-				} else {
-					link = $(this).attr("id").replace("/data/", "/ceasn/");
-				}
-				$.ajax({
-					async: false,
-					method: "GET",
-					url: link,
-					success: function (data) {
-						ary.push(data);
-					},
-					error: function (xhr, status, error) {
-						console.log(status);
-						console.log(error);
+		if ($(this).attr("id")) {
+			if (queryParams.selectVerbose == "true" && queryParams.concepts != "true") {
+				if (queryParams.selectExport == "ctdlasn") {
+					var link;
+					if (EcRepository.shouldTryUrl($(this).attr("id")) == false && $(this).attr("id").indexOf(repo.selectedServer) == -1) {
+						link = repo.selectedServer + "ceasn/" + EcCrypto.md5($(this).attr("id"));
+					} else {
+						link = $(this).attr("id").replace("/data/", "/ceasn/");
 					}
-				});
-			} else {
-				ary.push(JSON.parse(EcCompetency.getBlocking($(this).attr("id")).toJson()));
-			}
-		} else if (queryParams.selectVerbose == "true") {
-			ary.push(JSON.parse(EcConcept.getBlocking($(this).attr("id")).toJson()));
-		} else {
-			ary.push($(this).attr("id"));
-		}
-		var rId = $(this).attr("relationId");
-		if (rId != null && rId !== undefined && rId != "")
-			if (queryParams.selectRelations == "true") {
-				if (queryParams.selectVerbose == "true") {
-					ary.push(JSON.parse(EcAlignment.getBlocking(rId).toJson()));
+					$.ajax({
+						async: false,
+						method: "GET",
+						url: link,
+						success: function (data) {
+							ary.push(data);
+						},
+						error: function (xhr, status, error) {
+							console.log(status);
+							console.log(error);
+						}
+					});
 				} else {
-					ary.push(rId);
+					ary.push(JSON.parse(EcCompetency.getBlocking($(this).attr("id")).toJson()));
 				}
+			} else if (queryParams.selectVerbose == "true") {
+				ary.push(JSON.parse(EcConcept.getBlocking($(this).attr("id")).toJson()));
+			} else {
+				ary.push($(this).attr("id"));
 			}
+			var rId = $(this).attr("relationId");
+			if (rId != null && rId !== undefined && rId != "")
+				if (queryParams.selectRelations == "true") {
+					if (queryParams.selectVerbose == "true") {
+						ary.push(JSON.parse(EcAlignment.getBlocking(rId).toJson()));
+					} else {
+						ary.push(rId);
+					}
+				}
+		}
 	});
 	var currentFramework = framework;
 	if (queryParams.selectExport == "ctdlasn" && queryParams.concepts != "true") {
