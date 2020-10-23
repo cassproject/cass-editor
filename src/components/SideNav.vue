@@ -167,12 +167,12 @@
                 v-for="navLink of pluginLinkMap['Competencies & Frameworks']"
                 class="has-text-white"
                 v-show="showSideNav">
-                <router-link to="/pluginContainer">
+                <a @click="setLaunchPluginValues(navLink)">
                     <span class="icon">
                         <i class="fa fa-plug" />
                     </span>
                     <span v-if="showSideNav"> {{navLink.launchName}}</span>
-                </router-link>
+                </a>
             </li>
         </ul>
         <!-- CONCEPT SCHEMES -->
@@ -238,12 +238,12 @@
                 v-for="navLink of pluginLinkMap['Taxonomy']"
                 class="has-text-white"
                 v-show="showSideNav">
-                <router-link to="/pluginContainer">
+                <a @click="setLaunchPluginValues(navLink)">
                     <span class="icon">
                         <i class="fa fa-plug" />
                     </span>
                     <span v-if="showSideNav"> {{navLink.launchName}}</span>
-                </router-link>
+                </a>
             </li>
         </ul>
         <!--<ul class="menu-list" />-->
@@ -280,12 +280,12 @@
                 v-for="navLink of pluginLinkMap['Configuration']"
                 class="has-text-white"
                 v-show="showSideNav">
-                <router-link to="/pluginContainer">
+                <a @click="setLaunchPluginValues(navLink)">
                     <span class="icon">
                         <i class="fa fa-plug" />
                     </span>
                     <span v-if="showSideNav"> {{navLink.launchName}}</span>
-                </router-link>
+                </a>
             </li>
         </ul>
         <!-- NON STANDARD NAV CATEGORIES (FROM PLUGINS) -->
@@ -301,12 +301,12 @@
                 <li
                     v-for="navLink of pluginLinkMap[nonStandardNavCat]"
                     class="has-text-white">
-                    <router-link to="/pluginContainer">
+                    <a @click="setLaunchPluginValues(navLink)">
                         <span class="icon">
                             <i class="fa fa-plug" />
                         </span>
                         <span v-if="showSideNav"> {{navLink.launchName}}</span>
-                    </router-link>
+                    </a>
                 </li>
             </ul>
         </div>
@@ -344,6 +344,11 @@ export default {
         };
     },
     methods: {
+        setLaunchPluginValues(pluginShortcut) {
+            // console.log("setLaunchPluginValues: " + pluginShortcut.launchUrl);
+            this.$store.commit('app/pluginToLaunch', pluginShortcut);
+            this.$router.push({path: '/pluginContainer'});
+        },
         buildPluginLinkMap() {
             // TODO handle screen type plugins at some point...this would be the place to do it...stash them on the VUEX store
             this.pluginLinkMap = {};

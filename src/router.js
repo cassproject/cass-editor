@@ -134,6 +134,15 @@ export default new Router({
             component: () => import('./lode/views/Test.vue')
         },
         {
+            path: '/pluginContainer',
+            name: 'pluginContainer',
+            components: {
+                default: () => import('./views/plugins/PluginContainer.vue'),
+                sidebar: () => import('./components/SideNav.vue'),
+                topbar: () => import('./components/Topbar.vue')
+            }
+        },
+        {
             path: '/conceptScheme',
             name: 'conceptScheme',
             components: {

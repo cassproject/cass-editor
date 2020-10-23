@@ -56,7 +56,7 @@
                     Plugin Management
                 </h3>
                 <p class="description">
-                    Plugins provide the capability to add additional CaSS components that are available to multiple users.
+                    Plugins provide the capability to add additional CaSS related tools in order to customize your UI.
                 </p>
             </div>
             <div
