@@ -265,7 +265,7 @@
             <li v-if="pluginsEnabled">
                 <router-link to="/pluginManager">
                     <span class="icon">
-                        <i class="fa fa-plug" />
+                        <i class="fa fa-charging-station" />
                     </span><span v-if="showSideNav">Plugins</span>
                 </router-link>
             </li>
