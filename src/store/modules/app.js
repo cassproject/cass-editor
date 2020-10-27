@@ -11,6 +11,7 @@ const state = {
     canAddComments: false,
     pluginLastUpdate: null,
     pluginToLaunch: null,
+    pluginToLaunchLastUpdate: 0,
     framework: {
         showToolBar: true,
         commentsEnabled: true,
@@ -113,6 +114,9 @@ const mutations = {
     },
     pluginToLaunch: function(state, value) {
         state.pluginToLaunch = value;
+    },
+    pluginToLaunchLastUpdate: function(state, value) {
+        state.pluginToLaunchLastUpdate = value;
     },
     resetImport: function(state) {
         state.import = {
@@ -402,6 +406,9 @@ const getters = {
     },
     pluginToLaunch: state => {
         return state.pluginToLaunch;
+    },
+    pluginToLaunchLastUpdate: state => {
+        return state.pluginToLaunchLastUpdate;
     }
 };
 

@@ -155,6 +155,9 @@
                                                             <th>
                                                                 url
                                                             </th>
+                                                            <th>
+                                                                query params
+                                                            </th>
                                                             <th />
                                                         </tr>
                                                     </thead>
@@ -162,18 +165,25 @@
                                                         <tr
                                                             v-for="(mds, idx) in manifestData.shortcuts"
                                                             :key="idx">
-                                                            <th>
+                                                            <td>
                                                                 <b>{{ mds.launchName }}</b>
-                                                            </th>
-                                                            <th>
+                                                            </td>
+                                                            <td>
                                                                 {{ mds.launchLocation }}
-                                                            </th>
-                                                            <th>
+                                                            </td>
+                                                            <td>
                                                                 {{ mds.launchCategory }}
-                                                            </th>
-                                                            <th>
+                                                            </td>
+                                                            <td>
                                                                 {{ mds.launchUrl }}
-                                                            </th>
+                                                            </td>
+                                                            <td>
+                                                                <ul>
+                                                                    <li v-for="qp in mds.queryParams">
+                                                                        {{qp.name}}={{qp.value}}
+                                                                    </li>
+                                                                </ul>
+                                                            </td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -222,7 +232,6 @@ export default {
             if (!this.manifestData.loaded) this.manifestError = true;
             this.manifestLoaded = true;
             this.manifestRequestBusy = false;
-            console.log(this.pluginManifestData);
         },
         loadManifestData() {
             if (this.isValidUrl(this.plugin.url)) {

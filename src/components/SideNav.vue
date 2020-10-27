@@ -335,6 +335,7 @@ export default {
     },
     data() {
         return {
+            PLUGIN_CONTAINER_ROUTE: 'pluginContainer',
             STANDARD_NAV_CATEGORIES: ['Competencies & Frameworks', 'Taxonomy', 'Configuration'],
             casslogo: casslogo,
             casslogoSquare: casslogoSquare,
@@ -345,9 +346,9 @@ export default {
     },
     methods: {
         setLaunchPluginValues(pluginShortcut) {
-            // console.log("setLaunchPluginValues: " + pluginShortcut.launchUrl);
             this.$store.commit('app/pluginToLaunch', pluginShortcut);
-            this.$router.push({path: '/pluginContainer'});
+            this.$store.commit('app/pluginToLaunchLastUpdate', Date.now());
+            if (!this.$router.currentRoute.name.equals(this.PLUGIN_CONTAINER_ROUTE)) this.$router.push({path: '/pluginContainer'});
         },
         buildPluginLinkMap() {
             // TODO handle screen type plugins at some point...this would be the place to do it...stash them on the VUEX store

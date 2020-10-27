@@ -55,6 +55,12 @@ export const pluginUtil = {
                 let sdo = this.parsePluginManifestName(so.name);
                 sdo.launchUrl = manifestDataObject.scope + so.url;
                 sdo.launchUrl = sdo.launchUrl.replaceAll('//', '/');
+                sdo.queryParams = [];
+                if (so['query_params']) {
+                    for (let qp of so['query_params']) {
+                        sdo.queryParams.push(qp);
+                    }
+                }
                 manifestDataObject.shortcuts.push(sdo);
             }
         },
