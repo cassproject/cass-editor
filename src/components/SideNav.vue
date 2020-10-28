@@ -166,7 +166,7 @@
             <li
                 v-for="navLink of pluginLinkMap['Competencies & Frameworks']"
                 class="has-text-white"
-                v-show="showSideNav">
+                v-show="showSideNav && pluginsEnabled">
                 <a @click="setLaunchPluginValues(navLink)">
                     <span class="icon">
                         <i class="fa fa-plug" />
@@ -237,7 +237,7 @@
             <li
                 v-for="navLink of pluginLinkMap['Taxonomy']"
                 class="has-text-white"
-                v-show="showSideNav">
+                v-show="showSideNav && pluginsEnabled">
                 <a @click="setLaunchPluginValues(navLink)">
                     <span class="icon">
                         <i class="fa fa-plug" />
@@ -279,7 +279,7 @@
             <li
                 v-for="navLink of pluginLinkMap['Configuration']"
                 class="has-text-white"
-                v-show="showSideNav">
+                v-show="showSideNav && pluginsEnabled">
                 <a @click="setLaunchPluginValues(navLink)">
                     <span class="icon">
                         <i class="fa fa-plug" />
@@ -289,7 +289,10 @@
             </li>
         </ul>
         <!-- NON STANDARD NAV CATEGORIES (FROM PLUGINS) -->
-        <div  v-for="nonStandardNavCat of getNonStandardNavCategoriesFromPlugins">
+        <div
+            class="menu-label"
+            v-show="pluginsEnabled"
+            v-for="nonStandardNavCat of getNonStandardNavCategoriesFromPlugins">
             <div
                 v-if="showSideNav"
                 class="menu-label has-text-weight-bold">

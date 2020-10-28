@@ -1,22 +1,51 @@
 <template>
-    <div id="user-groups">
-        <iframe
-            id="pluginFrame"
-            :src="iFrameSource"
-            @load="handlePluginFrameLoaded">
-        </iframe>
+    <div :class="[{'modal-card': view === 'dynamic-modal'}, {'section': view !== 'dynamic-modal'}]">
+        <section :class="[{ 'container': view !== 'dynamic-modal'}, { 'modal-card-body': view === 'dynamic-modal'}]">
+            <div class="section">
+                <template>
+                    <h3 class="title">
+                        <i class="fa fa-plug"/> {{pluginName}}
+                    </h3>
+                </template>
+            </div>
+            <div
+                class="modal"
+                :class="[{'is-active': pluginBusy}]">
+                <div class="modal-background" />
+                <div class="modal-content has-text-centered">
+                    <span class="icon is-large has-text-center has-text-link">
+                        <i class="fas fa-2x fa-spinner is-info fa-pulse" />
+                    </span>
+                </div>
+            </div>
+            <div :class="[{'is-active': !pluginBusy}]">
+                <iframe
+                    id="pluginFrame"
+                    :src="iFrameSource"
+                    @load="handlePluginFrameLoaded">
+                </iframe>
+            </div>
+        </section>
     </div>
 </template>
 
 <script>
 
 export default {
+    props: {
+        view: {
+            default: '',
+            type: String
+        }
+    },
     name: 'PluginContainer',
     components: {},
     data: () => ({
         WAITING_MESSAGE: "waiting",
         INIT_IDENTITY_ACTION: "initIdentity",
-        iFrameSource: ''
+        pluginName: '',
+        iFrameSource: '',
+        pluginBusy: true
     }),
     methods: {
         getQueryParameterValue(queryParamValue) {
@@ -50,35 +79,31 @@ export default {
         },
         setIFrameSource() {
             if (this.pluginToLaunch) {
+                this.pluginBusy = true;
+                this.pluginName = this.pluginToLaunch.launchName;
                 this.iFrameSource = this.pluginToLaunch.launchUrl + this.buildQueryParameterString(this.pluginToLaunch.queryParams);
-                // console.log('this.iFrameSource');
-                // console.log(this.iFrameSource);
-            } else appLog('Cannot determine launch plugin');
+            } else {
+                appLog('Cannot determine launch plugin');
+            }
         },
         sendIdentityToPlugin(origin) {
             appLog('Sending "' + this.INIT_IDENTITY_ACTION + '" message to plugin');
-            // let origin = this.iFrameSource;
-            // let origin = "https://vlrc.cassproject.org";
             let messageObj = {
                 action: this.INIT_IDENTITY_ACTION,
                 serverParm: window.repo.selectedServer,
                 nameParm: EcIdentityManager.ids[0].displayName,
                 pemParm: EcIdentityManager.ids[0].ppk.toPem()
             };
-            console.log(messageObj);
             document.getElementsByTagName('iframe')[0].contentWindow.postMessage(JSON.stringify(messageObj), origin);
         },
         handlePluginFrameMessage(msg) {
             if (msg && msg.data && msg.data.message) {
-                console.log("!!!handlePluginFrameMessage!!!");
-                console.log(msg);
-                console.log(msg.data.message);
                 if (msg.data.message.equals(this.WAITING_MESSAGE)) this.sendIdentityToPlugin(msg.origin);
             }
         },
         handlePluginFrameLoaded() {
+            this.pluginBusy = false;
             window.addEventListener('message', this.handlePluginFrameMessage);
-            // document.getElementById('pluginFrame').contentWindow.addEventListener('message', this.handlePluginFrameMessage);
         }
     },
     computed: {
@@ -91,6 +116,7 @@ export default {
     },
     watch: {
         pluginToLaunchLastUpdate: function() {
+            // TODO handle clear event listener...reestablish (plugin crosstalk???)
             this.setIFrameSource();
         }
     },
@@ -99,7 +125,6 @@ export default {
     },
     beforeDestroy() {
         window.removeEventListener('message', this.handlePluginFrameMessage);
-        // document.getElementById('pluginFrame').contentWindow.removeEventListener('message', this.handlePluginFrameMessage);
     }
 };
 </script>
