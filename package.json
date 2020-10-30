@@ -29,6 +29,7 @@
     "vue-infinite-loading": "^2.4.5",
     "vue-moment": "^4.1.0",
     "vue-progressbar": "^0.7.5",
+    "vue-resource": "^1.5.1",
     "vue-router": "^3.4.6",
     "vue-scrollto": "^2.18.1",
     "vue-server-renderer": "^2.6.11",

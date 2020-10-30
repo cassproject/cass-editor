@@ -113,6 +113,11 @@
                     Configurations
                 </router-link>
             </li>
+            <li>
+                <router-link to="/pluginManager">
+                    Plugins
+                </router-link>
+            </li>
             <li v-if="isLoggedOn">
                 <router-link to="/users">
                     Users/Groups

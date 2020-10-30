@@ -114,6 +114,7 @@
         <!-- END OPTION TO NAVIGATE BACK -->
 
         <!-- GENERAL MENU -->
+        <!-- COMPETENCIES AND FRAMEWORKS -->
         <div
             v-if="showSideNav"
             class="menu-label has-text-weight-bold">
@@ -161,6 +162,17 @@
                         Import Framework
                     </span>
                 </router-link>
+            </li>
+            <li
+                v-for="navLink of pluginLinkMap['Competencies & Frameworks']"
+                class="has-text-white"
+                v-show="showSideNav && pluginsEnabled">
+                <a @click="setLaunchPluginValues(navLink)">
+                    <span class="icon">
+                        <i class="fa fa-plug" />
+                    </span>
+                    <span v-if="showSideNav"> {{navLink.launchName}}</span>
+                </a>
             </li>
         </ul>
         <!-- CONCEPT SCHEMES -->
@@ -222,8 +234,20 @@
                     </span>
                 </router-link>
             </li>
+            <li
+                v-for="navLink of pluginLinkMap['Taxonomy']"
+                class="has-text-white"
+                v-show="showSideNav && pluginsEnabled">
+                <a @click="setLaunchPluginValues(navLink)">
+                    <span class="icon">
+                        <i class="fa fa-plug" />
+                    </span>
+                    <span v-if="showSideNav"> {{navLink.launchName}}</span>
+                </a>
+            </li>
         </ul>
-        <ul class="menu-list" />
+        <!--<ul class="menu-list" />-->
+        <!-- CONFIGURATION -->
         <div
             v-if="showSideNav && (configurationsEnabled || userManagementEnabled)"
             class="menu-label has-text-weight-bold">
@@ -238,6 +262,13 @@
                     </span><span v-if="showSideNav">Configurations</span>
                 </router-link>
             </li>
+            <li v-if="pluginsEnabled">
+                <router-link to="/pluginManager">
+                    <span class="icon">
+                        <i class="fa fa-charging-station" />
+                    </span><span v-if="showSideNav">Plugins</span>
+                </router-link>
+            </li>
             <li v-if="isLoggedOn && userManagementEnabled">
                 <router-link to="/users">
                     <span class="icon">
@@ -245,7 +276,43 @@
                     </span><span v-if="showSideNav">Users and Groups</span>
                 </router-link>
             </li>
+            <li
+                v-for="navLink of pluginLinkMap['Configuration']"
+                class="has-text-white"
+                v-show="showSideNav && pluginsEnabled">
+                <a @click="setLaunchPluginValues(navLink)">
+                    <span class="icon">
+                        <i class="fa fa-plug" />
+                    </span>
+                    <span v-if="showSideNav"> {{navLink.launchName}}</span>
+                </a>
+            </li>
         </ul>
+        <!-- NON STANDARD NAV CATEGORIES (FROM PLUGINS) -->
+        <div
+            class="menu-label"
+            v-show="pluginsEnabled"
+            v-for="nonStandardNavCat of getNonStandardNavCategoriesFromPlugins">
+            <div
+                v-if="showSideNav"
+                class="menu-label has-text-weight-bold">
+                {{nonStandardNavCat}}
+            </div>
+            <ul
+                v-if="showSideNav"
+                class="menu-list">
+                <li
+                    v-for="navLink of pluginLinkMap[nonStandardNavCat]"
+                    class="has-text-white">
+                    <a @click="setLaunchPluginValues(navLink)">
+                        <span class="icon">
+                            <i class="fa fa-plug" />
+                        </span>
+                        <span v-if="showSideNav"> {{navLink.launchName}}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
     </aside>
 </template>
 
@@ -254,7 +321,11 @@ import {mapState} from 'vuex';
 import casslogo from '@/assets/cass-logo-white.svg';
 import casslogoSquare from '@/assets/cass-logo-square.png';
 import {cassUtil} from './../mixins/cassUtil';
+import {pluginUtil} from './../mixins/pluginUtil';
+import {curatedPlugins} from './../mixins/curatedPlugins';
+
 export default {
+    mixins: [cassUtil, pluginUtil, curatedPlugins],
     name: 'SideNav',
     props: {
         method: {
@@ -267,11 +338,43 @@ export default {
     },
     data() {
         return {
+            PLUGIN_CONTAINER_ROUTE: 'pluginContainer',
+            STANDARD_NAV_CATEGORIES: ['Competencies & Frameworks', 'Taxonomy', 'Configuration'],
             casslogo: casslogo,
             casslogoSquare: casslogoSquare,
             serverUrl: null,
-            url: null
+            url: null,
+            pluginLinkMap: {}
         };
+    },
+    methods: {
+        setLaunchPluginValues(pluginShortcut) {
+            this.$store.commit('app/pluginToLaunch', pluginShortcut);
+            this.$store.commit('app/pluginToLaunchLastUpdate', Date.now());
+            if (!this.$router.currentRoute.name.equals(this.PLUGIN_CONTAINER_ROUTE)) this.$router.push({path: '/pluginContainer'});
+        },
+        buildPluginLinkMap() {
+            // TODO handle screen type plugins at some point...this would be the place to do it...stash them on the VUEX store
+            this.pluginLinkMap = {};
+            let pluginKeys = Object.keys(this.pluginManifestData);
+            for (let pk of pluginKeys) {
+                let pm = this.pluginManifestData[pk];
+                if (pm.shortcuts && pm.shortcuts.length > 0) {
+                    for (let pmsc of pm.shortcuts) {
+                        if (pmsc.launchLocation.toLowerCase().equals('main')) {
+                            if (!this.pluginLinkMap[pmsc.launchCategory]) this.pluginLinkMap[pmsc.launchCategory] = [];
+                            this.pluginLinkMap[pmsc.launchCategory].push(pmsc);
+                        }
+                    }
+                }
+            }
+        },
+        buildPluginListComplete: function() {
+            let enabledPluginUrlList = this.getEnabledPluginUrlList();
+            if (enabledPluginUrlList && enabledPluginUrlList.length > 0) {
+                this.loadManifestDataForPluginUrlList(enabledPluginUrlList, this.buildPluginLinkMap);
+            } else this.pluginLinkMap = {};
+        }
     },
     watch: {
         serverUrl: function() {
@@ -279,16 +382,20 @@ export default {
         },
         url: function() {
             this.$emit('updateUrl', this.url);
+        },
+        pluginLastUpdate: function() {
+            this.buildPluginList(this.buildPluginListComplete);
         }
     },
-
     computed: {
         ...mapState({
             crosswalkEnabled: state => state.featuresEnabled.crosswalkEnabled,
             userManagementEnabled: state => state.featuresEnabled.userManagementEnabled,
             configurationsEnabled: state => state.featuresEnabled.configurationsEnabled,
+            pluginsEnabled: state => state.featuresEnabled.pluginsEnabled,
             loginEnabled: state => state.featuresEnabled.loginEnabled,
-            queryParams: state => state.editor.queryParams
+            queryParams: state => state.editor.queryParams,
+            pluginLastUpdate: state => state.app.pluginLastUpdate
         }),
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];
@@ -315,7 +422,19 @@ export default {
         },
         loggedOnPerson: function() {
             return this.$store.getters['user/loggedOnPerson'];
+        },
+        getNonStandardNavCategoriesFromPlugins: function() {
+            let nonStandardNavCats = [];
+            let pluginNavCats = Object.keys(this.pluginLinkMap);
+            for (let pnc of pluginNavCats) {
+                if (!this.STANDARD_NAV_CATEGORIES.includes(pnc)) nonStandardNavCats.push(pnc);
+            }
+            nonStandardNavCats.sort();
+            return nonStandardNavCats;
         }
+    },
+    mounted() {
+        this.buildPluginList(this.buildPluginListComplete);
     }
 };
 </script>

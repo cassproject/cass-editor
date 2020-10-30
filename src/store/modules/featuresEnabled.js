@@ -8,6 +8,7 @@ const state = {
     userManagementEnabled: true,
     configurationsEnabled: true,
     searchByOwnerNameEnabled: true,
+    pluginsEnabled: true,
     loginEnabled: true
 };
 const mutations = {
@@ -22,6 +23,9 @@ const mutations = {
     },
     searchByOwnerNameEnabled(state, bool) {
         state.searchByOwnerNameEnabled = bool;
+    },
+    pluginsEnabled(state, bool) {
+        state.pluginsEnabled = bool;
     },
     loginEnabled(state, bool) {
         state.loginEnabled = bool;
