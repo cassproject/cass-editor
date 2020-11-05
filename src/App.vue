@@ -77,6 +77,7 @@ export default {
                     this.$store.commit('featuresEnabled/userManagementEnabled', false);
                     this.$store.commit('featuresEnabled/searchByOwnerNameEnabled', false);
                     this.$store.commit('featuresEnabled/loginEnabled', false);
+                    this.$store.commit('featuresEnabled/pluginsEnabled', false);
                 }
             }
             for (var i = 0; i < servers.length; i++) {
