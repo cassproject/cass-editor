@@ -139,7 +139,7 @@ If you wish to highlight one or more competencies, you can force the cass-editor
 	}, window.location.origin);
 	
 	or ex:
-	https://cassproject.github.io/cass-editor/?frameworkId=https://sandbox.credentialengineregistry.org/resources/ce-b454a3b4-ae5f-4e41-9ce1-f4b4f1776a79&highlightCompetency=https://army.mil/task/081-833-0197&highlightCompetency=https://army.mil/task/081-835-3010
+	https://cassproject.github.io/cass-editor/?frameworkId=https://sandbox.credentialengineregistry.org/resources/ce-b454a3b4-ae5f-4e41-9ce1-f4b4f1776a79&highlightCompetency=https://army.mil/task/081-833-0197&highlightCompetency=https://army.mil/task/081-835-3010&server=https://dev.cassproject.org/api/
 			
 ## Expose URL links (1.2 and earlier)
 If your users need the URLs for each framework or resource they are editing, you can enable link-showing by using `link=true`
