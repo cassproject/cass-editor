@@ -9,7 +9,8 @@ const state = {
     configurationsEnabled: true,
     searchByOwnerNameEnabled: true,
     pluginsEnabled: true,
-    loginEnabled: true
+    loginEnabled: true,
+    shareEnabled: true
 };
 const mutations = {
     crosswalkEnabled(state, bool) {
@@ -29,6 +30,9 @@ const mutations = {
     },
     loginEnabled(state, bool) {
         state.loginEnabled = bool;
+    },
+    shareEnabled(state, bool) {
+        state.shareEnabled = bool;
     }
 };
 const actions = {

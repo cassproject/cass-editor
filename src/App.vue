@@ -79,6 +79,9 @@ export default {
                     this.$store.commit('featuresEnabled/loginEnabled', false);
                     this.$store.commit('featuresEnabled/pluginsEnabled', false);
                 }
+                if (this.queryParams.user === "wait") {
+                    this.$store.commit('featuresEnabled/shareEnabled', false);
+                }
             }
             for (var i = 0; i < servers.length; i++) {
                 var r = new EcRepository();
