@@ -143,17 +143,7 @@ export default {
     },
     data() {
         return {
-            serverUrl: null,
-            url: null
         };
-    },
-    watch: {
-        serverUrl: function() {
-            this.$emit('updateUrl', this.serverUrl);
-        },
-        url: function() {
-            this.$emit('updateUrl', this.url);
-        }
     },
 
     computed: {

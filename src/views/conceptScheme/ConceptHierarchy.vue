@@ -215,7 +215,7 @@
                     @add="add"
                     @beginDrag="beginDrag"
                     @move="move"
-                    @deleteObject="deleteObject"
+                    @delete-object="deleteObject"
                     @exportObject="exportObject"
                     @select="select"
                     :parentStructure="hierarchy"
@@ -461,7 +461,7 @@ export default {
          */
         startTime: function() {
             hierarchyTimeout = setTimeout(() => {
-                this.$emit('doneLoadingNodes');
+                this.$emit('done-loading-nodes');
             }, 1000);
         },
         computeHierarchy: function() {
@@ -744,7 +744,7 @@ export default {
             }
         },
         deleteObject: function(thing) {
-            this.$emit('deleteObject', thing);
+            this.$emit('delete-object', thing);
         },
         exportObject: function(thing, type) {
             this.$emit('exportObject', thing, type);

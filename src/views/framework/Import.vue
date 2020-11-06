@@ -61,7 +61,7 @@
                     <ImportDetails
                         :detailsDetected="detailsDetected"
                         v-if="importTransition === 'detail'"
-                        @deleteObject="deleteObject" />
+                        @delete-object="deleteObject" />
                     <!-- import preview -->
                     <div
                         v-if="importFramework && importTransition === 'preview'"
@@ -100,7 +100,7 @@
                             :class="{'is-hidden': !hierarchyIsdoneLoading}"
                             view="importPreview"
                             v-if="importFramework && !conceptMode"
-                            @doneLoadingNodes="handleDoneLoading"
+                            @done-loading-nodes="handleDoneLoading"
                             @searchThings="handleSearch($event)"
                             @edit-multiple-event="onEditMultiple"
                             :container="importFramework"
@@ -117,16 +117,16 @@
                             edgeSourceProperty="source"
                             edgeTargetProperty="target"
                             :repo="repo"
-                            @selectedArray="selectedArrayEvent"
+                            @selected-array="selectedArrayEvent"
                             :newFramework="true"
-                            @deleteObject="deleteObject"
+                            @delete-object="deleteObject"
                             @exportObject="exportObject"
                             :properties="importType === 'text' ? 'primary' : 'tertiary'" />
                         <ConceptHierarchy
                             :class="{'is-hidden': !hierarchyIsdoneLoading}"
                             view="import"
                             v-if="importFramework && conceptMode"
-                            @doneLoadingNodes="handleDoneLoading"
+                            @done-loading-nodes="handleDoneLoading"
                             @searchThings="handleSearch($event)"
                             @edit-multiple-event="onEditMultiple"
                             :container="importFramework"
@@ -134,9 +134,9 @@
                             :viewOnly="false"
                             :isDraggable="true"
                             :repo="repo"
-                            @selectedArray="selectedArrayEvent"
+                            @selected-array="selectedArrayEvent"
                             :newFramework="true"
-                            @deleteObject="deleteObject"
+                            @delete-object="deleteObject"
                             :profile="ctdlAsnConceptProfile"
                             properties="tertiary" />
                     </div>
@@ -172,7 +172,7 @@
                             edgeTargetProperty="target"
                             :repo="repo"
                             :newFramework="true"
-                            @deleteObject="deleteObject"
+                            @delete-object="deleteObject"
                             @exportObject="exportObject"
                             :properties="importType === 'text' ? 'primary' : 'tertiary'" />
                         <ConceptHierarchy
@@ -183,9 +183,9 @@
                             containerType="ConceptScheme"
                             :viewOnly="true"
                             :repo="repo"
-                            @selectedArray="selectedArrayEvent"
+                            @selected-array="selectedArrayEvent"
                             :newFramework="true"
-                            @deleteObject="deleteObject"
+                            @delete-object="deleteObject"
                             :profile="ctdlAsnConceptProfile"
                             properties="tertiary" />
                     </div>
@@ -195,7 +195,7 @@
             <ImportServer
                 :conceptMode="conceptMode"
                 :importTransition="importTransition"
-                @importCase="handleImportFromTabs($event)"
+                @import-case="handleImportFromTabs($event)"
                 v-if="importType === 'server'">
                 <template slot="import-server-title">
                     <h1
@@ -258,7 +258,7 @@
                             :class="{'is-hidden': !hierarchyIsdoneLoading}"
                             view="importPreview"
                             v-if="importFramework && !conceptMode"
-                            @doneLoadingNodes="handleDoneLoading"
+                            @done-loading-nodes="handleDoneLoading"
                             @searchThings="handleSearch($event)"
                             @edit-multiple-event="onEditMultiple"
                             :container="importFramework"
@@ -275,16 +275,16 @@
                             edgeSourceProperty="source"
                             edgeTargetProperty="target"
                             :repo="repo"
-                            @selectedArray="selectedArrayEvent"
+                            @selected-array="selectedArrayEvent"
                             :newFramework="true"
-                            @deleteObject="deleteObject"
+                            @delete-object="deleteObject"
                             @exportObject="exportObject"
                             :properties="importType === 'text' ? 'primary' : 'tertiary'" />
                         <ConceptHierarchy
                             :class="{'is-hidden': !hierarchyIsdoneLoading}"
                             view="import"
                             v-if="importFramework && conceptMode"
-                            @doneLoadingNodes="handleDoneLoading"
+                            @done-loading-nodes="handleDoneLoading"
                             @searchThings="handleSearch($event)"
                             @edit-multiple-event="onEditMultiple"
                             :container="importFramework"
@@ -292,9 +292,9 @@
                             :viewOnly="false"
                             :isDraggable="true"
                             :repo="repo"
-                            @selectedArray="selectedArrayEvent"
+                            @selected-array="selectedArrayEvent"
                             :newFramework="true"
-                            @deleteObject="deleteObject"
+                            @delete-object="deleteObject"
                             :profile="ctdlAsnConceptProfile"
                             properties="tertiary" />
                     </div>
@@ -330,7 +330,7 @@
                             edgeTargetProperty="target"
                             :repo="repo"
                             :newFramework="true"
-                            @deleteObject="deleteObject"
+                            @delete-object="deleteObject"
                             @exportObject="exportObject"
                             :properties="importType === 'text' ? 'primary' : 'tertiary'" />
                         <ConceptHierarchy
@@ -341,9 +341,9 @@
                             containerType="ConceptScheme"
                             :viewOnly="true"
                             :repo="repo"
-                            @selectedArray="selectedArrayEvent"
+                            @selected-array="selectedArrayEvent"
                             :newFramework="true"
-                            @deleteObject="deleteObject"
+                            @delete-object="deleteObject"
                             :profile="ctdlAsnConceptProfile"
                             properties="tertiary" />
                     </div>
@@ -414,7 +414,7 @@
                             :class="{'is-hidden': !hierarchyIsdoneLoading}"
                             view="importPreview"
                             v-if="importFramework && !conceptMode"
-                            @doneLoadingNodes="handleDoneLoading"
+                            @done-loading-nodes="handleDoneLoading"
                             @searchThings="handleSearch($event)"
                             @edit-multiple-event="onEditMultiple"
                             :container="importFramework"
@@ -431,16 +431,16 @@
                             edgeSourceProperty="source"
                             edgeTargetProperty="target"
                             :repo="repo"
-                            @selectedArray="selectedArrayEvent"
+                            @selected-array="selectedArrayEvent"
                             :newFramework="true"
-                            @deleteObject="deleteObject"
+                            @delete-object="deleteObject"
                             @exportObject="exportObject"
                             :properties="importType === 'text' ? 'primary' : 'tertiary'" />
                         <ConceptHierarchy
                             :class="{'is-hidden': !hierarchyIsdoneLoading}"
                             view="import"
                             v-if="importFramework && conceptMode"
-                            @doneLoadingNodes="handleDoneLoading"
+                            @done-loading-nodes="handleDoneLoading"
                             @searchThings="handleSearch($event)"
                             @edit-multiple-event="onEditMultiple"
                             :container="importFramework"
@@ -448,9 +448,9 @@
                             :viewOnly="false"
                             :isDraggable="true"
                             :repo="repo"
-                            @selectedArray="selectedArrayEvent"
+                            @selected-array="selectedArrayEvent"
                             :newFramework="true"
-                            @deleteObject="deleteObject"
+                            @delete-object="deleteObject"
                             :profile="ctdlAsnConceptProfile"
                             properties="tertiary" />
                     </div>
@@ -486,7 +486,7 @@
                             edgeTargetProperty="target"
                             :repo="repo"
                             :newFramework="true"
-                            @deleteObject="deleteObject"
+                            @delete-object="deleteObject"
                             @exportObject="exportObject"
                             :properties="importType === 'text' ? 'primary' : 'tertiary'" />
                         <ConceptHierarchy
@@ -497,9 +497,9 @@
                             containerType="ConceptScheme"
                             :viewOnly="true"
                             :repo="repo"
-                            @selectedArray="selectedArrayEvent"
+                            @selected-array="selectedArrayEvent"
                             :newFramework="true"
-                            @deleteObject="deleteObject"
+                            @delete-object="deleteObject"
                             :profile="ctdlAsnConceptProfile"
                             properties="tertiary" />
                     </div>
@@ -564,7 +564,7 @@
                             edgeTargetProperty="target"
                             :repo="repo"
                             :newFramework="true"
-                            @deleteObject="deleteObject"
+                            @delete-object="deleteObject"
                             @exportObject="exportObject"
                             :properties="importType === 'text' ? 'primary' : 'tertiary'" />
                         <ConceptHierarchy
@@ -575,9 +575,9 @@
                             containerType="ConceptScheme"
                             :viewOnly="true"
                             :repo="repo"
-                            @selectedArray="selectedArrayEvent"
+                            @selected-array="selectedArrayEvent"
                             :newFramework="true"
-                            @deleteObject="deleteObject"
+                            @delete-object="deleteObject"
                             :profile="ctdlAsnConceptProfile"
                             properties="tertiary" />
                     </div>

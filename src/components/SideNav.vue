@@ -347,8 +347,6 @@ export default {
             STANDARD_NAV_CATEGORIES: ['Competencies & Frameworks', 'Taxonomy', 'Configuration'],
             casslogo: casslogo,
             casslogoSquare: casslogoSquare,
-            serverUrl: null,
-            url: null,
             pluginLinkMap: {}
         };
     },
@@ -382,12 +380,6 @@ export default {
         }
     },
     watch: {
-        serverUrl: function() {
-            this.$emit('updateUrl', this.serverUrl);
-        },
-        url: function() {
-            this.$emit('updateUrl', this.url);
-        },
         pluginLastUpdate: function() {
             this.buildPluginList(this.buildPluginListComplete);
         }

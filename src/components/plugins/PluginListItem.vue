@@ -85,9 +85,9 @@ export default {
             },
             set(val) {
                 if (val) {
-                    this.$emit('enablePlugin', this.id);
+                    this.$emit('enable-plugin', this.id);
                 } else {
-                    this.$emit('disablePlugin', this.id);
+                    this.$emit('disable-plugin', this.id);
                 }
             }
         }

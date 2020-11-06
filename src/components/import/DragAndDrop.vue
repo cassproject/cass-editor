@@ -138,7 +138,7 @@ export default {
                 return f !== file;
             });
             this.$store.commit('');
-            this.$emit('clearFiles');
+            this.$emit('clear-files');
         },
         process() {
             this.$store.commit('app/importFiles', this.files);

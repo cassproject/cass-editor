@@ -121,9 +121,9 @@ export default {
             set(val) {
                 appLog("val", val);
                 if (val) {
-                    this.$emit('setBrowserDefault', this.id);
+                    this.$emit('set-browser-default', this.id);
                 } else {
-                    this.$emit('removeBrowserDefaultConfig');
+                    this.$emit('remove-browser-default-config');
                 }
             }
         }

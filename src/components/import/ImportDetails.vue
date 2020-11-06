@@ -109,7 +109,7 @@ export default {
     },
     methods: {
         cancelImport: function() {
-            this.$emit("deleteObject", this.importFramework);
+            this.$emit("delete-object", this.importFramework);
             this.$store.dispatch('app/clearImport');
         }
     }

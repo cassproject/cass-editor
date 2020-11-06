@@ -187,7 +187,7 @@
                                     :exportOptions="[]"
                                     :highlightList="null"
                                     @searchThings="handleSearch($event)"
-                                    @doneLoadingNodes="prepareToLoadCrosswalkTarget"
+                                    @done-loading-nodes="prepareToLoadCrosswalkTarget"
                                     properties="primary" />
                             </div>
                             <div

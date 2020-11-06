@@ -8,8 +8,8 @@
             <div class="framework-body columns is-multiline is-gapless is-paddingless is-marginless">
                 <FrameworkEditorToolbar
                     :properties="properties"
-                    @showExportModal="onOpenExportModal"
-                    @changeProperties="changeProperties" />
+                    @show-export-modal="onOpenExportModal"
+                    @change-properties="changeProperties" />
                 <div class="column is-12">
                     <!-- loading section -- dummy content to show while loading dome elemnts -->
                     <div
@@ -31,7 +31,7 @@
                                 :newFramework="newFramework"
                                 :parentNotEditable="queryParams.view==='true'"
                                 :profile="frameworkProfile"
-                                @deleteObject="deleteObject"
+                                @delete-object="deleteObject"
                                 @removeObject="removeObject"
                                 @editNodeEvent="onEditNode()"
                                 @doneEditingNodeEvent="onDoneEditingNode()"
@@ -121,15 +121,15 @@
                             :highlightList="highlightCompetency"
                             :profile="competencyProfile"
                             :newFramework="newFramework"
-                            @deleteObject="deleteObject"
+                            @delete-object="deleteObject"
                             @edit-multiple-event="onEditMultiple"
                             @removeObject="removeObject"
                             @exportObject="exportObject"
                             @searchThings="handleSearch($event)"
                             @select-button-click="onSelectButtonClick"
                             :properties="properties"
-                            @selectedArray="selectedArrayEvent"
-                            @doneLoadingNodes="preloadRelations" />
+                            @selected-array="selectedArrayEvent"
+                            @done-loading-nodes="preloadRelations" />
                     </div>
                 </div>
             </div>

@@ -15,7 +15,7 @@ export default {
             this.$store.commit('app/clearImportFiles');
         },
         cancelImport: function() {
-            this.$emit("deleteObject", this.importFramework);
+            this.$emit("delete-object", this.importFramework);
             this.resetImport();
         },
         resetImport: function() {

@@ -27,9 +27,9 @@
                 <AddProperty
                     :profile="profile"
                     :editingMultipleCompetencies="true"
-                    @propertyStringUpdated="propertyStringUpdated"
+                    @property-string-updated="propertyStringUpdated"
                     :idx="idx"
-                    @isSearching="isSearching=true"
+                    @is-searching="isSearching=true"
                     :addedPropertiesAndValuesFromSearching="item" />
                 <span v-if="item['error']">
                     {{ item['error'] }}
