@@ -37,8 +37,8 @@
     "vuex": "^3.5.1"
   },
   "devDependencies": {
+    "@vue/cli-plugin-eslint": "^4.5.8",
     "@vue/cli-plugin-babel": "^4.5.8",
-    "@vue/cli-plugin-eslint": "^4.5.7",
     "@vue/cli-plugin-unit-jest": "^4.4.6",
     "@vue/cli-service": "^4.4.6",
     "@vue/eslint-config-standard": "^4.0.0",
