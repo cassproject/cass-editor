@@ -11,13 +11,13 @@
             @sideBarEvent="onSidebarEvent"
             name="topbar" /> -->
         <router-view
-            @createNewFramework="createNewFramework"
-            @createNewConceptScheme="createNewConceptScheme"
+            @create-new-framework="createNewFramework"
+            @create-new-concept-scheme="createNewConceptScheme"
             :class="[{ 'clear-side-bar': showSideNav}, { 'clear-narrow-side-bar': !showSideNav}, {'clear-right-aside': showRightAside}]" />
         <router-view
             :showSideNav="showSideNav"
-            @createNewFramework="createNewFramework"
-            @createNewConceptScheme="createNewConceptScheme"
+            @create-new-framework="createNewFramework"
+            @create-new-concept-scheme="createNewConceptScheme"
             name="sidebar" />
         <vue-progress-bar />
     </div>

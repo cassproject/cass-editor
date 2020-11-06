@@ -42,7 +42,7 @@
                                 v-if="conceptMode"
                                 class="buttons is-right concept-buttons">
                                 <div
-                                    @click="$emit('createNewConceptScheme')"
+                                    @click="$emit('create-new-concept-scheme')"
                                     class="button is-outlined is-primary">
                                     <span class="icon">
                                         <i class="fa fa-plus" />
@@ -61,7 +61,7 @@
                                 v-else
                                 class="buttons is-right frameworks-buttons">
                                 <div
-                                    @click="$emit('createNewFramework')"
+                                    @click="$emit('create-new-framework')"
                                     class="button is-outlined is-primary">
                                     <span class="icon">
                                         <i class="fa fa-plus" />

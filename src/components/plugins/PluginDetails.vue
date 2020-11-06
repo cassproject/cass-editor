@@ -66,7 +66,9 @@
                         </div>
                     </div>
                     <!-- ************************************** Validation ************************************************ -->
-                    <div class="errorColor" v-if="pluginInvalid">
+                    <div
+                        class="errorColor"
+                        v-if="pluginInvalid">
                         <p>Plugin is invalid:</p>
                         <p v-if="pluginUrlInvalid">
                             *A valid URL is required for a plugin
@@ -87,7 +89,7 @@
                             <div
                                 class="manifestNotLoaded"
                                 v-if="!manifestLoaded">
-                                <p><i class="fa fa-exclamation-triangle is-primary"/> Manifest data not loaded</p>
+                                <p><i class="fa fa-exclamation-triangle is-primary" /> Manifest data not loaded</p>
                                 <br>
                                 <div class="buttons is-fullwidth is-left">
                                     <div
@@ -103,7 +105,7 @@
                             <div v-if="manifestLoaded">
                                 <div v-if="manifestError">
                                     <p class="errorColor">
-                                        <i class="fa fa-exclamation-triangle is-primary"/> Manifest load error: {{manifestData.error}}
+                                        <i class="fa fa-exclamation-triangle is-primary" /> Manifest load error: {{ manifestData.error }}
                                     </p>
                                     <br>
                                     <div class="buttons is-fullwidth is-left">
@@ -179,8 +181,10 @@
                                                             </td>
                                                             <td>
                                                                 <ul>
-                                                                    <li v-for="qp in mds.queryParams">
-                                                                        {{qp.name}}={{qp.value}}
+                                                                    <li
+                                                                        v-for="qp in mds.queryParams"
+                                                                        :key="qp">
+                                                                        {{ qp.name }}={{ qp.value }}
                                                                     </li>
                                                                 </ul>
                                                             </td>

@@ -94,10 +94,10 @@
                                 :url="pi.url"
                                 :is-curated="pi.isCurated"
                                 :is-owned="pi.isOwned"
-                                @enablePlugin="enablePlugin"
-                                @disablePlugin="disablePlugin"
-                                @showDelete="showPluginDelete"
-                                @showDetails="showPluginDetails" />
+                                @enable-plugin="enablePlugin"
+                                @disable-plugin="disablePlugin"
+                                @show-delete="showPluginDelete"
+                                @show-details="showPluginDetails" />
                         </tbody>
                     </table>
                 </div>

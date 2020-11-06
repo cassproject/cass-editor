@@ -28,7 +28,7 @@
                 v-if="isOwned"
                 title="Manage plugin"
                 class="button is-outlined is-small is-primary"
-                @click="$emit('showDetails', id)">
+                @click="$emit('show-details', id)">
                 <span class="icon">
                     <i class="fas fa-cog" />
                 </span>
@@ -37,7 +37,7 @@
                 v-if="isOwned"
                 title="Delete plugin"
                 class="button is-outlined is-small is-danger delete-btn"
-                @click="$emit('showDelete', id)">
+                @click="$emit('show-delete', id)">
                 <span class="icon">
                     <i class="fas fa-trash" />
                 </span>
@@ -46,7 +46,7 @@
                 v-if="!isOwned"
                 title="View plugin"
                 class="button is-outlined is-small is-primary"
-                @click="$emit('showDetails', id)">
+                @click="$emit('show-details', id)">
                 <span class="icon">
                     <i class="fas fa-eye" />
                 </span>
@@ -85,9 +85,9 @@ export default {
             },
             set(val) {
                 if (val) {
-                    this.$emit('enablePlugin', this.id);
+                    this.$emit('enable-plugin', this.id);
                 } else {
-                    this.$emit('disablePlugin', this.id);
+                    this.$emit('disable-plugin', this.id);
                 }
             }
         }

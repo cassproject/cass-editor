@@ -21,6 +21,7 @@ module.exports = {
                 'ignores': []
             }
         ],
+        'vue/no-mutating-props': 1,
         // These rules assume eslint recommended, if the rules is accepted from
         // eslint:recommended settings it is commented out and noted to the right of
         /*

@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import {shallowMount, mount, createLocalVue} from '@vue/test-utils';
 import Framework from '@/views/framework/Framework.vue';
 import VueCommon from '@/mixins/common.js';

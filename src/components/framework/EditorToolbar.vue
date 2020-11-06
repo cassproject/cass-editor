@@ -219,7 +219,7 @@ export default {
         },
         handleExportClick: function() {
             if (this.canExport) {
-                this.$emit('showExportModal');
+                this.$emit('show-export-modal');
                 this.showShareDropdown = false;
             }
         },
@@ -247,7 +247,7 @@ export default {
             } else if (newType === 'tertiary' && properties === 'tertiary') {
                 newType = 'secondary';
             }
-            this.$emit('changeProperties', newType);
+            this.$emit('change-properties', newType);
             this.showPropertyViewDropDown = false;
             this.activeView = newType;
         },

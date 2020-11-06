@@ -4,7 +4,7 @@
             <div class="section">
                 <template>
                     <h3 class="title">
-                        <i class="fa fa-plug"/> {{pluginName}}
+                        <i class="fa fa-plug" /> {{ pluginName }}
                     </h3>
                 </template>
             </div>
@@ -22,8 +22,7 @@
                 <iframe
                     id="pluginFrame"
                     :src="iFrameSource"
-                    @load="handlePluginFrameLoaded">
-                </iframe>
+                    @load="handlePluginFrameLoaded" />
             </div>
         </section>
     </div>
