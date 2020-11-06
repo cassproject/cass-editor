@@ -70,9 +70,9 @@
                     :profile="conceptProfile"
                     @deleteObject="deleteObject"
                     @exportObject="exportObject"
-                    @editMultipleEvent="onEditMultiple"
+                    @edit-multiple-event="onEditMultiple"
                     @searchThings="handleSearch($event)"
-                    @selectButtonClick="onSelectButtonClick"
+                    @select-button-click="onSelectButtonClick"
                     :properties="properties"
                     @selectedArray="selectedArrayEvent"
                     :doneDragging="doneDragging" />

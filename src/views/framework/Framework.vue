@@ -122,11 +122,11 @@
                             :profile="competencyProfile"
                             :newFramework="newFramework"
                             @deleteObject="deleteObject"
-                            @editMultipleEvent="onEditMultiple"
+                            @edit-multiple-event="onEditMultiple"
                             @removeObject="removeObject"
                             @exportObject="exportObject"
                             @searchThings="handleSearch($event)"
-                            @selectButtonClick="onSelectButtonClick"
+                            @select-button-click="onSelectButtonClick"
                             :properties="properties"
                             @selectedArray="selectedArrayEvent"
                             @doneLoadingNodes="preloadRelations" />

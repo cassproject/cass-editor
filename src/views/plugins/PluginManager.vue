@@ -96,8 +96,8 @@
                                 :is-owned="pi.isOwned"
                                 @enablePlugin="enablePlugin"
                                 @disablePlugin="disablePlugin"
-                                @showDelete="showPluginDelete"
-                                @showDetails="showPluginDetails" />
+                                @show-delete="showPluginDelete"
+                                @show-details="showPluginDetails" />
                         </tbody>
                     </table>
                 </div>

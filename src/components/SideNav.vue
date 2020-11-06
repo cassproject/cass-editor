@@ -133,7 +133,7 @@
             <li
                 v-if="showSideNav"
                 class="has-text-white"
-                @click="$emit('createNewFramework')">
+                @click="$emit('create-new-framework')">
                 <a>
                     <span class="icon">
                         <i class="fa fa-plus" />
@@ -166,12 +166,13 @@
             <li
                 v-for="navLink of pluginLinkMap['Competencies & Frameworks']"
                 class="has-text-white"
-                v-show="showSideNav && pluginsEnabled">
+                v-show="showSideNav && pluginsEnabled"
+                :key="navLink">
                 <a @click="setLaunchPluginValues(navLink)">
                     <span class="icon">
                         <i class="fa fa-plug" />
                     </span>
-                    <span v-if="showSideNav"> {{navLink.launchName}}</span>
+                    <span v-if="showSideNav"> {{ navLink.launchName }}</span>
                 </a>
             </li>
         </ul>
@@ -200,7 +201,7 @@
             <li
                 v-if="showSideNav"
                 class="has-text-white"
-                @click="$emit('createNewConceptScheme')">
+                @click="$emit('create-new-concept-scheme')">
                 <a>
                     <span class="icon">
                         <i class="fa fa-plus" />
@@ -237,12 +238,13 @@
             <li
                 v-for="navLink of pluginLinkMap['Taxonomy']"
                 class="has-text-white"
-                v-show="showSideNav && pluginsEnabled">
+                v-show="showSideNav && pluginsEnabled"
+                :key="navLink">
                 <a @click="setLaunchPluginValues(navLink)">
                     <span class="icon">
                         <i class="fa fa-plug" />
                     </span>
-                    <span v-if="showSideNav"> {{navLink.launchName}}</span>
+                    <span v-if="showSideNav"> {{ navLink.launchName }}</span>
                 </a>
             </li>
         </ul>
@@ -279,12 +281,13 @@
             <li
                 v-for="navLink of pluginLinkMap['Configuration']"
                 class="has-text-white"
-                v-show="showSideNav && pluginsEnabled">
+                v-show="showSideNav && pluginsEnabled"
+                :key="navLink">
                 <a @click="setLaunchPluginValues(navLink)">
                     <span class="icon">
                         <i class="fa fa-plug" />
                     </span>
-                    <span v-if="showSideNav"> {{navLink.launchName}}</span>
+                    <span v-if="showSideNav"> {{ navLink.launchName }}</span>
                 </a>
             </li>
         </ul>
@@ -292,23 +295,25 @@
         <div
             class="menu-label"
             v-show="pluginsEnabled"
-            v-for="nonStandardNavCat of getNonStandardNavCategoriesFromPlugins">
+            v-for="nonStandardNavCat of getNonStandardNavCategoriesFromPlugins"
+            :key="nonStandardNavCat">
             <div
                 v-if="showSideNav"
                 class="menu-label has-text-weight-bold">
-                {{nonStandardNavCat}}
+                {{ nonStandardNavCat }}
             </div>
             <ul
                 v-if="showSideNav"
                 class="menu-list">
                 <li
                     v-for="navLink of pluginLinkMap[nonStandardNavCat]"
-                    class="has-text-white">
+                    class="has-text-white"
+                    :key="navLink">
                     <a @click="setLaunchPluginValues(navLink)">
                         <span class="icon">
                             <i class="fa fa-plug" />
                         </span>
-                        <span v-if="showSideNav"> {{navLink.launchName}}</span>
+                        <span v-if="showSideNav"> {{ navLink.launchName }}</span>
                     </a>
                 </li>
             </ul>

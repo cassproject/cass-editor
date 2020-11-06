@@ -39,7 +39,7 @@
                 </div>
                 <div
                     v-if="selectButtonText"
-                    @click="$emit('selectButtonClick', selectedArray)"
+                    @click="$emit('select-button-click', selectedArray)"
                     class="button is-outlined is-primary">
                     {{ selectButtonText }}
                 </div>
@@ -50,7 +50,7 @@
                     class="buttons">
                     <div
                         v-if="multipleSelected && !addingNode && view !== 'import' && canEdit"
-                        @click="$emit('editMultipleEvent')"
+                        @click="$emit('edit-multiple-event')"
                         class="button is-outlined is-primary">
                         <span class="icon">
                             <i class="fa fa-cog" />
@@ -194,7 +194,7 @@
                 @end="endDrag">
                 <HierarchyNode
                     :view="view"
-                    @createNewNodeEvent="onCreateNewNode"
+                    @create-new-node-event="onCreateNewNode"
                     :subview="subview"
                     @mountingNode="handleMountingNode"
                     v-for="(item, index) in hierarchy"

@@ -183,9 +183,9 @@
                             :defaultBrowserConfigId="localDefaultBrowserConfigId"
                             :defaultFrameworkConfigId="frameworkConfigId"
                             @setBrowserDefault="setConfigAsBrowserDefault"
-                            @setFrameworkDefault="setConfigAsFrameworkDefault"
-                            @showDetails="showConfigDetails"
-                            @showDelete="showDeleteConfirm" />
+                            @set-framework-default="setConfigAsFrameworkDefault"
+                            @show-details="showConfigDetails"
+                            @show-delete="showDeleteConfirm" />
                     </tbody>
                     <br>
                 </table>
