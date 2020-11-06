@@ -196,7 +196,7 @@
                     :view="view"
                     @create-new-node-event="onCreateNewNode"
                     :subview="subview"
-                    @mountingNode="handleMountingNode"
+                    @mounting-node="handleMountingNode"
                     v-for="(item, index) in hierarchy"
                     :key="item.obj.id"
                     :obj="item.obj"
@@ -213,14 +213,14 @@
                     :frameworkEditable="canEdit"
                     :selectedArray="selectedArray"
                     @add="add"
-                    @beginDrag="beginDrag"
+                    @begin-drag="beginDrag"
                     @move="move"
                     @delete-object="deleteObject"
-                    @exportObject="exportObject"
+                    @export-object="exportObject"
                     @select="select"
                     :parentStructure="hierarchy"
                     :parent="container"
-                    @draggableCheck="onDraggableCheck"
+                    @draggable-check="onDraggableCheck"
                     :properties="properties"
                     :expandAll="expanded==true"
                     :parentChecked="false"
@@ -358,7 +358,7 @@ export default {
             } else {
                 this.addConceptOrChildText = "Add Concept";
             }
-            this.$emit('selectedArray', this.selectedArray);
+            this.$emit('selected-array', this.selectedArray);
         },
         // Concepts can't just depend on fields on the container object like frameworks can for reactivity
         recomputeHierarchy: function() {
@@ -747,7 +747,7 @@ export default {
             this.$emit('delete-object', thing);
         },
         exportObject: function(thing, type) {
-            this.$emit('exportObject', thing, type);
+            this.$emit('export-object', thing, type);
         },
         onDraggableCheck: function(checked) {
             this.isDraggable = checked;

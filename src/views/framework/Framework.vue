@@ -32,9 +32,9 @@
                                 :parentNotEditable="queryParams.view==='true'"
                                 :profile="frameworkProfile"
                                 @delete-object="deleteObject"
-                                @removeObject="removeObject"
-                                @editNodeEvent="onEditNode()"
-                                @doneEditingNodeEvent="onDoneEditingNode()"
+                                @remove-object="removeObject"
+                                @edit-node-event="onEditNode()"
+                                @done-editing-node-event="onDoneEditingNode()"
                                 :properties="properties">
                                 <template #frameworkDetails>
                                     <div class="lode__framework__info-bar">
@@ -123,9 +123,9 @@
                             :newFramework="newFramework"
                             @delete-object="deleteObject"
                             @edit-multiple-event="onEditMultiple"
-                            @removeObject="removeObject"
-                            @exportObject="exportObject"
-                            @searchThings="handleSearch($event)"
+                            @remove-object="removeObject"
+                            @export-object="exportObject"
+                            @search-things="handleSearch($event)"
                             @select-button-click="onSelectButtonClick"
                             :properties="properties"
                             @selected-array="selectedArrayEvent"

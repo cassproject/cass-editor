@@ -27,8 +27,8 @@
                         :parentNotEditable="queryParams.view==='true'"
                         @delete-object="deleteObject"
                         :profile="conceptSchemeProfile"
-                        @editNodeEvent="onEditNode()"
-                        @doneEditingNodeEvent="onDoneEditingNode()"
+                        @edit-node-event="onEditNode()"
+                        @done-editing-node-event="onDoneEditingNode()"
                         :properties="properties">
                         <div class="lode__framework__info-bar">
                             <span
@@ -69,9 +69,9 @@
                     :highlightList="highlightCompetency"
                     :profile="conceptProfile"
                     @delete-object="deleteObject"
-                    @exportObject="exportObject"
+                    @export-object="exportObject"
                     @edit-multiple-event="onEditMultiple"
-                    @searchThings="handleSearch($event)"
+                    @search-things="handleSearch($event)"
                     @select-button-click="onSelectButtonClick"
                     :properties="properties"
                     @selected-array="selectedArrayEvent"

@@ -186,7 +186,7 @@
                                     :queryParams="queryParams"
                                     :exportOptions="[]"
                                     :highlightList="null"
-                                    @searchThings="handleSearch($event)"
+                                    @search-things="handleSearch($event)"
                                     @done-loading-nodes="prepareToLoadCrosswalkTarget"
                                     properties="primary" />
                             </div>
@@ -223,7 +223,7 @@
                                     :queryParams="queryParams"
                                     :exportOptions="[]"
                                     :highlightList="null"
-                                    @searchThings="handleSearch($event)"
+                                    @search-things="handleSearch($event)"
                                     properties="primary" />
                             </div>
                         </div>

@@ -88,8 +88,8 @@
                         </div>
                         <Component
                             :is="dynamicThing"
-                            @editNodeEvent="onEditNode"
-                            @doneEditingNodeEvent="onDoneEditingNode"
+                            @edit-node-event="onEditNode"
+                            @done-editing-node-event="onDoneEditingNode"
                             :class="[{'is-hidden': !hierarchyIsdoneLoading}, parentObjectClass]"
                             :obj="changedObj ? changedObj : importFramework"
                             :repo="repo"
@@ -101,7 +101,7 @@
                             view="importPreview"
                             v-if="importFramework && !conceptMode"
                             @done-loading-nodes="handleDoneLoading"
-                            @searchThings="handleSearch($event)"
+                            @search-things="handleSearch($event)"
                             @edit-multiple-event="onEditMultiple"
                             :container="importFramework"
                             containerType="Framework"
@@ -120,14 +120,14 @@
                             @selected-array="selectedArrayEvent"
                             :newFramework="true"
                             @delete-object="deleteObject"
-                            @exportObject="exportObject"
+                            @export-object="exportObject"
                             :properties="importType === 'text' ? 'primary' : 'tertiary'" />
                         <ConceptHierarchy
                             :class="{'is-hidden': !hierarchyIsdoneLoading}"
                             view="import"
                             v-if="importFramework && conceptMode"
                             @done-loading-nodes="handleDoneLoading"
-                            @searchThings="handleSearch($event)"
+                            @search-things="handleSearch($event)"
                             @edit-multiple-event="onEditMultiple"
                             :container="importFramework"
                             containerType="ConceptScheme"
@@ -148,7 +148,7 @@
                             :is="dynamicThing"
                             :class="parentObjectClass"
                             :editingNode="editingNode"
-                            @doneEditingNodeEvent="onDoneEditingNode"
+                            @done-editing-node-event="onDoneEditingNode"
                             :obj="changedObj ? changedObj : importFramework"
                             :parentNotEditable="true"
                             class="framework-title"
@@ -173,7 +173,7 @@
                             :repo="repo"
                             :newFramework="true"
                             @delete-object="deleteObject"
-                            @exportObject="exportObject"
+                            @export-object="exportObject"
                             :properties="importType === 'text' ? 'primary' : 'tertiary'" />
                         <ConceptHierarchy
                             :class="{'is-hidden': !hierarchyIsdoneLoading}"
@@ -246,8 +246,8 @@
                         </div>
                         <Component
                             :is="dynamicThing"
-                            @editNodeEvent="onEditNode"
-                            @doneEditingNodeEvent="onDoneEditingNode"
+                            @edit-node-event="onEditNode"
+                            @done-editing-node-event="onDoneEditingNode"
                             :class="[{'is-hidden': !hierarchyIsdoneLoading}, parentObjectClass]"
                             :obj="changedObj ? changedObj : importFramework"
                             :repo="repo"
@@ -259,7 +259,7 @@
                             view="importPreview"
                             v-if="importFramework && !conceptMode"
                             @done-loading-nodes="handleDoneLoading"
-                            @searchThings="handleSearch($event)"
+                            @search-things="handleSearch($event)"
                             @edit-multiple-event="onEditMultiple"
                             :container="importFramework"
                             containerType="Framework"
@@ -278,14 +278,14 @@
                             @selected-array="selectedArrayEvent"
                             :newFramework="true"
                             @delete-object="deleteObject"
-                            @exportObject="exportObject"
+                            @export-object="exportObject"
                             :properties="importType === 'text' ? 'primary' : 'tertiary'" />
                         <ConceptHierarchy
                             :class="{'is-hidden': !hierarchyIsdoneLoading}"
                             view="import"
                             v-if="importFramework && conceptMode"
                             @done-loading-nodes="handleDoneLoading"
-                            @searchThings="handleSearch($event)"
+                            @search-things="handleSearch($event)"
                             @edit-multiple-event="onEditMultiple"
                             :container="importFramework"
                             containerType="ConceptScheme"
@@ -306,7 +306,7 @@
                             :is="dynamicThing"
                             :class="parentObjectClass"
                             :editingNode="editingNode"
-                            @doneEditingNodeEvent="onDoneEditingNode"
+                            @done-editing-node-event="onDoneEditingNode"
                             :obj="changedObj ? changedObj : importFramework"
                             :parentNotEditable="true"
                             class="framework-title"
@@ -331,7 +331,7 @@
                             :repo="repo"
                             :newFramework="true"
                             @delete-object="deleteObject"
-                            @exportObject="exportObject"
+                            @export-object="exportObject"
                             :properties="importType === 'text' ? 'primary' : 'tertiary'" />
                         <ConceptHierarchy
                             :class="{'is-hidden': !hierarchyIsdoneLoading}"
@@ -402,8 +402,8 @@
                         </div>
                         <Component
                             :is="dynamicThing"
-                            @editNodeEvent="onEditNode"
-                            @doneEditingNodeEvent="onDoneEditingNode"
+                            @edit-node-event="onEditNode"
+                            @done-editing-node-event="onDoneEditingNode"
                             :class="[{'is-hidden': !hierarchyIsdoneLoading}, parentObjectClass]"
                             :obj="changedObj ? changedObj : importFramework"
                             :repo="repo"
@@ -415,7 +415,7 @@
                             view="importPreview"
                             v-if="importFramework && !conceptMode"
                             @done-loading-nodes="handleDoneLoading"
-                            @searchThings="handleSearch($event)"
+                            @search-things="handleSearch($event)"
                             @edit-multiple-event="onEditMultiple"
                             :container="importFramework"
                             containerType="Framework"
@@ -434,14 +434,14 @@
                             @selected-array="selectedArrayEvent"
                             :newFramework="true"
                             @delete-object="deleteObject"
-                            @exportObject="exportObject"
+                            @export-object="exportObject"
                             :properties="importType === 'text' ? 'primary' : 'tertiary'" />
                         <ConceptHierarchy
                             :class="{'is-hidden': !hierarchyIsdoneLoading}"
                             view="import"
                             v-if="importFramework && conceptMode"
                             @done-loading-nodes="handleDoneLoading"
-                            @searchThings="handleSearch($event)"
+                            @search-things="handleSearch($event)"
                             @edit-multiple-event="onEditMultiple"
                             :container="importFramework"
                             containerType="ConceptScheme"
@@ -462,7 +462,7 @@
                             :is="dynamicThing"
                             :class="parentObjectClass"
                             :editingNode="editingNode"
-                            @doneEditingNodeEvent="onDoneEditingNode"
+                            @done-editing-node-event="onDoneEditingNode"
                             :obj="changedObj ? changedObj : importFramework"
                             :parentNotEditable="true"
                             class="framework-title"
@@ -487,7 +487,7 @@
                             :repo="repo"
                             :newFramework="true"
                             @delete-object="deleteObject"
-                            @exportObject="exportObject"
+                            @export-object="exportObject"
                             :properties="importType === 'text' ? 'primary' : 'tertiary'" />
                         <ConceptHierarchy
                             :class="{'is-hidden': !hierarchyIsdoneLoading}"
@@ -540,7 +540,7 @@
                             :is="dynamicThing"
                             :class="parentObjectClass"
                             :editingNode="editingNode"
-                            @doneEditingNodeEvent="onDoneEditingNode"
+                            @done-editing-node-event="onDoneEditingNode"
                             :obj="changedObj ? changedObj : importFramework"
                             :parentNotEditable="true"
                             class="framework-title"
@@ -565,7 +565,7 @@
                             :repo="repo"
                             :newFramework="true"
                             @delete-object="deleteObject"
-                            @exportObject="exportObject"
+                            @export-object="exportObject"
                             :properties="importType === 'text' ? 'primary' : 'tertiary'" />
                         <ConceptHierarchy
                             :class="{'is-hidden': !hierarchyIsdoneLoading}"
