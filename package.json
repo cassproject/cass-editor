@@ -42,7 +42,7 @@
     "@vue/cli-plugin-unit-jest": "^4.4.6",
     "@vue/cli-service": "^4.4.6",
     "@vue/eslint-config-standard": "^4.0.0",
-    "@vue/test-utils": "1.1.0",
+    "@vue/test-utils": "1.1.1",
     "@vuepress/core": "^1.6.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.8.0",
