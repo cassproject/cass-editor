@@ -360,7 +360,7 @@ export default {
                 }
             } else {
                 me.$store.commit('app/importFileType', '');
-                error = ("CaSS cannot read the file " + file.name + ". Please check that the file has the correct file extension.");
+                let error = ("CaSS cannot read the file " + file.name + ". Please check that the file has the correct file extension.");
                 me.$store.commit('app/addImportError', error);
                 me.$store.commit('app/importTransition', 'process');
                 return;
