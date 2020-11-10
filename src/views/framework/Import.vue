@@ -545,7 +545,8 @@
                             :parentNotEditable="true"
                             class="framework-title"
                             :profile="containerProfile"
-                            properties="tertiary" />
+                            properties="tertiary"
+                            view="importLight" />
                         <Hierarchy
                             v-if="importFramework && !conceptMode"
                             view="importLight"
