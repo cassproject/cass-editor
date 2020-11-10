@@ -168,7 +168,11 @@
                 v-if="showSideNav">
                 <a
                     href="/docs/competency-and-framework-management/"
-                    target="_blank">Framework Documentation
+                    target="_blank">
+                    <span class="icon">
+                        <i class="fas fa-book" />
+                    </span>
+                    Framework Documentation
                 </a>
             </li>
             <li
@@ -248,7 +252,11 @@
                 v-if="showSideNav">
                 <a
                     href="/docs/taxonomies/"
-                    target="_blank">{{ queryParams.ceasnDataFields === 'true' ? "Concept Scheme" : "Taxonomy" }} Documentation
+                    target="_blank">
+                    <span class="icon">
+                        <i class="fas fa-book" />
+                    </span>
+                    {{ queryParams.ceasnDataFields === 'true' ? "Concept Scheme" : "Taxonomy" }} Documentation
                 </a>
             </li>
             <li
