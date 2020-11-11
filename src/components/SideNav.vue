@@ -164,6 +164,18 @@
                 </router-link>
             </li>
             <li
+                class="has-text-white"
+                v-if="showSideNav">
+                <a
+                    href="/docs/competency-and-framework-management/"
+                    target="_blank">
+                    <span class="icon">
+                        <i class="fas fa-book" />
+                    </span>
+                    Framework Documentation
+                </a>
+            </li>
+            <li
                 v-for="navLink of pluginLinkMap['Competencies & Frameworks']"
                 class="has-text-white"
                 v-show="showSideNav && pluginsEnabled"
@@ -234,6 +246,18 @@
                         Taxonomy
                     </span>
                 </router-link>
+            </li>
+            <li
+                class="has-text-white"
+                v-if="showSideNav">
+                <a
+                    href="/docs/taxonomies/"
+                    target="_blank">
+                    <span class="icon">
+                        <i class="fas fa-book" />
+                    </span>
+                    {{ queryParams.ceasnDataFields === 'true' ? "Concept Scheme" : "Taxonomy" }} Documentation
+                </a>
             </li>
             <li
                 v-for="navLink of pluginLinkMap['Taxonomy']"
