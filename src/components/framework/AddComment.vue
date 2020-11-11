@@ -145,6 +145,7 @@ export default {
             this.updateStoredFrameworkCommentData();
             this.commentIsBusy = false;
             this.closeModal();
+            this.$store.commit('app/showRightAside', 'Comments');
         },
         saveCommentFailed: function(msg) {
             this.commentIsBusy = false;
