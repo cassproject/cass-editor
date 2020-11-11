@@ -7,7 +7,7 @@ textarea {
 .import-text-textarea {
     max-height: 75vh !important; 
     resize: vertical !important;
-}
+} 
 #import {
     #import-from-url,
     #import-from-server,
@@ -15,7 +15,7 @@ textarea {
     #import-from-file {
         min-height: 100vh;
     }
-    .parent-object {
+    .parent-object:not(.lode__thing-editing) {
         position: sticky;
         background-color: $white;
         top: 0px;
