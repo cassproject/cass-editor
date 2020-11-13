@@ -312,11 +312,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div
-                            class="container has-text-centered"
-                            v-if="alignmentsSaved">
-                            <h4><i class="fa fa-check" /> Alignments saved</h4>
-                        </div>
                     </div>
                 </transition>
             </div>
@@ -450,6 +445,13 @@ export default {
                 if (this.filteredQuickFilters[i].id === "ownedByMe") {
                     this.showMine = true;
                 }
+            }
+        },
+        alignmentsSaved: function() {
+            if (this.alignmentsSaved) {
+                let id = this.sourceFrameworkSaving.shortId();
+                this.$store.commit('editor/framework', this.sourceFrameworkSaving);
+                this.$router.push({name: 'framework', params: {frameworkId: id}});
             }
         }
     },
@@ -749,7 +751,7 @@ export default {
             for (let r of relArray) {
                 if (!processedRelationshipIds.includes(r.shortId)) {
                     processedRelationshipIds.push(r.shortId());
-                    if (this.frameworkSource.competency.includes(r.source) && this.frameworkTarget.competency.includes(r.target)) {
+                    if (this.frameworkSource.competency && this.frameworkSource.competency.includes(r.source) && this.frameworkTarget.competency && this.frameworkTarget.competency.includes(r.target)) {
                         if (!relAlignmentMap[r.source]) relAlignmentMap[r.source] = {};
                         if (!relAlignmentMap[r.source][r.relationType]) relAlignmentMap[r.source][r.relationType] = {};
                         if (!relAlignmentMap[r.source][r.relationType][r.target]) relAlignmentMap[r.source][r.relationType][r.target] = r;
