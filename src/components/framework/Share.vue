@@ -51,7 +51,9 @@
         <section
             v-else-if="!confirmMakePublic && !confirmMakePrivate"
             class="modal-card-body">
-            <div class="columns box is-mobile is-multiline">
+            <div
+                class="columns box is-mobile is-multiline"
+                v-if="shareEnabled">
                 <!-- share link -->
                 <div class="column is-12">
                     <h3 class="has-text-weight-bold">
@@ -84,7 +86,7 @@
             </div>
             <div
                 class="columns is-multiline is-mobile"
-                v-if="canEditFramework">
+                v-if="canEditFramework && userManagementEnabled">
                 <!-- end share link -->
                 <div v-if="ownerCount === 0">
                     To add users or groups or to make your {{ conceptOrFramework }} private, first add yourself as an owner.
@@ -416,6 +418,12 @@ export default {
         },
         conceptOrFramework: function() {
             return this.$store.getters['editor/conceptMode'] ? 'concept scheme' : 'framework';
+        },
+        shareEnabled: function() {
+            return this.$store.state.featuresEnabled.shareEnabled;
+        },
+        userManagementEnabled: function() {
+            return this.$store.state.featuresEnabled.userManagementEnabled;
         }
     },
     mounted: function() {

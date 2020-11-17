@@ -39,7 +39,7 @@
                 </div>
                 <div
                     v-if="selectButtonText"
-                    @click="$emit('selectButtonClick', selectedArray)"
+                    @click="$emit('select-button-click', selectedArray)"
                     class="button is-outlined is-primary">
                     {{ selectButtonText }}
                 </div>
@@ -50,7 +50,7 @@
                     class="buttons">
                     <div
                         v-if="multipleSelected && !addingNode && view !== 'import' && canEdit"
-                        @click="$emit('editMultipleEvent')"
+                        @click="$emit('edit-multiple-event')"
                         class="button is-outlined is-primary">
                         <span class="icon">
                             <i class="fa fa-cog" />
@@ -194,9 +194,9 @@
                 @end="endDrag">
                 <HierarchyNode
                     :view="view"
-                    @createNewNodeEvent="onCreateNewNode"
+                    @create-new-node-event="onCreateNewNode"
                     :subview="subview"
-                    @mountingNode="handleMountingNode"
+                    @mounting-node="handleMountingNode"
                     v-for="(item, index) in hierarchy"
                     :key="item.obj.id"
                     :obj="item.obj"
@@ -213,14 +213,14 @@
                     :frameworkEditable="canEdit"
                     :selectedArray="selectedArray"
                     @add="add"
-                    @beginDrag="beginDrag"
+                    @begin-drag="beginDrag"
                     @move="move"
-                    @deleteObject="deleteObject"
-                    @exportObject="exportObject"
+                    @delete-object="deleteObject"
+                    @export-object="exportObject"
                     @select="select"
                     :parentStructure="hierarchy"
                     :parent="container"
-                    @draggableCheck="onDraggableCheck"
+                    @draggable-check="onDraggableCheck"
                     :properties="properties"
                     :expandAll="expanded==true"
                     :parentChecked="false"
@@ -358,7 +358,7 @@ export default {
             } else {
                 this.addConceptOrChildText = "Add Concept";
             }
-            this.$emit('selectedArray', this.selectedArray);
+            this.$emit('selected-array', this.selectedArray);
         },
         // Concepts can't just depend on fields on the container object like frameworks can for reactivity
         recomputeHierarchy: function() {
@@ -461,7 +461,7 @@ export default {
          */
         startTime: function() {
             hierarchyTimeout = setTimeout(() => {
-                this.$emit('doneLoadingNodes');
+                this.$emit('done-loading-nodes');
             }, 1000);
         },
         computeHierarchy: function() {
@@ -744,10 +744,10 @@ export default {
             }
         },
         deleteObject: function(thing) {
-            this.$emit('deleteObject', thing);
+            this.$emit('delete-object', thing);
         },
         exportObject: function(thing, type) {
-            this.$emit('exportObject', thing, type);
+            this.$emit('export-object', thing, type);
         },
         onDraggableCheck: function(checked) {
             this.isDraggable = checked;

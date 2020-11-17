@@ -211,7 +211,7 @@ export default {
     methods: {
         // delete these?
         importCaseDocs: function() {
-            this.$emit('importCase', this.caseDocs);
+            this.$emit('import-case', this.caseDocs);
             this.$store.commit('app/importTransition', 'importingCaseFrameworks');
         },
         importFromUrl: function() {

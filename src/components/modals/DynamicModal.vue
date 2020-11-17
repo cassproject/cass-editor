@@ -21,7 +21,6 @@ returns content.
 </template>
 
 <script>
-import {mapState} from 'vuex';
 import Share from '@/components/framework/Share.vue';
 import MultiEdit from '@/components/competency/MultiEdit.vue';
 import Search from '@/components/competency/Search.vue';

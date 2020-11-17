@@ -141,7 +141,9 @@
                     </div>
                 </div>
                 <!-- manage users -->
-                <div class="column is-narrow">
+                <div
+                    class="column is-narrow"
+                    v-if="showUserManagementIcon">
                     <div
                         v-if="loggedIn"
                         title="Manage users"
@@ -153,7 +155,7 @@
                     </div>
                     <!-- get share link -->
                     <div
-                        v-else
+                        v-else-if="shareEnabled"
                         title="Get shareable link"
                         @click="showManageUsersModal(); showShareDropdown = false;"
                         class="button is-text has-text-dark ">
@@ -217,7 +219,7 @@ export default {
         },
         handleExportClick: function() {
             if (this.canExport) {
-                this.$emit('showExportModal');
+                this.$emit('show-export-modal');
                 this.showShareDropdown = false;
             }
         },
@@ -245,7 +247,7 @@ export default {
             } else if (newType === 'tertiary' && properties === 'tertiary') {
                 newType = 'secondary';
             }
-            this.$emit('changeProperties', newType);
+            this.$emit('change-properties', newType);
             this.showPropertyViewDropDown = false;
             this.activeView = newType;
         },
@@ -460,6 +462,21 @@ export default {
         },
         configurationsEnabled: function() {
             return this.$store.state.featuresEnabled.configurationsEnabled;
+        },
+        shareEnabled: function() {
+            return this.$store.state.featuresEnabled.shareEnabled;
+        },
+        userManagementEnabled: function() {
+            return this.$store.state.featuresEnabled.userManagementEnabled;
+        },
+        showUserManagementIcon: function() {
+            if (!this.shareEnabled && !this.canEditFramework) {
+                return false;
+            }
+            if (!this.shareEnabled && !this.userManagementEnabled) {
+                return false;
+            }
+            return true;
         }
     },
     watch: {

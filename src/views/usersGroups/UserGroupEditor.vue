@@ -62,7 +62,7 @@
                                 :description="grp.getDescription()"
                                 :numMembers="getUserGroupNumMembers(grp)"
                                 :isOwned="doesAnyIdentityOwnObject(grp)"
-                                @showDetails="showUserGroupDetails" />
+                                @show-details="showUserGroupDetails" />
                         </tbody>
                     </table>
                 </div>

@@ -15,7 +15,7 @@ export default {
             this.$store.commit('app/clearImportFiles');
         },
         cancelImport: function() {
-            this.$emit("deleteObject", this.importFramework);
+            this.$emit("delete-object", this.importFramework);
             this.resetImport();
         },
         resetImport: function() {
@@ -360,7 +360,7 @@ export default {
                 }
             } else {
                 me.$store.commit('app/importFileType', '');
-                error = ("CaSS cannot read the file " + file.name + ". Please check that the file has the correct file extension.");
+                let error = ("CaSS cannot read the file " + file.name + ". Please check that the file has the correct file extension.");
                 me.$store.commit('app/addImportError', error);
                 me.$store.commit('app/importTransition', 'process');
                 return;
@@ -1052,6 +1052,9 @@ export default {
                         EcRepository.cache[relations[i].shortId()] = relations[i];
                         f.addRelation(relations[i].shortId());
                     }
+                    if (me.importFrameworkName) {
+                        f.name = me.importFrameworkName;
+                    }
                     me.$nextTick(function() {
                         me.$store.commit('app/importFramework', f);
                         me.$store.commit('editor/framework', f);
@@ -1062,6 +1065,14 @@ export default {
                 appError,
                 this.repo,
                 false);
+        },
+        importFrameworkName: function() {
+            if (this.importType === "text" && this.importFramework) {
+                let framework = this.importFramework;
+                framework.name = this.importFrameworkName;
+                this.$store.commit('editor/changedObject', "update");
+                this.$store.commit('app/importFramework', framework);
+            }
         },
         importFramework: function() {
             if (this.importFramework && !this.conceptMode && this.frameworkSize === 0) {

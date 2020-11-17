@@ -3182,9 +3182,9 @@ export default {
             set(val) {
                 appLog("val", val);
                 if (val) {
-                    this.$emit('setBrowserDefault', this.config.id);
+                    this.$emit('set-browser-default', this.config.id);
                 } else {
-                    this.$emit('removeBrowserDefaultConfig');
+                    this.$emit('remove-browser-default-config');
                 }
             }
         },

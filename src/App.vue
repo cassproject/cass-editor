@@ -11,13 +11,13 @@
             @sideBarEvent="onSidebarEvent"
             name="topbar" /> -->
         <router-view
-            @createNewFramework="createNewFramework"
-            @createNewConceptScheme="createNewConceptScheme"
+            @create-new-framework="createNewFramework"
+            @create-new-concept-scheme="createNewConceptScheme"
             :class="[{ 'clear-side-bar': showSideNav}, { 'clear-narrow-side-bar': !showSideNav}, {'clear-right-aside': showRightAside}]" />
         <router-view
             :showSideNav="showSideNav"
-            @createNewFramework="createNewFramework"
-            @createNewConceptScheme="createNewConceptScheme"
+            @create-new-framework="createNewFramework"
+            @create-new-concept-scheme="createNewConceptScheme"
             name="sidebar" />
         <vue-progress-bar />
     </div>
@@ -77,6 +77,10 @@ export default {
                     this.$store.commit('featuresEnabled/userManagementEnabled', false);
                     this.$store.commit('featuresEnabled/searchByOwnerNameEnabled', false);
                     this.$store.commit('featuresEnabled/loginEnabled', false);
+                    this.$store.commit('featuresEnabled/pluginsEnabled', false);
+                }
+                if (this.queryParams.user === "wait") {
+                    this.$store.commit('featuresEnabled/shareEnabled', false);
                 }
             }
             for (var i = 0; i < servers.length; i++) {
