@@ -19,7 +19,7 @@
     "bulma-switch": "^2.0.0",
     "cassproject": "^3.0.13",
     "core-js": "^3.7.0",
-    "dateformat": "^3.0.3",
+    "dateformat": "^4.0.0",
     "file-saver": "^2.0.2",
     "jsonld": "^1.8.1",
     "lodash": "^4.17.20",
