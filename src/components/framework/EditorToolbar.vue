@@ -496,6 +496,10 @@ export default {
         }
     },
     mounted: function() {
+        if (this.$store.getters['editor/setPropertyLevel']) {
+            this.changeProperties(this.$store.getters['editor/setPropertyLevel']);
+            this.$store.commit('editor/setPropertyLevel', null);
+        }
         this.getConfigurationName();
     }
 };

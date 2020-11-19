@@ -43,7 +43,8 @@ const state = {
     paste: false,
     cutOrCopyContainerId: null,
     nodeInFocus: null,
-    relations: {}
+    relations: {},
+    setPropertyLevel: null
 };
 const mutations = {
     framework(state, f) {
@@ -167,6 +168,9 @@ const mutations = {
     },
     relations(state, obj) {
         state.relations = obj;
+    },
+    setPropertyLevel(state, level) {
+        state.setPropertyLevel = level;
     }
 };
 const actions = {
@@ -277,6 +281,9 @@ const getters = {
     },
     relations: function(state) {
         return state.relations;
+    },
+    setPropertyLevel: function(state) {
+        return state.setPropertyLevel;
     }
 };
 
