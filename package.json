@@ -20,7 +20,7 @@
     "cassproject": "^3.0.13",
     "core-js": "^3.7.0",
     "dateformat": "^3.0.3",
-    "file-saver": "^2.0.2",
+    "file-saver": "^2.0.5",
     "jsonld": "^1.8.1",
     "lodash": "^4.17.20",
     "pure-uuid": "^1.6.1",
