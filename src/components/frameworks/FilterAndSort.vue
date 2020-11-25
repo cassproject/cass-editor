@@ -220,7 +220,7 @@ export default {
                         let found = false;
                         for (let c of ca) {
                             if (c.isDefault === "true") {
-                                this.frameworkConfig = c.frameworkConfig;
+                                me.frameworkConfig = c.frameworkConfig;
                                 found = true;
                                 break;
                             }
