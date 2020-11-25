@@ -26,6 +26,7 @@ export default {
                     [{"@language": "en", "@value": "The name of the framework. One name per language."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Framework Name"}],
                     "heading": "General",
+                    "isRequired": "true",
                     "onePerLanguage": "true"
                 },
                 "http://schema.org/description": {
@@ -326,6 +327,7 @@ export default {
                     [{"@language": "en", "@value": "The name of the competency. One name per language."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}],
                     "heading": "General",
+                    "isRequired": "true",
                     "onePerLanguage": "true"
                 },
                 "http://schema.org/description": {
