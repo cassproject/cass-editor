@@ -313,6 +313,9 @@ export default {
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];
         },
+        addAnother: function() {
+            return this.$store.getters['editor/addAnother'];
+        },
         hierarchy: function() {
             var me = this;
             if (this.container == null) return null;
@@ -370,6 +373,12 @@ export default {
         doneDragging: function() {
             if (this.doneDragging) {
                 this.dragging = false;
+            }
+        },
+        addAnother: function(val) {
+            if (val) {
+                this.onClickCreateNew();
+                this.$store.commit('editor/addAnother', false);
             }
         }
     },

@@ -449,9 +449,19 @@ export default {
         },
         alignmentsSaved: function() {
             if (this.alignmentsSaved) {
-                let id = this.sourceFrameworkSaving.shortId();
-                this.$store.commit('editor/framework', this.sourceFrameworkSaving);
-                this.$router.push({name: 'framework', params: {frameworkId: id}});
+                if (this.saveToSourceFramework && !this.saveToTargetFramework) {
+                    let id = this.sourceFrameworkSaving.shortId();
+                    this.$store.commit('editor/framework', this.sourceFrameworkSaving);
+                    this.$store.commit('editor/setPropertyLevel', "tertiary");
+                    this.$router.push({name: 'framework', params: {frameworkId: id}});
+                } else {
+                    // If saving to both frameworks, go to list sorted by last modified
+                    this.$store.commit('app/sortResults', {
+                        id: 'lastEdited',
+                        label: 'last modified'
+                    });
+                    this.$router.push({name: "frameworks"});
+                }
             }
         }
     },
@@ -601,6 +611,7 @@ export default {
         saveTargetFramework: function() {
             if (this.isObjectOwnerless(this.targetFrameworkSaving) || this.doesAnyIdentityOwnObject(this.targetFrameworkSaving)) {
                 appLog("Saving target framework for crosswalk...");
+                this.targetFrameworkSaving["schema:dateModified"] = new Date().toISOString();
                 this.targetFrameworkSaving.save(this.handleSaveTargetFrameworkSuccess, this.handleSaveTargetFrameworkFailed, this.repo);
             } else {
                 this.alignmentsSaved = true;
@@ -614,6 +625,7 @@ export default {
         saveSourceFrameworkAndGo: function() {
             if (this.isObjectOwnerless(this.sourceFrameworkSaving) || this.doesAnyIdentityOwnObject(this.sourceFrameworkSaving)) {
                 appLog("Saving source framework for crosswalk...");
+                this.sourceFrameworkSaving["schema:dateModified"] = new Date().toISOString();
                 this.sourceFrameworkSaving.save(this.saveTargetFramework, this.handleSaveSourceFrameworkFailed, this.repo);
             } else this.saveTargetFramework();
         },

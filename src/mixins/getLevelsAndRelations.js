@@ -88,7 +88,7 @@ export default {
                             if (!framework) {
                                 framework = me.importFramework;
                             }
-                            if (framework.competency.indexOf(a.target) !== -1) {
+                            if (framework.competency.indexOf(a.target) !== -1 && framework.competency.indexOf(a.source) !== -1) {
                                 relationType = "isChildOf";
                                 reciprocalRelation = "hasChild";
                             }
