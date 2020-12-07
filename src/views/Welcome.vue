@@ -85,6 +85,9 @@
                                 when logged in. Use comments to create dialogues around your authoring process.
                             </p>
                         </div>
+                        <button @click="saveDirectory">
+                            Save a new directory
+                        </button>
                     </div>
                 </div>
                 <div class="column is-3 px-4 py-4">
@@ -412,6 +415,20 @@ export default {
         },
         openFrameworkExplorer: function() {
             this.$router.push({name: "viewer"});
+        },
+        saveDirectory: function() {
+            let dir = new EcDirectory();
+            dir.name = "Test Name";
+            dir.description = "Test Description";
+            dir.generateId(this.repo.selectedServer);
+            if (EcIdentityManager.ids.length > 0) {
+                dir.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            }
+            // To do: Add other owners and readers
+            // To do: add parentDirectory if button is being used to add a subdirectory
+            dir.save(function(success) {
+                appLog("Directory saved: " + dir.id);
+            }, console.error, this.repo);
         }
     }
 };
