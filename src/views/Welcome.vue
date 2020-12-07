@@ -88,6 +88,9 @@
                         <button @click="saveDirectory">
                             Save a new directory
                         </button>
+                        <button @click="searchForDirectories">
+                            Search For Directories
+                        </button>
                     </div>
                 </div>
                 <div class="column is-3 px-4 py-4">
@@ -429,6 +432,9 @@ export default {
             dir.save(function(success) {
                 appLog("Directory saved: " + dir.id);
             }, console.error, this.repo);
+        },
+        searchForDirectories: function() {
+            EcDirectory.search(this.repo, "", appLog, console.error, null);
         }
     }
 };
