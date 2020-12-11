@@ -28,7 +28,7 @@
                     </div>
                     <SearchBar
                         filterSet="all"
-                        :searchType="framework" />
+                        searchType="framework" />
                 </div>
             </div>
         </div>
@@ -206,7 +206,7 @@ export default {
             return this.$store.getters['editor/queryParams'];
         },
         searchOptions: function() {
-            let search = "";
+            let search = " AND (directory:\"" + this.directory.shortId() + "\" OR parentDirectory:\"" + this.directory.shortId() + "\")";
             if (this.queryParams && this.queryParams.filter != null) {
                 search += " AND (" + this.queryParams.filter + ")";
             }
@@ -324,9 +324,14 @@ export default {
             } else {
                 this.parentObjectClass = 'frameworks-sticky';
             }
+        },
+        createSubdirectory: function() {
         }
     },
     mounted: function() {
+        if (!this.directory || this.directory === '') {
+            this.$router.push({name: "frameworks"});
+        }
         // Keep sorting/filtering in sync with the store on back button
         if (this.sortResults.id === "lastEdited") {
             this.sortBy = "schema:dateModified";
