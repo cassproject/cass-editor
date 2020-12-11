@@ -306,17 +306,29 @@ export default {
             ];
         },
         setOtherPropertiesApplySearchTo: function() {
+            this.otherPropertiesApplySearchTo = [
+                {
+                    id: 'directoryName',
+                    checked: false,
+                    label: 'Directory name',
+                    enabled: true
+                },
+                {
+                    id: 'directoryDescription',
+                    checked: false,
+                    label: 'Directory description',
+                    enabled: true
+                }
+            ];
             if (this.searchByOwnerNameEnabled) {
-                this.otherPropertiesApplySearchTo = [
+                this.otherPropertiesApplySearchTo.push(
                     {
                         id: 'ownerName',
                         checked: false,
                         label: 'Owner name',
                         enabled: true
                     }
-                ];
-            } else {
-                this.otherPropertiesApplySearchTo = [];
+                );
             }
         },
         setCompetencyPropertiesApplySearchTo: function() {
