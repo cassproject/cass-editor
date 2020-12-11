@@ -88,9 +88,6 @@
                         <button @click="saveDirectory">
                             Save a new directory
                         </button>
-                        <button @click="searchForDirectories">
-                            Search For Directories
-                        </button>
                     </div>
                 </div>
                 <div class="column is-3 px-4 py-4">
@@ -427,14 +424,13 @@ export default {
             if (EcIdentityManager.ids.length > 0) {
                 dir.addOwner(EcIdentityManager.ids[0].ppk.toPk());
             }
+            dir["schema:dateCreated"] = new Date().toISOString();
+            dir["schema:dateModified"] = new Date().toISOString();
             // To do: Add other owners and readers
             // To do: add parentDirectory if button is being used to add a subdirectory
             dir.save(function(success) {
                 appLog("Directory saved: " + dir.id);
             }, console.error, this.repo);
-        },
-        searchForDirectories: function() {
-            EcDirectory.search(this.repo, "", appLog, console.error, null);
         }
     }
 };
