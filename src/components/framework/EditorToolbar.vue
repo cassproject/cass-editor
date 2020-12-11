@@ -179,6 +179,15 @@
                         <span class="is-hidden-touch">{{ defaultFrameworkConfigName }}</span>
                     </div>
                 </div>
+                <!-- directory -->
+                <div
+                    v-if="directoryId"
+                    class="column is-narrow"
+                    @click="goToDirectory">
+                    <div class="button is-text has-text-dark">
+                        Go to directory
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -407,6 +416,13 @@ export default {
             } else {
                 this.defaultFrameworkConfigName = "No configuration";
             }
+        },
+        goToDirectory: function() {
+            let me = this;
+            EcDirectory.get(this.directoryId, function(success) {
+                me.$store.commit('app/selectDirectory', success);
+                me.$router.push({name: "directory"});
+            }, appError);
         }
     },
     computed: {
@@ -477,6 +493,9 @@ export default {
                 return false;
             }
             return true;
+        },
+        directoryId: function() {
+            return this.framework.directory;
         }
     },
     watch: {
