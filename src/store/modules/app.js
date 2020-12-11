@@ -35,7 +35,7 @@ const state = {
         dynamicModalContent: {}
     },
     directories: {
-        selectedDirectory: ''
+        selectedDirectory: null
     },
     import: {
         files: [],

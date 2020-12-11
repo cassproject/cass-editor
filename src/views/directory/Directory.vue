@@ -21,8 +21,16 @@
                                 @click="createSubdirectory"
                                 class="button is-outlined is-primary">
                                 <span class="icon">
-                                    <i class="fa fa-upload" />
+                                    <i class="fa fa-plus" />
                                 </span><span>create subdirectory</span>
+                            </div>
+                            <div
+                                v-if="directory.parentDirectory"
+                                @click="goToParentDirectory"
+                                class="button is-outlined is-primary">
+                                <span class="icon">
+                                    <i class="fa fa-back" />
+                                </span><span>go to parent</span>
                             </div>
                         </div>
                         <div class="column">
@@ -298,6 +306,9 @@ export default {
             return item.canEditAny(EcIdentityManager.getMyPks());
         },
         frameworkClick: function(framework) {
+            if (framework.type === "Directory") {
+                this.$store.commit('app/selectDirectory', framework);
+            }
             var me = this;
             EcFramework.get(framework.id, function(success) {
                 me.$store.commit('editor/framework', success);
@@ -353,6 +364,29 @@ export default {
             }
         },
         createSubdirectory: function() {
+            let me = this;
+            let dir = new EcDirectory();
+            dir.name = "Test Subdirectory Name";
+            dir.description = "Test Subdirectory Description";
+            dir.generateId(this.repo.selectedServer);
+            dir.parentDirectory = this.directory.shortId();
+            if (this.directory.owner) {
+                dir.owner = this.directory.owner;
+            }
+            if (this.directory.reader) {
+                dir.reader = this.directory.reader;
+            }
+            if (EcIdentityManager.ids.length > 0) {
+                dir.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            }
+            dir["schema:dateCreated"] = new Date().toISOString();
+            dir["schema:dateModified"] = new Date().toISOString();
+            // To do: Add other owners and readers
+            // To do: add parentDirectory if button is being used to add a subdirectory
+            dir.save(function(success) {
+                appLog("Directory saved: " + dir.id);
+                me.$store.commit('app/selectDirectory', dir);
+            }, console.error, this.repo);
         },
         successfulClip({value, event}) {
             appLog('success', value);
@@ -367,6 +401,12 @@ export default {
             setTimeout(() => {
                 this.clipStatus = 'ready';
             }, 1000);
+        },
+        goToParentDirectory: function() {
+            let me = this;
+            EcDirectory.get(this.directory.parentDirectory, function(success) {
+                me.$store.commit('app/selectDirectory', success);
+            }, appError);
         }
     },
     mounted: function() {
