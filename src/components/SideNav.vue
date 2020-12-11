@@ -188,6 +188,26 @@
                 </a>
             </li>
         </ul>
+        <!-- DIRECTORIES -->
+        <div
+            v-if="showSideNav"
+            class="menu-label has-text-weight-bold">
+            My Directories
+        </div>
+        <ul
+            class="menu-list">
+            <li
+                class="has-text-white"
+                v-for="directory in myDirectories"
+                :key="directory.id"
+                @click="selectDirectory(directory)">
+                <span class="icon">
+                    <i class="fa fa-folder" />
+                </span>
+                <!-- fa fa-folder-open on selected -->
+                <span v-if="showSideNav"> {{ directory.name }}</span>
+            </li>
+        </ul>
         <!-- CONCEPT SCHEMES -->
         <div
             v-if="showSideNav"
@@ -371,7 +391,8 @@ export default {
             STANDARD_NAV_CATEGORIES: ['Competencies & Frameworks', 'Taxonomy', 'Configuration'],
             casslogo: casslogo,
             casslogoSquare: casslogoSquare,
-            pluginLinkMap: {}
+            pluginLinkMap: {},
+            myDirectories: []
         };
     },
     methods: {
@@ -401,6 +422,30 @@ export default {
             if (enabledPluginUrlList && enabledPluginUrlList.length > 0) {
                 this.loadManifestDataForPluginUrlList(enabledPluginUrlList, this.buildPluginLinkMap);
             } else this.pluginLinkMap = {};
+        },
+        searchForDirectories: function() {
+            let me = this;
+            EcDirectory.search(window.repo, "", function(dirs) {
+                for (let i = 0; i < dirs.length; i++) {
+                    if (dirs[i].canEditAny(EcIdentityManager.getMyPks())) {
+                        me.myDirectories.push(dirs[i]);
+                    }
+                }
+            }, appError, null);
+        },
+        addNewlinesToId: function(pem) {
+            // Begin public key line
+            pem = pem.substring(0, 26) + "\n" + pem.substring(26);
+            var length = pem.length;
+            var start = 27;
+            while (start + 64 < length) {
+                pem = pem.substring(0, start + 64) + "\n" + pem.substring(start + 64);
+                start += 65;
+                length++;
+            }
+            // End public key line
+            pem = pem.substring(0, length - 24) + "\n" + pem.substring(length - 24);
+            return pem;
         }
     },
     watch: {
@@ -456,6 +501,7 @@ export default {
     },
     mounted() {
         this.buildPluginList(this.buildPluginListComplete);
+        this.searchForDirectories();
     }
 };
 </script>
