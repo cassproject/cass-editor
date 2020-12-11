@@ -11,7 +11,7 @@
                         </div>
                         <div class="column">
                             <div
-                                @click="$emit('create-new-framework')"
+                                @click="$emit('create-new-framework', directory)"
                                 class="button is-outlined is-primary">
                                 <span class="icon">
                                     <i class="fa fa-plus" />

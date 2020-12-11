@@ -405,7 +405,7 @@ export default {
             returnObject.copyFrom(v.decryptIntoObject());
             return returnObject;
         },
-        createNewFramework: function() {
+        createNewFramework: function(optionalDirectory) {
             let me = this;
             this.$store.commit('editor/t3Profile', false);
             this.setDefaultLanguage();
@@ -417,6 +417,15 @@ export default {
             }
             framework["schema:dateCreated"] = new Date().toISOString();
             framework["schema:dateModified"] = new Date().toISOString();
+            if (optionalDirectory) {
+                framework.directory = optionalDirectory.shortId();
+                if (optionalDirectory.owner) {
+                    framework.owner = optionalDirectory.owner;
+                }
+                if (optionalDirectory.reader) {
+                    framework.reader = optionalDirectory.reader;
+                }
+            }
             if (EcIdentityManager.ids.length > 0) {
                 framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
             }
