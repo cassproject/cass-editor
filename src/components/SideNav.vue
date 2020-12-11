@@ -201,10 +201,16 @@
                 v-for="directory in myDirectories"
                 :key="directory.id"
                 @click="selectDirectory(directory)">
-                <span class="icon">
+                <span
+                    class="icon"
+                    v-if="$store.getters['app/selectedDirectory'] && $store.getters['app/selectedDirectory'].id === directory.id">
+                    <i class="fa fa-folder-open" />
+                </span>
+                <span
+                    class="icon"
+                    v-else>
                     <i class="fa fa-folder" />
                 </span>
-                <!-- fa fa-folder-open on selected -->
                 <span v-if="showSideNav"> {{ directory.name }}</span>
             </li>
         </ul>
@@ -446,6 +452,9 @@ export default {
             // End public key line
             pem = pem.substring(0, length - 24) + "\n" + pem.substring(length - 24);
             return pem;
+        },
+        selectDirectory: function(directory) {
+            this.$store.commit('app/selectDirectory', directory);
         }
     },
     watch: {

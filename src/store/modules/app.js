@@ -34,6 +34,9 @@ const state = {
         showModal: false,
         dynamicModalContent: {}
     },
+    directories: {
+        selectedDirectory: ''
+    },
     import: {
         files: [],
         transition: 'upload', // upload, process, detail, preview, light
@@ -258,6 +261,9 @@ const mutations = {
         state.frameworks.quickFilters = quickFilters;
         state.frameworks.sortResults = sortResults;
         state.frameworks.applySearchTo = applySearchTo;
+    },
+    selectDirectory: function(state, value) {
+        state.directories.selectedDirectory = value;
     }
 };
 const actions = {
@@ -409,6 +415,9 @@ const getters = {
     },
     pluginToLaunchLastUpdate: state => {
         return state.pluginToLaunchLastUpdate;
+    },
+    selectedDirectory: state => {
+        return state.directories.selectedDirectory;
     }
 };
 
