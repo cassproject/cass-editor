@@ -472,7 +472,7 @@ export default {
         },
         errorClip({value, event}) {
             appLog('error', value);
-            this.slipStatus = 'error';
+            this.clipStatus = 'error';
             setTimeout(() => {
                 this.clipStatus = 'ready';
             }, 1000);

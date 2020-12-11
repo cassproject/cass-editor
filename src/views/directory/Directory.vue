@@ -25,6 +25,29 @@
                                 </span><span>create subdirectory</span>
                             </div>
                         </div>
+                        <div class="column">
+                            <p class="share-url has-text-weight-light">
+                                {{ shareLink }}
+                            </p>
+                        </div>
+                        <div class="column is-narrow">
+                            <div
+                                class="button is-outlined is-large is-primary"
+                                title="Copy URL to the clipboard."
+                                v-clipboard="shareLink"
+                                v-clipboard:success="successfulClip"
+                                v-clipboard:error="errorClip">
+                                <i
+                                    v-if="clipStatus === 'ready'"
+                                    class="fa fa-copy" />
+                                <i
+                                    v-if="clipStatus === 'success'"
+                                    class="fa fa-check" />
+                                <i
+                                    v-if="clipStatus === 'error'"
+                                    class="fa fa-times" />
+                            </div>
+                        </div>
                     </div>
                     <SearchBar
                         filterSet="all"
@@ -188,7 +211,8 @@ export default {
             numIdentities: EcIdentityManager.ids.length,
             parentObjectClass: 'frameworks-sticky',
             sortBy: null,
-            defaultConfig: ""
+            defaultConfig: "",
+            clipStatus: 'ready'
         };
     },
     created: function() {
@@ -263,6 +287,9 @@ export default {
             let filterValues = this.quickFilters.filter(item => item.checked === true);
             appLog('filtered value', filterValues);
             return filterValues;
+        },
+        shareLink: function() {
+            return window.location.href.replace('/directory', "?directoryId=" + this.directory.shortId());
         }
     },
     components: {List, SearchBar},
@@ -326,6 +353,20 @@ export default {
             }
         },
         createSubdirectory: function() {
+        },
+        successfulClip({value, event}) {
+            appLog('success', value);
+            this.clipStatus = 'success';
+            setTimeout(() => {
+                this.clipStatus = 'ready';
+            }, 1000);
+        },
+        errorClip({value, event}) {
+            appLog('error', value);
+            this.clipStatus = 'error';
+            setTimeout(() => {
+                this.clipStatus = 'ready';
+            }, 1000);
         }
     },
     mounted: function() {

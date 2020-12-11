@@ -435,7 +435,7 @@ export default {
             let me = this;
             EcDirectory.search(window.repo, "", function(dirs) {
                 for (let i = 0; i < dirs.length; i++) {
-                    if (dirs[i].canEditAny(EcIdentityManager.getMyPks())) {
+                    if (dirs[i].canEditAny(EcIdentityManager.getMyPks()) && !dirs[i].parentDirectory) {
                         me.myDirectories.push(dirs[i]);
                     }
                 }

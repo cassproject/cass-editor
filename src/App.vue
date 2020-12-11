@@ -125,6 +125,12 @@ export default {
                             }, appError);
                         }
                     }
+                    if (me.queryParams.directoryId) {
+                        EcDirectory.get(me.queryParams.directoryId, function(success) {
+                            me.$store.commit('app/selectDirectory', success);
+                            me.$router.push({name: "directory"});
+                        }, appError);
+                    }
                     if (me.queryParams.action === "import") {
                         me.$router.push({name: "import"});
                     }
