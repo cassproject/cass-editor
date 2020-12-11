@@ -201,17 +201,19 @@
                 v-for="directory in myDirectories"
                 :key="directory.id"
                 @click="selectDirectory(directory)">
-                <span
-                    class="icon"
-                    v-if="$store.getters['app/selectedDirectory'] && $store.getters['app/selectedDirectory'].id === directory.id">
-                    <i class="fa fa-folder-open" />
-                </span>
-                <span
-                    class="icon"
-                    v-else>
-                    <i class="fa fa-folder" />
-                </span>
-                <span v-if="showSideNav"> {{ directory.name }}</span>
+                <router-link to="/directory">
+                    <span
+                        class="icon"
+                        v-if="$store.getters['app/selectedDirectory'] && $store.getters['app/selectedDirectory'].id === directory.id">
+                        <i class="fa fa-folder-open" />
+                    </span>
+                    <span
+                        class="icon"
+                        v-else>
+                        <i class="fa fa-folder" />
+                    </span>
+                    <span v-if="showSideNav"> {{ directory.name }}</span>
+                </router-link>
             </li>
         </ul>
         <!-- CONCEPT SCHEMES -->
