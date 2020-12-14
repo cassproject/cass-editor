@@ -417,6 +417,7 @@ export default {
             this.$router.push({name: "viewer"});
         },
         saveDirectory: function() {
+            let me = this;
             let dir = new EcDirectory();
             dir.name = "Test Name";
             dir.description = "Test Description";
@@ -430,6 +431,7 @@ export default {
             // To do: add parentDirectory if button is being used to add a subdirectory
             dir.save(function(success) {
                 appLog("Directory saved: " + dir.id);
+                me.$store.commit('app/refreshDirectories', true);
             }, console.error, this.repo);
         }
     }

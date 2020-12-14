@@ -433,6 +433,7 @@ export default {
         },
         searchForDirectories: function() {
             let me = this;
+            me.myDirectories.splice(0, me.myDirectories.length);
             EcDirectory.search(window.repo, "", function(dirs) {
                 for (let i = 0; i < dirs.length; i++) {
                     if (dirs[i].canEditAny(EcIdentityManager.getMyPks()) && !dirs[i].parentDirectory) {
@@ -462,6 +463,11 @@ export default {
     watch: {
         pluginLastUpdate: function() {
             this.buildPluginList(this.buildPluginListComplete);
+        },
+        refreshDirectories: function() {
+            if (this.refreshDirectories) {
+                this.searchForDirectories();
+            }
         }
     },
     computed: {
@@ -472,7 +478,8 @@ export default {
             pluginsEnabled: state => state.featuresEnabled.pluginsEnabled,
             loginEnabled: state => state.featuresEnabled.loginEnabled,
             queryParams: state => state.editor.queryParams,
-            pluginLastUpdate: state => state.app.pluginLastUpdate
+            pluginLastUpdate: state => state.app.pluginLastUpdate,
+            refreshDirectories: state => state.app.directories.refreshDirectories
         }),
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];

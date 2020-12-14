@@ -35,7 +35,8 @@ const state = {
         dynamicModalContent: {}
     },
     directories: {
-        selectedDirectory: null
+        selectedDirectory: null,
+        refreshDirectories: false
     },
     import: {
         files: [],
@@ -264,6 +265,9 @@ const mutations = {
     },
     selectDirectory: function(state, value) {
         state.directories.selectedDirectory = value;
+    },
+    refreshDirectories: function(state, bool) {
+        state.directories.refreshDirectories = bool;
     }
 };
 const actions = {
