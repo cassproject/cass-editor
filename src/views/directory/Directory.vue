@@ -25,6 +25,13 @@
                                 </span><span>create subdirectory</span>
                             </div>
                             <div
+                                @click="addResource"
+                                class="button is-outlined is-primary">
+                                <span class="icon">
+                                    <i class="fa fa-plus" />
+                                </span><span>add a resource</span>
+                            </div>
+                            <div
                                 v-if="directory.parentDirectory"
                                 @click="goToParentDirectory"
                                 class="button is-outlined is-primary">
@@ -406,6 +413,25 @@ export default {
             let me = this;
             EcDirectory.get(this.directory.parentDirectory, function(success) {
                 me.$store.commit('app/selectDirectory', success);
+            }, appError);
+        },
+        addResource: function() {
+            let c = new CreativeWork();
+            c.generateId(this.repo.selectedServer);
+            c.name = "New Resource";
+            c.url = "http://myresource.com";
+            c.directory = this.directory.shortId();
+            if (this.directory.owner) {
+                c.owner = this.directory.owner;
+            }
+            if (this.directory.reader) {
+                c.reader = this.directory.reader;
+            }
+            if (EcIdentityManager.ids.length > 0) {
+                c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            }
+            this.repo.saveTo(c, function() {
+                appLog("Resource saved: " + c.id);
             }, appError);
         }
     },
