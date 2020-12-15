@@ -7,6 +7,7 @@ const state = {
     showSideNav: false,
     showRightAside: false,
     rightAsideContent: '',
+    rightAsideObject: null,
     canViewComments: false,
     canAddComments: false,
     pluginLastUpdate: null,
@@ -83,6 +84,10 @@ const mutations = {
     closeRightAside: function(state) {
         state.showRightAside = false;
         state.rightAsideContent = '';
+        state.rightAsideObject = null;
+    },
+    rightAsideObject: function(state, payload) {
+        state.rightAsideObject = payload;
     },
     showModal: function(state, payload) {
         state.modal.showModal = true;
@@ -299,6 +304,9 @@ const getters = {
     },
     rightAsideContent: state => {
         return state.rightAsideContent;
+    },
+    rightAsideObject: state => {
+        return state.rightAsideObject;
     },
     framework: state => {
         return state.framework;

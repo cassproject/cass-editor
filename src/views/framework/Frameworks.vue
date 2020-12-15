@@ -359,7 +359,10 @@ export default {
         },
         frameworkClick: function(framework) {
             var me = this;
-            if (this.conceptMode) {
+            if (framework.type === "Directory") {
+                this.$store.commit('app/rightAsideObject', framework);
+                this.$store.commit('app/showRightAside', 'ListItemInfo');
+            } else if (this.conceptMode) {
                 EcConceptScheme.get(framework.id, function(success) {
                     me.$store.commit('editor/framework', success);
                     me.$store.commit('editor/clearFrameworkCommentData');

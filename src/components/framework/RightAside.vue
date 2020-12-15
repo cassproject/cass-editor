@@ -21,6 +21,7 @@
 <script>
 import Comments from './Comments.vue';
 import Versions from './Versions.vue';
+import ListItemInfo from './ListItemInfo.vue';
 import FilterAndSort from './../frameworks/FilterAndSort.vue';
 
 export default {
@@ -36,7 +37,8 @@ export default {
     components: {
         Comments,
         Versions,
-        FilterAndSort
+        FilterAndSort,
+        ListItemInfo
     },
     computed: {
         showRightAside: function() {
