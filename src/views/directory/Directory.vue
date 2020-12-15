@@ -206,6 +206,12 @@
                         </span>
                     </template>
                 </List>
+                <div
+                    v-for="item in resources"
+                    :key="item.id"
+                    @click="frameworkClick(item)">
+                    {{ item.name }}
+                </div>
             </div>
         </div>
     </div>
@@ -228,7 +234,8 @@ export default {
             parentObjectClass: 'frameworks-sticky',
             sortBy: null,
             defaultConfig: "",
-            clipStatus: 'ready'
+            clipStatus: 'ready',
+            resources: []
         };
     },
     created: function() {
@@ -244,6 +251,9 @@ export default {
         },
         directory: function() {
             return this.$store.getters['app/selectedDirectory'];
+        },
+        directoryShortId: function() {
+            return this.directory.shortId();
         },
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];
@@ -299,6 +309,9 @@ export default {
         sortResults: function() {
             return this.$store.getters['app/sortResults'];
         },
+        searchTerm: function() {
+            return this.$store.getters['app/searchTerm'];
+        },
         quickFilters: function() {
             return this.$store.getters['app/quickFilters'];
         },
@@ -321,7 +334,7 @@ export default {
             return item.canEditAny(EcIdentityManager.getMyPks());
         },
         frameworkClick: function(framework) {
-            if (framework.type === "Directory") {
+            if (framework.type === "Directory" || framework.type === "CreativeWork") {
                 this.$store.commit('app/rightAsideObject', framework);
                 this.$store.commit('app/showRightAside', 'ListItemInfo');
             } else {
@@ -426,6 +439,7 @@ export default {
             }, appError);
         },
         addResource: function() {
+            let me = this;
             let c = new CreativeWork();
             c.generateId(this.repo.selectedServer);
             c.name = "New Resource";
@@ -442,6 +456,17 @@ export default {
             }
             this.repo.saveTo(c, function() {
                 appLog("Resource saved: " + c.id);
+                me.searchForResources();
+            }, appError);
+        },
+        searchForResources: function() {
+            let me = this;
+            this.resources.splice(0, this.resources.length);
+            let type = "CreativeWork";
+            let search = "(@type:" + type + (this.searchTerm != null && this.searchTerm !== "" ? " AND " + this.searchTerm : "") + ") AND (directory:\"" + this.directory.shortId() + "\")";
+            me.repo.searchWithParams(search, {size: 10000}, function(resource) {
+                me.resources.push(resource);
+            }, function(subResults) {
             }, appError);
         }
     },
@@ -471,6 +496,7 @@ export default {
         }
         let documentBody = document.getElementById('directory');
         documentBody.addEventListener('scroll', debounce(this.scrollFunction, 100, {'leading': true}));
+        this.searchForResources();
     },
     watch: {
         sortResults: function() {
@@ -497,6 +523,12 @@ export default {
                     this.filterByConfig = true;
                 }
             }
+        },
+        searchTerm: function() {
+            this.searchForResources();
+        },
+        directoryShortId: function() {
+            this.searchForResources();
         }
     }
 };

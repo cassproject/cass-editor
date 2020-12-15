@@ -7,20 +7,25 @@
                 {{ objectName }}
             </h3>
         </div>
-        <div>
-            Details
-            <div>Last Modified: {{ lastModified }}</div>
-            <div>Date Created: {{ dateCreated }}</div>
-            <div>Subdirectories: {{ numSubdirectories }}</div>
-            <div>Objects: {{ numObjects }}</div>
+        <div v-if="object.type === 'Directory'">
+            <div>
+                Details
+                <div>Last Modified: {{ lastModified }}</div>
+                <div>Date Created: {{ dateCreated }}</div>
+                <div>Subdirectories: {{ numSubdirectories }}</div>
+                <div>Objects: {{ numObjects }}</div>
+            </div>
+            <div>
+                Description
+                <div>{{ objectDescription }}</div>
+            </div>
+            <button @click="openObject">
+                Open
+            </button>
         </div>
-        <div>
-            Description
-            <div>{{ objectDescription }}</div>
+        <div v-if="object.type === 'CreativeWork'">
+            {{ object.url }}
         </div>
-        <button @click="openObject">
-            Open
-        </button>
     </aside>
 </template>
 <script>
