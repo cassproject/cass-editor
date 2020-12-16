@@ -133,11 +133,31 @@
             <li
                 v-if="showSideNav"
                 class="has-text-white"
-                @click="$emit('create-new-framework')">
-                <a>
+                @click="addFrameworkOrDirectory = true">
+                <span class="icon">
+                    <i class="fa fa-plus" />
+                </span><span>Add New</span>
+                <a
+                    @click="$emit('create-new-framework')"
+                    v-if="addFrameworkOrDirectory">
                     <span class="icon">
                         <i class="fa fa-plus" />
                     </span><span v-if="showSideNav">New framework</span></a>
+                <a
+                    @click="addNewDirectory = true"
+                    v-if="addFrameworkOrDirectory">
+                    <span class="icon">
+                        <i class="fa fa-plus" />
+                    </span><span v-if="showSideNav">New directory</span></a>
+                <input
+                    v-if="addNewDirectory"
+                    v-model="directoryName">
+                <button
+                    v-if="addNewDirectory"
+                    :disabled="directoryName === 0"
+                    @click="saveDirectory">
+                    Save directory
+                </button>
             </li>
             <!-- hidding this for now -->
             <li
@@ -400,7 +420,10 @@ export default {
             casslogo: casslogo,
             casslogoSquare: casslogoSquare,
             pluginLinkMap: {},
-            myDirectories: []
+            myDirectories: [],
+            addFrameworkOrDirectory: false,
+            addNewDirectory: false,
+            directoryName: ""
         };
     },
     methods: {
@@ -458,6 +481,27 @@ export default {
         },
         selectDirectory: function(directory) {
             this.$store.commit('app/selectDirectory', directory);
+            if (this.$router.name !== "directory") {
+                this.$router.push({name: "directory"});
+            }
+        },
+        saveDirectory: function() {
+            let me = this;
+            let dir = new EcDirectory();
+            dir.name = this.directoryName;
+            // dir.description = "Test Description";
+            dir.generateId(window.repo.selectedServer);
+            if (EcIdentityManager.ids.length > 0) {
+                dir.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            }
+            dir["schema:dateCreated"] = new Date().toISOString();
+            dir["schema:dateModified"] = new Date().toISOString();
+            // To do: Add other owners and readers
+            dir.save(function(success) {
+                appLog("Directory saved: " + dir.id);
+                me.$store.commit('app/refreshDirectories', true);
+                me.selectDirectory(dir);
+            }, console.error, window.repo);
         }
     },
     watch: {
