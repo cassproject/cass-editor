@@ -334,19 +334,8 @@ export default {
             return item.canEditAny(EcIdentityManager.getMyPks());
         },
         frameworkClick: function(framework) {
-            if (framework.type === "Directory" || framework.type === "CreativeWork") {
-                this.$store.commit('app/rightAsideObject', framework);
-                this.$store.commit('app/showRightAside', 'ListItemInfo');
-            } else {
-                var me = this;
-                EcFramework.get(framework.id, function(success) {
-                    me.$store.commit('editor/framework', success);
-                    me.$store.commit('editor/clearFrameworkCommentData');
-                    me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
-                    me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
-                    me.$router.push({name: "framework", params: {frameworkId: framework.id}});
-                }, appError);
-            }
+            this.$store.commit('app/rightAsideObject', framework);
+            this.$store.commit('app/showRightAside', 'ListItemInfo');
         },
         getName: function(field) {
             let name = EcArray.isArray(field) ? field : [field];
