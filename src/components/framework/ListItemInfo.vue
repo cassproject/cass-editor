@@ -170,6 +170,9 @@ export default {
             return this.object.type;
         },
         lastModified: function() {
+            if (this.object.getTimestamp()) {
+                return this.$moment(new Date(this.object.getTimestamp())).format("MMM D YYYY");
+            }
             if (this.object["schema:dateModified"]) {
                 return this.$moment(new Date(this.object['schema:dateModified'])).format("MMM D YYYY");
             }
