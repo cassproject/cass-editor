@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="pt-4">
         <!-- member search modal -->
         <div
             class="modal"
@@ -86,82 +86,20 @@
         </div>
         <!-- ************************************** Content ************************************************ -->
         <div class="columns">
-            <div class="column is-3">
-                <nav :class="panelClass">
-                    <p class="panel-heading">
-                        Sections
-                    </p>
-                    <a
-                        class="panel-block"
-                        :class="{'is-active': tab === 'general'}"
-                        @click="tab ='general'">
-                        <span class="panel-icon">
-                            <i
-                                class="fas fa-list-alt"
-                                aria-hidden="true" />
-                        </span>
-                        General Details
-                    </a>
-                    <a
-                        class="panel-block"
-                        :class="{'is-active': tab === 'managers'}"
-                        @click="tab ='managers'">
-                        <span class="panel-icon">
-                            <i
-                                class="fas fa-list-alt"
-                                aria-hidden="true" />
-                        </span>
-                        Managers
-                    </a>
-                    <a
-                        :class="{'is-active': tab === 'members'}"
-                        class="panel-block"
-                        @click="tab = 'members'">
-                        <span class="panel-icon">
-                            <i
-                                class="fas fa-list-alt"
-                                aria-hidden="true" />
-                        </span>
-                        Members
-                    </a>
-                    <a
-                        class="panel-block"
-                        v-if="readOnly">
-                        <div
-                            class="buttons is-fullwidth is-right">
-                            <div
-                                class="button is-outlined is-primary"
-                                @click="$emit('back')">
-                                back
-                            </div>
-                        </div>
-                    </a>
+            <div class="column is-12">
+                <div class="buttons is-right">
                     <div
-                        class="panel-block"
-                        v-if="!readOnly">
-                        <div
-                            class="button is-fullwidth is-outlined is-dark"
-                            @click="$emit('cancel')">
-                            <span class="icon">
-                                <i class="fa fa-arrow-left" />
-                            </span>
-                            <span>cancel</span>
-                        </div>
+                        class="button is-outlined is-primary"
+                        @click="validateCurrentGroupAndEmitSave"
+                        :disabled="!amLoggedIn">
+                        <span class="icon">
+                            <i class="fa fa-save" />
+                        </span>
+                        <span>
+                            save
+                        </span>
                     </div>
-                    <div
-                        class="panel-block"
-                        v-if="!readOnly">
-                        <div
-                            class="button is-fullwidth  is-outlined is-primary"
-                            @click="validateCurrentGroupAndEmitSave">
-                            <span class="icon">
-                                <i class="fa fa-save" />
-                            </span><span>save user group</span>
-                        </div>
-                    </div>
-                </nav>
-            </div>
-            <div class="column is-9">
+                </div>
                 <div
                     class="section box px-4 py-4"
                     v-if="tab === 'general'">

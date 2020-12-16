@@ -33,7 +33,7 @@
             :searchOptions="searchOptions"
             :paramObj="paramObj">
             <template
-                v-slot:organizationTags="slotProps">
+                #organizationTags="slotProps">
                 <span
                     v-if="slotProps.item['schema:dateCreated']"
                     :title="new Date(slotProps.item['schema:dateCreated'])">
