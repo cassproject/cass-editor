@@ -36,8 +36,8 @@ const state = {
         dynamicModalContent: {}
     },
     directories: {
-        selectedDirectory: null,
-        refreshDirectories: false
+        directoryList: [],
+        selectedDirectory: null
     },
     import: {
         files: [],
@@ -271,8 +271,8 @@ const mutations = {
     selectDirectory: function(state, value) {
         state.directories.selectedDirectory = value;
     },
-    refreshDirectories: function(state, bool) {
-        state.directories.refreshDirectories = bool;
+    directoryList: function(state, list) {
+        state.directories.directoryList = list;
     }
 };
 const actions = {
@@ -284,6 +284,17 @@ const actions = {
         commit('importStatus', '');
         commit('importFeedback', '');
         commit('importFileType', '');
+    },
+    refreshDirectories: function({commit}) {
+        let directories = [];
+        EcDirectory.search(window.repo, "", function(dirs) {
+            for (let i = 0; i < dirs.length; i++) {
+                if (dirs[i].canEditAny(EcIdentityManager.getMyPks())) {
+                    directories.push(dirs[i]);
+                }
+            }
+            commit('directoryList', directories);
+        }, appError, null);
     }
 };
 const getters = {
@@ -430,6 +441,9 @@ const getters = {
     },
     selectedDirectory: state => {
         return state.directories.selectedDirectory;
+    },
+    directoryList: state => {
+        return state.directories.directoryList;
     }
 };
 

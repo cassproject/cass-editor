@@ -218,7 +218,7 @@
             class="menu-list">
             <li
                 class="has-text-white"
-                v-for="directory in myDirectories"
+                v-for="directory in myTopLevelDirectories"
                 :key="directory.id"
                 @click="selectDirectory(directory)">
                 <router-link to="/directory">
@@ -420,7 +420,6 @@ export default {
             casslogo: casslogo,
             casslogoSquare: casslogoSquare,
             pluginLinkMap: {},
-            myDirectories: [],
             addFrameworkOrDirectory: false,
             addNewDirectory: false,
             directoryName: ""
@@ -453,17 +452,6 @@ export default {
             if (enabledPluginUrlList && enabledPluginUrlList.length > 0) {
                 this.loadManifestDataForPluginUrlList(enabledPluginUrlList, this.buildPluginLinkMap);
             } else this.pluginLinkMap = {};
-        },
-        searchForDirectories: function() {
-            let me = this;
-            me.myDirectories.splice(0, me.myDirectories.length);
-            EcDirectory.search(window.repo, "", function(dirs) {
-                for (let i = 0; i < dirs.length; i++) {
-                    if (dirs[i].canEditAny(EcIdentityManager.getMyPks()) && !dirs[i].parentDirectory) {
-                        me.myDirectories.push(dirs[i]);
-                    }
-                }
-            }, appError, null);
         },
         addNewlinesToId: function(pem) {
             // Begin public key line
@@ -499,7 +487,7 @@ export default {
             // To do: Add other owners and readers
             dir.save(function(success) {
                 appLog("Directory saved: " + dir.id);
-                me.$store.commit('app/refreshDirectories', true);
+                me.$store.dispatch('app/refreshDirectories');
                 me.selectDirectory(dir);
             }, console.error, window.repo);
         }
@@ -507,11 +495,6 @@ export default {
     watch: {
         pluginLastUpdate: function() {
             this.buildPluginList(this.buildPluginListComplete);
-        },
-        refreshDirectories: function() {
-            if (this.refreshDirectories) {
-                this.searchForDirectories();
-            }
         }
     },
     computed: {
@@ -523,7 +506,7 @@ export default {
             loginEnabled: state => state.featuresEnabled.loginEnabled,
             queryParams: state => state.editor.queryParams,
             pluginLastUpdate: state => state.app.pluginLastUpdate,
-            refreshDirectories: state => state.app.directories.refreshDirectories
+            directoryList: state => state.app.directories.directoryList
         }),
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];
@@ -559,11 +542,16 @@ export default {
             }
             nonStandardNavCats.sort();
             return nonStandardNavCats;
+        },
+        myTopLevelDirectories: function() {
+            return this.directoryList.filter(directory => {
+                return !directory.parentDirectory;
+            });
         }
     },
     mounted() {
         this.buildPluginList(this.buildPluginListComplete);
-        this.searchForDirectories();
+        this.$store.dispatch('app/refreshDirectories');
     }
 };
 </script>
