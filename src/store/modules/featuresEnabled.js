@@ -8,7 +8,9 @@ const state = {
     userManagementEnabled: true,
     configurationsEnabled: true,
     searchByOwnerNameEnabled: true,
-    loginEnabled: true
+    pluginsEnabled: true,
+    loginEnabled: true,
+    shareEnabled: true
 };
 const mutations = {
     crosswalkEnabled(state, bool) {
@@ -23,8 +25,14 @@ const mutations = {
     searchByOwnerNameEnabled(state, bool) {
         state.searchByOwnerNameEnabled = bool;
     },
+    pluginsEnabled(state, bool) {
+        state.pluginsEnabled = bool;
+    },
     loginEnabled(state, bool) {
         state.loginEnabled = bool;
+    },
+    shareEnabled(state, bool) {
+        state.shareEnabled = bool;
     }
 };
 const actions = {

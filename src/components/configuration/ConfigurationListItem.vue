@@ -36,7 +36,7 @@
             <div
                 class="button is-outlined is-primary is-small"
                 :disabled="defaultFrameworkConfigId !== null && defaultFrameworkConfigId !== undefined && defaultFrameworkConfigId.equals(id)"
-                @click="$emit('setFrameworkDefault', id)">
+                @click="$emit('set-framework-default', id)">
                 set as framework default
             </div>
         </td>
@@ -45,7 +45,7 @@
                 v-if="isOwned"
                 title="Manage configuration"
                 class="button is-outlined is-small is-primary"
-                @click="$emit('showDetails', id)">
+                @click="$emit('show-details', id)">
                 <span class="icon">
                     <i class="fas fa-cog" />
                 </span>
@@ -54,7 +54,7 @@
                 v-if="isOwned && !isDefault"
                 title="Delete configuration"
                 class="button is-outlined is-small is-danger delete-btn"
-                @click="$emit('showDelete', id)">
+                @click="$emit('show-delete', id)">
                 <span class="icon">
                     <i class="fas fa-trash" />
                 </span>
@@ -63,7 +63,7 @@
                 v-if="!isOwned"
                 title="View configuration"
                 class="button is-outlined is-small is-primary"
-                @click="$emit('showDetails', id)">
+                @click="$emit('show-details', id)">
                 <span class="icon">
                     <i class="fas fa-eye" />
                 </span>
@@ -121,9 +121,9 @@ export default {
             set(val) {
                 appLog("val", val);
                 if (val) {
-                    this.$emit('setBrowserDefault', this.id);
+                    this.$emit('set-browser-default', this.id);
                 } else {
-                    this.$emit('removeBrowserDefaultConfig');
+                    this.$emit('remove-browser-default-config');
                 }
             }
         }

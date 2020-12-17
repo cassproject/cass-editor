@@ -8,8 +8,8 @@
             <div class="framework-body columns is-multiline is-gapless is-paddingless is-marginless">
                 <FrameworkEditorToolbar
                     :properties="properties"
-                    @showExportModal="onOpenExportModal"
-                    @changeProperties="changeProperties" />
+                    @show-export-modal="onOpenExportModal"
+                    @change-properties="changeProperties" />
                 <div class="column is-12">
                     <!-- loading section -- dummy content to show while loading dome elemnts -->
                     <div
@@ -31,10 +31,10 @@
                                 :newFramework="newFramework"
                                 :parentNotEditable="queryParams.view==='true'"
                                 :profile="frameworkProfile"
-                                @deleteObject="deleteObject"
-                                @removeObject="removeObject"
-                                @editNodeEvent="onEditNode()"
-                                @doneEditingNodeEvent="onDoneEditingNode()"
+                                @delete-object="deleteObject"
+                                @remove-object="removeObject"
+                                @edit-node-event="onEditNode()"
+                                @done-editing-node-event="onDoneEditingNode()"
                                 :properties="properties">
                                 <template #frameworkDetails>
                                     <div class="lode__framework__info-bar">
@@ -121,15 +121,15 @@
                             :highlightList="highlightCompetency"
                             :profile="competencyProfile"
                             :newFramework="newFramework"
-                            @deleteObject="deleteObject"
-                            @editMultipleEvent="onEditMultiple"
-                            @removeObject="removeObject"
-                            @exportObject="exportObject"
-                            @searchThings="handleSearch($event)"
-                            @selectButtonClick="onSelectButtonClick"
+                            @delete-object="deleteObject"
+                            @edit-multiple-event="onEditMultiple"
+                            @remove-object="removeObject"
+                            @export-object="exportObject"
+                            @search-things="handleSearch($event)"
+                            @select-button-click="onSelectButtonClick"
                             :properties="properties"
-                            @selectedArray="selectedArrayEvent"
-                            @doneLoadingNodes="preloadRelations" />
+                            @selected-array="selectedArrayEvent"
+                            @done-loading-nodes="preloadRelations" />
                     </div>
                 </div>
             </div>
@@ -303,6 +303,7 @@ export default {
                     [{"@language": "en", "@value": "The name of the framework. One name per language."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Framework Name"}],
                     "heading": "General",
+                    "isRequired": "true",
                     "onePerLanguage": "true"
                 },
                 "http://schema.org/description": {
@@ -451,6 +452,7 @@ export default {
                         [{"@language": "en", "@value": "The name of the competency. One name per language."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}],
                         "heading": "General",
+                        "isRequired": "true",
                         "onePerLanguage": "true"
                     },
                     "http://schema.org/description": {

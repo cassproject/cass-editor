@@ -11,13 +11,13 @@
             @sideBarEvent="onSidebarEvent"
             name="topbar" /> -->
         <router-view
-            @createNewFramework="createNewFramework"
-            @createNewConceptScheme="createNewConceptScheme"
+            @create-new-framework="createNewFramework"
+            @create-new-concept-scheme="createNewConceptScheme"
             :class="[{ 'clear-side-bar': showSideNav}, { 'clear-narrow-side-bar': !showSideNav}, {'clear-right-aside': showRightAside}]" />
         <router-view
             :showSideNav="showSideNav"
-            @createNewFramework="createNewFramework"
-            @createNewConceptScheme="createNewConceptScheme"
+            @create-new-framework="createNewFramework"
+            @create-new-concept-scheme="createNewConceptScheme"
             name="sidebar" />
         <vue-progress-bar />
     </div>
@@ -55,7 +55,7 @@ export default {
     },
     methods: {
         initializeApp: function() {
-            var servers = ["https://dev.api.cassproject.org/api/"];
+            var server = "https://dev.api.cassproject.org/api/";
             var me = this;
             if (this.$route.query) {
                 let queryParams = JSON.parse(JSON.stringify(this.$route.query));
@@ -67,7 +67,7 @@ export default {
                     if (this.queryParams.server.endsWith && this.queryParams.server.endsWith("/") === false) {
                         this.queryParams.server += "/";
                     }
-                    servers = [this.queryParams.server];
+                    server = this.queryParams.server;
                 }
                 if (this.queryParams.concepts === 'true') {
                     this.$store.commit('editor/conceptMode', true);
@@ -77,24 +77,28 @@ export default {
                     this.$store.commit('featuresEnabled/userManagementEnabled', false);
                     this.$store.commit('featuresEnabled/searchByOwnerNameEnabled', false);
                     this.$store.commit('featuresEnabled/loginEnabled', false);
+                    this.$store.commit('featuresEnabled/pluginsEnabled', false);
+                }
+                if (this.queryParams.user === "wait") {
+                    this.$store.commit('featuresEnabled/shareEnabled', false);
                 }
             }
-            for (var i = 0; i < servers.length; i++) {
-                var r = new EcRepository();
-                r.selectedServer = servers[i];
-                r.autoDetectRepository();
-                servers[i] = r;
-                window.repo = r;
-                this.repo = r;
+            var r = new EcRepository();
+            r.selectedServer = server;
+            r.init(server, function() {
+                appLog("Repository initialized");
+            }, appError);
+            r.autoDetectRepository();
+            window.repo = r;
+            this.repo = r;
 
-                try {
-                    window.addEventListener('message', this.cappend, false);
-                } catch (e) {
-                    appError(e);
-                }
-
-                this.openWebSocket(r);
+            try {
+                window.addEventListener('message', this.cappend, false);
+            } catch (e) {
+                appError(e);
             }
+
+            this.openWebSocket(r);
             if (window.addEventListener) {
                 window.addEventListener("message", this.messageListener, false);
             } else {

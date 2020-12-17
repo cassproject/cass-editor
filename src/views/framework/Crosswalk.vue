@@ -186,8 +186,8 @@
                                     :queryParams="queryParams"
                                     :exportOptions="[]"
                                     :highlightList="null"
-                                    @searchThings="handleSearch($event)"
-                                    @doneLoadingNodes="prepareToLoadCrosswalkTarget"
+                                    @search-things="handleSearch($event)"
+                                    @done-loading-nodes="prepareToLoadCrosswalkTarget"
                                     properties="primary" />
                             </div>
                             <div
@@ -223,7 +223,7 @@
                                     :queryParams="queryParams"
                                     :exportOptions="[]"
                                     :highlightList="null"
-                                    @searchThings="handleSearch($event)"
+                                    @search-things="handleSearch($event)"
                                     properties="primary" />
                             </div>
                         </div>
@@ -311,11 +311,6 @@
                                     </span>
                                 </div>
                             </div>
-                        </div>
-                        <div
-                            class="container has-text-centered"
-                            v-if="alignmentsSaved">
-                            <h4><i class="fa fa-check" /> Alignments saved</h4>
                         </div>
                     </div>
                 </transition>
@@ -449,6 +444,23 @@ export default {
             for (var i = 0; i < this.filteredQuickFilters.length; i++) {
                 if (this.filteredQuickFilters[i].id === "ownedByMe") {
                     this.showMine = true;
+                }
+            }
+        },
+        alignmentsSaved: function() {
+            if (this.alignmentsSaved) {
+                if (this.saveToSourceFramework && !this.saveToTargetFramework) {
+                    let id = this.sourceFrameworkSaving.shortId();
+                    this.$store.commit('editor/framework', this.sourceFrameworkSaving);
+                    this.$store.commit('editor/setPropertyLevel', "tertiary");
+                    this.$router.push({name: 'framework', params: {frameworkId: id}});
+                } else {
+                    // If saving to both frameworks, go to list sorted by last modified
+                    this.$store.commit('app/sortResults', {
+                        id: 'lastEdited',
+                        label: 'last modified'
+                    });
+                    this.$router.push({name: "frameworks"});
                 }
             }
         }
@@ -599,6 +611,7 @@ export default {
         saveTargetFramework: function() {
             if (this.isObjectOwnerless(this.targetFrameworkSaving) || this.doesAnyIdentityOwnObject(this.targetFrameworkSaving)) {
                 appLog("Saving target framework for crosswalk...");
+                this.targetFrameworkSaving["schema:dateModified"] = new Date().toISOString();
                 this.targetFrameworkSaving.save(this.handleSaveTargetFrameworkSuccess, this.handleSaveTargetFrameworkFailed, this.repo);
             } else {
                 this.alignmentsSaved = true;
@@ -612,6 +625,7 @@ export default {
         saveSourceFrameworkAndGo: function() {
             if (this.isObjectOwnerless(this.sourceFrameworkSaving) || this.doesAnyIdentityOwnObject(this.sourceFrameworkSaving)) {
                 appLog("Saving source framework for crosswalk...");
+                this.sourceFrameworkSaving["schema:dateModified"] = new Date().toISOString();
                 this.sourceFrameworkSaving.save(this.saveTargetFramework, this.handleSaveSourceFrameworkFailed, this.repo);
             } else this.saveTargetFramework();
         },
@@ -749,7 +763,7 @@ export default {
             for (let r of relArray) {
                 if (!processedRelationshipIds.includes(r.shortId)) {
                     processedRelationshipIds.push(r.shortId());
-                    if (this.frameworkSource.competency.includes(r.source) && this.frameworkTarget.competency.includes(r.target)) {
+                    if (this.frameworkSource.competency && this.frameworkSource.competency.includes(r.source) && this.frameworkTarget.competency && this.frameworkTarget.competency.includes(r.target)) {
                         if (!relAlignmentMap[r.source]) relAlignmentMap[r.source] = {};
                         if (!relAlignmentMap[r.source][r.relationType]) relAlignmentMap[r.source][r.relationType] = {};
                         if (!relAlignmentMap[r.source][r.relationType][r.target]) relAlignmentMap[r.source][r.relationType][r.target] = r;

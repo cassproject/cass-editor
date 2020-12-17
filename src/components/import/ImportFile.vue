@@ -21,7 +21,7 @@
                             <drag-and-drop
                                 class="column is-12"
                                 v-if="importTransition === 'upload'"
-                                @clearFiles="clearFiles" />
+                                @clear-files="clearFiles" />
                             <div
                                 v-else-if="(importTransition === 'process' || importTransition === 'info') && importErrors.length === 0"
                                 class="column">

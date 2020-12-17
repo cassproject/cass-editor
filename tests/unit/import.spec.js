@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import {shallowMount, mount, createLocalVue} from '@vue/test-utils';
 import Import from '@/views/framework/Import.vue';
 import DragAndDrop from '@/components/DragAndDrop.vue';

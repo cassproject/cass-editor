@@ -9,6 +9,7 @@ import Modal from './plugins/modalPlugin.js';
 import Clipboard from 'v-clipboard';
 import store from './store/index.js';
 import InfiniteLoading from 'vue-infinite-loading';
+import VueResource from 'vue-resource';
 
 var VueScrollTo = require('vue-scrollto');
 require("cassproject");
@@ -46,6 +47,7 @@ Vue.use(VueScrollTo, {
     y: true
 });
 Vue.use(InfiniteLoading);
+Vue.use(VueResource);
 
 // directive for clicking outside elements and performing an action
 // add v-click-outside="method" to parent element to do something
@@ -103,7 +105,15 @@ var queryParams = function() {
         var o = {};
         var paramString = hashSplit[1];
         var parts = (paramString).split("&");
-        for (var i = 0; i < parts.length; i++) { o[parts[i].split("=")[0]] = decodeURIComponent(parts[i].replace(parts[i].split("=")[0] + "=", "")); }
+        for (var i = 0; i < parts.length; i++) {
+            if (o[parts[i].split("=")[0]]) {
+                // Allow multiple values
+                o[parts[i].split("=")[0]] = [o[parts[i].split("=")[0]]];
+                o[parts[i].split("=")[0]].push(decodeURIComponent(parts[i].replace(parts[i].split("=")[0] + "=", "")));
+            } else {
+                o[parts[i].split("=")[0]] = decodeURIComponent(parts[i].replace(parts[i].split("=")[0] + "=", ""));
+            }
+        }
         return o;
     }
     return {};

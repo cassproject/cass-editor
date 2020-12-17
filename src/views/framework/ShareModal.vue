@@ -13,7 +13,7 @@
                 </p>
                 <button
                     class="delete"
-                    @click="$emit('closeShareModalEvent')"
+                    @click="$emit('close-share-modal-event')"
                     aria-label="close" />
             </header>
             <section class="modal-card-body">
@@ -151,7 +151,7 @@
                     <div class="column is-12">
                         <button
                             class="button is-left is-light"
-                            @click="$emit('closeShareModalEvent')">
+                            @click="$emit('close-share-modal-event')">
                             Cancel
                         </button>
                     </div>
@@ -388,7 +388,7 @@ export default {
                 f.addOwner(me.addOwner[i]);
             }
             me.repo.saveTo(f, function() {
-                me.$emit('closeShareModalEvent');
+                me.$emit('close-share-modal-event');
             }, function() {});
         },
         removeOwnerOrReader: function(userOrGroup, type) {

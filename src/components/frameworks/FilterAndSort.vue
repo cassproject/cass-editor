@@ -75,6 +75,10 @@
 </template>
 
 <script>
+import ctdlasnProfile from '@/mixins/ctdlasnProfile.js';
+import tlaProfile from '@/mixins/tlaProfile.js';
+import {cassUtil} from '@/mixins/cassUtil.js';
+
 export default {
     name: 'FilterAndSort',
     data() {
@@ -112,47 +116,16 @@ export default {
                 }
 
             ],
-            applySearchTo: [
-                {
-                    id: 'frameworkName',
-                    checked: false,
-                    label: 'Framework name',
-                    enabled: true
-                },
-                {
-                    id: 'frameworkDescription',
-                    checked: false,
-                    label: 'Framework description',
-                    enabled: true
-                },
-                {
-                    id: 'competencyLabel',
-                    checked: false,
-                    label: 'Competency label',
-                    enabled: false
-                },
-                {
-                    id: 'competencyName',
-                    checked: false,
-                    label: 'Competency name',
-                    enabled: true
-                },
-                {
-                    id: 'competencyDescription',
-                    checked: false,
-                    label: 'Competency description',
-                    enabled: true
-                },
-                {
-                    id: 'ownerName',
-                    checked: false,
-                    label: 'Owner name',
-                    enabled: true
-                }
-            ],
-            showQuickFilterHeading: true
+            frameworkPropertiesApplySearchTo: [],
+            competencyPropertiesApplySearchTo: [],
+            otherPropertiesApplySearchTo: [],
+            showQuickFilterHeading: true,
+            frameworkConfig: null,
+            configPropertiesToIgnore: ["@id", "headings", "primaryProperties", "secondaryProperties", "tertiaryProperties", "ctid"],
+            searchTermsFromRawSchemata: {}
         };
     },
+    mixins: [ctdlasnProfile, tlaProfile, cassUtil],
     computed: {
         sortBy: {
             get() {
@@ -173,15 +146,20 @@ export default {
         },
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];
+        },
+        applySearchTo: function() {
+            return this.frameworkPropertiesApplySearchTo.concat(this.competencyPropertiesApplySearchTo).concat(this.otherPropertiesApplySearchTo);
+        },
+        conceptMode: function() {
+            return this.$store.getters['editor/conceptMode'];
         }
     },
     mounted: function() {
-        if (!this.searchByOwnerNameEnabled) {
-            for (var i = 0; i < this.applySearchTo.length; i++) {
-                if (this.applySearchTo[i].id === "ownerName") {
-                    this.applySearchTo[i].enabled = false;
-                }
-            }
+        if (!this.conceptMode) {
+            this.setSearchTermsFromRawSchemata();
+            this.getFrameworkConfig();
+            this.setOtherPropertiesApplySearchTo();
+            this.setCompetencyPropertiesApplySearchTo();
         }
         if (!this.loggedIn) {
             for (var i = 0; i < this.quickFilters.length; i++) {
@@ -190,7 +168,7 @@ export default {
                 }
             }
         }
-        if (this.$store.getters['editor/conceptMode'] || !this.configurationsEnabled) {
+        if (this.conceptMode || !this.configurationsEnabled) {
             for (var i = 0; i < this.quickFilters.length; i++) {
                 if (this.quickFilters[i].id === "configMatchDefault") {
                     this.quickFilters[i].enabled = false;
@@ -204,17 +182,6 @@ export default {
             }
         }
         this.showQuickFilterHeading = showFilters;
-        if (this.queryParams.ceasnDataFields === 'true') {
-            for (var i = 0; i < this.applySearchTo.length; i++) {
-                if (this.applySearchTo[i].id === "competencyLabel") {
-                    this.applySearchTo[i].enabled = true;
-                } else if (this.applySearchTo[i].id === "competencyName") {
-                    this.applySearchTo[i].label = "Competency text";
-                } else if (this.applySearchTo[i].id === "competencyDescription") {
-                    this.applySearchTo[i].label = "Competency comment";
-                }
-            }
-        }
     },
     watch: {
         applySearchTo: {
@@ -230,6 +197,166 @@ export default {
                 this.$store.commit('app/quickFilters', this.quickFilters);
             },
             deep: true
+        },
+        frameworkConfig: function() {
+            if (this.frameworkConfig) {
+                this.setFrameworkPropertiesApplySearchTo();
+            }
+        }
+    },
+    methods: {
+        getFrameworkConfig: function() {
+            if (this.queryParams.ceasnDataFields === "true") {
+                this.frameworkConfig = this.ctdlAsnFrameworkProfile;
+            } else if (this.queryParams.tlaProfile === "true") {
+                this.frameworkConfig = this.tlaFrameworkProfile;
+            } else if (this.getDefaultBrowserConfigId() && !this.getDefaultBrowserConfigId().trim().equals('')) {
+                let c = EcRepository.getBlocking(this.getDefaultBrowserConfigId());
+                this.frameworkConfig = c.frameworkConfig;
+            } else {
+                let me = this;
+                window.repo.searchWithParams("@type:Configuration", {'size': 10000}, null,
+                    function(ca) {
+                        let found = false;
+                        for (let c of ca) {
+                            if (c.isDefault === "true") {
+                                me.frameworkConfig = c.frameworkConfig;
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            me.setDefaultFrameworkSearchTerms();
+                        }
+                    }, function() {
+                        me.setDefaultFrameworkSearchTerms();
+                    });
+            }
+        },
+        setFrameworkPropertiesApplySearchTo: function() {
+            let keys = EcObject.keys(this.frameworkConfig);
+            let properties = [];
+            for (let prop of keys) {
+                if (EcArray.has(this.configPropertiesToIgnore, prop)) {
+                    continue;
+                }
+                if (this.frameworkConfig[prop]["http://schema.org/rangeIncludes"][0]["@id"] !== "http://www.w3.org/2000/01/rdf-schema#langString" &&
+                    this.frameworkConfig[prop]["http://schema.org/rangeIncludes"][0]["@id"] !== "http://schema.org/Text") {
+                    continue;
+                }
+                let label = this.frameworkConfig[prop]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
+                let id = "";
+                if (prop === "http://schema.org/name") {
+                    id = "frameworkName";
+                } else if (prop === "http://schema.org/description") {
+                    id = "frameworkDescription";
+                } else {
+                    id = this.getSearchTermForProperty(prop);
+                }
+                properties.push(
+                    {
+                        id: id,
+                        checked: false,
+                        label: label,
+                        enabled: true
+                    }
+                );
+            }
+            this.frameworkPropertiesApplySearchTo = properties;
+        },
+        setSearchTermsFromRawSchemata: function() {
+            // Used to figure out prefixes to use when searching from the full property URL in the configuration
+            let context = this.$store.state.lode.rawSchemata["https://schema.cassproject.org/0.4"]["@context"];
+            let keys = EcObject.keys(context);
+            for (let key of keys) {
+                if (EcObject.isObject(context[key])) {
+                    continue;
+                }
+                this.searchTermsFromRawSchemata[context[key]] = key;
+            }
+        },
+        getSearchTermForProperty: function(prop) {
+            let keys = EcObject.keys(this.searchTermsFromRawSchemata);
+            let shortProp;
+            for (let key of keys) {
+                if (prop.indexOf(key) !== -1) {
+                    if (key === "https://schema.cassproject.org/0.4/") {
+                        shortProp = prop.replace(key, "");
+                    } else {
+                        shortProp = prop.replace(key, this.searchTermsFromRawSchemata[key] + "\\:");
+                    }
+                }
+            }
+            return shortProp;
+        },
+        setDefaultFrameworkSearchTerms: function() {
+            this.frameworkPropertiesApplySearchTo = [
+                {
+                    id: 'frameworkName',
+                    checked: false,
+                    label: 'Framework name',
+                    enabled: true
+                },
+                {
+                    id: 'frameworkDescription',
+                    checked: false,
+                    label: 'Framework description',
+                    enabled: true
+                }
+            ];
+        },
+        setOtherPropertiesApplySearchTo: function() {
+            if (this.searchByOwnerNameEnabled) {
+                this.otherPropertiesApplySearchTo = [
+                    {
+                        id: 'ownerName',
+                        checked: false,
+                        label: 'Owner name',
+                        enabled: true
+                    }
+                ];
+            } else {
+                this.otherPropertiesApplySearchTo = [];
+            }
+        },
+        setCompetencyPropertiesApplySearchTo: function() {
+            if (this.queryParams.ceasnDataFields === 'true') {
+                this.competencyPropertiesApplySearchTo = [
+                    {
+                        id: 'competencyLabel',
+                        checked: false,
+                        label: 'Competency label',
+                        enabled: true
+                    },
+                    {
+                        id: 'competencyName',
+                        checked: false,
+                        label: 'Competency text',
+                        enabled: true
+                    },
+                    {
+                        id: 'competencyDescription',
+                        checked: false,
+                        label: 'Competency comment',
+                        enabled: true
+                    }
+                ];
+            } else {
+                this.competencyPropertiesApplySearchTo = [
+                    {
+                        id: 'competencyName',
+                        checked: false,
+                        label: 'Competency name',
+                        enabled: true
+                    },
+                    {
+                        id: 'competencyDescription',
+                        checked: false,
+                        label: 'Competency description',
+                        enabled: true
+                    }
+                ];
+            }
         }
     }
 };

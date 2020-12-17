@@ -66,6 +66,15 @@ export default new Router({
             }
         },
         {
+            path: '/pluginManager',
+            name: 'pluginManager',
+            components: {
+                default: () => import('./views/plugins/PluginManager'),
+                sidebar: () => import('./components/SideNav.vue'),
+                topbar: () => import('./components/Topbar.vue')
+            }
+        },
+        {
             path: '/crosswalk',
             name: 'crosswalk',
             components: {
@@ -123,6 +132,15 @@ export default new Router({
             path: '/test',
             name: 'test',
             component: () => import('./lode/views/Test.vue')
+        },
+        {
+            path: '/pluginContainer',
+            name: 'pluginContainer',
+            components: {
+                default: () => import('./views/plugins/PluginContainer.vue'),
+                sidebar: () => import('./components/SideNav.vue'),
+                topbar: () => import('./components/Topbar.vue')
+            }
         },
         {
             path: '/conceptScheme',

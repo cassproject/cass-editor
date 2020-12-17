@@ -182,10 +182,10 @@
                             :isOwned="config.isOwned"
                             :defaultBrowserConfigId="localDefaultBrowserConfigId"
                             :defaultFrameworkConfigId="frameworkConfigId"
-                            @setBrowserDefault="setConfigAsBrowserDefault"
-                            @setFrameworkDefault="setConfigAsFrameworkDefault"
-                            @showDetails="showConfigDetails"
-                            @showDelete="showDeleteConfirm" />
+                            @set-browser-default="setConfigAsBrowserDefault"
+                            @set-framework-default="setConfigAsFrameworkDefault"
+                            @show-details="showConfigDetails"
+                            @show-delete="showDeleteConfirm" />
                     </tbody>
                     <br>
                 </table>
@@ -207,8 +207,8 @@
                     :readOnly="currentConfigIsReadOnly"
                     :defaultConfigId="defaultConfigId"
                     :defaultBrowserConfig="localDefaultBrowserConfigId"
-                    @setBrowserDefault="setConfigAsBrowserDefault"
-                    @removeBrowserDefaultConfig="removeBrowserDefaultConfig"
+                    @set-browser-default="setConfigAsBrowserDefault"
+                    @remove-browser-default-config="removeBrowserDefaultConfig"
                     @save="saveCurrentConfig"
                     @cancel="cancelEditCurrentConfig"
                     @back="backFromEditCurrentConfig" />

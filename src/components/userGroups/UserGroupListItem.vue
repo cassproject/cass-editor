@@ -12,7 +12,7 @@
         <td>
             <div
                 class="button is-outlined is-small is-primary"
-                @click="$emit('showDetails', id)">
+                @click="$emit('show-details', id)">
                 <span class="icon">
                     <i
                         v-if="isOwned"

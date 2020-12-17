@@ -348,7 +348,7 @@ export default {
                         appLog(frameworks);
                         if (frameworks.length > 0) {
                             me.$store.commit('app/importStatus', 'framework found...');
-                            me.showModal('duplicateOverwriteOnly', [me.caseDocs[firstIndex], firstIndex]);
+                            me.showModal('duplicateOverwriteOnly', [[me.caseDocs[firstIndex], firstIndex], frameworks[0]]);
                         } else {
                             me.$store.commit('app/importStatus', 'no match, saving new framework...');
                             me.continueCaseImport([me.caseDocs[firstIndex], firstIndex]);

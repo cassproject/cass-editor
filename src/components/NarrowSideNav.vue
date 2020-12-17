@@ -58,7 +58,7 @@
             </li>
             <li
                 class="has-text-white"
-                @click="$emit('createNewFramework')">
+                @click="$emit('create-new-framework')">
                 <a> New Framework</a>
             </li>
             <!-- hidding this for now -->
@@ -90,7 +90,7 @@
             </li>
             <li
                 class="has-text-white"
-                @click="$emit('createNewConceptScheme')">
+                @click="$emit('create-new-concept-scheme')">
                 <a> New Concept Scheme</a>
             </li>
             <li class="has-text-white">
@@ -111,6 +111,11 @@
             <li>
                 <router-link to="/configuration">
                     Configurations
+                </router-link>
+            </li>
+            <li>
+                <router-link to="/pluginManager">
+                    Plugins
                 </router-link>
             </li>
             <li v-if="isLoggedOn">
@@ -138,17 +143,7 @@ export default {
     },
     data() {
         return {
-            serverUrl: null,
-            url: null
         };
-    },
-    watch: {
-        serverUrl: function() {
-            this.$emit('updateUrl', this.serverUrl);
-        },
-        url: function() {
-            this.$emit('updateUrl', this.url);
-        }
     },
 
     computed: {

@@ -50,7 +50,7 @@
                             view="single"
                             :uri="dynamicModalContent.uri"
                             :expandInModal="true"
-                            @doneEditingNodeEvent="doneEditing"
+                            @done-editing-node-event="doneEditing"
                             :profile="profile" />
                     </div>
                 </div>
@@ -62,7 +62,7 @@
                             :is="dynamicThing"
                             :uri="dynamicModalContent.uri"
                             :expandInModal="true"
-                            @doneEditingNodeEvent="doneEditing"
+                            @done-editing-node-event="doneEditing"
                             :profile="profile" />
                     </div>
                 </div>

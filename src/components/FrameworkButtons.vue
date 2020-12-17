@@ -39,7 +39,7 @@
             </div>
             <div
                 v-if="selectButtonText"
-                @click="$emit('selectButtonClick', selectedArray)"
+                @click="$emit('select-button-click', selectedArray)"
                 class="button is-outlined is-primary">
                 {{ selectButtonText }}
             </div>
@@ -104,7 +104,7 @@
                 class="buttons">
                 <div
                     v-if="multipleSelected && view !== 'import' && canEdit"
-                    @click="$emit('editMultipleEvent')"
+                    @click="$emit('edit-multiple-event')"
                     class="button is-outlined is-primary">
                     <span class="icon">
                         <i class="fa fa-cog" />

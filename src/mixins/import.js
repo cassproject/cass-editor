@@ -15,7 +15,7 @@ export default {
             this.$store.commit('app/clearImportFiles');
         },
         cancelImport: function() {
-            this.$emit("deleteObject", this.importFramework);
+            this.$emit("delete-object", this.importFramework);
             this.resetImport();
         },
         resetImport: function() {
@@ -72,23 +72,45 @@ export default {
                     }
                 };
             } else if (val === 'duplicateOverwriteOnly') {
-                params = {
-                    type: val,
-                    title: "Duplicate framework",
-                    text: (data[0].name ? ("The framework " + data[0].name) : "This framework") + " has already been imported. If you're a framework admin you can overwrite it. Do you want to overwrite it?",
-                    onConfirm: () => {
-                        if (this.importType === "url") {
-                            return this.importJsonLd(data[0]);
-                        }
-                        return this.continueCaseImport(data);
-                    },
-                    onCancel: () => {
-                        if (this.importType === "url") {
+                if (data[1] && !data[1].canEditAny(EcIdentityManager.getMyPks())) {
+                    params = {
+                        type: val,
+                        title: "Duplicate framework",
+                        text: (data[0].name ? ("The framework " + data[0].name) : "This framework") + " has already been imported. Only a framework admin can log in and overwrite it.",
+                        onConfirm: () => {
+                            if (data[0][1]) {
+                                // more CASE imports in the queue
+                                return this.importCase(data[0]);
+                            }
+                            return this.clearImport();
+                        },
+                        onCancel: () => {
+                            if (data[0][1]) {
+                                // more CASE imports in the queue
+                                return this.importCase(data[0]);
+                            }
                             return this.clearImport();
                         }
-                        return this.importCase(data);
-                    }
-                };
+                    };
+                } else {
+                    params = {
+                        type: val,
+                        title: "Duplicate framework",
+                        text: (data[0].name ? ("The framework " + data[0].name) : "This framework") + " has already been imported. If you're a framework admin you can overwrite it. Do you want to overwrite it?",
+                        onConfirm: () => {
+                            if (this.importType === "url") {
+                                return this.importJsonLd(data[0]);
+                            }
+                            return this.continueCaseImport(data[0]);
+                        },
+                        onCancel: () => {
+                            if (this.importType === "url") {
+                                return this.clearImport();
+                            }
+                            return this.importCase(data[0]);
+                        }
+                    };
+                }
             }
             // reveal modal
             this.$modal.show(params);
@@ -164,6 +186,9 @@ export default {
             this.$store.commit('app/importStatus', '');
             this.$store.commit('app/importFeedback', '');
             this.$store.commit('app/importFileType', '');
+            if (this.caseDocs) {
+                this.caseDocs = [];
+            }
         },
         uploadFiles: function() {
             this.fileChange(this.importFile);
@@ -360,7 +385,7 @@ export default {
                 }
             } else {
                 me.$store.commit('app/importFileType', '');
-                error = ("CaSS cannot read the file " + file.name + ". Please check that the file has the correct file extension.");
+                let error = ("CaSS cannot read the file " + file.name + ". Please check that the file has the correct file extension.");
                 me.$store.commit('app/addImportError', error);
                 me.$store.commit('app/importTransition', 'process');
                 return;
@@ -559,7 +584,7 @@ export default {
                 me.$store.commit('app/importStatus', failure);
                 me.$store.commit('app/importTransition', 'process');
                 me.$store.commit('app/addImportError', failure);
-            }, ceo);
+            }, ceo, (this.queryParams.newObjectEndpoint ? this.queryParams.newObjectEndpoint : null));
         },
         importPdf: function() {
             var me = this;
@@ -870,7 +895,7 @@ export default {
                 me.$store.commit('app/importTransition', 'process');
                 me.$store.commit('app/addImportError', failure);
                 appError(failure);
-            }, ceo);
+            }, ceo, (this.queryParams.newObjectEndpoint ? this.queryParams.newObjectEndpoint : null));
         },
         importFromFile: function() {
             let me = this;
@@ -956,7 +981,7 @@ export default {
                             if (frameworks.length > 0) {
                                 me.$store.commit('app/importStatus', 'framework found...');
                                 if (me.importType === 'url') {
-                                    me.showModal('duplicateOverwriteOnly', [result]);
+                                    me.showModal('duplicateOverwriteOnly', [result, frameworks[0]]);
                                 }
                             } else {
                                 me.$store.commit('app/importStatus', 'no match, saving new framework...');
@@ -1052,6 +1077,9 @@ export default {
                         EcRepository.cache[relations[i].shortId()] = relations[i];
                         f.addRelation(relations[i].shortId());
                     }
+                    if (me.importFrameworkName) {
+                        f.name = me.importFrameworkName;
+                    }
                     me.$nextTick(function() {
                         me.$store.commit('app/importFramework', f);
                         me.$store.commit('editor/framework', f);
@@ -1062,6 +1090,14 @@ export default {
                 appError,
                 this.repo,
                 false);
+        },
+        importFrameworkName: function() {
+            if (this.importType === "text" && this.importFramework) {
+                let framework = this.importFramework;
+                framework.name = this.importFrameworkName;
+                this.$store.commit('editor/changedObject', "update");
+                this.$store.commit('app/importFramework', framework);
+            }
         },
         importFramework: function() {
             if (this.importFramework && !this.conceptMode && this.frameworkSize === 0) {

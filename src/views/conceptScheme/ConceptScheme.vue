@@ -5,8 +5,8 @@
         <div class="framework-content">
             <FrameworkEditorToolbar
                 :properties="properties"
-                @changeProperties="changeProperties"
-                @showExportModal="onOpenExportModal" />
+                @change-properties="changeProperties"
+                @show-export-modal="onOpenExportModal" />
             <div class="framework-wrapper">
                 <draggable
                     v-bind="dragOptions"
@@ -25,10 +25,10 @@
                         view="concept"
                         :newFramework="newFramework"
                         :parentNotEditable="queryParams.view==='true'"
-                        @deleteObject="deleteObject"
+                        @delete-object="deleteObject"
                         :profile="conceptSchemeProfile"
-                        @editNodeEvent="onEditNode()"
-                        @doneEditingNodeEvent="onDoneEditingNode()"
+                        @edit-node-event="onEditNode()"
+                        @done-editing-node-event="onDoneEditingNode()"
                         :properties="properties">
                         <div class="lode__framework__info-bar">
                             <span
@@ -68,13 +68,13 @@
                     :exportOptions="conceptExportOptions"
                     :highlightList="highlightCompetency"
                     :profile="conceptProfile"
-                    @deleteObject="deleteObject"
-                    @exportObject="exportObject"
-                    @editMultipleEvent="onEditMultiple"
-                    @searchThings="handleSearch($event)"
-                    @selectButtonClick="onSelectButtonClick"
+                    @delete-object="deleteObject"
+                    @export-object="exportObject"
+                    @edit-multiple-event="onEditMultiple"
+                    @search-things="handleSearch($event)"
+                    @select-button-click="onSelectButtonClick"
                     :properties="properties"
-                    @selectedArray="selectedArrayEvent"
+                    @selected-array="selectedArrayEvent"
                     :doneDragging="doneDragging" />
             </div>
         </div>
