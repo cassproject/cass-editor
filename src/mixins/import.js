@@ -584,7 +584,7 @@ export default {
                 me.$store.commit('app/importStatus', failure);
                 me.$store.commit('app/importTransition', 'process');
                 me.$store.commit('app/addImportError', failure);
-            }, ceo);
+            }, ceo, (this.queryParams.newObjectEndpoint ? this.queryParams.newObjectEndpoint : null));
         },
         importPdf: function() {
             var me = this;
@@ -895,7 +895,7 @@ export default {
                 me.$store.commit('app/importTransition', 'process');
                 me.$store.commit('app/addImportError', failure);
                 appError(failure);
-            }, ceo);
+            }, ceo, (this.queryParams.newObjectEndpoint ? this.queryParams.newObjectEndpoint : null));
         },
         importFromFile: function() {
             let me = this;
