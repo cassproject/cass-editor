@@ -1,5 +1,143 @@
 <template>
     <div class="pt-4">
+        <div class="columns">
+            <div class="column is-12">
+                <div class="buttons is-right">
+                    <div
+                        class="button is-outlined is-primary"
+                        @click="validateCurrentGroupAndEmitSave"
+                        :disabled="!amLoggedIn">
+                        <span class="icon">
+                            <i class="fa fa-save" />
+                        </span>
+                        <span>
+                            save
+                        </span>
+                    </div>
+                </div>
+                <div
+                    class="section box px-4 py-4"
+                    v-if="tab === 'general'">
+                    <h3 class="is-size-3 title">
+                        General details
+                    </h3>
+                    <div class="field">
+                        <label class="label">Name: </label>
+                        <div v-if="readOnly">
+                            {{ group.name }}
+                        </div>
+                        <div
+                            div
+                            class="control"
+                            v-if="!readOnly">
+                            <input
+                                class="input"
+                                type="text"
+                                v-model="group.name">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Description: </label>
+                        <div v-if="readOnly">
+                            {{ group.description }}
+                        </div>
+                        <div
+                            class="control"
+                            v-if="!readOnly">
+                            <input
+                                class="input"
+                                type="text"
+                                v-model="group.description">
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="section box py-4 px-4"
+                    v-if="tab === 'managers' || tab === 'general'">
+                    <h5 class="title is-size-3">
+                        Group Members
+                        <button
+                            class="button is-pulled-right is-family-primary is-small is-outlined is-primary"
+                            v-if="!readOnly"
+                            @click="addManagers">
+                            <span class="icon">
+                                <i class="fa fa-user-plus" />
+                            </span>
+                            <span>
+                                add managers
+                            </span>
+                        </button>
+                    </h5>
+                    <div class="table-container">
+                        <table class="table is-hoverable is-fullwidth">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        name
+                                    </th>
+                                    <th v-if="selectedGroup === ''">
+                                        default role
+                                    </th>
+                                    <th v-else>
+                                        role
+                                    </th>
+                                    <th v-if="selectedGroup === ''">
+                                        Groups
+                                    </th>
+                                    <th> reassign</th>
+                                    <th>remove</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    v-for="(user, userIdx) in allMembers"
+                                    :key="userIdx">
+                                    <th>
+                                        {{ user.getName() }}
+                                    </th>
+                                    <td v-if="user.owner.length > 0">
+                                        owner
+                                    </td>
+                                    <td v-else>
+                                        reader
+                                    </td>
+                                    <!-- these should be links to the subgroup -->
+                                    <td>
+                                        Developers, cass developers
+                                    </td>
+                                    <td>
+                                        <button
+                                            class="button is-outlined is-small is-primary"
+                                            v-if="!readOnly && !areAnyIdentitiesThisPerson(user) && user.owner !== null"
+                                            @click="moveManagerToUser(userIdx)">
+                                            reassign as member
+                                        </button>
+                                        <button
+                                            class="button is-outlined is-small is-primary"
+                                            v-else-if="!readOnly && user.reader !== null"
+                                            @click="moveUserToManager(userIdx)">
+                                            reassign as manager
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <div class="buttons is-centered">
+                                            <button
+                                                class="button is-outlined is-small is-danger"
+                                                v-if="!readOnly && !areAnyIdentitiesThisPerson(user)"
+                                                @click="removeManager(userIdx)">
+                                                <span class="icon">
+                                                    <i class="fa fa-trash" />
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- member search modal -->
         <div
             class="modal"
@@ -84,215 +222,6 @@
                 </footer>
             </div>
         </div>
-        <!-- ************************************** Content ************************************************ -->
-        <div class="columns">
-            <div class="column is-12">
-                <div class="buttons is-right">
-                    <div
-                        class="button is-outlined is-primary"
-                        @click="validateCurrentGroupAndEmitSave"
-                        :disabled="!amLoggedIn">
-                        <span class="icon">
-                            <i class="fa fa-save" />
-                        </span>
-                        <span>
-                            save
-                        </span>
-                    </div>
-                </div>
-                <div
-                    class="section box px-4 py-4"
-                    v-if="tab === 'general'">
-                    <h3 class="is-size-3 title">
-                        General details
-                    </h3>
-                    <div class="field">
-                        <label class="label">Name: </label>
-                        <div v-if="readOnly">
-                            {{ group.name }}
-                        </div>
-                        <div
-                            div
-                            class="control"
-                            v-if="!readOnly">
-                            <input
-                                class="input"
-                                type="text"
-                                v-model="group.name">
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label class="label">Description: </label>
-                        <div v-if="readOnly">
-                            {{ group.description }}
-                        </div>
-                        <div
-                            class="control"
-                            v-if="!readOnly">
-                            <input
-                                class="input"
-                                type="text"
-                                v-model="group.description">
-                        </div>
-                    </div>
-                </div>
-                <div
-                    class="section box py-4 px-4"
-                    v-if="tab === 'managers' || tab === 'general'">
-                    <h5 class="title is-size-3">
-                        Managers
-                        <button
-                            class="button is-pulled-right is-family-primary is-small is-outlined is-primary"
-                            v-if="!readOnly"
-                            @click="addManagers">
-                            <span class="icon">
-                                <i class="fa fa-user-plus" />
-                            </span>
-                            <span>
-                                add managers
-                            </span>
-                        </button>
-                    </h5>
-                    <p class="subtitle">
-                        Managers can add and remove members and other managers to the group.  Managers also share the owner and reader privileges assigned to the group.
-                    </p>
-                    <div class="table-container">
-                        <table class="table is-hoverable is-fullwidth">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        name
-                                    </th>
-                                    <th>
-                                        email
-                                    </th>
-                                    <th> reassign</th>
-                                    <th>remove</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr
-                                    v-for="(mgr, mgrIdx) in localGroupManagers"
-                                    :key="mgrIdx">
-                                    <th>
-                                        {{ mgr.getName() }}
-                                    </th>
-                                    <td>
-                                        {{ mgr.email }}
-                                    </td>
-                                    <td>
-                                        <button
-                                            class="button is-outlined is-small is-primary"
-                                            v-if="!readOnly && !areAnyIdentitiesThisPerson(mgr)"
-                                            @click="moveManagerToUser(mgrIdx)">
-                                            reassign as member
-                                        </button>
-                                    </td>
-                                    <td>
-                                        <div class="buttons is-centered">
-                                            <button
-                                                class="button is-outlined is-small is-danger"
-                                                v-if="!readOnly && !areAnyIdentitiesThisPerson(mgr)"
-                                                @click="removeManager(mgrIdx)">
-                                                <span class="icon">
-                                                    <i class="fa fa-trash" />
-                                                </span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div
-                    class="section box py-4 px-4"
-                    v-if="tab === 'members' || tab === 'general'">
-                    <h5 class="title is-size-3">
-                        Members
-                        <button
-                            class="button is-family-primary is-small is-pulled-right is-outlined is-primary"
-                            v-if="!readOnly"
-                            @click="addUsers">
-                            <span class="icon">
-                                <i class="fa fa-user-plus" />
-                            </span>
-                            <span>
-                                add members
-                            </span>
-                        </button>
-                    </h5>
-                    <p class="subtitle">
-                        Members share the owner and reader privileges assigned to the group.
-                    </p>
-                    <div v-if="groupUsers.length === 0">
-                        <p class="help is-info">
-                            No members assigned to this group yet.
-                        </p>
-                    </div>
-                    <div
-                        class="table-container"
-                        v-if="groupUsers.length > 0">
-                        <table class="table is-hoverable is-fullwidth">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        name
-                                    </th>
-                                    <th>
-                                        email
-                                    </th>
-                                    <th>reassign</th>
-                                    <th>remove</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr
-                                    v-for="(usr, usrIdx) in localGroupUsers"
-                                    :key="usrIdx">
-                                    <th>
-                                        {{ usr.getName() }}
-                                    </th>
-                                    <td>
-                                        {{ usr.email }}
-                                    </td>
-                                    <td>
-                                        <button
-                                            v-if="!readOnly && !areAnyIdentitiesThisPerson(usr)"
-                                            class="button is-outlined is-small is-primary"
-                                            @click="moveUserToManager(usrIdx)">
-                                            reassign as manager
-                                        </button>
-                                    </td>
-                                    <td>
-                                        <div class="buttons is-centered">
-                                            <div
-                                                v-if="!readOnly && !areAnyIdentitiesThisPerson(usr)"
-                                                class="button is-outlined is-small is-danger"
-                                                @click="removeUser(usrIdx)">
-                                                <span class="icon">
-                                                    <i class="fa fa-trash" />
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- ************************************** Validation ************************************************ -->
-                    <div v-if="groupInvalid">
-                        <p>User Group is invalid:</p>
-                        <p v-if="groupNameInvalid">
-                            *User group name is required
-                        </p>
-                        <p v-if="groupDescriptionInvalid">
-                            *User group description is required
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </template>
 <script>
@@ -320,6 +249,7 @@ export default {
     },
     data: function() {
         return {
+            selectedGroup: '',
             panelClass: 'panel',
             tab: 'general',
             addMemberMode: '',
@@ -434,6 +364,9 @@ export default {
         }
     },
     computed: {
+        allMembers() {
+            return this.localGroupManagers.concat(this.localGroupUsers);
+        },
         filteredPersons() {
             return this.personList.filter(person => {
                 if (this.groupHasManager(person.shortId()) || this.groupHasUser(person.shortId())) return false;

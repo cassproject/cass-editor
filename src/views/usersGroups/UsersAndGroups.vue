@@ -3,23 +3,62 @@
         <div class="container">
             <div class="columns">
                 <div class="column is-narrow">
-                    <cass-panel>
+                    <!-- what you should use -->
+                    <cass-panel v-if="false">
                         <cass-panel-item
                             @show-details="showUserGroupDetails($event)"
                             :depth="0"
                             :id="group.shortId()"
-                            :label="group.description"
+                            :label="group.name"
                             :nodes="group.sub"
                             v-for="group in userGroupList"
                             :key="group" />
                     </cass-panel>
+                    <!-- example using the userAndGroupList data object -->
+                    <cass-panel v-if="true">
+                        <cass-panel-item
+                            :depth="0"
+                            :label="group.display"
+                            :nodes="group.sub"
+                            v-for="group in userAndGroupList"
+                            :key="group" />
+                    </cass-panel>
                 </div>
+                <!-- main content section -->
                 <div class="column">
                     <div class="columns is-multiline is-gapless is-paddingless">
                         <div class="column is-12">
-                            <h3 class="title is-size-1">
-                                User Groups
-                            </h3>
+                            <!-- this should update based on group selected -->
+                            <template>
+                                <h3
+                                    class="title is-size-1"
+                                    v-if="!isEditingName">
+                                    {{ selectedGroupName }}
+                                    <span
+                                        class="icon"
+                                        @click="isEditingName = true">
+                                        <i class="fa fa-edit has-text-dark" />
+                                    </span>
+                                </h3>
+                                <div
+                                    class=""
+                                    v-if="isEditingName">
+                                    <label>Name of group</label>
+                                    <input
+                                        type="text"
+                                        class="input">
+                                </div>
+                            </template>
+                            <!-- should display breadcrumbs about groups -->
+                            <nav
+                                class="breadcrumb"
+                                aria-label="breadcrumbs">
+                                <ul>
+                                    <li><a href="#">Groups</a></li>
+                                    <li><a href="#">Developers</a></li>
+                                    <li><a href="#">CaSS Developers</a></li>
+                                </ul>
+                            </nav>
                             <p class="description">
                                 User groups provide the capability to assign multiple users the ability to assume a single shared ‘identity’.
                                 Members of a group are granted access to any CaSS object that the group has been explicitly assigned.
@@ -88,6 +127,8 @@ export default {
     name: 'UsersAndGroups',
     mixins: [cassUtil],
     data: () => ({
+        isEditingName: false,
+        selectedGroupName: 'All Users',
         pageTitle: 'All Users',
         GROUP_SEARCH_SIZE: 10000,
         PERSON_SEARCH_SIZE: 10000,
@@ -100,7 +141,7 @@ export default {
         personList: [],
         userAndGroupList: {
             'all': {
-                display: 'All Users'
+                display: 'Membership list'
             },
             'eduworks': {
                 display: 'Eduworks',
@@ -113,6 +154,22 @@ export default {
                             },
                             'pebl-developers': {
                                 display: 'CaSS Developers'
+                            }
+                        }
+                    }
+                }
+            },
+            'PeBL': {
+                display: 'PeBL',
+                sub: {
+                    'developers': {
+                        display: 'Developers',
+                        sub: {
+                            'cass-developers': {
+                                display: 'PeBL Developers'
+                            },
+                            'pebl-developers': {
+                                display: 'PeBL Developers'
                             }
                         }
                     }
