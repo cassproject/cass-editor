@@ -37,7 +37,8 @@ const state = {
     },
     directories: {
         directoryList: [],
-        selectedDirectory: null
+        selectedDirectory: null,
+        refreshResources: false
     },
     import: {
         files: [],
@@ -273,6 +274,9 @@ const mutations = {
     },
     directoryList: function(state, list) {
         state.directories.directoryList = list;
+    },
+    refreshResources: function(state, bool) {
+        state.directories.refreshResources = bool;
     }
 };
 const actions = {
@@ -444,6 +448,9 @@ const getters = {
     },
     directoryList: state => {
         return state.directories.directoryList;
+    },
+    refreshResources: state => {
+        return state.directories.refreshResources;
     }
 };
 

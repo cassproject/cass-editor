@@ -322,6 +322,9 @@ export default {
         },
         shareLink: function() {
             return window.location.href.replace('/directory', "?directoryId=" + this.directory.shortId());
+        },
+        refreshResources: function() {
+            return this.$store.getters['app/refreshResources'];
         }
     },
     components: {
@@ -518,6 +521,12 @@ export default {
         },
         directoryShortId: function() {
             this.searchForResources();
+        },
+        refreshResources: function() {
+            if (this.refreshResources) {
+                this.searchForResources();
+                this.$store.commit('app/refreshResources', false);
+            }
         }
     }
 };

@@ -60,12 +60,34 @@
         <div v-if="objectType === 'CreativeWork'">
             {{ object.url }}
         </div>
-        <button v-if="objectType === 'Framework' || objectType === 'CreativeWork'">
-            Copy to Directory
-        </button>
-        <button v-if="objectType === 'Framework' || objectType === 'CreativeWork'">
-            Move to Directory
-        </button>
+        <div v-if="canEditObject && canEditDirectory">
+            <button
+                v-if="objectType === 'Framework' || objectType === 'CreativeWork' || (objectType === 'Directory' && object.parentDirectory)"
+                @click="copyingToDirectory=true"
+                :disabled="movingToDirectory">
+                Copy to Directory
+            </button>
+            <button
+                v-if="objectType === 'Framework' || objectType === 'CreativeWork' || (objectType === 'Directory' && object.parentDirectory)"
+                @click="movingToDirectory=true"
+                :disabled="copyingToDirectory">
+                Move to Directory
+            </button>
+            <ul v-if="copyingToDirectory || movingToDirectory">
+                Choose a directory
+                <li
+                    v-for="directory in directoryOptions"
+                    :key="directory"
+                    @click="copyOrMove(directory)">
+                    {{ directory.name }}
+                </li>
+                <li
+                    @click="removeFromDirectory"
+                    v-if="movingToDirectory">
+                    Remove from directory
+                </li>
+            </ul>
+        </div>
     </aside>
 </template>
 <script>
@@ -77,7 +99,9 @@ export default {
     data() {
         return {
             numSubdirectories: "unknown",
-            numObjects: "unknown"
+            numObjects: "unknown",
+            copyingToDirectory: false,
+            movingToDirectory: false
         };
     },
     methods: {
@@ -148,6 +172,101 @@ export default {
                 }
                 me.$store.commit('app/closeRightAside');
             }, appError);
+        },
+        copyOrMove: function(directory) {
+            // To do: add confirmation step once we have this in the right spot
+            if (this.copyingToDirectory && this.objectType === 'Framework') {
+                this.copyFrameworkToDirectory(directory);
+            } else if (this.copyingToDirectory && this.objectType === 'CreativeWork') {
+                this.copyResourceToDirectory(directory);
+            } else if (this.copyingToDirectory && this.objectType === 'Directory') {
+                this.copySubdirectoryToDirectory(directory);
+            } else if (this.movingToDirectory && this.objectType === 'Framework') {
+                this.moveFrameworkToDirectory(directory);
+            } else if (this.movingToDirectory && this.objectType === 'CreativeWork') {
+                this.moveResourceToDirectory(directory);
+            } else if (this.movingToDirectory && this.objectType === 'Directory') {
+                this.moveSubdirectoryToDirectory(directory);
+            }
+        },
+        removeFromDirectory: function() {
+            if (this.objectType === 'Framework') {
+                this.removeFrameworkFromDirectory();
+            } else if (this.objectType === 'CreativeWork') {
+                this.removeResourceFromDirectory();
+            } else if (this.objectType === 'Directory') {
+                this.removeSubdirectoryFromDirectory();
+            }
+        },
+        copyFrameworkToDirectory: function(directory) {
+        },
+        copyResourceToDirectory: function(directory) {
+            let me = this;
+            let c = new CreativeWork();
+            c.generateId(window.repo.selectedServer);
+            c.name = this.object.name;
+            c.url = this.object.url;
+            c.directory = directory.shortId();
+            if (directory.owner) {
+                c.owner = this.directory.owner;
+            }
+            if (directory.reader) {
+                c.reader = this.directory.reader;
+            }
+            if (EcIdentityManager.ids.length > 0) {
+                c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            }
+            window.repo.saveTo(c, function() {
+                appLog("Resource copied: " + c.id);
+            }, appError);
+        },
+        copySubdirectoryToDirectory: function(directory) {
+        },
+        moveFrameworkToDirectory: function(directory) {
+        },
+        moveResourceToDirectory: function(directory) {
+            let me = this;
+            this.object.owner = directory.owner;
+            this.object.reader = directory.reader;
+            if (this.objectType === 'Directory') {
+                this.object.parentDirectory = directory.shortId();
+            } else {
+                this.object.directory = directory.shortId();
+            }
+            window.repo.saveTo(this.object, function() {
+                appLog("resource moved");
+                me.$store.commit('app/refreshResources', true);
+                me.movingToDirectory = false;
+            }, appError);
+        },
+        moveSubdirectoryToDirectory: function(directory) {
+        },
+        removeFrameworkFromDirectory: function() {
+        },
+        removeResourceFromDirectory: function() {
+            let me = this;
+            EcDirectory.get(this.object.directory, function(directory) {
+                if (directory.owner) {
+                    for (let each of directory.owner) {
+                        me.object.removeOwner(EcPk.fromPem(each));
+                    }
+                    me.object.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                }
+                if (directory.reader) {
+                    for (let each of directory.reader) {
+                        me.object.removeReader(EcPk.fromPem(each));
+                    }
+                }
+                delete me.object.parentDirectory;
+                delete me.object.directory;
+                window.repo.saveTo(me.object, function() {
+                    appLog("resource removed");
+                    me.$store.commit('app/refreshResources', true);
+                    me.movingToDirectory = false;
+                }, appError);
+            }, appError);
+        },
+        removeSubdirectoryFromDirectory: function() {
         }
     },
     mounted: function() {
@@ -214,6 +333,24 @@ export default {
                 return (link + "?concepts=true&frameworkId=" + this.objectShortId);
             }
             return (link + "?frameworkId=" + this.objectShortId);
+        },
+        directoryOptions: function() {
+            let me = this;
+            return this.$store.getters['app/directoryList'].filter(directory => {
+                return (directory.shortId() !== me.object.shortId());
+            });
+        },
+        canEditObject: function() {
+            return this.object.canEditAny(EcIdentityManager.getMyPks());
+        },
+        canEditDirectory: function() {
+            if (this.object.directory) {
+                return EcDirectory.getBlocking(this.object.directory).canEditAny(EcIdentityManager.getMyPks());
+            } else if (this.object.parentDirectory) {
+                return EcDirectory.getBlocking(this.object.parentDirectory).canEditAny(EcIdentityManager.getMyPks());
+            }
+            // Object is not in a directory
+            return true;
         }
     },
     watch: {
