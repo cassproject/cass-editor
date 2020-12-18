@@ -1,6 +1,7 @@
 variables:
    DEV_USERNAME: deployment
    T3_USERNAME: deploymentcass
+   GIT_SUBMODULE_STRATEGY: recursive
 
 image: node:11
 
@@ -19,9 +20,6 @@ buildDev:
   stage: build
   only:
     - dev
-  before_script:
-    - git submodule sync --recursive
-    - git submodule update --init --recursive
   script:
   - LAST_TAG=$(git describe --tags --always)
   - sed -i "s/VERSION/$LAST_TAG/" public/index.html
@@ -42,9 +40,6 @@ buildQA:
   stage: build
   only:
     - qa
-  before_script:
-    - git submodule sync --recursive
-    - git submodule update --init --recursive
   script:
   - LAST_TAG=$(git describe --tags --always)
   - sed -i "s/VERSION/$LAST_TAG/" public/index.html
@@ -68,9 +63,6 @@ buildT3:
   stage: build
   only:
     - t3
-  before_script:
-    - git submodule sync --recursive
-    - git submodule update --init --recursive
   script:
   - LAST_TAG=$(git describe --tags --always)
   - sed -i "s/VERSION/$LAST_TAG/" public/index.html
