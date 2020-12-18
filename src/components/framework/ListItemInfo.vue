@@ -370,6 +370,42 @@ export default {
         copySubdirectoryToDirectory: function(directory) {
         },
         moveFrameworkToDirectory: function(directory) {
+            let toSave = [];
+            let framework = this.object;
+            framework.owner = directory.owner;
+            framework.reader = directory.reader;
+            framework.directory = directory.shortId();
+            framework["schema:dateModified"] = new Date().toISOString();
+            toSave.push(framework);
+            let subobjects = [];
+            if (framework.competency && framework.competency.length > 0) {
+                subobjects = framework.competency;
+            }
+            if (framework.level && framework.level.length > 0) {
+                subobjects = subobjects.concat(framework.level);
+            }
+            if (framework.relation && framework.relation.length > 0) {
+                subobjects = subobjects.concat(framework.relation);
+            }
+            if (subobjects.length > 0) {
+                this.moveSubobjectsToDirectory(subobjects, directory, toSave);
+            } else {
+                this.multiput(toSave, true);
+            }
+        },
+        moveSubobjectsToDirectory: function(subobjects, directory, toSave) {
+            let me = this;
+            new EcAsyncHelper().each(subobjects, function(id, done) {
+                EcRepository.get(id, function(obj) {
+                    obj.owner = directory.owner;
+                    obj.reader = directory.reader;
+                    obj["schema:dateModified"] = new Date().toISOString();
+                    toSave.push(obj);
+                    done();
+                }, done);
+            }, function(ids) {
+                me.multiput(toSave, true);
+            });
         },
         moveResourceToDirectory: function(directory) {
             let me = this;
