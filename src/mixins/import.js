@@ -72,17 +72,17 @@ export default {
                     }
                 };
             } else if (val === 'duplicateOverwriteOnly') {
-                if (data[1] && !data[1].canEditAny(EcIdentityManager.getMyPks())) {
+                if (data[1] && (!EcIdentityManager.ids || EcIdentityManager.ids.length === 0)) {
+                    // An owner is attached from the server-side import so it can be overwritten, just not edited
                     params = {
                         type: val,
                         title: "Duplicate framework",
-                        text: (data[0].name ? ("The framework " + data[0].name) : "This framework") + " has already been imported. Only a framework admin can log in and overwrite it.",
+                        text: (data[0].name ? ("The framework " + data[0].name) : "This framework") + " has already been imported. You can overwrite it but will not be able to edit it since you're not logged in. Do you want to overwrite it?",
                         onConfirm: () => {
-                            if (data[0][1]) {
-                                // more CASE imports in the queue
-                                return this.importCase(data[0]);
+                            if (this.importType === "url") {
+                                return this.importJsonLd(data[0]);
                             }
-                            return this.clearImport();
+                            return this.continueCaseImport(data[0]);
                         },
                         onCancel: () => {
                             if (data[0][1]) {
