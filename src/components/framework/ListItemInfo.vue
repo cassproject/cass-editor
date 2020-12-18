@@ -337,7 +337,9 @@ export default {
         directoryOptions: function() {
             let me = this;
             return this.$store.getters['app/directoryList'].filter(directory => {
-                return (directory.shortId() !== me.object.shortId());
+                return (directory.shortId() !== me.object.shortId() &&
+                    (me.object.parentDirectory ? (directory.shortId() !== me.object.parentDirectory) : true) &&
+                    (me.object.directory ? (directory.shortId() !== me.object.directory) : true));
             });
         },
         canEditObject: function() {
