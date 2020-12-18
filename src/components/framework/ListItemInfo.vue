@@ -101,14 +101,15 @@ export default {
             numSubdirectories: "unknown",
             numObjects: "unknown",
             copyingToDirectory: false,
-            movingToDirectory: false
+            movingToDirectory: false,
+            repo: window.repo
         };
     },
     methods: {
         setNumSubdirectoriesAndObjects: function() {
             let me = this;
             if (this.objectType === "Directory") {
-                window.repo.searchWithParams("(@type:Directory AND parentDirectory:\"" + this.object.shortId() + "\")", {'size': 10000}, null, function(results) {
+                me.repo.searchWithParams("(@type:Directory AND parentDirectory:\"" + this.object.shortId() + "\")", {'size': 10000}, null, function(results) {
                     me.numSubdirectories = results.length;
                     if (results.length === 10000) {
                         me.numSubdirectories = "More than 10,000";
@@ -117,7 +118,7 @@ export default {
                     appError(error);
                     me.numSubdirectories = "unknown";
                 });
-                window.repo.searchWithParams("(directory:\"" + this.object.shortId() + "\")", {'size': 10000}, null, function(results) {
+                me.repo.searchWithParams("(directory:\"" + this.object.shortId() + "\")", {'size': 10000}, null, function(results) {
                     me.numObjects = results.length;
                     if (results.length === 10000) {
                         me.numObjects = "More than 10,000";
@@ -176,7 +177,7 @@ export default {
         copyOrMove: function(directory) {
             // To do: add confirmation step once we have this in the right spot
             if (this.copyingToDirectory && this.objectType === 'Framework') {
-                this.copyFrameworkToDirectory(directory);
+                this.copyFrameworkToDirectory(this.object, directory);
             } else if (this.copyingToDirectory && this.objectType === 'CreativeWork') {
                 this.copyResourceToDirectory(directory);
             } else if (this.copyingToDirectory && this.objectType === 'Directory') {
@@ -198,12 +199,153 @@ export default {
                 this.removeSubdirectoryFromDirectory();
             }
         },
-        copyFrameworkToDirectory: function(directory) {
+        multiput: function(toSave) {
+            let me = this;
+            this.repo.multiput(toSave, function(success) {
+                me.copyingToDirectory = false;
+                me.movingToDirectory = false;
+            }, appError);
+        },
+        copyFrameworkToDirectory: function(framework, directory) {
+            let toSave = [];
+            var f = new EcFramework();
+            f.copyFrom(framework);
+            if (this.queryParams.newObjectEndpoint != null) {
+                f.generateShortId(this.queryParams.newObjectEndpoint);
+            } else {
+                f.generateId(this.repo.selectedServer);
+            }
+            f.directory = directory.shortId();
+            f["schema:dateCreated"] = new Date().toISOString();
+            f["schema:dateModified"] = new Date().toISOString();
+            delete f.owner;
+            delete f.reader;
+            if (directory.owner) {
+                f.owner = directory.owner;
+            }
+            if (directory.reader) {
+                f.reader = directory.reader;
+            }
+            if (EcIdentityManager.ids.length > 0) {
+                f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            }
+            f['ceasn:derivedFrom'] = framework.id;
+            toSave.push(f);
+            if (framework.competency && framework.competency.length > 0) {
+                this.copyCompetenciesToDirectory(framework, toSave);
+            } else if (framework.level && framework.level.length > 0) {
+                this.copyLevelsToDirectory(framework, toSave);
+            } else if (framework.relation && framework.relation.length > 0) {
+                this.copyRelationsToDirectory(framework, toSave);
+            } else {
+                this.multiput(toSave);
+            }
+        },
+        copyCompetenciesToDirectory: function(framework, toSave) {
+            let me = this;
+            new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
+                EcCompetency.get(competencyId, function(competency) {
+                    var c = new EcCompetency();
+                    c.copyFrom(competency);
+                    if (me.queryParams.newObjectEndpoint != null) {
+                        c.generateShortId(me.queryParams.newObjectEndpoint);
+                    } else {
+                        c.generateId(me.repo.selectedServer);
+                    }
+                    c["schema:dateCreated"] = new Date().toISOString();
+                    c["schema:dateModified"] = new Date().toISOString();
+                    delete c.owner;
+                    delete c.reader;
+                    if (framework.owner) {
+                        c.owner = framework.owner;
+                    }
+                    if (framework.reader) {
+                        c.reader = framework.reader;
+                    }
+                    c['ceasn:derivedFrom'] = competency.id;
+                    toSave.push(c);
+                    done();
+                }, done);
+            }, function(competencyIds) {
+                if (framework.level && framework.level.length > 0) {
+                    me.copyLevelsToDirectory(framework, toSave);
+                } else if (framework.relation && framework.relation.length > 0) {
+                    me.copyRelationsToDirectory(framework, toSave);
+                } else {
+                    me.multiput(toSave);
+                }
+            });
+        },
+        copyLevelsToDirectory: function(framework, toSave) {
+            let me = this;
+            new EcAsyncHelper().each(framework.level, function(levelId, done) {
+                EcLevel.get(levelId, function(level) {
+                    var c = new EcLevel();
+                    c.copyFrom(level);
+                    if (me.queryParams.newObjectEndpoint != null) {
+                        c.generateShortId(me.queryParams.newObjectEndpoint);
+                    } else {
+                        c.generateId(me.repo.selectedServer);
+                    }
+                    c["schema:dateCreated"] = new Date().toISOString();
+                    c["schema:dateModified"] = new Date().toISOString();
+                    delete c.owner;
+                    delete c.reader;
+                    if (framework.owner) {
+                        c.owner = framework.owner;
+                    }
+                    if (framework.reader) {
+                        c.reader = framework.reader;
+                    }
+                    c['ceasn:derivedFrom'] = level.id;
+                    toSave.push(c);
+                    done();
+                }, done);
+            }, function(competencyIds) {
+                if (framework.relation && framework.relation.length > 0) {
+                    me.copyRelationsToDirectory(framework, toSave);
+                } else {
+                    me.multiput(toSave);
+                }
+            });
+        },
+        copyRelationsToDirectory: function(framework, toSave) {
+            let me = this;
+            new EcAsyncHelper().each(framework.relation, function(relationId, done) {
+                EcAlignment.get(relationId, function(relation) {
+                    var c = new EcAlignment();
+                    c.copyFrom(relation);
+                    if (me.queryParams.newObjectEndpoint != null) {
+                        c.generateShortId(me.queryParams.newObjectEndpoint);
+                    } else {
+                        c.generateId(me.repo.selectedServer);
+                    }
+                    c["schema:dateCreated"] = new Date().toISOString();
+                    c["schema:dateModified"] = new Date().toISOString();
+                    delete c.owner;
+                    delete c.reader;
+                    if (framework.owner) {
+                        c.owner = framework.owner;
+                    }
+                    if (framework.reader) {
+                        c.reader = framework.reader;
+                    }
+                    c['ceasn:derivedFrom'] = relation.id;
+                    toSave.push(c);
+                    done();
+                }, done);
+            }, function(competencyIds) {
+                me.multiput(toSave);
+            });
         },
         copyResourceToDirectory: function(directory) {
             let me = this;
             let c = new CreativeWork();
-            c.generateId(window.repo.selectedServer);
+            if (this.queryParams.newObjectEndpoint != null) {
+                c.generateShortId(this.queryParams.newObjectEndpoint);
+            } else {
+                c.generateId(this.repo.selectedServer);
+            }
             c.name = this.object.name;
             c.url = this.object.url;
             c.directory = directory.shortId();
@@ -216,7 +358,7 @@ export default {
             if (EcIdentityManager.ids.length > 0) {
                 c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
             }
-            window.repo.saveTo(c, function() {
+            me.repo.saveTo(c, function() {
                 appLog("Resource copied: " + c.id);
                 me.copyingToDirectory = false;
             }, appError);
@@ -234,7 +376,7 @@ export default {
             } else {
                 this.object.directory = directory.shortId();
             }
-            window.repo.saveTo(this.object, function() {
+            me.repo.saveTo(this.object, function() {
                 appLog("resource moved");
                 me.$store.commit('app/refreshResources', true);
                 me.movingToDirectory = false;
@@ -260,7 +402,7 @@ export default {
                 }
                 delete me.object.parentDirectory;
                 delete me.object.directory;
-                window.repo.saveTo(me.object, function() {
+                me.repo.saveTo(me.object, function() {
                     appLog("resource removed");
                     me.$store.commit('app/refreshResources', true);
                     me.movingToDirectory = false;
@@ -354,6 +496,9 @@ export default {
             }
             // Object is not in a directory
             return true;
+        },
+        queryParams: function() {
+            return this.$store.getters['editor/queryParams'];
         }
     },
     watch: {
