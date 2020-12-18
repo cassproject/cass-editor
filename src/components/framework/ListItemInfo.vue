@@ -199,11 +199,15 @@ export default {
                 this.removeSubdirectoryFromDirectory();
             }
         },
-        multiput: function(toSave) {
+        multiput: function(toSave, shouldRefresh) {
             let me = this;
             this.repo.multiput(toSave, function(success) {
                 me.copyingToDirectory = false;
                 me.movingToDirectory = false;
+                if (shouldRefresh) {
+                    // If removing or moving, need to refresh search results
+                    me.$store.commit('app/refreshSearch', true);
+                }
             }, appError);
         },
         copyFrameworkToDirectory: function(framework, directory) {
@@ -385,6 +389,63 @@ export default {
         moveSubdirectoryToDirectory: function(directory) {
         },
         removeFrameworkFromDirectory: function() {
+            let framework = this.object;
+            let me = this;
+            let toSave = [];
+            EcDirectory.get(framework.directory, function(directory) {
+                if (directory.owner) {
+                    for (let each of directory.owner) {
+                        framework.removeOwner(EcPk.fromPem(each));
+                    }
+                    framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                }
+                if (directory.reader) {
+                    for (let each of directory.reader) {
+                        framework.removeReader(EcPk.fromPem(each));
+                    }
+                }
+                delete framework.directory;
+                framework["schema:dateModified"] = new Date().toISOString();
+                toSave.push(framework);
+                let subobjects = [];
+                if (framework.competency && framework.competency.length > 0) {
+                    subobjects = framework.competency;
+                }
+                if (framework.level && framework.level.length > 0) {
+                    subobjects = subobjects.concat(framework.level);
+                }
+                if (framework.relation && framework.relation.length > 0) {
+                    subobjects = subobjects.concat(framework.relation);
+                }
+                if (subobjects.length > 0) {
+                    me.removeSubobjectsFromDirectory(subobjects, directory, toSave);
+                } else {
+                    this.multiput(toSave, true);
+                }
+            }, appError);
+        },
+        removeSubobjectsFromDirectory: function(subobjects, directory, toSave) {
+            let me = this;
+            new EcAsyncHelper().each(subobjects, function(id, done) {
+                EcRepository.get(id, function(obj) {
+                    if (directory.owner) {
+                        for (let each of directory.owner) {
+                            obj.removeOwner(EcPk.fromPem(each));
+                        }
+                        obj.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    }
+                    if (directory.reader) {
+                        for (let each of directory.reader) {
+                            obj.removeReader(EcPk.fromPem(each));
+                        }
+                    }
+                    obj["schema:dateModified"] = new Date().toISOString();
+                    toSave.push(obj);
+                    done();
+                }, done);
+            }, function(ids) {
+                me.multiput(toSave, true);
+            });
         },
         removeResourceFromDirectory: function() {
             let me = this;
@@ -400,7 +461,6 @@ export default {
                         me.object.removeReader(EcPk.fromPem(each));
                     }
                 }
-                delete me.object.parentDirectory;
                 delete me.object.directory;
                 me.repo.saveTo(me.object, function() {
                     appLog("resource removed");

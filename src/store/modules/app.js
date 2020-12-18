@@ -28,7 +28,8 @@ const state = {
         searchTerm: '',
         quickFilters: [],
         applySearchTo: [],
-        sortResults: []
+        sortResults: [],
+        refreshSearch: []
     },
     modal: {
         framework: '',
@@ -245,6 +246,9 @@ const mutations = {
     applySearchTo: function(state, value) {
         state.frameworks.applySearchTo = value;
     },
+    refreshSearch: function(state, value) {
+        state.frameworks.refreshSearch = value;
+    },
     sortResults: function(state, value) {
         state.frameworks.sortResults = value;
     },
@@ -424,6 +428,9 @@ const getters = {
     },
     applySearchTo: state => {
         return state.frameworks.applySearchTo;
+    },
+    refreshSearch: state => {
+        return state.frameworks.refreshSearch;
     },
     csvColumns: state => {
         return state.import.csvColumns;
