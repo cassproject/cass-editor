@@ -208,16 +208,17 @@ export default {
             c.url = this.object.url;
             c.directory = directory.shortId();
             if (directory.owner) {
-                c.owner = this.directory.owner;
+                c.owner = directory.owner;
             }
             if (directory.reader) {
-                c.reader = this.directory.reader;
+                c.reader = directory.reader;
             }
             if (EcIdentityManager.ids.length > 0) {
                 c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
             }
             window.repo.saveTo(c, function() {
                 appLog("Resource copied: " + c.id);
+                me.copyingToDirectory = false;
             }, appError);
         },
         copySubdirectoryToDirectory: function(directory) {
