@@ -121,7 +121,7 @@
                     :disallowEdits="true">
                     <!-- TO DO move these template items to the "actions" right side area -->
                     <template
-                        v-slot:frameworkTags="slotProps">
+                        #frameworkTags="slotProps">
                         <span class="framework-details has-text-weight-light family-primary is-size-7">
                             <span
                                 class="framework-details__item"

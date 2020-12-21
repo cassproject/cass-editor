@@ -111,8 +111,67 @@
             </div>
         </div>
         <hr>
-        <!-- END OPTION TO NAVIGATE BACK -->
-
+        <!-- Add new buttons -->
+        <div
+            v-if="showSideNav"
+            class="cass-add-item--button button is-rounded"
+            v-click-outside="handleClickoutsidePopup"
+            @click="addFrameworkOrDirectory = true">
+            <span class="icon">
+                <i class="fa fa-plus" />
+            </span>
+            <span>Create new</span>
+            <div
+                class="cass-add-item--pop-out"
+                v-if="addFrameworkOrDirectory">
+                <div
+                    @click="$emit('create-new-framework')"
+                    class="cass-add-item--popout-text-button">
+                    <span v-if="showSideNav">Framework</span>
+                </div>
+                <div
+                    @click="addNewDirectory = true"
+                    class="cass-add-item--popout-text-button">
+                    <span v-if="showSideNav">Directory</span>
+                </div>
+                <div
+                    class="cass-add-item--popout-text-button"
+                    @click="$emit('create-new-concept-scheme')">
+                    <span>
+                        <span v-if="showSideNav && queryParams.ceasnDataFields === 'true'">
+                            Concept Scheme
+                        </span>
+                        <span v-else-if="showSideNav">
+                            Taxonomy
+                        </span>
+                    </span>
+                </div>
+                <div
+                    class="control"
+                    v-if="addNewDirectory">
+                    <div class="control">
+                        <input
+                            class="input"
+                            v-model="directoryName">
+                    </div>
+                    <div class="field">
+                        <div class="buttons">
+                            <div
+                                class="button is-primary is-small"
+                                :disabled="directoryName === 0"
+                                @click="saveDirectory">
+                                Create
+                            </div>
+                            <div
+                                class="button is-primary is-small"
+                                @click="addFrameworkOrDirectory = false">
+                                Cancel
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- GENERAL MENU -->
         <!-- COMPETENCIES AND FRAMEWORKS -->
         <div
@@ -129,35 +188,6 @@
                     </span>
                     <span v-if="showSideNav"> Frameworks</span>
                 </router-link>
-            </li>
-            <li
-                v-if="showSideNav"
-                class="has-text-white"
-                @click="addFrameworkOrDirectory = true">
-                <span class="icon">
-                    <i class="fa fa-plus" />
-                </span><span>Add New</span>
-                <a
-                    @click="$emit('create-new-framework')"
-                    v-if="addFrameworkOrDirectory">
-                    <span class="icon">
-                        <i class="fa fa-plus" />
-                    </span><span v-if="showSideNav">New framework</span></a>
-                <a
-                    @click="addNewDirectory = true"
-                    v-if="addFrameworkOrDirectory">
-                    <span class="icon">
-                        <i class="fa fa-plus" />
-                    </span><span v-if="showSideNav">New directory</span></a>
-                <input
-                    v-if="addNewDirectory"
-                    v-model="directoryName">
-                <button
-                    v-if="addNewDirectory"
-                    :disabled="directoryName === 0"
-                    @click="saveDirectory">
-                    Save directory
-                </button>
             </li>
             <!-- hidding this for now -->
             <li
@@ -257,25 +287,6 @@
                         Taxonomies
                     </span>
                 </router-link>
-            </li>
-            <li
-                v-if="showSideNav"
-                class="has-text-white"
-                @click="$emit('create-new-concept-scheme')">
-                <a>
-                    <span class="icon">
-                        <i class="fa fa-plus" />
-                    </span>
-                    <span>
-                        New
-                        <span v-if="showSideNav && queryParams.ceasnDataFields === 'true'">
-                            Concept Scheme
-                        </span>
-                        <span v-else-if="showSideNav">
-                            Taxonomy
-                        </span>
-                    </span>
-                </a>
             </li>
             <li
                 class="has-text-white"
@@ -426,6 +437,11 @@ export default {
         };
     },
     methods: {
+        handleClickoutsidePopup() {
+            if (this.addFrameworkOrDirectory) {
+                this.addFrameworkOrDirectory = false;
+            }
+        },
         setLaunchPluginValues(pluginShortcut) {
             this.$store.commit('app/pluginToLaunch', pluginShortcut);
             this.$store.commit('app/pluginToLaunchLastUpdate', Date.now());
@@ -556,49 +572,7 @@ export default {
 };
 </script>
 <style lang="scss">
-.cass-logo {
-    max-width: 100px;
-    display: inline;
-    margin: auto;
-    width: 100%;
-    padding: 0rem .5rem;
-}
-.cass-logo-square {
-    max-width: 100px;
-    display: block;
-    margin: auto;
-    width: 100%;
-    padding: .5rem .5rem;
-}
-#app-side-nav-bar {
-    position: fixed;
-    z-index: 12;
-    top: 0;
-    left:0;
-    height: calc(100vh);
-    margin-top: 0rem;
-    bottom: 0;
-    overflow-y: scroll;
-}
+ @import '../scss/variables.scss';
+ @import '../scss/side-nav.scss';
 
-.menu.is-narrow {
-    margin: auto !important;
-    padding: .25rem !important;
-    width: 4rem;
-    .menu-label {
-        div.open-nav {
-            display: block;
-            margin: auto;
-            padding: .5rem 0rem;
-        }
-    }
-    .menu-list {
-        margin: auto !important;
-        display: block;
-        a {
-            padding: .5em !important;
-            text-align: center;
-        }
-    }
-}
 </style>

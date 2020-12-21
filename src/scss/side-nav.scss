@@ -1,0 +1,74 @@
+
+.cass-add-item--button {
+    position: relative;
+    overflow: visible;
+}
+.cass-add-item--pop-out {
+    width: 200px;
+    position: absolute;
+    background-color: $light;
+    box-shadow: $two-dp;
+    left: 0rem;
+    top: 2rem;
+    z-index: 100;
+    padding: 16px;
+    margin: .25rem 0rem;
+    border-radius: 1rem;
+    .cass-add-item--popout-text-button {
+        display: block;
+        font-weight: 500;
+        text-align: left;
+        color: black;
+        text-transform: capitalize;
+        padding: .25rem;
+    }
+    .cass-add-item--popout-text-button:hover {
+        cursor: pointer;
+        color: $primary;
+    }
+}
+.cass-logo {
+    max-width: 100px;
+    display: inline;
+    margin: auto;
+    width: 100%;
+    padding: 0rem .5rem;
+}
+.cass-logo-square {
+    max-width: 100px;
+    display: block;
+    margin: auto;
+    width: 100%;
+    padding: .5rem .5rem;
+}
+#app-side-nav-bar {
+    position: fixed;
+    z-index: 12;
+    top: 0;
+    left:0;
+    height: calc(100vh);
+    margin-top: 0rem;
+    bottom: 0;
+    overflow-y: scroll;
+}
+
+.menu.is-narrow {
+    margin: auto !important;
+    padding: .25rem !important;
+    width: 4rem;
+    .menu-label {
+        div.open-nav {
+            display: block;
+            margin: auto;
+            padding: .5rem 0rem;
+        }
+    }
+    .menu-list {
+        margin: auto !important;
+        display: block;
+        a {
+            padding: .5em !important;
+            text-align: center;
+        }
+    }
+}
