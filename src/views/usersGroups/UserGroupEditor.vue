@@ -7,8 +7,26 @@
             <div class="columns">
                 <div class="column is-narrow">
                     <nav>
-                        <a>Membership List</a>
+                        <a @click="showMemberListView">Membership List</a>
                     </nav>
+                </div>
+            </div>
+            <div class="columns">
+                <div class="column is-narrow">
+                    <div class="buttons">
+                        <div
+                            class="button is-outlined is-primary"
+                            @click="createNewUserGroup"
+                            :disabled="!amLoggedIn"
+                            :title="getCreateUserGroupButtonTitle">
+                            <span class="icon">
+                                <i class="fa fa-plus" />
+                            </span>
+                            <span>
+                                create new group
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="columns">
@@ -18,7 +36,9 @@
                             :depth="0"
                             :label="group.name"
                             :nodes="group.subGroups"
+                            :id="group.id"
                             v-for="group in userGroupDisplayList"
+                            @showDetails="showGroupDetails"
                             :key="group" />
                     </cass-panel>
                 </div>
@@ -26,56 +46,118 @@
                 <div class="column">
                     <div class="columns is-multiline is-gapless is-paddingless">
                         <div class="column is-12">
-                            <!-- this should update based on group selected -->
-                            <template>
-                                <h3
-                                    class="title is-size-1"
-                                    v-if="!isEditingName">
-                                    {{ selectedGroupName }}
-                                    <span
-                                        class="icon"
-                                        @click="isEditingName = true">
-                                        <i class="fa fa-edit has-text-dark" />
-                                    </span>
-                                </h3>
-                                <div
-                                    class=""
-                                    v-if="isEditingName">
-                                    <label>Name of group</label>
-                                    <input
-                                        type="text"
-                                        class="input">
-                                </div>
-                            </template>
-                            <!-- should display breadcrumbs about groups -->
-                            <nav
-                                class="breadcrumb"
-                                aria-label="breadcrumbs">
-                                <ul>
-                                    <li><a href="#">Groups</a></li>
-                                    <li><a href="#">Developers</a></li>
-                                    <li><a href="#">CaSS Developers</a></li>
-                                </ul>
-                            </nav>
-                            <p class="description">
-                                User groups provide the capability to assign multiple users the ability to assume a single shared ‘identity’.
-                                Members of a group are granted access to any CaSS object that the group has been explicitly assigned.
-                                These grouped rules can be applied at the configuration level in the
-                                configuration management screen or at the framework level in the framework editor.
-                            </p>
-                            <!-- TO DO: if we are creating a new group, hide this button until saved -->
-                            <div class="buttons is-right">
-                                <div
-                                    class="button is-outlined is-primary"
-                                    @click="createNewUserGroup"
-                                    :disabled="!amLoggedIn"
-                                    :title="getCreateUserGroupButtonTitle">
-                                    <span class="icon">
-                                        <i class="fa fa-plus" />
-                                    </span>
-                                    <span>
-                                        create new group
-                                    </span>
+                            <div v-if="viewMode === 'memberList'">
+                                <template>
+                                    <h3 class="title is-size-1">
+                                        Membership List
+                                    </h3>
+                                    <div class="section box py-4 px-4">
+                                        <div class="table-container">
+                                            <table class="table is-hoverable is-fullwidth">
+                                                <thead>
+                                                    <tr>
+                                                        <th>
+                                                            name
+                                                        </th>
+                                                        <th>
+                                                            email
+                                                        </th>
+                                                        <th>
+                                                            membership
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr
+                                                        v-for="(member, memberIdx) in allGroupMembersList"
+                                                        :key="memberIdx">
+                                                        <th>
+                                                            {{ member.name }}
+                                                        </th>
+                                                        <td>
+                                                            {{ member.email }}
+                                                        </td>
+                                                        <td>
+                                                            <div v-if="member.managerOf.length > 0">
+                                                                <b>Manager of</b>
+                                                                <br>
+                                                                <span v-for="(memMgrOf, memMgrOfIdx) in member.managerOf">
+                                                                    <span v-if="memMgrOfIdx > 0">, </span>
+                                                                    <a @click="showGroupDetails(memMgrOf.id)">
+                                                                        {{memMgrOf.name}}
+                                                                    </a>
+                                                                </span>
+                                                            </div>
+                                                            <div v-if="member.memberOf.length > 0">
+                                                                <b>Member of</b>
+                                                                <br>
+                                                                <span v-for="(memMemOf, memMemOfIdx) in member.memberOf">
+                                                                    <span v-if="memMemOfIdx > 0">, </span>
+                                                                    <a @click="showGroupDetails(memMemOf.id)">
+                                                                        {{memMemOf.name}}
+                                                                    </a>
+                                                                </span>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div v-if="viewMode === 'groupDetail'">
+                                <!-- this should update based on group selected -->
+                                <template>
+                                    <h3
+                                        class="title is-size-1"
+                                        v-if="!isEditingName">
+                                        {{ selectedGroupName }}
+                                        <span
+                                            class="icon"
+                                            @click="isEditingName = true">
+                                            <i class="fa fa-edit has-text-dark" />
+                                        </span>
+                                    </h3>
+                                    <div
+                                        class=""
+                                        v-if="isEditingName">
+                                        <label>Name of group</label>
+                                        <input
+                                            type="text"
+                                            class="input">
+                                    </div>
+                                </template>
+                                <!-- should display breadcrumbs about groups -->
+                                <nav
+                                    class="breadcrumb"
+                                    aria-label="breadcrumbs">
+                                    <ul>
+                                        <li><a href="#">Groups</a></li>
+                                        <li><a href="#">Developers</a></li>
+                                        <li><a href="#">CaSS Developers</a></li>
+                                    </ul>
+                                </nav>
+                                <p class="description">
+                                    User groups provide the capability to assign multiple users the ability to assume a single shared ‘identity’.
+                                    Members of a group are granted access to any CaSS object that the group has been explicitly assigned.
+                                    These grouped rules can be applied at the configuration level in the
+                                    configuration management screen or at the framework level in the framework editor.
+                                </p>
+                                <!-- TO DO: if we are creating a new group, hide this button until saved -->
+                                <div class="buttons is-right">
+                                    <div
+                                        class="button is-outlined is-primary"
+                                        @click="createNewUserGroup"
+                                        :disabled="!amLoggedIn"
+                                        :title="getCreateUserGroupButtonTitle">
+                                        <span class="icon">
+                                            <i class="fa fa-plus" />
+                                        </span>
+                                        <span>
+                                            create new group
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -111,53 +193,12 @@ export default {
         PERSON_SEARCH_SIZE: 10000,
         userGroupBusy: false,
         currentUserGroup: {},
-        personList: [],
+        allPersonList: [],
+        allPersonMap: {},
+        allGroupMembersList: [],
         userGroupDisplayList: [],
         userGroupMap: {},
-        userAndGroupList: {
-            'eduworks': {
-                display: 'Eduworks',
-                sub: {
-                    'developers': {
-                        display: 'Developers',
-                        sub: {
-                            'cass-developers': {
-                                display: 'CaSS Developers',
-                                sub: {
-                                    'cass-developers 1': {
-                                        display: 'CaSS Developers 1'
-                                    },
-                                    'pebl-developers 1': {
-                                        display: 'CaSS Developers 1'
-                                    }
-                                }
-                            },
-                            'pebl-developers': {
-                                display: 'CaSS Developers'
-                            }
-                        }
-                    }
-                }
-            },
-            'PeBL': {
-                display: 'PeBL',
-                sub: {
-                    'developers': {
-                        display: 'Developers',
-                        sub: {
-                            'cass-developers': {
-                                display: 'PeBL Developers'
-                            },
-                            'pebl-developers': {
-                                display: 'PeBL Developers'
-                            }
-                        }
-                    }
-                }
-            }
-
-
-        }
+        viewMode: 'memberList'
     }),
     components: {
         CassPanel,
@@ -174,7 +215,17 @@ export default {
         }
     },
     methods: {
+        showMemberListView() {
+            this.viewMode = "memberList";
+        },
+        showGroupDetailView() {
+            this.viewMode = "groupDetail";
+        },
+        showGroupDetails(id) {
+            console.log('TODO showGroupDetails: ' + id);
+        },
         createNewUserGroup() {
+            console.log('TODO createNewUserGroup');
             // this.userGroupBusy = true;
             // let newUserGroup = new EcOrganization();
             // newUserGroup.generateId(window.repo.selectedServer);
@@ -246,12 +297,58 @@ export default {
             }
         },
         buildUserGroupDisplayList(userGroupList) {
-            console.log('buildUserGroupDisplayList');
-            console.log(userGroupList);
             this.userGroupDisplayList = [];
             let ugDisplayObjs = this.buildUserGroupDisplayObjects(userGroupList);
             this.assignUserGroupDisplayObjectsSubGroups(ugDisplayObjs);
             this.addRootUserGroupsToUserGroupDisplayList(ugDisplayObjs);
+        },
+        buildInitialGroupMembersDisplayData() {
+            let initGrpMemDispData = {};
+            initGrpMemDispData.gmList = [];
+            initGrpMemDispData.gmMap = {};
+            for (let p of this.allPersonList) {
+                let pdo = {};
+                pdo.name = p.getName();
+                pdo.email = p.email;
+                pdo.managerOf = [];
+                pdo.memberOf = [];
+                initGrpMemDispData.gmList.push(pdo);
+                initGrpMemDispData.gmMap[p.getFingerprint()] = pdo;
+            }
+            return initGrpMemDispData;
+        },
+        addMembershipData(gmMap, pdoKey, pkData, ug) {
+            if (pkData) {
+                for (let pk of pkData) {
+                    let pkFingerprint = EcPk.fromPem(pk).fingerprint();
+                    if (gmMap[pkFingerprint]) {
+                        let mo = {};
+                        mo.name = ug.getName();
+                        mo.id = ug.shortId();
+                        gmMap[pkFingerprint][pdoKey].push(mo);
+                    }
+                }
+            }
+        },
+        fillOutMembershipData(initGrpMemDispData) {
+            for (let ugKey of Object.keys(this.userGroupMap)) {
+                let ug = this.userGroupMap[ugKey];
+                this.addMembershipData(initGrpMemDispData.gmMap, 'managerOf', ug.owner, ug);
+                this.addMembershipData(initGrpMemDispData.gmMap, 'memberOf', ug.reader, ug);
+            }
+        },
+        filterOutNonMembers(initGrpMemDispData) {
+            for (let gm of initGrpMemDispData.gmList) {
+                if (gm.managerOf.length > 0 || gm.memberOf.length > 0) {
+                    this.allGroupMembersList.push(gm);
+                }
+            }
+        },
+        buildGroupMembersDisplayList() {
+            this.allGroupMembersList = [];
+            let initGrpMemDispData = this.buildInitialGroupMembersDisplayData();
+            this.fillOutMembershipData(initGrpMemDispData);
+            this.filterOutNonMembers(initGrpMemDispData);
         },
         searchRepositoryForGroupsSuccess(ecoa) {
             let userGroupList = [];
@@ -261,17 +358,47 @@ export default {
             }
             this.buildUserGroupMap(userGroupList);
             this.buildUserGroupDisplayList(userGroupList);
+            this.buildGroupMembersDisplayList();
+            this.showMemberListView();
             this.userGroupBusy = false;
         },
         searchRepositoryForGroupsFailure(msg) {
             appLog("Group search failure: " + msg);
             this.userGroupBusy = false;
         },
-        buildUserGroupData() {
-            this.userGroupBusy = true;
+        buildGroupListData() {
             let paramObj = {};
             paramObj.size = this.GROUP_SEARCH_SIZE;
             EcOrganization.search(window.repo, '', this.searchRepositoryForGroupsSuccess, this.searchRepositoryForGroupsFailure, paramObj);
+        },
+        sortAllPersonList() {
+            this.allPersonList.sort(function(p1, p2) {
+                if (p1.getName() > p2.getName()) return 1;
+                else if (p2.getName() > p1.getName()) return -1;
+                else return 0;
+            });
+        },
+        buildAllPersonMap() {
+            this.allPersonMap = {};
+            for (let p of this.allPersonList) {
+                this.allPersonMap[p.shortId()] = p;
+            }
+        },
+        fetchPersonListForDetailViewSuccess(ecpa) {
+            this.allPersonList = ecpa;
+            this.sortAllPersonList();
+            this.buildAllPersonMap();
+            this.buildGroupListData();
+        },
+        fetchPersonListForDetailViewFailure(msg) {
+            appLog("Person search failure: " + msg);
+            this.userGroupBusy = false;
+        },
+        buildUserGroupData() {
+            this.userGroupBusy = true;
+            let paramObj = {};
+            paramObj.size = this.PERSON_SEARCH_SIZE;
+            EcPerson.search(window.repo, '', this.fetchPersonListForDetailViewSuccess, this.fetchPersonListForDetailViewFailure, paramObj);
         }
     },
     mounted() {
