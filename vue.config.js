@@ -1,3 +1,5 @@
+const CompressionPlugin = require("compression-webpack-plugin");
+
 module.exports = {
     css: {
         loaderOptions: {
@@ -8,6 +10,9 @@ module.exports = {
                 }
             }
         }
+    },
+    configureWebpack: {
+        plugins: [new CompressionPlugin()]
     },
     publicPath: process.env.NODE_ENV === 'production'
         ? '/cass-editor/'

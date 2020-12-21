@@ -45,11 +45,12 @@
     "@vue/test-utils": "1.1.1",
     "@vuepress/core": "^1.7.1",
     "babel-eslint": "^10.1.0",
+    "compression-webpack-plugin": "^6.1.1",
     "eslint": "^6.8.0",
-    "sass-loader": "^10.1.0",
     "eslint-plugin-vue": "^7.2.0",
     "file-loader": "^6.2.0",
     "sass": "^1.30.0",
+    "sass-loader": "^10.1.0",
     "vue-template-compiler": "^2.6.12",
     "vuepress": "^1.7.1"
   },
