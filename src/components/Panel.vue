@@ -1,9 +1,6 @@
 <template>
     <div class="cass-users-and-groups__panel">
         <nav>
-            <p class="panel-heading has-background-white">
-                My Groups
-            </p>
             <slot />
         </nav>
     </div>

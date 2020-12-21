@@ -1,109 +1,6 @@
 <template>
-    <div class="cass-users-and-groups">
-        <div class="container">
-            <div class="columns">
-                <div class="column is-narrow">
-                    <!-- what you should use -->
-                    <cass-panel v-if="false">
-                        <cass-panel-item
-                            @show-details="showUserGroupDetails($event)"
-                            :depth="0"
-                            :id="group.shortId()"
-                            :label="group.name"
-                            :nodes="group.sub"
-                            v-for="group in userGroupList"
-                            :key="group" />
-                    </cass-panel>
-                    <!-- example using the userAndGroupList data object -->
-                    <cass-panel v-if="true">
-                        <cass-panel-item
-                            :depth="0"
-                            :label="group.display"
-                            :nodes="group.sub"
-                            v-for="group in userAndGroupList"
-                            :key="group" />
-                    </cass-panel>
-                </div>
-                <!-- main content section -->
-                <div class="column">
-                    <div class="columns is-multiline is-gapless is-paddingless">
-                        <div class="column is-12">
-                            <!-- this should update based on group selected -->
-                            <template>
-                                <h3
-                                    class="title is-size-1"
-                                    v-if="!isEditingName">
-                                    {{ selectedGroupName }}
-                                    <span
-                                        class="icon"
-                                        @click="isEditingName = true">
-                                        <i class="fa fa-edit has-text-dark" />
-                                    </span>
-                                </h3>
-                                <div
-                                    class=""
-                                    v-if="isEditingName">
-                                    <label>Name of group</label>
-                                    <input
-                                        type="text"
-                                        class="input">
-                                </div>
-                            </template>
-                            <!-- should display breadcrumbs about groups -->
-                            <nav
-                                class="breadcrumb"
-                                aria-label="breadcrumbs">
-                                <ul>
-                                    <li><a href="#">Groups</a></li>
-                                    <li><a href="#">Developers</a></li>
-                                    <li><a href="#">CaSS Developers</a></li>
-                                </ul>
-                            </nav>
-                            <p class="description">
-                                User groups provide the capability to assign multiple users the ability to assume a single shared ‘identity’.
-                                Members of a group are granted access to any CaSS object that the group has been explicitly assigned.
-                                These grouped rules can be applied at the configuration level in the
-                                configuration management screen or at the framework level in the framework editor.
-                            </p>
-                            <!-- TO DO: if we are creating a new group, hide this button until saved -->
-                            <div class="buttons is-right">
-                                <div
-                                    class="button is-outlined is-primary"
-                                    @click="createNewUserGroup"
-                                    :disabled="!amLoggedIn"
-                                    :title="getCreateUserGroupButtonTitle">
-                                    <span class="icon">
-                                        <i class="fa fa-plus" />
-                                    </span>
-                                    <span>
-                                        create new group
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div
-                            v-if="currentUserGroup.id"
-                            class="column is-12">
-                            <user-group-details
-                                :group="currentUserGroup"
-                                :personList="personList"
-                                :groupManagers="currentUserGroupManagers"
-                                :groupUsers="currentUserGroupUsers"
-                                :readOnly="currentUserGroupIsReadOnly"
-                                @save="saveCurrentUserGroup"
-                                @cancel="cancelEditCurrentUserGroup"
-                                @back="backFromEditCurrentUserGroup" />
-                        </div>
-                        <div
-                            v-else
-                            class="pt-4">
-                            Please show a table of all users with "default role"
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- modals go down at bottom please -->
+    <div id="user-groups">
+        <!-- busy modal-->
         <div
             class="modal"
             :class="[{'is-active': userGroupBusy}]">
@@ -114,22 +11,108 @@
                 </span>
             </div>
         </div>
+        <!-- user group editor content-->
+        <div
+            class="container"
+            v-if="!userGroupBusy">
+            <div class="section">
+                <h3 class="title is-size-1">
+                    User Groups
+                </h3>
+                <p class="description">
+                    User groups provide the capability to assign multiple users the ability to assume a single shared ‘identity’.
+                    Members of a group are granted access to any CaSS object that the group has been explicitly assigned.
+                    These grouped rules can be applied at the configuration level in the
+                    configuration management screen or at the framework level in the framework editor.
+                </p>
+            </div>
+            <div
+                class="section">
+                <h4 class="header is-size-3">
+                    Groups
+                </h4>
+                <div v-if="userGroupList.length === 0">
+                    <p>No user groups are available.</p>
+                </div>
+                <div
+                    class="table-container"
+                    v-if="userGroupList.length > 0">
+                    <table class="table is-hoverable is-fullwidth">
+                        <thead>
+                            <tr>
+                                <th>
+                                    name
+                                </th>
+                                <th>
+                                    description
+                                </th>
+                                <th>
+                                    number of members
+                                </th>
+                                <th />
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <user-group-list-item
+                                v-for="(grp, index) in userGroupList"
+                                :id="grp.shortId()"
+                                :key="index"
+                                :name="grp.getName()"
+                                :description="grp.getDescription()"
+                                :numMembers="getUserGroupNumMembers(grp)"
+                                :isOwned="doesAnyIdentityOwnObject(grp)"
+                                @show-details="showUserGroupDetails" />
+                        </tbody>
+                    </table>
+                </div>
+                <div class="buttons is-right">
+                    <div
+                        class="button is-outlined is-primary"
+                        @click="createNewUserGroup"
+                        :disabled="!amLoggedIn"
+                        :title="getCreateUserGroupButtonTitle">
+                        <span class="icon">
+                            <i class="fa fa-plus" />
+                        </span>
+                        <span>
+                            create new group
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div v-if="userGroupViewMode.equals('detail')">
+                <user-group-details
+                    :group="currentUserGroup"
+                    :personList="personList"
+                    :groupManagers="currentUserGroupManagers"
+                    :groupUsers="currentUserGroupUsers"
+                    :readOnly="currentUserGroupIsReadOnly"
+                    @save="saveCurrentUserGroup"
+                    @cancel="cancelEditCurrentUserGroup"
+                    @back="backFromEditCurrentUserGroup" />
+            </div>
+            <div class="columns">
+                <div class="column is-12">
+                    No group
+                </div>
+            </div>
+        </div>
     </div>
 </template>
+
 <script>
 import UserGroupListItem from '../../components/userGroups/UserGroupListItem';
-import CassPanel from '../../components/Panel';
-import CassPanelItem from '../../components/PanelItem';
 import UserGroupDetails from "../../components/userGroups/UserGroupDetails";
 import {cassUtil} from '../../mixins/cassUtil';
 
 export default {
-    name: 'UsersAndGroups',
     mixins: [cassUtil],
+    name: 'UserGroupEditor-OLD',
+    components: {
+        UserGroupDetails,
+        UserGroupListItem
+    },
     data: () => ({
-        isEditingName: false,
-        selectedGroupName: 'All Users',
-        pageTitle: 'All Users',
         GROUP_SEARCH_SIZE: 10000,
         PERSON_SEARCH_SIZE: 10000,
         userGroupViewMode: 'list',
@@ -138,52 +121,8 @@ export default {
         currentUserGroupManagers: [],
         currentUserGroupUsers: [],
         userGroupList: [],
-        personList: [],
-        userAndGroupList: {
-            'all': {
-                display: 'Membership list'
-            },
-            'eduworks': {
-                display: 'Eduworks',
-                sub: {
-                    'developers': {
-                        display: 'Developers',
-                        sub: {
-                            'cass-developers': {
-                                display: 'CaSS Developers'
-                            },
-                            'pebl-developers': {
-                                display: 'CaSS Developers'
-                            }
-                        }
-                    }
-                }
-            },
-            'PeBL': {
-                display: 'PeBL',
-                sub: {
-                    'developers': {
-                        display: 'Developers',
-                        sub: {
-                            'cass-developers': {
-                                display: 'PeBL Developers'
-                            },
-                            'pebl-developers': {
-                                display: 'PeBL Developers'
-                            }
-                        }
-                    }
-                }
-            }
-
-
-        }
+        personList: []
     }),
-    components: {
-        CassPanel,
-        CassPanelItem,
-        UserGroupDetails
-    },
     computed: {
         getCreateUserGroupButtonTitle: function() {
             if (this.amLoggedIn) return '';
@@ -390,8 +329,11 @@ export default {
     }
 };
 </script>
-<style>
-.cass-users-and-groups {
-    width: calc(100vw - 72px);
-}
+
+
+<style lang="scss">
+
+    p.description {
+        padding-bottom: .75rem;
+    }
 </style>

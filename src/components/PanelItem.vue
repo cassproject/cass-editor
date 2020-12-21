@@ -10,8 +10,8 @@
             :depth="depth + 1"
             v-for="node in nodes"
             :key="node"
-            :nodes="node.sub"
-            :label="node.display" />
+            :nodes="node.subGroups"
+            :label="node.name" />
     </div>
 </template>
 <script>

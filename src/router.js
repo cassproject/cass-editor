@@ -65,15 +65,15 @@ export default new Router({
                 topbar: () => import('./components/Topbar.vue')
             }
         },
-        {
-            path: '/users-and-groups',
-            name: 'users-and-groups',
-            components: {
-                default: () => import('./views/usersGroups/UsersAndGroups.vue'),
-                sidebar: () => import('./components/SideNav.vue'),
-                topbar: () => import('./components/Topbar.vue')
-            }
-        },
+        // {
+        //     path: '/users-and-groups',
+        //     name: 'users-and-groups',
+        //     components: {
+        //         default: () => import('./views/usersGroups/UsersAndGroups.vue'),
+        //         sidebar: () => import('./components/SideNav.vue'),
+        //         topbar: () => import('./components/Topbar.vue')
+        //     }
+        // },
         {
             path: '/pluginManager',
             name: 'pluginManager',
