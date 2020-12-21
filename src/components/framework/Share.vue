@@ -477,59 +477,66 @@ export default {
                 this.clipStatus = 'ready';
             }, 1000);
         },
+        getEachOwner: function(ownerPem) {
+            var pk = EcPk.fromPem(ownerPem);
+            let me = this;
+            EcPerson.getByPk(window.repo, pk, function(success) {
+                appLog(success);
+                if (success) {
+                    let currentUser = false;
+                    if (me.loggedOnPerson.shortId() === success.shortId()) {
+                        currentUser = true;
+                    }
+                    var user = {header: success.name, email: success.email, view: "admin", id: success.shortId(), changed: false, pk: pk, currentUser: currentUser};
+                    me.users.push(user);
+                    me.ownerCount++;
+                }
+            }, function(failure) {
+                // If it's not a Person, check organizations
+                me.getOrganizationByEcPk(pk, function(success) {
+                    appLog(success);
+                    if (success) {
+                        var org = {header: success.name, view: "admin", id: success.shortId(), changed: false, pk: pk};
+                        me.groups.push(org);
+                        me.ownerCount++;
+                    }
+                }, function(error) {
+                    appError(error);
+                });
+            });
+        },
+        getEachReader: function(readerPem) {
+            let me = this;
+            var pk = EcPk.fromPem(readerPem);
+            EcPerson.getByPk(window.repo, pk, function(success) {
+                appLog(success);
+                if (success) {
+                    var user = {header: success.name, email: success.email, view: "view", id: success.shortId(), changed: false, pk: pk};
+                    me.users.push(user);
+                }
+            }, function(failure) {
+                // If it's not a Person, check organizations
+                me.getOrganizationByEcPk(pk, function(success) {
+                    appLog(success);
+                    if (success) {
+                        var org = {header: success.name, view: "view", id: success.shortId(), changed: false, pk: pk};
+                        me.groups.push(org);
+                    }
+                }, function(error) {
+                    appError(error);
+                });
+            });
+        },
         getCurrentOwnersAndReaders: function() {
-            var me = this;
             if (this.framework.owner) {
                 for (var i = 0; i < this.framework.owner.length; i++) {
-                    var pk = EcPk.fromPem(this.framework.owner[i]);
-                    EcPerson.getByPk(window.repo, pk, function(success) {
-                        appLog(success);
-                        if (success) {
-                            let currentUser = false;
-                            if (me.loggedOnPerson.shortId() === success.shortId()) {
-                                currentUser = true;
-                            }
-                            var user = {header: success.name, email: success.email, view: "admin", id: success.shortId(), changed: false, pk: pk, currentUser: currentUser};
-                            me.users.push(user);
-                            me.ownerCount++;
-                        }
-                    }, function(failure) {
-                        // If it's not a Person, check organizations
-                        me.getOrganizationByEcPk(pk, function(success) {
-                            appLog(success);
-                            if (success) {
-                                var org = {header: success.name, view: "admin", id: success.shortId(), changed: false, pk: pk};
-                                me.groups.push(org);
-                                me.ownerCount++;
-                            }
-                        }, function(error) {
-                            appError(error);
-                        });
-                    });
+                    this.getEachOwner(this.framework.owner[i]);
                 }
             }
             if (this.framework.reader) {
                 this.cantRemoveCurrentUserAsOwner = true;
                 for (var i = 0; i < this.framework.reader.length; i++) {
-                    var pk = EcPk.fromPem(this.framework.reader[i]);
-                    EcPerson.getByPk(window.repo, pk, function(success) {
-                        appLog(success);
-                        if (success) {
-                            var user = {header: success.name, email: success.email, view: "view", id: success.shortId(), changed: false, pk: pk};
-                            me.users.push(user);
-                        }
-                    }, function(failure) {
-                        // If it's not a Person, check organizations
-                        me.getOrganizationByEcPk(pk, function(success) {
-                            appLog(success);
-                            if (success) {
-                                var org = {header: success.name, view: "view", id: success.shortId(), changed: false, pk: pk};
-                                me.groups.push(org);
-                            }
-                        }, function(error) {
-                            appError(error);
-                        });
-                    });
+                    this.getEachReader(this.framework.reader[i]);
                 }
             }
         },
