@@ -89,136 +89,21 @@
                 </div>
             </div>
             <div class="container is-fluid">
-                <List
+                <DirectoryList
                     type="Framework"
                     :repo="repo"
                     :click="frameworkClick"
                     :searchOptions="searchOptions"
                     :paramObj="paramObj"
                     view="directory"
-                    :disallowEdits="true">
-                    <!-- TO DO move these template items to the "actions" right side area -->
-                    <template
-                        #frameworkTags="slotProps">
-                        <span class="framework-details has-text-weight-light family-primary is-size-7">
-                            <span
-                                class="framework-details__item"
-                                v-if="slotProps.item.type === 'Framework'">
-                                <span class="has-text-weight-medium">
-                                    Items:
-                                </span>
-                                <span class="has-text-weight-light">
-                                    {{ slotProps.item.competency ? slotProps.item.competency.length : 0 }}
-                                </span>
-                            </span>
-                            <span
-                                class="framework-details__item"
-                                v-if="slotProps.item.Published"
-                                :title="slotProps.item.Published">
-                                <span class="has-text-weight-medium">
-                                    Published:
-                                </span>
-                                <span class="has-text-weight-light">
-                                    &nbsp; {{ slotProps.item.Published }}
-                                </span>
-                            </span>
-                            <span
-                                class="framework-details__item"
-                                v-if="slotProps.item.Approved"
-                                :title="slotProps.item.Approved">
-                                <span class="has-texte-weight-medium">
-                                    Approved:
-                                </span>
-                                <span class="has-text-weight-light">
-                                    &nbsp; {{ slotProps.item.Approved }}
-                                </span>
-                            </span>
-                            <span
-                                class="framework-details__item"
-                                v-if="slotProps.item['schema:dateCreated']"
-                                :title="new Date(slotProps.item['schema:dateCreated'])">
-                                <span class="has-text-weight-medium">
-                                    Created:
-                                </span>
-                                <span class="has-text-weight-light">
-                                    &nbsp; {{ $moment(new Date(slotProps.item['schema:dateCreated'])).format("MMM D YYYY") }}
-                                </span>
-                            </span>
-                            <span
-                                class="framework-details__item"
-                                v-if="slotProps.item.getTimestamp()"
-                                :title="new Date(slotProps.item.getTimestamp())">
-                                <span class="has-text-weight-medium">
-                                    Last modified:
-                                </span>
-                                <span class="has-text-weight-light">
-                                    &nbsp; {{ $moment(slotProps.item.getTimestamp()).format("MMM D YYYY") }}
-                                </span>
-                            </span>
-                            <span
-                                class="framework-details__item"
-                                v-else-if="slotProps.item['schema:dateModified']"
-                                :title="new Date(slotProps.item['schema:dateModified'])">
-                                <span class="has-text-weight-medium">
-                                    Last modified:
-                                </span>
-                                <span class="has-text-weight-light">
-                                    {{ $moment(new Date(slotProps.item['schema:dateModified'])).format("MMM D YYYY") }}
-                                </span>
-                            </span>
-                            <span
-                                class="framework-details__item"
-                                v-if="slotProps.item['ceasn:publisherName'] && getName(slotProps.item['ceasn:publisherName'])">
-                                <span class="has-text-weight-medium">
-                                    Publisher:
-                                </span>
-                                <span class="has-text-weight-light">
-                                    {{ getName(slotProps.item['ceasn:publisherName']) }}
-                                </span>
-                            </span>
-                            <span
-                                class="framework-details__item"
-                                v-else-if="slotProps.item['schema:publisher'] && getName(slotProps.item['schema:publisher'])">
-                                <span class="has-text-weight-medium">
-                                    Publisher:
-                                </span>
-                                <span>
-                                    {{ getName(slotProps.item['schema:publisher']) }}
-                                </span>
-                            </span>
-                            <span
-                                class=""
-                                v-else-if="slotProps.item['schema:creator'] && getName(slotProps.item['schema:creator'])">
-                                <span class="has-text-weight-medium">
-                                    Creator
-                                </span>
-                                <span>
-                                    {{ getName(slotProps.item['schema:creator']) }}
-                                </span>
-                            </span>
-                            <span
-                                class="framework-details__item"
-                                v-if="canEditItem(slotProps.item) && queryParams.view !== 'true'">
-                                <span class="has-text-weight-medium">
-                                    Editable
-                                </span>
-                            </span>
-                        </span>
-                    </template>
-                </List>
-                <div
-                    v-for="item in resources"
-                    :key="item.id"
-                    @click="frameworkClick(item)">
-                    {{ item.name }}
-                </div>
+                    :disallowEdits="true" />
             </div>
         </div>
     </div>
 </template>
 <script>
 import debounce from 'lodash/debounce';
-import List from '@/lode/components/lode/List.vue';
+import DirectoryList from './DirectoryList.vue';
 import common from '@/mixins/common.js';
 import SearchBar from '@/components/framework/SearchBar.vue';
 export default {
@@ -234,8 +119,7 @@ export default {
             parentObjectClass: 'frameworks-sticky',
             sortBy: null,
             defaultConfig: "",
-            clipStatus: 'ready',
-            resources: []
+            clipStatus: 'ready'
         };
     },
     created: function() {
@@ -322,13 +206,10 @@ export default {
         },
         shareLink: function() {
             return window.location.href.replace('/directory', "?directoryId=" + this.directory.shortId());
-        },
-        refreshResources: function() {
-            return this.$store.getters['app/refreshResources'];
         }
     },
     components: {
-        List,
+        DirectoryList,
         SearchBar,
         RightAside: () => import('@/components/framework/RightAside.vue')
     },
@@ -448,17 +329,7 @@ export default {
             }
             this.repo.saveTo(c, function() {
                 appLog("Resource saved: " + c.id);
-                me.searchForResources();
-            }, appError);
-        },
-        searchForResources: function() {
-            let me = this;
-            this.resources.splice(0, this.resources.length);
-            let type = "CreativeWork";
-            let search = "(@type:" + type + (this.searchTerm != null && this.searchTerm !== "" ? " AND " + this.searchTerm : "") + ") AND (directory:\"" + this.directory.shortId() + "\")";
-            me.repo.searchWithParams(search, {size: 10000}, function(resource) {
-                me.resources.push(resource);
-            }, function(subResults) {
+                me.$store.commit('app/refreshSearch');
             }, appError);
         }
     },
@@ -488,7 +359,6 @@ export default {
         }
         let documentBody = document.getElementById('directory');
         documentBody.addEventListener('scroll', debounce(this.scrollFunction, 100, {'leading': true}));
-        this.searchForResources();
     },
     watch: {
         sortResults: function() {
@@ -514,18 +384,6 @@ export default {
                 if (this.filteredQuickFilters[i].id === "configMatchDefault") {
                     this.filterByConfig = true;
                 }
-            }
-        },
-        searchTerm: function() {
-            this.searchForResources();
-        },
-        directoryShortId: function() {
-            this.searchForResources();
-        },
-        refreshResources: function() {
-            if (this.refreshResources) {
-                this.searchForResources();
-                this.$store.commit('app/refreshResources', false);
             }
         }
     }

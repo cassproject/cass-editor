@@ -505,7 +505,7 @@ export default {
             } else {
                 me.repo.saveTo(resource, function() {
                     appLog("resource moved");
-                    me.$store.commit('app/refreshResources', true);
+                    me.$store.commit('app/refreshSearch', true);
                     me.movingToDirectory = false;
                 }, appError);
             }
@@ -611,7 +611,7 @@ export default {
                 delete me.object.directory;
                 me.repo.saveTo(me.object, function() {
                     appLog("resource removed");
-                    me.$store.commit('app/refreshResources', true);
+                    me.$store.commit('app/refreshSearch', true);
                     me.movingToDirectory = false;
                 }, appError);
             }, appError);
