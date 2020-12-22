@@ -16,7 +16,7 @@
                     <div class="buttons">
                         <div
                             class="button is-outlined is-primary"
-                            @click="createNewUserGroup"
+                            @click="createNewUserGroup(null)"
                             :disabled="!amLoggedIn"
                             :title="getCreateUserGroupButtonTitle">
                             <span class="icon">
@@ -137,6 +137,13 @@
                                             class="input"
                                             v-model="currentUserGroupName">
                                     </div>
+                                    <div
+                                        class="field has-text-danger"
+                                        v-if="currentUserGroupNameInvalid">
+                                        <div class="label has-text-danger">
+                                            Group name is required
+                                        </div>
+                                    </div>
                                 </template>
                                 <!-- should display breadcrumbs about groups -->
                                 <nav
@@ -175,6 +182,13 @@
                                             type="text"
                                             class="input"
                                             v-model="currentUserGroupDescription">
+                                    </div>
+                                    <div
+                                        class="field has-text-danger"
+                                        v-if="currentUserGroupDescriptionInvalid">
+                                        <div class="label has-text-danger">
+                                            Group description is required
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="section box py-4 px-4">
@@ -274,7 +288,7 @@
                                                         <div class="buttons is-right">
                                                             <div
                                                                 class="button is-small is-outlined is-primary"
-                                                                @click="changeMemberToManager(manager.shortId())"
+                                                                @click="changeMemberToManager(member.shortId())"
                                                                 title="Change role to manager">
                                                                 <span class="icon">
                                                                     <i class="fa fa-arrow-up" />
@@ -285,7 +299,7 @@
                                                             </div>
                                                             <div
                                                                 class="button is-small is-outlined is-warning"
-                                                                @click="removeGroupMember(manager.shortId())"
+                                                                @click="removeGroupMember(member.shortId())"
                                                                 title="Remove member">
                                                                 <span class="icon">
                                                                     <i class="fa fa-trash" />
@@ -354,8 +368,6 @@
                 </div>
             </div>
         </div>
-        <!-- modals go down at bottom please -->
-        <!-- NO!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
         <!-- busy modal -->
         <div
             class="modal"
@@ -506,6 +518,9 @@ export default {
         currentUserGroupChanged: false,
         isEditingCurrentGroupName: false,
         isEditingCurrentGroupDescription: false,
+        currentUserGroupInvalid: false,
+        currentUserGroupNameInvalid: false,
+        currentUserGroupDescriptionInvalid: false,
         showAddMemberModal: false,
         addMemberPersonFilter: '',
         availablePersonsForMembership: [],
@@ -517,6 +532,7 @@ export default {
         userGroupDisplayList: [],
         userGroupDisplayMap: {},
         userGroupMap: {},
+        userGroupIdToShowAfterReload: '',
         viewMode: 'memberList'
     }),
     components: {
@@ -562,11 +578,13 @@ export default {
             this.currentUserGroupChanged = true;
         },
         changeManagerToMember(personId) {
-            console.log('TODO changeManagerToMember');
+            this.currentUserGroupManagers = this.currentUserGroupManagers.filter(mem => mem.shortId() !== personId);
+            this.currentUserGroupMembers.push(this.allPersonMap[personId]);
             this.currentUserGroupChanged = true;
         },
         changeMemberToManager(personId) {
-            console.log('TODO changeMemberToManager');
+            this.currentUserGroupMembers = this.currentUserGroupMembers.filter(mgr => mgr.shortId() !== personId);
+            this.currentUserGroupManagers.push(this.allPersonMap[personId]);
             this.currentUserGroupChanged = true;
         },
         removeGroupMember(personId) {
@@ -631,6 +649,7 @@ export default {
             this.showAddMemberModal = true;
         },
         applySelectedNewMembers() {
+            // TODO check and see if members were on remove list...
             for (let newMemId of this.selectedNewMembers) {
                 this.currentUserGroupMembers.push(this.allPersonMap[newMemId]);
             }
@@ -640,40 +659,93 @@ export default {
             this.currentUserGroupChanged = true;
             this.closeAddGroupMemberModal();
         },
-        saveCurrentUserGroup() {
-            console.log('TODO saveCurrentUserGroup');
-        },
-        cancelCurrentUserGroupChanges() {
-            console.log('TODO cancelCurrentUserGroupChanges');
-        },
         showDeleteCurrentUserGroupConfirm() {
+            // getSubGroupsForUserGroup
             console.log('TODO showDeleteCurrentUserGroupConfirm');
         },
         deleteCurrentUserGroup() {
             console.log('TODO deleteCurrentUserGroup');
         },
+        setCurrentUserGroupValidationsChecksToValid() {
+            this.currentUserGroupInvalid = false;
+            this.currentUserGroupNameInvalid = false;
+            this.currentUserGroupDescriptionInvalid = false;
+        },
+        validateCurrentUserGroupFields() {
+            this.setCurrentUserGroupValidationsChecksToValid();
+            if (!this.currentUserGroupName || this.currentUserGroupName.trim().equals('')) {
+                this.currentUserGroupInvalid = true;
+                this.currentUserGroupNameInvalid = true;
+            }
+            if (!this.currentUserGroupDescription || this.currentUserGroupDescription.trim().equals('')) {
+                this.currentUserGroupInvalid = true;
+                this.currentUserGroupDescriptionInvalid = true;
+            }
+        },
+        updateCurrentUserGroupMemberList() {
+            this.currentUserGroup.employee = [];
+            this.currentUserGroup.owner = [];
+            this.currentUserGroup.reader = [];
+            for (let gm of this.currentUserGroupManagers) {
+                let gmEcPk = this.getPersonEcPk(gm);
+                if (gmEcPk) {
+                    this.currentUserGroup.addEmployee(gm);
+                    this.currentUserGroup.addOwner(gmEcPk);
+                }
+            }
+            for (let gu of this.currentUserGroupMembers) {
+                let guEcPk = this.getPersonEcPk(gu);
+                if (guEcPk) {
+                    this.currentUserGroup.addEmployee(gu);
+                    this.currentUserGroup.addReader(guEcPk);
+                }
+            }
+        },
+        saveCurrentUserGroup() {
+            this.validateCurrentUserGroupFields();
+            if (!this.currentUserGroupInvalid) {
+                this.updateCurrentUserGroupMemberList();
+                this.userGroupIdToShowAfterReload = this.currentUserGroup.shortId();
+                console.log('Would have called group save....');
+                // TODO call save
+                // TODO check removed members and do stuff
+                // Removing a member should remove him/her from all sub groups
+                // that may leave us with a group without a manager
+                // If that happens then what?  Add current user as group manager?
+            }
+        },
+        cancelCurrentUserGroupChanges() {
+            if (this.currentUserGroupIsNewGroup) {
+                if (this.currentUserGroup.memberOf && this.currentUserGroup.memberOf !== '') {
+                    this.showGroupDetailsById(this.currentUserGroup.memberOf);
+                } else {
+                    this.showMemberListView();
+                }
+            } else this.showGroupDetailsById(this.currentUserGroupId);
+        },
         createNewUserGroup(parentGroupId) {
-            console.log('TODO createNewUserGroup');
+            this.userGroupBusy = true;
             this.currentUserGroupIsNewGroup = true;
-            // this.userGroupBusy = true;
-            // let newUserGroup = new EcOrganization();
-            // newUserGroup.generateId(window.repo.selectedServer);
-            // newUserGroup.setName('New User Group');
-            // newUserGroup.setDescription('New group of users');
-            // newUserGroup.employee = [];
-            // newUserGroup.addEmployee(this.$store.state.user.loggedOnPerson);
-            // this.addAllIdentityPksAsOwners(newUserGroup);
-            // // Vue wasn't updating the this.userGroupBusy before it got busy generating the key.  Putting this timeout here
-            // // to let it 'catch up'.  Seems to be 'work' ok.
-            // setTimeout(() => {
-            //     let newUserGroupPpk = EcPpk.generateKey();
-            //     newUserGroup[this.GROUP_PPK_KEY] = EcEncryptedValue.encryptValue(newUserGroupPpk.toPem(), this.GROUP_PPK_KEY, newUserGroup.owner, newUserGroup.reader);
-            //     appLog('New user group created: ');
-            //     appLog(newUserGroup);
-            //     this.currentUserGroup = newUserGroup;
-            //     this.userGroupBusy = false;
-            //     this.fetchPersonListForDetailViewAndPopulateUserLists();
-            // }, 300);
+            let newUserGroup = new EcOrganization();
+            newUserGroup.generateId(window.repo.selectedServer);
+            newUserGroup.setName('New User Group');
+            newUserGroup.setDescription('New group of users');
+            newUserGroup.employee = [];
+            newUserGroup.addEmployee(this.$store.state.user.loggedOnPerson);
+            newUserGroup.addOwner(this.getPersonalIdentityPk());
+            let parentGroupLineage = null;
+            if (parentGroupId) {
+                newUserGroup.memberOf = parentGroupId;
+                let parentGroup = this.userGroupMap[parentGroupId];
+                parentGroupLineage = this.buildUserGroupLineage(parentGroup, null);
+            }
+            // Vue wasn't updating the this.userGroupBusy before it got busy generating the key.  Putting this timeout here
+            // to let it 'catch up'.  Seems to be 'work' ok.
+            setTimeout(() => {
+                newUserGroup.addOrgKey(EcPpk.generateKey());
+                this.showGroupDetails(newUserGroup, parentGroupLineage);
+                this.userGroupBusy = false;
+            }, 300);
         },
         appendGroupSubGroupsToArray(groupId, subGroupArray) {
             let ugdo = this.userGroupDisplayMap[groupId];
@@ -723,7 +795,7 @@ export default {
             if (!inheritedLineage) {
                 this.fillOutLineage(ugLineage, userGroup);
             } else {
-                ugLineage = inheritedLineage();
+                ugLineage = inheritedLineage;
                 ugLineage.push(this.generateLineageObject(userGroup));
             }
             return ugLineage;
@@ -742,8 +814,6 @@ export default {
                 this.setCurrentUserGroupManagerAndUserListsForDetailView();
                 this.currentUserGroupLineage = this.buildUserGroupLineage(this.currentUserGroup, inheritedLineage);
                 this.showGroupDetailView();
-            } else {
-                appLog('Cannot find user group: ' + id);
             }
         },
         showGroupDetailsById(id) {
@@ -870,7 +940,11 @@ export default {
             this.buildUserGroupMap(userGroupList);
             this.buildUserGroupDisplayList(userGroupList);
             this.buildGroupMembersDisplayList();
-            this.showMemberListView();
+            if (this.userGroupIdToShowAfterReload && this.userGroupIdToShowAfterReload.trim().length > 0 && this.userGroupMap[this.userGroupIdToShowAfterReload]) {
+                let goToId = this.userGroupIdToShowAfterReload;
+                this.userGroupIdToShowAfterReload = '';
+                this.showGroupDetailsById(goToId);
+            } else this.showMemberListView();
             this.userGroupBusy = false;
         },
         searchRepositoryForGroupsFailure(msg) {

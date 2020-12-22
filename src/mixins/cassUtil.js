@@ -131,6 +131,12 @@ export const cassUtil = {
             }
             return false;
         },
+        getPersonalIdentityPk() {
+            // assuming that the first identity is the user's personal identity
+            if (EcIdentityManager && EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
+                return EcIdentityManager.ids[0].ppk.toPk();
+            } else return null;
+        },
         buildEcAlignmentsFromRemoteLinkedData(ecrlda) {
             let ecaa = [];
             for (let ecrld of ecrlda) {
