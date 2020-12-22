@@ -95,6 +95,7 @@
                     :click="frameworkClick"
                     :searchOptions="searchOptions"
                     :paramObj="paramObj"
+                    :directoryId="directory.shortId()"
                     view="directory"
                     :disallowEdits="true" />
             </div>
@@ -136,14 +137,11 @@ export default {
         directory: function() {
             return this.$store.getters['app/selectedDirectory'];
         },
-        directoryShortId: function() {
-            return this.directory.shortId();
-        },
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];
         },
         searchOptions: function() {
-            let search = " AND (directory:\"" + this.directory.shortId() + "\" OR parentDirectory:\"" + this.directory.shortId() + "\")";
+            let search = "";
             if (this.queryParams && this.queryParams.filter != null) {
                 search += " AND (" + this.queryParams.filter + ")";
             }

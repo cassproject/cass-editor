@@ -82,7 +82,7 @@
                 <infinite-loading
                     @infinite="loadResults"
                     spinner="circles"
-                    v-if="!firstSearchProcessing"
+                    v-if="(directory + framework + competency + creativework > 10)"
                     :distance="10">
                     <div slot="no-more">
                         All results loaded
@@ -111,7 +111,8 @@ export default {
         view: {
             type: String,
             default: ''
-        }
+        },
+        directoryId: String
     },
     components: {Thing, Breadcrumbs},
     mixins: [ cassUtil ],
@@ -137,7 +138,8 @@ export default {
             directory: [],
             resourcesStart: 0,
             directoriesStart: 0,
-            start: 0
+            start: 0,
+            directoryIdList: []
         };
     },
     watch: {
@@ -189,6 +191,9 @@ export default {
                 this.searchRepo();
                 this.$store.commit('app/refreshSearch', false);
             }
+        },
+        directoryId: function() {
+            this.searchRepo();
         }
     },
     computed: {
@@ -224,93 +229,136 @@ export default {
                 this.$store.commit('app/showModal', modalObject);
             }
         },
+        buildIdList: function(success) {
+            let me = this;
+            if (this.searchTerm === "" || this.searchingFor === "CreativeWork") {
+                success(" AND (directory:\"" + this.directoryId + "\" OR parentDirectory:\"" + this.directoryId + "\")");
+            } else if (this.searchingFor === "Directory" || this.searchingFor === "Framework") {
+                this.directoryIdList.splice(0, this.directoryIdList.length);
+                let list = " AND (directory:\"" + this.directoryId + "\" OR parentDirectory:\"" + this.directoryId + "\"";
+                this.getDirectoryIds(this.directoryId, function() {
+                    if (me.directoryIdList.length > 0) {
+                        for (let i in me.directoryIdList) {
+                            list += (" OR directory:\"" + me.directoryIdList[i] + "\" OR parentDirectory:\"" + me.directoryIdList[i] + "\"");
+                        }
+                        list += ")";
+                        success(list);
+                    } else {
+                        list += ")";
+                        success(list);
+                    }
+                });
+            } else if (this.searchingFor === "Competency") {
+                //
+            } else {
+                success("");
+            }
+        },
+        getDirectoryIds: function(directoryId, success, failure) {
+            let me = this;
+            this.repo.search("(parentDirectory:\"" + directoryId + "\")", function(each) {
+            }, function(all) {
+                new EcAsyncHelper().each(all, function(obj, done) {
+                    me.directoryIdList.push(obj.shortId());
+                    me.getDirectoryIds(obj.shortId(), done, done);
+                }, function() {
+                    success();
+                });
+            }, function(error) {
+                appError(error);
+                done();
+            });
+        },
         buildSearch: function(type, callback) {
+            let me = this;
             var search = "";
             // Used to only add OR to query if there's already a term
             var termAdded = false;
-            if (!this.applySearchTo || this.searchTerm === "") {
-                search = "(@type:" + type + (this.searchTerm != null && this.searchTerm !== "" ? " AND " + this.searchTerm : "") + ")" + (this.searchOptions == null || this.searchOptions === "" ? "" : this.searchOptions);
-            } else {
-                search = "(@type:" + type + " AND (";
-                for (let i = 0; i < this.applySearchTo.length; i++) {
-                    if ((type === "Framework" && this.applySearchTo[i].id === "frameworkName") ||
-                    (type === "Competency" && this.applySearchTo[i].id === "competencyName") ||
-                    (type === "Directory" && this.applySearchTo[i].id === "directoryName")) {
-                        if (termAdded) {
-                            search += " OR ";
-                        }
-                        search += ("name:" + this.searchTerm);
-                        termAdded = true;
-                    } else if ((type === "Framework" && this.applySearchTo[i].id === "frameworkDescription") ||
-                    (type === "Competency" && this.applySearchTo[i].id === "competencyDescription") ||
-                    (type === "Directory" && this.applySearchTo[i].id === "directoryDescription")) {
-                        if (termAdded) {
-                            search += " OR ";
-                        }
-                        search += ("description:" + this.searchTerm);
-                        termAdded = true;
-                    } else if (type === "Framework") {
-                        if (termAdded) {
-                            search += " OR ";
-                        }
-                        // Other framework property from config
-                        search += (this.applySearchTo[i].id + ":" + this.searchTerm);
-                        termAdded = true;
-                    } else if (type === "Competency" && this.applySearchTo[i].id === "competencyLabel") {
-                        if (termAdded) {
-                            search += " OR ";
-                        }
-                        search += ("ceasn\\:competencyLabel:" + this.searchTerm);
-                        termAdded = true;
-                    } else if (this.applySearchTo[i].id === "ownerName") {
-                        let paramObj = {};
-                        paramObj.size = 10;
-                        let me = this;
-                        EcPerson.search(window.repo, 'name:' + this.searchTerm, function(success) {
-                            if (termAdded && success.length > 0) {
+            this.buildIdList(function(idList) {
+                if (!me.applySearchTo || me.searchTerm === "") {
+                    search = "(@type:" + type + (me.searchTerm != null && me.searchTerm !== "" ? " AND " + me.searchTerm : "") + ")" + (me.searchOptions == null || me.searchOptions === "" ? "" : me.searchOptions);
+                    search += idList;
+                } else {
+                    search = "(@type:" + type + " AND (";
+                    for (let i = 0; i < me.applySearchTo.length; i++) {
+                        if ((type === "Framework" && me.applySearchTo[i].id === "frameworkName") ||
+                        (type === "Competency" && me.applySearchTo[i].id === "competencyName") ||
+                        (type === "Directory" && me.applySearchTo[i].id === "directoryName")) {
+                            if (termAdded) {
                                 search += " OR ";
                             }
-                            appLog(success);
-                            for (var i = 0; i < success.length; i++) {
-                                search += "\\*owner:\"" + me.getPersonEcPk(success[i]).toPem() + "\"";
-                                if (i < success.length - 1) {
+                            search += ("name:" + me.searchTerm);
+                            termAdded = true;
+                        } else if ((type === "Framework" && me.applySearchTo[i].id === "frameworkDescription") ||
+                        (type === "Competency" && me.applySearchTo[i].id === "competencyDescription") ||
+                        (type === "Directory" && me.applySearchTo[i].id === "directoryDescription")) {
+                            if (termAdded) {
+                                search += " OR ";
+                            }
+                            search += ("description:" + me.searchTerm);
+                            termAdded = true;
+                        } else if (type === "Framework") {
+                            if (termAdded) {
+                                search += " OR ";
+                            }
+                            // Other framework property from config
+                            search += (this.applySearchTo[i].id + ":" + me.searchTerm);
+                            termAdded = true;
+                        } else if (type === "Competency" && me.applySearchTo[i].id === "competencyLabel") {
+                            if (termAdded) {
+                                search += " OR ";
+                            }
+                            search += ("ceasn\\:competencyLabel:" + me.searchTerm);
+                            termAdded = true;
+                        } else if (me.applySearchTo[i].id === "ownerName") {
+                            let paramObj = {};
+                            paramObj.size = 10;
+                            EcPerson.search(window.repo, 'name:' + me.searchTerm, function(success) {
+                                if (termAdded && success.length > 0) {
                                     search += " OR ";
                                 }
-                            }
-                            EcOrganization.search(window.repo, 'name:' + me.searchTerm, function(success) {
                                 appLog(success);
                                 for (var i = 0; i < success.length; i++) {
-                                    search += "\\*owner:\"" + me.getOrganizationEcPk(success[i]).toPem() + "\"";
-                                    termAdded = true;
+                                    search += "\\*owner:\"" + me.getPersonEcPk(success[i]).toPem() + "\"";
                                     if (i < success.length - 1) {
                                         search += " OR ";
                                     }
                                 }
-                                search += "))" + (me.searchOptions == null ? "" : me.searchOptions);
-                                if (search.indexOf("AND ())") !== -1) {
-                                    search = null;
-                                }
-                                callback(search);
+                                EcOrganization.search(window.repo, 'name:' + me.searchTerm, function(success) {
+                                    appLog(success);
+                                    for (var i = 0; i < success.length; i++) {
+                                        search += "\\*owner:\"" + me.getOrganizationEcPk(success[i]).toPem() + "\"";
+                                        termAdded = true;
+                                        if (i < success.length - 1) {
+                                            search += " OR ";
+                                        }
+                                    }
+                                    search += "))" + (me.searchOptions == null ? "" : me.searchOptions);
+                                    search += idList;
+                                    if (search.indexOf("AND ())") !== -1) {
+                                        search = null;
+                                    }
+                                    callback(search);
+                                }, function(failure) {
+                                    appError(failure);
+                                    callback(null);
+                                }, paramObj);
                             }, function(failure) {
                                 appError(failure);
                                 callback(null);
                             }, paramObj);
-                        }, function(failure) {
-                            appError(failure);
-                            callback(null);
-                        }, paramObj);
+                        }
+                    }
+                    if (!me.applySearchToOwner) {
+                        search += "))" + (me.searchOptions == null ? "" : me.searchOptions);
                     }
                 }
-                if (!this.applySearchToOwner) {
-                    search += "))" + (this.searchOptions == null ? "" : this.searchOptions);
+                if (!me.applySearchToOwner) {
+                    callback(search);
                 }
-            }
-            if (!this.applySearchToOwner) {
-                callback(search);
-            }
+            });
         },
         searchRepo: function() {
-            var me = this;
             this.frameworkStart = 0;
             this.competencyStart = 0;
             this.directory.splice(0, this.directory.length);
@@ -319,17 +367,6 @@ export default {
             this.creativework.splice(0, this.creativework.length);
             this.resultIds.splice(0, this.resultIds.length);
             this.searchingFor = 'Directory';
-            /* if (this.searchDirectories) {
-                this.searchForDirectories();
-            } else if (this.searchFrameworks) {
-                this.searchForFrameworks();
-            } else if (this.searchCompetencies) {
-                this.searchForCompetencies();
-            } else if (this.searchResources) {
-                this.searchForResources();
-            } else {
-                me.firstSearchProcessing = false;
-            } */
             this.loadResults();
         },
         loadResults: function($state) {
