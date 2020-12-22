@@ -396,6 +396,8 @@ export default {
                 this.searchingFor = "CreativeWork";
             } else if ($state) {
                 return $state.complete();
+            } else {
+                return;
             }
             this.loadResults($state);
         }
