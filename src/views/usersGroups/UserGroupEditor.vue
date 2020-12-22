@@ -38,7 +38,7 @@
                             :nodes="group.subGroups"
                             :id="group.id"
                             v-for="group in userGroupDisplayList"
-                            @showDetails="showGroupDetails"
+                            @showDetails="showGroupDetailsById"
                             :key="group" />
                     </cass-panel>
                 </div>
@@ -51,7 +51,14 @@
                                     <h3 class="title is-size-1">
                                         Membership List
                                     </h3>
-                                    <div class="section box py-4 px-4">
+                                    <div v-if="allGroupMembersList.length === 0">
+                                        <h3 class="title is-size-5">
+                                            <i class="fa fa-info-circle"/> No user groups are available to you
+                                        </h3>
+                                    </div>
+                                    <div
+                                        v-if="allGroupMembersList.length > 0"
+                                        class="section box py-4 px-4">
                                         <div class="table-container">
                                             <table class="table is-hoverable is-fullwidth">
                                                 <thead>
@@ -83,7 +90,7 @@
                                                                 <br>
                                                                 <span v-for="(memMgrOf, memMgrOfIdx) in member.managerOf">
                                                                     <span v-if="memMgrOfIdx > 0">, </span>
-                                                                    <a @click="showGroupDetails(memMgrOf.id)">
+                                                                    <a @click="showGroupDetailsById(memMgrOf.id)">
                                                                         {{memMgrOf.name}}
                                                                     </a>
                                                                 </span>
@@ -93,7 +100,7 @@
                                                                 <br>
                                                                 <span v-for="(memMemOf, memMemOfIdx) in member.memberOf">
                                                                     <span v-if="memMemOfIdx > 0">, </span>
-                                                                    <a @click="showGroupDetails(memMemOf.id)">
+                                                                    <a @click="showGroupDetailsById(memMemOf.id)">
                                                                         {{memMemOf.name}}
                                                                     </a>
                                                                 </span>
@@ -111,51 +118,212 @@
                                 <template>
                                     <h3
                                         class="title is-size-1"
-                                        v-if="!isEditingName">
-                                        {{ selectedGroupName }}
+                                        v-if="!isEditingCurrentGroupName">
+                                        {{ currentUserGroupName }}
                                         <span
                                             class="icon"
-                                            @click="isEditingName = true">
+                                            v-if="currentUserGroupIsManager"
+                                            @click="isEditingCurrentGroupName = true">
                                             <i class="fa fa-edit has-text-dark" />
                                         </span>
                                     </h3>
                                     <div
                                         class=""
-                                        v-if="isEditingName">
-                                        <label>Name of group</label>
+                                        v-if="isEditingCurrentGroupName">
+                                        <label>Group Name</label>
                                         <input
+                                            @change="setCurrentUserGroupAsChanged"
                                             type="text"
-                                            class="input">
+                                            class="input"
+                                            v-model="currentUserGroupName">
                                     </div>
                                 </template>
                                 <!-- should display breadcrumbs about groups -->
                                 <nav
                                     class="breadcrumb"
-                                    aria-label="breadcrumbs">
+                                    aria-label="breadcrumbs"
+                                    v-if="currentUserGroupLineage && currentUserGroupLineage.length > 1">
                                     <ul>
-                                        <li><a href="#">Groups</a></li>
-                                        <li><a href="#">Developers</a></li>
-                                        <li><a href="#">CaSS Developers</a></li>
+                                        <li v-for="lineageObj in currentUserGroupLineage">
+                                            <a @click="showGroupDetailsById(lineageObj.id)">
+                                                {{ lineageObj.name }}
+                                            </a>
+                                        </li>
                                     </ul>
                                 </nav>
-                                <p class="description">
-                                    User groups provide the capability to assign multiple users the ability to assume a single shared ‘identity’.
-                                    Members of a group are granted access to any CaSS object that the group has been explicitly assigned.
-                                    These grouped rules can be applied at the configuration level in the
-                                    configuration management screen or at the framework level in the framework editor.
-                                </p>
-                                <!-- TO DO: if we are creating a new group, hide this button until saved -->
+                                <div class="description">
+                                    <div v-if="!isEditingCurrentGroupDescription">
+                                        <span v-if="currentUserGroupDescription && currentUserGroupDescription.trim().length > 0">
+                                            {{ currentUserGroupDescription }}
+                                        </span>
+                                        <span v-else>
+                                            <i>Group Description</i>
+                                        </span>
+                                        <span
+                                            class="icon"
+                                            v-if="currentUserGroupIsManager"
+                                            @click="isEditingCurrentGroupDescription = true">
+                                            <i class="fa fa-edit has-text-dark" />
+                                        </span>
+                                    </div>
+                                    <div
+                                        class=""
+                                        v-if="isEditingCurrentGroupDescription">
+                                        <label>Group Description</label>
+                                        <input
+                                            @change="setCurrentUserGroupAsChanged"
+                                            type="text"
+                                            class="input"
+                                            v-model="currentUserGroupDescription">
+                                    </div>
+                                </div>
+                                <div class="section box py-4 px-4">
+                                    <span class="subtitle is-size-4">
+                                        Group Members
+                                    </span>
+                                    <div class="table-container">
+                                        <table class="table is-hoverable is-fullwidth">
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        name
+                                                    </th>
+                                                    <th>
+                                                        email
+                                                    </th>
+                                                    <th>
+                                                        role
+                                                    </th>
+                                                    <th v-if="currentUserGroupIsManager">
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr
+                                                    v-for="(manager, managerIdx) in currentUserGroupManagers"
+                                                    :key="managerIdx">
+                                                    <th>
+                                                        {{ manager.name }}
+                                                    </th>
+                                                    <td>
+                                                        {{ manager.email }}
+                                                    </td>
+                                                    <td>
+                                                        <b>manager</b>
+                                                    </td>
+                                                    <td v-if="currentUserGroupIsManager">
+                                                        <div
+                                                            v-if="!areAnyIdentitiesThisPerson(manager)"
+                                                            class="buttons is-right">
+                                                            <div
+                                                                class="button is-small is-outlined is-primary"
+                                                                @click="changeManagerToMember(manager.shortId())"
+                                                                title="Change role to member">
+                                                                <span class="icon">
+                                                                    <i class="fa fa-arrow-down" />
+                                                                </span>
+                                                                <span>
+                                                                    change role
+                                                                </span>
+                                                            </div>
+                                                            <div
+                                                                class="button is-small is-outlined is-warning"
+                                                                @click="removeGroupMember(manager.shortId())"
+                                                                title="Remove manager">
+                                                                <span class="icon">
+                                                                    <i class="fa fa-trash" />
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr
+                                                    v-for="(member, memberIdx) in currentUserGroupMembers"
+                                                    :key="memberIdx">
+                                                    <th>
+                                                        {{ member.name }}
+                                                    </th>
+                                                    <td>
+                                                        {{ member.email }}
+                                                    </td>
+                                                    <td>
+                                                        member
+                                                    </td>
+                                                    <td v-if="currentUserGroupIsManager">
+                                                        <div class="buttons is-right">
+                                                            <div
+                                                                class="button is-small is-outlined is-primary"
+                                                                @click="changeMemberToManager(manager.shortId())"
+                                                                title="Change role to manager">
+                                                                <span class="icon">
+                                                                    <i class="fa fa-arrow-up" />
+                                                                </span>
+                                                                <span>
+                                                                    change role
+                                                                </span>
+                                                            </div>
+                                                            <div
+                                                                class="button is-small is-outlined is-warning"
+                                                                @click="removeGroupMember(manager.shortId())"
+                                                                title="Remove member">
+                                                                <span class="icon">
+                                                                    <i class="fa fa-trash" />
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                                 <div class="buttons is-right">
                                     <div
+                                        v-if="currentUserGroupIsManager && currentUserGroupChanged"
                                         class="button is-outlined is-primary"
-                                        @click="createNewUserGroup"
-                                        :disabled="!amLoggedIn"
-                                        :title="getCreateUserGroupButtonTitle">
+                                        @click="saveCurrentUserGroup"
+                                        title="Save group">
                                         <span class="icon">
-                                            <i class="fa fa-plus" />
+                                            <i class="fa fa-save" />
                                         </span>
                                         <span>
-                                            create new group
+                                            save
+                                        </span>
+                                    </div>
+                                    <div
+                                        v-if="currentUserGroupIsManager && currentUserGroupChanged"
+                                        class="button is-outlined is-secondary"
+                                        @click="cancelCurrentUserGroupChanges"
+                                        title="Cancel group changes">
+                                        <span class="icon">
+                                            <i class="fa fa-undo" />
+                                        </span>
+                                        <span>
+                                            cancel
+                                        </span>
+                                    </div>
+                                    <div
+                                        v-if="currentUserGroupIsManager && !currentUserGroupIsNewGroup"
+                                        class="button is-outlined is-primary"
+                                        @click="createSubGroupForCurrentUserGroup"
+                                        title="Create sub-group">
+                                        <span class="icon">
+                                            <i class="fa fa-level-down-alt" />
+                                        </span>
+                                        <span>
+                                            create sub-group
+                                        </span>
+                                    </div>
+                                    <div
+                                        v-if="currentUserGroupIsManager && !currentUserGroupIsNewGroup"
+                                        class="button is-outlined is-warning"
+                                        @click="createSubGroupForCurrentUserGroup"
+                                        title="Delete group and sub-groups">
+                                        <span class="icon">
+                                            <i class="fa fa-trash" />
+                                        </span>
+                                        <span>
+                                            delete
                                         </span>
                                     </div>
                                 </div>
@@ -166,6 +334,7 @@
             </div>
         </div>
         <!-- modals go down at bottom please -->
+        <!-- NO!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
         <div
             class="modal"
             :class="[{'is-active': userGroupBusy}]">
@@ -187,16 +356,27 @@ export default {
     name: 'UserGroupEditor',
     mixins: [cassUtil],
     data: () => ({
-        isEditingName: false,
-        selectedGroupName: 'All Users',
         GROUP_SEARCH_SIZE: 10000,
         PERSON_SEARCH_SIZE: 10000,
         userGroupBusy: false,
         currentUserGroup: {},
+        currentUserGroupId: '',
+        currentUserGroupNeedsRekey: false,
+        currentUserGroupIsManager: false,
+        currentUserGroupManagers: [],
+        currentUserGroupMembers: [],
+        currentUserGroupName: '',
+        currentUserGroupDescription: '',
+        currentUserGroupLineage: [],
+        currentUserGroupIsNewGroup: false,
+        currentUserGroupChanged: false,
+        isEditingCurrentGroupName: false,
+        isEditingCurrentGroupDescription: false,
         allPersonList: [],
         allPersonMap: {},
         allGroupMembersList: [],
         userGroupDisplayList: [],
+        userGroupDisplayMap: {},
         userGroupMap: {},
         viewMode: 'memberList'
     }),
@@ -216,16 +396,60 @@ export default {
     },
     methods: {
         showMemberListView() {
+            this.currentUserGroupNeedsRekey = false;
+            this.currentUserGroupIsManager = false;
+            this.isEditingCurrentGroupName = false;
+            this.isEditingCurrentGroupDescription = false;
+            this.currentUserGroup = {};
+            this.currentUserGroupId = '';
+            this.currentUserGroupManagers = [];
+            this.currentUserGroupMembers = [];
+            this.currentUserGroupName = '';
+            this.currentUserGroupDescription = '';
+            this.currentUserGroupLineage = [];
+            this.currentUserGroupIsNewGroup = false;
+            this.currentUserGroupChanged = false;
             this.viewMode = "memberList";
         },
         showGroupDetailView() {
             this.viewMode = "groupDetail";
         },
-        showGroupDetails(id) {
-            console.log('TODO showGroupDetails: ' + id);
+        setCurrentUserGroupAsChanged() {
+            this.currentUserGroupChanged = true;
         },
-        createNewUserGroup() {
+        changeManagerToMember(personId) {
+            console.log('TODO changeManagerToMember');
+            this.currentUserGroupChanged = true;
+        },
+        changeMemberToManager(personId) {
+            console.log('TODO changeMemberToManager');
+            this.currentUserGroupChanged = true;
+        },
+        removeGroupMember(personId) {
+            // TODO this really needs to be thought about...
+            // Removing a member should remove him/her from all sub groups
+            // that may leave us with a group without a manager
+            // If that happens then what?  Add current user as group manager?
+            console.log('TODO removeGroupMember');
+            this.currentUserGroupChanged = true;
+            this.currentUserGroupNeedsRekey = true;
+        },
+        addGroupMembers(personIdArray, role) {
+            console.log('TODO addGroupMember');
+            this.currentUserGroupChanged = true;
+        },
+        saveCurrentUserGroup() {
+            console.log('TODO saveCurrentUserGroup');
+        },
+        cancelCurrentUserGroupChanges() {
+            console.log('TODO cancelCurrentUserGroupChanges');
+        },
+        deleteCurrentUserGroup() {
+            console.log('TODO deleteCurrentUserGroup');
+        },
+        createNewUserGroup(parentGroupId) {
             console.log('TODO createNewUserGroup');
+            this.currentUserGroupIsNewGroup = true;
             // this.userGroupBusy = true;
             // let newUserGroup = new EcOrganization();
             // newUserGroup.generateId(window.repo.selectedServer);
@@ -245,6 +469,94 @@ export default {
             //     this.userGroupBusy = false;
             //     this.fetchPersonListForDetailViewAndPopulateUserLists();
             // }, 300);
+        },
+        appendGroupSubGroupsToArray(groupId, subGroupArray) {
+            let ugdo = this.userGroupDisplayMap[groupId];
+            if (ugdo.subGroups && ugdo.subGroups.length > 0) {
+                for (let sg of ugdo.subGroups) {
+                    subGroupArray.push(sg.id);
+                    this.appendGroupSubGroupsToArray(sg.id, subGroupArray);
+                }
+            }
+        },
+        getSubGroupsForUserGroup(groupId) {
+            let sga = [];
+            this.appendGroupSubGroupsToArray(groupId, sga);
+            return sga;
+        },
+        createSubGroupForCurrentUserGroup() {
+            this.createNewUserGroup(this.currentUserGroupId);
+        },
+        getPersonById(personId) {
+            for (let p of this.allPersonList) {
+                if (p.shortId().equals(personId)) {
+                    return p;
+                }
+            }
+            return null;
+        },
+        setCurrentUserGroupManagerAndUserListsForDetailView() {
+            this.currentUserGroupManagers = [];
+            this.currentUserGroupMembers = [];
+            if (!this.currentUserGroup.employee) return;
+            for (let empId of this.currentUserGroup.employee) {
+                let p = this.getPersonById(empId);
+                if (p) {
+                    if (this.isPersonIdAnObjectOwner(empId, this.currentUserGroup)) this.currentUserGroupManagers.push(p);
+                    if (this.isPersonIdAnObjectReader(empId, this.currentUserGroup)) this.currentUserGroupMembers.push(p);
+                }
+            }
+        },
+        generateLineageObject(userGroup) {
+            let lo = {};
+            lo.name = userGroup.getName();
+            lo.id = userGroup.shortId();
+            return lo;
+        },
+        fillOutLineage(ugLineage, userGroup) {
+            if (userGroup) {
+                ugLineage.unshift(this.generateLineageObject(userGroup));
+                if (userGroup.memberOf && userGroup.memberOf !== '') {
+                    this.fillOutLineage(ugLineage, this.userGroupMap[userGroup.memberOf]);
+                }
+            }
+        },
+        buildUserGroupLineage(userGroup, inheritedLineage) {
+            let ugLineage = [];
+            console.log('buildUserGroupLineage');
+            console.log(inheritedLineage);
+            if (!inheritedLineage) {
+                this.fillOutLineage(ugLineage, userGroup);
+            } else {
+                ugLineage = inheritedLineage();
+                ugLineage.push(this.generateLineageObject(userGroup));
+            }
+            return ugLineage;
+        },
+        showGroupDetails(userGroup, inheritedLineage) {
+            if (userGroup) {
+                this.currentUserGroupChanged = this.currentUserGroupIsNewGroup;
+                this.currentUserGroup = userGroup;
+                this.currentUserGroupId = userGroup.shortId();
+                this.currentUserGroupNeedsRekey = false;
+                this.isEditingCurrentGroupName = false;
+                this.isEditingCurrentGroupDescription = false;
+                this.currentUserGroupName = this.currentUserGroup.getName();
+                this.currentUserGroupDescription = this.currentUserGroup.getDescription();
+                this.currentUserGroupIsManager = this.doesAnyIdentityOwnObject(this.currentUserGroup);
+                this.setCurrentUserGroupManagerAndUserListsForDetailView();
+                this.currentUserGroupLineage = this.buildUserGroupLineage(this.currentUserGroup, inheritedLineage);
+                this.showGroupDetailView();
+            } else {
+                appLog('Cannot find user group: ' + id);
+            }
+        },
+        showGroupDetailsById(id) {
+            let userGroup = this.userGroupMap[id];
+            if (userGroup) {
+                this.currentUserGroupIsNewGroup = false;
+                this.showGroupDetails(userGroup, null);
+            } else appLog('Cannot find user group: ' + id);
         },
         sortUserGroupList(userGroupList) {
             let me = this;
@@ -275,7 +587,9 @@ export default {
                 let ugdo = {};
                 ugdo.id = ug.shortId();
                 ugdo.name = ug.getName();
-                if (ug.memberOf && ug.memberOf !== '') ugdo.memberOf = ug.memberOf;
+                // if (ug.memberOf && ug.memberOf !== '') ugdo.memberOf = ug.memberOf;
+                // changing this a little bit so that dangling groups can be seen...if needed
+                if (ug.memberOf && ug.memberOf !== '' && this.userGroupMap[ug.memberOf]) ugdo.memberOf = ug.memberOf;
                 ugdo.subGroups = [];
                 ugDisplayObjs.doMap[ugdo.id] = ugdo;
                 ugDisplayObjs.doList.push(ugdo);
@@ -298,9 +612,11 @@ export default {
         },
         buildUserGroupDisplayList(userGroupList) {
             this.userGroupDisplayList = [];
+            this.userGroupDisplayMap = {};
             let ugDisplayObjs = this.buildUserGroupDisplayObjects(userGroupList);
             this.assignUserGroupDisplayObjectsSubGroups(ugDisplayObjs);
             this.addRootUserGroupsToUserGroupDisplayList(ugDisplayObjs);
+            this.userGroupDisplayMap = ugDisplayObjs.doMap;
         },
         buildInitialGroupMembersDisplayData() {
             let initGrpMemDispData = {};
@@ -407,6 +723,7 @@ export default {
         // TAKE THIS OUT AT SOME POINT  JUST DONT WANT TO HAVE TO LOGIN every time
         // *******************************************************************************
         if (EcIdentityManager.ids.length <= 0) {
+            console.log("USING BOBO LOGIN");
             // CAT Admin
             let tempIdent = new EcIdentity();
             tempIdent.ppk = EcPpk.fromPem("-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqRiQ0AxctuVuicg3yhriN39sRMkZmfsV9AdMMF6lHf5Ygnts0g/edqcaB57tuFPpCBvjvLXHKKBrfPMoZS3YdDFU4GfBo/uAa+uI7Tsz0PyWWw1Zv4AVptC80wOhcmyV8nl0OHmXXLQ2UkiL1x4wYHWiV293WPaoE/m4rD7EdK1memSoX7kFPkPZfQqEpjAROBtPJd+ebnjuBXXr6bUEhs6UBe9t371hQc41Ge7aS8KplJu/re9fFzNLDifSe3PPgjKIkwhHnt4somXJCPjuXITacoYVY+pdRac+W7PereOBZ+OYevnphbejU8DKxsEg8mOih6Nbn1LqEigGzv/oAQIDAQAB-----END PUBLIC KEY----");
