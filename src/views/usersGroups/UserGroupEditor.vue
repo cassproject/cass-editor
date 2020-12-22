@@ -179,7 +179,28 @@
                                 </div>
                                 <div class="section box py-4 px-4">
                                     <span class="subtitle is-size-4">
-                                        Group Members
+                                        <div class="columns">
+                                            <div class="column is-6">
+                                                Group Members
+                                            </div>
+                                            <div class="column is-6">
+                                                <div
+                                                    v-if="currentUserGroupIsManager"
+                                                    class="buttons is-right">
+                                                    <div
+                                                        class="button is-small is-outlined is-primary"
+                                                        @click="showAddGroupMembersModal"
+                                                        title="Add group members">
+                                                        <span class="icon">
+                                                            <i class="fa fa-plus" />
+                                                        </span>
+                                                        <span>
+                                                            add group members
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </span>
                                     <div class="table-container">
                                         <table class="table is-hoverable is-fullwidth">
@@ -201,7 +222,7 @@
                                             <tbody>
                                                 <tr
                                                     v-for="(manager, managerIdx) in currentUserGroupManagers"
-                                                    :key="managerIdx">
+                                                    :key="managerIdx + '_mgr'">
                                                     <th>
                                                         {{ manager.name }}
                                                     </th>
@@ -239,7 +260,7 @@
                                                 </tr>
                                                 <tr
                                                     v-for="(member, memberIdx) in currentUserGroupMembers"
-                                                    :key="memberIdx">
+                                                    :key="memberIdx + '_mem'">
                                                     <th>
                                                         {{ member.name }}
                                                     </th>
@@ -317,7 +338,7 @@
                                     <div
                                         v-if="currentUserGroupIsManager && !currentUserGroupIsNewGroup"
                                         class="button is-outlined is-warning"
-                                        @click="createSubGroupForCurrentUserGroup"
+                                        @click="showDeleteCurrentUserGroupConfirm"
                                         title="Delete group and sub-groups">
                                         <span class="icon">
                                             <i class="fa fa-trash" />
@@ -335,6 +356,7 @@
         </div>
         <!-- modals go down at bottom please -->
         <!-- NO!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+        <!-- busy modal -->
         <div
             class="modal"
             :class="[{'is-active': userGroupBusy}]">
@@ -343,6 +365,118 @@
                 <span class="icon is-large has-text-center has-text-link">
                     <i class="fas fa-2x fa-spinner is-info fa-pulse" />
                 </span>
+            </div>
+        </div>
+        <!-- member search modal -->
+        <div
+            class="modal"
+            :class="[{'is-active': showAddMemberModal}]">
+            <div class="modal-background" />
+            <div class="modal-card">
+                <header class="modal-card-head has-background-primary">
+                    <p class="is-size-3 modal-card-title has-text-white">
+                        Add members to '{{ currentUserGroupName }}'
+                        <button
+                            class="delete is-pulled-right"
+                            aria-label="close"
+                            @click="closeAddGroupMemberModal" />
+                    </p>
+                </header>
+                <div class="modal-card-body has-text-dark">
+                    <div
+                        v-if="!(filteredAvailablePersonsForMembership.length === 0 && addMemberPersonFilter === '')"
+                        class="field">
+                        <input
+                            type="text"
+                            class="input"
+                            v-model="addMemberPersonFilter"
+                            placeholder="search for person...">
+                    </div>
+                    <div v-if="filteredAvailablePersonsForMembership.length === 0 && addMemberPersonFilter === ''">
+                        <i class="fa fa-info-circle"/> No group members available. Users must be managers or members of any parent groups in order to be available for sub-groups.
+                    </div>
+                    <div v-if="filteredAvailablePersonsForMembership.length > 0">
+                        <h4 class="header is-size-3">
+                            Available members
+                        </h4>
+                        <div class="table-container">
+                            <table class="table is-hoverable is-fullwidth">
+                                <thead>
+                                    <tr>
+                                        <th title="Add as member">
+                                            <i class="fa fa-user"/>
+                                        </th>
+                                        <th title="Add as manager">
+                                            <i class="fa fa-user-shield"/>
+                                        </th>
+                                        <th>name</th>
+                                        <th>email</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        v-for="(prs, index) in filteredAvailablePersonsForMembership"
+                                        :key="index">
+                                        <th>
+                                            <div class="checkbox">
+                                                <input
+                                                    :id="prs.shortId()"
+                                                    :value="prs.shortId()"
+                                                    name="prs.shortId()"
+                                                    type="checkbox"
+                                                    title="Add as member"
+                                                    @change="removeFromSelectedNewManagers(prs.shortId())"
+                                                    v-model="selectedNewMembers">
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="checkbox">
+                                                <input
+                                                    :id="prs.shortId()"
+                                                    :value="prs.shortId()"
+                                                    name="prs.shortId()"
+                                                    type="checkbox"
+                                                    title="Add as manager"
+                                                    @change="removeFromSelectedNewMembers(prs.shortId())"
+                                                    v-model="selectedNewManagers">
+                                            </div>
+                                        </th>
+                                        <td> {{ prs.getName() }} </td>
+                                        <td> {{ prs.email }} </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+                <footer class="modal-card-foot has-background-light">
+                    <div class="buttons is-right">
+                        <div
+                            v-if="selectedNewMembers.length > 0 || selectedNewManagers.length > 0"
+                            class="button is-outlined is-primary is-small"
+                            @click="applySelectedNewMembers"
+                            title="Apply new members">
+                            <span class="icon">
+                                <i class="fa fa-save" />
+                            </span>
+                            <span>
+                                apply
+                            </span>
+                        </div>
+                        <div
+                            class="button is-outlined is-secondary is-small"
+                            @click="closeAddGroupMemberModal"
+                            title="Cancel add new members">
+                            <span class="icon">
+                                <i class="fa fa-times" />
+                            </span>
+                            <span>
+                                cancel
+                            </span>
+                        </div>
+                    </div>
+                </footer>
             </div>
         </div>
     </div>
@@ -372,6 +506,11 @@ export default {
         currentUserGroupChanged: false,
         isEditingCurrentGroupName: false,
         isEditingCurrentGroupDescription: false,
+        showAddMemberModal: false,
+        addMemberPersonFilter: '',
+        availablePersonsForMembership: [],
+        selectedNewMembers: [],
+        selectedNewManagers: [],
         allPersonList: [],
         allPersonMap: {},
         allGroupMembersList: [],
@@ -389,9 +528,14 @@ export default {
             if (this.amLoggedIn) return '';
             else return 'Must be logged in';
         },
-        currentUserGroupIsReadOnly: function() {
-            if (this.doesAnyIdentityOwnObject(this.currentUserGroup)) return false;
-            else return true;
+        filteredAvailablePersonsForMembership: function() {
+            return this.availablePersonsForMembership.filter(person => {
+                if (this.currentUserGroupHasManager(person.shortId()) || this.currentUserGroupHasMember(person.shortId())) return false;
+                return (((person.getName() && person.getName().toLowerCase().indexOf(this.addMemberPersonFilter.toLowerCase()) > -1) ||
+                        (person.email && person.email.toLowerCase().indexOf(this.addMemberPersonFilter.toLowerCase()) > -1))
+
+                );
+            });
         }
     },
     methods: {
@@ -434,15 +578,76 @@ export default {
             this.currentUserGroupChanged = true;
             this.currentUserGroupNeedsRekey = true;
         },
-        addGroupMembers(personIdArray, role) {
-            console.log('TODO addGroupMember');
+        closeAddGroupMemberModal() {
+            this.selectedNewMembers = [];
+            this.selectedNewManagers = [];
+            this.showAddMemberModal = false;
+        },
+        getPersonListFromIdList(personIdList) {
+            let pl = [];
+            for (let pid of personIdList) {
+                let p = this.allPersonMap[pid];
+                if (p) pl.push(p);
+            }
+            return pl;
+        },
+        removeFromSelectedNewMembers(personId) {
+            this.selectedNewMembers = this.selectedNewMembers.filter(p => p !== personId);
+        },
+        removeFromSelectedNewManagers(personId) {
+            this.selectedNewManagers = this.selectedNewManagers.filter(p => p !== personId);
+        },
+        currentUserGroupHasManager(personId) {
+            for (let p of this.currentUserGroupManagers) {
+                if (p.shortId().equals(personId)) {
+                    return true;
+                }
+            }
+            return false;
+        },
+        currentUserGroupHasMember(personId) {
+            for (let p of this.currentUserGroupMembers) {
+                if (p.shortId().equals(personId)) {
+                    return true;
+                }
+            }
+            return false;
+        },
+        buildAvailablePersonsForMembership() {
+            let apl = [];
+            if (!this.currentUserGroup.memberOf || !this.userGroupMap[this.currentUserGroup.memberOf]) {
+                apl = this.allPersonList;
+            } else {
+                let parentGroup = this.userGroupMap[this.currentUserGroup.memberOf];
+                apl = this.getPersonListFromIdList(parentGroup.employee);
+            }
+            this.availablePersonsForMembership = apl;
+        },
+        showAddGroupMembersModal() {
+            this.selectedNewMembers = [];
+            this.selectedNewManagers = [];
+            this.buildAvailablePersonsForMembership();
+            this.addMemberPersonFilter = '';
+            this.showAddMemberModal = true;
+        },
+        applySelectedNewMembers() {
+            for (let newMemId of this.selectedNewMembers) {
+                this.currentUserGroupMembers.push(this.allPersonMap[newMemId]);
+            }
+            for (let newMgrId of this.selectedNewManagers) {
+                this.currentUserGroupManagers.push(this.allPersonMap[newMgrId]);
+            }
             this.currentUserGroupChanged = true;
+            this.closeAddGroupMemberModal();
         },
         saveCurrentUserGroup() {
             console.log('TODO saveCurrentUserGroup');
         },
         cancelCurrentUserGroupChanges() {
             console.log('TODO cancelCurrentUserGroupChanges');
+        },
+        showDeleteCurrentUserGroupConfirm() {
+            console.log('TODO showDeleteCurrentUserGroupConfirm');
         },
         deleteCurrentUserGroup() {
             console.log('TODO deleteCurrentUserGroup');
@@ -487,20 +692,12 @@ export default {
         createSubGroupForCurrentUserGroup() {
             this.createNewUserGroup(this.currentUserGroupId);
         },
-        getPersonById(personId) {
-            for (let p of this.allPersonList) {
-                if (p.shortId().equals(personId)) {
-                    return p;
-                }
-            }
-            return null;
-        },
         setCurrentUserGroupManagerAndUserListsForDetailView() {
             this.currentUserGroupManagers = [];
             this.currentUserGroupMembers = [];
             if (!this.currentUserGroup.employee) return;
             for (let empId of this.currentUserGroup.employee) {
-                let p = this.getPersonById(empId);
+                let p = this.allPersonMap[empId];
                 if (p) {
                     if (this.isPersonIdAnObjectOwner(empId, this.currentUserGroup)) this.currentUserGroupManagers.push(p);
                     if (this.isPersonIdAnObjectReader(empId, this.currentUserGroup)) this.currentUserGroupMembers.push(p);
@@ -523,8 +720,6 @@ export default {
         },
         buildUserGroupLineage(userGroup, inheritedLineage) {
             let ugLineage = [];
-            console.log('buildUserGroupLineage');
-            console.log(inheritedLineage);
             if (!inheritedLineage) {
                 this.fillOutLineage(ugLineage, userGroup);
             } else {
