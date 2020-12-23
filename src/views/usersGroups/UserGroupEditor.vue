@@ -6,46 +6,52 @@
             </h3>
             <div class="columns">
                 <div class="column is-narrow">
-                    <nav>
-                        <a @click="showMemberListView">Membership List</a>
-                    </nav>
-                </div>
-            </div>
-            <div class="columns">
-                <div class="column is-narrow">
-                    <div class="buttons">
-                        <div
-                            class="button is-outlined is-primary"
-                            @click="createNewUserGroup(null)"
-                            :disabled="!amLoggedIn"
-                            :title="getCreateUserGroupButtonTitle">
-                            <span class="icon">
-                                <i class="fa fa-plus" />
-                            </span>
-                            <span>
-                                create new group
-                            </span>
+                    <div class="columns">
+                        <div class="column is-narrow">
+                            <nav>
+                                <a @click="showMemberListView">Membership List</a>
+                            </nav>
+                        </div>
+                    </div>
+                    <div class="columns">
+                        <div class="column is-narrow">
+                            <div class="buttons">
+                                <div
+                                    class="button is-outlined is-primary"
+                                    @click="createNewUserGroup(null)"
+                                    :disabled="!amLoggedIn"
+                                    :title="getCreateUserGroupButtonTitle">
+                                    <span class="icon">
+                                        <i class="fa fa-plus" />
+                                    </span>
+                                    <span>
+                                        create new group
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="columns">
+                        <!-- group nav tree -->
+                        <div class="column is-narrow">
+                            <cass-panel>
+                                <cass-panel-item
+                                    :depth="0"
+                                    :label="group.name"
+                                    :nodes="group.subGroups"
+                                    :id="group.id"
+                                    v-for="group in userGroupDisplayList"
+                                    @showDetails="showGroupDetailsById"
+                                    :key="group" />
+                            </cass-panel>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="columns">
-                <div class="column is-narrow">
-                    <cass-panel>
-                        <cass-panel-item
-                            :depth="0"
-                            :label="group.name"
-                            :nodes="group.subGroups"
-                            :id="group.id"
-                            v-for="group in userGroupDisplayList"
-                            @showDetails="showGroupDetailsById"
-                            :key="group" />
-                    </cass-panel>
-                </div>
-                <!-- main content section -->
                 <div class="column">
+                    <!-- main content section -->
                     <div class="columns is-multiline is-gapless is-paddingless">
                         <div class="column is-12">
+                            <!-- member list section -->
                             <div v-if="viewMode === 'memberList'">
                                 <template>
                                     <h3 class="title is-size-1">
@@ -113,8 +119,9 @@
                                     </div>
                                 </template>
                             </div>
+                            <!-- group detail section -->
                             <div v-if="viewMode === 'groupDetail'">
-                                <!-- this should update based on group selected -->
+                                <!-- group name -->
                                 <template>
                                     <h3
                                         class="title is-size-1"
@@ -145,7 +152,7 @@
                                         </div>
                                     </div>
                                 </template>
-                                <!-- should display breadcrumbs about groups -->
+                                <!-- group breadcrumbs -->
                                 <nav
                                     class="breadcrumb"
                                     aria-label="breadcrumbs"
@@ -158,6 +165,7 @@
                                         </li>
                                     </ul>
                                 </nav>
+                                <!-- group description -->
                                 <div class="description">
                                     <div v-if="!isEditingCurrentGroupDescription">
                                         <span v-if="currentUserGroupDescription && currentUserGroupDescription.trim().length > 0">
@@ -191,6 +199,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!-- group members -->
                                 <div class="section box py-4 px-4">
                                     <span class="subtitle is-size-4">
                                         <div class="columns">
@@ -234,6 +243,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                                <!-- group managers -->
                                                 <tr
                                                     v-for="(manager, managerIdx) in currentUserGroupManagers"
                                                     :key="managerIdx + '_mgr'">
@@ -262,16 +272,27 @@
                                                                 </span>
                                                             </div>
                                                             <div
+                                                                v-if="isPersonRemovableFromCurrentUserGroup(manager.shortId())"
                                                                 class="button is-small is-outlined is-warning"
-                                                                @click="removeGroupMember(manager.shortId())"
+                                                                @click="removeMemberFromCurrentUserGroup(manager.shortId())"
                                                                 title="Remove manager">
                                                                 <span class="icon">
                                                                     <i class="fa fa-trash" />
                                                                 </span>
                                                             </div>
+                                                            <button
+                                                                v-else
+                                                                class="button is-small is-outlined is-disabled"
+                                                                disabled
+                                                                title="Cannot remove: member of sub-group you do not manage.">
+                                                                <span class="icon">
+                                                                    <i class="fa fa-trash" />
+                                                                </span>
+                                                            </button>
                                                         </div>
                                                     </td>
                                                 </tr>
+                                                <!-- group members/non-managers -->
                                                 <tr
                                                     v-for="(member, memberIdx) in currentUserGroupMembers"
                                                     :key="memberIdx + '_mem'">
@@ -298,13 +319,23 @@
                                                                 </span>
                                                             </div>
                                                             <div
+                                                                v-if="isPersonRemovableFromCurrentUserGroup(member.shortId())"
                                                                 class="button is-small is-outlined is-warning"
-                                                                @click="removeGroupMember(member.shortId())"
+                                                                @click="removeMemberFromCurrentUserGroup(member.shortId())"
                                                                 title="Remove member">
                                                                 <span class="icon">
                                                                     <i class="fa fa-trash" />
                                                                 </span>
                                                             </div>
+                                                            <button
+                                                                v-else
+                                                                class="button is-small is-outlined is-disabled"
+                                                                disabled
+                                                                title="Cannot remove: member of sub-group you do not manage.">
+                                                                <span class="icon">
+                                                                    <i class="fa fa-trash" />
+                                                                </span>
+                                                            </button>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -312,6 +343,7 @@
                                         </table>
                                     </div>
                                 </div>
+                                <!-- group action buttons -->
                                 <div class="buttons is-right">
                                     <div
                                         v-if="currentUserGroupIsManager && currentUserGroupChanged"
@@ -379,7 +411,7 @@
                 </span>
             </div>
         </div>
-        <!-- member search modal -->
+        <!-- add member search modal -->
         <div
             class="modal"
             :class="[{'is-active': showAddMemberModal}]">
@@ -467,7 +499,7 @@
                         <div
                             v-if="selectedNewMembers.length > 0 || selectedNewManagers.length > 0"
                             class="button is-outlined is-primary is-small"
-                            @click="applySelectedNewMembers"
+                            @click="applySelectedNewMembersToCurrentUserGroup"
                             title="Apply new members">
                             <span class="icon">
                                 <i class="fa fa-save" />
@@ -577,6 +609,7 @@ export default {
         currentUserGroupInvalid: false,
         currentUserGroupNameInvalid: false,
         currentUserGroupDescriptionInvalid: false,
+        membersToRemove: [],
         userGroupsToSave: [],
         numberOfUserGroupsToSave: 0,
         numberOfUserGroupsSaved: 0,
@@ -642,23 +675,14 @@ export default {
             this.currentUserGroupChanged = true;
         },
         changeManagerToMember(personId) {
-            this.currentUserGroupManagers = this.currentUserGroupManagers.filter(mem => mem.shortId() !== personId);
+            this.currentUserGroupManagers = this.currentUserGroupManagers.filter(mgr => mgr.shortId() !== personId);
             this.currentUserGroupMembers.push(this.allPersonMap[personId]);
             this.currentUserGroupChanged = true;
         },
         changeMemberToManager(personId) {
-            this.currentUserGroupMembers = this.currentUserGroupMembers.filter(mgr => mgr.shortId() !== personId);
+            this.currentUserGroupMembers = this.currentUserGroupMembers.filter(mem => mem.shortId() !== personId);
             this.currentUserGroupManagers.push(this.allPersonMap[personId]);
             this.currentUserGroupChanged = true;
-        },
-        removeGroupMember(personId) {
-            // TODO this really needs to be thought about...
-            // Removing a member should remove him/her from all sub groups
-            // that may leave us with a group without a manager
-            // If that happens then what?  Add current user as group manager?
-            console.log('TODO removeGroupMember');
-            this.currentUserGroupChanged = true;
-            this.currentUserGroupNeedsRekey = true;
         },
         closeAddGroupMemberModal() {
             this.selectedNewMembers = [];
@@ -712,16 +736,36 @@ export default {
             this.addMemberPersonFilter = '';
             this.showAddMemberModal = true;
         },
-        applySelectedNewMembers() {
-            // TODO check and see if members were on remove list...
+        removePersonFromMembersToRemoveBuffer(personId) {
+            this.membersToRemove = this.membersToRemove.filter(p => p !== personId);
+        },
+        applySelectedNewMembersToCurrentUserGroup() {
             for (let newMemId of this.selectedNewMembers) {
                 this.currentUserGroupMembers.push(this.allPersonMap[newMemId]);
+                this.removePersonFromMembersToRemoveBuffer(newMemId);
             }
             for (let newMgrId of this.selectedNewManagers) {
                 this.currentUserGroupManagers.push(this.allPersonMap[newMgrId]);
+                this.removePersonFromMembersToRemoveBuffer(newMgrId);
             }
             this.currentUserGroupChanged = true;
             this.closeAddGroupMemberModal();
+        },
+        removeMemberFromCurrentUserGroup(personId) {
+            this.membersToRemove.push(personId);
+            this.currentUserGroupManagers = this.currentUserGroupManagers.filter(mgr => mgr.shortId() !== personId);
+            this.currentUserGroupMembers = this.currentUserGroupMembers.filter(mem => mem.shortId() !== personId);
+            this.currentUserGroupChanged = true;
+        },
+        isPersonRemovableFromCurrentUserGroup(personId) {
+            // A person can't be removed if he/she is also a member of a sub-group of which the logged in person is not a manager
+            // This isn't 100% fool proof but it works for now
+            let subGroupIds = this.getSubGroupIdsForUserGroup(this.currentUserGroupId);
+            for (let sgId of subGroupIds) {
+                let ug = this.userGroupMap[sgId];
+                if (ug.employee.includes(personId) && !this.isPersonalIdentityAnObjectOwner(ug)) return false;
+            }
+            return true;
         },
         closeDeleteGroupConfirmModal() {
             this.showConfirmDeleteUserGroupModal = false;
@@ -786,25 +830,6 @@ export default {
                 this.currentUserGroupDescriptionInvalid = true;
             }
         },
-        updateCurrentUserGroupMemberList() {
-            this.currentUserGroup.employee = [];
-            this.currentUserGroup.owner = [];
-            this.currentUserGroup.reader = [];
-            for (let gm of this.currentUserGroupManagers) {
-                let gmEcPk = this.getPersonEcPk(gm);
-                if (gmEcPk) {
-                    this.currentUserGroup.addEmployee(gm);
-                    this.currentUserGroup.addOwner(gmEcPk);
-                }
-            }
-            for (let gu of this.currentUserGroupMembers) {
-                let guEcPk = this.getPersonEcPk(gu);
-                if (guEcPk) {
-                    this.currentUserGroup.addEmployee(gu);
-                    this.currentUserGroup.addReader(guEcPk);
-                }
-            }
-        },
         checkUserGroupSaveStatus() {
             if (this.numberOfUserGroupsSaved >= this.numberOfUserGroupsToSave) {
                 this.buildUserGroupData();
@@ -830,6 +855,49 @@ export default {
                 grp.save(this.handleSaveUserGroupSuccess, this.handleSaveUserGroupFailure, window.repo);
             }
         },
+        updateCurrentUserGroupMemberList() {
+            this.currentUserGroup.employee = [];
+            this.currentUserGroup.owner = [];
+            this.currentUserGroup.reader = [];
+            for (let gm of this.currentUserGroupManagers) {
+                let gmEcPk = this.getPersonEcPk(gm);
+                if (gmEcPk) {
+                    this.currentUserGroup.addEmployee(gm);
+                    this.currentUserGroup.addOwner(gmEcPk);
+                }
+            }
+            for (let gu of this.currentUserGroupMembers) {
+                let guEcPk = this.getPersonEcPk(gu);
+                if (guEcPk) {
+                    this.currentUserGroup.addEmployee(gu);
+                    this.currentUserGroup.addReader(guEcPk);
+                }
+            }
+        },
+        pushRemovedMembersToSubGroupsForSave() {
+            let alreadyInSaveBuffer = [];
+            for (let mtrId of this.membersToRemove) {
+                let memberToRemove = this.allPersonMap[mtrId];
+                if (memberToRemove) {
+                    let memberPk = this.getPersonEcPk(memberToRemove);
+                    if (memberPk) {
+                        let subGroupIds = this.getSubGroupIdsForUserGroup(this.currentUserGroupId);
+                        for (let sgId of subGroupIds) {
+                            let subGroup = this.userGroupMap[sgId];
+                            if (subGroup && this.isPersonalIdentityAnObjectOwner(subGroup) && subGroup.employee.includes(mtrId)) {
+                                subGroup.removeEmployeeById(mtrId);
+                                subGroup.removeOwner(memberPk);
+                                subGroup.removeReader(memberPk);
+                                if (!alreadyInSaveBuffer.includes(subGroup.shortId())) {
+                                    this.userGroupsToSave.push(subGroup);
+                                    alreadyInSaveBuffer.push(subGroup.shortId());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         saveCurrentUserGroup() {
             this.validateCurrentUserGroupFields();
             if (!this.currentUserGroupInvalid) {
@@ -838,14 +906,11 @@ export default {
                 this.currentUserGroup.name = this.currentUserGroupName;
                 this.currentUserGroup.description = this.currentUserGroupDescription;
                 this.userGroupIdToShowAfterReload = this.currentUserGroup.shortId();
-                console.log('Attempting save for: ' + this.currentUserGroup.shortId());
                 this.userGroupsToSave = [];
                 this.numberOfUserGroupsSaved = 0;
-                // TODO check removed members and do stuff
-                this.currentUserGroupNeedsRekey = false; // TODO tie this into removed users...
-                // Removing a member should remove him/her from all sub groups
-                // that may leave us with a group without a manager
-                // If that happens then what?  Add current user as group manager?
+                this.pushRemovedMembersToSubGroupsForSave();
+                this.currentUserGroupNeedsRekey = false;
+                // this.currentUserGroupNeedsRekey = this.membersToRemove.length > 0; // TODO uncomment this when feeling brave!!!!
                 this.userGroupsToSave.push(this.currentUserGroup);
                 this.numberOfUserGroupsToSave = this.userGroupsToSave.length;
                 this.saveUserGroup(0);
@@ -939,6 +1004,9 @@ export default {
         },
         showGroupDetails(userGroup, inheritedLineage) {
             if (userGroup) {
+                this.membersToRemove = [];
+                this.userGroupsToSave = [];
+                this.userGroupsToDelete = [];
                 this.currentUserGroupChanged = this.currentUserGroupIsNewGroup;
                 this.currentUserGroup = userGroup;
                 this.currentUserGroupId = userGroup.shortId();
@@ -1062,11 +1130,21 @@ export default {
                 }
             }
         },
+        sortMembershipData(membershipData) {
+            membershipData.sort((mo1, mo2) => (mo1.name > mo2.name) ? 1 : -1);
+        },
+        sortGroupMemberListMembershipData() {
+            for (let gm of this.allGroupMembersList) {
+                this.sortMembershipData(gm.managerOf);
+                this.sortMembershipData(gm.memberOf);
+            }
+        },
         buildGroupMembersDisplayList() {
             this.allGroupMembersList = [];
             let initGrpMemDispData = this.buildInitialGroupMembersDisplayData();
             this.fillOutMembershipData(initGrpMemDispData);
             this.filterOutNonMembers(initGrpMemDispData);
+            this.sortGroupMemberListMembershipData();
         },
         searchRepositoryForGroupsSuccess(ecoa) {
             let userGroupList = [];
@@ -1125,18 +1203,6 @@ export default {
     },
     mounted() {
         this.buildUserGroupData();
-        // *******************************************************************************
-        // TAKE THIS OUT AT SOME POINT  JUST DONT WANT TO HAVE TO LOGIN every time
-        // *******************************************************************************
-        if (EcIdentityManager.ids.length <= 0) {
-            console.log("USING BOBO LOGIN");
-            // CAT Admin
-            let tempIdent = new EcIdentity();
-            tempIdent.ppk = EcPpk.fromPem("-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqRiQ0AxctuVuicg3yhriN39sRMkZmfsV9AdMMF6lHf5Ygnts0g/edqcaB57tuFPpCBvjvLXHKKBrfPMoZS3YdDFU4GfBo/uAa+uI7Tsz0PyWWw1Zv4AVptC80wOhcmyV8nl0OHmXXLQ2UkiL1x4wYHWiV293WPaoE/m4rD7EdK1memSoX7kFPkPZfQqEpjAROBtPJd+ebnjuBXXr6bUEhs6UBe9t371hQc41Ge7aS8KplJu/re9fFzNLDifSe3PPgjKIkwhHnt4somXJCPjuXITacoYVY+pdRac+W7PereOBZ+OYevnphbejU8DKxsEg8mOih6Nbn1LqEigGzv/oAQIDAQAB-----END PUBLIC KEY----");
-            EcIdentityManager.addIdentity(tempIdent);
-            let p = EcPerson.getBlocking("https://dev.api.cassproject.org/api/data/schema.org.Person/0bfd2fca207beb1d889a2461e4595a87");
-            this.$store.commit('user/loggedOnPerson', p);
-        }
     }
 };
 </script>

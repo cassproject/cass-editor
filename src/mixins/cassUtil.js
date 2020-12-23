@@ -131,6 +131,11 @@ export const cassUtil = {
             }
             return false;
         },
+        isPersonalIdentityAnObjectOwner(obj) {
+            if (!obj.owner || obj.owner.length === 0) return false;
+            let personalIdentPkPem = this.getPersonalIdentityPk().toPem();
+            return obj.owner.includes(personalIdentPkPem);
+        },
         getPersonalIdentityPk() {
             // assuming that the first identity is the user's personal identity
             if (EcIdentityManager && EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
