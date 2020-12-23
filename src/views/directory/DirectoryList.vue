@@ -236,7 +236,7 @@ export default {
             } else if (this.searchingFor === "Directory" || this.searchingFor === "Framework") {
                 this.directoryIdList.splice(0, this.directoryIdList.length);
                 let list = " AND (directory:\"" + this.directoryId + "\" OR parentDirectory:\"" + this.directoryId + "\"";
-                this.getDirectoryIds(this.directoryId, function() {
+                this.getSubDirectoryIds(this.directoryId, function() {
                     if (me.directoryIdList.length > 0) {
                         for (let i in me.directoryIdList) {
                             list += (" OR directory:\"" + me.directoryIdList[i] + "\" OR parentDirectory:\"" + me.directoryIdList[i] + "\"");
@@ -249,24 +249,76 @@ export default {
                     }
                 });
             } else if (this.searchingFor === "Competency") {
-                //
+                if (this.directoryIdList) {
+                    this.getCompetencyIds(function(competencies) {
+                        if (competencies && competencies.length > 0) {
+                            let list = " AND (";
+                            for (let i in competencies) {
+                                // eslint-disable-next-line eqeqeq
+                                if (i != 0) {
+                                    list += " OR ";
+                                }
+                                list += ("@id:\"" + competencies[i] + "\"");
+                            }
+                            list += ")";
+                            success(list);
+                        } else success("");
+                    });
+                } else {
+                    this.getSubDirectoryIds(this.directoryId, function() {
+                        me.getCompetencyIds(function(competencies) {
+                            if (competencies && competencies.length > 0) {
+                                let list = " AND (";
+                                for (let i in competencies) {
+                                    // eslint-disable-next-line eqeqeq
+                                    if (i != 0) {
+                                        list += " OR ";
+                                    }
+                                    list += ("@id:\"" + competencies[i] + "\"");
+                                }
+                                list += ")";
+                                success(list);
+                            } else success("");
+                        });
+                    });
+                }
             } else {
                 success("");
             }
         },
-        getDirectoryIds: function(directoryId, success, failure) {
+        getSubDirectoryIds: function(directoryId, success) {
             let me = this;
             this.repo.search("(parentDirectory:\"" + directoryId + "\")", function(each) {
             }, function(all) {
                 new EcAsyncHelper().each(all, function(obj, done) {
                     me.directoryIdList.push(obj.shortId());
-                    me.getDirectoryIds(obj.shortId(), done, done);
+                    me.getSubDirectoryIds(obj.shortId(), done, done);
                 }, function() {
                     success();
                 });
             }, function(error) {
                 appError(error);
                 done();
+            });
+        },
+        getCompetencyIds: function(success) {
+            let me = this;
+            let competencies = [];
+            let directories = this.directoryIdList.concat(this.directoryId);
+            new EcAsyncHelper().each(directories, function(id, done) {
+                me.repo.search("(@type:Framework AND directory:\"" + id + "\")", function(each) {
+                    if (each.competency) {
+                        competencies = competencies.concat(each.competency);
+                    }
+                    done();
+                }, function(all) {
+                    console.log(all);
+                }, function(error) {
+                    appError(error);
+                    done();
+                });
+            }, function() {
+                success(competencies);
             });
         },
         buildSearch: function(type, callback) {
@@ -428,7 +480,12 @@ export default {
             if (this.searchingFor === "Directory") {
                 this.searchingFor = "Framework";
             } else if (this.searchingFor === "Framework") {
-                this.searchingFor = "Competency";
+                if (this.searchTerm) {
+                    this.searchingFor = "Competency";
+                } else {
+                    // Only display competencies when searching for something
+                    this.searchingFor = "CreativeWork";
+                }
             } else if (this.searchingFor === "Competency") {
                 this.searchingFor = "CreativeWork";
             } else if ($state) {
