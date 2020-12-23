@@ -107,7 +107,7 @@ import {cassUtil} from '../../mixins/cassUtil';
 
 export default {
     mixins: [cassUtil],
-    name: 'UserGroupEditor-OLD',
+    name: 'UserGroupEditorOLD',
     components: {
         UserGroupDetails,
         UserGroupListItem

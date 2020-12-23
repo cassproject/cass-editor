@@ -11,8 +11,14 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
 .cass-users-and-groups__panel {
     width: 300px;
+    .panel-block {
+        max-width: 100%;
+        right: 0;
+    }
+    height: calc(100px - 72);
+    overflow-y: scroll;
 }
 </style>

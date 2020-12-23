@@ -1,12 +1,25 @@
 <template>
     <div>
         <a
-            @click="showDetails"
             class="panel-block"
-            :style="indent">
-            {{ label }}
+            :style="{ transform: indent, width: calcWidth }">
+            <span @click="showDetails">
+                {{ label }}
+            </span>
+            <span
+                v-if="nodes.length >0"
+                class="icon is-pulled-right"
+                @click="showChildren = !showChildren">
+                <i
+                    v-if="showChildren"
+                    class="fa fa-chevron-down" />
+                <i
+                    v-else
+                    class="fa fa-chevron-right" />
+            </span>
         </a>
         <cass-panel-item
+            v-show="showChildren"
             :depth="depth + 1"
             v-for="node in nodes"
             :key="node"
@@ -25,13 +38,22 @@ export default {
     components: {
         CassPanelItem
     },
+    data() {
+        return {
+            showChildren: false
+        };
+    },
     computed: {
         indent() {
-            return {transform: `translate(${this.depth * 16}px)`};
+            return `translate(${this.depth * 16}px)`;
+        },
+        calcWidth() {
+            return `calc(100% - ${this.depth * 16}px) !important`;
         }
     },
     methods: {
         showDetails() {
+            this.showChildren = true;
             // console.log("PanelItem - showDetails: " + this.id);
             this.$emit('showDetails', this.id);
         },
