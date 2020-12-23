@@ -327,7 +327,7 @@
                                     </div>
                                     <div
                                         v-if="currentUserGroupIsManager && currentUserGroupChanged"
-                                        class="button is-outlined is-secondary"
+                                        class="button is-outlined"
                                         @click="cancelCurrentUserGroupChanges"
                                         title="Cancel group changes">
                                         <span class="icon">
@@ -352,7 +352,7 @@
                                     <div
                                         v-if="currentUserGroupIsManager && !currentUserGroupIsNewGroup"
                                         class="button is-outlined is-warning"
-                                        @click="showDeleteCurrentUserGroupConfirm"
+                                        @click="showDeleteCurrentUserGroupConfirmModal"
                                         title="Delete group and sub-groups">
                                         <span class="icon">
                                             <i class="fa fa-trash" />
@@ -477,7 +477,7 @@
                             </span>
                         </div>
                         <div
-                            class="button is-outlined is-secondary is-small"
+                            class="button is-outlined is-small"
                             @click="closeAddGroupMemberModal"
                             title="Cancel add new members">
                             <span class="icon">
@@ -485,6 +485,62 @@
                             </span>
                             <span>
                                 cancel
+                            </span>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+        <!-- group deletion confirm modal-->
+        <div
+            class="modal"
+            :class="[{'is-active': showConfirmDeleteUserGroupModal}]">
+            <div class="modal-background" />
+            <div class="modal-card">
+                <header class="modal-card-head has-background-primary">
+                    <p class="modal-card-title">
+                        <span class="title has-text-white">
+                            Delete User Group?
+                        </span>
+                    </p>
+                    <button
+                        class="delete"
+                        @click="closeDeleteGroupConfirmModal"
+                        aria-label="close" />
+                </header>
+                <section class="modal-card-body">
+                    Are you sure you wish to delete the user group <b>'{{ currentUserGroupName }}'</b>?
+                    <div
+                        class="field has-text-danger pt-4"
+                        v-if="deleteConfirmNumberOfSubGroups > 0">
+                        <div class="label has-text-danger">
+                            <i class="fa fa-exclamation-triangle"/> Warning! Deleting this group will also delete all of
+                            its sub-groups (<b>{{ deleteConfirmNumberOfSubGroups }}</b>).  This is non-reversible.
+                        </div>
+                    </div>
+                </section>
+                <footer class="modal-card-foot">
+                    <div class="buttons is-right">
+                        <div
+                            class="button is-outlined"
+                            @click="closeDeleteGroupConfirmModal"
+                            title="Cancel user group delete">
+                            <span class="icon">
+                                <i class="fa fa-times" />
+                            </span>
+                            <span>
+                                cancel
+                            </span>
+                        </div>
+                        <div
+                            class="button is-outlined is-warning"
+                            @click="deleteCurrentUserGroupAndSubGroups"
+                            title="Confirm user group delete">
+                            <span class="icon">
+                                <i class="fa fa-trash" />
+                            </span>
+                            <span>
+                                delete
                             </span>
                         </div>
                     </div>
@@ -521,7 +577,15 @@ export default {
         currentUserGroupInvalid: false,
         currentUserGroupNameInvalid: false,
         currentUserGroupDescriptionInvalid: false,
+        userGroupsToSave: [],
+        numberOfUserGroupsToSave: 0,
+        numberOfUserGroupsSaved: 0,
+        userGroupsToDelete: [],
+        numberOfUserGroupsToDelete: 0,
+        numberOfUserGroupsDeleted: 0,
         showAddMemberModal: false,
+        showConfirmDeleteUserGroupModal: false,
+        deleteConfirmNumberOfSubGroups: 0,
         addMemberPersonFilter: '',
         availablePersonsForMembership: [],
         selectedNewMembers: [],
@@ -659,12 +723,52 @@ export default {
             this.currentUserGroupChanged = true;
             this.closeAddGroupMemberModal();
         },
-        showDeleteCurrentUserGroupConfirm() {
-            // getSubGroupsForUserGroup
-            console.log('TODO showDeleteCurrentUserGroupConfirm');
+        closeDeleteGroupConfirmModal() {
+            this.showConfirmDeleteUserGroupModal = false;
         },
-        deleteCurrentUserGroup() {
-            console.log('TODO deleteCurrentUserGroup');
+        showDeleteCurrentUserGroupConfirmModal() {
+            this.deleteConfirmNumberOfSubGroups = this.getSubGroupIdsForUserGroup(this.currentUserGroupId).length;
+            this.showConfirmDeleteUserGroupModal = true;
+        },
+        addCurrentUserGroupSubGroupsToGroupsToDelete() {
+            let subGroupIds = this.getSubGroupIdsForUserGroup(this.currentUserGroupId);
+            for (let sgid of subGroupIds) {
+                this.userGroupsToDelete.push(this.userGroupMap[sgid]);
+            }
+        },
+        checkUserGroupDeleteStatus() {
+            if (this.numberOfUserGroupsDeleted >= this.numberOfUserGroupsToDelete) {
+                this.buildUserGroupData();
+            } else {
+                this.deleteUserGroup(this.numberOfUserGroupsDeleted);
+            }
+        },
+        handleDeleteUserGroupSuccess() {
+            appLog("Delete user group success...");
+            this.numberOfUserGroupsDeleted++;
+            this.checkUserGroupDeleteStatus();
+        },
+        handleDeleteUserGroupFailure(msg) {
+            appLog("Delete user group failure: " + msg);
+            this.numberOfUserGroupsDeleted++;
+            this.checkUserGroupDeleteStatus();
+        },
+        deleteUserGroup(ugIdx) {
+            let grp = this.userGroupsToDelete[ugIdx];
+            window.repo.deleteRegistered(grp, this.handleDeleteUserGroupSuccess, this.handleDeleteUserGroupFailure);
+        },
+        deleteCurrentUserGroupAndSubGroups() {
+            this.userGroupBusy = true;
+            this.showConfirmDeleteUserGroupModal = false;
+            this.userGroupsToDelete = [];
+            this.numberOfUserGroupsDeleted = 0;
+            this.addCurrentUserGroupSubGroupsToGroupsToDelete();
+            this.userGroupsToDelete.push(this.currentUserGroup);
+            this.numberOfUserGroupsToDelete = this.userGroupsToDelete.length;
+            if (this.currentUserGroup.memberOf && this.currentUserGroup.memberOf !== '') {
+                this.userGroupIdToShowAfterReload = this.currentUserGroup.memberOf;
+            } else this.userGroupIdToShowAfterReload = '';
+            this.deleteUserGroup(0);
         },
         setCurrentUserGroupValidationsChecksToValid() {
             this.currentUserGroupInvalid = false;
@@ -701,17 +805,50 @@ export default {
                 }
             }
         },
+        checkUserGroupSaveStatus() {
+            if (this.numberOfUserGroupsSaved >= this.numberOfUserGroupsToSave) {
+                this.buildUserGroupData();
+            } else {
+                this.saveUserGroup(this.numberOfUserGroupsSaved);
+            }
+        },
+        handleSaveUserGroupSuccess() {
+            appLog("Save user group success...");
+            this.numberOfUserGroupsSaved++;
+            this.checkUserGroupSaveStatus();
+        },
+        handleSaveUserGroupFailure(msg) {
+            appLog("Save user group failure: " + msg);
+            this.numberOfUserGroupsSaved++;
+            this.checkUserGroupSaveStatus();
+        },
+        saveUserGroup(ugIdx) {
+            let grp = this.userGroupsToSave[ugIdx];
+            if (this.currentUserGroupNeedsRekey) {
+                grp.rekeyAndSave(this.handleSaveUserGroupSuccess, this.handleSaveUserGroupFailure, window.repo);
+            } else {
+                grp.save(this.handleSaveUserGroupSuccess, this.handleSaveUserGroupFailure, window.repo);
+            }
+        },
         saveCurrentUserGroup() {
             this.validateCurrentUserGroupFields();
             if (!this.currentUserGroupInvalid) {
+                this.userGroupBusy = true;
                 this.updateCurrentUserGroupMemberList();
+                this.currentUserGroup.name = this.currentUserGroupName;
+                this.currentUserGroup.description = this.currentUserGroupDescription;
                 this.userGroupIdToShowAfterReload = this.currentUserGroup.shortId();
-                console.log('Would have called group save....');
-                // TODO call save
+                console.log('Attempting save for: ' + this.currentUserGroup.shortId());
+                this.userGroupsToSave = [];
+                this.numberOfUserGroupsSaved = 0;
                 // TODO check removed members and do stuff
+                this.currentUserGroupNeedsRekey = false; // TODO tie this into removed users...
                 // Removing a member should remove him/her from all sub groups
                 // that may leave us with a group without a manager
                 // If that happens then what?  Add current user as group manager?
+                this.userGroupsToSave.push(this.currentUserGroup);
+                this.numberOfUserGroupsToSave = this.userGroupsToSave.length;
+                this.saveUserGroup(0);
             }
         },
         cancelCurrentUserGroupChanges() {
@@ -747,18 +884,18 @@ export default {
                 this.userGroupBusy = false;
             }, 300);
         },
-        appendGroupSubGroupsToArray(groupId, subGroupArray) {
+        appendGroupSubGroupIdsToArray(groupId, subGroupArray) {
             let ugdo = this.userGroupDisplayMap[groupId];
             if (ugdo.subGroups && ugdo.subGroups.length > 0) {
                 for (let sg of ugdo.subGroups) {
                     subGroupArray.push(sg.id);
-                    this.appendGroupSubGroupsToArray(sg.id, subGroupArray);
+                    this.appendGroupSubGroupIdsToArray(sg.id, subGroupArray);
                 }
             }
         },
-        getSubGroupsForUserGroup(groupId) {
+        getSubGroupIdsForUserGroup(groupId) {
             let sga = [];
-            this.appendGroupSubGroupsToArray(groupId, sga);
+            this.appendGroupSubGroupIdsToArray(groupId, sga);
             return sga;
         },
         createSubGroupForCurrentUserGroup() {
