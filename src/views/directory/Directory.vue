@@ -88,6 +88,17 @@
                     </div>
                 </div>
             </div>
+            <div>
+                <label
+                    class="checkbox"
+                    for="searchingInDirectory">
+                    <input
+                        type="checkbox"
+                        value="true"
+                        id="searchingInDirectory"
+                        v-model="searchingInDirectory">
+                    Search within Directory</label>
+            </div>
             <div class="container is-fluid">
                 <DirectoryList
                     type="Framework"
@@ -136,6 +147,14 @@ export default {
         },
         directory: function() {
             return this.$store.getters['app/selectedDirectory'];
+        },
+        searchingInDirectory: {
+            get() {
+                return this.$store.getters['app/searchingInDirectory'];
+            },
+            set(val) {
+                this.$store.commit('app/searchingInDirectory', val);
+            }
         },
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];

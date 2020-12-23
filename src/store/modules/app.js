@@ -38,7 +38,8 @@ const state = {
     },
     directories: {
         directoryList: [],
-        selectedDirectory: null
+        selectedDirectory: null,
+        searchingInDirectory: true
     },
     import: {
         files: [],
@@ -277,6 +278,9 @@ const mutations = {
     },
     directoryList: function(state, list) {
         state.directories.directoryList = list;
+    },
+    searchingInDirectory: function(state, bool) {
+        state.directories.searchingInDirectory = bool;
     }
 };
 const actions = {
@@ -451,6 +455,9 @@ const getters = {
     },
     directoryList: state => {
         return state.directories.directoryList;
+    },
+    searchingInDirectory: state => {
+        return state.directories.searchingInDirectory;
     }
 };
 

@@ -194,6 +194,9 @@ export default {
         },
         directoryId: function() {
             this.searchRepo();
+        },
+        searchingInDirectory: function() {
+            this.searchRepo();
         }
     },
     computed: {
@@ -209,6 +212,9 @@ export default {
             let filterValues = options.filter(item => item.checked === true);
             if (filterValues.length <= 0) return null;
             return filterValues;
+        },
+        searchingInDirectory: function() {
+            return this.$store.getters['app/searchingInDirectory'];
         }
     },
     methods: {
@@ -231,7 +237,9 @@ export default {
         },
         buildIdList: function(success) {
             let me = this;
-            if (this.searchTerm === "" || this.searchingFor === "CreativeWork") {
+            if (!this.searchingInDirectory) {
+                success("");
+            } else if (this.searchTerm === "" || this.searchingFor === "CreativeWork") {
                 success(" AND (directory:\"" + this.directoryId + "\" OR parentDirectory:\"" + this.directoryId + "\")");
             } else if (this.searchingFor === "Directory" || this.searchingFor === "Framework") {
                 this.directoryIdList.splice(0, this.directoryIdList.length);
@@ -312,7 +320,6 @@ export default {
                     }
                     done();
                 }, function(all) {
-                    console.log(all);
                 }, function(error) {
                     appError(error);
                     done();
@@ -479,21 +486,24 @@ export default {
             this.start = 0;
             if (this.searchingFor === "Directory") {
                 this.searchingFor = "Framework";
+                return this.loadResults($state);
             } else if (this.searchingFor === "Framework") {
-                if (this.searchTerm) {
+                if (this.searchTerm || !this.searchingInDirectory) {
                     this.searchingFor = "Competency";
                 } else {
                     // Only display competencies when searching for something
                     this.searchingFor = "CreativeWork";
                 }
+                return this.loadResults($state);
             } else if (this.searchingFor === "Competency") {
-                this.searchingFor = "CreativeWork";
-            } else if ($state) {
-                return $state.complete();
-            } else {
-                return;
+                if (this.searchingInDirectory) {
+                    this.searchingFor = "CreativeWork";
+                    return this.loadResults($state);
+                }
             }
-            this.loadResults($state);
+            if ($state) {
+                return $state.complete();
+            }
         }
     }
 };
