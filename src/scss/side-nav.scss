@@ -2,9 +2,10 @@
 .cass-add-item--button {
     position: relative;
     overflow: visible;
+    margin-top: 1rem;
 }
-.cass-add-item--pop-out {
-    width: 200px;
+.cass--pop-out {
+    width: 260px;
     position: absolute;
     background-color: $light;
     box-shadow: $two-dp;
@@ -14,18 +15,19 @@
     padding: 16px;
     margin: .25rem 0rem;
     border-radius: 1rem;
-    .cass-add-item--popout-text-button {
-        display: block;
-        font-weight: 500;
-        text-align: left;
-        color: black;
-        text-transform: capitalize;
-        padding: .25rem;
-    }
-    .cass-add-item--popout-text-button:hover {
-        cursor: pointer;
-        color: $primary;
-    }
+
+}
+.cass--popout-text-button {
+    display: block;
+    font-weight: 500;
+    text-align: left;
+    color: black;
+    text-transform: capitalize;
+    padding: .25rem;
+}
+.cass--popout-text-button:hover {
+    cursor: pointer;
+    color: $primary;
 }
 .cass-logo {
     max-width: 100px;

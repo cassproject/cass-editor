@@ -21,7 +21,7 @@
                 v-if="showSideNav"
                 class="icon is-pulled-right"
                 @click="$store.commit('app/closeSideNav')">
-                <i class="fa fa-times" />
+                <i class="fa fa-chevron-down" />
             </div>
         </div>
         <div
@@ -32,13 +32,14 @@
                 @click="$store.commit('app/showSideNav')">
                 <div class="button is-outlined is-white">
                     <span class="icon icon has-text-centered">
-                        <i class="fa fa-bars has-text-centered" />
+                        <i class="fa fa-chevron-right has-text-centered" />
                     </span>
                 </div>
             </div>
             <template v-if="displayName !== 'No user'">
                 <div class="has-text-centered">
                     <span
+                        :title="'Signed in as: ' + displayName"
                         class="icon has-text-centered"
                         v-if="!showSideNav">
                         <i class="far fa-user-circle" />
@@ -59,9 +60,10 @@
                 </p>
                 <div
                     class="buttons is-right"
-                    v-if="showSideNav">
+                    v-if="showSideNav"
+                    title="Log out">
                     <router-link
-                        class="button is-outlined is-link"
+                        class="button is-rounded is-white has-text-danger"
                         to="/login">
                         <span class="icon">
                             <i class="fa fa-sign-out-alt" />
@@ -114,28 +116,28 @@
         <!-- Add new buttons -->
         <div
             v-if="showSideNav"
-            class="cass-add-item--button button is-rounded"
+            class="cass-add-item--button button is-rounded has-text-primary has-font-weight-medium"
             v-click-outside="handleClickoutsidePopup"
-            @click="addFrameworkOrDirectory = true">
+            @click="addFrameworkOrDirectory = true;">
             <span class="icon">
                 <i class="fa fa-plus" />
             </span>
             <span>Create new</span>
             <div
-                class="cass-add-item--pop-out"
+                class="cass--pop-out"
                 v-if="addFrameworkOrDirectory">
                 <div
                     @click="$emit('create-new-framework')"
-                    class="cass-add-item--popout-text-button">
+                    class="cass--popout-text-button">
                     <span v-if="showSideNav">Framework</span>
                 </div>
                 <div
-                    @click="addNewDirectory = true"
-                    class="cass-add-item--popout-text-button">
+                    @click.prevent="addNewDirectory = true"
+                    class="cass--popout-text-button">
                     <span v-if="showSideNav">Directory</span>
                 </div>
                 <div
-                    class="cass-add-item--popout-text-button"
+                    class="cass--popout-text-button"
                     @click="$emit('create-new-concept-scheme')">
                     <span>
                         <span v-if="showSideNav && queryParams.ceasnDataFields === 'true'">
@@ -147,26 +149,32 @@
                     </span>
                 </div>
                 <div
-                    class="control"
+                    class="field"
                     v-if="addNewDirectory">
                     <div class="control">
-                        <input
-                            class="input"
-                            v-model="directoryName">
+                        <div class="control">
+                            <input
+                                class="input"
+                                placeholder="Name of new directory"
+                                v-model="directoryName">
+                        </div>
                     </div>
-                    <div class="field">
-                        <div class="buttons">
-                            <div
-                                class="button is-primary is-small"
-                                :disabled="directoryName === 0"
-                                @click="saveDirectory">
-                                Create
-                            </div>
-                            <div
-                                class="button is-primary is-small"
-                                @click="addFrameworkOrDirectory = false">
-                                Cancel
-                            </div>
+                </div>
+                <div
+                    class="field"
+                    v-if="addNewDirectory">
+                    <div class="buttons">
+                        <div
+                            class="button is-dark is-outlined is-small"
+                            @click="addFrameworkOrDirectory = false">
+                            Cancel
+                        </div>
+                        <div
+                            class="button is-primary is-small"
+                            :class="directoryName.length === 0 ? 'is-disabled' : ''"
+                            :disabled="directoryName.length === 0"
+                            @click="saveDirectory">
+                            Create
                         </div>
                     </div>
                 </div>
@@ -184,7 +192,7 @@
             <li class="has-text-white">
                 <router-link to="/frameworks">
                     <span class="icon">
-                        <i class="fa fa-list-alt" />
+                        <i class="fa fa-th-list" />
                     </span>
                     <span v-if="showSideNav"> Frameworks</span>
                 </router-link>
@@ -209,7 +217,7 @@
                     <span class="icon">
                         <i class="fa fa-upload" />
                     </span><span v-if="showSideNav">
-                        Import Framework
+                        Import
                     </span>
                 </router-link>
             </li>
@@ -222,7 +230,7 @@
                     <span class="icon">
                         <i class="fas fa-book" />
                     </span>
-                    Framework Documentation
+                    Documentation
                 </a>
             </li>
             <li
@@ -298,12 +306,6 @@
                         <i class="fa fa-upload" />
                     </span>
                     Import
-                    <span v-if="showSideNav && queryParams.ceasnDataFields === 'true'">
-                        Concept Scheme
-                    </span>
-                    <span v-else-if="showSideNav">
-                        Taxonomy
-                    </span>
                 </router-link>
             </li>
             <li
@@ -314,8 +316,7 @@
                     target="_blank">
                     <span class="icon">
                         <i class="fas fa-book" />
-                    </span>
-                    {{ queryParams.ceasnDataFields === 'true' ? "Concept Scheme" : "Taxonomy" }} Documentation
+                    </span> Documentation
                 </a>
             </li>
             <li
@@ -440,6 +441,7 @@ export default {
         handleClickoutsidePopup() {
             if (this.addFrameworkOrDirectory) {
                 this.addFrameworkOrDirectory = false;
+                this.addNewDirectory = false;
             }
         },
         setLaunchPluginValues(pluginShortcut) {
