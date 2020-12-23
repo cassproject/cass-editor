@@ -951,7 +951,7 @@ export default {
         },
         appendGroupSubGroupIdsToArray(groupId, subGroupArray) {
             let ugdo = this.userGroupDisplayMap[groupId];
-            if (ugdo.subGroups && ugdo.subGroups.length > 0) {
+            if (ugdo && ugdo.subGroups && ugdo.subGroups.length > 0) {
                 for (let sg of ugdo.subGroups) {
                     subGroupArray.push(sg.id);
                     this.appendGroupSubGroupIdsToArray(sg.id, subGroupArray);
