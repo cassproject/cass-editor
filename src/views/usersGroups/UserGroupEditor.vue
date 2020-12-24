@@ -4,7 +4,7 @@
         class="cass-users-and-groups">
         <div class="section">
             <div class="container">
-                <div class="columns">
+                <div class="columns is-mobile is-multiline">
                     <!-- desktop vs of navigation -->
                     <div class="column width-300 is-narrow is-hidden-touch">
                         <div class="cass-left-panel">
@@ -48,7 +48,7 @@
                         </div>
                     </div>
                     <!-- mobile vs of navigation -->
-                    <div class="column is-hidden-desktop">
+                    <div class="column is-12 is-hidden-desktop">
                         <cass-dropdown
                             @closeDropdown="groupsDropdownActive=false"
                             :label="currentUserGroupName"
